@@ -32,9 +32,9 @@ export const Start = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const navigate = useNavigate();
-
   const setCollection = useSetCollection();
+
+  const navigate = useNavigate();
 
   const onOpenFolder = async () => {
     setState('loading');
@@ -43,18 +43,16 @@ export const Start = () => {
       const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
 
       const files = [];
-      
+
       for await (const entry of handle.values()) {
         const fileHandle = await handle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
         files.push(file);
       }
 
-      console.log('files', files.length);
-
       const images: AnnotatedImage[] = [];
 
-      files.reduce((promise, file, index) => promise.then(() =>
+      await files.reduce((promise, file, index) => promise.then(() =>
         readFileContent(file).then(blob => {
           images.push({
             name: file.name,
@@ -62,17 +60,14 @@ export const Start = () => {
             blob
           });
 
-          console.log('progress', Math.round(index / files.length));
-
           setProgress(Math.round(100 * index / files.length));
         })
-      ), Promise.resolve()).then(() => {
-        setProgress(100);
+      ), Promise.resolve());
 
-        setCollection({ images, handle });
-  
-        navigate('/');  
-      });
+      setProgress(100);
+      setCollection({ images, handle });
+      
+      navigate('/'); 
     } catch {
       setState('error');
     }
