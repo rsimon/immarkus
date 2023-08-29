@@ -1,10 +1,13 @@
-import { Folder } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AnnotatedImage } from '@/model';
-import { Button } from '@/components/Button';
 import { useSetCollection } from '@/store';
+import { Loading } from './Loading';
+import { Open } from './Open';
 
 import './Start.css';
-import { useNavigate } from 'react-router-dom';
+
+type State = 'idle' | 'loading' | 'error';
 
 const readFileContent = (file: File): Promise<Blob> => 
   new Promise((resolve, reject) => {
@@ -25,49 +28,62 @@ const readFileContent = (file: File): Promise<Blob> =>
 
 export const Start = () => {
 
+  const [state, setState] = useState<State>('idle');
+
+  const [progress, setProgress] = useState(0);
+
   const navigate = useNavigate();
 
   const setCollection = useSetCollection();
 
-  const images: AnnotatedImage[] = [];
-
   const onOpenFolder = async () => {
-    const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+    setState('loading');
 
-    for await (const entry of dirHandle.values()) {
-      const fileHandle = await dirHandle.getFileHandle(entry.name);
-      const file = await fileHandle.getFile();
-      const blob = await readFileContent(file);
+    try {
+      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
 
-      console.log(entry);
+      const files = [];
+      
+      for await (const entry of handle.values()) {
+        const fileHandle = await handle.getFileHandle(entry.name);
+        const file = await fileHandle.getFile();
+        files.push(file);
+      }
 
-      images.push({
-        name: entry.name,
-        path: `${dirHandle.name}/${entry.name}`,
-        blob
-      })
+      console.log('files', files.length);
+
+      const images: AnnotatedImage[] = [];
+
+      files.reduce((promise, file, index) => promise.then(() =>
+        readFileContent(file).then(blob => {
+          images.push({
+            name: file.name,
+            path: `${handle.name}/${file.name}`,
+            blob
+          });
+
+          console.log('progress', Math.round(index / files.length));
+
+          setProgress(Math.round(100 * index / files.length));
+        })
+      ), Promise.resolve()).then(() => {
+        setProgress(100);
+
+        setCollection({ images, handle });
+  
+        navigate('/');  
+      });
+    } catch {
+      setState('error');
     }
-
-    setCollection({
-      images,
-      handle: dirHandle
-    });
-
-    navigate('/');
   }
 
-  return (
-    <main className="page start">
-      <div className="cta">
-        <h1 className="font-medium mb-2 text-lg">Welcome to I-MARKUS</h1>
-        <p className="text-xs text-muted-foreground mb-6 max-w-md">
-          Open an existing work folder, or a new folder with image files.
-        </p>
-        <Button onClick={onOpenFolder}>
-          <Folder size={18} className="mr-2" /> Open Folder
-        </Button>
-      </div>
-    </main>
+  return state === 'idle' ? (
+    <Open onOpenFolder={onOpenFolder} />
+  ) : state === 'loading' ? (
+    <Loading progress={progress} />
+  ) : (
+    <div></div>
   )
 
 }
