@@ -1,0 +1,32 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --font-dark: #323232;
+  --font-small: 0.875em;
+
+  --background-lightgray: #f7f7f7;
+
+  --border-lightgray: #e5e5e5;
+  --border-radius: 8px;
+}
+
+html, body, #app {
+  color: var(--font-dark);
+  font-family: Inter;
+  margin: 0;
+  height: 100%;
+  padding: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+}
+
+main {
+  flex-grow: 1;
+  padding: 30px 50px;
+}
+

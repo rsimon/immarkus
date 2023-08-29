@@ -1,0 +1,16 @@
+aside.main-nav {
+  background-color: var(--background-lightgray);
+  border-right: 1px solid var(--border-lightgray);
+  font-size: var(--font-small);
+  min-width: 250px;
+  padding: 20px;
+}
+
+aside.main-nav li + li {
+  margin-top: 0.4em;
+}
+
+aside.main-nav li a {
+  display: block;
+  padding: 10px;
+}
