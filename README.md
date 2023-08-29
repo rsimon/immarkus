@@ -1,3 +1,3 @@
-# MARKUS Image Annotation Environment
+# Image Annotation for the X-MARKUS Environment
 
-An image annotation environment for the MARKUS platform.
+An image annotation platform for the X-MARKUS environment.
