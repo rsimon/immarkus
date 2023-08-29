@@ -1,8 +1,16 @@
 import { ReactNode, createContext, useContext, useState } from 'react';
-import { AnnotatedImage, ReadableCollection, WritableCollection } from '@/model';
+import { PersistentCollection } from '@/model';
+
+interface CollectionContextState {
+
+  collection?: PersistentCollection;
+
+  setCollection: React.Dispatch<React.SetStateAction<PersistentCollection | undefined>>
+
+}
 
 //@ts-ignore
-const CollectionContext = createContext<WritableCollection>(null);
+const CollectionContext = createContext<CollectionContextState>(undefined);
 
 interface CollectionContextProps {
 
@@ -12,36 +20,22 @@ interface CollectionContextProps {
 
 export const CollectionProvider = (props: CollectionContextProps) => {
 
-  const [images, setImages] = useState<AnnotatedImage[]>([]);
-
-  const [isLoaded, setIsLoaded] = useState(false);
-
-  const collection = { images, setImages, isLoaded, setIsLoaded };
+  const [collection, setCollection] = useState<PersistentCollection | undefined>(undefined);
 
   return (
-    <CollectionContext.Provider value={collection}>
+    <CollectionContext.Provider value={{ collection, setCollection }}>
       {props.children}
     </CollectionContext.Provider>
   )
 
 }
 
-export const useWriteableCollection = () => useContext(CollectionContext);
-
-export const useCollection = () => {
-  const { images, isLoaded } = useContext(CollectionContext);
-  return { images, isLoaded } as ReadableCollection;
+export const useSetCollection = () => {
+  const { setCollection }  = useContext(CollectionContext);
+  return setCollection;
 }
 
-/** Listen to changes and modifiy one specific image **/
-export const useImage = (id: string) => {
-  // TODO prevent unnecessary re-renders, by tracking state internally
-  const { images, setImages } = useContext(CollectionContext);
-
-  const image = images.find(img => img.id === id);
-
-  const updateImage = (image: AnnotatedImage) => setImages(images => 
-    images.map(img => img.id === id ? image : img));
-
-  return { image, updateImage };
+export const useCollection = () => {
+  const { collection } = useContext(CollectionContext);
+  return collection;
 }

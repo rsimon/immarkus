@@ -1,9 +1,8 @@
-import { Routes, Route, Outlet, Link, Navigate } from 'react-router-dom';
-import { Sidebar } from '@/components/Sidebar';
+import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useCollection } from '@/store';
+import { Images, Start } from './pages';
 
 import './App.css';
-import { Start } from './pages/start/Start';
 
 export const App = () => {
 
@@ -11,10 +10,12 @@ export const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to={collection.isLoaded ? '/images' : '/start' }/>} />
+      <Route path="/">
+        <Route index element={<Navigate to={collection ? '/images' : '/start' }/>} />
 
         <Route path="start" element={<Start />} />
+
+        <Route path="images" element={<Images />} />
 
         {/* image list + image import 
         <Route path="images" element={<Images />} />
@@ -37,16 +38,6 @@ export const App = () => {
     </Routes>
   )
 
-}
-
-const Layout = () => {
-
-  return (
-    <div className="app-container">
-      <Sidebar />  
-      <Outlet />
-    </div>
-  );
 }
 
 const NotFound = () => {

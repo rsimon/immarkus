@@ -1,13 +1,9 @@
-import { Annotation } from '@annotorious/react';
-
 export interface AnnotatedImage {
 
-  id: string;
+  name: string;
 
-  filename: string;
+  path: string;
 
-  src: string;
-
-  annotations: Annotation[];
+  blob: Blob;
   
 }

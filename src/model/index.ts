@@ -1,2 +1,2 @@
 export * from './AnnotatedImage';
-export * from './Collection';
+export * from './PersistentCollection';

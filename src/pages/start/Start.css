@@ -1,0 +1,10 @@
+main.page.start {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+main.page.start .cta {
+  text-align: center;
+}
