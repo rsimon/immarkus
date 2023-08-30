@@ -1,24 +1,24 @@
 import { MessagesSquare } from 'lucide-react';
-import { useCollection } from '@/store';
+import { useStore } from '@/store';
 import { ImageActions } from './ImageActions';
 
 import './ImageGrid.css';
 
 export const ImageGrid = () => {
 
-  const collection = useCollection()!;
+  const store = useStore()!;
 
   return (
     <div className="image-grid">
       <div className="space-y-1 headline">
-        <h1 className="text-2xl font-semibold tracking-tight">{collection.name}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{store.handle.name}</h1>
         <p className="text-sm text-muted-foreground">
-          {collection.images.length} images
+          {store.images.length} images
         </p>
       </div>
 
       <ul>
-        {collection.images.map(image => (
+        {store.images.map(image => (
           <li key={image.name}>
             <div className="relative overflow-hidden rounded-md shadow border">
               <img

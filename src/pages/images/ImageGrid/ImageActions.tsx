@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { AnnotatedImage } from '@/model';
-import { Download, MessagesSquare, MoreVertical, PanelTop, Trash2 } from 'lucide-react';
+import { Image } from '@/model';
+import { Download, MoreVertical, PanelTop } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ interface ImageActionProps {
 
   className?: string;
 
-  image: AnnotatedImage;
+  image: Image;
 
 }
 
@@ -29,7 +29,7 @@ export const ImageActions = (props: ImageActionProps) => {
 
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Link to={`/annotate/${props.image.name}`} >
+          <Link to={`/annotate/${props.image.id}`} >
             <PanelTop size={18} className="inline text-muted-foreground relative -top-px mr-2" />Open image
           </Link>
         </DropdownMenuItem>

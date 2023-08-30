@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDatabase } from '@/db';
-import { AnnotatedImage } from '@/model';
+import { Image } from '@/model';
 import { useSetCollection } from '@/store';
 import { readFile } from './readFile';
 import { Loading } from './Loading';
@@ -9,6 +9,7 @@ import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 import './Start.css';
+import { useInitStore } from '@/store/StoreProvider';
 
 type State = 'idle' | 'loading' | 'error';
 
@@ -18,7 +19,7 @@ export const Start = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const setCollection = useSetCollection();
+  const initStore = useInitStore();
 
   const db = useDatabase();
 
@@ -26,6 +27,7 @@ export const Start = () => {
 
   const onOpenFolder = async (storedHandle?: FileSystemDirectoryHandle) => {
     try {
+      // Use stored handle or request new
       let handle = storedHandle;
 
       if (handle) {
@@ -35,39 +37,16 @@ export const Start = () => {
       } else {
         handle = await window.showDirectoryPicker({ mode: 'readwrite' });
 
-        // Persist this handle
+        // Persist new handle
         db.handles.clear();
         db.handles.add({ handle, created: new Date() });
       }
 
+      // Loading!
       setState('loading');
-
-      const files = [];
-
-      for await (const entry of handle.values()) {
-        const fileHandle = await handle.getFileHandle(entry.name);
-        const file = await fileHandle.getFile();
-        files.push(file);
-      }
-
-      const images: AnnotatedImage[] = [];
-
-      await files.reduce((promise, file, index) => file.type.startsWith('image') ? 
-        promise.then(() => 
-          readFile(file).then(data => {
-            images.push({
-              name: file.name,
-              path: `${handle!.name}/${file.name}`,
-              data
-            });
-
-            setProgress(Math.round(100 * index / files.length));
-          }) 
-      ) : promise, Promise.resolve());
-
-      setProgress(100);
-      setCollection({ name: handle.name, images, handle });
+      await initStore(handle, setProgress);
       
+      // Done - navigate to root
       navigate('/'); 
     } catch (error) {
       console.error(error);

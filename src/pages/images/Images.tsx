@@ -1,14 +1,14 @@
-import { useCollection } from '@/store';
+import { Sidebar } from '@/components/Sidebar';
+import { useStore } from '@/store';
 import { ImageGrid } from './ImageGrid';
 
 import './Images';
-import { Sidebar } from '@/components/Sidebar';
 
 export const Images = () => {
 
-  const collection = useCollection({ redirect: true });
+  const store = useStore({ redirect: true });
 
-  return collection && (
+  return store && (
     <div className="page-root">
       <Sidebar />
 

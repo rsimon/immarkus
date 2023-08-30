@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator } from '@annotorious/react';
 import { Sidebar } from '@/components/Sidebar';
-import { useCollection } from '@/store';
+import { useStore } from '@/store';
 
 import './Annotate.css';
 
@@ -9,13 +9,13 @@ import '@annotorious/react/dist/annotorious-react.css';
 
 export const Annotate = () => {
 
-  const collection = useCollection({ redirect: true });
+  const store = useStore({ redirect: true });
 
   const params = useParams();
 
-  const image = collection?.images.find(i => i.name === params.id);
+  const image = store?.getImage(params.id!);
 
-  return collection &&  (
+  return store &&  (
     <div className="page-root">
       <Sidebar />
 

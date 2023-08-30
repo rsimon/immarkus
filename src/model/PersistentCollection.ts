@@ -1,4 +1,4 @@
-import { AnnotatedImage } from './AnnotatedImage';
+import { AnnotatedImage } from './Image';
 
 export interface PersistentCollection {
 

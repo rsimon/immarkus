@@ -1,17 +1,17 @@
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useCollection } from '@/store';
 import { Annotate, Images, Start } from './pages';
+import { useStore } from './store';
 
 import './App.css';
 
 export const App = () => {
 
-  const collection = useCollection();
+  const store = useStore();
 
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<Navigate to={collection ? '/images' : '/start' }/>} />
+        <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
 
         <Route path="start" element={<Start />} />
 

@@ -1,4 +1,6 @@
-export interface AnnotatedImage {
+export interface Image {
+
+  id: string;
 
   name: string;
 
