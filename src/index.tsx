@@ -8,10 +8,10 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <DatabaseProvider>
-    <HashRouter>
-      <StoreProvider>
+    <StoreProvider>
+      <HashRouter>
         <App />
-      </StoreProvider>
-    </HashRouter>
+      </HashRouter>
+    </StoreProvider>
   </DatabaseProvider>
 )

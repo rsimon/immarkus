@@ -6,6 +6,7 @@ import { useStore } from '@/store';
 import './Annotate.css';
 
 import '@annotorious/react/dist/annotorious-react.css';
+import { AnnotoriousStorePlugin } from './AnnotoriousStorePlugin';
 
 export const Annotate = () => {
 
@@ -42,6 +43,9 @@ export const Annotate = () => {
                   src={URL.createObjectURL(image.data)}
                   alt={image.path} />
               </ImageAnnotator>
+
+              <AnnotoriousStorePlugin 
+                image={image} />
             </Annotorious>
           </section>
         )}

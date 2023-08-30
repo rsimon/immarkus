@@ -1,4 +1,4 @@
-import { Annotation } from '@annotorious/react';
+import { ImageAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
 
 const readImageFile = (file: File): Promise<Blob> =>
@@ -18,13 +18,13 @@ const readImageFile = (file: File): Promise<Blob> =>
     reader.readAsArrayBuffer(file);
   });
 
-const readJSONFile = (file: File): Promise<Object[]> =>
+const readJSONFile = (file: File): Promise<ImageAnnotation[]> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = (event) => {
       if (event.target?.result) {
-        const obj: Object[] = JSON.parse(String(event.target.result));
+        const obj: ImageAnnotation[] = JSON.parse(String(event.target.result));
         resolve(obj);
       } else {
         reject();
@@ -37,6 +37,13 @@ const readJSONFile = (file: File): Promise<Object[]> =>
 
     reader.readAsText(file);
   });
+
+const writeJSONFile = (handle: FileSystemFileHandle, annotations: ImageAnnotation[]) => {
+  const content = JSON.stringify(annotations, null, 2);
+  return handle.createWritable().then(writable => {
+    return writable.write(content).then(() => writable.close());
+  });
+}
 
 const generateShortId = (str: string) =>
   crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
@@ -58,15 +65,15 @@ export interface Store {
 
   getImage(id: string): Image | undefined;
 
-  getAnnotations(imageId: string): Annotation[];
+  getAnnotations(imageId: string): ImageAnnotation[];
 
   countAnnotations(imageId: string): number;
 
-  addAnnotation(imageId: string, annotation: Annotation): void;
+  addAnnotation(imageId: string, annotation: ImageAnnotation): void;
 
-  updateAnnotation(annotation: Annotation): void;
+  updateAnnotation(imageId: string, annotation: ImageAnnotation): void;
 
-  deleteAnnotation(annotation: Annotation): void;
+  deleteAnnotation(imageId: string, annotation: ImageAnnotation): void;
 
 }
 
@@ -84,7 +91,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
   
     const images: Image[] = [];
 
-    const annotations = new Map<string, Object[]>()
+    const annotations = new Map<string, ImageAnnotation[]>()
   
     await files.reduce((promise, file, index) => {
       let nextPromise;
@@ -101,7 +108,8 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
         }));
       } else if (file.type === 'application/json') {
         nextPromise = promise.then(() => readJSONFile(file).then(json => {
-          annotations.set(file.name, json);
+          const id = file.name.substring(0, file.name.lastIndexOf('.'));
+          annotations.set(id, json);
         }));
       } else {
         nextPromise = promise;
@@ -112,27 +120,47 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       return nextPromise;
     }, Promise.resolve());
 
-    console.log('images', images);
-    console.log('annotations', annotations);
-
     onProgress && onProgress(100);
 
     const getImage = (id: string) => images.find(i => i.id === id);
 
-    const getAnnotations = (imageId: string) => annotations.get(imageId) as Annotation[];
+    const getAnnotations = (imageId: string) => annotations.get(imageId) || [];
 
     const countAnnotations = (imageId: string) => annotations.get(imageId)?.length || 0;
 
-    const addAnnotation = (imageId: string, annotation: Annotation) => {
+    const addAnnotation = (imageId: string, annotation: ImageAnnotation) => {
+      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+        const next = [
+          ...(annotations.get(imageId) || []).filter(a => a.id !== annotation.id),
+          annotation
+        ];
 
+        annotations.set(imageId, next);
+
+        writeJSONFile(fileHandle, next);
+      });
     }
 
-    const updateAnnotation = (annotation: Annotation) => {
-      
+    const updateAnnotation = (imageId: string, annotation: ImageAnnotation) => {
+      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+        const next = (annotations.get(imageId) || [])
+          .map(a => a.id === annotation.id ? annotation : a);
+
+        annotations.set(imageId, next);
+
+        writeJSONFile(fileHandle, next);
+      });
     }
   
-    const deleteAnnotation = (annotation: Annotation)=> {
-      
+    const deleteAnnotation = (imageId: string, annotation: ImageAnnotation)=> {
+      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+        const next = (annotations.get(imageId) || [])
+          .filter(a => a.id !== annotation.id);
+
+        annotations.set(imageId, next);
+
+        writeJSONFile(fileHandle, next);
+      }); 
     }
 
     resolve({

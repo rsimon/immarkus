@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDatabase } from '@/db';
-import { Image } from '@/model';
-import { useSetCollection } from '@/store';
-import { readFile } from './readFile';
+import { useInitStore } from '@/store/StoreProvider';
 import { Loading } from './Loading';
 import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 import './Start.css';
-import { useInitStore } from '@/store/StoreProvider';
 
 type State = 'idle' | 'loading' | 'error';
 

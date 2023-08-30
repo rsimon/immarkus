@@ -30,7 +30,9 @@ export const ImageGrid = () => {
 
               <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full">
                 <div className="text-white text-sm">
-                  <MessagesSquare size={18} className="inline align-text-bottom mr-0.5" /> 0
+                  <MessagesSquare 
+                    size={18} 
+                    className="inline align-text-bottom mr-0.5" /> {store.countAnnotations(image.id)}
                 </div>
 
                 <div className="absolute bottom-0 right-2 text-white text-sm">
