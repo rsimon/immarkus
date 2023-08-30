@@ -52,17 +52,18 @@ export const Start = () => {
 
       const images: AnnotatedImage[] = [];
 
-      await files.reduce((promise, file, index) => promise.then(() =>
-        readFile(file).then(data => {
-          images.push({
-            name: file.name,
-            path: `${handle!.name}/${file.name}`,
-            data
-          });
+      await files.reduce((promise, file, index) => file.type.startsWith('image') ? 
+        promise.then(() => 
+          readFile(file).then(data => {
+            images.push({
+              name: file.name,
+              path: `${handle!.name}/${file.name}`,
+              data
+            });
 
-          setProgress(Math.round(100 * index / files.length));
-        })
-      ), Promise.resolve());
+            setProgress(Math.round(100 * index / files.length));
+          }) 
+      ) : promise, Promise.resolve());
 
       setProgress(100);
       setCollection({ name: handle.name, images, handle });
