@@ -12,7 +12,10 @@ export const Loading = (props: LoadingProps) => {
 
   return (
     <main className="page start loading">
-      <Progress value={props.progress} />
+      <div className="content-wrapper">
+        <p className="mb-4 text-md">Loading...</p>
+        <Progress className="progress" value={props.progress} />
+      </div>
     </main>
   )
 

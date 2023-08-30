@@ -44,7 +44,7 @@ export const Open = (props: OpenProps) => {
             </Button>
           )}
         </div>
-        <p className="text-xs text-muted-foreground mt-4 max-w-sm">
+        <p className="text-xs text-muted-foreground mt-4">
           Open an existing work folder, or a new folder with image files.
         </p>
       </div>

@@ -1,11 +1,13 @@
-main.page.start.open .cta {
-  text-align: center;
-}
-
 main.page.start.open .buttons {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+
+main.page.start .cta {
+  text-align: center;
+  min-width: 220px;
 }
 
 main.page.start.open .buttons button + button {
