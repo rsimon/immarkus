@@ -29,10 +29,7 @@ export const Open = (props: OpenProps) => {
   return (
     <main className="page start open">
       <div className="cta">
-        <h1 className="font-medium mb-2 text-lg">Welcome to I-MARKUS</h1>
-        <p className="text-xs text-muted-foreground mb-6 max-w-md">
-          Open an existing work folder, or a new folder with image files.
-        </p>
+        <h1 className="font-medium mb-4 text-lg">Welcome to I-MARKUS</h1>
         <div className="buttons">
           <Button 
             onClick={() => props.onOpenFolder()}>
@@ -47,6 +44,9 @@ export const Open = (props: OpenProps) => {
             </Button>
           )}
         </div>
+        <p className="text-xs text-muted-foreground mt-4 max-w-sm">
+          Open an existing work folder, or a new folder with image files.
+        </p>
       </div>
     </main>
   )
