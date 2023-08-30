@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDatabase } from '@/db';
 import { AnnotatedImage } from '@/model';
 import { useSetCollection } from '@/store';
+import { readFile } from './readFile';
 import { Loading } from './Loading';
 import { Open } from './Open';
 
@@ -9,38 +11,45 @@ import './Start.css';
 
 type State = 'idle' | 'loading' | 'error';
 
-const readFileContent = (file: File): Promise<Blob> => 
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const contentArrayBuffer = event.target?.result as ArrayBuffer;
-      const data = new Blob([contentArrayBuffer], { type: file.type });
-      resolve(data);
-    };
-
-    reader.onerror = (event) => {
-      reject(event.target?.error);
-    };
-
-    reader.readAsArrayBuffer(file);
-  });
-
 export const Start = () => {
 
   const [state, setState] = useState<State>('idle');
+
+  const [storedHandle, setStoredHandle] = useState<FileSystemDirectoryHandle | undefined>();
 
   const [progress, setProgress] = useState(0);
 
   const setCollection = useSetCollection();
 
+  const db = useDatabase();
+
   const navigate = useNavigate();
 
-  const onOpenFolder = async () => {
-    setState('loading');
+  useEffect(() => {
+    // Retrieve stored dir handle on mount, if any
+    db.handles.toArray().then(handles => {
+      if (handles.length > 0)
+        setStoredHandle(handles[0].handle);
+    });
+  }, []);
 
+  const onOpenFolder = async () => {
     try {
-      const handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+      let handle = storedHandle;
+
+      if (handle) {
+        const permissions = await handle.requestPermission({ mode: 'readwrite' });
+        if (permissions !== 'granted')
+          throw new Error('File access denied by user');
+      } else {
+        handle = await window.showDirectoryPicker({ mode: 'readwrite' });
+
+        // Persist this handle
+        db.handles.clear();
+        db.handles.add({ handle, created: new Date() });
+      }
+
+      setState('loading');
 
       const files = [];
 
@@ -53,10 +62,10 @@ export const Start = () => {
       const images: AnnotatedImage[] = [];
 
       await files.reduce((promise, file, index) => promise.then(() =>
-        readFileContent(file).then(data => {
+        readFile(file).then(data => {
           images.push({
             name: file.name,
-            path: `${handle.name}/${file.name}`,
+            path: `${handle!.name}/${file.name}`,
             data
           });
 
@@ -68,7 +77,8 @@ export const Start = () => {
       setCollection({ images, handle });
       
       navigate('/'); 
-    } catch {
+    } catch (error) {
+      console.error(error)
       setState('error');
     }
   }

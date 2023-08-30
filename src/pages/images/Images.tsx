@@ -21,7 +21,7 @@ export const Images = () => {
         {collection?.images.map(image => (
           <li key={image.name}>
             <img
-              src={URL.createObjectURL(image.blob)}
+              src={URL.createObjectURL(image.data)}
               alt={image.name}
               className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-square" />
           </li>

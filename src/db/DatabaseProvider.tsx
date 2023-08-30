@@ -29,4 +29,4 @@ export const DatabaseProvider = (props: DatabaseContextProviderProps) => {
 
 }
 
-export const useDB = () => useContext(DatabaseContext);
+export const useDatabase = () => useContext(DatabaseContext)!;
