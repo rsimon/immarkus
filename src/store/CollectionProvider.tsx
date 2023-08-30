@@ -1,4 +1,5 @@
-import { ReactNode, createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PersistentCollection } from '@/model';
 
 interface CollectionContextState {
@@ -35,7 +36,15 @@ export const useSetCollection = () => {
   return setCollection;
 }
 
-export const useCollection = () => {
+export const useCollection = (args: { redirect: boolean } = { redirect: false }) => {
   const { collection } = useContext(CollectionContext);
+
+  const navigate = args.redirect && useNavigate();
+
+  useEffect(() => {
+    if (!collection && navigate)
+      navigate('/');
+  }, []);
+
   return collection;
 }

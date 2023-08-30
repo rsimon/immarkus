@@ -1,26 +1,21 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Annotorious } from '@annotorious/react';
+import { Link, useParams } from 'react-router-dom';
+import { Annotorious, ImageAnnotator } from '@annotorious/react';
 import { Sidebar } from '@/components/Sidebar';
 import { useCollection } from '@/store';
 
 import './Annotate.css';
 
+import '@annotorious/react/dist/annotorious-react.css';
+
 export const Annotate = () => {
 
-  const navigate = useNavigate();
-
-  const collection = useCollection();
-
-  if (!collection) {
-    navigate('/');
-    return null;
-  }
+  const collection = useCollection({ redirect: true });
 
   const params = useParams();
 
-  const image = collection.images.find(i => i.name === params.id);
+  const image = collection?.images.find(i => i.name === params.id);
 
-  return (
+  return collection &&  (
     <div className="page-root">
       <Sidebar />
 
@@ -42,13 +37,11 @@ export const Annotate = () => {
         {image && (
           <section>
             <Annotorious>
-
+              <ImageAnnotator>
                 <img 
                   src={URL.createObjectURL(image.data)}
                   alt={image.path} />
-
-
-
+              </ImageAnnotator>
             </Annotorious>
           </section>
         )}

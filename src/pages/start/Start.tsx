@@ -6,9 +6,9 @@ import { useSetCollection } from '@/store';
 import { readFile } from './readFile';
 import { Loading } from './Loading';
 import { Open } from './Open';
+import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 import './Start.css';
-import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 type State = 'idle' | 'loading' | 'error';
 
