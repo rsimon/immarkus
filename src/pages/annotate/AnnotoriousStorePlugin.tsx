@@ -22,7 +22,7 @@ export const AnnotoriousStorePlugin = (props: AnnotoriousStorePluginProps) => {
       const { id } = image;
 
       const annotations = store.getAnnotations(id);
-      anno.state.store.bulkAddAnnotation(annotations);
+      anno.setAnnotations(annotations);
 
       anno.on('createAnnotation', annotation =>
         store.addAnnotation(id, annotation));
