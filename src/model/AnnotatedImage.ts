@@ -4,6 +4,6 @@ export interface AnnotatedImage {
 
   path: string;
 
-  blob: Blob;
+  data: Blob;
   
 }

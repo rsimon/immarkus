@@ -53,11 +53,11 @@ export const Start = () => {
       const images: AnnotatedImage[] = [];
 
       await files.reduce((promise, file, index) => promise.then(() =>
-        readFileContent(file).then(blob => {
+        readFileContent(file).then(data => {
           images.push({
             name: file.name,
             path: `${handle.name}/${file.name}`,
-            blob
+            data
           });
 
           setProgress(Math.round(100 * index / files.length));
