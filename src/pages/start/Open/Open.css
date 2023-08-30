@@ -1,3 +1,13 @@
 main.page.start.open .cta {
   text-align: center;
 }
+
+main.page.start.open .buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+main.page.start.open .buttons button + button {
+  margin-left: 0.6em;
+}

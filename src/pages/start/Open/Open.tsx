@@ -1,15 +1,30 @@
+import { useEffect, useState } from 'react';
 import { Folder } from 'lucide-react';
 import { Button } from '@/components/Button';
+import { useDatabase } from '@/db';
 
 import './Open.css';
 
 interface OpenProps {
 
-  onOpenFolder(): void;
+  onOpenFolder(handle?: FileSystemDirectoryHandle): void;
 
 }
 
 export const Open = (props: OpenProps) => {
+
+  const [storedHandle, setStoredHandle] = 
+    useState<FileSystemDirectoryHandle | undefined>();
+
+  const db = useDatabase();
+
+  useEffect(() => {
+    // Retrieve stored dir handle on mount, if any
+    db.handles.toArray().then(handles => {
+      if (handles.length > 0)
+        setStoredHandle(handles[0].handle);
+    });
+  }, []);
 
   return (
     <main className="page start open">
@@ -18,9 +33,20 @@ export const Open = (props: OpenProps) => {
         <p className="text-xs text-muted-foreground mb-6 max-w-md">
           Open an existing work folder, or a new folder with image files.
         </p>
-        <Button onClick={props.onOpenFolder}>
-          <Folder size={18} className="mr-2" /> Open Folder
-        </Button>
+        <div className="buttons">
+          <Button 
+            onClick={() => props.onOpenFolder()}>
+            <Folder size={18} className="mr-2" /> Open New Folder
+          </Button>
+
+          {Boolean(storedHandle) && (
+            <Button 
+              variant="outline"
+              onClick={() => props.onOpenFolder(storedHandle)}>
+              <Folder size={18} className="mr-2" /> {storedHandle!.name}
+            </Button>
+          )}
+        </div>
       </div>
     </main>
   )

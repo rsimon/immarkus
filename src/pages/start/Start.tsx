@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDatabase } from '@/db';
 import { AnnotatedImage } from '@/model';
@@ -8,14 +8,13 @@ import { Loading } from './Loading';
 import { Open } from './Open';
 
 import './Start.css';
+import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 type State = 'idle' | 'loading' | 'error';
 
 export const Start = () => {
 
   const [state, setState] = useState<State>('idle');
-
-  const [storedHandle, setStoredHandle] = useState<FileSystemDirectoryHandle | undefined>();
 
   const [progress, setProgress] = useState(0);
 
@@ -25,15 +24,7 @@ export const Start = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Retrieve stored dir handle on mount, if any
-    db.handles.toArray().then(handles => {
-      if (handles.length > 0)
-        setStoredHandle(handles[0].handle);
-    });
-  }, []);
-
-  const onOpenFolder = async () => {
+  const onOpenFolder = async (storedHandle?: FileSystemDirectoryHandle) => {
     try {
       let handle = storedHandle;
 
@@ -78,17 +69,17 @@ export const Start = () => {
       
       navigate('/'); 
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setState('error');
     }
   }
 
-  return state === 'idle' ? (
-    <Open onOpenFolder={onOpenFolder} />
+  return !window.showDirectoryPicker ? (
+    <UnsupportedBrowser />
   ) : state === 'loading' ? (
     <Loading progress={progress} />
   ) : (
-    <div></div>
+    <Open onOpenFolder={onOpenFolder} />
   )
 
 }
