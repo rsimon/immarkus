@@ -1,6 +1,6 @@
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useCollection } from '@/store';
-import { Images, Start } from './pages';
+import { Annotate, Images, Start } from './pages';
 
 import './App.css';
 
@@ -17,10 +17,6 @@ export const App = () => {
 
         <Route path="images" element={<Images />} />
 
-        {/* image list + image import 
-        <Route path="images" element={<Images />} />
-        
-        {/* image annotation view 
         <Route path="annotate/:id" element={<Annotate />} />
 
         {/* TODO vocabulary management 
