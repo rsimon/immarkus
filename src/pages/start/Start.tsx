@@ -65,7 +65,7 @@ export const Start = () => {
       ), Promise.resolve());
 
       setProgress(100);
-      setCollection({ images, handle });
+      setCollection({ name: handle.name, images, handle });
       
       navigate('/'); 
     } catch (error) {
@@ -74,12 +74,16 @@ export const Start = () => {
     }
   }
 
-  return !window.showDirectoryPicker ? (
-    <UnsupportedBrowser />
-  ) : state === 'loading' ? (
-    <Loading progress={progress} />
-  ) : (
-    <Open onOpenFolder={onOpenFolder} />
+  return ( 
+    <div className="page-root">
+      {!window.showDirectoryPicker ? (
+        <UnsupportedBrowser />
+      ) : state === 'loading' ? (
+        <Loading progress={progress} />
+      ) : (
+        <Open onOpenFolder={onOpenFolder} />
+      )}
+    </div>
   )
 
 }

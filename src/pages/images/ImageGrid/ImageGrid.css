@@ -1,0 +1,32 @@
+.image-grid .headline {
+  padding-right: 160px;
+}
+
+.image-grid ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 200px);
+  grid-gap: 30px;
+  list-style: none;
+  padding: 40px 0 0 0;
+}
+
+.image-grid li {
+  display: inline-block;
+}
+
+.image-grid .image-wrapper {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+
+.image-grid img {
+  max-width: 200px;
+}
+
+.image-grid .image-actions-trigger {
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.image-grid .image-actions-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}

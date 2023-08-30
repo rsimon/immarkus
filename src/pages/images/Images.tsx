@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCollection } from '@/store';
+import { ImageGrid } from './ImageGrid';
 
 import './Images';
+import { Sidebar } from '@/components/Sidebar';
 
 export const Images = () => {
 
@@ -15,19 +17,14 @@ export const Images = () => {
       navigate('/');
   }, []);
   
-  return (
-    <main className="page images">
-      <ul>
-        {collection?.images.map(image => (
-          <li key={image.name}>
-            <img
-              src={URL.createObjectURL(image.data)}
-              alt={image.name}
-              className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-square" />
-          </li>
-        ))}
-      </ul>
-    </main>
+  return collection && (
+    <div className="page-root">
+      <Sidebar />
+
+      <main className="page images">
+        <ImageGrid />
+      </main>
+    </div>
   )
 
 }
