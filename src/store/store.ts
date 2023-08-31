@@ -1,4 +1,4 @@
-import { ImageAnnotation } from '@annotorious/react';
+import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
 
 const readImageFile = (file: File): Promise<Blob> =>
@@ -18,13 +18,13 @@ const readImageFile = (file: File): Promise<Blob> =>
     reader.readAsArrayBuffer(file);
   });
 
-const readJSONFile = (file: File): Promise<ImageAnnotation[]> =>
+const readJSONFile = (file: File): Promise<W3CAnnotation[]> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
 
     reader.onload = (event) => {
       if (event.target?.result) {
-        const obj: ImageAnnotation[] = JSON.parse(String(event.target.result));
+        const obj: W3CAnnotation[] = JSON.parse(String(event.target.result));
         resolve(obj);
       } else {
         reject();
@@ -38,7 +38,7 @@ const readJSONFile = (file: File): Promise<ImageAnnotation[]> =>
     reader.readAsText(file);
   });
 
-const writeJSONFile = (handle: FileSystemFileHandle, annotations: ImageAnnotation[]) => {
+const writeJSONFile = (handle: FileSystemFileHandle, annotations: W3CAnnotation[]) => {
   const content = JSON.stringify(annotations, null, 2);
   return handle.createWritable().then(writable => {
     return writable.write(content).then(() => writable.close());
@@ -65,15 +65,15 @@ export interface Store {
 
   getImage(id: string): Image | undefined;
 
-  getAnnotations(imageId: string): ImageAnnotation[];
+  getAnnotations(imageId: string): W3CAnnotation[];
 
   countAnnotations(imageId: string): number;
 
-  addAnnotation(imageId: string, annotation: ImageAnnotation): void;
+  addAnnotation(imageId: string, annotation: W3CAnnotation): void;
 
-  updateAnnotation(imageId: string, annotation: ImageAnnotation): void;
+  updateAnnotation(imageId: string, annotation: W3CAnnotation): void;
 
-  deleteAnnotation(imageId: string, annotation: ImageAnnotation): void;
+  deleteAnnotation(imageId: string, annotation: W3CAnnotation): void;
 
 }
 
@@ -91,7 +91,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
   
     const images: Image[] = [];
 
-    const annotations = new Map<string, ImageAnnotation[]>()
+    const annotations = new Map<string, W3CAnnotation[]>()
   
     await files.reduce((promise, file, index) => {
       let nextPromise;
@@ -128,7 +128,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
     const countAnnotations = (imageId: string) => annotations.get(imageId)?.length || 0;
 
-    const addAnnotation = (imageId: string, annotation: ImageAnnotation) => {
+    const addAnnotation = (imageId: string, annotation: W3CAnnotation) => {
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = [
           ...(annotations.get(imageId) || []).filter(a => a.id !== annotation.id),
@@ -141,7 +141,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       });
     }
 
-    const updateAnnotation = (imageId: string, annotation: ImageAnnotation) => {
+    const updateAnnotation = (imageId: string, annotation: W3CAnnotation) => {
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .map(a => a.id === annotation.id ? annotation : a);
@@ -152,7 +152,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       });
     }
   
-    const deleteAnnotation = (imageId: string, annotation: ImageAnnotation)=> {
+    const deleteAnnotation = (imageId: string, annotation: W3CAnnotation)=> {
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .filter(a => a.id !== annotation.id);
