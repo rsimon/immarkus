@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator } from '@annotorious/react';
 import { Sidebar } from '@/components/Sidebar';
 import { useStore } from '@/store';
 import { AnnotoriousStorePlugin } from './AnnotoriousStorePlugin';
+import { SaveStatusIndicator, SaveStatus } from './SaveStatusIndicator';
 
 import './Annotate.css';
 import '@annotorious/react/dist/annotorious-react.css';
@@ -14,6 +16,17 @@ export const Annotate = () => {
   const params = useParams();
 
   const image = store?.getImage(params.id!);
+
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+
+  const onSaving = () => setSaveStatus('saving');
+
+  const onSaved = () => setSaveStatus('success');
+
+  const onError = (error: Error) => {
+    console.error(error);
+    setSaveStatus('error');
+  }
 
   return store &&  (
     <div className="page-root">
@@ -34,6 +47,8 @@ export const Annotate = () => {
           </ul>
         </nav>
 
+        <SaveStatusIndicator status={saveStatus} />
+
         {image && (
           <section>
             <Annotorious>
@@ -44,7 +59,10 @@ export const Annotate = () => {
               </ImageAnnotator>
 
               <AnnotoriousStorePlugin 
-                image={image} />
+                image={image} 
+                onSaving={onSaving}
+                onSaved={onSaved}
+                onError={onError} />
             </Annotorious>
           </section>
         )}

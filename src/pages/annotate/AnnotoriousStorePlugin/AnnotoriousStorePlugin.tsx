@@ -7,6 +7,12 @@ interface AnnotoriousStorePluginProps {
 
   image: Image;
 
+  onSaving(): void;
+
+  onSaved(): void;
+
+  onError(error: Error): void;
+
 }
 
 export const AnnotoriousStorePlugin = (props: AnnotoriousStorePluginProps) => {
@@ -24,14 +30,23 @@ export const AnnotoriousStorePlugin = (props: AnnotoriousStorePluginProps) => {
       const annotations = store.getAnnotations(id);
       anno.setAnnotations(annotations);
 
-      anno.on('createAnnotation', annotation =>
-        store.addAnnotation(id, annotation));
+      // Wrap the op so that onSaving, onSaved and onError are
+      // called appropriately 
+      const withSaveStatus = (op: () => Promise<void>) => {
+        props.onSaving();
+        op()
+          .then(() => props.onSaved())
+          .catch(error => props.onError(error));
+      }
 
-      anno.on('deleteAnnotation', annotation => 
-        store.deleteAnnotation(id, annotation));
+      anno.on('createAnnotation', annotation =>
+        withSaveStatus(() => store.addAnnotation(id, annotation)));
+
+      anno.on('deleteAnnotation', annotation =>
+        withSaveStatus(() => store.deleteAnnotation(id, annotation)));
 
       anno.on('updateAnnotation', annotation =>
-        store.updateAnnotation(id, annotation));
+        withSaveStatus(() => store.updateAnnotation(id, annotation)));
     }
   }, [anno]);
 

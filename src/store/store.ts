@@ -69,11 +69,11 @@ export interface Store {
 
   countAnnotations(imageId: string): number;
 
-  addAnnotation(imageId: string, annotation: W3CAnnotation): void;
+  addAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  updateAnnotation(imageId: string, annotation: W3CAnnotation): void;
+  updateAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  deleteAnnotation(imageId: string, annotation: W3CAnnotation): void;
+  deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
 }
 
@@ -128,7 +128,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
     const countAnnotations = (imageId: string) => annotations.get(imageId)?.length || 0;
 
-    const addAnnotation = (imageId: string, annotation: W3CAnnotation) => {
+    const addAnnotation = (imageId: string, annotation: W3CAnnotation) =>
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = [
           ...(annotations.get(imageId) || []).filter(a => a.id !== annotation.id),
@@ -139,9 +139,8 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
         writeJSONFile(fileHandle, next);
       });
-    }
 
-    const updateAnnotation = (imageId: string, annotation: W3CAnnotation) => {
+    const updateAnnotation = (imageId: string, annotation: W3CAnnotation) =>
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .map(a => a.id === annotation.id ? annotation : a);
@@ -150,9 +149,8 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
         writeJSONFile(fileHandle, next);
       });
-    }
   
-    const deleteAnnotation = (imageId: string, annotation: W3CAnnotation)=> {
+    const deleteAnnotation = (imageId: string, annotation: W3CAnnotation) =>
       handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .filter(a => a.id !== annotation.id);
@@ -161,7 +159,6 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
         writeJSONFile(fileHandle, next);
       }); 
-    }
 
     resolve({
       handle,
