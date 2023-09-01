@@ -1,26 +1,42 @@
 .save-status-wrapper {
+  animation: fadeIn 250ms; 
   display: inline-block;
+  position: absolute;
+  right: 20px;
+  top: 20px;
   vertical-align: bottom;
   transition: opacity 500ms;
 }
 
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 .save-status {
-  border: 1px solid var(--font-dark);
+  background-color: #f2f2f2;
+  border: 1px solid #c9c9c9;
   border-radius: 9999px;
+  color: #696969;
+  display: inline-block;
   padding: 4px 10px 4px 6px;
 }
 
 .save-status > span {
   display: inline-block;
   margin-left: 0.3em;
-  position: relative;
-  top: 0.5px;
 }
 
 .save-status svg {
   display: inline-block;
-  position: relative;
-  top: -0.5px;
+}
+
+.save-status.saving {
+  padding: 4px 10px 4px 10px;
+}
+
+.save-status.saving > span {
+  margin-left: 0;
 }
 
 .save-status.success {
@@ -30,8 +46,12 @@
 }
 
 .save-status.failed {
-  background-color: var(--background-success);
-  border-color: var(--border-success);
-  color: var(--font-success);
+  background-color: var(--background-failed);
+  border-color: var(--border-failed);
+  color: var(--font-failed);
 }
 
+.save-status.failed svg {
+  position: relative;
+  top: -0.5px;
+}

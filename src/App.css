@@ -3,19 +3,18 @@
 
 :root {
   --font-dark: #323232;
+  --font-failed: #821717;
   --font-small: 0.875em;
-  --font-failed: #6b0000e6;
-  --font-success: #006b3be6;
+  --font-success: #178433;
 
-  --background-failed: #ba020224;
+  --background-failed: #f0dbdb;
   --background-lightgray: #f7f7f7;
-  --background-success: #02ba3c16;
+  --background-success: #daefdc;
 
-  --border-failed: #6b0000b3;
+  --border-failed: #bc7676;
   --border-lightgray: #e5e5e5;
   --border-radius: 8px;
-
-  --border-success: #006b3b78;
+  --border-success: #76bc82;
 }
 
 html, body, #app {
