@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { AnnotatedImage, Annotation, FolderHandle } from '../model';
+import { Image, Annotation, FolderHandle } from '../model';
 
 const checkAndPersistStorage = () => 'storage' in navigator ?
     navigator.storage.persist().then(granted => {
@@ -12,7 +12,7 @@ const checkAndPersistStorage = () => 'storage' in navigator ?
 
 export class Database extends Dexie {
 
-  images!: Table<AnnotatedImage, number>; 
+  images!: Table<Image, number>; 
   
   annotations!: Table<Annotation, string>;
   

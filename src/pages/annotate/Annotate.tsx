@@ -7,7 +7,7 @@ import { AnnotoriousStorePlugin } from './AnnotoriousStorePlugin';
 import { SaveStatusIndicator, SaveStatus } from './SaveStatusIndicator';
 
 import './Annotate.css';
-import '@annotorious/react/dist/annotorious-react.css';
+import '@annotorious/react/annotorious-react.css';
 
 export const Annotate = () => {
 
