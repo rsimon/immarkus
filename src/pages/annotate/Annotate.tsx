@@ -25,7 +25,7 @@ export const Annotate = () => {
 
   const onError = (error: Error) => {
     console.error(error);
-    setSaveStatus('error');
+    setSaveStatus('failed');
   }
 
   return store &&  (

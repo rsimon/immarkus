@@ -1,3 +1,37 @@
-.save-status {
-  font-weight: bold;
+.save-status-wrapper {
+  display: inline-block;
+  vertical-align: bottom;
+  transition: opacity 500ms;
 }
+
+.save-status {
+  border: 1px solid var(--font-dark);
+  border-radius: 9999px;
+  padding: 4px 10px 4px 6px;
+}
+
+.save-status > span {
+  display: inline-block;
+  margin-left: 0.3em;
+  position: relative;
+  top: 0.5px;
+}
+
+.save-status svg {
+  display: inline-block;
+  position: relative;
+  top: -0.5px;
+}
+
+.save-status.success {
+  background-color: var(--background-success);
+  border-color: var(--border-success);
+  color: var(--font-success);
+}
+
+.save-status.failed {
+  background-color: var(--background-success);
+  border-color: var(--border-success);
+  color: var(--font-success);
+}
+
