@@ -38,11 +38,7 @@ export const SaveStatusIndicator = (props: SaveStatusIndicatorProps) => {
 
   return (
     <div className="save-status-wrapper" style={{ opacity }}>
-      {status === 'idle' ? (
-        <div className="save-status success text-xs font-semibold">
-          <Check size={16} /><span>Saved</span>
-        </div>
-      ) : status === 'success' ? (
+      {status === 'success' ? (
         <div className="save-status success text-xs font-semibold">
           <Check size={16} /><span>Saved</span>
         </div>
@@ -50,11 +46,11 @@ export const SaveStatusIndicator = (props: SaveStatusIndicatorProps) => {
         <div className="save-status failed text-xs font-semibold">
           <X size={16} /><span>Error</span>
         </div>
-      ) : (
+      ) : status === 'saving' ? (
         <div className="save-status saving text-xs font-semibold">
           <span>Saving</span>
         </div>
-      )}
+      ) : ( null )}
     </div>
   )
 
