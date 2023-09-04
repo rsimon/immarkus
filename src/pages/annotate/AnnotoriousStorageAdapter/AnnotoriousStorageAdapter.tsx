@@ -15,7 +15,7 @@ interface AnnotoriousStorePluginProps {
 
 }
 
-export const AnnotoriousStorePlugin = (props: AnnotoriousStorePluginProps) => {
+export const AnnotoriousStorageAdapter = (props: AnnotoriousStorePluginProps) => {
 
   const { image } = props;
 

@@ -80,6 +80,7 @@ export interface Store {
 export type ProgressHandler = (progress: number) => void;
 
 export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: ProgressHandler): Promise<Store> => 
+ 
   new Promise(async resolve => {
     const files = [];
 
@@ -122,6 +123,15 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
     onProgress && onProgress(100);
 
+    const getAnnotationFileName = (imageId: string) => {
+      const image = images.find(i => i.id === imageId);
+      if (!image)
+        throw 'Attempt to store data for unknown image: ' + imageId;
+
+      const { name } = image;
+      return `${name.substring(0, name.lastIndexOf('.'))}.json`;
+    }
+
     const getImage = (id: string) => images.find(i => i.id === id);
 
     const getAnnotations = (imageId: string) => annotations.get(imageId) || [];
@@ -129,7 +139,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
     const countAnnotations = (imageId: string) => annotations.get(imageId)?.length || 0;
 
     const addAnnotation = (imageId: string, annotation: W3CAnnotation) =>
-      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+      handle.getFileHandle(getAnnotationFileName(imageId), { create: true }).then(fileHandle => {
         const next = [
           ...(annotations.get(imageId) || []).filter(a => a.id !== annotation.id),
           annotation
@@ -141,7 +151,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       });
 
     const updateAnnotation = (imageId: string, annotation: W3CAnnotation) =>
-      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+      handle.getFileHandle(getAnnotationFileName(imageId), { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .map(a => a.id === annotation.id ? annotation : a);
 
@@ -151,7 +161,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       });
   
     const deleteAnnotation = (imageId: string, annotation: W3CAnnotation) =>
-      handle.getFileHandle(`${imageId}.json`, { create: true }).then(fileHandle => {
+      handle.getFileHandle(getAnnotationFileName(imageId), { create: true }).then(fileHandle => {
         const next = (annotations.get(imageId) || [])
           .filter(a => a.id !== annotation.id);
 

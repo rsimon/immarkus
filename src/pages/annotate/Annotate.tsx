@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator } from '@annotorious/react';
 import { Sidebar } from '@/components/Sidebar';
 import { useStore } from '@/store';
-import { AnnotoriousStorePlugin } from './AnnotoriousStorePlugin';
+import { AnnotoriousStorageAdapter } from './AnnotoriousStorageAdapter';
 import { SaveStatusIndicator, SaveStatus } from './SaveStatusIndicator';
 
 import './Annotate.css';
@@ -58,7 +58,7 @@ export const Annotate = () => {
                   alt={image.path} />
               </ImageAnnotator>
 
-              <AnnotoriousStorePlugin 
+              <AnnotoriousStorageAdapter
                 image={image} 
                 onSaving={onSaving}
                 onSaved={onSaved}
