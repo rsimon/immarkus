@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
+import { AnnotoriousImageAnnotator, useAnnotator } from '@annotorious/react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
-import { AnnotoriousImageAnnotator, useAnnotator } from '@annotorious/react';
-import { useEffect } from 'react';
 
-interface AnnotoriousStorePluginProps {
+interface AnnotoriousAdapterProps {
 
   image: Image;
 
@@ -15,7 +15,7 @@ interface AnnotoriousStorePluginProps {
 
 }
 
-export const AnnotoriousStorageAdapter = (props: AnnotoriousStorePluginProps) => {
+export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
 
   const { image } = props;
 
@@ -28,7 +28,9 @@ export const AnnotoriousStorageAdapter = (props: AnnotoriousStorePluginProps) =>
       const { id } = image;
 
       const annotations = store.getAnnotations(id);
-      anno.setAnnotations(annotations);
+
+      // @ts-ignore
+      anno.setAnnotations(annotations.filter(a => a.target.selector));
 
       // Wrap the op so that onSaving, onSaved and onError are
       // called appropriately 
@@ -40,13 +42,13 @@ export const AnnotoriousStorageAdapter = (props: AnnotoriousStorePluginProps) =>
       }
 
       anno.on('createAnnotation', annotation =>
-        withSaveStatus(() => store.addAnnotation(id, annotation)));
+        withSaveStatus(() => store.upsertAnnotation(id, annotation)));
 
       anno.on('deleteAnnotation', annotation =>
         withSaveStatus(() => store.deleteAnnotation(id, annotation)));
 
       anno.on('updateAnnotation', annotation =>
-        withSaveStatus(() => store.updateAnnotation(id, annotation)));
+        withSaveStatus(() => store.upsertAnnotation(id, annotation)));
     }
   }, [anno]);
 

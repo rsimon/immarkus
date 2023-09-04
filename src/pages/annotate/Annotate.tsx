@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator } from '@annotorious/react';
-import { Sidebar } from '@/components/Sidebar';
 import { useStore } from '@/store';
-import { AnnotoriousStorageAdapter } from './AnnotoriousStorageAdapter';
-import { EditorSidebar } from './EditorSidebar';
-import { SaveStatusIndicator, SaveStatus } from './SaveStatusIndicator';
+import { Sidebar } from '@/components/Sidebar';
+import { AnnotoriousAdapter } from './AnnotoriousAdapter';
+import { EditorSidebar } from './EditorPane';
+import { SaveStatusIndicator, SaveStatus } from './SaveIndicator';
 
 import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
@@ -59,7 +59,7 @@ export const Annotate = () => {
                   alt={image.path} />
               </ImageAnnotator>
 
-              <AnnotoriousStorageAdapter
+              <AnnotoriousAdapter
                 image={image} 
                 onSaving={onSaving}
                 onSaved={onSaved}
@@ -68,7 +68,11 @@ export const Annotate = () => {
           )}
         </main>
 
-        <EditorSidebar />
+        <EditorSidebar 
+          image={image} 
+          onSaving={onSaving} 
+          onSaved={onSaved}
+          onError={onError} />
       </Annotorious>
     </div>
   )

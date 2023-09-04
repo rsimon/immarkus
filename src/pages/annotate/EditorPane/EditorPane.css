@@ -1,0 +1,4 @@
+.editor-pane {
+  border-left: 1px solid var(--border-lightgray);
+  padding: 20px;
+}

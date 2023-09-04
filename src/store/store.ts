@@ -70,11 +70,9 @@ export interface Store {
 
   getAnnotations(imageId: string): W3CAnnotation[];
 
-  countAnnotations(imageId: string): number;
+  countAnnotations(imageId: string, withSelectorOnly?: boolean): number;
 
-  addAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
-
-  updateAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
+  upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
@@ -143,24 +141,22 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
 
     const getAnnotations = (imageId: string) => annotations.get(imageId) || [];
 
-    const countAnnotations = (imageId: string) => annotations.get(imageId)?.length || 0;
+    const countAnnotations = (imageId: string, withSelectorOnly = true) => 
+      withSelectorOnly ?
+        // @ts-ignore
+        (annotations.get(imageId) || []).filter(a => a.target.selector).length || 0 :
+         annotations.get(imageId)?.length || 0;
 
-    const addAnnotation = (imageId: string, annotation: W3CAnnotation) =>
+    const upsertAnnotation = (imageId: string, annotation: W3CAnnotation) => 
       handle.getFileHandle(getAnnotationFileName(imageId), { create: true }).then(fileHandle => {
-        const next = [
-          ...(annotations.get(imageId) || []).filter(a => a.id !== annotation.id),
-          annotation
-        ];
+        const exists = annotations.get(imageId)?.find(a => a.id === annotation.id);
 
-        annotations.set(imageId, next);
+        const next = exists ? 
+          // Update existing
+          annotations.get(imageId).map(a => a.id === annotation.id ? annotation : a) :
 
-        writeJSONFile(fileHandle, next);
-      });
-
-    const updateAnnotation = (imageId: string, annotation: W3CAnnotation) =>
-      handle.getFileHandle(getAnnotationFileName(imageId), { create: true }).then(fileHandle => {
-        const next = (annotations.get(imageId) || [])
-          .map(a => a.id === annotation.id ? annotation : a);
+          // Append
+          [...(annotations.get(imageId) || []), annotation];
 
         annotations.set(imageId, next);
 
@@ -183,8 +179,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
       getImage,
       getAnnotations,
       countAnnotations,
-      addAnnotation,
-      updateAnnotation,
+      upsertAnnotation,
       deleteAnnotation
     });
   
