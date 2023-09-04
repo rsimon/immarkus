@@ -4,6 +4,7 @@ import { Annotorious, ImageAnnotator } from '@annotorious/react';
 import { Sidebar } from '@/components/Sidebar';
 import { useStore } from '@/store';
 import { AnnotoriousStorageAdapter } from './AnnotoriousStorageAdapter';
+import { EditorSidebar } from './EditorSidebar';
 import { SaveStatusIndicator, SaveStatus } from './SaveStatusIndicator';
 
 import './Annotate.css';
@@ -30,28 +31,28 @@ export const Annotate = () => {
 
   return store &&  (
     <div className="page-root">
-      <Sidebar />
+      <Annotorious>
+        <Sidebar />
 
-      <main className="page annotate">
-        <nav className="breadcrumb">
-          <ul>
-            <li>
-              <Link to="/images">Images</Link>
-            </li>
-
-            {image && (
+        <main className="page annotate">
+          <nav className="breadcrumb">
+            <ul>
               <li>
-                {image.path}
+                <Link to="/images">Images</Link>
               </li>
-            )}
-          </ul>
-        </nav>
 
-        <SaveStatusIndicator status={saveStatus} />
+              {image && (
+                <li>
+                  {image.path}
+                </li>
+              )}
+            </ul>
+          </nav>
 
-        {image && (
-          <section>
-            <Annotorious>
+          <SaveStatusIndicator status={saveStatus} />
+
+          {image && (
+            <section>
               <ImageAnnotator>
                 <img 
                   src={URL.createObjectURL(image.data)}
@@ -63,10 +64,12 @@ export const Annotate = () => {
                 onSaving={onSaving}
                 onSaved={onSaved}
                 onError={onError} />
-            </Annotorious>
-          </section>
-        )}
-      </main>
+            </section>
+          )}
+        </main>
+
+        <EditorSidebar />
+      </Annotorious>
     </div>
   )
 

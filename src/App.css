@@ -33,7 +33,6 @@ html, body, #app {
 
 main {
   flex-grow: 1;
-  height: 100%;
   overflow-y: scroll;
   padding: 30px 50px;
 }
