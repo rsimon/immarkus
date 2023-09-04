@@ -28,8 +28,8 @@ export const ImageActions = (props: ImageActionProps) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Link to={`/annotate/${props.image.id}`} >
+        <DropdownMenuItem asChild>
+          <Link to={`/annotate/${props.image.id}`}>
             <PanelTop size={18} className="inline text-muted-foreground relative -top-px mr-2" />Open image
           </Link>
         </DropdownMenuItem>
