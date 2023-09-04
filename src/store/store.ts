@@ -45,8 +45,10 @@ const writeJSONFile = (handle: FileSystemFileHandle, annotations: W3CAnnotation[
   });
 }
 
-const generateShortId = (str: string) =>
-  crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+const generateShortId = (filepath: string) => {
+  const str = filepath.substring(0, filepath.lastIndexOf('.'));
+
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
     .then(hash => {
       const arr = new Uint8Array(hash);
       const shortId = Array.from(arr)
@@ -56,6 +58,7 @@ const generateShortId = (str: string) =>
     
       return shortId;
     });
+}
 
 export interface Store {
 
@@ -105,12 +108,16 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
           
           return generateShortId(path).then(id => {
             images.push({ id, name, path, data });
-          })
+          });
         }));
       } else if (file.type === 'application/json') {
         nextPromise = promise.then(() => readJSONFile(file).then(json => {
-          const id = file.name.substring(0, file.name.lastIndexOf('.'));
-          annotations.set(id, json);
+          const { name } = file;
+          const path = `${handle!.name}/${name}`;
+
+          return generateShortId(path).then(id => {
+            annotations.set(id, json);
+          });
         }));
       } else {
         nextPromise = promise;
