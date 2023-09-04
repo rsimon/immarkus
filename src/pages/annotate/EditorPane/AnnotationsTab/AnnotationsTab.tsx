@@ -1,30 +1,71 @@
-import { useSelection } from '@annotorious/react';
+import { useRef } from 'react';
+import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
 import { EditorPaneProps } from '..';
 import { Textarea } from '@/components/Textarea';
+import { Button } from '@/components/Button';
+import { useStore } from '@/store';
 
 export const AnnotationsTab = (props: EditorPaneProps) => {
+
+  const textarea = useRef<HTMLTextAreaElement>();
+
+  const store = useAnnotationStore()
 
   const { selected } = useSelection();
 
   const empty = selected.length === 0;
 
+  const comment = selected.length > 0 ? 
+    selected[0].bodies.find(b => b.purpose === 'commenting')?.value : '';
+
+  const onSave = (evt: React.FormEvent) => {
+    evt.preventDefault()
+
+    const annotation = selected[0];
+
+    const comment = createBody(selected[0], {
+      value: textarea.current.value,
+      purpose: 'commenting'
+    });
+
+    const updated = {
+      ...annotation,
+      bodies: [
+        ...annotation.bodies.filter(b => b.purpose !== 'commenting'),
+        comment
+      ]
+    };
+
+    store.updateAnnotation(updated);
+  }
+
   return empty ? (
-    <div className="flex bg-muted rounded text-sm justify-center items-center w-full text-muted-foreground">
+    <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
       No annotation selected
     </div> 
   ) : (
-    <div className="w-full">
-      <h2 className="text-sm font-medium">
-        Comment
-      </h2>
+    <div className="w-full" key={selected.map(a => a.id).join('.')}>
+      <form onSubmit={onSave}>
+        <fieldset>
+          <h2 className="text-sm font-medium">
+            Comment
+          </h2>
 
-      <Textarea 
-        className="mt-2 mb-4" 
-        rows={6} />
+          <Textarea 
+            ref={textarea}
+            className="mt-2 mb-4" 
+            rows={6} 
+            defaultValue={comment}/>
+        </fieldset>
 
-      <h2 className="text-sm font-medium">
-        Tags
-      </h2>
+        <fieldset>
+          <h2 className="text-sm font-medium">
+            Tags
+          </h2>
+        </fieldset>
+
+        <Button>Save</Button>
+      </form>
     </div>
   )
 

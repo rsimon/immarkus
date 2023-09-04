@@ -23,7 +23,7 @@ export const EditorSidebar = (props: EditorPaneProps) => {
 
   const { selected } = useSelection();
 
-  const [tab, setTab] = useState('notes');
+  const [tab, setTab] = useState('annotations');
 
   useEffect(() => {
     // Switch to annotation tab every time
@@ -37,19 +37,19 @@ export const EditorSidebar = (props: EditorPaneProps) => {
       <Tabs 
         value={tab}
         onValueChange={setTab} 
-        className="w-[300px] min-h-full flex flex-col">
+        className="w-[320px] min-h-full flex flex-col">
 
         <TabsList className="mb-2 self-start">
-          <TabsTrigger value="notes">Notes</TabsTrigger>
           <TabsTrigger value="annotations">Annotations</TabsTrigger>
+          <TabsTrigger value="notes">Image Notes</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="notes">
-          <NotesTab {...props} />
-        </TabsContent>
 
         <TabsContent value="annotations" className="flex grow">
           <AnnotationsTab {...props} />
+        </TabsContent>
+
+        <TabsContent value="notes">
+          <NotesTab {...props} />
         </TabsContent>
       </Tabs>
     </aside>
