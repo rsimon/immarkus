@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
 import { EditorPaneProps } from '..';
-import { Textarea } from '@/components/Textarea';
+import { Badge } from '@/components/Badge';
 import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
+import { Textarea } from '@/components/Textarea';
 import { DeleteWithConfirmation } from './DeleteWithConfirmation';
+import { useToast } from '@/components/Toaster';
 
 export const AnnotationsTab = (props: EditorPaneProps) => {
 
   const textarea = useRef<HTMLTextAreaElement>();
+
+  const input = useRef<HTMLInputElement>();
+
+  const { toast } = useToast();
 
   const store = useAnnotationStore()
 
@@ -17,6 +24,11 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
 
   const comment = selected.length > 0 ? 
     selected[0].bodies.find(b => b.purpose === 'commenting')?.value : '';
+
+  const tags = selected.length > 0 ?
+    selected.reduce((tags, annotation) => (
+      [...tags, ...annotation.bodies.filter(b => b.purpose === 'tagging').map(b => b.value)]
+    ), [] as string[]) : [];
 
   const [hasChanged, setHasChanged] = useState(false);
 
@@ -28,21 +40,39 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
 
     const annotation = selected[0];
 
-    const comment = createBody(selected[0], {
+    // Don't add the same tag twice
+    const hasNewTag = input.current.value && !tags.includes(input.current.value);
+    const tag = hasNewTag ? [createBody(annotation, {
+      value: input.current.value,
+      purpose: 'tagging'
+    })] : [];
+
+    if (input.current.value && !hasNewTag)
+      toast({
+        title: 'Duplicate Tag',
+        description: `The annotation already contains the tag '${input.current.value}'.`,
+      });
+
+    const comments = textarea.current.value ? [createBody(annotation, {
       value: textarea.current.value,
       purpose: 'commenting'
-    });
+    })] : [];
 
-    const updated = {
-      ...annotation,
-      bodies: [
-        ...annotation.bodies.filter(b => b.purpose !== 'commenting'),
-        comment
-      ]
-    };
+    if (tag.length > 0 || hasChanged) {
+      const updated = {
+        ...annotation,
+        bodies: [
+          ...annotation.bodies.filter(b => b.purpose !== 'commenting'),
+          ...comments,
+          ...tag
+        ]
+      };
 
-    store.updateAnnotation(updated);
+      store.updateAnnotation(updated);
+    }
+
     setHasChanged(false);
+    input.current.value = '';
   }
 
   const onDelete = () =>
@@ -55,27 +85,44 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   ) : (
     <div className="w-full" key={selected.map(a => a.id).join('.')}>
       <form onSubmit={onSave}>
-        <fieldset>
-          <h2 className="text-sm font-medium">
+        <fieldset className="mb-6">
+          <h2 className="text-sm font-medium mb-2">
             Comment
           </h2>
 
           <Textarea 
             ref={textarea}
-            className="mt-2 mb-4" 
             rows={6} 
             onChange={() => setHasChanged(true)}
             defaultValue={comment}/>
         </fieldset>
 
-        <fieldset>
-          <h2 className="text-sm font-medium">
+        <fieldset className="mb-6">
+          <h2 className="text-sm font-medium mb-2">
             Tags
           </h2>
+          <ul className="mb-4 inline-flex gap-1 flex-wrap">
+            {tags.map(tag => (
+              <li key={tag} className="inline">
+                <Badge variant="secondary">{tag}</Badge>
+              </li>
+            ))}
+          </ul>
+          <div className="flex w-full max-w-sm items-center space-x-2">
+            <Input 
+              ref={input}
+              placeholder="Tag..." />
+
+            <Button 
+              type="submit" 
+              className="whitespace-nowrap">
+              Add
+            </Button>
+          </div>
         </fieldset>
 
         <fieldset>
-          <h2 className="text-sm font-medium">
+          <h2 className="text-sm font-medium mb-2">
             Relations
           </h2>
         </fieldset>

@@ -39,11 +39,11 @@ export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
       const withSaveStatus = (fn: () => Promise<void>) => {
 
         props.onSaving();
-
+        
         const minWait = new Promise(resolve => 
           setTimeout(() => resolve(undefined), MIN_SAVE_WAIT));
 
-        const both = Promise.all([minWait, fn]);
+        const both = Promise.all([minWait, fn()]);
         both
           .then(() => props.onSaved())
           .catch(error => props.onError(error));
