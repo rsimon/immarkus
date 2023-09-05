@@ -15,6 +15,8 @@ interface AnnotoriousAdapterProps {
 
 }
 
+const MIN_SAVE_WAIT = 1000;
+
 export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
 
   const { image } = props;
@@ -34,9 +36,15 @@ export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
 
       // Wrap the op so that onSaving, onSaved and onError are
       // called appropriately 
-      const withSaveStatus = (op: () => Promise<void>) => {
+      const withSaveStatus = (fn: () => Promise<void>) => {
+
         props.onSaving();
-        op()
+
+        const minWait = new Promise(resolve => 
+          setTimeout(() => resolve(undefined), MIN_SAVE_WAIT));
+
+        const both = Promise.all([minWait, fn]);
+        both
           .then(() => props.onSaved())
           .catch(error => props.onError(error));
       }
