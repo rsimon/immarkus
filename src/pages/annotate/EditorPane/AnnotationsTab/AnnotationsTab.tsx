@@ -121,12 +121,6 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
           </div>
         </fieldset>
 
-        <fieldset>
-          <h2 className="text-sm font-medium mb-2">
-            Relations
-          </h2>
-        </fieldset>
-
         <div className="flex mt-2">
           <Button 
             type="submit"
