@@ -38,9 +38,11 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   useEffect(() => {
     setHasChanged(false);
     setTagsEditable(false);
-  }, [selected]);
+  }, [selected.map(a => a.id).join()]);
 
   const onSave = (evt: React.FormEvent) => {
+    console.log('onSave');
+
     evt.preventDefault()
 
     const annotation = selected[0];
@@ -74,13 +76,14 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
       };
 
       store.updateAnnotation(updated);
-    }
 
-    setHasChanged(false);
-    input.current.value = '';
+      setHasChanged(false);
+      input.current.value = '';
+    }
   }
 
   const onDeleteTag = (tag: string) => {
+    console.log(tag);
     const annotation = selected[0];
 
     const updated = {
@@ -118,6 +121,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
           <h2 className="text-sm font-medium mb-2">
             Tags 
             <Button 
+              type="button"
               variant="ghost" 
               size="icon" 
               className="ml-1 align-sub"
@@ -129,7 +133,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             {tags.map(tag => (
               <li key={tag} className="inline">
                 {tagsEditable ? (
-                  <button onClick={() => onDeleteTag(tag)}>
+                  <button type="button" onClick={() => onDeleteTag(tag)}>
                     <Badge variant="outline" className="hover:bg-muted cursor-pointer">
                       {tag}
                       <X size={12} className="ml-1 -mr-1" />
