@@ -9,6 +9,7 @@ import { SaveStatusIndicator, SaveStatus } from './SaveIndicator';
 
 import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
+import { Tool, Toolbar } from './Toolbar';
 
 export const Annotate = () => {
 
@@ -19,6 +20,8 @@ export const Annotate = () => {
   const image = store?.getImage(params.id!);
 
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+
+  const [tool, setTool] = useState<Tool>('rectangle');
 
   const onSaving = () => setSaveStatus('saving');
 
@@ -53,8 +56,14 @@ export const Annotate = () => {
 
           {image && (
             <section>
-              <ImageAnnotator>
+              <Toolbar 
+                tool={tool}
+                onToolChange={setTool}/>
+
+              <ImageAnnotator
+                tool={tool}>
                 <img 
+                  className="select-none"
                   src={URL.createObjectURL(image.data)}
                   alt={image.path} />
               </ImageAnnotator>
