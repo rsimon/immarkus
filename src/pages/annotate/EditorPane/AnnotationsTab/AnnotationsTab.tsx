@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Pencil, X } from 'lucide-react';
 import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
 import { EditorPaneProps } from '..';
 import { Badge } from '@/components/Badge';
@@ -30,10 +31,14 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
       [...tags, ...annotation.bodies.filter(b => b.purpose === 'tagging').map(b => b.value)]
     ), [] as string[]) : [];
 
+  const [tagsEditable, setTagsEditable] = useState(false);
+
   const [hasChanged, setHasChanged] = useState(false);
 
-  useEffect(() => 
-    setHasChanged(false), [selected]);
+  useEffect(() => {
+    setHasChanged(false);
+    setTagsEditable(false);
+  }, [selected]);
 
   const onSave = (evt: React.FormEvent) => {
     evt.preventDefault()
@@ -75,6 +80,18 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
     input.current.value = '';
   }
 
+  const onDeleteTag = (tag: string) => {
+    const annotation = selected[0];
+
+    const updated = {
+      ...annotation,
+      bodies: annotation.bodies.filter(b => 
+        !(b.purpose === 'tagging' && b.value === tag))
+    }
+
+    store.updateAnnotation(updated);
+  }
+
   const onDelete = () =>
     store.bulkDeleteAnnotation(selected);
 
@@ -99,12 +116,30 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
 
         <fieldset className="mb-6">
           <h2 className="text-sm font-medium mb-2">
-            Tags
+            Tags 
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="ml-1 align-sub"
+              onClick={() => setTagsEditable(edit => !edit)}>
+              <Pencil className="h-4 w-4" />
+            </Button>
           </h2>
           <ul className="mb-4 inline-flex gap-1 flex-wrap">
             {tags.map(tag => (
               <li key={tag} className="inline">
-                <Badge variant="secondary">{tag}</Badge>
+                {tagsEditable ? (
+                  <button onClick={() => onDeleteTag(tag)}>
+                    <Badge variant="outline" className="hover:bg-muted cursor-pointer">
+                      {tag}
+                      <X size={12} className="ml-1 -mr-1" />
+                    </Badge>
+                  </button>
+                ) : (
+                  <Badge variant="secondary">
+                    {tag}
+                  </Badge>
+                )}
               </li>
             ))}
           </ul>
