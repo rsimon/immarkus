@@ -1,9 +1,10 @@
 import { useRef } from 'react';
 import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
+import { Trash2 } from 'lucide-react';
 import { EditorPaneProps } from '..';
 import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
-import { useStore } from '@/store';
+import { DeleteWithConfirmation } from './DeleteWithConfirmation';
 
 export const AnnotationsTab = (props: EditorPaneProps) => {
 
@@ -39,6 +40,9 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
     store.updateAnnotation(updated);
   }
 
+  const onDelete = () =>
+    store.bulkDeleteAnnotation(selected);
+
   return empty ? (
     <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
       No annotation selected
@@ -64,7 +68,20 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
           </h2>
         </fieldset>
 
-        <Button>Save</Button>
+        <fieldset>
+          <h2 className="text-sm font-medium">
+            Relations
+          </h2>
+        </fieldset>
+
+        <div className="flex mt-2">
+          <Button type="submit">
+            Save
+          </Button>
+
+          <DeleteWithConfirmation 
+            onDelete={onDelete} />
+        </div>
       </form>
     </div>
   )
