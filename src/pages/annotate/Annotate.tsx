@@ -6,10 +6,10 @@ import { Sidebar } from '@/components/Sidebar';
 import { AnnotoriousAdapter } from './AnnotoriousAdapter';
 import { EditorSidebar } from './EditorPane';
 import { SaveStatusIndicator, SaveStatus } from './SaveIndicator';
+import { Tool, Toolbar } from './Toolbar';
 
 import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
-import { Tool, Toolbar } from './Toolbar';
 
 export const Annotate = () => {
 

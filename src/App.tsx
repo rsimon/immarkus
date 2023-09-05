@@ -1,5 +1,5 @@
 import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Annotate, Images, Start } from './pages';
+import { Annotate, Images, Start, Vocabularies } from './pages';
 import { useStore } from './store';
 
 import './App.css';
@@ -19,7 +19,6 @@ export const App = () => {
 
         <Route path="annotate/:id" element={<Annotate />} />
 
-        {/* TODO vocabulary management 
         <Route path="vocabularies" element={<Vocabularies />} />
 
         {/* TODO data export 
