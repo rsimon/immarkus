@@ -1,6 +1,5 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
-import { Trash2 } from 'lucide-react';
 import { EditorPaneProps } from '..';
 import { Textarea } from '@/components/Textarea';
 import { Button } from '@/components/Button';
@@ -18,6 +17,11 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
 
   const comment = selected.length > 0 ? 
     selected[0].bodies.find(b => b.purpose === 'commenting')?.value : '';
+
+  const [hasChanged, setHasChanged] = useState(false);
+
+  useEffect(() => 
+    setHasChanged(false), [selected]);
 
   const onSave = (evt: React.FormEvent) => {
     evt.preventDefault()
@@ -38,6 +42,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
     };
 
     store.updateAnnotation(updated);
+    setHasChanged(false);
   }
 
   const onDelete = () =>
@@ -59,6 +64,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             ref={textarea}
             className="mt-2 mb-4" 
             rows={6} 
+            onChange={() => setHasChanged(true)}
             defaultValue={comment}/>
         </fieldset>
 
@@ -75,7 +81,9 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
         </fieldset>
 
         <div className="flex mt-2">
-          <Button type="submit">
+          <Button 
+            type="submit"
+            disabled={!hasChanged}>
             Save
           </Button>
 
