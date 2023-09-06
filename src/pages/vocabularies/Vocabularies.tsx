@@ -12,7 +12,8 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs';
 import { useStore } from '@/store';
 import { Button } from '@/components/Button';
-import { DummyGraph } from './Graph';
+import { CreateEntity } from './CreateEntity';
+// import { DummyGraph } from './Graph';
 
 type Entity = {
   
@@ -73,7 +74,7 @@ export const Vocabularies = () => {
               </Table>
             </div>
 
-            <Button className="mt-4">Create New Entity</Button>
+            <CreateEntity />
           </TabsContent>
 
           <TabsContent value="relations">
@@ -101,7 +102,7 @@ export const Vocabularies = () => {
           </TabsContent>
 
           <TabsContent value="graph">
-            <DummyGraph />
+           
           </TabsContent>
         </Tabs>
       </main>
