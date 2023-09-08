@@ -5,6 +5,8 @@ import { DatabaseProvider } from './db';
 import { Toaster } from '@/components/Toaster';
 import { App } from '@/App.tsx';
 
+console.log('start');
+
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('app')!).render(

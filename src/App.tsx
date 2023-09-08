@@ -4,9 +4,15 @@ import { useStore } from './store';
 
 import './App.css';
 
+console.log('app');
+
 export const App = () => {
 
+  console.log('rending app');
+
   const store = useStore();
+
+  console.log(store);
 
   return (
     <Routes>
