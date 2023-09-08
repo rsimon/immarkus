@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { ArrowLeftRight, Braces, Workflow } from 'lucide-react';
+import { ArrowLeftRight, Braces, Tags, Workflow } from 'lucide-react';
 import { Sidebar } from '@/components/Sidebar';
 import {
   Table,
@@ -11,25 +10,12 @@ import {
 } from '@/components/Table';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs';
 import { useStore } from '@/store';
-import { Button } from '@/components/Button';
 import { CreateEntity } from './CreateEntity';
 import { CreateRelation } from './CreateRelation';
-
-type Entity = {
-  
-  name: string
-
-  id: string
-
-  notes: string
-
-}
 
 export const Vocabularies = () => {
 
   const store = useStore({ redirect: true });
-
-  const [entities, setEntities] = useState<Entity[]>([]);
 
   return store &&  (
     <div className="page-root">
@@ -37,9 +23,13 @@ export const Vocabularies = () => {
 
       <main className="page vocabularies">
         <Tabs 
-          defaultValue="entities">
+          defaultValue="tags">
 
           <TabsList>
+            <TabsTrigger value="tags">
+              <Tags size={16} className="mr-2" /> Tags
+            </TabsTrigger>
+
             <TabsTrigger value="entities">
               <Braces size={16} className="mr-2" /> Entities
             </TabsTrigger>
