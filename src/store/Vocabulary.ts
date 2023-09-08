@@ -1,4 +1,4 @@
-import { readJSONFile } from './io';
+import { readJSONFile, writeJSONFile } from './io';
 
 export interface Vocabulary {
 
@@ -12,17 +12,17 @@ export interface Vocabulary {
 
 export interface VocabularyStore extends Vocabulary {
 
-  addTag(tag: Tag): void;
+  addTag(tag: Tag): Promise<void>;
 
-  removeTag(tag: Tag): void;
+  removeTag(tag: Tag): Promise<void>;
 
-  addEntity(entity: Entity): void;
+  addEntity(entity: Entity): Promise<void>;
 
-  removeEntity(entityOrId: Entity | string): void;
+  removeEntity(entityOrId: Entity | string): Promise<void>;
 
-  addRelation(relation: Relation): void;
+  addRelation(relation: Relation): Promise<void>;
 
-  removeRelation(relationOrId: Relation | string): void;
+  removeRelation(relationOrId: Relation | string): Promise<void>;
 
 }
 
@@ -35,7 +35,7 @@ export interface Entity {
 
   id: string;
 
-  color: string;
+  color?: string;
 
   parentId?: string;
 
@@ -49,7 +49,7 @@ export interface Relation {
 
   id: string;
 
-  color: string;
+  color?: string;
 
   notes: string;
 
@@ -76,36 +76,47 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
     console.log('Loading vocabulary', { tags, entities, relations });
 
     const addTag = (tag: Tag) => {
-      if (!tags.includes(tag))
+      if (!tags.includes(tag)) {
         tags = [...tags, tag];
-      else 
-        throw new Error('Tag already exists');
+        return writeJSONFile(fileHandle, { tags, entities, relations });
+      } else { 
+        return Promise.reject(`Tag ${tag} already exists`);
+      }
     }
 
     const removeTag = (tag: Tag) => {
       tags = tags.filter(t => t !== tag);
+      return writeJSONFile(fileHandle, { tags, entities, relations });
     }
 
     const addEntity = (entity: Entity) => {
       if (!entities.find(e => e.id === entity.id)) {
         entities = [...entities, entity];
+        return writeJSONFile(fileHandle, { tags, entities, relations });
+      } else {
+        return Promise.reject(`Entity with ID ${entity.id} already exists`);
       }
     }
 
     const removeEntity = (entityOrId: Entity | string) => {
       const id = typeof entityOrId === 'string' ? entityOrId : entityOrId.id;
       entities = entities.filter(e => e.id !== id);
+      return writeJSONFile(fileHandle, { tags, entities, relations });
     }
 
     const addRelation = (relation: Relation) => {
       if (!relations.find(r => r.id === relation.id)) {
         relations = [...relations, relation];
+        return writeJSONFile(fileHandle, { tags, entities, relations });
+      } else {
+        return Promise.reject(`Relation with ID ${relation.id} already exists`);
       }
     }
 
     const removeRelation = (relationOrId: Relation | string) => {
       const id = typeof relationOrId === 'string' ? relationOrId : relationOrId.id;
       entities = entities.filter(e => e.id !== id);
+      return writeJSONFile(fileHandle, { tags, entities, relations });
     }
 
     resolve({

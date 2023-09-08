@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,8 +9,18 @@ import {
 } from '@/components/Table';
 import { Store } from '@/store/Store';
 import { CreateRelation } from './CreateRelation';
+import { Relation } from '@/store/Vocabulary';
 
 export const RelationsTab = (props: { store: Store }) => {
+
+  const { vocabulary } = props.store;
+
+  const [relations, setRelations] = useState<Relation[]>(vocabulary.relations);
+
+  const onCreateRelation = (relation: Relation) => {
+    vocabulary.addRelation(relation);
+    setRelations(vocabulary.relations);
+  }
 
   return (
     <>
@@ -24,16 +35,19 @@ export const RelationsTab = (props: { store: Store }) => {
           </TableHeader>
 
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">is inside</TableCell>
-              <TableCell>R1234</TableCell>
-              <TableCell>My own relation, for use with 'City Walls' for example</TableCell>
-            </TableRow>
+            {relations.map(r => (
+              <TableRow>
+                <TableCell className="font-medium">{r.label}</TableCell>
+                <TableCell>{r.id}</TableCell>
+                <TableCell>{r.notes}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
 
-      <CreateRelation />
+      <CreateRelation 
+        onCreate={onCreateRelation}/>
     </>
   )
 

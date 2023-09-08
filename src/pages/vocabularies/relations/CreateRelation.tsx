@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useFormik } from 'formik';
+import { Relation } from '@/store/Vocabulary';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';
@@ -13,22 +15,31 @@ import {
   DialogTrigger,
 } from '@/components/Dialog';
 
-export const CreateRelation = () => {
+interface CreateRelationProps {
+
+  onCreate(e: Relation): void;
+
+}
+
+export const CreateRelation = (props: CreateRelationProps) => {
+
+  const [open, setOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      label: '',
       id: '',
       notes: ''
     },
 
-    onSubmit: ({ name, id, notes }) => {
-      console.log('submit', name, id, notes);
+    onSubmit: values => {
+      props.onCreate(values);
+      setOpen(false);
     }
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="mt-4">
           Create New Relation
@@ -46,15 +57,15 @@ export const CreateRelation = () => {
         <form className="grid gap-4 py-4" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label 
-              htmlFor="name" 
+              htmlFor="label" 
               className="text-right">
-              Name
+              Label
             </Label>
 
             <Input 
-              id="name" 
+              id="label" 
               className="col-span-3" 
-              value={formik.values.name} 
+              value={formik.values.label} 
               onChange={formik.handleChange} />
           </div>
 

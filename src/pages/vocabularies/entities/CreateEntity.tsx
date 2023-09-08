@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useFormik } from 'formik';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -12,8 +13,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/Dialog';
+import { Entity } from '@/store/Vocabulary';
 
-export const CreateEntity = () => {
+interface CreateEntityProps {
+
+  onCreate(e: Entity): void;
+
+}
+
+export const CreateEntity = (props: CreateEntityProps) => {
+
+  const [open, setOpen] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -23,13 +33,14 @@ export const CreateEntity = () => {
       notes: ''
     },
 
-    onSubmit: ({ label, id, parentId, notes }) => {
-      console.log('submit', label, id, parentId, notes);
+    onSubmit: values => {
+      props.onCreate(values);
+      setOpen(false);
     }
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           Create New Entity
@@ -49,7 +60,7 @@ export const CreateEntity = () => {
             <Label 
               htmlFor="label" 
               className="text-right">
-              Name
+              Label
             </Label>
 
             <Input 
