@@ -1,49 +1,7 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
-
-const readImageFile = (file: File): Promise<Blob> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      const contentArrayBuffer = event.target?.result as ArrayBuffer;
-      const data = new Blob([contentArrayBuffer], { type: file.type });
-      resolve(data);
-    };
-
-    reader.onerror = (event) => {
-      reject(event.target?.error);
-    };
-
-    reader.readAsArrayBuffer(file);
-  });
-
-const readJSONFile = (file: File): Promise<W3CAnnotation[]> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (event) => {
-      if (event.target?.result) {
-        const obj: W3CAnnotation[] = JSON.parse(String(event.target.result));
-        resolve(obj);
-      } else {
-        reject();
-      }
-    }
-
-    reader.onerror = (event) => {
-      reject(event.target?.error);
-    };
-
-    reader.readAsText(file);
-  });
-
-const writeJSONFile = (handle: FileSystemFileHandle, annotations: W3CAnnotation[]) => {
-  const content = JSON.stringify(annotations, null, 2);
-  return handle.createWritable().then(writable => {
-    return writable.write(content).then(() => writable.close());
-  });
-}
+import { loadVocabulary } from './Vocabulary';
+import { readImageFile, readJSONFile, writeJSONFile } from './io';
 
 const generateShortId = (filepath: string) => {
   const str = filepath.substring(0, filepath.lastIndexOf('.'));
@@ -93,7 +51,9 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
   
     const images: Image[] = [];
 
-    const annotations = new Map<string, W3CAnnotation[]>()
+    const annotations = new Map<string, W3CAnnotation[]>();
+
+    const vocabulary = await loadVocabulary(handle);
   
     await files.reduce((promise, file, index) => {
       let nextPromise;
@@ -109,7 +69,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
           });
         }));
       } else if (file.type === 'application/json') {
-        nextPromise = promise.then(() => readJSONFile(file).then(json => {
+        nextPromise = promise.then(() => readJSONFile<W3CAnnotation[]>(file).then(json => {
           const { name } = file;
           const path = `${handle!.name}/${name}`;
 
