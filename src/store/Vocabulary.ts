@@ -31,11 +31,13 @@ export type Tag = string;
 
 export interface Entity {
 
-  color: string;
-
-  name: string;
+  label: string;
 
   id: string;
+
+  color: string;
+
+  parentId?: string;
 
   notes: string;
 
@@ -43,11 +45,11 @@ export interface Entity {
 
 export interface Relation {
 
-  color: string;
-
-  name: string;
+  label: string;
 
   id: string;
+
+  color: string;
 
   notes: string;
 

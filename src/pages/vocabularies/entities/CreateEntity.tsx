@@ -17,20 +17,21 @@ export const CreateEntity = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      label: '',
       id: '',
+      parentId: '',
       notes: ''
     },
 
-    onSubmit: ({ name, id, notes }) => {
-      console.log('submit', name, id, notes);
+    onSubmit: ({ label, id, parentId, notes }) => {
+      console.log('submit', label, id, parentId, notes);
     }
   });
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-4">
+        <Button>
           Create New Entity
         </Button>
       </DialogTrigger>
@@ -46,15 +47,15 @@ export const CreateEntity = () => {
         <form className="grid gap-4 py-4" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label 
-              htmlFor="name" 
+              htmlFor="label" 
               className="text-right">
               Name
             </Label>
 
             <Input 
-              id="name" 
+              id="label" 
               className="col-span-3" 
-              value={formik.values.name} 
+              value={formik.values.label} 
               onChange={formik.handleChange} />
           </div>
 
@@ -69,6 +70,20 @@ export const CreateEntity = () => {
               id="id" 
               className="col-span-3" 
               value={formik.values.id} 
+              onChange={formik.handleChange} />
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label 
+              htmlFor="parentId" 
+              className="text-right">
+              Parent ID (optional)
+            </Label>
+
+            <Input 
+              id="parentId" 
+              className="col-span-3" 
+              value={formik.values.parentId} 
               onChange={formik.handleChange} />
           </div>
 
