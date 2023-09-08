@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Share2 } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -8,11 +7,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/Table';
-import { Button } from '@/components/Button';
 import { Store } from '@/store/Store';
 import { CreateEntity } from './CreateEntity';
 import { Entity } from '@/store/Vocabulary';
 import { EntityActions } from './EntityActions';
+import { getRandomColor } from '../ColorPalette';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
@@ -31,6 +30,7 @@ export const EntitiesTab = (props: { store: Store }) => {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead></TableHead>
               <TableHead className="w-[100px]">Label</TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Parent ID</TableHead>
@@ -42,6 +42,9 @@ export const EntitiesTab = (props: { store: Store }) => {
           <TableBody>
             {entities.map(e => (
               <TableRow>
+                <TableCell>
+                  <span className="pip" style={{ backgroundColor: getRandomColor() }} />
+                </TableCell>
                 <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.id}</TableCell>
                 <TableCell>{e.parentId}</TableCell>

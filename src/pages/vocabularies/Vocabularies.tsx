@@ -5,6 +5,8 @@ import { useStore } from '@/store';
 import { EntitiesTab } from './entities/EntitiesTab';
 import { RelationsTab } from './relations/RelationsTab';
 
+import './Vocabularies.css';
+
 export const Vocabularies = () => {
 
   const store = useStore({ redirect: true });
