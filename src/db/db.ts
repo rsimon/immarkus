@@ -6,7 +6,7 @@ const checkAndPersistStorage = () => 'storage' in navigator ?
       if (granted) {
         console.log('Storage set to persistent');
       } else {
-        throw 'Storage persistence denied by user';
+        console.warn('Storage persistence denied by user');
       }
     }) : Promise.reject();
 

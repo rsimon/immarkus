@@ -7,22 +7,13 @@ import { App } from '@/App.tsx';
 
 import './index.css'
 
-/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
-  <DatabaseProvider>
+  <DatabaseProvider onDBInitError={error => console.error(error)}>
     <StoreProvider>
       <HashRouter>       
         <Toaster />
         <App />
       </HashRouter>
     </StoreProvider>
-  </DatabaseProvider>
-)
-*/
-
-ReactDOM.createRoot(document.getElementById('app')!).render(
-  <DatabaseProvider 
-    onDBInitError={error => console.error(error)}>
-    <div>Hello World</div>
   </DatabaseProvider>
 )
