@@ -5,6 +5,7 @@ import { EditorPaneProps } from '..';
 import { Badge } from '@/components/Badge';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { Separator } from "@/components/Separator"
 import { Textarea } from '@/components/Textarea';
 import { DeleteWithConfirmation } from './DeleteWithConfirmation';
 import { useToast } from '@/components/Toaster';
@@ -115,7 +116,16 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             rows={6} 
             onChange={() => setHasChanged(true)}
             defaultValue={comment}/>
+
+          <Button 
+            className="mt-2"
+            type="submit"
+            disabled={!hasChanged}>
+            Save
+          </Button>
         </fieldset>
+
+        <Separator className="mb-2" />
 
         <fieldset className="mb-6">
           <h2 className="text-sm font-medium mb-2">
@@ -160,16 +170,10 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
           </div>
         </fieldset>
 
-        <div className="flex mt-2">
-          <Button 
-            type="submit"
-            disabled={!hasChanged}>
-            Save
-          </Button>
+        <Separator className="mb-2" />
 
-          <DeleteWithConfirmation 
-            onDelete={onDelete} />
-        </div>
+        <DeleteWithConfirmation 
+          onDelete={onDelete} />
       </form>
     </div>
   )

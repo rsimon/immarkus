@@ -25,7 +25,7 @@ export const DeleteWithConfirmation = (props: DeleteWithConfirmationProps) => {
       <AlertDialogTrigger asChild>
         <Button 
           variant="destructive" 
-          className="ml-2"
+          className="w-full mt-2"
           type="button">
           <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
         </Button>

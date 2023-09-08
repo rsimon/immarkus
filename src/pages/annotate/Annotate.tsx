@@ -41,7 +41,7 @@ export const Annotate = () => {
           <nav className="breadcrumb">
             <ul>
               <li>
-                <Link to="/images">Images</Link>
+                <Link className="font-semibold" to="/images">Images</Link>
               </li>
 
               {image && (
