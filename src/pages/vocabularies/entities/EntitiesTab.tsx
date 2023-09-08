@@ -12,6 +12,7 @@ import { Button } from '@/components/Button';
 import { Store } from '@/store/Store';
 import { CreateEntity } from './CreateEntity';
 import { Entity } from '@/store/Vocabulary';
+import { EntityActions } from './EntityActions';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
@@ -34,6 +35,7 @@ export const EntitiesTab = (props: { store: Store }) => {
               <TableHead>ID</TableHead>
               <TableHead>Parent ID</TableHead>
               <TableHead>Notes</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
 
@@ -44,6 +46,9 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell>{e.id}</TableCell>
                 <TableCell>{e.parentId}</TableCell>
                 <TableCell>{e.notes}</TableCell>
+                <TableCell className="text-right">
+                  <EntityActions />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
