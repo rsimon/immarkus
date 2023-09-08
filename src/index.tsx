@@ -9,6 +9,7 @@ console.log('start');
 
 import './index.css'
 
+/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <DatabaseProvider>
     <StoreProvider>
@@ -18,4 +19,9 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
       </HashRouter>
     </StoreProvider>
   </DatabaseProvider>
+)
+*/
+
+ReactDOM.createRoot(document.getElementById('app')!).render(
+  <div>Hello World</div>
 )
