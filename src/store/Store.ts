@@ -1,6 +1,6 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
-import { loadVocabulary } from './Vocabulary';
+import { VocabularyStore, loadVocabulary } from './Vocabulary';
 import { readImageFile, readJSONFile, writeJSONFile } from './io';
 
 const generateShortId = (filepath: string) => {
@@ -23,6 +23,8 @@ export interface Store {
   handle: FileSystemDirectoryHandle;
 
   images: Image[];
+
+  vocabulary: VocabularyStore;
 
   getImage(id: string): Image | undefined;
 
@@ -136,6 +138,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: Progre
     resolve({
       handle,
       images: [...images],
+      vocabulary,
       getImage,
       getAnnotations,
       countAnnotations,

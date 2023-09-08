@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProgressHandler, Store, loadStore } from './store';
+import { ProgressHandler, Store, loadStore } from './Store';
 
 interface StoreContextState {
 
