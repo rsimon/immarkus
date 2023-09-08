@@ -5,8 +5,6 @@ import { DatabaseProvider } from './db';
 import { Toaster } from '@/components/Toaster';
 import { App } from '@/App.tsx';
 
-console.log('start');
-
 import './index.css'
 
 /*
@@ -23,5 +21,7 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
 */
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
-  <div>Hello World</div>
+  <DatabaseProvider>
+    <div>Hello World</div>
+  </DatabaseProvider>
 )
