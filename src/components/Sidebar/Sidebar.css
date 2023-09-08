@@ -11,6 +11,7 @@ aside.main-nav li + li {
 }
 
 aside.main-nav li a {
-  display: block;
+  align-items: center;
+  display: flex;
   padding: 10px;
 }

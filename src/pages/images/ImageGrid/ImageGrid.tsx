@@ -1,5 +1,7 @@
 import { MessagesSquare } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/store';
+import { Image } from '@/model';
 import { ImageActions } from './ImageActions';
 
 import './ImageGrid.css';
@@ -8,10 +10,16 @@ export const ImageGrid = () => {
 
   const store = useStore()!;
 
+  const navigate = useNavigate();
+
+  const onOpen = (image: Image) => () =>
+    navigate(`/annotate/${image.id}`);
+
   return (
     <div className="image-grid">
       <div className="space-y-1 headline">
-        <h1 className="text-2xl font-semibold tracking-tight">{store.handle.name}</h1>
+        <h1 className="text-sm text-muted-foreground tracking-tight">Folder</h1>
+        <h2 className="text-3xl font-semibold tracking-tight">{store.handle.name}</h2>
         <p className="text-sm text-muted-foreground">
           {store.images.length} images
         </p>
@@ -20,7 +28,9 @@ export const ImageGrid = () => {
       <ul>
         {store.images.map(image => (
           <li key={image.name}>
-            <div className="relative overflow-hidden rounded-md border">
+            <div 
+              className="cursor-pointer relative overflow-hidden rounded-md border"
+              onClick={onOpen(image)}>
               <img
                 loading="lazy"
                 src={URL.createObjectURL(image.data)}

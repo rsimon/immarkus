@@ -72,9 +72,7 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       relations: []
 
     });
-
-    console.log('Loading vocabulary', { tags, entities, relations });
-
+    
     const addTag = (tag: Tag) => {
       if (!tags.includes(tag)) {
         tags = [...tags, tag];

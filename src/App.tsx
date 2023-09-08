@@ -1,9 +1,9 @@
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Annotate, Images, Start, Vocabularies } from './pages';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Sidebar } from './components/Sidebar';
+import { Annotate, Export, Graph, Images, Markus, Start, Vocabularies } from './pages';
 import { useStore } from './store';
 
 import './App.css';
-import { Sidebar } from './components/Sidebar';
 
 export const App = () => {
 
@@ -22,13 +22,12 @@ export const App = () => {
 
         <Route path="vocabularies" element={<Vocabularies />} />
 
-        {/* TODO data export 
+        <Route path="graph" element={<Graph />} />
+
         <Route path="export" element={<Export />}  />
 
-        {/* TODO publish to MARKUS platform 
-        <Route path="markus" element={<Markus />} /> /*}
+        <Route path="markus" element={<Markus />} />
 
-        {/* TODO catch-all 404 */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
@@ -42,7 +41,7 @@ const NotFound = () => {
     <div className="page-root">
       <Sidebar />
 
-      <main className="page vocabularies">
+      <main className="page not-found">
         <h2>Nothing to see here. (Yet.)</h2>
       </main>
     </div>

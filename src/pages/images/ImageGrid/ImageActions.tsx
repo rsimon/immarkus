@@ -33,10 +33,6 @@ export const ImageActions = (props: ImageActionProps) => {
             <PanelTop size={18} className="inline text-muted-foreground relative -top-px mr-2" />Open image
           </Link>
         </DropdownMenuItem>
-
-        <DropdownMenuItem>
-          <Download size={18} className="inline text-muted-foreground relative -top-px mr-2" />Download annotations
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

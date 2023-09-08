@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Blocks, Download, Globe2, Image, Sparkles } from 'lucide-react';
 
 import './Sidebar.css';
 
@@ -12,13 +13,17 @@ export const Sidebar = () => {
 
   return (
     <aside className="main-nav">
+      <h1 className="text-imarkus font-semibold text-lg mb-6 mt-1 ml-3">
+        I-MARKUS
+      </h1>
+
       <nav>
         <ul>
           <li>
            <Link 
               className={pathname === '/images' ? active : undefined} 
               to="/images">
-                Images
+              <Image size={18} className="mr-2" /> Images
             </Link>
           </li>
 
@@ -26,7 +31,15 @@ export const Sidebar = () => {
             <Link 
               className={pathname === '/vocabularies' ? active : undefined} 
               to="/vocabularies">
-                Vocabularies
+              <Sparkles size={18} className="mr-2" />  Vocabularies
+            </Link>
+          </li>
+
+          <li>
+            <Link 
+              className={pathname === '/graph' ? active : undefined} 
+              to="/graph">
+              <Globe2 size={18} className="mr-2" />  Knowledge Graph
             </Link>
           </li>
 
@@ -34,7 +47,7 @@ export const Sidebar = () => {
             <Link 
               className={pathname === '/export' ? active : undefined} 
               to="/export">
-                Export
+              <Download size={18} className="mr-2 relative -top-0.5" /> Export
             </Link>
           </li>
 
@@ -42,7 +55,7 @@ export const Sidebar = () => {
             <Link 
               className={pathname === '/markus' ? active : undefined} 
               to="/markus">
-                MARKUS
+              <Blocks size={18} className="mr-2 relative -top-0.5" /> MARKUS
             </Link>
           </li>
         </ul>
