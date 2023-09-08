@@ -3,6 +3,7 @@ import { Annotate, Images, Start, Vocabularies } from './pages';
 import { useStore } from './store';
 
 import './App.css';
+import { Sidebar } from './components/Sidebar';
 
 export const App = () => {
 
@@ -38,11 +39,12 @@ export const App = () => {
 const NotFound = () => {
 
   return (
-    <div>
-      <h2>Nothing to see here.</h2>
-      <p>
-        <Link to="/">Back</Link>
-      </p>
+    <div className="page-root">
+      <Sidebar />
+
+      <main className="page vocabularies">
+        <h2>Nothing to see here. (Yet.)</h2>
+      </main>
     </div>
   )
 

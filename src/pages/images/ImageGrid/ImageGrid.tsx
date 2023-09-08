@@ -20,12 +20,12 @@ export const ImageGrid = () => {
       <ul>
         {store.images.map(image => (
           <li key={image.name}>
-            <div className="relative overflow-hidden rounded-md shadow border">
+            <div className="relative overflow-hidden rounded-md border">
               <img
                 loading="lazy"
                 src={URL.createObjectURL(image.data)}
                 alt={image.path}
-                className="h-auto w-auto object-cover transition-all hover:scale-105 aspect-square"
+                className="h-auto w-auto object-cover transition-all aspect-square"
               />
 
               <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full">

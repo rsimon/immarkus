@@ -14,18 +14,18 @@ export const Vocabularies = () => {
       <Sidebar />
 
       <main className="page vocabularies">
-        <Tabs defaultValue="tags">
+        <Tabs defaultValue="entities">
           <TabsList>
-            <TabsTrigger value="tags">
-              <Tags size={16} className="mr-2" /> Tags
-            </TabsTrigger>
-
             <TabsTrigger value="entities">
               <Braces size={16} className="mr-2" /> Entities
             </TabsTrigger>
 
             <TabsTrigger value="relations">
               <ArrowLeftRight size={16} className="mr-2" />  Relations
+            </TabsTrigger>
+
+            <TabsTrigger value="tags">
+              <Tags size={16} className="mr-2" /> Tags
             </TabsTrigger>
 
             <TabsTrigger value="graph">

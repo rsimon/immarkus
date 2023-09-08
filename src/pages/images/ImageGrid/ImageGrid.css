@@ -14,8 +14,21 @@
   display: inline-block;
 }
 
+.image-grid li:hover img {
+  transform: scale(1.05);
+}
+
+.image-grid li > div {
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 .image-grid .image-wrapper {
-  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0));
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.image-grid svg {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(0, 0, 0, 0.35));
 }
 
 .image-grid img {
