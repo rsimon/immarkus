@@ -21,7 +21,8 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
 */
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
-  <DatabaseProvider>
+  <DatabaseProvider 
+    onDBInitError={error => console.error(error)}>
     <div>Hello World</div>
   </DatabaseProvider>
 )

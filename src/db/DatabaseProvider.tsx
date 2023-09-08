@@ -7,7 +7,7 @@ interface DatabaseContextProviderProps {
 
   children: ReactNode;
 
-  onDBInitError?: () => void;
+  onDBInitError?: (error: Error) => void;
 
 }
 
@@ -18,7 +18,7 @@ export const DatabaseProvider = (props: DatabaseContextProviderProps) => {
   useEffect(() => {
     initDB()
       .then(setDatabase)
-      .catch(() => props.onDBInitError && props.onDBInitError());
+      .catch(error => props.onDBInitError && props.onDBInitError(error));
   }, []);
 
   return (
