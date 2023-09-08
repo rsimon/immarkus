@@ -58,10 +58,6 @@ export const EntitiesTab = (props: { store: Store }) => {
       <div className="flex mt-4">
         <CreateEntity 
           onCreate={onCreateEntity} />
-
-        <Button variant="outline" disabled className="ml-2">
-          <Share2 size={16} className="mr-2" /> View Ontology Graph
-        </Button>
       </div>
     </>
   )
