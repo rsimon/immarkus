@@ -11,7 +11,6 @@ import { Store } from '@/store/Store';
 import { CreateEntity } from './CreateEntity';
 import { Entity } from '@/store/Vocabulary';
 import { EntityActions } from './EntityActions';
-import { getRandomColor } from '../ColorPalette';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
@@ -43,7 +42,7 @@ export const EntitiesTab = (props: { store: Store }) => {
             {entities.map(e => (
               <TableRow>
                 <TableCell>
-                  <span className="pip" style={{ backgroundColor: getRandomColor() }} />
+                  <span className="pip" style={{ backgroundColor: e.color }} />
                 </TableCell>
                 <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.id}</TableCell>

@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/Dialog';
 import { Entity } from '@/store/Vocabulary';
+import { getRandomColor } from '../ColorPalette';
 
 interface CreateEntityProps {
 
@@ -34,7 +35,10 @@ export const CreateEntity = (props: CreateEntityProps) => {
     },
 
     onSubmit: values => {
-      props.onCreate(values);
+      props.onCreate({
+        ...values,
+        color: getRandomColor()
+      });
       setOpen(false);
     }
   });
