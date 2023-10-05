@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { RefreshCcw } from 'lucide-react';
-import { Entity } from '@/model';
+import { Plus, RefreshCcw, Settings, X } from 'lucide-react';
+import { Entity, EntityProperty } from '@/model';
 import {
   Accordion,
   AccordionContent,
@@ -8,8 +8,14 @@ import {
   AccordionTrigger,
 } from '@/components/Accordion';
 import { Button } from '@/components/Button';
-import { Separator } from '@/components/Separator';
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/Table';
 
 export interface EntityCardProps {
 
@@ -37,29 +43,35 @@ const getBrightness = (color: string) => {
 
 export const EntityCard = (props: EntityCardProps) => {
 
-  const [color, setColor] = useState(props.entity?.color || getRandomColor());
+  const [label, setLabel] = useState<string>('');
 
-  const [schemaOpen, setSchemaOpen] = useState(false);
+  const [color, setColor] = useState(props.entity?.color || getRandomColor());
 
   const brightness = getBrightness(color);
 
+  const dummyProperties: EntityProperty[] = [{
+    type: 'string', name: 'Name'
+  }, {
+    type: 'number', name: 'No. of arches'
+  }, {
+    type: 'enum', name: 'Material', values: ['Wood', 'Brick']
+  }];
+
   return (
-    <article style={{ margin: 40, width: 300 }}>
-      <div className="flex justify-center">
+    <article style={{ margin: 40, width: 380 }}>
+      <div className="flex justify-center mb-8">
         <h2 
           className="rounded-full px-2.5 py-1 text-xs"
           style={{ 
             backgroundColor: color,
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
-          Entity Preview
+          {label || 'Entity Preview'}
         </h2>
       </div>
 
-      <Separator className="mt-4" />
-
-      <div className="grid grid-cols-7 gap-2 mt-2 mb-3">
-        <div className="col-span-3">
+      <div className="grid grid-cols-2 gap-2 mt-2 mb-3">
+        <div>
           <label 
             htmlFor="identifier"
             className="text-xs font-medium 
@@ -78,7 +90,7 @@ export const EntityCard = (props: EntityCardProps) => {
               disabled:cursor-not-allowed disabled:opacity-50" />
         </div>
 
-        <div className="col-span-4">
+        <div>
           <label 
             htmlFor="color"
             className="text-xs font-medium leading-none 
@@ -86,7 +98,7 @@ export const EntityCard = (props: EntityCardProps) => {
             Color
           </label>
 
-          <div className="grid grid-cols-4">
+          <div className="grid grid-cols-4 gap-6">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -101,7 +113,7 @@ export const EntityCard = (props: EntityCardProps) => {
 
             <input 
               id="color"
-              className="col-span-3 flex h-9 w-full rounded-md border border-input 
+              className="col-span-3 flex h-9 rounded-md border border-input 
                 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
                 file:border-0 file:bg-transparent file:text-sm file:font-medium 
                 placeholder:text-muted-foreground focus-visible:outline-none 
@@ -124,6 +136,7 @@ export const EntityCard = (props: EntityCardProps) => {
 
         <input
           id="label"
+          onChange={evt => setLabel(evt.target.value)}
           className="flex h-9 w-full rounded-md border border-input 
             bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -144,31 +157,69 @@ export const EntityCard = (props: EntityCardProps) => {
             bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
             placeholder:text-muted-foreground focus-visible:outline-none 
-            focus-visible:ring-1 focus-visible:ring-ring 
+            focus-visible:ring-1 focus-visible:ring-ring mb-2
             disabled:cursor-not-allowed disabled:opacity-50" 
-          rows={5} />
+          rows={3} />
       </div>
 
       <Accordion
-        onValueChange={value => setSchemaOpen(Boolean(value))}
         type="single" 
         collapsible 
-        className="w-full">
-        <AccordionItem value="schema">
-          <AccordionTrigger>
+        className="w-full bg-muted rounded-md p-3 pb-0">
+        <AccordionItem value="schema" className="border-none">
+          <AccordionTrigger className="p-0 m-0 pb-3">
             <div className="flex flex-col items-start">
-              <h3 className="text-xs">
-                Entity schema
+              <h3 className="text-sm">
+                Entity Schema
               </h3>
 
-              {!schemaOpen && (
-                <div className="text-sm mt-1.5 text-muted-foreground">No schema defined</div>
-              )}
+              <div className="text-xs mt-1 text-muted-foreground">
+                {dummyProperties.length === 0 ? 
+                  'No schema defined' : `${dummyProperties.length} propert${dummyProperties.length === 1 ? 'y' : 'ies'}`}
+              </div>
             </div>
           </AccordionTrigger>
 
           <AccordionContent>
-            TODO
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow className="text-xs p-0 hover:bg-muted/0">
+                  <TableHead className="p-1 h-8 pl-0 hover:bg-opacity-0">Name</TableHead>
+                  <TableHead className="p-1 h-8">Type</TableHead>
+                  <TableHead className="p-1 h-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {dummyProperties.map(p => (
+                  <TableRow className="text-xs">
+                    <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
+
+                    <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
+
+                    <TableCell className="p-1 pl-6 flex justify-end">
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 text-muted-foreground hover:text-black">
+                        <Settings className="w-3.5 h-3.5 " />
+                      </Button>
+
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6 text-muted-foreground hover:text-black">
+                        <X className="w-3.5 h-3.5" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+
+            <Button variant="outline" className="text-xs mt-4 h-8 pl-2 pr-3 font-medium">
+              <Plus className="w-4 h-5 mr-1" /> Add Property
+            </Button>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
