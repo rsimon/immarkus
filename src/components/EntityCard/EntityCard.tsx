@@ -63,7 +63,7 @@ export const EntityCard = (props: EntityCardProps) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-9 w-9"
+              className={getBrightness(color) < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
               style={{ 
                 backgroundColor: color,
                 color: getBrightness(color) > 0.5 ? '#000' : '#fff' 
