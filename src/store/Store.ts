@@ -1,22 +1,7 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
-import { VocabularyStore, loadVocabulary } from './Vocabulary';
-import { readImageFile, readJSONFile, writeJSONFile } from './io';
-
-const generateShortId = (filepath: string) => {
-  const str = filepath.substring(0, filepath.lastIndexOf('.'));
-
-  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
-    .then(hash => {
-      const arr = new Uint8Array(hash);
-      const shortId = Array.from(arr)
-        .slice(0, 8)
-        .map(byte => byte.toString(16).padStart(2, '0'))
-        .join('');
-    
-      return shortId;
-    });
-}
+import { VocabularyStore, loadVocabulary } from '@/store/VocabularyStore';
+import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from '@/store/utils';
 
 export interface Store {
 
@@ -38,9 +23,9 @@ export interface Store {
 
 }
 
-export type ProgressHandler = (progress: number) => void;
+export type StoreProgressHandler = (progress: number) => void;
 
-export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: ProgressHandler): Promise<Store> => 
+export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler): Promise<Store> => 
  
   new Promise(async resolve => {
     const files = [];

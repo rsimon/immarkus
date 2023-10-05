@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFormik } from 'formik';
-import { Relation } from '@/store/Vocabulary';
+import { Relation } from '@/model';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import { Label } from '@/components/Label';

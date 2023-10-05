@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Folder } from 'lucide-react';
 import { Button } from '@/components/Button';
-import { useDatabase } from '@/db';
+import { getStoredHandles } from '../storedHandles';
 
 import './Open.css';
 
@@ -13,17 +13,11 @@ interface OpenProps {
 
 export const Open = (props: OpenProps) => {
 
-  const [storedHandle, setStoredHandle] = 
-    useState<FileSystemDirectoryHandle | undefined>();
-
-  const db = useDatabase();
+  const [storedHandles, setStoredHandles] = 
+    useState<FileSystemDirectoryHandle[]>([]);
 
   useEffect(() => {
-    // Retrieve stored dir handle on mount, if any
-    db.handles.toArray().then(handles => {
-      if (handles.length > 0)
-        setStoredHandle(handles[0].handle);
-    });
+    getStoredHandles().then(setStoredHandles);
   }, []);
 
   return (
@@ -36,11 +30,11 @@ export const Open = (props: OpenProps) => {
             <Folder size={18} className="mr-2" /> Open New Folder
           </Button>
 
-          {Boolean(storedHandle) && (
+          {storedHandles.length > 0 && (
             <Button 
               variant="outline"
-              onClick={() => props.onOpenFolder(storedHandle)}>
-              <Folder size={18} className="mr-2" /> {storedHandle!.name}
+              onClick={() => props.onOpenFolder(storedHandles[storedHandles.length - 1])}>
+              <Folder size={18} className="mr-2" /> {storedHandles[storedHandles.length - 1]!.name}
             </Button>
           )}
         </div>

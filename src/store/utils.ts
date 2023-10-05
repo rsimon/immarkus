@@ -41,3 +41,19 @@ export const writeJSONFile = (handle: FileSystemFileHandle, data: any) => {
     return writable.write(content).then(() => writable.close());
   });
 }
+
+export const generateShortId = (filepath: string) => {
+  const str = filepath.substring(0, filepath.lastIndexOf('.'));
+
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+    .then(hash => {
+      const arr = new Uint8Array(hash);
+      const shortId = Array.from(arr)
+        .slice(0, 8)
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    
+      return shortId;
+    });
+}
+

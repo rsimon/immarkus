@@ -1,9 +1,11 @@
+import { W3CAnnotation } from '@annotorious/react';
+
 export interface Annotation {
 
   id: string;
 
   image: number;
 
-  data: Object;
+  data: W3CAnnotation;
 
 }

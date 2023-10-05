@@ -9,7 +9,7 @@ import {
 } from '@/components/Table';
 import { Store } from '@/store/Store';
 import { CreateRelation } from './CreateRelation';
-import { Relation } from '@/store/Vocabulary';
+import { Relation } from '@/model';
 import { RelationActions } from './RelationActions';
 
 export const RelationsTab = (props: { store: Store }) => {
@@ -31,7 +31,7 @@ export const RelationsTab = (props: { store: Store }) => {
             <TableRow>
               <TableHead className="w-[100px]">Label</TableHead>
               <TableHead>ID</TableHead>
-              <TableHead>Notes</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -41,7 +41,7 @@ export const RelationsTab = (props: { store: Store }) => {
               <TableRow>
                 <TableCell className="font-medium">{r.label}</TableCell>
                 <TableCell>{r.id}</TableCell>
-                <TableCell>{r.notes}</TableCell>
+                <TableCell>{r.description}</TableCell>
                 <TableCell className="text-right">
                   <RelationActions />
                 </TableCell>

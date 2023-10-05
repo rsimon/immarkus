@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/Dialog';
-import { Entity } from '@/store/Vocabulary';
+import { Entity } from '@/model';
 import { getRandomColor } from '../ColorPalette';
 
 interface CreateEntityProps {
@@ -52,7 +52,7 @@ export const CreateEntity = (props: CreateEntityProps) => {
       </DialogTrigger>
 
       <DialogContent>
-      <DialogHeader>
+        <DialogHeader>
           <DialogTitle>Create New Entity</DialogTitle>
           <DialogDescription>
             Create a new semantic entity for use in image annotations. Click save when you are done.

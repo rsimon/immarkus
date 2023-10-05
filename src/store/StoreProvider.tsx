@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProgressHandler, Store, loadStore } from './Store';
+import { StoreProgressHandler, Store, loadStore } from './Store';
 
 interface StoreContextState {
 
@@ -10,7 +10,6 @@ interface StoreContextState {
 
 }
 
-//@ts-ignore
 const StoreContext = createContext<StoreContextState>(undefined);
 
 interface StoreProviderProps {
@@ -34,10 +33,10 @@ export const StoreProvider = (props: StoreProviderProps) => {
 export const useInitStore = () => {
   const { setStore } = useContext(StoreContext);
 
-  return (handle: FileSystemDirectoryHandle, onProgress?: ProgressHandler) =>
+  return (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler) =>
     loadStore(handle, onProgress).then(store => {
       setStore(store);
-    })
+    });
 }
 
 export const useStore = (args: { redirect: boolean } = { redirect: false }) => {

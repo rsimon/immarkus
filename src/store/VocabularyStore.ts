@@ -1,14 +1,5 @@
-import { readJSONFile, writeJSONFile } from './io';
-
-export interface Vocabulary {
-
-  tags: Tag[];
-
-  entities: Entity[];
-
-  relations: Relation[];
-
-}
+import { Entity, Relation, Tag, Vocabulary } from '@/model';
+import { readJSONFile, writeJSONFile } from './utils';
 
 export interface VocabularyStore extends Vocabulary {
 
@@ -23,35 +14,6 @@ export interface VocabularyStore extends Vocabulary {
   addRelation(relation: Relation): Promise<void>;
 
   removeRelation(relationOrId: Relation | string): Promise<void>;
-
-}
-
-// TODO just a hack for now
-export type Tag = string; 
-
-export interface Entity {
-
-  label: string;
-
-  id: string;
-
-  color?: string;
-
-  parentId?: string;
-
-  notes: string;
-
-}
-
-export interface Relation {
-
-  label: string;
-
-  id: string;
-
-  color?: string;
-
-  notes: string;
 
 }
 

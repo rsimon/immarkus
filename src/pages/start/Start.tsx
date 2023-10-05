@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDatabase } from '@/db';
 import { useInitStore } from '@/store/StoreProvider';
 import { Loading } from './Loading';
 import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 
 import './Start.css';
+import { clearStoredHandles, storeHandle } from './storedHandles';
 
 type State = 'idle' | 'loading' | 'error';
 
@@ -17,8 +17,6 @@ export const Start = () => {
   const [progress, setProgress] = useState(0);
 
   const initStore = useInitStore();
-
-  const db = useDatabase();
 
   const navigate = useNavigate();
 
@@ -33,10 +31,7 @@ export const Start = () => {
           throw new Error('File access denied by user');
       } else {
         handle = await window.showDirectoryPicker({ mode: 'readwrite' });
-
-        // Persist new handle
-        db.handles.clear();
-        db.handles.add({ handle, created: new Date() });
+        storeHandle(handle);
       }
 
       // Loading!
