@@ -7,6 +7,7 @@ import { EntityDetails } from '@/components/EntityDetails';
 
 import './index.css'
 
+/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <StoreProvider>
     <HashRouter>       
@@ -15,9 +16,8 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
     </HashRouter>
   </StoreProvider>
 );
+*/
 
-/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <EntityDetails />
 );
-*/
