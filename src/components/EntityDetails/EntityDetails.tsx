@@ -18,7 +18,7 @@ import {
 } from '@/ui/Table';
 import { PropertyDetails } from './PropertyDetails';
 
-export interface EntityCardProps {
+interface EntityDetailsProps {
 
   entity?: Entity;
 
@@ -50,7 +50,7 @@ const getBrightness = (color: string) => {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-export const EntityCard = (props: EntityCardProps) => {
+export const EntityDetails = (props: EntityDetailsProps) => {
 
   const [label, setLabel] = useState<string>('');
 

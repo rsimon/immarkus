@@ -4,7 +4,9 @@ import { createBody, useAnnotationStore, useSelection } from '@annotorious/react
 import { EditorPaneProps } from '..';
 import { Badge } from '@/ui/Badge';
 import { Button } from '@/ui/Button';
+import { Input } from '@/ui/Input';
 import { Separator } from '@/ui/Separator';
+import { Textarea } from '@/ui/Textarea';
 import { DeleteWithConfirmation } from './DeleteWithConfirmation';
 import { useToast } from '@/ui/Toaster';
 
@@ -106,7 +108,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             Comment
           </h2>
 
-          <textarea 
+          <Textarea 
             ref={textarea}
             rows={6} 
             onChange={() => setHasChanged(true)}
@@ -153,7 +155,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             ))}
           </ul>
           <div className="flex w-full max-w-sm items-center space-x-2">
-            <input 
+            <Input 
               ref={input}
               placeholder="Tag..." />
 
