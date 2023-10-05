@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Plus, RefreshCcw, Settings, X } from 'lucide-react';
+import { Plus, RefreshCcw, X } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/Accordion';
-import { Button } from '@/components/Button';
+} from '@/ui/Accordion';
+import { Button } from '@/ui/Button';
 import {
   Table,
   TableBody,
@@ -15,7 +15,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/Table';
+} from '@/ui/Table';
+import { PropertyDetails } from './PropertyDetails';
 
 export interface EntityCardProps {
 
@@ -91,7 +92,7 @@ export const EntityCard = (props: EntityCardProps) => {
               bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
               file:border-0 file:bg-transparent file:text-sm file:font-medium 
               placeholder:text-muted-foreground focus-visible:outline-none 
-              focus-visible:ring-1 focus-visible:ring-ring 
+              focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring 
               disabled:cursor-not-allowed disabled:opacity-50" />
         </div>
 
@@ -122,7 +123,7 @@ export const EntityCard = (props: EntityCardProps) => {
                 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
                 file:border-0 file:bg-transparent file:text-sm file:font-medium 
                 placeholder:text-muted-foreground focus-visible:outline-none 
-                focus-visible:ring-1 focus-visible:ring-ring 
+                focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring 
                 disabled:cursor-not-allowed disabled:opacity-50" 
               value={color} 
               onChange={evt => setColor(evt.target.value)}/>
@@ -146,7 +147,7 @@ export const EntityCard = (props: EntityCardProps) => {
             bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
             placeholder:text-muted-foreground focus-visible:outline-none 
-            focus-visible:ring-1 focus-visible:ring-ring 
+            focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring 
             disabled:cursor-not-allowed disabled:opacity-50" />
             
         <label 
@@ -162,7 +163,7 @@ export const EntityCard = (props: EntityCardProps) => {
             bg-transparent px-3 py-2 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
             placeholder:text-muted-foreground focus-visible:outline-none 
-            focus-visible:ring-1 focus-visible:ring-ring mb-2
+            focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring mb-2
             disabled:cursor-not-allowed disabled:opacity-50" 
           rows={3} />
       </div>
@@ -203,12 +204,7 @@ export const EntityCard = (props: EntityCardProps) => {
                     <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
 
                     <TableCell className="p-1 pl-6 flex justify-end">
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-6 w-6 text-muted-foreground hover:text-black">
-                        <Settings className="w-3.5 h-3.5 " />
-                      </Button>
+                      <PropertyDetails property={p} />
 
                       <Button 
                         onClick={deleteProperty(p)}
@@ -231,7 +227,7 @@ export const EntityCard = (props: EntityCardProps) => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-
+      
       <div className="mt-4">
         <Button>Create</Button>
       </div>

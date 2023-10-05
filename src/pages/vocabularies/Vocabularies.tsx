@@ -1,6 +1,6 @@
 import { ArrowLeftRight, Braces, Tags, ListTree } from 'lucide-react';
 import { Sidebar } from '@/components/Sidebar';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useStore } from '@/store';
 import { EntitiesTab } from './entities/EntitiesTab';
 import { RelationsTab } from './relations/RelationsTab';

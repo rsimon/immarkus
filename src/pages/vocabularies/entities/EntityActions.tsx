@@ -1,4 +1,4 @@
-import { Button } from '@/components/Button';
+import { Button } from '@/ui/Button';
 import { MoreHorizontal } from 'lucide-react';
 import {
   Dialog,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/Dialog';
+} from '@/ui/Dialog';
 
 export const EntityActions = () => {
 

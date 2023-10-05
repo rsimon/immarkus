@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/DropdownMenu';
+} from '@/ui/DropdownMenu';
 
 interface ImageActionProps {
 

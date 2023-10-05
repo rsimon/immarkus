@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { useFormik } from 'formik';
 import { Relation } from '@/model';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Label } from '@/components/Label';
-import { Textarea } from '@/components/Textarea';
+import { Button } from '@/ui/Button';
 import {
   Dialog,
   DialogContent,
@@ -13,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/Dialog';
+} from '@/ui/Dialog';
 
 interface CreateRelationProps {
 
@@ -56,13 +53,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
 
         <form className="grid gap-4 py-4" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label 
+            <label 
               htmlFor="label" 
               className="text-right">
               Label
-            </Label>
+            </label>
 
-            <Input 
+            <input 
               id="label" 
               className="col-span-3" 
               value={formik.values.label} 
@@ -70,13 +67,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label 
+            <label 
               htmlFor="id" 
               className="text-right">
               ID
-            </Label>
+            </label>
 
-            <Input 
+            <input 
               id="id" 
               className="col-span-3" 
               value={formik.values.id} 
@@ -84,13 +81,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-start gap-4">
-            <Label 
+            <label 
               htmlFor="notes" 
               className="text-right">
               Notes
-            </Label>
+            </label>
 
-            <Textarea 
+            <textarea 
               id="notes" 
               className="col-span-3" 
               rows={5}

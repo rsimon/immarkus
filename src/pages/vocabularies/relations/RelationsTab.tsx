@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/Table';
+} from '@/ui/Table';
 import { Store } from '@/store/Store';
 import { CreateRelation } from './CreateRelation';
 import { Relation } from '@/model';

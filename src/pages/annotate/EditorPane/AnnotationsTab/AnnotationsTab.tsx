@@ -2,13 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Pencil, X } from 'lucide-react';
 import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
 import { EditorPaneProps } from '..';
-import { Badge } from '@/components/Badge';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Separator } from "@/components/Separator"
-import { Textarea } from '@/components/Textarea';
+import { Badge } from '@/ui/Badge';
+import { Button } from '@/ui/Button';
+import { Separator } from '@/ui/Separator';
 import { DeleteWithConfirmation } from './DeleteWithConfirmation';
-import { useToast } from '@/components/Toaster';
+import { useToast } from '@/ui/Toaster';
 
 export const AnnotationsTab = (props: EditorPaneProps) => {
 
@@ -108,7 +106,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             Comment
           </h2>
 
-          <Textarea 
+          <textarea 
             ref={textarea}
             rows={6} 
             onChange={() => setHasChanged(true)}
@@ -155,7 +153,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
             ))}
           </ul>
           <div className="flex w-full max-w-sm items-center space-x-2">
-            <Input 
+            <input 
               ref={input}
               placeholder="Tag..." />
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Folder } from 'lucide-react';
-import { Button } from '@/components/Button';
+import { Button } from '@/ui/Button';
 import { getStoredHandles } from '../storedHandles';
 
 import './Open.css';

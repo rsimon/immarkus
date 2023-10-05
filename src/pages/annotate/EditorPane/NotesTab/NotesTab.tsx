@@ -1,8 +1,7 @@
 import { useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { W3CAnnotation } from '@annotorious/react';
-import { Button } from '@/components/Button';
-import { Textarea } from '@/components/Textarea';
+import { Button } from '@/ui/Button';
 import { useStore } from '@/store';
 import { EditorPaneProps } from '..';
 
@@ -51,7 +50,7 @@ export const NotesTab = (props: EditorPaneProps) => {
 
   return (
     <form onSubmit={onSaveNote}>
-      <Textarea 
+      <textarea 
         ref={textarea} 
         className="mb-2"
         rows={10}

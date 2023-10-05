@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/Button';
+import { Button } from '@/ui/Button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/AlertDialog';
+} from '@/ui/AlertDialog';
 
 interface DeleteWithConfirmationProps {
 

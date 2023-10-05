@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Toggle } from '@/components/Toggle';
+import { Toggle } from '@/ui/Toggle';
 import { Polygon, Rectangle } from './Icons';
 
 interface ToolbarProps {

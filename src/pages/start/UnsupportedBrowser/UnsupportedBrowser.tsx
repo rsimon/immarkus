@@ -1,5 +1,5 @@
 import { AlertCircle } from "lucide-react"
-import { Alert, AlertTitle, AlertDescription } from '@/components/Alert';
+import { Alert, AlertTitle, AlertDescription } from '@/ui/Alert';
 
 export const UnsupportedBrowser = () => {
 

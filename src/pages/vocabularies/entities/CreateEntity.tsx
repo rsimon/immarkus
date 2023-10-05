@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { useFormik } from 'formik';
-import { Button } from '@/components/Button';
-import { Input } from '@/components/Input';
-import { Label } from '@/components/Label';
-import { Textarea } from '@/components/Textarea';
+import { Button } from '@/ui/Button';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/Dialog';
+} from '@/ui/Dialog';
 import { Entity } from '@/model';
 import { getRandomColor } from '../ColorPalette';
 
@@ -61,13 +58,13 @@ export const CreateEntity = (props: CreateEntityProps) => {
 
         <form className="grid gap-4 py-4" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label 
+            <label 
               htmlFor="label" 
               className="text-right">
               Label
-            </Label>
+            </label>
 
-            <Input 
+            <input 
               id="label" 
               className="col-span-3" 
               value={formik.values.label} 
@@ -75,13 +72,13 @@ export const CreateEntity = (props: CreateEntityProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label 
+            <label 
               htmlFor="id" 
               className="text-right">
               ID
-            </Label>
+            </label>
 
-            <Input 
+            <input 
               id="id" 
               className="col-span-3" 
               value={formik.values.id} 
@@ -89,13 +86,13 @@ export const CreateEntity = (props: CreateEntityProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label 
+            <label 
               htmlFor="parentId" 
               className="text-right">
               Parent ID (optional)
-            </Label>
+            </label>
 
-            <Input 
+            <input 
               id="parentId" 
               className="col-span-3" 
               value={formik.values.parentId} 
@@ -103,13 +100,13 @@ export const CreateEntity = (props: CreateEntityProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-start gap-4">
-            <Label 
+            <label 
               htmlFor="notes" 
               className="text-right">
               Notes
-            </Label>
+            </label>
 
-            <Textarea 
+            <textarea 
               id="notes" 
               className="col-span-3" 
               rows={5}

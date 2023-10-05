@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelection } from '@annotorious/react';
 import { Image } from '@/model';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/Tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { AnnotationsTab } from './AnnotationsTab';
 import { NotesTab } from './NotesTab';
 
