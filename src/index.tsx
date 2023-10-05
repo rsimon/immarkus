@@ -5,7 +5,7 @@ import { Toaster } from '@/ui/Toaster';
 import { App } from '@/App';
 
 import './index.css'
-import { EntityCard } from './components/EntityCard/EntityCard';
+import { EntityCard } from './components/EntityDetails/EntityDetails';
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <StoreProvider>

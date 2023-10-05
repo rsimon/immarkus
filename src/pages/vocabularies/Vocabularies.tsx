@@ -1,5 +1,5 @@
 import { ArrowLeftRight, Braces, Tags, ListTree } from 'lucide-react';
-import { Sidebar } from '@/components/Sidebar';
+import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useStore } from '@/store';
 import { EntitiesTab } from './entities/EntitiesTab';
@@ -13,7 +13,7 @@ export const Vocabularies = () => {
 
   return store &&  (
     <div className="page-root">
-      <Sidebar />
+      <NavigationSidebar />
 
       <main className="page vocabularies">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Vocabulary Management</h1>

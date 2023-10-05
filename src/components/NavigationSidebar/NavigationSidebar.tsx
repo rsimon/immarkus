@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Blocks, Download, Globe2, Image, Sparkles } from 'lucide-react';
 
-import './Sidebar.css';
+import './NavigationSidebar.css';
 
-export const Sidebar = () => {
+export const NavigationSidebar = () => {
 
   const { pathname } = useLocation();
 

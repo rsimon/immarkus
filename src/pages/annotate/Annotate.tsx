@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
 import { useStore } from '@/store';
-import { Sidebar } from '@/components/Sidebar';
+import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { AnnotoriousAdapter } from './AnnotoriousAdapter';
 import { EditorSidebar } from './EditorPane';
 import { SaveStatusIndicator, SaveStatus } from './SaveIndicator';
@@ -35,7 +35,7 @@ export const Annotate = () => {
   return store &&  (
     <div className="page-root">
       <Annotorious>
-        <Sidebar />
+        <NavigationSidebar />
 
         <main className="page annotate">
           <nav className="breadcrumb">

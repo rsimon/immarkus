@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Sidebar } from './components/Sidebar';
+import { NavigationSidebar } from './components/NavigationSidebar';
 import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabularies } from './pages';
 import { useStore } from './store';
 
@@ -39,7 +39,7 @@ const NotFound = () => {
 
   return (
     <div className="page-root">
-      <Sidebar />
+      <NavigationSidebar />
 
       <main className="page not-found">
         <h2>Nothing to see here. (Yet.)</h2>

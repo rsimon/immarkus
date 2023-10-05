@@ -1,4 +1,4 @@
-import { Sidebar } from '@/components/Sidebar';
+import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { useStore } from '@/store';
 
 export const Export = () => {
@@ -8,7 +8,7 @@ export const Export = () => {
 
   return (
     <div className="page-root">
-      <Sidebar />
+      <NavigationSidebar />
 
       <main className="page export">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Nothing to see here. (Yet.)</h1>

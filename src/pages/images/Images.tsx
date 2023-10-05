@@ -1,4 +1,4 @@
-import { Sidebar } from '@/components/Sidebar';
+import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { useStore } from '@/store';
 import { ImageGrid } from './ImageGrid';
 
@@ -10,7 +10,7 @@ export const Images = () => {
 
   return store && (
     <div className="page-root">
-      <Sidebar />
+      <NavigationSidebar />
 
       <main className="page images">
         <ImageGrid />
