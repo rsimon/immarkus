@@ -1,7 +1,7 @@
 import { Sidebar } from '@/components/Sidebar';
 import { useStore } from '@/store';
 
-export const Graph = () => {
+export const KnowledgeGraph = () => {
 
   // Just put this here so we redirect if the store isn't loaded
   useStore({ redirect: true });

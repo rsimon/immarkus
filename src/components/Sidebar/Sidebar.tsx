@@ -7,9 +7,11 @@ export const Sidebar = () => {
 
   const { pathname } = useLocation();
 
-  // I mean how TF is this better than having a decent stylesheet!?? 
   const active = 
-    "rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"; 
+    `rounded-md text-sm font-medium ring-offset-background transition-colors 
+     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+     focus-visible:ring-offset-2 bg-primary text-primary-foreground 
+     hover:bg-primary/90 h-10 px-4 py-2`; 
 
   return (
     <aside className="main-nav">
@@ -37,8 +39,8 @@ export const Sidebar = () => {
 
           <li>
             <Link 
-              className={pathname === '/graph' ? active : undefined} 
-              to="/graph">
+              className={pathname === '/knowledge-graph' ? active : undefined} 
+              to="/knowledge-graph">
               <Globe2 size={18} className="mr-2" />  Knowledge Graph
             </Link>
           </li>

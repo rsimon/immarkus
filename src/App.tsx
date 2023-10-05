@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
-import { Annotate, Export, Graph, Images, Markus, Start, Vocabularies } from './pages';
+import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabularies } from './pages';
 import { useStore } from './store';
 
 import './App.css';
@@ -22,7 +22,7 @@ export const App = () => {
 
         <Route path="vocabularies" element={<Vocabularies />} />
 
-        <Route path="graph" element={<Graph />} />
+        <Route path="knowledge-graph" element={<KnowledgeGraph />} />
 
         <Route path="export" element={<Export />}  />
 
