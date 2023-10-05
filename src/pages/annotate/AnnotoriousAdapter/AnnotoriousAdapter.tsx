@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AnnotoriousImageAnnotator, useAnnotator } from '@annotorious/react';
+import { AnnotoriousImageAnnotator, W3CAnnotation, useAnnotator } from '@annotorious/react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
 
@@ -23,13 +23,14 @@ export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
 
   const store = useStore()!;
 
-  const anno = useAnnotator<AnnotoriousImageAnnotator>();
+  const anno = useAnnotator<AnnotoriousImageAnnotator<W3CAnnotation>>();
 
   useEffect(() => {
     if (anno && store) {
       const { id } = image;
 
       const annotations = store.getAnnotations(id);
+      console.log(annotations);
 
       // @ts-ignore
       anno.setAnnotations(annotations.filter(a => a.target.selector));

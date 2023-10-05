@@ -3,7 +3,7 @@ import { HashRouter } from 'react-router-dom';
 import { StoreProvider } from './store/StoreProvider';
 import { DatabaseProvider } from './db';
 import { Toaster } from '@/components/Toaster';
-import { App } from '@/App.tsx';
+import { App } from './App';
 
 import './index.css'
 

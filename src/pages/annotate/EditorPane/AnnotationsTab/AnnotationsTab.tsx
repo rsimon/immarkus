@@ -25,10 +25,10 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   const empty = selected.length === 0;
 
   const comment = selected.length > 0 ? 
-    selected[0].bodies.find(b => b.purpose === 'commenting')?.value : '';
+    selected[0].annotation.bodies.find(b => b.purpose === 'commenting')?.value : '';
 
   const tags = selected.length > 0 ?
-    selected.reduce((tags, annotation) => (
+    selected.reduce((tags, { annotation }) => (
       [...tags, ...annotation.bodies.filter(b => b.purpose === 'tagging').map(b => b.value)]
     ), [] as string[]) : [];
 
@@ -39,14 +39,12 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   useEffect(() => {
     setHasChanged(false);
     setTagsEditable(false);
-  }, [selected.map(a => a.id).join()]);
+  }, [selected.map(({ annotation }) => annotation.id).join()]);
 
   const onSave = (evt: React.FormEvent) => {
-    console.log('onSave');
-
     evt.preventDefault()
 
-    const annotation = selected[0];
+    const { annotation } = selected[0];
 
     // Don't add the same tag twice
     const hasNewTag = input.current.value && !tags.includes(input.current.value);
@@ -84,8 +82,7 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   }
 
   const onDeleteTag = (tag: string) => {
-    console.log(tag);
-    const annotation = selected[0];
+    const { annotation } = selected[0];
 
     const updated = {
       ...annotation,
@@ -97,14 +94,14 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
   }
 
   const onDelete = () =>
-    store.bulkDeleteAnnotation(selected);
+    store.bulkDeleteAnnotation(selected.map(s => s.annotation.id));
 
   return empty ? (
     <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
       No annotation selected
     </div> 
   ) : (
-    <div className="w-full" key={selected.map(a => a.id).join('.')}>
+    <div className="w-full" key={selected.map(({ annotation }) => annotation.id).join('.')}>
       <form onSubmit={onSave}>
         <fieldset className="mb-6">
           <h2 className="text-sm font-medium mb-2">

@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,

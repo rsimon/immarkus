@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Annotorious, ImageAnnotator } from '@annotorious/react';
+import { Annotorious, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
 import { useStore } from '@/store';
 import { Sidebar } from '@/components/Sidebar';
 import { AnnotoriousAdapter } from './AnnotoriousAdapter';
@@ -61,6 +61,8 @@ export const Annotate = () => {
                 onToolChange={setTool}/>
 
               <ImageAnnotator
+                adapter={W3CImageFormat(image.path)}
+                autoSave={true}
                 tool={tool}>
                 <img 
                   className="select-none"
