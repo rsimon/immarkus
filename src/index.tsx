@@ -5,7 +5,9 @@ import { Toaster } from '@/components/Toaster';
 import { App } from '@/App';
 
 import './index.css'
+import { EntityCard } from './components/EntityCard/EntityCard';
 
+/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <StoreProvider>
     <HashRouter>       
@@ -13,4 +15,9 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
       <App />
     </HashRouter>
   </StoreProvider>
-)
+);
+*/
+
+ReactDOM.createRoot(document.getElementById('app')!).render(
+  <EntityCard />
+);
