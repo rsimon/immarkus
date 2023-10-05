@@ -1,4 +1,4 @@
-import { Plus, X } from 'lucide-react';
+import { Plus, Settings, X } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -28,6 +28,12 @@ interface EntitySchemaDetailsProps {
 export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
 
   const { properties } = props; 
+
+  const addProperty = (added: EntityProperty) =>
+    props.onChange([...properties, added]);
+
+  const updateProperty = (updated: EntityProperty, previous: EntityProperty) =>
+    props.onChange(properties.map(p => p === previous ? updated : p));
 
   const deleteProperty = (property: EntityProperty) => () =>
     props.onChange(properties.filter(p => p !== property));
@@ -64,13 +70,24 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
 
               <TableBody>
                 {properties.map(p => (
-                  <TableRow className="text-xs">
+                  <TableRow key={p.name} className="text-xs">
                     <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
 
                     <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
 
                     <TableCell className="p-1 pl-6 flex justify-end">
-                      <PropertyDialog property={p} />
+                      <PropertyDialog
+                        property={p}
+                        onUpdate={updated => updateProperty(updated, p)}>
+
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-6 w-6 text-muted-foreground hover:text-black">
+                          <Settings className="w-3.5 h-3.5 " />
+                        </Button>
+
+                      </PropertyDialog>
 
                       <Button 
                         onClick={deleteProperty(p)}
@@ -85,11 +102,16 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
               </TableBody>
             </Table>
 
-            <Button 
-              variant="outline" 
-              className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
-              <Plus className="w-4 h-5 mr-1" /> Add Property
-            </Button>
+            <PropertyDialog
+              onUpdate={addProperty}>
+
+              <Button 
+                variant="outline" 
+                className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
+                <Plus className="w-4 h-5 mr-1" /> Add Property
+              </Button>
+
+            </PropertyDialog>
           </div>
         </AccordionContent>
       </AccordionItem>

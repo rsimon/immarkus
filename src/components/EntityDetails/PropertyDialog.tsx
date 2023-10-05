@@ -1,30 +1,38 @@
-import { useState } from 'react';
-import { Settings } from 'lucide-react';
-import { Button } from '@/ui/Button';
+import { ReactNode, useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/ui/Dialog';
-import { PropertyDetails, PropertyDetailsProps } from '../PropertyDetails';
+import { PropertyDetails } from '../PropertyDetails';
+import { EntityProperty } from '@/model';
 
-export const PropertyDialog = (props: PropertyDetailsProps) => {
+interface PropertyDialogProps {
+
+  property?: EntityProperty
+
+  onUpdate(updated: EntityProperty): void;
+
+  children: ReactNode;
+
+}
+
+export const PropertyDialog = (props: PropertyDialogProps) => {
 
   const [open, setOpen] = useState(false);
+
+  const onUpdate = (property: EntityProperty) => {
+    props.onUpdate(property);
+    setOpen(false);
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="h-6 w-6 text-muted-foreground hover:text-black">
-          <Settings className="w-3.5 h-3.5 " />
-        </Button>
+        {props.children}
       </DialogTrigger>
 
       <DialogContent>
@@ -35,11 +43,9 @@ export const PropertyDialog = (props: PropertyDetailsProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <PropertyDetails {...props} />
-
-        <DialogFooter className="mt-2 sm:justify-start">
-          <Button>Save</Button>
-        </DialogFooter>
+        <PropertyDetails 
+          property={props.property} 
+          onUpdate={onUpdate} />
       </DialogContent>
     </Dialog>
   )

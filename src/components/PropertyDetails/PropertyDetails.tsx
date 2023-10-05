@@ -1,5 +1,8 @@
+import { useFormik } from 'formik';
 import { EntityProperty } from '@/model';
+import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
+import { Label } from '@/ui/Label';
 import {
   Select,
   SelectContent,
@@ -8,35 +11,56 @@ import {
   SelectValue,
 } from '@/ui/Select';
 
-export interface PropertyDetailsProps {
+interface PropertyDetailsProps {
 
-  property: EntityProperty;
+  property?: EntityProperty;
+
+  onUpdate(updated: EntityProperty): void;
 
 }
 
 export const PropertyDetails = (props: PropertyDetailsProps) => {
 
+  const { property } = props;
+
+  const formik = useFormik({
+    initialValues: {
+      name: property?.name || '',
+      type: property?.type || '' as 'string' | 'number' | 'enum'
+    },
+
+    onSubmit: ({ name, type }) => {
+      props.onUpdate({ type, name, values: type === 'enum' && [] })
+    },
+
+    validate: ({ type }) => {
+      if (!type)
+        return { type: 'Required' };
+    }
+  });
+
   return (
-    <div className="grid gap-2 pt-4">
-      <label 
+    <form className="grid gap-2 pt-4" onSubmit={formik.handleSubmit}>
+      <Label 
         htmlFor="name"
-        className="text-sm font-medium leading-none 
-          peer-disabled:cursor-not-allowed pt-2
-          peer-disabled:opacity-70">
+        className="text-sm">
         Property Name
-      </label>
+      </Label>
 
-      <Input id="name" />
+      <Input 
+        id="name" 
+        value={formik.values.name} 
+        onChange={formik.handleChange}/>
 
-      <label 
+      <Label 
         htmlFor="type"
-        className="text-sm font-medium leading-none 
-          peer-disabled:cursor-not-allowed pt-4
-          peer-disabled:opacity-70">
+        className="text-sm">
         Property Type
-      </label>
+      </Label>
 
-      <Select>
+      <Select
+        value={formik.values.type}
+        onValueChange={t => formik.setFieldValue('type', t)}>
         <SelectTrigger className="w-full h-10 shadow-sm">
           <SelectValue />
         </SelectTrigger>
@@ -47,7 +71,11 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
           <SelectItem value="enum">Choice</SelectItem>
         </SelectContent>
       </Select>
-    </div>
+
+      <div className="mt-2 sm:justify-start">
+        <Button type="submit">Save</Button>
+      </div>
+    </form>
   )
 
 }
