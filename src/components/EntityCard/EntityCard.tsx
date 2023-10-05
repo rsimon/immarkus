@@ -1,7 +1,15 @@
 import { useState } from 'react';
 import { RefreshCcw } from 'lucide-react';
 import { Entity } from '@/model';
-import { Button } from '../Button';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/Accordion';
+import { Button } from '@/components/Button';
+import { Separator } from '@/components/Separator';
+
 
 export interface EntityCardProps {
 
@@ -31,19 +39,37 @@ export const EntityCard = (props: EntityCardProps) => {
 
   const [color, setColor] = useState(props.entity?.color || getRandomColor());
 
+  const [schemaOpen, setSchemaOpen] = useState(false);
+
+  const brightness = getBrightness(color);
+
   return (
-    <article className="p-6 pt-0 grid gap-4" style={{ margin: 40, width: 300 }}>
-      <h1>Entity Preview</h1>
-      <div className="grid grid-cols-7 gap-2">
+    <article style={{ margin: 40, width: 300 }}>
+      <div className="flex justify-center">
+        <h2 
+          className="rounded-full px-2.5 py-1 text-xs"
+          style={{ 
+            backgroundColor: color,
+            color: brightness > 0.5 ? '#000' : '#fff' 
+          }}>
+          Entity Preview
+        </h2>
+      </div>
+
+      <Separator className="mt-4" />
+
+      <div className="grid grid-cols-7 gap-2 mt-2 mb-3">
         <div className="col-span-3">
           <label 
-            className="text-sm font-medium 
+            htmlFor="identifier"
+            className="text-xs font-medium 
               leading-none peer-disabled:cursor-not-allowed 
               peer-disabled:opacity-70">
             ID
           </label>
 
           <input 
+            id="identifier"
             className="flex h-9 w-full rounded-md border border-input 
               bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
               file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -54,25 +80,27 @@ export const EntityCard = (props: EntityCardProps) => {
 
         <div className="col-span-4">
           <label 
-            className="text-sm font-medium leading-none 
+            htmlFor="color"
+            className="text-xs font-medium leading-none 
               peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             Color
           </label>
 
-          <div className="grid grid-cols-4 gap-8">
+          <div className="grid grid-cols-4">
             <Button 
               variant="ghost" 
               size="icon" 
-              className={getBrightness(color) < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
+              className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
               style={{ 
                 backgroundColor: color,
-                color: getBrightness(color) > 0.5 ? '#000' : '#fff' 
+                color: brightness > 0.5 ? '#000' : '#fff' 
               }}
               onClick={() => setColor(getRandomColor())}>
               <RefreshCcw className="h-4 w-4" />
             </Button>
 
             <input 
+              id="color"
               className="col-span-3 flex h-9 w-full rounded-md border border-input 
                 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
                 file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -85,15 +113,17 @@ export const EntityCard = (props: EntityCardProps) => {
         </div>
       </div>
 
-      <div className="grid gap-2">
+      <div className="grid gap-2 mb-2">
         <label 
-          className="text-sm font-medium leading-none 
+          htmlFor="label"
+          className="text-xs font-medium leading-none 
             peer-disabled:cursor-not-allowed 
             peer-disabled:opacity-70">
           Label
         </label>
 
-        <input 
+        <input
+          id="label"
           className="flex h-9 w-full rounded-md border border-input 
             bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -102,12 +132,14 @@ export const EntityCard = (props: EntityCardProps) => {
             disabled:cursor-not-allowed disabled:opacity-50" />
             
         <label 
-          className="text-sm font-medium leading-none 
+          htmlFor="description"
+          className="text-xs font-medium leading-none mt-2
             peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Description
         </label>
 
         <textarea 
+          id="description"
           className="flex w-full rounded-md border border-input 
             bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
@@ -117,7 +149,31 @@ export const EntityCard = (props: EntityCardProps) => {
           rows={5} />
       </div>
 
-      <div>
+      <Accordion
+        onValueChange={value => setSchemaOpen(Boolean(value))}
+        type="single" 
+        collapsible 
+        className="w-full">
+        <AccordionItem value="schema">
+          <AccordionTrigger>
+            <div className="flex flex-col items-start">
+              <h3 className="text-xs">
+                Entity schema
+              </h3>
+
+              {!schemaOpen && (
+                <div className="text-sm mt-1.5 text-muted-foreground">No schema defined</div>
+              )}
+            </div>
+          </AccordionTrigger>
+
+          <AccordionContent>
+            TODO
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <div className="mt-4">
         <Button>Create</Button>
       </div>
     </article>
