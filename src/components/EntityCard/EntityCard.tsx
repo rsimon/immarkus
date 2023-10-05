@@ -23,6 +23,14 @@ export interface EntityCardProps {
 
 }
 
+const dummyProperties: EntityProperty[] = [{
+  type: 'string', name: 'Name'
+}, {
+  type: 'number', name: 'No. of arches'
+}, {
+  type: 'enum', name: 'Material', values: ['Wood', 'Brick']
+}];
+
 const getRandomColor = () => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
@@ -49,13 +57,10 @@ export const EntityCard = (props: EntityCardProps) => {
 
   const brightness = getBrightness(color);
 
-  const dummyProperties: EntityProperty[] = [{
-    type: 'string', name: 'Name'
-  }, {
-    type: 'number', name: 'No. of arches'
-  }, {
-    type: 'enum', name: 'Material', values: ['Wood', 'Brick']
-  }];
+  const [properties, setProperties] = useState<EntityProperty[]>(dummyProperties);
+
+  const deleteProperty = (property: EntityProperty) => () =>
+    setProperties(props => props.filter(p => p !== property));
 
   return (
     <article style={{ margin: 40, width: 380 }}>
@@ -70,7 +75,7 @@ export const EntityCard = (props: EntityCardProps) => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 mt-2 mb-3">
+      <div className="grid grid-cols-2 gap-4 mt-2 mb-3">
         <div>
           <label 
             htmlFor="identifier"
@@ -98,7 +103,7 @@ export const EntityCard = (props: EntityCardProps) => {
             Color
           </label>
 
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-4">
             <Button 
               variant="ghost" 
               size="icon" 
@@ -154,7 +159,7 @@ export const EntityCard = (props: EntityCardProps) => {
         <textarea 
           id="description"
           className="flex w-full rounded-md border border-input 
-            bg-transparent px-3 py-1 text-sm shadow-sm transition-colors 
+            bg-transparent px-3 py-2 text-sm shadow-sm transition-colors 
             file:border-0 file:bg-transparent file:text-sm file:font-medium 
             placeholder:text-muted-foreground focus-visible:outline-none 
             focus-visible:ring-1 focus-visible:ring-ring mb-2
@@ -174,8 +179,8 @@ export const EntityCard = (props: EntityCardProps) => {
               </h3>
 
               <div className="text-xs mt-1 text-muted-foreground">
-                {dummyProperties.length === 0 ? 
-                  'No schema defined' : `${dummyProperties.length} propert${dummyProperties.length === 1 ? 'y' : 'ies'}`}
+                {properties.length === 0 ? 
+                  'No schema defined' : `${properties.length} propert${properties.length === 1 ? 'y' : 'ies'}`}
               </div>
             </div>
           </AccordionTrigger>
@@ -191,7 +196,7 @@ export const EntityCard = (props: EntityCardProps) => {
               </TableHeader>
 
               <TableBody>
-                {dummyProperties.map(p => (
+                {properties.map(p => (
                   <TableRow className="text-xs">
                     <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
 
@@ -206,6 +211,7 @@ export const EntityCard = (props: EntityCardProps) => {
                       </Button>
 
                       <Button 
+                        onClick={deleteProperty(p)}
                         variant="ghost" 
                         size="icon" 
                         className="h-6 w-6 text-muted-foreground hover:text-black">
@@ -217,7 +223,9 @@ export const EntityCard = (props: EntityCardProps) => {
               </TableBody>
             </Table>
 
-            <Button variant="outline" className="text-xs mt-4 h-8 pl-2 pr-3 font-medium">
+            <Button 
+              variant="outline" 
+              className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
               <Plus className="w-4 h-5 mr-1" /> Add Property
             </Button>
           </AccordionContent>
