@@ -107,7 +107,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
           onChange={schema => setEntity(e => ({...e, schema }))} />
 
         <Button className="w-full mt-4">
-          <Braces className="w-5 h-5 mr-2" /> Create Entity
+          <Braces className="w-5 h-5 mr-2" /> Save Entity
         </Button>
       </div>
 

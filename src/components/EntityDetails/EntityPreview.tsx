@@ -30,7 +30,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
       <div className="flex">
         <h3 
-          className="rounded-full px-2.5 py-1 text-xs"
+          className="rounded-full px-3 py-1 text-xs"
           style={{ 
             backgroundColor: entity.color,
             color: brightness > 0.5 ? '#000' : '#fff' 
