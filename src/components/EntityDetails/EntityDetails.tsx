@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RefreshCcw } from 'lucide-react';
+import { Braces, RefreshCcw } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -37,12 +37,10 @@ export const EntityDetails = (props: EntityDetailsProps) => {
 
   const brightness = getBrightness(entity.color);
 
-  console.log(brightness);
-
   return (
-    <article className="grid grid-cols-2" style={{ margin: 40, width: 640 }}>
-      <div className="p-4">
-        <div className="grid grid-cols-2 gap-4 mt-2 mb-3">
+    <article className="grid grid-cols-2" style={{ width: 680 }}>
+      <div className="py-3 px-4">
+        <div className="grid grid-cols-2 gap-2 mt-2 mb-3">
           <div>
             <Label 
               htmlFor="identifier"
@@ -60,7 +58,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
               htmlFor="color"
               className="text-xs">Color</Label>
 
-            <div className="grid grid-cols-4">
+            <div className="grid grid-cols-4 gap-4">
               <Button 
                 variant="ghost" 
                 size="icon" 
@@ -107,10 +105,10 @@ export const EntityDetails = (props: EntityDetailsProps) => {
         <EntitySchemaDetails 
           properties={entity.schema || []}
           onChange={schema => setEntity(e => ({...e, schema }))} />
-        
-        <div className="mt-4">
-          <Button>Create</Button>
-        </div>
+
+        <Button className="w-full mt-4">
+          <Braces className="w-5 h-5 mr-2" /> Create Entity
+        </Button>
       </div>
 
       <EntityPreview 
