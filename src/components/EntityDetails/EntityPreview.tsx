@@ -1,3 +1,4 @@
+import { Braces } from 'lucide-react';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import {
@@ -30,11 +31,12 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
       <div className="flex">
         <h3 
-          className="rounded-full px-3 py-1 text-xs"
+          className="rounded-full pl-2.5 pr-3.5 py-1 flex items-center text-xs"
           style={{ 
             backgroundColor: entity.color,
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
+          <Braces className="inline h-3.5 w-3.5 mr-1.5" />
           {entity.label || 'Entity Preview'}
         </h3>
       </div>

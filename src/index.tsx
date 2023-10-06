@@ -4,6 +4,7 @@ import { StoreProvider } from './store/StoreProvider';
 import { Toaster } from '@/ui/Toaster';
 import { App } from '@/App';
 import { EntityDetails } from '@/components/EntityDetails';
+import { AnnotationCommandDialog } from '@/components/AnnotationCommands';
 
 import './index.css'
 
@@ -20,4 +21,8 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <EntityDetails />
+);
+
+ReactDOM.createRoot(document.getElementById('app')!).render(
+  <AnnotationCommandDialog />
 );

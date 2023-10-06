@@ -5,7 +5,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/ui/Dialog';
 import { PropertyDetails } from '../PropertyDetails';
 import { EntityProperty } from '@/model';
