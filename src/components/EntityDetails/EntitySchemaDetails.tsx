@@ -1,4 +1,4 @@
-import { Plus, Settings, X } from 'lucide-react';
+import { CaseSensitive, Hash, List } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -6,16 +6,10 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Button } from '@/ui/Button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/Table';
-import { PropertyDialog } from './PropertyDialog';
 import { EntityProperty } from '@/model';
+import { EntitySchemaPropActions } from './EntitySchemaPropActions';
+import { PropertyDialog } from './PropertyDialog';
+import { moveArrayItem } from './moveArrayItem';
 
 interface EntitySchemaDetailsProps {
 
@@ -32,6 +26,9 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
   const addProperty = (added: EntityProperty) =>
     props.onChange([...properties, added]);
 
+  const onMoveProperty = (property: EntityProperty, up: boolean) => () =>
+    props.onChange(moveArrayItem(properties, properties.indexOf(property), up));
+
   const updateProperty = (updated: EntityProperty, previous: EntityProperty) =>
     props.onChange(properties.map(p => p === previous ? updated : p));
 
@@ -47,7 +44,7 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
         <AccordionTrigger className="p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
             <h3 className="text-sm">
-              Entity Schema
+              Schema
             </h3>
 
             <div className="text-xs mt-1 text-muted-foreground">
@@ -62,69 +59,53 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
             {properties.length === 0 ? (
               <p 
                 className="text-center flex text-muted-foreground 
-                  px-7 pt-5 pb-6 justify-center text-xs
+                  px-7 pb-2 justify-center text-xs
                   leading-relaxed">
                 Schemas allow you to record additional properties for 
                 an entity, such as weight, material, age, etc.
               </p>
             ) : (
-              <Table className="mt-4">
-                <TableHeader>
-                  <TableRow className="text-xs p-0 hover:bg-muted/0">
-                    <TableHead className="p-1 h-8 pl-0 hover:bg-opacity-0">Name</TableHead>
-                    <TableHead className="p-1 h-8">Type</TableHead>
-                    <TableHead className="p-1 h-8"></TableHead>
-                  </TableRow>
-                </TableHeader>
+              <ul className="mb-1">
+                {properties.map(p => (
+                  <li 
+                    key={p.name} 
+                    className="flex text-xs w-full justify-between items-center
+                      bg-muted-foreground/10 pl-3 pr-2 py-1.5 rounded-sm mb-1.5">
+                    <div>
+                      {p.type === 'string' ? (
+                        <CaseSensitive 
+                          className="inline w-5 h-5 mr-2" />
+                      ) : p.type === 'number' ? (
+                        <Hash 
+                          className="inline w-4 h-4 mr-3" />
+                      ) : p.type === 'enum' && (
+                        <List 
+                          className="inline w-4 h-4 mr-3" />
+                      )}
+                      {p.name}
+                    </div>
 
-                <TableBody>
-                  {properties.map(p => (
-                    <TableRow key={p.name} className="text-xs">
-                      <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
-
-                      <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
-
-                      <TableCell className="p-1 pl-6 flex justify-end">
-                        <PropertyDialog
-                          property={p}
-                          onUpdate={updated => updateProperty(updated, p)}>
-
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-6 w-6 text-muted-foreground hover:text-black">
-                            <Settings className="w-3.5 h-3.5 " />
-                          </Button>
-
-                        </PropertyDialog>
-
-                        <Button 
-                          onClick={deleteProperty(p)}
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-6 w-6 text-muted-foreground hover:text-black">
-                          <X className="w-3.5 h-3.5" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              
+                    <EntitySchemaPropActions 
+                      property={p} 
+                      onMoveUp={onMoveProperty(p, true)}
+                      onMoveDown={onMoveProperty(p, false)}
+                      onUpdateProperty={updated => updateProperty(updated, p)}
+                      onDeleteProperty={deleteProperty(p)} />
+                  </li>
+                ))}
+              </ul>
             )}
-
-            <PropertyDialog
-              onUpdate={addProperty}>
-
-              <div className="flex justify-end">
+            
+            <div className="flex justify-end">
+              <PropertyDialog
+                onUpdate={addProperty}>
                 <Button 
                   variant="outline" 
-                  className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
-                  <Plus className="w-4 h-5 mr-1" /> Add Property
+                  className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
+                  Add Property
                 </Button>
-              </div>
-
-            </PropertyDialog>
+              </PropertyDialog>
+            </div>
           </div>
         </AccordionContent>
       </AccordionItem>

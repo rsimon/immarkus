@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Image } from '@/model';
-import { Download, MoreVertical, PanelTop } from 'lucide-react';
+import { MoreVertical, PanelTop } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
