@@ -59,57 +59,70 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
 
         <AccordionContent>
           <div className="p-3 pb-0">
-            <Table className="mt-4">
-              <TableHeader>
-                <TableRow className="text-xs p-0 hover:bg-muted/0">
-                  <TableHead className="p-1 h-8 pl-0 hover:bg-opacity-0">Name</TableHead>
-                  <TableHead className="p-1 h-8">Type</TableHead>
-                  <TableHead className="p-1 h-8"></TableHead>
-                </TableRow>
-              </TableHeader>
+            {properties.length === 0 ? (
+              <p 
+                className="text-center flex text-muted-foreground 
+                  px-7 pt-5 pb-6 justify-center text-xs
+                  leading-relaxed">
+                Schemas allow you to record additional properties for 
+                an entity, such as weight, material, age, etc.
+              </p>
+            ) : (
+              <Table className="mt-4">
+                <TableHeader>
+                  <TableRow className="text-xs p-0 hover:bg-muted/0">
+                    <TableHead className="p-1 h-8 pl-0 hover:bg-opacity-0">Name</TableHead>
+                    <TableHead className="p-1 h-8">Type</TableHead>
+                    <TableHead className="p-1 h-8"></TableHead>
+                  </TableRow>
+                </TableHeader>
 
-              <TableBody>
-                {properties.map(p => (
-                  <TableRow key={p.name} className="text-xs">
-                    <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
+                <TableBody>
+                  {properties.map(p => (
+                    <TableRow key={p.name} className="text-xs">
+                      <TableCell className="p-1 w-2/3 pl-0">{p.name}</TableCell>
 
-                    <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
+                      <TableCell className="p-1">{p.type.toUpperCase()}</TableCell>
 
-                    <TableCell className="p-1 pl-6 flex justify-end">
-                      <PropertyDialog
-                        property={p}
-                        onUpdate={updated => updateProperty(updated, p)}>
+                      <TableCell className="p-1 pl-6 flex justify-end">
+                        <PropertyDialog
+                          property={p}
+                          onUpdate={updated => updateProperty(updated, p)}>
+
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-6 w-6 text-muted-foreground hover:text-black">
+                            <Settings className="w-3.5 h-3.5 " />
+                          </Button>
+
+                        </PropertyDialog>
 
                         <Button 
+                          onClick={deleteProperty(p)}
                           variant="ghost" 
                           size="icon" 
                           className="h-6 w-6 text-muted-foreground hover:text-black">
-                          <Settings className="w-3.5 h-3.5 " />
+                          <X className="w-3.5 h-3.5" />
                         </Button>
-
-                      </PropertyDialog>
-
-                      <Button 
-                        onClick={deleteProperty(p)}
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-6 w-6 text-muted-foreground hover:text-black">
-                        <X className="w-3.5 h-3.5" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              
+            )}
 
             <PropertyDialog
               onUpdate={addProperty}>
 
-              <Button 
-                variant="outline" 
-                className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
-                <Plus className="w-4 h-5 mr-1" /> Add Property
-              </Button>
+              <div className="flex justify-end">
+                <Button 
+                  variant="outline" 
+                  className="text-xs mt-4 h-8 pl-2 pr-3 font-medium hover:bg-muted-foreground/5" >
+                  <Plus className="w-4 h-5 mr-1" /> Add Property
+                </Button>
+              </div>
 
             </PropertyDialog>
           </div>

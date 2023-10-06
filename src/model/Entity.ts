@@ -34,7 +34,9 @@ type EnumProperty = {
 
   type: 'enum',
 
-  values: string[];
+  values: string[],
+
+  multipleChoice?: boolean
 
 }
 

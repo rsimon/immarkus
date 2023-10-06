@@ -35,11 +35,20 @@ export const PropertyDialog = (props: PropertyDialogProps) => {
         {props.children}
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Property</DialogTitle>
-          <DialogDescription>
-            Define a schema property for this entity type.
+          <DialogTitle>Entity Property</DialogTitle>
+          <DialogDescription className="leading-relaxed">
+            <p>
+              Enter a name and type for the property.
+              E.g. name: <strong>Age</strong>, type: <strong>Number</strong>. 
+            </p>
+
+            <p className="mt-2">
+              The <strong>Options</strong> type allows you to define a fixed 
+              set of choices. E.g. name: <strong>Material</strong>,
+              options: <strong>Clay</strong>, <strong>Metal</strong>, <strong>Wood</strong>.
+            </p>
           </DialogDescription>
         </DialogHeader>
 
