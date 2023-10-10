@@ -1,4 +1,5 @@
-import { Braces, MessageSquare, Spline, Tag } from 'lucide-react';
+import { useState } from 'react';
+import { Braces, Spline, Tags } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import {
   Command,
@@ -12,10 +13,19 @@ import {
 
 export const AnnotationCommands = () => {
 
+  const [value, setValue] = useState('');
+
+  const createNewTag = () => {
+    console.log('new tag', value);
+  }
+
   return (
     <Command>
       <CommandInput 
-        placeholder="Search or type a new tag" />
+        placeholder="Search or type a new tag" 
+        value={value} 
+        onValueChange={setValue} />
+        
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
@@ -43,6 +53,16 @@ export const AnnotationCommands = () => {
           <CommandItem>
             <Spline className="h-4 w-4 mr-2" /> is inside
           </CommandItem>
+        </CommandGroup>
+
+        <CommandSeparator />
+
+        <CommandGroup heading="Tags">
+          {value && (
+            <CommandItem onSelect={createNewTag}>
+              <Tags className="h-4 w-4 mr-2" /> {value}
+            </CommandItem>
+          )}
         </CommandGroup>
       </CommandList>
 
