@@ -2,8 +2,9 @@ import { useSelection } from '@annotorious/react';
 import { useEffect, useState } from 'react';
 import { Image, MessagesSquare, MousePointerSquare } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
-import { ImageNotes } from '../ImageNotes';
 import { EditorPanelProps } from './EditorPanelProps';
+import { CurrentSelection } from '../CurrentSelection';
+import { ImageNotes } from '../ImageNotes';
 
 export const EditorPanel = (props: EditorPanelProps) => {
 
@@ -36,7 +37,7 @@ export const EditorPanel = (props: EditorPanelProps) => {
       </TabsList>
 
       <TabsContent value="selection">
-        
+        <CurrentSelection {...props} />
       </TabsContent>
 
       <TabsContent value="list">

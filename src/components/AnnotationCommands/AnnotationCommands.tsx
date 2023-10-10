@@ -14,7 +14,8 @@ export const AnnotationCommands = () => {
 
   return (
     <Command>
-      <CommandInput placeholder="Search..." />
+      <CommandInput 
+        placeholder="Search or type a new tag" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
@@ -41,18 +42,6 @@ export const AnnotationCommands = () => {
 
           <CommandItem>
             <Spline className="h-4 w-4 mr-2" /> is inside
-          </CommandItem>
-        </CommandGroup>
-
-        <CommandSeparator />
-        
-        <CommandGroup heading="Other">
-          <CommandItem>
-            <MessageSquare className="h-4 w-4 mr-2" /> Add a comment
-          </CommandItem>
-
-          <CommandItem>
-            <Tag className="h-4 w-4 mr-2" /> Add a text tag
           </CommandItem>
         </CommandGroup>
       </CommandList>
