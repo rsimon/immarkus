@@ -1,9 +1,9 @@
-.save-status-wrapper {
+.saving-indicator {
   animation: fadeIn 250ms; 
   display: inline-block;
   position: absolute;
-  right: 22px;
-  top: 26px;
+  right: 18px;
+  top: 18px;
   vertical-align: bottom;
   transition: opacity 500ms;
 }

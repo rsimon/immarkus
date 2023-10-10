@@ -3,7 +3,7 @@ import { AnnotoriousImageAnnotator, W3CAnnotation, useAnnotator } from '@annotor
 import { Image } from '@/model';
 import { useStore } from '@/store';
 
-interface AnnotoriousAdapterProps {
+interface StoragePluginProps {
 
   image: Image;
 
@@ -17,7 +17,7 @@ interface AnnotoriousAdapterProps {
 
 const MIN_SAVE_WAIT = 1000;
 
-export const AnnotoriousAdapter = (props: AnnotoriousAdapterProps) => {
+export const StoragePlugin = (props: StoragePluginProps) => {
 
   const { image } = props;
 

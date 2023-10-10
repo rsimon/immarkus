@@ -3,12 +3,12 @@ import { Link, useParams } from 'react-router-dom';
 import { Annotorious, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
 import { useStore } from '@/store';
 import { NavigationSidebar } from '@/components/NavigationSidebar';
-import { AnnotoriousAdapter } from './AnnotoriousAdapter';
-import { EditorSidebar } from './EditorPane';
-import { SaveStatusIndicator, SaveStatus } from './SaveIndicator';
+import { SaveStatus, SavingIndicator } from '@/components/SavingIndicator';
+import { useToast } from '@/ui/Toaster';
+import { EditorPanel } from './EditorPanel';
+import { StoragePlugin } from './StoragePlugin';
 import { Tool, Toolbar } from './Toolbar';
 
-import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
 
 export const Annotate = () => {
@@ -23,13 +23,19 @@ export const Annotate = () => {
 
   const [tool, setTool] = useState<Tool>('rectangle');
 
+  const { toast } = useToast();
+
   const onSaving = () => setSaveStatus('saving');
 
   const onSaved = () => setSaveStatus('success');
 
   const onError = (error: Error) => {
-    console.error(error);
     setSaveStatus('failed');
+
+    toast({
+      title: 'Something went wrong',
+      description: `There was an error saving annotation. Message: ${error}`
+    });
   }
 
   return store &&  (
@@ -52,7 +58,7 @@ export const Annotate = () => {
             </ul>
           </nav>
 
-          <SaveStatusIndicator status={saveStatus} />
+          <SavingIndicator status={saveStatus} />
 
           {image && (
             <section>
@@ -70,7 +76,7 @@ export const Annotate = () => {
                   alt={image.path} />
               </ImageAnnotator>
 
-              <AnnotoriousAdapter
+              <StoragePlugin
                 image={image} 
                 onSaving={onSaving}
                 onSaved={onSaved}
@@ -79,11 +85,13 @@ export const Annotate = () => {
           )}
         </main>
 
-        <EditorSidebar 
-          image={image} 
-          onSaving={onSaving} 
-          onSaved={onSaved}
-          onError={onError} />
+        <aside className="border-l p-3">
+          <EditorPanel 
+            image={image} 
+            onSaving={onSaving} 
+            onSaved={onSaved}
+            onError={onError} />
+        </aside>
       </Annotorious>
     </div>
   )

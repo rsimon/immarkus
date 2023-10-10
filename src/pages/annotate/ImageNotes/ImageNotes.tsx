@@ -2,10 +2,11 @@ import { useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { W3CAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
+import { Textarea } from '@/ui/Textarea';
 import { useStore } from '@/store';
-import { EditorPaneProps } from '..';
+import { EditorPanelProps } from '../EditorPanel';
 
-export const NotesTab = (props: EditorPaneProps) => {
+export const ImageNotes = (props: EditorPanelProps) => {
 
   const { image } = props;
 
@@ -43,20 +44,21 @@ export const NotesTab = (props: EditorPaneProps) => {
     };
 
     props.onSaving();
+
     store.upsertAnnotation(image.id, next)
       .then(() => props.onSaved())
-      .catch(error => props.onError(error));
+      .catch(props.onError);
   }
 
   return (
     <form onSubmit={onSaveNote}>
-      <textarea 
+      <Textarea 
         ref={textarea} 
-        className="mb-2"
+        className="mb-3"
         rows={10}
         defaultValue={note} />
       
-      <div className="text-right">
+      <div>
         <Button>Save</Button>
       </div>
     </form>

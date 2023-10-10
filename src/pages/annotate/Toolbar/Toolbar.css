@@ -6,10 +6,3 @@
   top: -1.5px;
   width: 22px;
 }
-
-.ia-tool * {
-  fill: none;
-  stroke: currentColor;
-  stroke-linejoin: round;
-  stroke-width: 4px;
-}

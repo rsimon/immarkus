@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'; 
 import { Check, X } from 'lucide-react';
 
-import './SaveStatusIndicator.css';
+import './SavingIndicator.css';
 
 export type SaveStatus = 'idle' | 'saving' | 'success' | 'failed';
 
-interface SaveStatusIndicatorProps {
+interface SavingIndicatorProps {
 
   status: SaveStatus;
 
@@ -13,7 +13,7 @@ interface SaveStatusIndicatorProps {
 
 }
 
-export const SaveStatusIndicator = (props: SaveStatusIndicatorProps) => {
+export const SavingIndicator = (props: SavingIndicatorProps) => {
 
   const { status } = props;
 
@@ -37,7 +37,7 @@ export const SaveStatusIndicator = (props: SaveStatusIndicatorProps) => {
   }, [status]);
 
   return (
-    <div className="save-status-wrapper" style={{ opacity }}>
+    <div className="saving-indicator" style={{ opacity }}>
       {status === 'success' ? (
         <div className="save-status success text-xs font-semibold">
           <Check size={16} /><span>Saved</span>

@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { Polygon, Rectangle } from '@/components/Icons';
 import { Toggle } from '@/ui/Toggle';
-import { Polygon, Rectangle } from './Icons';
 
 interface ToolbarProps {
 
@@ -19,14 +18,14 @@ export const Toolbar = (props: ToolbarProps) => {
       <Toggle 
         pressed={props.tool === 'rectangle'}
         onPressedChange={() => props.onToolChange('rectangle')}>
-        <Rectangle /> Box
+        <Rectangle className="ia-tool" /> Box
       </Toggle>
 
       <Toggle   
         className="ml-2"
         pressed={props.tool === 'polygon'}
         onPressedChange={() => props.onToolChange('polygon')}>
-        <Polygon /> Polygon
+        <Polygon className="ia-too" /> Polygon
       </Toggle>
     </div>
   )
