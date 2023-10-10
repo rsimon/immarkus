@@ -8,7 +8,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/murmurhash-js": "^1.0.4",
     "@types/node": "^20.5.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

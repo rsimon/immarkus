@@ -23,6 +23,8 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
   <EntityDetails />
 );
 
+/*
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <AnnotationCommandDialog />
 );
+*/
