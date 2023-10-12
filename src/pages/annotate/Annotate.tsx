@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Annotorious, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
+import { Annotorious, AnnotoriousPlugin, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
+import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { useStore } from '@/store';
 import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { SaveStatus, SavingIndicator } from '@/components/SavingIndicator';
@@ -75,6 +76,11 @@ export const Annotate = () => {
                   src={URL.createObjectURL(image.data)}
                   alt={image.path} />
               </ImageAnnotator>
+
+              {/* @ts-ignore */}
+              <AnnotoriousPlugin
+                // @ts-ignore 
+                plugin={SelectorPack} />
 
               <StoragePlugin
                 image={image} 

@@ -9,7 +9,7 @@ interface ToolbarProps {
 
 }
 
-export type Tool = 'rectangle' | 'polygon';
+export type Tool = 'rectangle' | 'polygon' | 'ellipse';
 
 export const Toolbar = (props: ToolbarProps) => {
 
@@ -26,6 +26,13 @@ export const Toolbar = (props: ToolbarProps) => {
         pressed={props.tool === 'polygon'}
         onPressedChange={() => props.onToolChange('polygon')}>
         <Polygon className="ia-too" /> Polygon
+      </Toggle>
+
+      <Toggle   
+        className="ml-2"
+        pressed={props.tool === 'ellipse'}
+        onPressedChange={() => props.onToolChange('ellipse')}>
+        <Polygon className="ia-too" /> Ellipse
       </Toggle>
     </div>
   )
