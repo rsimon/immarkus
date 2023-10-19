@@ -42,7 +42,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
             ref={ref}
             onClick={() => setCommandsOpen(true)}
             onKeyDown={onKeyDown}
-            className="px-8 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
+            className="px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
           <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
             <DialogContent className="p-0 max-w-md rounded-lg">

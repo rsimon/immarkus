@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Braces, RefreshCcw } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
+import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -29,13 +30,32 @@ export interface EntityStub {
 
 }
 
+const validate = (stub: EntityStub): Entity | undefined =>
+  (stub.id && stub.label) ? stub as Entity : undefined;
+
 export const EntityDetails = (props: EntityDetailsProps) => {
+
+  const { vocabulary } = useStore();
 
   const [entity, setEntity] = useState<EntityStub>(props.entity || {
     color: getRandomColor()
   });
 
   const brightness = getBrightness(entity.color);
+
+  const [errors, setErrors] = useState({ id: false, label: false });
+
+  const onSave = () => {
+    const valid = validate(entity);
+    if (valid) {
+      vocabulary.addEntity(valid);
+    } else {
+      setErrors({
+        id: !entity.id,
+        label: !entity.label
+      });
+    }
+  }
 
   return (
     <article className="grid grid-cols-2 rounded-lg overflow-hidden">
@@ -44,11 +64,12 @@ export const EntityDetails = (props: EntityDetailsProps) => {
           <div>
             <Label 
               htmlFor="identifier"
-              className="text-xs">ID</Label>
+              className="text-xs">ID <span className="text-red-600 ml-0">*</span>
+            </Label>{errors.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
             <Input 
               id="identifier"
-              className="h-9" 
+              className="mt-1 h-9" 
               value={entity.id || ''} 
               onChange={evt => setEntity(e => ({...e, id: evt.target.value}))}/>
           </div>
@@ -60,9 +81,8 @@ export const EntityDetails = (props: EntityDetailsProps) => {
 
             <div className="grid grid-cols-4 gap-4">
               <Button 
-                variant="ghost" 
                 size="icon" 
-                className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
+                className={brightness < 0.9 ? 'h-9 w-9 mt-1' : 'h-9 w-9 border shadow-sm mt-1'}
                 style={{ 
                   backgroundColor: entity.color,
                   color: brightness > 0.5 ? '#000' : '#fff' 
@@ -73,7 +93,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
 
               <Input 
                 id="color"
-                className="col-span-3 h-9" 
+                className="col-span-3 h-9 mt-1" 
                 value={entity.color} 
                 onChange={evt => setEntity(e => ({...e, color: evt.target.value }))}/>
             </div>
@@ -81,15 +101,18 @@ export const EntityDetails = (props: EntityDetailsProps) => {
         </div>
 
         <div className="grid gap-2 mb-4">
+          <div>
           <Label 
             htmlFor="label"
-            className="text-xs">Label</Label>
+            className="text-xs">Label <span className="text-red-600">*</span>
+          </Label>{errors.label && (<span className="text-xs text-red-600 ml-1">required</span>)}
+          </div>
 
           <Input
             id="label"
             value={entity.label || ''}
             onChange={evt => setEntity(e => ({ ...e, label: evt.target.value }))}
-            className="h-9" />
+            className="h-9 mt-1 mb-1" />
               
           <Label 
             htmlFor="description"
@@ -97,6 +120,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
 
           <Textarea 
             id="description"
+            className="mt-1"
             rows={3} 
             value={entity.description || ''} 
             onChange={evt => setEntity(e => ({ ...e, description: evt.target.value }))} />
@@ -106,7 +130,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
           properties={entity.schema || []}
           onChange={schema => setEntity(e => ({...e, schema }))} />
 
-        <Button className="w-full mt-4">
+        <Button className="w-full mt-4" onClick={onSave}>
           <Braces className="w-5 h-5 mr-2" /> Save Entity
         </Button>
       </div>

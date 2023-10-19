@@ -46,6 +46,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        // @ts-ignore
+        onKeyDown={(evt: React.KeyboardEvent) => evt.key === 'Enter' && props.onClick && props.onClick(evt)}
         {...props}
       />
     )

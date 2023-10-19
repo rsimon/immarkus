@@ -41,7 +41,8 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
       collapsible 
       className="w-full bg-muted rounded-md p-0">
       <AccordionItem value="schema" className="border-none">
-        <AccordionTrigger className="p-3 m-0 hover:no-underline">
+        <AccordionTrigger 
+          className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
             <h3 className="text-sm">
               Schema
@@ -55,7 +56,7 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
         </AccordionTrigger>
 
         <AccordionContent>
-          <div className="p-3 pb-0">
+          <div className="p-3 pb-0 pt-5 border-t">
             {properties.length === 0 ? (
               <p 
                 className="text-center flex text-muted-foreground 
