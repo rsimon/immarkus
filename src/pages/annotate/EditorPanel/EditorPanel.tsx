@@ -24,7 +24,7 @@ export const EditorPanel = (props: EditorPanelProps) => {
       onValueChange={setTab} 
       className="min-h-full flex flex-col">
 
-      <TabsList className="mb-2 self-start mr-24">
+      <TabsList className="mb-2 self-start">
         <TabsTrigger value="selection">
           <MousePointerSquare className="h-4 w-4 mr-2" /> Selection
         </TabsTrigger>
@@ -32,7 +32,7 @@ export const EditorPanel = (props: EditorPanelProps) => {
           <MessagesSquare className="h-4 w-4 mr-2" /> List
         </TabsTrigger>
         <TabsTrigger value="notes">
-          <Image className="h-4 w-4 mr-2" /> Image Notes
+          <Image className="h-4 w-4 mr-2" /> Image
         </TabsTrigger>
       </TabsList>
 

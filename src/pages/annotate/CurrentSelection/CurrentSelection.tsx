@@ -1,11 +1,66 @@
-import { Braces, Tags } from 'lucide-react';
-import { AnnotationCommands } from '@/components/AnnotationCommands';
+import { useEffect, useRef, useState } from 'react';
+import { useAnnotationStore, useSelection } from '@annotorious/react';
+// import { Trash2, Braces, Tags } from 'lucide-react';
+// import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { EditorPanelProps } from '../EditorPanel';
+import { Button } from '@/ui/Button';
+import { Dialog, DialogContent } from '@/ui/Dialog';
+import { AnnotationCommands } from '@/components/AnnotationCommands';
+import { DeleteButton } from './DeleteButton';
 
 export const CurrentSelection = (props: EditorPanelProps) => {
 
-  return (
-    <div>
+  const store = useAnnotationStore();
+
+  const { selected } = useSelection();
+
+  const empty = selected.length === 0;
+
+  const ref = useRef<HTMLButtonElement>();
+
+  const [commandsOpen, setCommandsOpen] = useState(false);
+
+  useEffect(() => {
+    if (selected.length > 0) ref.current.focus();
+  }, [selected]);
+
+  const onDelete = () =>
+    store.bulkDeleteAnnotation(selected.map(s => s.annotation.id));
+
+  const onKeyDown = (evt: React.KeyboardEvent) => {
+    if (evt.key !== 'Tab')
+      !commandsOpen && setCommandsOpen(true)
+  }
+
+  return empty ? (
+    <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
+      No annotation selected
+    </div> 
+  ) : (
+    <div className="flex flex-col grow">
+      <div className="flex grow justify-center items-center">
+        <div>
+          <Button
+            ref={ref}
+            onClick={() => setCommandsOpen(true)}
+            onKeyDown={onKeyDown}
+            className="px-8 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
+
+          <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
+            <DialogContent className="p-0 max-w-md rounded-lg">
+              <AnnotationCommands />
+            </DialogContent>
+          </Dialog>
+
+          <Button 
+            variant="outline">Add Comment</Button>
+        </div>
+      </div>
+
+      <footer>
+        <DeleteButton onDelete={onDelete} />
+      </footer>
+      {/*
       <div className="mt-2 mb-6 p-1 justify-center flex flex-wrap gap-1">
         <span
           className="rounded-full px-2.5 py-1 inline-flex items-center text-xs"
@@ -59,6 +114,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
       <div className="border-t">
         <AnnotationCommands />
       </div>
+      */}
     </div>
   )
 

@@ -10,6 +10,7 @@ import { EditorPanel } from './EditorPanel';
 import { StoragePlugin } from './StoragePlugin';
 import { Tool, Toolbar } from './Toolbar';
 
+import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
 
 export const Annotate = () => {
@@ -40,11 +41,11 @@ export const Annotate = () => {
   }
 
   return store &&  (
-    <div className="page-root">
+    <div className="page-root page annotate">
       <Annotorious>
         <NavigationSidebar />
 
-        <main className="page annotate">
+        <main>
           <nav className="breadcrumb">
             <ul>
               <li>

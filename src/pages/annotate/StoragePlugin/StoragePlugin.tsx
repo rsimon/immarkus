@@ -30,7 +30,6 @@ export const StoragePlugin = (props: StoragePluginProps) => {
       const { id } = image;
 
       const annotations = store.getAnnotations(id);
-      console.log(annotations);
 
       // @ts-ignore
       anno.setAnnotations(annotations.filter(a => a.target.selector));

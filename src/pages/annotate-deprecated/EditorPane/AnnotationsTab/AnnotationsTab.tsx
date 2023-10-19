@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
-import { Pencil, X } from 'lucide-react';
-import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
-import { EditorPaneProps } from '..';
-import { Badge } from '@/ui/Badge';
-import { Button } from '@/ui/Button';
-import { Input } from '@/ui/Input';
-import { Separator } from '@/ui/Separator';
-import { Textarea } from '@/ui/Textarea';
-import { DeleteWithConfirmation } from './DeleteWithConfirmation';
-import { useToast } from '@/ui/Toaster';
+// import { useEffect, useRef, useState } from 'react';
+// import { Pencil, X } from 'lucide-react';
+// import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
+// import { EditorPaneProps } from '..';
+// import { Badge } from '@/ui/Badge';
+// import { Button } from '@/ui/Button';
+// import { Input } from '@/ui/Input';
+// import { Separator } from '@/ui/Separator';
+// import { Textarea } from '@/ui/Textarea';
+// import { DeleteWithConfirmation } from '../../../annotate/CurrentSelection/DeleteButton/DeleteButton';
+// import { useToast } from '@/ui/Toaster';
 
-export const AnnotationsTab = (props: EditorPaneProps) => {
+export const AnnotationsTab = () => {
+  /*
 
   const textarea = useRef<HTMLTextAreaElement>();
 
@@ -95,8 +96,9 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
 
   const onDelete = () =>
     store.bulkDeleteAnnotation(selected.map(s => s.annotation.id));
+  */
 
-  return empty ? (
+  return null /* empty ? (
     <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
       No annotation selected
     </div> 
@@ -173,6 +175,6 @@ export const AnnotationsTab = (props: EditorPaneProps) => {
           onDelete={onDelete} />
       </form>
     </div>
-  )
+  ) */
 
 }

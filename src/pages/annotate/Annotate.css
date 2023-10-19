@@ -1,0 +1,4 @@
+.page.annotate [role="tabpanel"][data-state="active"] {
+  display: flex;
+  flex-grow: 1;
+}

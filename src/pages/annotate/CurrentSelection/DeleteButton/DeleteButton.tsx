@@ -12,13 +12,13 @@ import {
   AlertDialogTrigger,
 } from '@/ui/AlertDialog';
 
-interface DeleteWithConfirmationProps {
+interface DeleteButtonProps {
 
   onDelete(): void;
 
 }
 
-export const DeleteWithConfirmation = (props: DeleteWithConfirmationProps) => {
+export const DeleteButton = (props: DeleteButtonProps) => {
 
   return (
     <AlertDialog>

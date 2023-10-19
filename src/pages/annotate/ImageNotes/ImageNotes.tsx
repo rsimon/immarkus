@@ -51,7 +51,7 @@ export const ImageNotes = (props: EditorPanelProps) => {
   }
 
   return (
-    <form onSubmit={onSaveNote}>
+    <form onSubmit={onSaveNote} className="grow">
       <Textarea 
         ref={textarea} 
         className="mb-3"
