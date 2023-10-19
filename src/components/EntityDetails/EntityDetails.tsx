@@ -38,7 +38,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
   const brightness = getBrightness(entity.color);
 
   return (
-    <article className="grid grid-cols-2" style={{ width: 680 }}>
+    <article className="grid grid-cols-2 rounded-lg overflow-hidden">
       <div className="py-3 px-4">
         <div className="grid grid-cols-2 gap-2 mt-2 mb-3">
           <div>

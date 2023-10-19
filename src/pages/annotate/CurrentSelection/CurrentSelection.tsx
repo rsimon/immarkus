@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAnnotationStore, useSelection } from '@annotorious/react';
-// import { Trash2, Braces, Tags } from 'lucide-react';
-// import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { EditorPanelProps } from '../EditorPanel';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
@@ -60,6 +58,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
       <footer>
         <DeleteButton onDelete={onDelete} />
       </footer>
+
       {/*
       <div className="mt-2 mb-6 p-1 justify-center flex flex-wrap gap-1">
         <span
