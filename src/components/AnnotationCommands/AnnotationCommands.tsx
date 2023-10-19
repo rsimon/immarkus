@@ -11,60 +11,86 @@ import {
   CommandSeparator
 } from '@/ui/Command';
 import { EntityDetailsDialog } from '../EntityDetails/EntityDetailsDialog';
+import { useStore } from '@/store';
 
 export const AnnotationCommands = () => {
+
+  const { vocabulary } = useStore();
+
+  const { entities, relations, tags } = vocabulary;
 
   const [value, setValue] = useState('');
 
   const createNewTag = () => {
-    console.log('new tag', value);
+    // console.log('new tag', value);
   }
 
   return (
-    <Command>
+    <Command 
+      loop
+      filter={(value, search) =>
+        value.replace(/ /g, '').includes(search.toLowerCase().replace(/ /g, '')) ? 1 : 0
+      }>
+
       <CommandInput 
         placeholder="Search or type a new tag" 
         value={value} 
         onValueChange={setValue} />
         
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty>
+          asdfasdfasdf
+          <CommandGroup heading="Foo">
+                <CommandItem >
+                  <Spline className="h-4 w-4 mr-2" /> Foo
+                </CommandItem>
 
-        <CommandGroup heading="Entities">
-          <CommandItem>
-            <Braces className="h-4 w-4 mr-2" /> Bridge
-          </CommandItem>
+            </CommandGroup>
+        </CommandEmpty>
 
-          <CommandItem>
-            <Braces className="h-4 w-4 mr-2" /> Tower
-          </CommandItem>
+        {entities.length > 0 && (
+          <CommandGroup heading="Entities">
+            {entities.map(entity => (
+              <CommandItem key={entity.id}>
+                <Braces className="h-4 w-4 mr-2" /> {entity.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
 
-          <CommandItem>
-            <Braces className="h-4 w-4 mr-2" /> Gate
-          </CommandItem>
-        </CommandGroup>
+        {relations.length > 0 && (
+          <>
+            <CommandSeparator />
 
-        <CommandSeparator />
+            <CommandGroup heading="Relations">
+              {relations.map(relation => (
+                <CommandItem key={relation.id}>
+                  <Spline className="h-4 w-4 mr-2" /> {relation.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </>
+        )}
 
-        <CommandGroup heading="Relations">
-          <CommandItem>
-            <Spline className="h-4 w-4 mr-2" /> is part of
-          </CommandItem>
+        {tags.length > 0 || value && (
+          <>
+            <CommandSeparator />
 
-          <CommandItem>
-            <Spline className="h-4 w-4 mr-2" /> is inside
-          </CommandItem>
-        </CommandGroup>
+            <CommandGroup heading="Tags">
+              {tags.map(tag => (
+                <CommandItem key={tag}>
+                  <Tags className="h-4 w-4 mr-2" /> {tag}
+                </CommandItem>
+              ))}
 
-        <CommandSeparator />
-
-        <CommandGroup heading="Tags">
-          {value && (
-            <CommandItem onSelect={createNewTag}>
-              <Tags className="h-4 w-4 mr-2" /> {value}
-            </CommandItem>
-          )}
-        </CommandGroup>
+              {value && (
+                <CommandItem onSelect={createNewTag}>
+                  <Tags className="h-4 w-4 mr-2" /> {value}
+                </CommandItem>
+              )}
+            </CommandGroup>
+          </>
+        )}
       </CommandList>
 
       <div className="p-1 pt-1.5 border-t flex justify-end text-muted-foreground">

@@ -12,7 +12,7 @@ export const EntityDetailsDialog = (props: EntityDetailsDialogProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         {props.children}
       </DialogTrigger>
 
