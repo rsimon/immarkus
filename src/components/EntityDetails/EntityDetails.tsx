@@ -41,9 +41,15 @@ export const EntityDetails = (props: EntityDetailsProps) => {
     color: getRandomColor()
   });
 
+  const [errors, setErrors] = useState({ id: false, label: false });
+
+  const [isDuplicateId, setIsDuplicateId] = useState(false);
+
   const brightness = getBrightness(entity.color);
 
-  const [errors, setErrors] = useState({ id: false, label: false });
+  const onChangeId = () => {
+
+  }
 
   const onSave = () => {
     const valid = validate(entity);

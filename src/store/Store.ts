@@ -3,13 +3,11 @@ import { Image } from '@/model';
 import { VocabularyStore, loadVocabulary } from '@/store/VocabularyStore';
 import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from '@/store/utils';
 
-export interface Store {
+export interface Store extends VocabularyStore {
 
   handle: FileSystemDirectoryHandle;
 
   images: Image[];
-
-  vocabulary: VocabularyStore;
 
   getImage(id: string): Image | undefined;
 
@@ -123,12 +121,12 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
     resolve({
       handle,
       images: [...images],
-      vocabulary,
       getImage,
       getAnnotations,
       countAnnotations,
       upsertAnnotation,
-      deleteAnnotation
+      deleteAnnotation,
+      ...vocabulary
     });
   
   });
