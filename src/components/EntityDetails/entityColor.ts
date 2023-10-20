@@ -15,3 +15,8 @@ export const getBrightness = (color: string) => {
 
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
+
+export const getForegroundColor = (color: string) => {
+  const brightness = getBrightness(color);
+  return brightness > 0.5 ? '#000' : '#fff' 
+}

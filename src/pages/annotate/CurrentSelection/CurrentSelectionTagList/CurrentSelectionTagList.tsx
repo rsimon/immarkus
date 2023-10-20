@@ -1,5 +1,6 @@
 import { useVocabulary } from '@/store';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { BadgeEntity } from './BadgeEntity';
 
 interface CurrentSelectionTagListProps {
 
@@ -11,17 +12,17 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
 
   const { bodies } = props.annotation;
 
-  const { vocabulary } = useVocabulary();
+  const { vocabulary, getEntity } = useVocabulary();
 
   const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
 
   return (
     <ul>
-      {tags.map(body => (
+      {tags.map(body => body.purpose === 'classifying' ? (
         <li key={body.id}>
-          {vocabulary.entities.find(e => e.id === body.source)?.label || body.source}
+          <BadgeEntity entity={getEntity(body.source)} />
         </li>
-      ))}
+      ) : null)}
     </ul>
   )
 

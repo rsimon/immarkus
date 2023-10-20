@@ -76,6 +76,9 @@ export const useVocabulary = () => {
   const removeEntity = (entityOrId: Entity | string) =>
     setAsync(store.removeEntity(entityOrId));
 
+  const getEntity = (id: string) => 
+    vocabulary.entities.find(e => e.id === id);
+
   const addRelation = (relation: Relation) =>
     setAsync(store.addRelation(relation));
 
@@ -84,6 +87,9 @@ export const useVocabulary = () => {
 
   const removeRelation = (relationOrId: Relation | string) =>
     setAsync(store.removeRelation(relationOrId));
+
+  const getRelation = (id: string) =>
+    vocabulary.relations.find(r => r.id === id);
 
   const addTag = (tag: TextTag) =>
     setAsync(store.addTag(tag));
@@ -96,9 +102,11 @@ export const useVocabulary = () => {
     addEntity,
     updateEntity,
     removeEntity,
+    getEntity,
     addRelation,
     updateRelation,
     removeRelation,
+    getRelation,
     addTag,
     removeTag
   };
