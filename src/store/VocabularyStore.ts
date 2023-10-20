@@ -1,4 +1,4 @@
-import { Entity, Relation, Tag, Vocabulary } from '@/model';
+import { Entity, Relation, TextTag, Vocabulary } from '@/model';
 import { readJSONFile, writeJSONFile } from './utils';
 
 export interface VocabularyStore {
@@ -15,9 +15,9 @@ export interface VocabularyStore {
 
   removeRelation(relationOrId: Relation | string): Promise<void>;
 
-  addTag(tag: Tag): Promise<void>;
+  addTag(tag: TextTag): Promise<void>;
 
-  removeTag(tag: Tag): Promise<void>;
+  removeTag(tag: TextTag): Promise<void>;
 
   getVocabulary(): Vocabulary;
 
@@ -41,7 +41,7 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
 
     });
     
-    const addTag = (tag: Tag) => {
+    const addTag = (tag: TextTag) => {
       if (!tags.includes(tag)) {
         tags = [...tags, tag];
         return writeJSONFile(fileHandle, { tags, entities, relations });
@@ -50,7 +50,7 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       }
     }
 
-    const removeTag = (tag: Tag) => {
+    const removeTag = (tag: TextTag) => {
       tags = tags.filter(t => t !== tag);
       return writeJSONFile(fileHandle, { tags, entities, relations });
     }

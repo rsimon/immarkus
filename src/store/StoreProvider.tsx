@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StoreProgressHandler, Store, loadStore } from './Store';
-import { Entity, Relation, Tag, Vocabulary } from '@/model';
+import { Entity, Relation, TextTag, Vocabulary } from '@/model';
 
 interface StoreContextState {
 
@@ -85,10 +85,10 @@ export const useVocabulary = () => {
   const removeRelation = (relationOrId: Relation | string) =>
     setAsync(store.removeRelation(relationOrId));
 
-  const addTag = (tag: Tag) =>
+  const addTag = (tag: TextTag) =>
     setAsync(store.addTag(tag));
 
-  const removeTag = (tag: Tag) =>
+  const removeTag = (tag: TextTag) =>
     setAsync(store.removeTag(tag));
 
   return { 

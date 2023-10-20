@@ -1,4 +1,4 @@
-import { Braces } from 'lucide-react';
+import { Braces, OptionIcon } from 'lucide-react';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import {
@@ -49,7 +49,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
       <div className="mt-2">
         {(entity.schema || []).map(property => (
-          <div className="mt-1">
+          <div className="mt-1" key={property.name}>
             <Label 
               htmlFor={property.name}
               className="text-xs">
@@ -64,7 +64,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
                 <SelectContent>
                   {property.values.map(option => (
-                    <SelectItem value={option}>{option}</SelectItem>
+                    <SelectItem key={option} value={option}>{option}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

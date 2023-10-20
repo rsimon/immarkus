@@ -12,13 +12,13 @@ import {
   CommandSeparator
 } from '@/ui/Command';
 import { EntityDetailsDialog } from '../EntityDetails';
-import { Entity, Tag } from '@/model';
+import { Entity, TextTag } from '@/model';
 
 interface AnnotationCommandProps {
 
   onAddEntity(entity: Entity): void;
 
-  onAddTag(tag: Tag): void;
+  onAddTag(tag: TextTag): void;
 
 }
 

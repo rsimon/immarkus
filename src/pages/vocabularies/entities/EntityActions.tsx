@@ -25,7 +25,7 @@ export const EntityActions = (props: EntityActionsProps) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="rounded-full">
             <MoreHorizontal size={16} />
           </Button>
         </DropdownMenuTrigger>

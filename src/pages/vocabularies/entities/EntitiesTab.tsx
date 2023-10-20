@@ -40,7 +40,7 @@ export const EntitiesTab = (props: { store: Store }) => {
     <>
       <div className="rounded-md border mt-8">
         <Table>
-          <TableHeader>
+          <TableHeader className="text-xs">
             <TableRow>
               <TableHead className="w-[40px]"></TableHead>
               <TableHead>ID</TableHead>
@@ -61,14 +61,14 @@ export const EntitiesTab = (props: { store: Store }) => {
                 </TableCell>
               </TableRow>
             ) : vocabulary.entities.map(e => (
-              <TableRow key={e.id}>
-                <TableCell>
+              <TableRow key={e.id} className="text-xs">
+                <TableCell className="p-2">
                   <span className="pip" style={{ backgroundColor: e.color }} />
                 </TableCell>
-                <TableCell className="whitespace-nowrap">{e.id}</TableCell>
-                <TableCell className="font-medium">{e.label}</TableCell>
-                <TableCell>{e.description}</TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap px-3 py-2">{e.id}</TableCell>
+                <TableCell className="font-medium px-3 py-2 whitespace-nowrap">{e.label}</TableCell>
+                <TableCell className="p-2">{e.description}</TableCell>
+                <TableCell className="p-2">
                   {e.schema?.map(property => (
                     <span key={property.name}
                       className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
@@ -85,7 +85,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                     </span>    
                   ))}
                 </TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right p-2">
                   <EntityActions 
                     onEditEntity={() => setEditExisting(e)} 
                     onDeleteEntity={onDeleteEntity(e)} />
