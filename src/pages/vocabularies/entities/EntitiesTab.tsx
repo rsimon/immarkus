@@ -42,10 +42,10 @@ export const EntitiesTab = (props: { store: Store }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead></TableHead>
-              <TableHead className="w-[100px]">Label</TableHead>
+              <TableHead className="w-[40px]"></TableHead>
               <TableHead>ID</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>Label</TableHead>
+              <TableHead className="w-[600px]">Description</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -56,8 +56,8 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell>
                   <span className="pip" style={{ backgroundColor: e.color }} />
                 </TableCell>
-                <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.id}</TableCell>
+                <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.description}</TableCell>
                 <TableCell className="text-right">
                   <EntityActions 

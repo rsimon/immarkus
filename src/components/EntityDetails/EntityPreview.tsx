@@ -42,7 +42,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       </div>
 
       {entity.description && (
-        <p className="text-xs text-muted-foreground p-1">
+        <p className="text-xs text-muted-foreground p-1 mt-1">
           {entity.description}
         </p>
       )}

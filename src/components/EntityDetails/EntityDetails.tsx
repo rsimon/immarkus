@@ -121,7 +121,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
               htmlFor="color"
               className="text-xs">Color</Label>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4">
               <Button 
                 size="icon" 
                 className={brightness < 0.9 ? 'h-9 w-9 mt-1' : 'h-9 w-9 border shadow-sm mt-1'}
