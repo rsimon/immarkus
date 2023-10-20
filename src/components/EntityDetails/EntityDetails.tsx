@@ -100,6 +100,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
             </Label>{errors?.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
             <Input 
+              disabled={Boolean(props.entity)}
               id="identifier"
               className={errors?.id ? "mt-1 h-9 mb-1 border-red-500" : "mt-1 h-9"} 
               value={entity.id || ''} 

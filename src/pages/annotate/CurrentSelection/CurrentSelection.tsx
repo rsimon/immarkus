@@ -1,11 +1,12 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useAnnotationStore, useSelection } from '@annotorious/react';
-import { EditorPanelProps } from '../EditorPanel';
+import { createBody, useAnnotationStore, useSelection } from '@annotorious/react';
+import { Entity } from '@/model';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { EditorPanelProps } from '../EditorPanel';
 
 export const CurrentSelection = (props: EditorPanelProps) => {
 
@@ -31,6 +32,20 @@ export const CurrentSelection = (props: EditorPanelProps) => {
       !commandsOpen && setCommandsOpen(true)
   }
 
+  const onAddEntity = (entity: Entity) => {
+    // We only support single selection so far
+    const annotation = selected[0].annotation;
+
+    // @ts-ignore
+    const body = createBody(annotation, {
+      type: 'SpecificResource',
+      purpose: 'classifying',
+      source: entity.id
+    }, new Date());
+
+    store.addBody(body);
+  }
+
   return empty ? (
     <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
       No annotation selected
@@ -47,12 +62,14 @@ export const CurrentSelection = (props: EditorPanelProps) => {
 
           <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
             <DialogContent className="p-0 max-w-md rounded-lg">
-              <AnnotationCommands />
+              <AnnotationCommands 
+                onAddEntity={onAddEntity} 
+                onAddTag={() => console.log('todo')} />
             </DialogContent>
           </Dialog>
 
           <Button 
-            variant="outline">Add Comment</Button>
+            variant="outline">Add Note</Button>
         </div>
       </div>
 

@@ -12,17 +12,27 @@ import {
   CommandSeparator
 } from '@/ui/Command';
 import { EntityDetailsDialog } from '../EntityDetails';
+import { Entity, Tag } from '@/model';
 
-export const AnnotationCommands = () => {
+interface AnnotationCommandProps {
 
-  const { vocabulary } = useVocabulary();
+  onAddEntity(entity: Entity): void;
+
+  onAddTag(tag: Tag): void;
+
+}
+
+export const AnnotationCommands = (props: AnnotationCommandProps) => {
+
+  const { vocabulary, addTag } = useVocabulary();
 
   const { entities, relations, tags } = vocabulary;
 
   const [value, setValue] = useState('');
 
-  const createNewTag = () => {
-    // console.log('new tag', value);
+  const onCreateNewTag = () => {
+    addTag(value);
+    props.onAddTag(value);
   }
 
   return (
@@ -40,19 +50,13 @@ export const AnnotationCommands = () => {
           
         <CommandList>
           <CommandEmpty>
-            asdfasdfasdf
-            <CommandGroup heading="Foo">
-                  <CommandItem >
-                    <Spline className="h-4 w-4 mr-2" /> Foo
-                  </CommandItem>
-
-              </CommandGroup>
+            No results
           </CommandEmpty>
 
           {entities.length > 0 && (
             <CommandGroup heading="Entities">
               {entities.map(entity => (
-                <CommandItem key={entity.id}>
+                <CommandItem key={entity.id} onSelect={() => props.onAddEntity(entity)}>
                   <Braces className="h-4 w-4 mr-2" /> {entity.label}
                 </CommandItem>
               ))}
@@ -79,13 +83,13 @@ export const AnnotationCommands = () => {
 
               <CommandGroup heading="Tags">
                 {tags.map(tag => (
-                  <CommandItem key={tag}>
+                  <CommandItem key={tag} onSelect={() => props.onAddTag(tag)}>
                     <Tags className="h-4 w-4 mr-2" /> {tag}
                   </CommandItem>
                 ))}
 
                 {value && (
-                  <CommandItem onSelect={createNewTag}>
+                  <CommandItem onSelect={onCreateNewTag}>
                     <Tags className="h-4 w-4 mr-2" /> {value}
                   </CommandItem>
                 )}
