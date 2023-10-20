@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Braces, Spline, Tags } from 'lucide-react';
+import { useVocabulary } from '@/store';
 import { Button } from '@/ui/Button';
 import {
   Command,
@@ -10,8 +11,7 @@ import {
   CommandList,
   CommandSeparator
 } from '@/ui/Command';
-import { EntityDetailsDialog } from '../EntityDetails/EntityDetailsDialog';
-import { useVocabulary } from '@/store';
+import { EntityDetailsDialog } from '../EntityDetails';
 
 export const AnnotationCommands = () => {
 

@@ -1,10 +1,11 @@
+import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useAnnotationStore, useSelection } from '@annotorious/react';
 import { EditorPanelProps } from '../EditorPanel';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { AnnotationCommands } from '@/components/AnnotationCommands';
-import { DeleteButton } from './DeleteButton';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 
 export const CurrentSelection = (props: EditorPanelProps) => {
 
@@ -56,7 +57,13 @@ export const CurrentSelection = (props: EditorPanelProps) => {
       </div>
 
       <footer>
-        <DeleteButton onDelete={onDelete} />
+        <ConfirmedDelete
+          variant="destructive" 
+          className="w-full mt-2"
+          label="This action will delete the annotation permanently."
+          onConfirm={onDelete}>
+          <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
+        </ConfirmedDelete>
       </footer>
 
       {/*

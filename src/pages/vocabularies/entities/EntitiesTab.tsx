@@ -1,4 +1,10 @@
-import { useState } from 'react';
+import { XCircle } from 'lucide-react';
+import { EntityDetailsDialog } from '@/components/EntityDetails';
+import { Entity } from '@/model';
+import { Store, useVocabulary } from '@/store';
+import { Button } from '@/ui/Button';
+import { useToast, ToastTitle } from '@/ui/Toaster';
+import { EntityActions } from './EntityActions';
 import {
   Table,
   TableBody,
@@ -7,20 +13,29 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/Table';
-import { Store } from '@/store/Store';
-import { CreateEntity } from './CreateEntity';
-import { Entity } from '@/model';
-import { EntityActions } from './EntityActions';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
-  const { vocabulary } = props.store;
+  const { vocabulary, removeEntity } =  useVocabulary();
 
-  const [entities, setEntities] = useState<Entity[]>(vocabulary.entities);
+  const { toast } = useToast();
 
-  const onCreateEntity = (e: Entity) => {
-    vocabulary.addEntity(e);
-    setEntities(vocabulary.entities);
+  const onEditEntity = (entity: Entity) => () => {
+    console.log('edit', entity);
+  }
+
+  const onDeleteEntity = (entity: Entity) => () => {
+    removeEntity(entity)
+      .catch(error => {
+        console.error(error);
+
+        toast({
+          variant: 'destructive',
+          // @ts-ignore
+          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+          description: 'Could not delete entity'
+        });    
+      });
   }
 
   return (
@@ -38,8 +53,8 @@ export const EntitiesTab = (props: { store: Store }) => {
           </TableHeader>
 
           <TableBody>
-            {entities.map(e => (
-              <TableRow>
+            {vocabulary.entities.map(e => (
+              <TableRow key={e.id}>
                 <TableCell>
                   <span className="pip" style={{ backgroundColor: e.color }} />
                 </TableCell>
@@ -47,7 +62,9 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell>{e.id}</TableCell>
                 <TableCell>{e.description}</TableCell>
                 <TableCell className="text-right">
-                  <EntityActions />
+                  <EntityActions 
+                    onEditEntity={onEditEntity(e)} 
+                    onDeleteEntity={onDeleteEntity(e)} />
                 </TableCell>
               </TableRow>
             ))}
@@ -56,8 +73,11 @@ export const EntitiesTab = (props: { store: Store }) => {
       </div>
 
       <div className="flex mt-4">
-        <CreateEntity 
-          onCreate={onCreateEntity} />
+        <EntityDetailsDialog>
+          <Button>
+            Create New Entity
+          </Button>
+        </EntityDetailsDialog>
       </div>
     </>
   )
