@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { dequal } from 'dequal/lite';
 import { AlertCircle, Braces, CheckCircle2, RefreshCcw } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
 import { useVocabulary } from '@/store';
@@ -37,7 +38,7 @@ const validate = (stub: EntityStub): Entity | undefined =>
 
 export const EntityDetails = (props: EntityDetailsProps) => {
 
-  const { vocabulary, addEntity } = useVocabulary();
+  const { vocabulary, addEntity, updateEntity } = useVocabulary();
 
   const { entities } = vocabulary;
 
@@ -45,11 +46,14 @@ export const EntityDetails = (props: EntityDetailsProps) => {
     color: getRandomColor()
   });
 
-  const isIdAvailable = !entities.find(e => e.id === entity.id);
+  const isIdAvailable = props.entity ?
+    // Editing existing - check if entity with the ID is props.entity.id
+    !entities.find(e => e.id === entity.id) || entities.find(e => e.id === entity.id).id === props.entity.id :
+
+    // Not editing an existing entity - check if any exists with same ID
+    !entities.find(e => e.id === entity.id);
 
   const [errors, setErrors] = useState<{ id: boolean, label: boolean } | undefined>();
-
-  const [isDuplicateId, setIsDuplicateId] = useState(false);
 
   const brightness = getBrightness(entity.color);
 
@@ -61,12 +65,22 @@ export const EntityDetails = (props: EntityDetailsProps) => {
   const onSave = () => {
     const valid = isIdAvailable && validate(entity);
     if (valid) {
-      addEntity(valid)
-        .then(() => props.onSaved())
-        .catch(error => {
-          // TODO error handling!
-          console.error(error);
-        });
+      // Save new or update existing?
+      if (props.entity) {
+        updateEntity(valid)
+          .then(() => props.onSaved())
+          .catch(error => {
+            // TODO error handling
+            console.error(error);
+          });
+      } else {
+        addEntity(valid)
+          .then(() => props.onSaved())
+          .catch(error => {
+            // TODO error handling!
+            console.error(error);
+          });
+      }
     } else {
       setErrors({
         id: !entity.id || !isIdAvailable,
@@ -91,13 +105,13 @@ export const EntityDetails = (props: EntityDetailsProps) => {
               value={entity.id || ''} 
               onChange={evt => setEntity(e => ({...e, id: evt.target.value}))}/>
 
-            {entity.id && (isIdAvailable ? (
-              <span className="flex items-center text-xs mt-2 text-green-600">
-                <CheckCircle2 className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
-              </span>
-            ) : (
+            {entity.id && (!isIdAvailable ? (
               <span className="flex items-center text-xs mt-2 text-red-600">
                 <AlertCircle className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
+              </span>
+            ) : (props.entity && !(props.entity.id === entity.id)) && (
+              <span className="flex items-center text-xs mt-2 text-green-600">
+                <CheckCircle2 className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
               </span>
             ))}
           </div>

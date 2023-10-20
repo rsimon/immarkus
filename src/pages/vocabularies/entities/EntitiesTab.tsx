@@ -1,3 +1,4 @@
+import { useState } from 'react'; 
 import { XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { Entity } from '@/model';
@@ -20,11 +21,9 @@ export const EntitiesTab = (props: { store: Store }) => {
 
   const { toast } = useToast();
 
-  const onEditEntity = (entity: Entity) => () => {
-    console.log('edit', entity);
-  }
+  const [editExisting, setEditExisting] = useState<Entity | undefined>();
 
-  const onDeleteEntity = (entity: Entity) => () => {
+  const onDeleteEntity = (entity: Entity) => () =>
     removeEntity(entity)
       .catch(error => {
         console.error(error);
@@ -36,7 +35,6 @@ export const EntitiesTab = (props: { store: Store }) => {
           description: 'Could not delete entity'
         });    
       });
-  }
 
   return (
     <>
@@ -63,7 +61,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell>{e.description}</TableCell>
                 <TableCell className="text-right">
                   <EntityActions 
-                    onEditEntity={onEditEntity(e)} 
+                    onEditEntity={() => setEditExisting(e)} 
                     onDeleteEntity={onDeleteEntity(e)} />
                 </TableCell>
               </TableRow>
@@ -71,6 +69,11 @@ export const EntitiesTab = (props: { store: Store }) => {
           </TableBody>
         </Table>
       </div>
+
+      <EntityDetailsDialog 
+        open={Boolean(editExisting)} 
+        entity={editExisting}
+        onOpenChange={open => !open && setEditExisting(undefined)} />
 
       <div className="flex mt-4">
         <EntityDetailsDialog>

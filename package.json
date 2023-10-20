@@ -38,6 +38,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "dequal": "^2.0.3",
     "formik": "^2.4.3",
     "localforage": "^1.10.0",
     "lucide-react": "^0.270.0",

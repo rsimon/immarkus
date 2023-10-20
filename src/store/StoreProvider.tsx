@@ -70,11 +70,17 @@ export const useVocabulary = () => {
   const addEntity = (entity: Entity) =>
     setAsync(store.addEntity(entity));
 
+  const updateEntity = (entity: Entity) => 
+    setAsync(store.updateEntity(entity));
+
   const removeEntity = (entityOrId: Entity | string) =>
     setAsync(store.removeEntity(entityOrId));
 
   const addRelation = (relation: Relation) =>
     setAsync(store.addRelation(relation));
+
+  const updateRelation = (relation: Relation) =>
+    setAsync(store.updateRelation(relation));
 
   const removeRelation = (relationOrId: Relation | string) =>
     setAsync(store.removeRelation(relationOrId));
@@ -88,8 +94,10 @@ export const useVocabulary = () => {
   return { 
     vocabulary,
     addEntity,
+    updateEntity,
     removeEntity,
     addRelation,
+    updateRelation,
     removeRelation,
     addTag,
     removeTag

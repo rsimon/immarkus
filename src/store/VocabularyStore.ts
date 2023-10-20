@@ -5,9 +5,13 @@ export interface VocabularyStore {
 
   addEntity(entity: Entity): Promise<void>;
 
+  updateEntity(entity: Entity): Promise<void>;
+
   removeEntity(entityOrId: Entity | string): Promise<void>;
 
   addRelation(relation: Relation): Promise<void>;
+
+  updateRelation(relation: Relation): Promise<void>;
 
   removeRelation(relationOrId: Relation | string): Promise<void>;
 
@@ -60,6 +64,15 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       }
     }
 
+    const updateEntity = (entity: Entity) => {
+      if (entities.find(e => e.id === entity.id)) {
+        entities = entities.map(e => e.id === entity.id ? entity : e);
+        return writeJSONFile(fileHandle, { tags, entities, relations });
+      } else {
+        return Promise.reject(`Attempt to update entity ${entity.id} but does not exist in store`);
+      }
+    }
+
     const removeEntity = (entityOrId: Entity | string) => {
       const id = typeof entityOrId === 'string' ? entityOrId : entityOrId.id;
       entities = entities.filter(e => e.id !== id);
@@ -75,6 +88,15 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       }
     }
 
+    const updateRelation = (relation: Relation) => {
+      if (relations.find(r => r.id === relation.id)) {
+        relations = relations.map(r => r.id === relation.id ? relation : r);
+        return writeJSONFile(fileHandle, { tags, entities, relations });
+      } else {
+        return Promise.reject(`Attempt to update relation ${relation.id} but does not exist in store`);
+      }
+    }
+
     const removeRelation = (relationOrId: Relation | string) => {
       const id = typeof relationOrId === 'string' ? relationOrId : relationOrId.id;
       entities = entities.filter(e => e.id !== id);
@@ -87,8 +109,10 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       addTag,
       removeTag,
       addEntity,
+      updateEntity,
       removeEntity,
       addRelation,
+      updateRelation,
       removeRelation,
       getVocabulary
     });
