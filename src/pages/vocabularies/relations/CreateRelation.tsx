@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useFormik } from 'formik';
 import { Relation } from '@/model';
 import { Button } from '@/ui/Button';
+import { Input } from '@/ui/Input';
+import { Label } from '@/ui/Label';
+import { Textarea } from '@/ui/Textarea';
 import {
   Dialog,
   DialogContent,
@@ -53,13 +56,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
 
         <form className="grid gap-4 py-4" onSubmit={formik.handleSubmit}>
           <div className="grid grid-cols-4 items-center gap-4">
-            <label 
+            <Label 
               htmlFor="label" 
               className="text-right">
               Label
-            </label>
+            </Label>
 
-            <input 
+            <Input 
               id="label" 
               className="col-span-3" 
               value={formik.values.label} 
@@ -67,13 +70,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <label 
+            <Label 
               htmlFor="id" 
               className="text-right">
               ID
-            </label>
+            </Label>
 
-            <input 
+            <Input 
               id="id" 
               className="col-span-3" 
               value={formik.values.id} 
@@ -81,13 +84,13 @@ export const CreateRelation = (props: CreateRelationProps) => {
           </div>
 
           <div className="grid grid-cols-4 items-start gap-4">
-            <label 
+            <Label 
               htmlFor="notes" 
               className="text-right">
               Notes
-            </label>
+            </Label>
 
-            <textarea 
+            <Textarea 
               id="notes" 
               className="col-span-3" 
               rows={5}

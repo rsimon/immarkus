@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { CaseSensitive, Hash, XCircle } from 'lucide-react';
+import { CaseSensitive, Hash, List, XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { Entity } from '@/model';
 import { Store, useVocabulary } from '@/store';
@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/Table';
-import { Badge } from '@/ui/Badge';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
@@ -53,23 +52,33 @@ export const EntitiesTab = (props: { store: Store }) => {
           </TableHeader>
 
           <TableBody>
-            {vocabulary.entities.map(e => (
+            {vocabulary.entities.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="h-24 text-center text-muted-foreground">
+                  No entities
+                </TableCell>
+              </TableRow>
+            ) : vocabulary.entities.map(e => (
               <TableRow key={e.id}>
                 <TableCell>
                   <span className="pip" style={{ backgroundColor: e.color }} />
                 </TableCell>
-                <TableCell>{e.id}</TableCell>
+                <TableCell className="whitespace-nowrap">{e.id}</TableCell>
                 <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.description}</TableCell>
                 <TableCell>
                   {e.schema?.map(property => (
-                    <span 
+                    <span key={property.name}
                       className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
-                        mx-0.5 mb-0.5 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
+                        mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
                       {property.type === 'string' ? (
                         <CaseSensitive className="w-4 h-4 mr-0.5" />
                       ) : property.type === 'number' ? (
-                        <Hash className="w-3.5 h-3.5 mr-0.5" />
+                        <Hash className="w-3 h-3 mr-0.5" />
+                      ) : property.type === 'enum' ? (
+                        <List className="w-3 h-3 mr-0.5" />
                       ) : null}
 
                       {property.name}

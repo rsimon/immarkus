@@ -7,21 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/Table';
-import { Store } from '@/store/Store';
+import { Store, useVocabulary } from '@/store';
 import { CreateRelation } from './CreateRelation';
 import { Relation } from '@/model';
 import { RelationActions } from './RelationActions';
 
+
 export const RelationsTab = (props: { store: Store }) => {
 
-  const { vocabulary } = props.store;
+  const { vocabulary, addRelation } =  useVocabulary();
 
-  const [relations, setRelations] = useState<Relation[]>(vocabulary.relations);
-
-  const onCreateRelation = (relation: Relation) => {
-    vocabulary.addRelation(relation);
-    setRelations(vocabulary.relations);
-  }
+  const onCreateRelation = (relation: Relation) =>
+    addRelation(relation);
 
   return (
     <>
@@ -37,7 +34,15 @@ export const RelationsTab = (props: { store: Store }) => {
           </TableHeader>
 
           <TableBody>
-            {relations.map(r => (
+            {vocabulary.relations.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={6}
+                  className="h-24 text-center text-muted-foreground">
+                  No entities
+                </TableCell>
+              </TableRow>
+            ) : vocabulary.relations.map(r => (
               <TableRow>
                 <TableCell className="font-medium">{r.label}</TableCell>
                 <TableCell>{r.id}</TableCell>
