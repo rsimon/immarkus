@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { XCircle } from 'lucide-react';
+import { CaseSensitive, Hash, XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { Entity } from '@/model';
 import { Store, useVocabulary } from '@/store';
@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/Table';
+import { Badge } from '@/ui/Badge';
 
 export const EntitiesTab = (props: { store: Store }) => {
 
@@ -45,7 +46,8 @@ export const EntitiesTab = (props: { store: Store }) => {
               <TableHead className="w-[40px]"></TableHead>
               <TableHead>ID</TableHead>
               <TableHead>Label</TableHead>
-              <TableHead className="w-[600px]">Description</TableHead>
+              <TableHead className="w-[450px]">Description</TableHead>
+              <TableHead className="w-[300px]">Schema</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -59,6 +61,21 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell>{e.id}</TableCell>
                 <TableCell className="font-medium">{e.label}</TableCell>
                 <TableCell>{e.description}</TableCell>
+                <TableCell>
+                  {e.schema?.map(property => (
+                    <span 
+                      className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
+                        mx-0.5 mb-0.5 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
+                      {property.type === 'string' ? (
+                        <CaseSensitive className="w-4 h-4 mr-0.5" />
+                      ) : property.type === 'number' ? (
+                        <Hash className="w-3.5 h-3.5 mr-0.5" />
+                      ) : null}
+
+                      {property.name}
+                    </span>    
+                  ))}
+                </TableCell>
                 <TableCell className="text-right">
                   <EntityActions 
                     onEditEntity={() => setEditExisting(e)} 

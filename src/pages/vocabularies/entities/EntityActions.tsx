@@ -30,11 +30,10 @@ export const EntityActions = (props: EntityActionsProps) => {
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent>
+        <DropdownMenuContent sideOffset={-10}>
           <DropdownMenuItem onSelect={props.onEditEntity}>
             <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit Entity
           </DropdownMenuItem>
-
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>
             <Trash2 size={16} className="inline text-red-400 relative -top-px mr-2" />
