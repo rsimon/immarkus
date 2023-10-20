@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Braces, RefreshCcw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AlertCircle, Braces, CheckCircle2, RefreshCcw } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
 import { useVocabulary } from '@/store';
 import { Button } from '@/ui/Button';
@@ -37,24 +37,29 @@ const validate = (stub: EntityStub): Entity | undefined =>
 
 export const EntityDetails = (props: EntityDetailsProps) => {
 
-  const { addEntity } = useVocabulary();
+  const { vocabulary, addEntity } = useVocabulary();
+
+  const { entities } = vocabulary;
 
   const [entity, setEntity] = useState<EntityStub>(props.entity || {
     color: getRandomColor()
   });
 
-  const [errors, setErrors] = useState({ id: false, label: false });
+  const isIdAvailable = !entities.find(e => e.id === entity.id);
+
+  const [errors, setErrors] = useState<{ id: boolean, label: boolean } | undefined>();
 
   const [isDuplicateId, setIsDuplicateId] = useState(false);
 
   const brightness = getBrightness(entity.color);
 
-  const onChangeId = () => {
-
-  }
+  useEffect(() => {
+    if (errors)
+      setErrors({ id: !entity.id || !isIdAvailable, label: !entity.label });
+  }, [entity]);
 
   const onSave = () => {
-    const valid = validate(entity);
+    const valid = isIdAvailable && validate(entity);
     if (valid) {
       addEntity(valid)
         .then(() => props.onSaved())
@@ -64,7 +69,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
         });
     } else {
       setErrors({
-        id: !entity.id,
+        id: !entity.id || !isIdAvailable,
         label: !entity.label
       });
     }
@@ -77,14 +82,24 @@ export const EntityDetails = (props: EntityDetailsProps) => {
           <div>
             <Label 
               htmlFor="identifier"
-              className="text-xs">ID <span className="text-red-600 ml-0">*</span>
-            </Label>{errors.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
+              className="text-xs">ID *
+            </Label>{errors?.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
             <Input 
               id="identifier"
-              className="mt-1 h-9" 
+              className={errors?.id ? "mt-1 h-9 mb-1 border-red-500" : "mt-1 h-9"} 
               value={entity.id || ''} 
               onChange={evt => setEntity(e => ({...e, id: evt.target.value}))}/>
+
+            {entity.id && (isIdAvailable ? (
+              <span className="flex items-center text-xs mt-2 text-green-600">
+                <CheckCircle2 className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
+              </span>
+            ) : (
+              <span className="flex items-center text-xs mt-2 text-red-600">
+                <AlertCircle className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
+              </span>
+            ))}
           </div>
 
           <div>
@@ -117,15 +132,15 @@ export const EntityDetails = (props: EntityDetailsProps) => {
           <div>
           <Label 
             htmlFor="label"
-            className="text-xs">Label <span className="text-red-600">*</span>
-          </Label>{errors.label && (<span className="text-xs text-red-600 ml-1">required</span>)}
+            className="text-xs">Label *
+          </Label>{errors?.label && (<span className="text-xs text-red-600 ml-1">required</span>)}
           </div>
 
           <Input
             id="label"
             value={entity.label || ''}
             onChange={evt => setEntity(e => ({ ...e, label: evt.target.value }))}
-            className="h-9 mt-1 mb-1" />
+            className={errors?.label ? "h-9 mt-1 mb-1 border-red-500" : "h-9 mt-1 mb-1"} />
               
           <Label 
             htmlFor="description"
