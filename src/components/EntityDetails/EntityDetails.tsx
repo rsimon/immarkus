@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Braces, RefreshCcw } from 'lucide-react';
 import { Entity, EntityProperty } from '@/model';
-import { useStore } from '@/store';
+import { useVocabulary } from '@/store';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -13,6 +13,8 @@ import { EntitySchemaDetails } from './EntitySchemaDetails';
 export interface EntityDetailsProps {
 
   entity?: Entity;
+
+  onSaved(): void;
 
 }
 
@@ -35,7 +37,7 @@ const validate = (stub: EntityStub): Entity | undefined =>
 
 export const EntityDetails = (props: EntityDetailsProps) => {
 
-  const { vocabulary } = useStore();
+  const { addEntity } = useVocabulary();
 
   const [entity, setEntity] = useState<EntityStub>(props.entity || {
     color: getRandomColor()
@@ -54,7 +56,12 @@ export const EntityDetails = (props: EntityDetailsProps) => {
   const onSave = () => {
     const valid = validate(entity);
     if (valid) {
-      vocabulary.addEntity(valid);
+      addEntity(valid)
+        .then(() => props.onSaved())
+        .catch(error => {
+          // TODO error handling!
+          console.error(error);
+        });
     } else {
       setErrors({
         id: !entity.id,

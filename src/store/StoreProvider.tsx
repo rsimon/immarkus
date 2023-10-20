@@ -1,12 +1,17 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { StoreProgressHandler, Store, loadStore } from './Store';
+import { Entity, Relation, Tag, Vocabulary } from '@/model';
 
 interface StoreContextState {
 
   store?: Store;
 
-  setStore: React.Dispatch<React.SetStateAction<Store | undefined>>
+  setStore: React.Dispatch<React.SetStateAction<Store>>;
+
+  vocabulary: Vocabulary;
+
+  setVocabulary: React.Dispatch<React.SetStateAction<Vocabulary>>;
 
 }
 
@@ -22,8 +27,10 @@ export const StoreProvider = (props: StoreProviderProps) => {
 
   const [store, setStore] = useState<Store | undefined>(undefined);
 
+  const [vocabulary, setVocabulary] = useState<Vocabulary>(undefined);
+
   return (
-    <StoreContext.Provider value={{ store, setStore }}>
+    <StoreContext.Provider value={{ store, setStore, vocabulary, setVocabulary }}>
       {props.children}
     </StoreContext.Provider>
   )
@@ -31,11 +38,12 @@ export const StoreProvider = (props: StoreProviderProps) => {
 }
 
 export const useInitStore = () => {
-  const { setStore } = useContext(StoreContext);
+  const { setStore, setVocabulary } = useContext(StoreContext);
 
   return (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler) =>
     loadStore(handle, onProgress).then(store => {
       setStore(store);
+      setVocabulary(store.getVocabulary());
     });
 }
 
@@ -50,4 +58,41 @@ export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
   }, []);
 
   return store;
+}
+
+export const useVocabulary = () => {
+
+  const { store, vocabulary, setVocabulary } = useContext(StoreContext);
+
+  const setAsync = (p: Promise<void>) =>
+    p.then(() => setVocabulary(store.getVocabulary()));
+
+  const addEntity = (entity: Entity) =>
+    setAsync(store.addEntity(entity));
+
+  const removeEntity = (entityOrId: Entity | string) =>
+    setAsync(store.removeEntity(entityOrId));
+
+  const addRelation = (relation: Relation) =>
+    setAsync(store.addRelation(relation));
+
+  const removeRelation = (relationOrId: Relation | string) =>
+    setAsync(store.removeRelation(relationOrId));
+
+  const addTag = (tag: Tag) =>
+    setAsync(store.addTag(tag));
+
+  const removeTag = (tag: Tag) =>
+    setAsync(store.removeTag(tag));
+
+  return { 
+    vocabulary,
+    addEntity,
+    removeEntity,
+    addRelation,
+    removeRelation,
+    addTag,
+    removeTag
+  };
+
 }

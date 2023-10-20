@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Entity, Relation, Tag, Vocabulary } from '@/model';
 import { readJSONFile, writeJSONFile } from './utils';
-import { useStore } from './StoreProvider';
 
 export interface VocabularyStore {
 
@@ -96,43 +94,3 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
     });
 
 });
-
-// A helper hook to use the vocabulary reactively.
-export const useVocabulary = () => {
-
-  const [vocabulary, setVocabulary] = useState<Vocabulary>();
-
-  const store = useStore();
-
-  const setAsync = (p: Promise<void>) =>
-    p.then(() => setVocabulary(store.getVocabulary()));
-
-  const addEntity = (entity: Entity) =>
-    setAsync(store.addEntity(entity));
-
-  const removeEntity = (entityOrId: Entity | string) =>
-    setAsync(store.removeEntity(entityOrId));
-
-  const addRelation = (relation: Relation) =>
-    setAsync(store.addRelation(relation));
-
-  const removeRelation = (relationOrId: Relation | string) =>
-    setAsync(store.removeRelation(relationOrId));
-
-  const addTag = (tag: Tag) =>
-    setAsync(store.addTag(tag));
-
-  const removeTag = (tag: Tag) =>
-    setAsync(store.removeTag(tag));
-
-  return { 
-    vocabulary,
-    addEntity,
-    removeEntity,
-    addRelation,
-    removeRelation,
-    addTag,
-    removeTag
-  };
-
-}
