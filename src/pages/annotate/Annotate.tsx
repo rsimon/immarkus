@@ -60,9 +60,9 @@ export const Annotate = () => {
                 )}
               </ul>
             </nav>
-
-            <SavingIndicator status={saveStatus} />
           </div>
+
+          <SavingIndicator status={saveStatus} />
 
           {image && (
             <div className="flex justify-center items-center z-0">

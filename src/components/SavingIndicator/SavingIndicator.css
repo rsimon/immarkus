@@ -2,8 +2,8 @@
   animation: fadeIn 250ms; 
   display: inline-block;
   position: absolute;
-  right: 18px;
-  top: 18px;
+  right: 12px;
+  top: 12px;
   vertical-align: bottom;
   transition: opacity 500ms;
 }
