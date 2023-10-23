@@ -1,5 +1,5 @@
 import { useVocabulary } from '@/store';
-import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
 import { useFormik } from 'formik';
 import { EntitySchemaFields } from './EntitySchemaFields';
 
@@ -15,6 +15,8 @@ const toSafeKey = (str: string) =>
 export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
 
   const tags: W3CAnnotationBody[] = props.annotation.bodies.filter(b => b.purpose === 'classifying');
+
+  const store = useAnnotationStore();
 
   const { getEntity } = useVocabulary();
 
@@ -32,7 +34,7 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
     ...initialValues,
     ...Object.fromEntries(entity.schema!.map(property => ([
       safeKeys.find(([_, name]) => name === property.name)[0], 
-      'schema' in body ? body.schema[property.name] || '' : '' 
+      'properties' in body ? body.properties[property.name] || '' : '' 
     ])))
   }), {});
 
@@ -46,9 +48,20 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
         value
       ]));
 
-      // TODO need to split this up across bodies and save the 
-      // bodies in the annotation
-      console.log('submitting', resolved);
+      const updatedBodies = schemaBodies.map(({ body, entity }) => {
+        const propertyNames = new Set(entity.schema.map(property => property.name));
+
+        const properties = resolved.reduce((properties, [name, value]) => {
+          if (propertyNames.has(name as string))
+            return { ...properties, [name as string]: value };
+          else
+            return properties;
+        }, {});
+
+        return { annotation: props.annotation.id, ...body, properties };
+      });
+
+      store.bulkUpdateBodies(updatedBodies as AnnotationBody[]);
     }
   });
 
@@ -63,8 +76,8 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
     </form>
   ) : (
     <form className="mt-2 px-1" onSubmit={formik.handleSubmit}>
-      {schemaBodies.map(({ body, entity}) => (
-        <div>
+      {schemaBodies.map(({ body, entity }) => (
+        <div key={body.id}>
           <h3>{entity.label}</h3>
 
           <EntitySchemaFields
