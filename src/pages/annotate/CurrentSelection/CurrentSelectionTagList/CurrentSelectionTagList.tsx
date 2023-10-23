@@ -1,6 +1,6 @@
 import { PlusCircle } from 'lucide-react';
+import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore, useAnnotator } from '@annotorious/react';
 import { useVocabulary } from '@/store';
-import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { BadgeEntity } from './BadgeEntity';
 import { Button } from '@/ui/Button';
 
@@ -16,22 +16,29 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
 
   const { bodies } = props.annotation;
 
-  const { vocabulary, getEntity } = useVocabulary();
+  const store = useAnnotationStore();
+
+  const { getEntity } = useVocabulary();
 
   const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
+
+  const onDeleteBody = (body: W3CAnnotationBody) =>
+    store.deleteBody(body as AnnotationBody);
 
   return (
     <ul className="flex flex-wrap py-1 pl-1">
       {tags.map(body => body.purpose === 'classifying' ? (
         <li key={body.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
-          <BadgeEntity entity={getEntity(body.source)} />
+          <BadgeEntity 
+            entity={getEntity(body.source)} 
+            onDelete={() => onDeleteBody(body)}/>
         </li>
       ) : null)}
 
       <li>
         <Button 
           variant="ghost" 
-          className="text-xs px-2 py-3.5 h-6 font-normal rounded-full whitespace-nowrap -ml-0.5"
+          className="text-xs px-1.5 py-3.5 h-6 font-normal rounded-full whitespace-nowrap -ml-0.5"
           onClick={props.onAddTag}>
           <PlusCircle className="h-4 w-4 mr-1" /> Add Tag
         </Button>
