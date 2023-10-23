@@ -17,7 +17,7 @@ export const BadgeEntity = (props: BadgeEntityProps) => {
 
   return (
     <span 
-      className="rounded-full px-2.5 py-1 inline-flex items-center text-xs"
+      className="rounded-full px-2.5 py-1 inline-flex items-center text-xs h-6"
       style={{ 
         backgroundColor,
         color: getForegroundColor(backgroundColor)

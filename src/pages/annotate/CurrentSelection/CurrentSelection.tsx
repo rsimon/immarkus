@@ -41,6 +41,8 @@ export const CurrentSelection = (props: EditorPanelProps) => {
     }, new Date());
 
     store.addBody(body);
+
+    setCommandsOpen(false);
   }
 
   return !selected ? (
@@ -58,23 +60,25 @@ export const CurrentSelection = (props: EditorPanelProps) => {
               onKeyDown={onKeyDown}
               className="px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
-            <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
-              <DialogContent className="p-0 max-w-md rounded-lg">
-                <AnnotationCommands 
-                  onAddEntity={onAddEntity} 
-                  onAddTag={() => console.log('todo')} />
-              </DialogContent>
-            </Dialog>
-
             <Button 
               variant="outline">Add Note</Button>
           </div>
         </div>
       ) : (
         <div className="grow">
-          <CurrentSelectionTagList annotation={selected} />
+          <CurrentSelectionTagList 
+            annotation={selected} 
+            onAddTag={() => setCommandsOpen(true)} />
         </div>
       )}
+
+      <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
+        <DialogContent className="p-0 max-w-md rounded-lg">
+          <AnnotationCommands 
+            onAddEntity={onAddEntity} 
+            onAddTag={() => setCommandsOpen(false)} />
+        </DialogContent>
+      </Dialog>
   
       <footer>
         <ConfirmedDelete

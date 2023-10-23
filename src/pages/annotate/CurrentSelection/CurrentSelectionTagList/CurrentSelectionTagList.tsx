@@ -1,10 +1,14 @@
+import { PlusCircle } from 'lucide-react';
 import { useVocabulary } from '@/store';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { BadgeEntity } from './BadgeEntity';
+import { Button } from '@/ui/Button';
 
 interface CurrentSelectionTagListProps {
 
   annotation: ImageAnnotation;
+
+  onAddTag(): void;
 
 }
 
@@ -17,12 +21,21 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
   const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
 
   return (
-    <ul>
+    <ul className="flex flex-wrap py-1 pl-1">
       {tags.map(body => body.purpose === 'classifying' ? (
-        <li key={body.id}>
+        <li key={body.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
           <BadgeEntity entity={getEntity(body.source)} />
         </li>
       ) : null)}
+
+      <li>
+        <Button 
+          variant="ghost" 
+          className="text-xs px-2 py-3.5 h-6 font-normal rounded-full whitespace-nowrap -ml-0.5"
+          onClick={props.onAddTag}>
+          <PlusCircle className="h-4 w-4 mr-1" /> Add Tag
+        </Button>
+      </li>
     </ul>
   )
 
