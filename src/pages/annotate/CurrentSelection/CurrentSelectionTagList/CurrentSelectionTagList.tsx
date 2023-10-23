@@ -1,5 +1,5 @@
 import { PlusCircle } from 'lucide-react';
-import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore, useAnnotator } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
 import { useVocabulary } from '@/store';
 import { BadgeEntity } from './BadgeEntity';
 import { Button } from '@/ui/Button';
