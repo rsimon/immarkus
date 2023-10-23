@@ -32,7 +32,7 @@ export const EditorPanel = (props: EditorPanelProps) => {
           <MessagesSquare className="h-4 w-4 mr-2" /> List
         </TabsTrigger>
         <TabsTrigger value="notes">
-          <Image className="h-4 w-4 mr-2" /> Image
+          <Image className="h-4 w-4 mr-2" /> Image  
         </TabsTrigger>
       </TabsList>
 
@@ -41,7 +41,9 @@ export const EditorPanel = (props: EditorPanelProps) => {
       </TabsContent>
 
       <TabsContent value="list">
-        
+        <div className="py-4 text-sm flex grow items-center justify-center text-muted-foreground">
+          Coming soon...
+        </div>
       </TabsContent>
 
       <TabsContent value="notes">
