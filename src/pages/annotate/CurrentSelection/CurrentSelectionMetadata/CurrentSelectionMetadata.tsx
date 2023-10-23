@@ -114,6 +114,11 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
         </div>
       ))}
 
+      <CurrentSelectionNote
+        body={note} 
+        safeKey={noteKey}
+        formik={formik} />
+
       <Button className="mt-0 h-8" type="submit">Save</Button>
     </form>
   ) : null;
