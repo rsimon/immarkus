@@ -65,7 +65,7 @@ export const Annotate = () => {
           <SavingIndicator status={saveStatus} />
 
           {image && (
-            <div className="flex justify-center items-center z-0">
+            <div className="flex justify-center items-center z-0 flex-grow pb-12">
               <ImageAnnotator
                 adapter={W3CImageFormat(image.path)}
                 autoSave={true}
