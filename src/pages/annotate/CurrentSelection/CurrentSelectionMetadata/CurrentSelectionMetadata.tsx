@@ -2,7 +2,6 @@ import { useVocabulary } from '@/store';
 import { 
   AnnotationBody, 
   ImageAnnotation, 
-  W3CAnnotation, 
   W3CAnnotationBody, 
   createBody, 
   useAnnotationStore 
@@ -121,6 +120,16 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
       <Button className="mt-0 h-8" type="submit">Save</Button>
     </form>
-  ) : null;
+  ) : (
+    <form className="mt-2 px-1" onSubmit={formik.handleSubmit}>
+      <CurrentSelectionNote
+        defaultOpen
+        body={note} 
+        safeKey={noteKey}
+        formik={formik} />
+
+      <Button className="mt-2 h-8" type="submit">Save</Button>
+    </form>
+  );
 
 }

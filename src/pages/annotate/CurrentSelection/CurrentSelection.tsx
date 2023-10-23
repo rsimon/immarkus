@@ -23,8 +23,13 @@ export const CurrentSelection = (props: EditorPanelProps) => {
 
   const [commandsOpen, setCommandsOpen] = useState(false);
 
+  const [showAsEmpty, setShowAsEmpty] = useState(!selected?.bodies || selected.bodies.length === 0);
+
   useEffect(() => {
-    if (selected) ref.current?.focus();
+    if (selected) { 
+      ref.current?.focus();
+      setShowAsEmpty(!selected.bodies || selected.bodies.length === 0);
+    }
   }, [selected]);
 
   const onDelete = () => store.deleteAnnotation(selected.id);
@@ -52,7 +57,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
     </div> 
   ) : (
     <div key={selected.id} className="flex flex-col grow">
-      {selected.bodies.length === 0 ? (
+      {showAsEmpty ? (
         <div className="flex grow justify-center items-center">
           <div>
             <Button
@@ -61,7 +66,8 @@ export const CurrentSelection = (props: EditorPanelProps) => {
               onKeyDown={onKeyDown}
               className="px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
-            <Button 
+            <Button
+              onClick={() => setShowAsEmpty(false)}
               variant="outline">Add Note</Button>
           </div>
         </div>

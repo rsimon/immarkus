@@ -8,6 +8,8 @@ import { Label } from '@/ui/Label';
 
 interface CurrentSelectionNoteProps {
 
+  defaultOpen?: boolean;
+
   body?: W3CAnnotationBody;
 
   safeKey: string;
@@ -20,7 +22,7 @@ export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
 
   const { formik, safeKey } = props;
 
-  const [showNote, setShowNote] = useState(Boolean(props.body));
+  const [showNote, setShowNote] = useState(Boolean(props.body) || props.defaultOpen);
 
   return showNote ? (
     <div>
