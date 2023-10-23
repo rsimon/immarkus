@@ -43,9 +43,9 @@ export const Annotate = () => {
   return store &&  (
     <div className="page-root page annotate">
       <Annotorious>
-        <main className="bg-muted relative p-0">
-          <div className="bg-white inline-block border-r rounded-br-lg shadow-md pr-3 relative z-10">
-            <nav className="breadcrumb p-3">
+        <main className="bg-muted relative p-0 flex flex-col overflow-hidden">
+          <div>
+            <nav className="p-3 pr-4 bg-white inline-block border-r rounded-br-lg shadow-md relative z-10">
               <ul className="flex text-sm">
                 <li className="inline-block">
                   <Link className="font-semibold" to="/images">
