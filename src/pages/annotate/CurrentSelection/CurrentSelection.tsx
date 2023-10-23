@@ -51,7 +51,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
       No annotation selected
     </div> 
   ) : (
-    <div className="flex flex-col grow">
+    <div key={selected.id} className="flex flex-col grow">
       {selected.bodies.length === 0 ? (
         <div className="flex grow justify-center items-center">
           <div>
