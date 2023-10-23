@@ -36,7 +36,7 @@ export const CurrentSelection = (props: EditorPanelProps) => {
 
   const onAddEntity = (entity: Entity) => {
     const body = createBody(selected, {
-      type: 'SpecificResource',
+      type: 'Dataset',
       purpose: 'classifying',
       source: entity.id
     }, new Date());

@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Node",
     "noEmit": true,
@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": false,
-    "target": "ES2020",
+    "target": "ES6",
     "useDefineForClassFields": true
   },
   "include": ["src"],
