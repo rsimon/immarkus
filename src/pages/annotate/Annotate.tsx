@@ -43,9 +43,8 @@ export const Annotate = () => {
   return store &&  (
     <div className="page-root page annotate">
       <Annotorious>
-        <NavigationSidebar />
-
-        <main>
+        <main className="bg-muted relative">
+          {/*
           <nav className="breadcrumb">
             <ul>
               <li>
@@ -59,15 +58,12 @@ export const Annotate = () => {
               )}
             </ul>
           </nav>
+          */}
 
           <SavingIndicator status={saveStatus} />
 
           {image && (
-            <section>
-              <Toolbar 
-                tool={tool}
-                onToolChange={setTool}/>
-
+            <div className="flex justify-center items-center">
               <ImageAnnotator
                 adapter={W3CImageFormat(image.path)}
                 autoSave={true}
@@ -88,8 +84,20 @@ export const Annotate = () => {
                 onSaving={onSaving}
                 onSaved={onSaved}
                 onError={onError} />
-            </section>
+            </div>
           )}
+
+          <div className="pointer-events-none">
+            <div className="">
+
+            </div>
+          
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center p-4">
+              <Toolbar 
+                tool={tool}
+                onToolChange={setTool}/>
+            </div>
+          </div>
         </main>
 
         <aside className="border-l p-3">
