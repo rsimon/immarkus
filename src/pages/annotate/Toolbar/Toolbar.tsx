@@ -16,7 +16,7 @@ export type Tool = 'rectangle' | 'polygon' | 'ellipse';
 export const Toolbar = (props: ToolbarProps) => {
 
   return (
-    <div className="bg-white p-1.5 shadow-lg rounded-lg pointer-events-auto flex">
+    <div className="bg-white p-1.5 shadow-md rounded-lg border-t border-l pointer-events-auto flex">
       <Toggle 
         className="pl-2 pr-3"
         pressed={props.tool === 'rectangle'}

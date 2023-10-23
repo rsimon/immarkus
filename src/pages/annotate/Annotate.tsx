@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Annotorious, AnnotoriousPlugin, ImageAnnotator, W3CImageFormat } from '@annotorious/react';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
+import { ChevronLeft } from 'lucide-react';
 import { useStore } from '@/store';
-import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { SaveStatus, SavingIndicator } from '@/components/SavingIndicator';
 import { useToast } from '@/ui/Toaster';
 import { EditorPanel } from './EditorPanel';
@@ -43,27 +43,29 @@ export const Annotate = () => {
   return store &&  (
     <div className="page-root page annotate">
       <Annotorious>
-        <main className="bg-muted relative">
-          {/*
-          <nav className="breadcrumb">
-            <ul>
-              <li>
-                <Link className="font-semibold" to="/images">Images</Link>
-              </li>
-
-              {image && (
-                <li>
-                  {image.path}
+        <main className="bg-muted relative p-0">
+          <div className="bg-white inline-block border-r rounded-br-lg shadow-md pr-3 relative z-10">
+            <nav className="breadcrumb p-3">
+              <ul className="flex text-sm">
+                <li className="inline-block">
+                  <Link className="font-semibold" to="/images">
+                    <ChevronLeft className="h-5 w-5 mr-1" />
+                  </Link>
                 </li>
-              )}
-            </ul>
-          </nav>
-          */}
 
-          <SavingIndicator status={saveStatus} />
+                {image && (
+                  <li className="inline-block font-medium">
+                    {image.name}
+                  </li>
+                )}
+              </ul>
+            </nav>
+
+            <SavingIndicator status={saveStatus} />
+          </div>
 
           {image && (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center z-0">
               <ImageAnnotator
                 adapter={W3CImageFormat(image.path)}
                 autoSave={true}
@@ -87,11 +89,7 @@ export const Annotate = () => {
             </div>
           )}
 
-          <div className="pointer-events-none">
-            <div className="">
-
-            </div>
-          
+          <div className="pointer-events-none">          
             <div className="absolute bottom-0 left-0 right-0 flex justify-center p-4">
               <Toolbar 
                 tool={tool}
