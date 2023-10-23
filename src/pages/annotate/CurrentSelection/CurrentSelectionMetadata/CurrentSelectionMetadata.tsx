@@ -1,19 +1,29 @@
 import { useVocabulary } from '@/store';
-import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
+import { 
+  AnnotationBody, 
+  ImageAnnotation, 
+  W3CAnnotation, 
+  W3CAnnotationBody, 
+  createBody, 
+  useAnnotationStore 
+} from '@annotorious/react';
 import { useFormik } from 'formik';
 import { Button } from '@/ui/Button';
 import { EntitySchemaFields } from './EntitySchemaFields';
 import { createSafeKeys } from './PropertyKeys';
+import { CurrentSelectionNote } from './CurrentSelectionNote';
 
-interface CurrentSelectionSchemaProps {
+interface CurrentSelectionMetadataProps {
 
   annotation: ImageAnnotation;
 
 }
 
-export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
+export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) => {
 
-  const tags: W3CAnnotationBody[] = props.annotation.bodies.filter(b => b.purpose === 'classifying');
+  const { annotation } = props;
+
+  const tags: W3CAnnotationBody[] = annotation.bodies.filter(b => b.purpose === 'classifying');
 
   const store = useAnnotationStore();
 
@@ -25,20 +35,24 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
 
   const safeKeys = createSafeKeys(schemaBodies);
 
+  const note = annotation.bodies.find(b => b.purpose === 'commenting');
+
+  const noteKey = `${annotation.id}@note`;
+
   const initialValues = schemaBodies.reduce((initialValues, { entity, body }) => ({
     ...initialValues,
     ...Object.fromEntries(entity.schema!.map(property => ([
       safeKeys.getKey(body, property.name), 
       'properties' in body ? body.properties[property.name] || '' : '' 
-    ])))
+    ]))),
+    [noteKey]: note?.value || ''
   }), {});
 
   const formik = useFormik({
     initialValues,
 
     onSubmit: values => {
-      const updatedBodies = schemaBodies.map(({ body, entity }) => {
-
+      const updatedTags = schemaBodies.map(({ body }) => {
         const properties = Object.entries(values).reduce((properties, [key, value]) => {
           const name = safeKeys.getName(key);
 
@@ -51,10 +65,21 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
             return properties;
         }, {});
 
-        return { annotation: props.annotation.id, ...body, properties };
+        return { annotation: props.annotation.id, ...body, properties } as AnnotationBody;
       });
 
-      store.bulkUpdateBodies(updatedBodies as AnnotationBody[]);
+      const noteBody: AnnotationBody = values[noteKey] && createBody(annotation, {
+        type: 'TextualBody',
+        purpose: 'commenting',
+        value:  values[noteKey]
+      });
+
+      let updatedAnnotation = {
+        ...store.getAnnotation(annotation.id),
+        bodies: noteBody ? [...updatedTags, noteBody ] : updatedTags
+      };
+
+      store.updateAnnotation(updatedAnnotation);
     }
   });
 
@@ -64,6 +89,11 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
         body={schemaBodies[0].body}
         entity={schemaBodies[0].entity}
         safeKeys={safeKeys}
+        formik={formik} />
+
+      <CurrentSelectionNote
+        body={note} 
+        safeKey={noteKey}
         formik={formik} />
 
       <Button className="mt-3 h-8" type="submit">Save</Button>
