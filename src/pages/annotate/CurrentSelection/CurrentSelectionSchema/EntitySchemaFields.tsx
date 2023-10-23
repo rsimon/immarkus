@@ -29,17 +29,18 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
   const { body, entity, safeKeys, formik } = props;
   
   return (entity.schema || []).map(property => (
-    <div className="mt-1" key={safeKeys.getKey(body, property.name)}>
+    <div className="mt-2" key={safeKeys.getKey(body, property.name)}>
       <Label 
         htmlFor={safeKeys.getKey(body, property.name)}
-        className="text-xs">
+        className="text-xs block mb-1 mt-3">
         {property.name}
       </Label>
 
       {property.type === 'enum' ? (
         <Select 
           value={formik.values[safeKeys.getKey(body, property.name)]}
-          onValueChange={formik.handleChange}>
+          onValueChange={value => 
+            formik.handleChange(safeKeys.getKey(body, property.name))(value)}>
           
           <SelectTrigger className="w-full h-8 mt-0.5">
             <SelectValue />

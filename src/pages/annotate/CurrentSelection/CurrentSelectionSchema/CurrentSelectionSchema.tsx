@@ -1,6 +1,7 @@
 import { useVocabulary } from '@/store';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
 import { useFormik } from 'formik';
+import { Button } from '@/ui/Button';
 import { EntitySchemaFields } from './EntitySchemaFields';
 import { createSafeKeys } from './PropertyKeys';
 
@@ -65,13 +66,15 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
         safeKeys={safeKeys}
         formik={formik} />
 
-      <button type="submit">Save</button>
+      <Button className="mt-3 h-8" type="submit">Save</Button>
     </form>
   ) : (
     <form className="mt-2 px-1" onSubmit={formik.handleSubmit}>
-      {schemaBodies.map(({ body, entity }) => (
-        <div key={body.id}>
-          <h3>{entity.label}</h3>
+      {schemaBodies.map(({ body, entity }, idx) => (
+        <div key={body.id} className="mb-4">
+          <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
+            {entity.label}
+          </h3>
 
           <EntitySchemaFields
             body={body}
@@ -81,7 +84,7 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
         </div>
       ))}
 
-      <button type="submit">Save</button>
+      <Button className="mt-0 h-8" type="submit">Save</Button>
     </form>
   ) : null;
 
