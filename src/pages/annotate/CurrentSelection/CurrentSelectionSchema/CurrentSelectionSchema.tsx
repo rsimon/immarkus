@@ -2,15 +2,13 @@ import { useVocabulary } from '@/store';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
 import { useFormik } from 'formik';
 import { EntitySchemaFields } from './EntitySchemaFields';
+import { createSafeKeys } from './PropertyKeys';
 
 interface CurrentSelectionSchemaProps {
 
   annotation: ImageAnnotation;
 
 }
-
-const toSafeKey = (str: string) =>
-  str.replaceAll(/[.,\/#!$%^&*;:{}=\-_`~()\s]/g, '_').toLowerCase();
 
 export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
 
@@ -24,16 +22,12 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
     .map(body => ({ body, entity: getEntity(body.source) }))
     .filter(({ entity }) => entity.schema?.length > 0);
 
-  // Converts schema names to keys we can safely use with formik, and
-  // keeps a lookup table (or, rather, list): key -> name
-  const safeKeys: [string, string][] = schemaBodies.reduce((safeKeys, { entity }) => (
-    [...safeKeys, ...entity.schema.map(property => ([toSafeKey(property.name), property.name]))]
-  ), []);
+  const safeKeys = createSafeKeys(schemaBodies);
 
   const initialValues = schemaBodies.reduce((initialValues, { entity, body }) => ({
     ...initialValues,
     ...Object.fromEntries(entity.schema!.map(property => ([
-      safeKeys.find(([_, name]) => name === property.name)[0], 
+      safeKeys.getKey(body, property.name), 
       'properties' in body ? body.properties[property.name] || '' : '' 
     ])))
   }), {});
@@ -42,17 +36,15 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
     initialValues,
 
     onSubmit: values => {
-      // Resolve value keys to property names
-      const resolved = Object.entries(values).map(([key, value]) => ([
-        safeKeys.find(([safeKey, ]) => safeKey === key)[1],
-        value
-      ]));
-
       const updatedBodies = schemaBodies.map(({ body, entity }) => {
-        const propertyNames = new Set(entity.schema.map(property => property.name));
 
-        const properties = resolved.reduce((properties, [name, value]) => {
-          if (propertyNames.has(name as string))
+        const properties = Object.entries(values).reduce((properties, [key, value]) => {
+          const name = safeKeys.getName(key);
+
+          // This will return undefined if this key is not in this body
+          const expectedKey = safeKeys.getKey(body, name);
+
+          if (expectedKey == key)
             return { ...properties, [name as string]: value };
           else
             return properties;
@@ -68,6 +60,7 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
   return schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
     <form className="mt-2 px-1" onSubmit={formik.handleSubmit}>
       <EntitySchemaFields 
+        body={schemaBodies[0].body}
         entity={schemaBodies[0].entity}
         safeKeys={safeKeys}
         formik={formik} />
@@ -81,6 +74,7 @@ export const CurrentSelectionSchema = (props: CurrentSelectionSchemaProps) => {
           <h3>{entity.label}</h3>
 
           <EntitySchemaFields
+            body={body}
             entity={entity}
             safeKeys={safeKeys}
             formik={formik} />

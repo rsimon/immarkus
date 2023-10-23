@@ -1,4 +1,3 @@
-import { W3CAnnotationBody } from '@annotorious/react';
 import { useFormik } from 'formik';
 import { Entity } from '@/model';
 import { Input } from '@/ui/Input';
@@ -10,12 +9,16 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/ui/Select';
+import { createSafeKeys } from './PropertyKeys';
+import { W3CAnnotationBody } from '@annotorious/react';
 
 interface EntitySchemaFieldsProps {
 
+  body: W3CAnnotationBody,
+
   entity: Entity;
 
-  safeKeys: [string, string][];
+  safeKeys: ReturnType<typeof createSafeKeys>;
 
   formik: ReturnType<typeof useFormik>;
 
@@ -23,22 +26,19 @@ interface EntitySchemaFieldsProps {
 
 export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
 
-  const { entity, safeKeys, formik } = props;
-
-  const getKey = (name: string) =>
-    safeKeys.find(([_, n]) => n === name)[0];
+  const { body, entity, safeKeys, formik } = props;
   
   return (entity.schema || []).map(property => (
-    <div className="mt-1" key={getKey(property.name)}>
+    <div className="mt-1" key={safeKeys.getKey(body, property.name)}>
       <Label 
-        htmlFor={getKey(property.name)}
+        htmlFor={safeKeys.getKey(body, property.name)}
         className="text-xs">
         {property.name}
       </Label>
 
       {property.type === 'enum' ? (
         <Select 
-          value={formik.values[getKey(property.name)]}
+          value={formik.values[safeKeys.getKey(body, property.name)]}
           onValueChange={formik.handleChange}>
           
           <SelectTrigger className="w-full h-8 mt-0.5">
@@ -53,9 +53,9 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
         </Select>
       ) : (
         <Input 
-          id={getKey(property.name)} 
+          id={safeKeys.getKey(body, property.name)} 
           className="h-8 mt-0.5" 
-          value={formik.values[getKey(property.name)]} 
+          value={formik.values[safeKeys.getKey(body, property.name)]} 
           onChange={formik.handleChange}/>
       )}
     </div>
