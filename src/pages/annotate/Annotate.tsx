@@ -67,6 +67,7 @@ export const Annotate = () => {
           {image && (
             <div className="flex justify-center items-center z-0 flex-grow pb-12">
               <ImageAnnotator
+                // @ts-ignore
                 adapter={W3CImageFormat(image.path)}
                 autoSave={true}
                 tool={tool}>
