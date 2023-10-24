@@ -23,17 +23,33 @@ export interface Store extends VocabularyStore {
 
 export type StoreProgressHandler = (progress: number) => void;
 
+const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = []): Promise<File[]> => {
+
+  for await (const entry of handle.values()) {
+    try {
+      if (entry.kind === 'directory') {
+        // Wait for subfolder contents to load
+        const subDirHandle = await handle.getDirectoryHandle(entry.name);
+        await loadDirectory(subDirHandle, files);
+      } else {
+        const fileHandle = await handle.getFileHandle(entry.name);
+        const file = await fileHandle.getFile();
+        files.push(file);
+      }
+    } catch (error) {
+      console.error('Error opening fs entry', error);
+    }
+  }
+
+  return files;
+
+}
+
 export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler): Promise<Store> => 
  
   new Promise(async resolve => {
-    const files = [];
+    const files = await loadDirectory(handle);
 
-    for await (const entry of handle.values()) {
-      const fileHandle = await handle.getFileHandle(entry.name);
-      const file = await fileHandle.getFile();
-      files.push(file);
-    }
-  
     const images: Image[] = [];
 
     const annotations = new Map<string, W3CAnnotation[]>();
