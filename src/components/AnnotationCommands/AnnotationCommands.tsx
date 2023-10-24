@@ -30,6 +30,8 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
 
   const [value, setValue] = useState('');
 
+  const isEmpty = (entities.length + relations.length + tags.length) === 0 && !value;
+
   const onCreateNewTag = () => {
     addTag(value);
     props.onAddTag(value);
@@ -49,51 +51,57 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
           onValueChange={setValue} />
           
         <CommandList>
-          <CommandEmpty>
-            No results
-          </CommandEmpty>
-
-          {entities.length > 0 && (
-            <CommandGroup heading="Entities">
-              {entities.map(entity => (
-                <CommandItem key={entity.id} onSelect={() => props.onAddEntity(entity)}>
-                  <Braces className="h-4 w-4 mr-2" /> {entity.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
-
-          {relations.length > 0 && (
+          {isEmpty ? (
+            <div className="flex justify-center items-center p-6 text-sm text-muted-foreground">No results</div>
+          ) : (
             <>
-              <CommandSeparator />
+              <CommandEmpty>
+                No results
+              </CommandEmpty>
 
-              <CommandGroup heading="Relations">
-                {relations.map(relation => (
-                  <CommandItem key={relation.id}>
-                    <Spline className="h-4 w-4 mr-2" /> {relation.label}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
+              {entities.length > 0 && (
+                <CommandGroup heading="Entities">
+                  {entities.map(entity => (
+                    <CommandItem key={entity.id} onSelect={() => props.onAddEntity(entity)}>
+                      <Braces className="h-4 w-4 mr-2" /> {entity.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
 
-          {tags.length > 0 || value && (
-            <>
-              <CommandSeparator />
+              {relations.length > 0 && (
+                <>
+                  <CommandSeparator />
 
-              <CommandGroup heading="Tags">
-                {tags.map(tag => (
-                  <CommandItem key={tag} onSelect={() => props.onAddTag(tag)}>
-                    <Tags className="h-4 w-4 mr-2" /> {tag}
-                  </CommandItem>
-                ))}
+                  <CommandGroup heading="Relations">
+                    {relations.map(relation => (
+                      <CommandItem key={relation.id}>
+                        <Spline className="h-4 w-4 mr-2" /> {relation.label}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
+              )}
 
-                {value && (
-                  <CommandItem onSelect={onCreateNewTag}>
-                    <Tags className="h-4 w-4 mr-2" /> {value}
-                  </CommandItem>
-                )}
-              </CommandGroup>
+              {tags.length > 0 || value && (
+                <>
+                  <CommandSeparator />
+
+                  <CommandGroup heading="Tags">
+                    {tags.map(tag => (
+                      <CommandItem key={tag} onSelect={() => props.onAddTag(tag)}>
+                        <Tags className="h-4 w-4 mr-2" /> {tag}
+                      </CommandItem>
+                    ))}
+
+                    {value && (
+                      <CommandItem onSelect={onCreateNewTag}>
+                        <Tags className="h-4 w-4 mr-2" /> {value}
+                      </CommandItem>
+                    )}
+                  </CommandGroup>
+                </>
+              )}
             </>
           )}
         </CommandList>
