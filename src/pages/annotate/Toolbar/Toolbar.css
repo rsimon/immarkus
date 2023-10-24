@@ -1,8 +1,13 @@
-.ia-tool {
+.ia-tool svg {
   height: 22px;
   margin-right: 0.3em;
   overflow: visible;
   position: relative;
   top: -1.5px;
   width: 22px;
+}
+
+.ia-tool[data-state="on"] {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
 }

@@ -26,24 +26,24 @@ export const Toolbar = (props: ToolbarProps) => {
   return (
     <div className="bg-white p-1.5 shadow-md rounded-lg border-t border-l pointer-events-auto flex">
       <Toggle 
-        className="pl-2 pr-3"
+        className="ia-tool pl-2 pr-3"
         pressed={props.tool === 'rectangle'}
         onPressedChange={onToolChange('rectangle')}>
-        <Rectangle className="ia-tool" /> Box
+        <Rectangle /> Box
       </Toggle>
 
       <Toggle   
-        className="ml-2"
+        className="ia-tool ml-2 pr-3"
         pressed={props.tool === 'polygon'}
         onPressedChange={onToolChange('polygon')}>
-        <Polygon className="ia-tool" /> Polygon
+        <Polygon /> Polygon
       </Toggle>
 
       <Toggle   
-        className="ml-2"
+        className="ia-tool ml-2 pr-4"
         pressed={props.tool === 'ellipse'}
         onPressedChange={onToolChange('ellipse')}>
-        <Ellipse className="ia-tool" /> Ellipse
+        <Ellipse /> Ellipse
       </Toggle>
     </div>
   )

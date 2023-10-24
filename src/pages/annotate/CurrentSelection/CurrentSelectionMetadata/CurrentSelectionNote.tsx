@@ -33,6 +33,7 @@ export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
       <Textarea 
         id={safeKey}
         className="mt-2 mb-2"
+        rows={8}
         value={formik.values[safeKey]} 
         onChange={formik.handleChange} />
     </div>

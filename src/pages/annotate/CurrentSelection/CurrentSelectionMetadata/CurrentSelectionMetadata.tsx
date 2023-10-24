@@ -44,8 +44,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
       safeKeys.getKey(body, property.name), 
       'properties' in body ? body.properties[property.name] || '' : '' 
     ]))),
-    [noteKey]: note?.value || ''
-  }), {});
+  }), { [noteKey]: note?.value || '' });
 
   const formik = useFormik({
     initialValues,
