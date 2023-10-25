@@ -29,9 +29,11 @@ const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = 
     try {
       if (entry.kind === 'directory') {
         // Wait for subfolder contents to load
+        console.info('Found directory: ' + entry.name);
         const subDirHandle = await handle.getDirectoryHandle(entry.name);
         await loadDirectory(subDirHandle, files);
       } else {
+        console.info('Found file: ' + entry.name);
         const fileHandle = await handle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
         files.push(file);
@@ -48,6 +50,8 @@ const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = 
 export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler): Promise<Store> => 
  
   new Promise(async resolve => {
+    console.info('Starting import: ' + handle.name);
+
     const files = await loadDirectory(handle);
 
     const images: Image[] = [];
@@ -55,8 +59,12 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
     const annotations = new Map<string, W3CAnnotation[]>();
 
     const vocabulary = await loadVocabulary(handle);
-  
+
+    console.info(`Attempting import of ${files.length} files`);
+
     await files.reduce((promise, file, index) => {
+      console.info(`Loading: ${file.name} (${file.type || 'unknown type'})`);
+
       let nextPromise;
 
       if (file.type.startsWith('image')) {
@@ -67,6 +75,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
           
           return generateShortId(path).then(id => {
             images.push({ id, name, path, data });
+            console.info(`${name} - OK (image file)`);
           });
         }));
       } else if (file.type === 'application/json') {
@@ -76,9 +85,11 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
 
           return generateShortId(path).then(id => {
             annotations.set(id, json);
+            console.info(`${name} - OK (annotations file)`);
           });
         }));
       } else {
+        console.info('Skipping this file');
         nextPromise = promise;
       }
 
@@ -88,6 +99,8 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
     }, Promise.resolve());
 
     onProgress && onProgress(100);
+
+    console.info(`Finished loading. Got ${images.length} images`);
 
     const getAnnotationFileName = (imageId: string) => {
       const image = images.find(i => i.id === imageId);
