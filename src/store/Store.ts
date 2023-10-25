@@ -29,11 +29,11 @@ const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = 
     try {
       if (entry.kind === 'directory') {
         // Wait for subfolder contents to load
-        console.info('Found directory: ' + entry.name);
+        console.info(`Found directory: ${handle.name}/${entry.name}`);
         const subDirHandle = await handle.getDirectoryHandle(entry.name);
         await loadDirectory(subDirHandle, files);
       } else {
-        console.info('Found file: ' + entry.name);
+        console.info(`Found file: ${handle.name}/${entry.name}`);
         const fileHandle = await handle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
         files.push(file);
@@ -61,6 +61,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
     const vocabulary = await loadVocabulary(handle);
 
     console.info(`Attempting import of ${files.length} files`);
+    files.forEach(f => console.info(`  ${f.name}`));
 
     await files.reduce((promise, file, index) => {
       console.info(`Loading: ${file.name} (${file.type || 'unknown type'})`);
@@ -89,7 +90,7 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
           });
         }));
       } else {
-        console.info('Skipping this file');
+        console.info(`Skipping file file ${file.name}`);
         nextPromise = promise;
       }
 
