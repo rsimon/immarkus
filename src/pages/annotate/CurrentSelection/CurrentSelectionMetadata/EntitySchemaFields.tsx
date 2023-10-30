@@ -1,7 +1,13 @@
 import { Entity } from '@/model';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { NumberPropertyField, TextPropertyField, URIPropertyField } from '@/components/PropertyFields';
+import { 
+  EnumPropertyField, 
+  GeoCoordinatePropertyField, 
+  NumberPropertyField, 
+  TextPropertyField, 
+  URIPropertyField 
+} from '@/components/PropertyFields';
 
 interface EntitySchemaFieldsProps {
 
@@ -34,7 +40,19 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
       {fields.map(({ property, key }) => (
         <div className="mt-2" key={key}>
           {property.type === 'enum' ? (
-            <div />
+            <EnumPropertyField
+              id={key}
+              property={property} 
+              value={props.values[key]}
+              validate={props.showErrors}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'geocoordinate' ? (
+            <GeoCoordinatePropertyField
+              id={key}
+              property={property} 
+              value={props.values[key]}
+              validate={props.showErrors}
+              onChange={value => props.onChange(key, value)} />
           ) : property.type === 'number' ? (
             <NumberPropertyField
               id={key}

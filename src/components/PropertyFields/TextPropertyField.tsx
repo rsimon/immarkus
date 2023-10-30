@@ -10,9 +10,9 @@ interface TextPropertyFieldProps {
 
   validate?: boolean;
 
-  value: string;
+  value?: string;
 
-  onChange(value: string): void;
+  onChange?(value: string): void;
 
 }
 

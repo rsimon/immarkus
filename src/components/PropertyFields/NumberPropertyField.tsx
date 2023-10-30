@@ -10,9 +10,9 @@ interface NumberPropertyFieldProps {
 
   validate?: boolean;
 
-  value: string;
+  value?: string;
 
-  onChange(value: number): void;
+  onChange?(value: number): void;
 
 }
 

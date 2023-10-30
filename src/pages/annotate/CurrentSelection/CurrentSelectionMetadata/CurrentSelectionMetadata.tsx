@@ -32,6 +32,8 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
     .map(body => ({ body, entity: getEntity(body.source) }))
     .filter(({ entity }) => entity.schema?.length > 0);
 
+  console.log(schemaBodies);
+
   const safeKeys = createSafeKeys(schemaBodies);
 
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -42,9 +44,9 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
     ...initialValues,
     ...Object.fromEntries(entity.schema!.map(property => ([
       safeKeys.getKey(body, property.name), 
-      'properties' in body ? body.properties[property.name] || '' : '' 
+      'properties' in body ? body.properties[property.name] : undefined 
     ]))),
-  }), { [noteKey]: note?.value || '' });
+  }), { [noteKey]: note?.value });
 
   const [formState, setFormState] = useState<{[key: string]: string}>(getInitialValues());
 
