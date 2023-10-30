@@ -32,7 +32,7 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
   const formik = useFormik({
     initialValues: {
       name: property?.name || '',
-      type: property?.type || '' as 'string' | 'number' | 'enum'
+      type: property?.type || '' as 'string' | 'number' | 'enum' | 'uri' | 'coordinate'
     },
 
     onSubmit: ({ name, type }) => {
@@ -98,6 +98,8 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
           <SelectItem value="string">Text</SelectItem>
           <SelectItem value="number">Number</SelectItem>
           <SelectItem value="enum">Options</SelectItem>
+          <SelectItem value="uri">URI</SelectItem>
+          <SelectItem value="coordinate">Coordinate</SelectItem>
         </SelectContent>
       </Select>
 

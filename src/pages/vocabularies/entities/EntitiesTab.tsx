@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { CaseSensitive, Hash, List, XCircle } from 'lucide-react';
+import { CaseSensitive, Hash, Link2, List, MapPin, XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { Entity } from '@/model';
 import { Store, useVocabulary } from '@/store';
@@ -79,8 +79,11 @@ export const EntitiesTab = (props: { store: Store }) => {
                         <Hash className="w-3 h-3 mr-0.5" />
                       ) : property.type === 'enum' ? (
                         <List className="w-3 h-3 mr-0.5" />
+                      ) : property.type === 'uri' ? (
+                        <Link2 className="w-3 h-3 mr-0.5" />
+                      ) : property.type === 'coordinate' ? (
+                        <MapPin className="w-3 h-3 mr-0.5" />
                       ) : null}
-
                       {property.name}
                     </span>    
                   ))}

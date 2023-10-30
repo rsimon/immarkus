@@ -12,7 +12,7 @@ export interface Entity {
 
 }
 
-type StringProperty = {
+export type StringProperty = {
 
   name: string,
 
@@ -20,7 +20,7 @@ type StringProperty = {
 
 }
 
-type NumberProperty = {
+export type NumberProperty = {
 
   name: string,
 
@@ -28,7 +28,7 @@ type NumberProperty = {
 
 }
 
-type EnumProperty = {
+export type EnumProperty = {
 
   name: string,
 
@@ -40,5 +40,26 @@ type EnumProperty = {
 
 }
 
-export type EntityProperty = StringProperty | NumberProperty | EnumProperty;
+export type URIProperty = {
+
+  name: string,
+
+  type: 'uri'
+
+}
+
+export type CoordinateProperty = {
+
+  name: string,
+
+  type: 'coordinate'
+
+}
+
+export type EntityProperty = 
+  StringProperty | 
+  NumberProperty | 
+  EnumProperty | 
+  URIProperty |
+  CoordinateProperty;
 

@@ -1,4 +1,4 @@
-import { CaseSensitive, Hash, List } from 'lucide-react';
+import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -79,8 +79,14 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
                       ) : p.type === 'number' ? (
                         <Hash 
                           className="inline w-4 h-4 mr-3" />
-                      ) : p.type === 'enum' && (
+                      ) : p.type === 'enum' ? (
                         <List 
+                          className="inline w-4 h-4 mr-3" />
+                      ) : p.type === 'uri' ? (
+                        <Link2 
+                          className="inline w-4 h-4 mr-3" />
+                      ) : p.type === 'coordinate' && (
+                        <MapPin 
                           className="inline w-4 h-4 mr-3" />
                       )}
                       {p.name}

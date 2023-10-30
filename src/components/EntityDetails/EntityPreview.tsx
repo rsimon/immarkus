@@ -68,10 +68,14 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                   ))}
                 </SelectContent>
               </Select>
-            ) : (
+            ) : property.type === 'coordinate' ? (
               <Input 
                 id={property.name} 
                 className="h-8 mt-0.5" />
+            ) : (
+              <Input 
+                id={property.name} 
+                className="h-8 mt-0.5" /> 
             )}
           </div>
         ))}
