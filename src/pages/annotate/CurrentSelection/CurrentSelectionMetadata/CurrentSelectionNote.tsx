@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useFormik } from 'formik';
 import { PlusCircle } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { Button } from '@/ui/Button';
@@ -10,32 +9,30 @@ interface CurrentSelectionNoteProps {
 
   defaultOpen?: boolean;
 
+  id: string;
+
   body?: W3CAnnotationBody;
 
-  safeKey: string;
-
-  formik: ReturnType<typeof useFormik>;
+  onChange(note: string): void;
 
 }
 
 export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
-
-  const { formik, safeKey } = props;
 
   const [showNote, setShowNote] = useState(Boolean(props.body) || props.defaultOpen);
 
   return showNote ? (
     <div>
       <Label 
-        htmlFor={safeKey}
+        htmlFor={props.id}
         className="text-xs block mb-1 mt-3">Note</Label>
 
       <Textarea 
-        id={safeKey}
+        id={props.id}
         className="mt-2 mb-2"
         rows={8}
-        value={formik.values[safeKey]} 
-        onChange={formik.handleChange} />
+        value={props.body?.value || ''} 
+        onChange={evt => props.onChange(evt.target.value)} />
     </div>
   ) : (
     <div className="mt-3">

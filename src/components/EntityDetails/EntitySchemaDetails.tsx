@@ -73,7 +73,7 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
                     className="flex text-xs w-full justify-between items-center
                       bg-muted-foreground/10 pl-3 pr-2 py-1.5 rounded-sm mb-1.5">
                     <div>
-                      {p.type === 'string' ? (
+                      {p.type === 'text' ? (
                         <CaseSensitive 
                           className="inline w-5 h-5 mr-2" />
                       ) : p.type === 'number' ? (
@@ -85,7 +85,7 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
                       ) : p.type === 'uri' ? (
                         <Link2 
                           className="inline w-4 h-4 mr-3" />
-                      ) : p.type === 'coordinate' && (
+                      ) : p.type === 'geocoordinate' && (
                         <MapPin 
                           className="inline w-4 h-4 mr-3" />
                       )}

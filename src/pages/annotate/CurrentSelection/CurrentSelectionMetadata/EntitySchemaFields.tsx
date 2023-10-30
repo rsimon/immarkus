@@ -1,11 +1,11 @@
-import { useFormik } from 'formik';
 import { Entity } from '@/model';
-import { Label } from '@/ui/Label';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { EnumField, NumberField, StringField, URIField } from './SchemaFields';
+import { NumberPropertyField, TextPropertyField, URIPropertyField } from '@/components/PropertyFields';
 
 interface EntitySchemaFieldsProps {
+
+  showErrors?: boolean;
 
   body: W3CAnnotationBody,
 
@@ -13,34 +13,49 @@ interface EntitySchemaFieldsProps {
 
   safeKeys: ReturnType<typeof createSafeKeys>;
 
-  formik: ReturnType<typeof useFormik>;
+  values: {[key: string]: string};
+
+  onChange(key: string, value: any): void;
 
 }
 
 export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
 
   const { body, entity, safeKeys } = props;
+
+  const fields = (entity.schema || [])
+    .map(property => ({ 
+      property, 
+      key: safeKeys.getKey(body, property.name)
+    }));
   
   return (
     <>
-      {(entity.schema || []).map(property => (
-        <div className="mt-2" key={safeKeys.getKey(body, property.name)}>
+      {fields.map(({ property, key }) => (
+        <div className="mt-2" key={key}>
           {property.type === 'enum' ? (
-            <EnumField 
-              {...props}
-              {...property} />
+            <div />
           ) : property.type === 'number' ? (
-            <NumberField
-              {...props}
-              {...property} />
-          ) : property.type === 'string' ? (
-            <StringField 
-              {...props}
-              {...property} />
+            <NumberPropertyField
+              id={key}
+              property={property} 
+              value={props.values[key]}
+              validate={props.showErrors}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'text' ? (
+            <TextPropertyField 
+              id={key}
+              property={property} 
+              value={props.values[key]}
+              validate={props.showErrors} 
+              onChange={value => props.onChange(key, value)} />
           ) : property.type === 'uri' ? (
-            <URIField 
-              {...props}
-              {...property} />
+            <URIPropertyField 
+              id={key}
+              property={property} 
+              value={props.values[key]}
+              validate={props.showErrors} 
+              onChange={value => props.onChange(key, value)} />
           ) : null }
         </div>
       ))}

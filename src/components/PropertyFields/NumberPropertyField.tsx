@@ -1,0 +1,45 @@
+import { NumberProperty } from '@/model';
+import { Input } from '@/ui/Input';
+import { Label } from '@/ui/Label';
+
+interface NumberPropertyFieldProps {
+
+  id: string;
+
+  property: NumberProperty;
+
+  validate?: boolean;
+
+  value: string;
+
+  onChange(value: number): void;
+
+}
+
+export const NumberPropertyField = (props: NumberPropertyFieldProps) => {
+
+  const { id, property, value, validate, onChange } = props;
+
+  const isValid = !validate || !isNaN(parseFloat(value));
+
+  return (
+    <>
+      <Label 
+        htmlFor={id}
+        className="text-xs block mb-1 mt-3">
+        {property.name}
+      </Label> {property.required && !value ? (
+        <span className="text-xs text-red-600 ml-1">required</span>
+      ) : !isValid && (
+        <span className="text-xs text-red-600 ml-1">must be a number</span>
+      )}
+
+      <Input 
+        id={id} 
+        className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
+        value={value} 
+        onChange={evt => onChange(parseFloat(evt.target.value))} />
+    </>
+  )
+
+}
