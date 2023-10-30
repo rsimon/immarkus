@@ -23,7 +23,7 @@ export const Open = (props: OpenProps) => {
   return (
     <main className="page start open">
       <div className="cta">
-        <h1 className="font-medium mb-4 text-lg">Welcome to I-MARKUS</h1>
+        <h1 className="font-medium mb-4 text-lg">Welcome to IMMARKUS</h1>
         <div className="buttons">
           <Button 
             onClick={() => props.onOpenFolder()}>
