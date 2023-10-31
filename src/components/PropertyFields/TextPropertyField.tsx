@@ -1,4 +1,3 @@
-import { CaseSensitive } from 'lucide-react';
 import { TextProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -27,8 +26,8 @@ export const TextPropertyField = (props: TextPropertyFieldProps) => {
     <div className="mb-5">
       <Label
         htmlFor={id}
-        className="text-xs block mt-3">
-        <CaseSensitive className="inline w-5 h-5 mr-1" /> {property.name}
+        className="text-xs block mt-3 mb-1.5">
+        {property.name}
       </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
       <Input 

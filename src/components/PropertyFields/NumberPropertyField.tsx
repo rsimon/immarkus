@@ -1,4 +1,3 @@
-import { Hash } from 'lucide-react';
 import { NumberProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -27,8 +26,8 @@ export const NumberPropertyField = (props: NumberPropertyFieldProps) => {
     <div className="mb-5">
       <Label 
         htmlFor={id}
-        className="text-xs block mt-3">
-        <Hash className="inline w-3.5 h-3.5 mb-0.5 mr-1" /> {property.name} 
+        className="text-xs block mt-3  mb-1.5">
+        {property.name} 
       </Label> {property.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (

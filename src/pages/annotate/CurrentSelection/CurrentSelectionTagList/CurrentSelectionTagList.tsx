@@ -26,7 +26,7 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
     store.deleteBody(body as AnnotationBody);
 
   return (
-    <ul className="flex flex-wrap py-1 pl-1">
+    <ul className="flex flex-wrap py-1 pl-1 mb-4">
       {tags.map(body => body.purpose === 'classifying' ? (
         <li key={body.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
           <EntityBadge 

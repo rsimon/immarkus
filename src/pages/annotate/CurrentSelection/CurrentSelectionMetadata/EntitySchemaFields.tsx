@@ -80,12 +80,13 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
         </div>
       ))}
 
-      <div className="flex justify-end -mt-6">
+      <div className="flex justify-end -mt-5 -mb-4">
         <EntityDetailsDialog entity={entity}>
           <Button 
             type="button"
             variant="link" 
-            className="text-xs text-muted-foreground p-0.5">Edit {entity.label} schema</Button>
+            className="text-xs text-muted-foreground p-0.5">
+            Edit Schema</Button>
         </EntityDetailsDialog>
       </div>
     </div>

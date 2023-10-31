@@ -1,4 +1,3 @@
-import { MapPin } from 'lucide-react';
 import { GeoCoordinateProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -30,8 +29,8 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
   return (
     <div className="mb-5">
       <Label
-        className="text-xs block mb-1">
-        <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" />{property.name}
+        className="text-xs block mb-2.5">
+        {property.name}
       </Label> {property.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (

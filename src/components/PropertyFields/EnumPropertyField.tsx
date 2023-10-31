@@ -1,4 +1,3 @@
-import { List } from 'lucide-react';
 import { EnumProperty } from '@/model';
 import { Label } from '@/ui/Label';
 import { 
@@ -33,8 +32,8 @@ export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
     <div className="mb-5">
       <Label 
         htmlFor={id}
-        className="text-xs block mt-3">
-        <List className="inline w-4 h-4 mr-1 mb-0.5" /> {property.name}
+        className="text-xs block mt-3 mb-1.5">
+        {property.name}
       </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
       <Select 
