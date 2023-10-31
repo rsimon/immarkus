@@ -12,25 +12,15 @@ export interface Entity {
 
 }
 
-export type StringProperty = {
+type BaseEntityProperty = {
 
-  name: string,
+  name: string, 
 
-  type: 'string'
-
-}
-
-export type NumberProperty = {
-
-  name: string,
-
-  type: 'number'
+  required?: boolean
 
 }
 
-export type EnumProperty = {
-
-  name: string,
+export type EnumProperty = BaseEntityProperty & {
 
   type: 'enum',
 
@@ -40,26 +30,35 @@ export type EnumProperty = {
 
 }
 
-export type URIProperty = {
+export type GeoCoordinateProperty = BaseEntityProperty & {
 
-  name: string,
+  type: 'geocoordinate'
+
+}
+
+export type NumberProperty = BaseEntityProperty & {
+
+  type: 'number'
+
+}
+
+export type TextProperty = BaseEntityProperty & {
+
+  type: 'text'
+
+}
+
+export type URIProperty = BaseEntityProperty & {
 
   type: 'uri'
 
 }
 
-export type CoordinateProperty = {
-
-  name: string,
-
-  type: 'coordinate'
-
-}
-
 export type EntityProperty = 
-  StringProperty | 
+  EnumProperty |
+  GeoCoordinateProperty |
   NumberProperty | 
-  EnumProperty | 
-  URIProperty |
-  CoordinateProperty;
+  TextProperty  | 
+  URIProperty;
+
 

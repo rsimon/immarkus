@@ -1,15 +1,13 @@
-import { Braces, OptionIcon } from 'lucide-react';
-import { Input } from '@/ui/Input';
-import { Label } from '@/ui/Label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/ui/Select';
+import { Braces } from 'lucide-react';
 import { getBrightness } from './entityColor';
 import { EntityStub } from './EntityDetails';
+import { 
+  EnumPropertyField, 
+  GeoCoordinatePropertyField, 
+  NumberPropertyField, 
+  TextPropertyField, 
+  URIPropertyField 
+} from '../PropertyFields';
 
 interface EntityPreviewProps {
 
@@ -50,33 +48,27 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       <div className="mt-2">
         {(entity.schema || []).map(property => (
           <div className="mt-1" key={property.name}>
-            <Label 
-              htmlFor={property.name}
-              className="text-xs">
-              {property.name}
-            </Label>
-
             {property.type === 'enum' ? (
-              <Select>
-                <SelectTrigger className="w-full h-8 mt-0.5">
-                  <SelectValue />
-                </SelectTrigger>
-
-                <SelectContent>
-                  {property.values.map(option => (
-                    <SelectItem key={option} value={option}>{option}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : property.type === 'coordinate' ? (
-              <Input 
-                id={property.name} 
-                className="h-8 mt-0.5" />
-            ) : (
-              <Input 
-                id={property.name} 
-                className="h-8 mt-0.5" /> 
-            )}
+              <EnumPropertyField 
+                id={property.name}
+                property={property} />
+            ) : property.type === 'geocoordinate' ? (
+              <GeoCoordinatePropertyField 
+                id={property.name}
+                property={property} />
+            ) : property.type === 'number' ? (
+              <NumberPropertyField 
+                id={property.name}
+                property={property} />   
+            ) : property.type === 'text' ? (
+              <TextPropertyField 
+                id={property.name}
+                property={property} />   
+            ) : property.type === 'uri' ? (
+              <URIPropertyField 
+                id={property.name}
+                property={property} />   
+            ) : null}
           </div>
         ))}
       </div>
