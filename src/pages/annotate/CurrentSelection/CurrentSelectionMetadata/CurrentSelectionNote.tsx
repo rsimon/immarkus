@@ -11,7 +11,7 @@ interface CurrentSelectionNoteProps {
 
   id: string;
 
-  body?: W3CAnnotationBody;
+  value: string;
 
   onChange(note: string): void;
 
@@ -19,7 +19,7 @@ interface CurrentSelectionNoteProps {
 
 export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
 
-  const [showNote, setShowNote] = useState(Boolean(props.body) || props.defaultOpen);
+  const [showNote, setShowNote] = useState(Boolean(props.value) || props.defaultOpen);
 
   return showNote ? (
     <div>
@@ -31,7 +31,7 @@ export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
         id={props.id}
         className="mb-2"
         rows={4}
-        value={props.body?.value || ''} 
+        value={props.value || ''} 
         onChange={evt => props.onChange(evt.target.value)} />
     </div>
   ) : (

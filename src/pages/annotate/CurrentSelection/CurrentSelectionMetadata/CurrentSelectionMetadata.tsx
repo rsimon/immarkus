@@ -100,7 +100,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
       <CurrentSelectionNote
         id={noteKey}
-        body={note} 
+        value={formState[noteKey]}
         onChange={value => onChange(noteKey, value)} />
 
       <Button className="mt-3 h-8" type="submit">Save</Button>
@@ -124,7 +124,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
       <CurrentSelectionNote
         id={noteKey}
-        body={note} 
+        value={formState[noteKey]}
         onChange={value => onChange(noteKey, value)} />
 
       <Button className="mt-0 h-8" type="submit">Save</Button>
@@ -134,7 +134,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
       <CurrentSelectionNote
         defaultOpen
         id={noteKey}
-        body={note} 
+        value={formState[noteKey]}
         onChange={value => onChange(noteKey, value)} />
 
       <Button className="mt-2 h-8" type="submit">Save</Button>
