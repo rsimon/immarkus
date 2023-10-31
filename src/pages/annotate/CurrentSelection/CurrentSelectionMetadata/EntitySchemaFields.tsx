@@ -21,7 +21,7 @@ interface EntitySchemaFieldsProps {
 
   safeKeys: ReturnType<typeof createSafeKeys>;
 
-  values: {[key: string]: string};
+  values: {[key: string]: any};
 
   onChange(key: string, value: any): void;
 
