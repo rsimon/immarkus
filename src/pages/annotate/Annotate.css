@@ -2,3 +2,12 @@
   display: flex;
   flex-grow: 1;
 }
+
+.osd-container {
+  height: 100%;
+  width: 100%;
+}
+
+.osd-container .openseadragon-canvas {
+  outline: none;
+}
