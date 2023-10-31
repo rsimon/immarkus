@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { EditorPanelProps } from './EditorPanelProps';
 import { CurrentSelection } from '../CurrentSelection';
 import { ImageNotes } from '../ImageNotes';
+import { AnnotationList } from '../AnnotationList';
 
 export const EditorPanel = (props: EditorPanelProps) => {
 
@@ -37,13 +38,11 @@ export const EditorPanel = (props: EditorPanelProps) => {
       </TabsList>
 
       <TabsContent value="selection">
-        <CurrentSelection {...props} />
+        <CurrentSelection />
       </TabsContent>
 
       <TabsContent value="list">
-        <div className="py-4 text-sm flex grow items-center justify-center text-muted-foreground">
-          Coming soon...
-        </div>
+        <AnnotationList />
       </TabsContent>
 
       <TabsContent value="notes">

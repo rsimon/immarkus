@@ -29,11 +29,11 @@ const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = 
     try {
       if (entry.kind === 'directory') {
         // Wait for subfolder contents to load
-        console.info(`Found directory: ${handle.name}/${entry.name}`);
+        // bconsole.info(`Found directory: ${handle.name}/${entry.name}`);
         const subDirHandle = await handle.getDirectoryHandle(entry.name);
         await loadDirectory(subDirHandle, files);
       } else {
-        console.info(`Found file: ${handle.name}/${entry.name}`);
+        // console.info(`Found file: ${handle.name}/${entry.name}`);
         const fileHandle = await handle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
         files.push(file);
@@ -50,7 +50,7 @@ const loadDirectory = async (handle: FileSystemDirectoryHandle, files: File[] = 
 export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler): Promise<Store> => 
  
   new Promise(async resolve => {
-    console.info('Starting import: ' + handle.name);
+    // console.info('Starting import: ' + handle.name);
 
     const files = await loadDirectory(handle);
 
@@ -60,37 +60,39 @@ export const loadStore = (handle: FileSystemDirectoryHandle, onProgress?: StoreP
 
     const vocabulary = await loadVocabulary(handle);
 
-    console.info(`Attempting import of ${files.length} files`);
-    files.forEach(f => console.info(`  ${f.name}`));
+    // console.info(`Attempting import of ${files.length} files`);
+    // files.forEach(f => console.info(`  ${f.name}`));
 
     await files.reduce((promise, file, index) => {
-      console.info(`Loading: ${file.name} (${file.type || 'unknown type'})`);
-
       let nextPromise;
 
       if (file.type.startsWith('image')) {
         // Load the image and attach it to the images array
+        console.info(`Image: ${file.name}`);
+
         nextPromise = promise.then(() => readImageFile(file).then(data => {
           const { name } = file;
           const path = `${handle!.name}/${name}`;
           
           return generateShortId(path).then(id => {
             images.push({ id, name, path, data });
-            console.info(`${name} - OK (image file)`);
+            // console.info(`${name} - OK (image file)`);
           });
         }));
       } else if (file.type === 'application/json') {
         nextPromise = promise.then(() => readJSONFile<W3CAnnotation[]>(file).then(json => {
+          console.info(`Annotations: ${file.name}`);
+
           const { name } = file;
           const path = `${handle!.name}/${name}`;
 
           return generateShortId(path).then(id => {
             annotations.set(id, json);
-            console.info(`${name} - OK (annotations file)`);
+            // console.info(`${name} - OK (annotations file)`);
           });
         }));
       } else {
-        console.info(`Skipping file file ${file.name}`);
+        console.info(`Skipping: ${file.name}`);
         nextPromise = promise;
       }
 

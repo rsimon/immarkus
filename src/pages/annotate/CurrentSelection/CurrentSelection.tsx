@@ -6,11 +6,10 @@ import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { EditorPanelProps } from '../EditorPanel';
 import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
 import { CurrentSelectionTagList } from './CurrentSelectionTagList';
 
-export const CurrentSelection = (props: EditorPanelProps) => {
+export const CurrentSelection = () => {
 
   const store = useAnnotationStore();
 
