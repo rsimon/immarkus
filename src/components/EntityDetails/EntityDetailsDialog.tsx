@@ -41,7 +41,7 @@ export const EntityDetailsDialog = (props: EntityDetailsDialogProps) => {
         </DialogTrigger>
       )}
 
-      <DialogContent className="p-0 max-w-3xl rounded-lg">
+      <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
         <EntityDetails 
           entity={props.entity}
           onSaved={() => onOpenChange(false)} />

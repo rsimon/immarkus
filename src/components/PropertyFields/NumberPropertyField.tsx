@@ -1,3 +1,4 @@
+import { Hash } from 'lucide-react';
 import { NumberProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -23,11 +24,11 @@ export const NumberPropertyField = (props: NumberPropertyFieldProps) => {
   const isValid = !validate || !isNaN(parseFloat(value));
 
   return (
-    <>
+    <div className="mb-5">
       <Label 
         htmlFor={id}
-        className="text-xs block mb-1 mt-3">
-        {property.name}
+        className="text-xs block mt-3">
+        <Hash className="inline w-3.5 h-3.5 mb-0.5 mr-1" /> {property.name} 
       </Label> {property.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (
@@ -39,7 +40,7 @@ export const NumberPropertyField = (props: NumberPropertyFieldProps) => {
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
         value={value} 
         onChange={evt => onChange(parseFloat(evt.target.value))} />
-    </>
+    </div>
   )
 
 }

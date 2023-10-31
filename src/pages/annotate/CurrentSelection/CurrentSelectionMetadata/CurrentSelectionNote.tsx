@@ -29,8 +29,8 @@ export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
 
       <Textarea 
         id={props.id}
-        className="mt-2 mb-2"
-        rows={8}
+        className="mb-2"
+        rows={4}
         value={props.body?.value || ''} 
         onChange={evt => props.onChange(evt.target.value)} />
     </div>

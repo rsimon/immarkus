@@ -73,7 +73,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                     <span key={property.name}
                       className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
                         mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
-                      {property.type === 'string' ? (
+                      {property.type === 'text' ? (
                         <CaseSensitive className="w-4 h-4 mr-0.5" />
                       ) : property.type === 'number' ? (
                         <Hash className="w-3 h-3 mr-0.5" />
@@ -81,7 +81,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                         <List className="w-3 h-3 mr-0.5" />
                       ) : property.type === 'uri' ? (
                         <Link2 className="w-3 h-3 mr-0.5" />
-                      ) : property.type === 'coordinate' ? (
+                      ) : property.type === 'geocoordinate' ? (
                         <MapPin className="w-3 h-3 mr-0.5" />
                       ) : null}
                       {property.name}

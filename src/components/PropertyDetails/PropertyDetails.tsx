@@ -1,4 +1,5 @@
 import { ChangeEvent, useState } from 'react';
+import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
 import { useFormik } from 'formik';
 import { X } from 'lucide-react';
 import { EntityProperty } from '@/model';
@@ -95,11 +96,21 @@ export const PropertyDetails = (props: PropertyDetailsProps) => {
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value="text">Text</SelectItem>
-          <SelectItem value="number">Number</SelectItem>
-          <SelectItem value="enum">Options</SelectItem>
-          <SelectItem value="uri">URI</SelectItem>
-          <SelectItem value="geocoordinate">Coordinate</SelectItem>
+          <SelectItem value="text">
+            <CaseSensitive className="inline w-4 h-4 mr-0.5" /> Text
+          </SelectItem>
+          <SelectItem value="number">
+            <Hash className="inline w-3 h-3 mr-1 mb-0.5" /> Number
+          </SelectItem>
+          <SelectItem value="enum">
+            <List className="inline w-3 h-3 mr-1 mb-0.5" /> Options
+          </SelectItem>
+          <SelectItem value="uri">
+            <Link2 className="inline w-3 h-3 mr-1 mb-0.5" /> URI
+          </SelectItem>
+          <SelectItem value="geocoordinate">
+            <MapPin className="inline w-3 h-3 mr-1 mb-0.5" /> Geo-coordinate
+          </SelectItem>
         </SelectContent>
       </Select>
 

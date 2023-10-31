@@ -1,3 +1,4 @@
+import { Link2 } from 'lucide-react';
 import { URIProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -35,11 +36,11 @@ export const URIPropertyField = (props: URIPropertyFieldProps) => {
   const isValid = !validate || isValidURL(value);
 
   return (
-    <>
+    <div className="mb-5">
       <Label 
         htmlFor={id}
-        className="text-xs block mb-1 mt-3">
-        {property.name}
+        className="text-xs block mt-3">
+        <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" />{property.name}
       </Label> {property.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (
@@ -51,7 +52,7 @@ export const URIPropertyField = (props: URIPropertyFieldProps) => {
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
         value={value} 
         onChange={evt => onChange(evt.target.value)} />
-    </>
+    </div>
   )
 
 }
