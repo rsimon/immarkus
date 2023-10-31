@@ -99,7 +99,7 @@ export const Annotate = () => {
           </div>
         </main>
 
-        <aside className="border-l p-3 overflow-y-auto w-[340px]">
+        <aside className="border-l p-3 overflow-y-auto w-[340px] basis-[340px] grow-0 shrink-0">
           <EditorPanel 
             image={image} 
             onSaving={onSaving} 
