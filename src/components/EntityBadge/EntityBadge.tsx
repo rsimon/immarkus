@@ -33,7 +33,7 @@ export const EntityBadge = (props: BadgeEntityProps) => {
 
       {editable && (
         <button 
-          className="ml-1 -mr-0.5"
+          className="ml-1 -mr-1"
           onClick={props.onDelete}>
           <X className="h-3.5 w-3.5" />
         </button>

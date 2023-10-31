@@ -1,6 +1,7 @@
 import { Entity } from '@/model';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
@@ -8,6 +9,7 @@ import {
   TextPropertyField, 
   URIPropertyField 
 } from '@/components/PropertyFields';
+import { Button } from '@/ui/Button';
 
 interface EntitySchemaFieldsProps {
 
@@ -36,7 +38,7 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
     }));
   
   return (
-    <>
+    <div>
       {fields.map(({ property, key }) => (
         <div className="mt-2" key={key}>
           {property.type === 'enum' ? (
@@ -77,7 +79,16 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
           ) : null }
         </div>
       ))}
-    </>
+
+      <div className="flex justify-end -mt-6">
+        <EntityDetailsDialog entity={entity}>
+          <Button 
+            type="button"
+            variant="link" 
+            className="text-xs text-muted-foreground p-0.5">Edit {entity.label} schema</Button>
+        </EntityDetailsDialog>
+      </div>
+    </div>
   )
 
 }
