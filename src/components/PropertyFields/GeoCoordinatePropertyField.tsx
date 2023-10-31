@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { GeoCoordinateProperty } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -31,6 +31,11 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
 
   }
 
+  const parseInput = (evt: ChangeEvent<HTMLInputElement>) => {
+    const parsed = parseFloat(evt.target.value);
+    return isNaN(parsed) ? undefined : parsed;
+  }
+
   const isValid = !validate || isValidCoordinate();
 
   return (
@@ -54,7 +59,7 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
           id={id} 
           className={isValid ? "h-8" : "h-8 border-red-500"} 
           value={lonLat[1]} 
-          onChange={evt => setLonLat(([lon, _]) => ([lon, parseFloat(evt.target.value)]))} />
+          onChange={evt => setLonLat(([lon, _]) => ([lon, parseInput(evt)]))} />
 
         <Label
           className="text-xs ml-4">
@@ -65,7 +70,7 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
           id={id} 
           className={isValid ? "h-8" : "h-8 border-red-500"} 
           value={lonLat[0]} 
-          onChange={evt => setLonLat(([_, lat]) => ([parseFloat(evt.target.value), lat]))}/>
+          onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
       </div>
     </div>
   )
