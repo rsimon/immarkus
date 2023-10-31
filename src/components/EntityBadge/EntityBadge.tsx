@@ -7,13 +7,13 @@ interface BadgeEntityProps {
 
   entity?: Entity;
 
-  onDelete(): void;
+  onDelete?(): void;
 
 }
 
 const DEFAULT_COLOR = '#c2c2c2';
 
-export const BadgeEntity = (props: BadgeEntityProps) => {
+export const EntityBadge = (props: BadgeEntityProps) => {
 
   const { entity } = props;
 
@@ -23,7 +23,7 @@ export const BadgeEntity = (props: BadgeEntityProps) => {
 
   return (
     <span 
-      onClick={() => setEditable(editable => !editable)}
+      onClick={props.onDelete ? () => setEditable(editable => !editable) : undefined}
       className="rounded-full px-2.5 py-1 inline-flex items-center text-xs h-6 cursor-pointer"
       style={{ 
         backgroundColor,

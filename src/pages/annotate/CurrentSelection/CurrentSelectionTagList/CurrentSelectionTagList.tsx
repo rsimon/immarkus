@@ -1,7 +1,7 @@
 import { PlusCircle } from 'lucide-react';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
 import { useVocabulary } from '@/store';
-import { BadgeEntity } from './BadgeEntity';
+import { EntityBadge } from '@/components/EntityBadge';
 import { Button } from '@/ui/Button';
 
 interface CurrentSelectionTagListProps {
@@ -29,7 +29,7 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
     <ul className="flex flex-wrap py-1 pl-1">
       {tags.map(body => body.purpose === 'classifying' ? (
         <li key={body.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
-          <BadgeEntity 
+          <EntityBadge 
             entity={getEntity(body.source)} 
             onDelete={() => onDeleteBody(body)}/>
         </li>
