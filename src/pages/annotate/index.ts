@@ -1,1 +1,1 @@
-export * from './Annotate';
+export * from './AnnotateMosaic';
