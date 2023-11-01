@@ -4,4 +4,4 @@ export * from './knowledgegraph';
 export * from './images';
 export * from './markus';
 export * from './start';
-export * from './vocabularies';
+export * from './vocabulary';

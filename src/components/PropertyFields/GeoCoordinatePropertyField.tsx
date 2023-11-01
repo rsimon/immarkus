@@ -24,7 +24,8 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
   const [lonLat, setLonLat] = useState<[number | undefined, number | undefined]>(value || [undefined, undefined]);
 
   useEffect(() => {
-    props.onChange(lonLat);
+    if (props.onChange)
+      props.onChange(lonLat);
   }, [lonLat]);
 
   const isValidCoordinate = () => {

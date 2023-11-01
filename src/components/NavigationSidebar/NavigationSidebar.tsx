@@ -31,9 +31,9 @@ export const NavigationSidebar = () => {
 
           <li>
             <Link 
-              className={pathname === '/vocabularies' ? active : undefined} 
-              to="/vocabularies">
-              <Sparkles size={18} className="mr-2" />  Vocabularies
+              className={pathname === '/vocabulary' ? active : undefined} 
+              to="/vocabulary">
+              <Sparkles size={18} className="mr-2" />  Vocabulary
             </Link>
           </li>
 
