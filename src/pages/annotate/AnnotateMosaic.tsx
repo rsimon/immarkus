@@ -20,11 +20,14 @@ export const AnnotateMosaic = () => {
         </section>
 
         <section 
-          className="workspace bg-muted flex-grow shadow-inner">
+          className="workspace flex-grow shadow-inner">
 
           <Mosaic
             renderTile={(id, path) => (
-              <MosaicWindow path={path} createNode={() => 'new'} title={TITLE_MAP[id]}>
+              <MosaicWindow 
+                path={path} 
+                className="foo"
+                createNode={() => 'new'} title={TITLE_MAP[id]}>
                 <h1>{TITLE_MAP[id]}</h1>
               </MosaicWindow>
             )}

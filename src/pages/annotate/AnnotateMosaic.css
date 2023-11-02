@@ -1,3 +1,29 @@
+.page.annotate {
+  --workspace-bg: #f2f2f2;
+  --window-title-bg: #f7f7f7;
+}
+
+.page.annotate .workspace {
+  background-color: var(--workspace-bg);
+}
+
 .page.annotate .toolbar {
   height: 40px;
+}
+
+/** Mosaic theme overrides **/
+.page.annotate .mosaic-tile {
+  margin: 5px;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme {
+  background: none;
+}
+
+.page.annotate .mosaic-window-toolbar.draggable {
+  background-color: var(--window-title-bg);
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-body {
+  background-color: #fff;
 }
