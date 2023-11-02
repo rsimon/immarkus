@@ -106,7 +106,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   ) : (
     <form className="mt-2 px-1" onSubmit={onSubmit}>
       {schemaBodies.map(({ body, entity }, idx) => (
-        <div key={body.id} className="mb-4">
+        <div key={body.id} className="pb-4">
           <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
             {entity.label}
           </h3>
