@@ -14,7 +14,7 @@ export const AnnotationList = () => {
     anno.removeAnnotation(annotation.id);
 
   return (
-    <div className="py-4 text-sm grow">
+    <div className="pb-4 text-sm grow">
       <ul>
         {annotations.map(annotation => (
           <li key={annotation.id}>
