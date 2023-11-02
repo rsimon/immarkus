@@ -43,7 +43,7 @@ export const useInitStore = () => {
   return (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler) =>
     loadStore(handle, onProgress).then(store => {
       setStore(store);
-      setVocabulary(store.getVocabulary());
+      setVocabulary(store.vocabulary);
     });
 }
 
@@ -65,7 +65,7 @@ export const useVocabulary = () => {
   const { store, vocabulary, setVocabulary } = useContext(StoreContext);
 
   const setAsync = (p: Promise<void>) =>
-    p.then(() => setVocabulary(store.getVocabulary()));
+    p.then(() => setVocabulary(store.vocabulary));
 
   const addEntity = (entity: Entity) =>
     setAsync(store.addEntity(entity));

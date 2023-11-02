@@ -12,6 +12,7 @@ import { Tool, Toolbar } from './Toolbar';
 
 import './Annotate.css';
 import '@annotorious/react/annotorious-react.css';
+import { colorByEntity } from './annotationStyles';
 
 // 'Feature toggle' for future use
 const DISPLAY_MODE: 'image' | 'osd' = 'image';
@@ -80,6 +81,7 @@ export const Annotate = () => {
                   // @ts-ignore
                   adapter={W3CImageFormat(image.path)}
                   autoSave={true}
+                  style={colorByEntity(store)}
                   tool={tool}>
                   <img 
                     className="select-none"
