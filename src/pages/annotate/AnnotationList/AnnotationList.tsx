@@ -10,12 +10,18 @@ export const AnnotationList = () => {
   const onSelect = (annotation: ImageAnnotation) => () =>
     anno.setSelected(annotation.id);
 
+  const onDelete = (annotation: ImageAnnotation) => () =>
+    anno.removeAnnotation(annotation.id);
+
   return (
     <div className="py-4 text-sm grow">
       <ul>
         {annotations.map(annotation => (
-          <li key={annotation.id} onClick={onSelect(annotation)}>
-            <AnnotationListItem annotation={annotation} />
+          <li key={annotation.id}>
+            <AnnotationListItem 
+              annotation={annotation} 
+              onSelect={onSelect(annotation)} 
+              onDelete={onDelete(annotation)} />
           </li>
         ))}
       </ul>
