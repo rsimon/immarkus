@@ -35,7 +35,7 @@ export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
         onChange={evt => props.onChange(evt.target.value)} />
     </div>
   ) : (
-    <div className="mt-3">
+    <div className="mb-2">
       <Button 
         variant="ghost" 
         type="button"
