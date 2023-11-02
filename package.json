@@ -21,7 +21,7 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@annotorious/react": "file:../../annotorious/annotorious/packages/annotorious-react",
+    "@annotorious/react": "^3.0.0-pre-alpha-54",
     "@annotorious/selector-pack": "^0.1.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
