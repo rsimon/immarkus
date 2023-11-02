@@ -25,9 +25,6 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
-  // Show one line comment if there are tags, 2 if not
-  const lineClamp = tags.length > 0 ? 1 : 2; 
-
   return (
     <div className="border mb-2 rounded shadow-sm px-2 pt-2.5 pb-2">
       <ul className="flex flex-wrap">
@@ -40,7 +37,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
       </ul>
     
       {note && (
-        <p className={`line-clamp-${lineClamp} px-1 pt-1 pb-0.5`}>
+        <p className={tags.length > 0 ? 'line-clamp-1 px-1 pt-1 pb-0.5' : 'line-clamp-2 px-1 pt-1 pb-0.5'}>
           {note.value}
         </p>
       )}
