@@ -8,6 +8,15 @@
   box-shadow: inset -1px 2px 3px -2px rgb(0, 0, 0, 0.08);
 }
 
+.page.annotate .workspace .osd-container {
+  height: 100%;
+  width: 100%;
+}
+
+.page.annotate .workspace .osd-container .openseadragon-canvas {
+  outline: none;
+}
+
 /** Mosaic theme overrides **/
 .page.annotate .mosaic-tile {
   margin: 4px;
