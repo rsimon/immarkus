@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import * as Tabs from '@radix-ui/react-tabs';
 import { OpenSeadragonViewer } from '@annotorious/react';
-import { Mosaic, MosaicContext, MosaicWindow } from 'react-mosaic-component';
+import { Mosaic, MosaicContext, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -12,6 +12,7 @@ import {
   ImagePlus, 
   MessagesSquare, 
   MousePointerSquare, 
+  PanelLeft,
   Square,
   X,
   ZoomIn,
@@ -51,11 +52,9 @@ export const AnnotateMosaic = () => {
               </Link>
 
               <span className="text-xs font-medium mr-2 ml-0.5">
-                {image.name}
+                {image?.name}
               </span>
             </div>
-
-
           </section>
 
           <section className="toolbar-right flex gap-1.5 items-center">
@@ -64,7 +63,7 @@ export const AnnotateMosaic = () => {
             </button>
 
             <button className="pl-2.5 py-2 pr-2 flex items-center text-xs rounded-md hover:bg-muted border shadow-sm">
-              <Square className="w-4 h-4 mr-1 mb-0.5" />
+              <Square className="w-4 h-4 mr-1.5" />
               Rectangle
               <ChevronDown className="h-3 w-3 ml-1" />
             </button>
@@ -90,6 +89,7 @@ export const AnnotateMosaic = () => {
                 <MosaicWindow 
                   path={path}
                   className="text-xs"
+                  createNode={() => 'new'}
                   title={image.name}
                   toolbarControls={(
                     <>
@@ -101,15 +101,31 @@ export const AnnotateMosaic = () => {
                         <ZoomOut className="h-4 w-4 mr-1.5 text-muted-foreground hover:text-black" />
                       </button>
 
+                      <Separator orientation="vertical" className="h-4 ml-0.5 mr-1" />
+
                       <MosaicContext.Consumer>
-                        {({ mosaicActions}) => (
-                          <Button 
-                            variant="ghost" 
-                            size="icon"
-                            className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
-                            onClick={() => mosaicActions.remove(path)}>
-                            <X className="h-4 w-4" />
-                          </Button>
+                        {({ mosaicActions }) => (
+                          <MosaicWindowContext.Consumer>
+                            {({ mosaicWindowActions })  => (
+                              <>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  className="h-6 w-6 p-0 -mr-0.5 rounded-full text-muted-foreground hover:text-black"
+                                  onClick={() => mosaicWindowActions.split()}>
+                                  <PanelLeft className="h-4 w-4" />
+                                </Button>
+
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
+                                  onClick={() => mosaicActions.remove(path)}>
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
+                          </MosaicWindowContext.Consumer>
                         )}
                       </MosaicContext.Consumer>
                     </>
@@ -144,29 +160,47 @@ export const AnnotateMosaic = () => {
       </main>
 
       <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col">
-        <Tabs.Root asChild>
-          <section className="toolbar border-b h-[46px] flex items-center">
-            <Separator orientation="vertical" className="h-4" />
+        <Tabs.Root asChild defaultValue="selection">
+          <>
+            <section className="toolbar border-b h-[46px] flex items-center">
+              <Separator orientation="vertical" className="h-4" />
 
-            <Tabs.List className="flex gap-1.5 py-0.5 px-2">
-              <Tabs.Trigger value="selection" className="p-2 flex text-xs rounded-md bg-black text-white">
-                <MousePointerSquare className="h-4 w-4 mr-1" /> Selection
-              </Tabs.Trigger>
+              <Tabs.List className="flex gap-1.5 py-0.5 px-2">
+                <Tabs.Trigger value="selection" className="p-2 flex text-xs rounded-md bg-black text-white">
+                  <MousePointerSquare className="h-4 w-4 mr-1" /> Selection
+                </Tabs.Trigger>
 
-              <Tabs.Trigger value="annotation-list" className="p-2 flex text-xs rounded-md hover:bg-muted text-muted-foreground">
-                <MessagesSquare className="h-4 w-4 mr-1" /> List
-              </Tabs.Trigger>
+                <Tabs.Trigger value="annotation-list" className="p-2 flex text-xs rounded-md hover:bg-muted text-muted-foreground">
+                  <MessagesSquare className="h-4 w-4 mr-1" /> List
+                </Tabs.Trigger>
 
-              <Tabs.Trigger value="image-notes" className="p-2 flex text-xs rounded-md hover:bg-muted text-muted-foreground">
-                <Image className="h-4 w-4 mr-1" /> Image Notes
-              </Tabs.Trigger>
-            </Tabs.List>
-          </section>
+                <Tabs.Trigger value="image-notes" className="p-2 flex text-xs rounded-md hover:bg-muted text-muted-foreground">
+                  <Image className="h-4 w-4 mr-1" /> Image Notes
+                </Tabs.Trigger>
+              </Tabs.List>
+            </section>
+
+            <section className="sidebar-content bg-muted/80 flex flex-grow border-l">
+              <Tabs.Content value="selection" asChild>
+                <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+                  No annotation selected
+                </div> 
+              </Tabs.Content>
+
+              <Tabs.Content value="annotation-list" asChild>
+                <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+                  Annotation List
+                </div> 
+              </Tabs.Content>
+
+              <Tabs.Content value="image-notes" asChild>
+                <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+                  Image Notes
+                </div> 
+              </Tabs.Content>
+            </section>
+          </>
         </Tabs.Root>
-
-        <section className="sidebar-content bg-muted/80 flex-grow border-l">
-          <AnnotationList />
-        </section>
       </aside>
     </div>
   )
