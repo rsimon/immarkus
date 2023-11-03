@@ -1,13 +1,23 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, Circle, Image, ImagePlus, MessagesSquare, MousePointerSquare, Square, TriangleRight } from 'lucide-react';
-import { Mosaic, MosaicWindow } from 'react-mosaic-component';
 import * as Tabs from '@radix-ui/react-tabs';
+import { Mosaic, MosaicContext, MosaicWindow } from 'react-mosaic-component';
+import { Button } from '@/ui/Button';
+import { Separator } from '@/ui/Separator';
+import { 
+  ChevronLeft, 
+  Circle, 
+  Image, 
+  ImagePlus, 
+  MessagesSquare, 
+  MousePointerSquare, 
+  Square, 
+  TriangleRight,
+  X
+} from 'lucide-react';
 
 import './AnnotateMosaic.css';
 import 'react-mosaic-component/react-mosaic-component.css';
-import { Separator } from '@/ui/Separator';
-import { Toggle } from '@/ui/Toggle';
-import { Ellipse, Polygon, Rectangle } from '@/components/Icons';
+
 
 const TITLE_MAP: Record<string, string> = {
   a: 'Left Window',
@@ -42,7 +52,7 @@ export const AnnotateMosaic = () => {
 
           <section className="toolbar-right flex gap-1.5 items-center">
             <button className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
-              <Square className="w-4 h-4 mr-1" />
+              <Square className="w-4 h-4 mr-1 mb-0.5" />
               Box
             </button>
             
@@ -52,13 +62,47 @@ export const AnnotateMosaic = () => {
             </button>
 
             <button className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
-              <Circle className="w-4 h-4 mr-1 scale-y-90" />
+              <Circle className="w-4 h-4 mr-1 scale-y-90 mb-0.5" />
               Ellipse
             </button>
           </section>
         </section>
 
-        <section className="workspace flex-grow shadow-inner bg-muted" />
+        <section className="workspace flex-grow bg-muted">
+          <Mosaic
+            renderTile={(id, path) => (
+              <MosaicWindow 
+                path={path}
+                className="text-xs"
+                title={TITLE_MAP[id]}
+                toolbarControls={(
+                  <MosaicContext.Consumer>
+                    {({ mosaicActions}) => (
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
+                        onClick={() => mosaicActions.remove(path)}>
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </MosaicContext.Consumer>
+                )}>
+               
+              
+               
+              </MosaicWindow>
+            )}
+            initialValue={{
+              direction: 'row',
+              first: 'a',
+              second: {
+                direction: 'column',
+                first: 'b',
+                second: 'c',
+              },
+            }} />
+        </section>
       </main>
 
       <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col">
