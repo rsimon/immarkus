@@ -4,9 +4,21 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import { useStore } from '@/store';
-import { EditorPanelProps } from '../EditorPanel';
+import { Image } from '@/model';
 
-export const ImageNotes = (props: EditorPanelProps) => {
+interface ImageNotesProps {
+
+  image: Image;
+
+  onSaving(): void;
+
+  onSaved(): void;
+
+  onError(error: Error): void;
+
+}
+
+export const ImageNotes = (props: ImageNotesProps) => {
 
   const { image } = props;
 

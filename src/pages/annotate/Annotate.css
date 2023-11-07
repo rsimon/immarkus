@@ -1,13 +1,65 @@
-.page.annotate [role="tabpanel"][data-state="active"] {
-  display: flex;
-  flex-grow: 1;
+
+.page.annotate {
+  --bg-muted-light: #f3f7fa;
+  --border-color: #d7dfea;
 }
 
-.osd-container {
+.page.annotate .workspace {
+  box-shadow: inset -1px 2px 3px -2px rgb(0, 0, 0, 0.08);
+}
+
+.page.annotate .workspace .osd-container {
   height: 100%;
   width: 100%;
 }
 
-.osd-container .openseadragon-canvas {
+.page.annotate .workspace .osd-container .openseadragon-canvas {
   outline: none;
+}
+
+/** Mosaic theme overrides **/
+.page.annotate .mosaic-tile {
+  margin: 4px;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme {
+  background: none;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window {
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  box-shadow: 0 1px 2px 0 rgb(0, 0, 0, 0.08), 0 1px 2px -1px rgb(0, 0, 0, 0.05);
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-title {
+  font-weight: 500;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-toolbar {
+  background-color: #fff;
+  border-bottom: 1px solid var(--border-color);
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  box-shadow: none;
+  padding: 16px 0;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-toolbar.draggable:hover {
+  background: none;
+  background-color: #fff;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-controls {
+  align-items: center;
+}
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-body {
+  background-color: var(--bg-muted-light);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.page.annotate .mosaic-zero-state {
+  display: none;
 }

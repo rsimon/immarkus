@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { NavigationSidebar } from './components/NavigationSidebar';
-import { AnnotateMosaic, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
+import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
 import { useStore } from './store';
 
 import './App.css';
@@ -18,7 +18,7 @@ export const App = () => {
 
         <Route path="images" element={<Images />} />
 
-        <Route path="annotate/:id" element={<AnnotateMosaic />} />
+        <Route path="annotate/:images" element={<Annotate />} />
 
         <Route path="vocabulary" element={<Vocabulary />} />
 
