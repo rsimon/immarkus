@@ -19,13 +19,11 @@ interface AnnotatableImageProps {
 
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
-  // For now, this just returns an OpenSeadragon viewer.
-
   return (
     <Annotorious source={props.image.id}>
       <OpenSeadragonAnnotator
         adapter={W3CImageFormat(props.image.name)}>
-          
+
         <OpenSeadragonViewer
           className="osd-container"
           options={{

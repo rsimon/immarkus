@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronLeft, ImagePlus, Square } from 'lucide-react';
+import { ChevronLeft, ImagePlus } from 'lucide-react';
 import { Image } from '@/model';
+import { Tool, ToolSelector } from './ToolSelector';
+import { useState } from 'react';
 
 interface HeaderSectionProps {
 
@@ -9,6 +11,8 @@ interface HeaderSectionProps {
 }
 
 export const HeaderSection = (props: HeaderSectionProps) => {
+
+  const [tool, setTool] = useState<Tool>('rectangle');
 
   return (
     <section className="toolbar border-b p-2 flex justify-between text-sm h-[46px]">
@@ -31,23 +35,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <ImagePlus className="h-4 w-4 mr-1" /> Add image
         </button>
 
-        <button className="pl-2.5 py-2 pr-2 flex items-center text-xs rounded-md hover:bg-muted border shadow-sm">
-          <Square className="w-4 h-4 mr-1.5" />
-          Rectangle
-          <ChevronDown className="h-3 w-3 ml-1" />
-        </button>
-        
-        {/* 
-          <button className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
-            <TriangleRight className="w-4 h-4 mr-1.5 -rotate-[10deg] mb-0.5" />
-            Polygon
-          </button>
-
-          <button className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
-            <Circle className="w-4 h-4 mr-1 scale-y-90 mb-0.5" />
-            Ellipse
-          </button>
-        */}
+        <ToolSelector 
+          tool={tool} 
+          onToolChange={setTool} />
       </section>
     </section>
   )
