@@ -1,7 +1,23 @@
-
 .page.annotate {
   --bg-muted-light: #f3f7fa;
   --border-color: #d7dfea;
+}
+
+.tool-dropdown div[role="option"] {
+  padding-left: 0.5em !important;
+}
+
+.tool-dropdown div[role="option"] span[aria-hidden="true"] > svg {
+  display: none; 
+}
+
+.page.annotate .toolbar button[role="tab"][aria-selected="true"] {
+  background-color: #000; 
+  color: #fff;
+}
+
+.page.annotate .toolbar button[role="tab"][aria-selected="false"] {
+  color: #64748b; /* text-muted-foreground */
 }
 
 .page.annotate .workspace {
