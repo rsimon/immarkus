@@ -1,13 +1,28 @@
+import { useEffect, useState } from 'react';
 import { Image, MessagesSquare, MousePointerSquare } from 'lucide-react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { AnnotationList } from './AnnotationList';
+import { useSelection } from '@annotorious/react-manifold';
+import { CurrentSelection } from './CurrentSelection';
 
 export const SidebarSection = () => {
 
+  const { selected } = useSelection();
+
+  const [tab, setTab] = useState('selection');
+
+  useEffect(() => {
+    if (selected.length > 0)
+      setTab('selection');
+  }, [selected]);
+
   return (
     <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col">
-      <Tabs.Root asChild defaultValue="selection">
+      <Tabs.Root 
+        asChild      
+        value={tab}
+        onValueChange={setTab}>
         <>
           <section className="toolbar border-b h-[46px] flex items-center">
             <Separator orientation="vertical" className="h-4" />
@@ -30,7 +45,7 @@ export const SidebarSection = () => {
           <section className="sidebar-content bg-muted/80 flex flex-grow border-l">
             <Tabs.Content value="selection" asChild>
               <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
-                No annotation selected
+                <CurrentSelection />
               </div> 
             </Tabs.Content>
 

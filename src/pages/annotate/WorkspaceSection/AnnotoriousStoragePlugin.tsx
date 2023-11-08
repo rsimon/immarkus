@@ -28,8 +28,6 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
     if (anno && store) {
       const annotations = store.getAnnotations(imageId);
 
-      console.log('storage pluign', annotations);
-
       // @ts-ignore
       anno.setAnnotations(annotations.filter(a => a.target.selector));
 

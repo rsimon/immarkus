@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { ImageAnnotation, createBody, useAnnotationStore, useSelection } from '@annotorious/react';
+import { ImageAnnotation, createBody } from '@annotorious/react';
 import { Entity } from '@/model';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
@@ -8,15 +8,16 @@ import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
 import { CurrentSelectionTagList } from './CurrentSelectionTagList';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 
 export const CurrentSelection = () => {
 
-  const store = useAnnotationStore();
+  const anno = useAnnotoriousManifold();
 
-  const selection = useSelection<ImageAnnotation>();
+  const selection = useSelection();
 
   const selected: ImageAnnotation | undefined = 
-    selection.selected?.length > 0 ? selection.selected[0].annotation : undefined;
+    selection.selected?.length > 0 ? anno.getAnnotationById(selection.selected[0].id) : undefined;
 
   const ref = useRef<HTMLButtonElement>();
 
@@ -31,7 +32,9 @@ export const CurrentSelection = () => {
     }
   }, [selected]);
 
-  const onDelete = () => store.deleteAnnotation(selected.id);
+  const onDelete = () => { 
+    anno.removeAnnotation(selected.id);
+  }
 
   const onKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key !== 'Tab')
@@ -45,7 +48,7 @@ export const CurrentSelection = () => {
       source: entity.id
     }, new Date());
 
-    store.addBody(body);
+    // store.addBody(body);
 
     setCommandsOpen(false);
   }
