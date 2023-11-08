@@ -32,9 +32,8 @@ export const CurrentSelection = () => {
     }
   }, [selected]);
 
-  const onDelete = () => { 
-    anno.removeAnnotation(selected.id);
-  }
+  const onDelete = () => 
+    anno.deleteAnnotation(selected.id);
 
   const onKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key !== 'Tab')
@@ -48,7 +47,7 @@ export const CurrentSelection = () => {
       source: entity.id
     }, new Date());
 
-    // store.addBody(body);
+    anno.addBody(body);
 
     setCommandsOpen(false);
   }
