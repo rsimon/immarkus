@@ -14,13 +14,31 @@ export const Annotate = () => {
   const params = useParams();
 
   const images = params.images.split('&').map(id => store?.getImage(id)).filter(Boolean);
+  
+  const onSaving = () => {
+    // TODO
+  }
+
+  const onSaved = () => {
+    // TODO
+  }
+
+  const onSaveError = () => {
+    // TODO
+  }
 
   return (
     <div className="page annotate h-full w-full">
       <AnnotoriousManifold>
         <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-          <HeaderSection images={images} />
-          <WorkspaceSection images={images} />
+          <HeaderSection
+            images={images} />
+
+          <WorkspaceSection 
+            images={images} 
+            onSaving={onSaving} 
+            onSaved={onSaved}
+            onSaveError={onSaveError} />
         </main>
 
         <SidebarSection />

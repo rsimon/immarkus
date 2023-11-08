@@ -1,6 +1,7 @@
 import { Image, MessagesSquare, MousePointerSquare } from 'lucide-react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
+import { AnnotationList } from './AnnotationList';
 
 export const SidebarSection = () => {
 
@@ -35,7 +36,7 @@ export const SidebarSection = () => {
 
                 <Tabs.Content value="annotation-list" asChild>
                   <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
-                    Annotation List
+                    <AnnotationList />
                   </div> 
                 </Tabs.Content>
 

@@ -11,6 +11,12 @@ interface WorkspaceSectionProps {
 
   images: Image[];
 
+  onSaving(): void;
+
+  onSaved(): void;
+
+  onSaveError(error: Error): void;
+
 }
 
 const createInitialValue= (list: string[], direction = 'row') => {
@@ -27,7 +33,11 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   return (
     <section className="workspace flex-grow bg-muted">
       {props.images.length === 1 ? (
-        <AnnotatableImage image={props.images[0]} />
+        <AnnotatableImage 
+          image={props.images[0]} 
+          onSaving={props.onSaving} 
+          onSaved={props.onSaved}
+          onSaveError={props.onSaveError} />
       ) : props.images.length > 1 ? (
         <Mosaic
           renderTile={(id, path) => (
@@ -76,7 +86,11 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
                 </>
               )}>
 
-              <AnnotatableImage image={props.images.find(i => i.id === id)} />
+              <AnnotatableImage 
+                image={props.images.find(i => i.id === id)} 
+                onSaving={props.onSaving} 
+                onSaved={props.onSaved}
+                onSaveError={props.onSaveError} />
             </MosaicWindow>
           )}
           initialValue={createInitialValue(props.images.map(i => i.id))} />

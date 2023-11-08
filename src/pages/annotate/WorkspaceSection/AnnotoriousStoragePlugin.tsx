@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { AnnotoriousImageAnnotator, W3CAnnotation, useAnnotator } from '@annotorious/react';
-import { Image } from '@/model';
 import { useStore } from '@/store';
 
-interface StoragePluginProps {
+interface AnnotoriousStoragePluginProps {
 
-  image: Image;
+  imageId: string;
 
   onSaving(): void;
 
@@ -17,9 +16,9 @@ interface StoragePluginProps {
 
 const MIN_SAVE_WAIT = 1000;
 
-export const StoragePlugin = (props: StoragePluginProps) => {
+export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) => {
 
-  const { image } = props;
+  const { imageId } = props;
 
   const store = useStore()!;
 
@@ -27,9 +26,9 @@ export const StoragePlugin = (props: StoragePluginProps) => {
 
   useEffect(() => {
     if (anno && store) {
-      const { id } = image;
+      const annotations = store.getAnnotations(imageId);
 
-      const annotations = store.getAnnotations(id);
+      console.log('storage pluign', annotations);
 
       // @ts-ignore
       anno.setAnnotations(annotations.filter(a => a.target.selector));
@@ -50,13 +49,13 @@ export const StoragePlugin = (props: StoragePluginProps) => {
       }
 
       anno.on('createAnnotation', annotation =>
-        withSaveStatus(() => store.upsertAnnotation(id, annotation)));
+        withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
 
       anno.on('deleteAnnotation', annotation =>
-        withSaveStatus(() => store.deleteAnnotation(id, annotation)));
+        withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
 
       anno.on('updateAnnotation', annotation =>
-        withSaveStatus(() => store.upsertAnnotation(id, annotation)));
+        withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
     }
   }, [anno]);
 
