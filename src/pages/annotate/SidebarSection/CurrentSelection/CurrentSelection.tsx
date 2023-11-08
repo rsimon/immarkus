@@ -17,7 +17,7 @@ export const CurrentSelection = () => {
   const selection = useSelection();
 
   const selected: ImageAnnotation | undefined = 
-    selection.selected?.length > 0 ? anno.getAnnotationById(selection.selected[0].id) : undefined;
+    selection.selected?.length > 0 ? selection.selected[0].annotation : undefined;
 
   const ref = useRef<HTMLButtonElement>();
 
