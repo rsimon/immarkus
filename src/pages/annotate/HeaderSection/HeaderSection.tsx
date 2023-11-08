@@ -4,6 +4,8 @@ import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { useState } from 'react';
 
+import './HeaderSection.css';
+
 interface HeaderSectionProps {
 
   images: Image[];

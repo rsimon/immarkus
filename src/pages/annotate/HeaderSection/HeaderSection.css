@@ -1,0 +1,7 @@
+.tool-dropdown div[role="option"] {
+  padding-left: 0.5em !important;
+}
+
+.tool-dropdown div[role="option"] span[aria-hidden="true"] > svg {
+  display: none; 
+}

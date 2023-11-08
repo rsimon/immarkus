@@ -25,7 +25,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         <SelectValue className="pr-4" />
       </SelectTrigger>
 
-      <SelectContent>
+      <SelectContent className="tool-dropdown">
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs">
             <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> Rectangle
@@ -38,7 +38,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
           </div>
         </SelectItem>
 
-        <SelectItem value="ellipse">
+        <SelectItem value="ellipse" >
           <div className="flex items-center text-xs">
             <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" /> Ellipse
           </div>
