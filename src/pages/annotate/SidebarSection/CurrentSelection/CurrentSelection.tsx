@@ -57,7 +57,7 @@ export const CurrentSelection = () => {
       No annotation selected
     </div> 
   ) : (
-    <div key={selected.id} className="flex flex-col grow">
+    <div key={selected.id} className="flex flex-col grow h-full">
       {showAsEmpty ? (
         <div className="flex grow justify-center items-center">
           <div>

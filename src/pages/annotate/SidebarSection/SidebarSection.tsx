@@ -44,7 +44,7 @@ export const SidebarSection = () => {
 
           <section className="sidebar-content bg-muted/80 flex flex-grow border-l">
             <Tabs.Content value="selection" asChild>
-              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>

@@ -3,6 +3,10 @@
   --border-color: #d7dfea;
 }
 
+.page.annotate .tool-dropdown-trigger svg {
+  margin: 0 0 0 0.125rem;
+}
+
 .tool-dropdown div[role="option"] {
   padding-left: 0.5em !important;
 }
@@ -11,12 +15,12 @@
   display: none; 
 }
 
-.page.annotate .toolbar button[role="tab"][aria-selected="true"] {
+.page.annotate .toolbar button[aria-selected="true"] {
   background-color: #000; 
   color: #fff;
 }
 
-.page.annotate .toolbar button[role="tab"][aria-selected="false"] {
+.page.annotate .toolbar button[aria-selected="false"] {
   color: #64748b; /* text-muted-foreground */
 }
 
