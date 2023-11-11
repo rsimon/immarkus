@@ -32,16 +32,20 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         className="flex items-center text-xs rounded-md hover:bg-muted">
         <button 
           onClick={props.onClick}
-          className="pl-2 py-2 pr-1.5 hover:bg-slate-200 rounded-l-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          className="pl-2 py-2 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <SelectValue className="pr-0" />
         </button>        
         
-        <SelectTrigger className="tool-dropdown-trigger rounded-l-none border-none bg-transparent 
-          pl-0.5 pr-1.5 hover:bg-slate-200 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0" />
+        <SelectTrigger 
+          className="tool-dropdown-trigger rounded-l-none bg-transparent border-t-0 border-r-0 border-b-0 
+            border-l-1 border-white/30 pl-[1px] pr-1 hover:bg-slate-200 focus:outline-none focus:ring-0 
+            focus:ring-ring focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+            focus-visible:ring-offset-2" />
       </div>
 
       <SelectContent
         align="end" 
+        alignOffset={-14}
         className="tool-dropdown">
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs">
