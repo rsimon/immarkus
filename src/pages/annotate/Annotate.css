@@ -15,12 +15,12 @@
   display: none; 
 }
 
-.page.annotate .toolbar button[aria-selected="true"] {
+.page.annotate .toolbar :is(button[aria-selected="true"], [role="button"][aria-selected="true"]) {
   background-color: #000; 
   color: #fff;
 }
 
-.page.annotate .toolbar button[aria-selected="false"] {
+.page.annotate .toolbar button[role="tab"][aria-selected="false"] {
   color: #64748b; /* text-muted-foreground */
 }
 

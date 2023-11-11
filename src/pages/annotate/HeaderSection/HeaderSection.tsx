@@ -4,7 +4,6 @@ import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { useState } from 'react';
 import { Separator } from '@/ui/Separator';
-import { Toggle } from '@radix-ui/react-toggle';
 
 interface HeaderSectionProps {
 
@@ -16,7 +15,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const [tool, setTool] = useState<Tool>('rectangle');
 
-  const [mode, setMode] = useState<'move' | 'draw'>('move');
+  const [mode, setMode] = useState<'move' | 'draw'>('draw');
+
+  const onEnableDrawing = (tool?: Tool) => {
+    if (tool)
+      setTool(tool);
+
+    setMode('draw');
+  }
 
   return (
     <section className="toolbar border-b p-2 flex justify-between text-sm h-[46px]">
@@ -42,17 +48,19 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        <Toggle 
+        <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={mode === 'move'}
-          data-state={mode === 'move' ? 'active' : undefined}>
+          data-state={mode === 'move' ? 'active' : undefined}
+          onClick={() => setMode('move')}>
           <MousePointer2 className="h-4 w-4 mr-1" /> Move
-        </Toggle>
+        </button>
 
         <ToolSelector 
           tool={tool} 
           active={mode === 'draw'}
-          onToolChange={setTool} />
+          onClick={() => onEnableDrawing()}
+          onToolChange={onEnableDrawing} />
       </section>
     </section>
   )
