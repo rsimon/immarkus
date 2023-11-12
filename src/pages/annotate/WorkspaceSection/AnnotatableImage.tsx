@@ -1,6 +1,7 @@
-import { OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat } from '@annotorious/react';
-import { Image } from '@/model';
+import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat } from '@annotorious/react';
 import { Annotorious } from '@annotorious/react-manifold';
+import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
+import { Image } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
 
@@ -45,6 +46,9 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
             showNavigationControl: false,
             crossOriginPolicy: 'Anonymous'
           }} />
+
+        <AnnotoriousPlugin
+          plugin={SelectorPack} />
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}
