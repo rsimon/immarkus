@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
-import { HeaderSection } from './HeaderSection';
+import { HeaderSection, ToolMode, Tool } from './HeaderSection';
 import { SidebarSection } from './SidebarSection';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -14,6 +15,10 @@ export const Annotate = () => {
   const params = useParams();
 
   const images = params.images.split('&').map(id => store?.getImage(id)).filter(Boolean);
+
+  const [tool, setTool] = useState<Tool>('rectangle');
+
+  const [mode, setMode] = useState<ToolMode>('move');
   
   const onSaving = () => {
     // TODO
@@ -32,10 +37,16 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
           <HeaderSection
-            images={images} />
+            images={images} 
+            mode={mode}
+            tool={tool}
+            onChangeMode={setMode}
+            onChangeTool={setTool} />
 
           <WorkspaceSection 
             images={images} 
+            mode={mode}
+            tool={tool}
             onSaving={onSaving} 
             onSaved={onSaved}
             onSaveError={onSaveError} />

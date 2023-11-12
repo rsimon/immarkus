@@ -4,12 +4,17 @@ import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { AnnotatableImage } from './AnnotatableImage';
+import { Tool, ToolMode } from '../HeaderSection';
 
 import 'react-mosaic-component/react-mosaic-component.css';
 
 interface WorkspaceSectionProps {
 
   images: Image[];
+
+  mode: ToolMode;
+
+  tool: Tool;
 
   onSaving(): void;
 
@@ -35,6 +40,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       {props.images.length === 1 ? (
         <AnnotatableImage 
           image={props.images[0]} 
+          mode={props.mode}
+          tool={props.tool}
           onSaving={props.onSaving} 
           onSaved={props.onSaved}
           onSaveError={props.onSaveError} />
@@ -88,6 +95,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
               <AnnotatableImage 
                 image={props.images.find(i => i.id === id)} 
+                mode={props.mode}
+                tool={props.tool}
                 onSaving={props.onSaving} 
                 onSaved={props.onSaved}
                 onSaveError={props.onSaveError} />
