@@ -1,9 +1,11 @@
-import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat } from '@annotorious/react';
+import { useContext, useEffect } from 'react';
+import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat, useViewer } from '@annotorious/react';
 import { Annotorious } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { Image } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
+import { OSDViewerContext } from '../OSDViewerManifold';
 
 import '@annotorious/react/annotorious-react.css';
 
@@ -23,6 +25,29 @@ interface AnnotatableImageProps {
 
 }
 
+/**
+ * A simple shim that passes the OSD viewer instance upwards to the manifold.
+ */
+const ManifoldConnector = () => {
+
+  const viewer = useViewer();
+
+  const { setViewers } = useContext(OSDViewerContext);
+
+  useEffect(() => {
+    if (viewer) {
+      setViewers(viewers => [...viewers, viewer]);
+
+      return () => {
+        setViewers(viewers => viewers.filter(v => v !== viewer));
+      }
+    }
+  }, [viewer]);
+
+  return null;
+
+}
+
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   return (
@@ -32,6 +57,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         tool={props.tool}>
+
+        <ManifoldConnector />
 
         <OpenSeadragonViewer
           className="osd-container"

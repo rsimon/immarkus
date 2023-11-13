@@ -3,6 +3,7 @@ import { ChevronLeft, ImagePlus, MousePointer2, ZoomIn, ZoomOut } from 'lucide-r
 import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
+import { useViewers } from '../OSDViewerManifold';
 
 interface HeaderSectionProps {
 
@@ -22,11 +23,19 @@ export type ToolMode = 'move' | 'draw';
 
 export const HeaderSection = (props: HeaderSectionProps) => {
 
+  // OpenSeadragon viewer instances
+  const viewers = useViewers();
+
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
       props.onChangeTool(tool);
 
     props.onChangeMode('draw');
+  }
+
+  const onZoom = (factor: number) => () => {
+    const viewer = viewers[0];
+    viewer.viewport.zoomBy(factor);
   }
 
   return (
@@ -59,7 +68,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
             disabled:opacity-25">
-          <ZoomIn className="h-4 w-4" />
+          <ZoomIn 
+            className="h-4 w-4" 
+            onClick={onZoom(2)}/>
         </button>
 
         <button
@@ -67,7 +78,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
             disabled:opacity-25">
-          <ZoomOut className="h-4 w-4" />
+          <ZoomOut 
+            className="h-4 w-4" 
+            onClick={onZoom(0.5)} />
         </button>
 
         <button 

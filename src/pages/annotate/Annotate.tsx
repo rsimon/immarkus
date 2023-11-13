@@ -7,6 +7,7 @@ import { SidebarSection } from './SidebarSection';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';
+import { OSDViewerManifold } from './OSDViewerManifold';
 
 export const Annotate = () => {
 
@@ -35,24 +36,26 @@ export const Annotate = () => {
   return (
     <div className="page annotate h-full w-full">
       <AnnotoriousManifold>
-        <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-          <HeaderSection
-            images={images} 
-            mode={mode}
-            tool={tool}
-            onChangeMode={setMode}
-            onChangeTool={setTool} />
+        <OSDViewerManifold>
+          <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+            <HeaderSection
+              images={images} 
+              mode={mode}
+              tool={tool}
+              onChangeMode={setMode}
+              onChangeTool={setTool} />
 
-          <WorkspaceSection 
-            images={images} 
-            mode={mode}
-            tool={tool}
-            onSaving={onSaving} 
-            onSaved={onSaved}
-            onSaveError={onSaveError} />
-        </main>
+            <WorkspaceSection 
+              images={images} 
+              mode={mode}
+              tool={tool}
+              onSaving={onSaving} 
+              onSaved={onSaved}
+              onSaveError={onSaveError} />
+          </main>
 
-        <SidebarSection />
+          <SidebarSection />
+        </OSDViewerManifold>
       </AnnotoriousManifold>
     </div>
   )
