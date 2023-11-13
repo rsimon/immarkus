@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ImagePlus, MousePointer2 } from 'lucide-react';
+import { ChevronLeft, ImagePlus, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
@@ -47,11 +47,28 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
       <section className="toolbar-right flex gap-1.5 items-center">
         <button 
-          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <ImagePlus className="h-4 w-4 mr-1" /> Add image
         </button>
 
         <Separator orientation="vertical" className="h-4" />
+
+        <button
+          disabled={props.images.length > 1}
+          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+            disabled:opacity-25">
+          <ZoomIn className="h-4 w-4" />
+        </button>
+
+        <button
+          disabled={props.images.length > 1}
+          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+            disabled:opacity-25">
+          <ZoomOut className="h-4 w-4" />
+        </button>
 
         <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
