@@ -4,30 +4,19 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import { useStore } from '@/store';
-import { Image } from '@/model';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 
-interface ImageNotesProps {
+export const ImageNotes = () => {
 
-  image: Image;
-
-  onSaving(): void;
-
-  onSaved(): void;
-
-  onError(error: Error): void;
-
-}
-
-export const ImageNotes = (props: ImageNotesProps) => {
-
-  const { image } = props;
+  const anno = useAnnotoriousManifold();
 
   const store = useStore();
+
+  const images = anno.sources.map(source => store.getImage(source));
 
   const textarea = useRef<HTMLTextAreaElement>();
 
   const metadata: W3CAnnotation | undefined = 
-    // @ts-ignore
     store.getAnnotations(image.id).find(a => !a.target.selector);
 
   const note = metadata ?

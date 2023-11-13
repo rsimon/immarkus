@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Image, MessagesSquare, MousePointerSquare } from 'lucide-react';
+import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
-import { AnnotationList } from './AnnotationList';
-import { useSelection } from '@annotorious/react-manifold';
 import { CurrentSelection } from './CurrentSelection';
+import { AnnotationList } from './AnnotationList';
+import { ImageNotes } from './ImageNotes';
 
 export const SidebarSection = () => {
 
@@ -59,7 +60,7 @@ export const SidebarSection = () => {
 
             <Tabs.Content value="image-notes" asChild>
               <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3 px-4">
-                Image Notes
+                <ImageNotes />
               </div> 
             </Tabs.Content>
           </section>
