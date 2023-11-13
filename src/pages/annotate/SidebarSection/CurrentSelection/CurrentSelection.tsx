@@ -14,7 +14,7 @@ export const CurrentSelection = () => {
 
   const anno = useAnnotoriousManifold();
 
-  const selection = useSelection();
+  const selection = useSelection<ImageAnnotation>();
 
   const selected: ImageAnnotation | undefined = 
     selection.selected?.length > 0 ? selection.selected[0].annotation : undefined;

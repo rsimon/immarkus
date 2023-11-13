@@ -49,6 +49,7 @@
     "react-router-dom": "^6.15.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
+    "timeago-react": "^3.0.6",
     "uuid": "^9.0.0"
   }
 }

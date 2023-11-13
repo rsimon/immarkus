@@ -24,7 +24,7 @@ export const SidebarSection = () => {
         value={tab}
         onValueChange={setTab}>
         <>
-          <section className="toolbar border-b h-[46px] flex items-center">
+          <section className="toolbar border-b h-[46px] flex items-center flex-shrink-0">
             <Separator orientation="vertical" className="h-4" />
 
             <Tabs.List className="flex gap-1.5 py-0.5 px-2">
@@ -42,21 +42,23 @@ export const SidebarSection = () => {
             </Tabs.List>
           </section>
 
-          <section className="sidebar-content bg-muted/80 flex flex-grow border-l">
+          <section className="sidebar-content bg-muted/80 flex flex-grow border-l overflow-y-scroll">
             <Tabs.Content value="selection" asChild>
-              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3">
+              <div 
+                className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3 px-4">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="annotation-list" asChild>
-              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+              <div 
+                className="flex-grow text-sm justify-center items-center w-full p-3 px-4">
                 <AnnotationList />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground">
+              <div className="flex flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3 px-4">
                 Image Notes
               </div> 
             </Tabs.Content>
