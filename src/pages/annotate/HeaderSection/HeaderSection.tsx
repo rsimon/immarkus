@@ -37,7 +37,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   const onZoom = (factor: number) => () => {
-    const viewer = viewers[0];
+    const viewer = Array.from(viewers.values())[0];
     viewer.viewport.zoomBy(factor);
   }
 
@@ -70,7 +70,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           disabled={props.images.length > 1}
           className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-            disabled:opacity-25">
+            disabled:opacity-25 disabled:hover:bg-transparent">
           <ZoomIn 
             className="h-4 w-4" 
             onClick={onZoom(2)}/>
@@ -80,7 +80,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           disabled={props.images.length > 1}
           className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-            disabled:opacity-25">
+            disabled:opacity-25 disabled:hover:bg-transparent">
           <ZoomOut 
             className="h-4 w-4" 
             onClick={onZoom(0.5)} />

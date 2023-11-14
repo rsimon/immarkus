@@ -8,6 +8,7 @@ import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../HeaderSection';
 
 import 'react-mosaic-component/react-mosaic-component.css';
+import { useViewers } from '../OSDViewerManifold';
 
 interface WorkspaceSectionProps {
 
@@ -31,6 +32,8 @@ const createInitialValue= (list: string[], direction = 'row') => {
 }
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
+  
+  const viewers = useViewers();
 
   const onCloseWindow = (
     actions: MosaicRootActions<MosaicKey>, 
@@ -39,6 +42,11 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   ) => () => {
     actions.remove(path);
     props.onRemoveImage(props.images.find(image => image.id === imageId));
+  }
+
+  const onZoom = (factor: number, imageId: string) => () => {
+    const viewer = viewers.get(imageId);
+    viewer.viewport.zoomBy(factor);
   }
 
   return (
@@ -55,14 +63,14 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               path={path}
               className="text-xs"
               createNode={() => id}
-              title={id}
+              title={props.images.find(i => i.id === id).name}
               toolbarControls={(
                 <>
-                  <button>
+                  <button onClick={onZoom(2, id)}>
                     <ZoomIn className="h-4 w-4 mr-2.5 text-muted-foreground hover:text-black" />
                   </button>
 
-                  <button>
+                  <button onClick={onZoom(0.5, id)}>
                     <ZoomOut className="h-4 w-4 mr-1.5 text-muted-foreground hover:text-black" />
                   </button>
 
@@ -73,6 +81,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
                       <MosaicWindowContext.Consumer>
                         {({ mosaicWindowActions })  => (
                           <>
+                            {/*
                             <Button 
                               variant="ghost" 
                               size="icon"
@@ -80,6 +89,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
                               onClick={() => mosaicWindowActions.split()}>
                               <PanelLeft className="h-4 w-4" />
                             </Button>
+                            */}
 
                             <Button 
                               variant="ghost" 

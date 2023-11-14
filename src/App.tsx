@@ -18,7 +18,7 @@ export const App = () => {
 
         <Route path="images" element={<Images />} />
 
-        <Route path="annotate/:images" element={<Annotate />} />
+        <Route path="annotate/:images" element={store ? <Annotate /> : <Start />} />
 
         <Route path="vocabulary" element={<Vocabulary />} />
 

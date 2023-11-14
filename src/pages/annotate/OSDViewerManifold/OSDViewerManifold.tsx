@@ -3,9 +3,9 @@ import { Viewer } from '@annotorious/react';
 
 interface OSDViewerContextValue {
 
-  viewers: Viewer[]
+  viewers: Map<string, Viewer>;
 
-  setViewers: React.Dispatch<React.SetStateAction<Viewer[]>>
+  setViewers: React.Dispatch<React.SetStateAction<Map<string, Viewer>>>
 
 }
 
@@ -19,7 +19,7 @@ export const OSDViewerContext = createContext<OSDViewerContextValue>({
 
 export const OSDViewerManifold = (props: { children: ReactNode }) => {
 
-  const [viewers, setViewers] = useState<Viewer[]>([]);
+  const [viewers, setViewers] = useState(new Map<string, Viewer>());
 
   return (
     <OSDViewerContext.Provider value={{ viewers, setViewers }}>

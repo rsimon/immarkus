@@ -23,7 +23,7 @@ interface AnnotatableImageProps {
 /**
  * A simple shim that passes the OSD viewer instance upwards to the manifold.
  */
-const ManifoldConnector = () => {
+const ManifoldConnector = (props: { source: string }) => {
 
   const viewer = useViewer();
 
@@ -31,10 +31,10 @@ const ManifoldConnector = () => {
 
   useEffect(() => {
     if (viewer) {
-      setViewers(viewers => [...viewers, viewer]);
+      setViewers(m => new Map(m.entries()).set(props.source, viewer));
 
       return () => {
-        setViewers(viewers => viewers.filter(v => v !== viewer));
+        setViewers(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== props.source)));
       }
     }
   }, [viewer]);
@@ -69,7 +69,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingEnabled={props.mode === 'draw'}
         tool={props.tool}>
 
-        <ManifoldConnector />
+        <ManifoldConnector source={props.image.id} />
 
         <OpenSeadragonViewer
           className="osd-container"
