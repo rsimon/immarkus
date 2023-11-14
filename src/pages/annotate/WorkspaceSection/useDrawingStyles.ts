@@ -1,6 +1,5 @@
 import { Vocabulary } from '@/model';
-import { useStore, useVocabulary } from '@/store';
-import { VocabularyStore } from '@/store/VocabularyStore';
+import { useVocabulary } from '@/store';
 import { Color, DrawingStyle, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 export const colorByEntity = (
