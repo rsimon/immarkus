@@ -21,9 +21,9 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@annotorious/react": "file:../../annotorious/annotorious/packages/annotorious-react",
-    "@annotorious/react-manifold": "file:../../annotorious/annotorious-react-manifold",
-    "@annotorious/selector-pack": "file:../../annotorious/annotorious-v3-extensions/annotorious-selector-pack",
+    "@annotorious/react": "^3.0.0-pre-alpha-57",
+    "@annotorious/react-manifold": "^0.0.8",
+    "@annotorious/selector-pack": "^0.1.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
