@@ -16,12 +16,6 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
-  onSaving(): void;
-
-  onSaved(): void;
-
-  onSaveError(error: Error): void;
-
 }
 
 const createInitialValue= (list: string[], direction = 'row') => {
@@ -41,10 +35,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
         <AnnotatableImage 
           image={props.images[0]} 
           mode={props.mode}
-          tool={props.tool}
-          onSaving={props.onSaving} 
-          onSaved={props.onSaved}
-          onSaveError={props.onSaveError} />
+          tool={props.tool} />
       ) : props.images.length > 1 ? (
         <Mosaic
           renderTile={(id, path) => (
@@ -96,10 +87,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               <AnnotatableImage 
                 image={props.images.find(i => i.id === id)} 
                 mode={props.mode}
-                tool={props.tool}
-                onSaving={props.onSaving} 
-                onSaved={props.onSaved}
-                onSaveError={props.onSaveError} />
+                tool={props.tool} />
             </MosaicWindow>
           )}
           initialValue={createInitialValue(props.images.map(i => i.id))} />

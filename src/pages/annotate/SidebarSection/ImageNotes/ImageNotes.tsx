@@ -1,10 +1,6 @@
-import { useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { W3CAnnotation } from '@annotorious/react';
-import { Button } from '@/ui/Button';
-import { Textarea } from '@/ui/Textarea';
 import { useStore } from '@/store';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { ImageNotesItem } from './ImageNotesItem';
 
 export const ImageNotes = () => {
 
@@ -14,55 +10,24 @@ export const ImageNotes = () => {
 
   const images = anno.sources.map(source => store.getImage(source));
 
-  const textarea = useRef<HTMLTextAreaElement>();
+  return images.length === 1 ? (
+    <div className="py-2 grow">
+      <ImageNotesItem image={images[0]} />
+    </div>
+  ) : (
+    <div className="py-2 grow">
+      <ul>
+        {images.map(image => (
+          <li key={image.id}>
+            <h2 className="text-xs font-medium mb-2">
+              {image.name}
+            </h2>
 
-  const metadata: W3CAnnotation | undefined = 
-    store.getAnnotations(image.id).find(a => !a.target.selector);
-
-  const note = metadata ?
-    Array.isArray(metadata.body) ? 
-      (metadata.body.find(b => !b.purpose).value || '') : 
-      (metadata.body?.value || '') : '';
-
-  const onSaveNote = (evt: React.FormEvent) => {
-    evt.preventDefault();
-
-    const next: W3CAnnotation = metadata ? {
-      ...metadata,
-      body: {
-        value: textarea.current.value
-      }
-    } : {
-      '@context': 'http://www.w3.org/ns/anno.jsonld',
-      type: 'Annotation',
-      id: uuidv4(),
-      body: {
-        value: textarea.current.value
-      },
-      target: {
-        source: image.id
-      }
-    };
-
-    props.onSaving();
-
-    store.upsertAnnotation(image.id, next)
-      .then(() => props.onSaved())
-      .catch(props.onError);
-  }
-
-  return (
-    <form onSubmit={onSaveNote} className="grow">
-      <Textarea 
-        ref={textarea} 
-        className="mb-3"
-        rows={10}
-        defaultValue={note} />
-      
-      <div>
-        <Button>Save</Button>
-      </div>
-    </form>
+            <ImageNotesItem image={image} />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 
 }

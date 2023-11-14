@@ -19,7 +19,22 @@ export const AnnotationList = () => {
   const onDelete = (annotation: ImageAnnotation) => () =>
     anno.deleteAnnotation(annotation.id);
 
-  return (
+  const imageIds = Array.from(annotations.keys());
+
+  return imageIds.length === 1 ? (
+    <div className="py-2 grow">
+      <ul>
+        {annotations.get(imageIds[0]).map(annotation => (
+          <li key={annotation.id} onClick={onSelect(annotation)}>
+            <AnnotationListItem 
+              annotation={annotation} 
+              onSelect={onSelect(annotation)}
+              onDelete={onDelete(annotation)} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
     <div className="py-2 grow">
       <ul>
         {Array.from(annotations.keys()).map(source => (
@@ -41,7 +56,7 @@ export const AnnotationList = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </div>  
   )
 
 }

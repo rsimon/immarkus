@@ -4,6 +4,7 @@ import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
 import { useViewers } from '../OSDViewerManifold';
+import { SavingState } from '../SavingState';
 
 interface HeaderSectionProps {
 
@@ -23,7 +24,6 @@ export type ToolMode = 'move' | 'draw';
 
 export const HeaderSection = (props: HeaderSectionProps) => {
 
-  // OpenSeadragon viewer instances
   const viewers = useViewers();
 
   const onEnableDrawing = (tool?: Tool) => {
@@ -52,6 +52,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
           </span>
         </div>
+
+        <SavingState.Indicator />
       </section>
 
       <section className="toolbar-right flex gap-1.5 items-center">

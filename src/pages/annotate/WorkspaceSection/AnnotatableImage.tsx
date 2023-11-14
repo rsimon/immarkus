@@ -6,6 +6,7 @@ import { Image } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
 import { OSDViewerContext } from '../OSDViewerManifold';
+import { useSavingState } from '../SavingState';
 
 import '@annotorious/react/annotorious-react.css';
 
@@ -16,12 +17,6 @@ interface AnnotatableImageProps {
   mode: ToolMode;
 
   tool: Tool;
-
-  onSaving(): void;
-
-  onSaved(): void;
-
-  onSaveError(error: Error): void;
 
 }
 
@@ -49,6 +44,21 @@ const ManifoldConnector = () => {
 }
 
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
+
+  const { setSavingState } = useSavingState();
+
+  const onSave = () => setSavingState({ value: 'saving' });
+
+  const onSaved = () => setSavingState({ value: 'success' });
+
+  const onError = (error: Error) => {
+    console.error(error);
+
+    setSavingState({
+      value: 'failed',
+      message: `Could not save the last annotation. Error: ${error.message}`
+    });
+  }
 
   return (
     <Annotorious source={props.image.id}>
@@ -79,9 +89,9 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}
-          onSaving={props.onSaving} 
-          onSaved={props.onSaved}
-          onError={props.onSaveError} />
+          onSaving={onSave} 
+          onSaved={onSaved}
+          onError={onError} />
       </OpenSeadragonAnnotator>
     </Annotorious>
   )

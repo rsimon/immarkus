@@ -21,8 +21,6 @@ export const OSDViewerManifold = (props: { children: ReactNode }) => {
 
   const [viewers, setViewers] = useState<Viewer[]>([]);
 
-  console.log('manifold!', viewers);
-
   return (
     <OSDViewerContext.Provider value={{ viewers, setViewers }}>
       {props.children}
