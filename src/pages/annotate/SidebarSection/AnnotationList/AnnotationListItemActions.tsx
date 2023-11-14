@@ -53,8 +53,4 @@ export const AnnotationListItemActions = (props: AnnotationListItemActionsProps)
     </>
   )
 
-<<<<<<< HEAD:src/pages/annotate/AnnotationList/AnnotationListItemActions.tsx
 }
-=======
-}
->>>>>>> multi-image:src/pages/annotate/SidebarSection/AnnotationList/AnnotationListItemActions.tsx
