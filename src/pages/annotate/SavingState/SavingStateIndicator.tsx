@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'; 
-import { Check, X } from 'lucide-react';
+import { FolderCheck, FolderSync, FolderX } from 'lucide-react';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/ui/Popover"
 import { useSavingState } from './useSavingState';
 
 interface SavingStateIndicatorProps {
@@ -19,6 +24,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    console.log('saving mount')
     if (!fadeOut)
       return;
 
@@ -32,19 +38,66 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
   }, [savingState]);
 
   return (
-    <div className="saving-indicator" style={{ opacity }}>
-      {savingState.value === 'success' ? (
-        <div className="save-status success text-xs font-semibold">
-          <Check size={16} /><span>Saved</span>
-        </div>
+    <div className="saving-state-indicator">
+      {savingState.value === 'idle' ? (
+        <Popover>
+          <PopoverTrigger 
+            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+              focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
+            <FolderCheck className="h-4 w-4" />
+          </PopoverTrigger>
+
+          <PopoverContent 
+            align="start"
+            alignOffset={-18}
+            className="text-xs flex gap-2 font-medium w-[200px] items-center 
+            justify-center text-green-600">
+            <FolderCheck className="h-4 w-4" />All annotations saved
+          </PopoverContent>
+        </Popover>
+      ) : savingState.value === 'success' ? (
+        <Popover>
+          <PopoverTrigger 
+            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+              focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
+            <FolderCheck className="h-4 w-4" />
+            <span style={{ opacity, width: opacity === 0 ? 0 : undefined}}>
+              <span className="ml-1">Saved</span>
+            </span>
+          </PopoverTrigger>
+
+          <PopoverContent 
+            align="start"
+            alignOffset={-18}
+            className="text-xs flex gap-2font-medium w-[200px] items-center 
+            justify-center text-green-600">
+            <FolderCheck className="h-4 w-4" />All annotations saved
+          </PopoverContent>
+        </Popover>
       ) : savingState.value === 'failed' ? (
-        <div className="save-status failed text-xs font-semibold">
-          <X size={16} /><span>Error</span>
-        </div>
+        <Popover>
+          <PopoverTrigger
+            className="p-2 flex gap-1 text-xs font-medium rounded-md hover:bg-muted focus-visible:outline-none 
+              focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center text-red-600">
+            <FolderX size={16} />
+            <span>Failed</span>
+          </PopoverTrigger> 
+
+          <PopoverContent 
+            align="start"
+            alignOffset={-18}
+            className="text-xs flex gap-2 font-medium w-[200px] items-center 
+            justify-center text-red-600">
+            <FolderX className="h-4 w-4" />{savingState.message || 'Error saving data'}
+          </PopoverContent>
+        </Popover>
       ) : savingState.value === 'saving' ? (
-        <div className="save-status saving text-xs font-semibold">
-          <span>Saving</span>
-        </div>
+        <button 
+          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
+          <FolderSync size={16} />
+          <span className="ml-1">Saving</span>
+        </button>
       ) : null}
     </div>
   )

@@ -64,6 +64,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     <Annotorious source={props.image.id}>
       <OpenSeadragonAnnotator
         adapter={W3CImageFormat(props.image.name)}
+        autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         tool={props.tool}>

@@ -48,7 +48,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             </div>
           </Link>
 
-          <span className="text-xs font-medium mr-2 ml-0.5">
+          <span className="text-xs font-medium ml-0.5">
             {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
           </span>
         </div>
