@@ -14,7 +14,8 @@ export const colorByEntity = (
     const entity = vocabulary.entities.find(e => e.id === firstEntityBody.source);
     if (entity)
       return { 
-        fill: entity.color as Color 
+        fill: entity.color as Color,
+        stroke: entity.color as Color
       };
   }
 
