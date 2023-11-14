@@ -18,7 +18,7 @@ export const App = () => {
 
         <Route path="images" element={<Images />} />
 
-        <Route path="annotate/:id" element={<Annotate />} />
+        <Route path="annotate/:images" element={store ? <Annotate /> : <Start />} />
 
         <Route path="vocabulary" element={<Vocabulary />} />
 
@@ -36,6 +36,9 @@ export const App = () => {
 }
 
 const NotFound = () => {
+
+  // Redirects to start if store is not loaded yet
+  useStore({ redirect: true });
 
   return (
     <div className="page-root">

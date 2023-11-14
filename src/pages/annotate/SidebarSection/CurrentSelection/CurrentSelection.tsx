@@ -1,6 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { ImageAnnotation, createBody, useAnnotationStore, useSelection } from '@annotorious/react';
+import { ImageAnnotation, createBody } from '@annotorious/react';
 import { Entity } from '@/model';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
@@ -8,10 +8,11 @@ import { AnnotationCommands } from '@/components/AnnotationCommands';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
 import { CurrentSelectionTagList } from './CurrentSelectionTagList';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 
 export const CurrentSelection = () => {
 
-  const store = useAnnotationStore();
+  const anno = useAnnotoriousManifold();
 
   const selection = useSelection<ImageAnnotation>();
 
@@ -31,7 +32,8 @@ export const CurrentSelection = () => {
     }
   }, [selected]);
 
-  const onDelete = () => store.deleteAnnotation(selected.id);
+  const onDelete = () => 
+    anno.deleteAnnotation(selected.id);
 
   const onKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key !== 'Tab')
@@ -45,7 +47,7 @@ export const CurrentSelection = () => {
       source: entity.id
     }, new Date());
 
-    store.addBody(body);
+    anno.addBody(body);
 
     setCommandsOpen(false);
   }
@@ -55,7 +57,7 @@ export const CurrentSelection = () => {
       No annotation selected
     </div> 
   ) : (
-    <div key={selected.id} className="flex flex-col grow">
+    <div key={selected.id} className="flex flex-col grow h-full">
       {showAsEmpty ? (
         <div className="flex grow justify-center items-center">
           <div>

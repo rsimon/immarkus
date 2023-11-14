@@ -1,0 +1,1 @@
+export type SavingStateValue = 'idle' | 'saving' | 'success' | 'failed';

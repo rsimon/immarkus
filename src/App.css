@@ -31,7 +31,7 @@ html, body, #app {
   height: 100%;
 }
 
-main {
+.page-root main {
   flex-grow: 1;
   overflow-y: scroll;
   padding: 30px 50px;

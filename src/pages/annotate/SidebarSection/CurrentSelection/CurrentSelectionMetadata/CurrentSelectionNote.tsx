@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
-import { W3CAnnotationBody } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import { Label } from '@/ui/Label';
