@@ -7,6 +7,7 @@ import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
 import { OSDViewerContext } from '../OSDViewerManifold';
 import { useSavingState } from '../SavingState';
+import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
 
@@ -47,6 +48,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { setSavingState } = useSavingState();
 
+  const { colorByEntity } = useDrawingStyles();
+
   const onSave = () => setSavingState({ value: 'saving' });
 
   const onSaved = () => setSavingState({ value: 'success' });
@@ -67,6 +70,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
+        style={colorByEntity}
         tool={props.tool}>
 
         <ManifoldConnector source={props.image.id} />
