@@ -5,6 +5,7 @@ import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
 import { useViewers } from '../OSDViewerManifold';
 import { SavingState } from '../SavingState';
+import { AddImage } from './AddImage';
 
 interface HeaderSectionProps {
 
@@ -13,6 +14,8 @@ interface HeaderSectionProps {
   mode: ToolMode;
 
   tool: Tool;
+
+  onAddImage(image: Image): void;
 
   onChangeTool(tool: Tool): void;
 
@@ -57,11 +60,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
       </section>
 
       <section className="toolbar-right flex gap-1.5 items-center">
-        <button 
-          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
-            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-          <ImagePlus className="h-4 w-4 mr-1" /> Add image
-        </button>
+        <AddImage 
+          current={props.images} 
+          onAddImage={props.onAddImage} />
 
         <Separator orientation="vertical" className="h-4" />
 

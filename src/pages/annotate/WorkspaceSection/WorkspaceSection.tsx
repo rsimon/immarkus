@@ -1,4 +1,5 @@
-import { Mosaic, MosaicContext, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
+import { Mosaic, MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
+import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
 import { PanelLeft, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
@@ -16,6 +17,8 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
+  onRemoveImage(image: Image): void;
+
 }
 
 const createInitialValue= (list: string[], direction = 'row') => {
@@ -28,6 +31,15 @@ const createInitialValue= (list: string[], direction = 'row') => {
 }
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
+
+  const onCloseWindow = (
+    actions: MosaicRootActions<MosaicKey>, 
+    path: MosaicBranch[],
+    imageId: string
+  ) => () => {
+    actions.remove(path);
+    props.onRemoveImage(props.images.find(image => image.id === imageId));
+  }
 
   return (
     <section className="workspace flex-grow bg-muted">
@@ -73,7 +85,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
                               variant="ghost" 
                               size="icon"
                               className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
-                              onClick={() => mosaicActions.remove(path)}>
+                              onClick={onCloseWindow(mosaicActions, path, id)}>
                               <X className="h-4 w-4" />
                             </Button>
                           </>

@@ -24,7 +24,6 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
   const [timer, setTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    console.log('saving mount')
     if (!fadeOut)
       return;
 
@@ -69,7 +68,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
           <PopoverContent 
             align="start"
             alignOffset={-18}
-            className="text-xs flex gap-2font-medium w-[200px] items-center 
+            className="text-xs flex gap-2 font-medium w-[200px] items-center 
             justify-center text-green-600">
             <FolderCheck className="h-4 w-4" />All annotations saved
           </PopoverContent>

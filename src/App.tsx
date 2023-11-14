@@ -37,6 +37,9 @@ export const App = () => {
 
 const NotFound = () => {
 
+  // Redirects to start if store is not loaded yet
+  useStore({ redirect: true });
+
   return (
     <div className="page-root">
       <NavigationSidebar />

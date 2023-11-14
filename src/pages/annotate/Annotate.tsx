@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold } from '@annotorious/react-manifold';
+import { Image } from '@/model';
 import { useStore } from '@/store';
 import { HeaderSection, ToolMode, Tool } from './HeaderSection';
 import { OSDViewerManifold } from './OSDViewerManifold';
@@ -14,13 +15,21 @@ export const Annotate = () => {
 
   const store = useStore({ redirect: true });
 
+  const navigate = useNavigate();
+
   const params = useParams();
 
-  const images = params.images.split('&').map(id => store?.getImage(id)).filter(Boolean);
+  const [images, setImages] = 
+    useState<Image[]>(params.images.split('&').map(id => store?.getImage(id)).filter(Boolean));
 
   const [tool, setTool] = useState<Tool>('rectangle');
 
   const [mode, setMode] = useState<ToolMode>('move');
+
+  useEffect(() => {
+    // Update the URL in response to image change
+    navigate(`/annotate/${images.map(i => i.id).join('&')}`);
+  }, [images]);
 
   return (
     <div className="page annotate h-full w-full">
@@ -32,13 +41,15 @@ export const Annotate = () => {
                 images={images} 
                 mode={mode}
                 tool={tool}
+                onAddImage={image => setImages(images => ([...images, image]))} 
                 onChangeMode={setMode}
                 onChangeTool={setTool} />
 
               <WorkspaceSection 
                 images={images} 
                 mode={mode}
-                tool={tool} />
+                tool={tool} 
+                onRemoveImage={image => setImages(images => images.filter(i => i.id !== image.id))} />
             </main>
 
             <SidebarSection />
