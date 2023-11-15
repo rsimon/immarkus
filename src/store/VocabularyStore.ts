@@ -3,13 +3,7 @@ import { readJSONFile, writeJSONFile } from './utils';
 
 export interface VocabularyStore {
 
-  entities: Entity[];
-
-  relations: Relation[];
-
-  tags: TextTag[];
-
-  vocabulary: { entities: Entity[], relations: Relation[], tags: TextTag[] };
+  getVocabulary(): { entities: Entity[], relations: Relation[], tags: TextTag[] };
 
   addEntity(entity: Entity): Promise<void>;
 
@@ -46,6 +40,8 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       relations: []
 
     });
+
+    const getVocabulary = () => ({ entities, relations, tags });
     
     const addTag = (tag: TextTag) => {
       if (!tags.includes(tag)) {
@@ -109,13 +105,8 @@ export const loadVocabulary = (handle: FileSystemDirectoryHandle): Promise<Vocab
       return writeJSONFile(fileHandle, { tags, entities, relations });
     }
 
-    const getVocabulary = () => ({  });
-
     resolve({
-      get entities() { return entities },
-      get relations() { return relations },
-      get tags() { return tags },
-      get vocabulary() { return { entities, relations, tags } },
+      getVocabulary,
       addTag,
       removeTag,
       addEntity,

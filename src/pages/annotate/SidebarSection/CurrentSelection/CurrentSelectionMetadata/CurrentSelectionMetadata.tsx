@@ -30,7 +30,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const schemaBodies = tags
     .map(body => ({ body, entity: getEntity(body.source) }))
-    .filter(({ entity }) => entity.schema?.length > 0);
+    .filter(({ entity }) => entity?.schema?.length > 0);
 
   const safeKeys = createSafeKeys(schemaBodies);
 
