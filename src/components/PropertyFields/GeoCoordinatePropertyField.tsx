@@ -59,7 +59,7 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
         <Input 
           id={id} 
           className={isValid ? "h-8" : "h-8 border-red-500"} 
-          value={lonLat[1]} 
+          value={lonLat[1] || ''} 
           onChange={evt => setLonLat(([lon, _]) => ([lon, parseInput(evt)]))} />
 
         <Label
@@ -70,7 +70,7 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
         <Input 
           id={id} 
           className={isValid ? "h-8" : "h-8 border-red-500"} 
-          value={lonLat[0]} 
+          value={lonLat[0] || ''} 
           onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
       </div>
     </div>

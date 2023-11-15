@@ -37,7 +37,7 @@ export const NumberPropertyField = (props: NumberPropertyFieldProps) => {
       <Input 
         id={id} 
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
-        value={value} 
+        value={value || ''} 
         onChange={evt => onChange(parseFloat(evt.target.value))} />
     </div>
   )

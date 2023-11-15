@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@annotorious/react": "^3.0.0-pre-alpha-58",
-    "@annotorious/react-manifold": "^0.0.13",
+    "@annotorious/react-manifold": "file:../../annotorious/annotorious-react-manifold",
     "@annotorious/selector-pack": "^0.2.2",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",

@@ -33,7 +33,7 @@ export const TextPropertyField = (props: TextPropertyFieldProps) => {
       <Input 
         id={id} 
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
-        value={value} 
+        value={value || ''} 
         onChange={evt => onChange(evt.target.value)} />
     </div>
   )

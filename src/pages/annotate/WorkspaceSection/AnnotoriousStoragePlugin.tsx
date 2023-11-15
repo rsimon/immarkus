@@ -34,7 +34,6 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
       // Wrap the op so that onSaving, onSaved and onError are
       // called appropriately 
       const withSaveStatus = (fn: () => Promise<void>) => {
-
         props.onSaving();
         
         const minWait = new Promise(resolve => 
