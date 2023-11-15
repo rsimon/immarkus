@@ -1,8 +1,9 @@
 import { PlusCircle } from 'lucide-react';
-import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, useAnnotationStore } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { useVocabulary } from '@/store';
 import { EntityBadge } from '@/components/EntityBadge';
 import { Button } from '@/ui/Button';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 
 interface CurrentSelectionTagListProps {
 
@@ -16,14 +17,14 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
 
   const { bodies } = props.annotation;
 
-  const store = useAnnotationStore();
+  const anno = useAnnotoriousManifold()
 
   const { getEntity } = useVocabulary();
 
   const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
 
   const onDeleteBody = (body: W3CAnnotationBody) =>
-    store.deleteBody(body as AnnotationBody);
+    anno.deleteBody(body as AnnotationBody);
 
   return (
     <ul className="flex flex-wrap py-1 pl-1 mb-4">

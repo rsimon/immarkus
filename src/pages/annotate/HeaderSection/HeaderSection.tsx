@@ -59,7 +59,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <SavingState.Indicator />
       </section>
 
-      <section className="toolbar-right flex gap-1.5 items-center">
+      <section className="toolbar-right flex gap-1 items-center">
         <AddImage 
           current={props.images} 
           onAddImage={props.onAddImage} />
@@ -68,21 +68,21 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <button
           disabled={props.images.length > 1}
-          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+          className="text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
             disabled:opacity-25 disabled:hover:bg-transparent">
           <ZoomIn 
-            className="h-4 w-4" 
+            className="h-8 w-8 p-2" 
             onClick={onZoom(2)}/>
         </button>
 
         <button
           disabled={props.images.length > 1}
-          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+          className="text-xs rounded-md hover:bg-muted focus-visible:outline-none 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
             disabled:opacity-25 disabled:hover:bg-transparent">
           <ZoomOut 
-            className="h-4 w-4" 
+            className="h-8 w-8 p-2" 
             onClick={onZoom(0.5)} />
         </button>
 

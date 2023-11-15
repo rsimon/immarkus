@@ -4,7 +4,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/ui/Popover"
+} from '@/ui/Popover';
 import { useSavingState } from './useSavingState';
 
 interface SavingStateIndicatorProps {
@@ -47,8 +47,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
           </PopoverTrigger>
 
           <PopoverContent 
-            align="start"
-            alignOffset={-18}
+            align="center"
             className="text-xs flex gap-2 font-medium w-[200px] items-center 
             justify-center text-green-600">
             <FolderCheck className="h-4 w-4" />All annotations saved
@@ -66,8 +65,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
           </PopoverTrigger>
 
           <PopoverContent 
-            align="start"
-            alignOffset={-18}
+            align="center"
             className="text-xs flex gap-2 font-medium w-[200px] items-center 
             justify-center text-green-600">
             <FolderCheck className="h-4 w-4" />All annotations saved

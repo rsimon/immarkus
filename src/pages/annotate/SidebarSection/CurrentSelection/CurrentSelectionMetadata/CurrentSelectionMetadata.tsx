@@ -3,14 +3,14 @@ import {
   AnnotationBody, 
   ImageAnnotation, 
   W3CAnnotationBody, 
-  createBody, 
-  useAnnotationStore 
+  createBody
 } from '@annotorious/react';
 import { useVocabulary } from '@/store';
 import { Button } from '@/ui/Button';
 import { EntitySchemaFields } from './EntitySchemaFields';
 import { createSafeKeys } from './PropertyKeys';
 import { CurrentSelectionNote } from './CurrentSelectionNote';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 
 interface CurrentSelectionMetadataProps {
 
@@ -24,7 +24,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const tags: W3CAnnotationBody[] = annotation.bodies.filter(b => b.purpose === 'classifying');
 
-  const store = useAnnotationStore();
+  const anno = useAnnotoriousManifold();
 
   const { getEntity } = useVocabulary();
 
@@ -80,11 +80,11 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
     });
 
     let updatedAnnotation = {
-      ...store.getAnnotation(annotation.id),
+      ...anno.getAnnotation(annotation.id),
       bodies: noteBody ? [...updatedTags, noteBody ] : updatedTags
     };
 
-    store.updateAnnotation(updatedAnnotation);
+    anno.updateAnnotation(updatedAnnotation);
   }
 
   return schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
