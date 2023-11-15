@@ -1,23 +1,25 @@
-import { ImageAnnotation } from '@annotorious/react';
+import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
 
 export const AnnotationList = () => {
 
-  const anno = useAnnotoriousManifold();
+  const manifold = useAnnotoriousManifold();
 
   const annotations = useAnnotations<ImageAnnotation>();
 
   const store = useStore();
 
   const onSelect = (annotation: ImageAnnotation) => () => {
-    // TODO
-    // anno.setSelected(annotation.id);
+    manifold.setSelected(annotation.id);
+
+    const annotator = manifold.findAnnotator(annotation.id);
+    (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
   }
 
   const onDelete = (annotation: ImageAnnotation) => () =>
-    anno.deleteAnnotation(annotation.id);
+    manifold.deleteAnnotation(annotation.id);
 
   const imageIds = Array.from(annotations.keys());
 
