@@ -86,7 +86,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
               clickToZoom: false
             },
             showNavigationControl: false,
-            crossOriginPolicy: 'Anonymous'
+            crossOriginPolicy: 'Anonymous',
+            maxZoomLevel: 1000
           }} />
 
         <AnnotoriousPlugin
