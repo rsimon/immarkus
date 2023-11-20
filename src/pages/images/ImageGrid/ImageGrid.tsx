@@ -29,7 +29,7 @@ export const ImageGrid = () => {
         {store.images.map(image => (
           <li key={image.name}>
             <div 
-              className="cursor-pointer relative overflow-hidden rounded-md border"
+              className="cursor-pointer relative overflow-hidden rounded-md border w-[200px] h-[200px]"
               onClick={onOpen(image)}>
               <img
                 loading="lazy"
