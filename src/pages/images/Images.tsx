@@ -3,8 +3,6 @@ import { useStore } from '@/store';
 import { useParams } from 'react-router-dom';
 import { ImageGrid } from './ImageGrid';
 
-import './Images';
-
 export const Images = () => {
 
   const store = useStore({ redirect: true });
