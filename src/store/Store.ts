@@ -148,7 +148,9 @@ export const loadStore = (
     if (img) {
       readImageFile(img.file).then(data => {
         resolve({...img, data });
-      });
+      }).catch(error => {
+        console.error(error);
+      })
     } else {
       reject(Error(`Image ${id} not found`));
     }

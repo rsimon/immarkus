@@ -62,9 +62,8 @@ export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
 
 export const useImages = (
   imageIdOrIds: string | string[],
-  args: { redirect: boolean } = { redirect: false }
 ): LoadedImage | LoadedImage[] => {
-  const store = useStore(args);
+  const store = useStore();
 
   const [images, setImages] = useState<LoadedImage[]>([]);
 
@@ -75,7 +74,7 @@ export const useImages = (
       const promises = imageIds.map(id => store.loadImage(id));
       Promise.all(promises).then(setImages);
     }
-  }, [store, imageIdOrIds]);
+  }, [store]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
