@@ -1,15 +1,9 @@
 import { W3CAnnotation } from '@annotorious/react';
-import { Folder, FolderItems, Image, LoadedImage } from '@/model';
+import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadVocabulary, VocabularyStore } from './VocabularyStore';
 
 export interface Store extends VocabularyStore {
-
-  rootDir: FileSystemDirectoryHandle;
-
-  images: Image[];
-
-  folders: Folder[];
 
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
 
@@ -17,7 +11,11 @@ export interface Store extends VocabularyStore {
 
   getAnnotations(imageId: string): Promise<W3CAnnotation[]>;
 
-  getDirContents(dir: FileSystemDirectoryHandle): FolderItems;
+  getFolder(folderId: string): Folder;
+
+  getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
+
+  getRootFolder(): RootFolder;
 
   loadImage(id: string): Promise<LoadedImage>;
 
@@ -44,18 +42,19 @@ const loadDirectory = async (
         const subDirHandle = await dirHandle.getDirectoryHandle(entry.name);
 
         const { name } = subDirHandle;
-        const p = [...path, name ];
+        const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
         
-        folders.push({ name, path: p, handle: subDirHandle, parent: dirHandle });
+        folders.push({ id, name, path, handle: subDirHandle, parent: dirHandle });
 
-        await loadDirectory(subDirHandle, p, images, folders);
+        const nextPath = [...path, id ];
+        await loadDirectory(subDirHandle, nextPath, images, folders);
       } else {
         const fileHandle = await dirHandle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
 
         if (file.type.startsWith('image')) {
           const { name } = file;
-          const id = await generateShortId(`${path.join('/')}/${name}`);
+          const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
 
           images.push({ id, name, path, file, folder: dirHandle });
         }
@@ -92,7 +91,8 @@ export const loadStore = (
         const file = await fileHandle.getFile();
 
         readJSONFile<W3CAnnotation[]>(file)
-          .then(annotations => {
+          .then(data => {
+            const annotations = data || [];
             cachedAnnotations.set(imageId, annotations);
             resolve(annotations);
           })
@@ -135,11 +135,17 @@ export const loadStore = (
     }
   });
 
-  const getDirContents = (dir: FileSystemDirectoryHandle): FolderItems => {
+  const getFolder = (id: string) => folders.find(f => f.id === id);
+
+  const getFolderContents = (dir: FileSystemDirectoryHandle): FolderItems => {
     const imageItems = images.filter(i => i.folder === dir);
     const folderItems = folders.filter(f => f.parent === dir);
     return { images: imageItems, folders: folderItems };
   }
+
+  const getRootFolder = () => ({
+    name: rootDir.name, path: [], handle: rootDir
+  });
 
   const loadImage = (
     id: string
@@ -180,13 +186,12 @@ export const loadStore = (
   });
 
   resolve({
-    rootDir,
-    images,
-    folders,
     countAnnotations,
     deleteAnnotation,
     getAnnotations,
-    getDirContents,
+    getFolder,
+    getFolderContents,
+    getRootFolder,
     loadImage,
     upsertAnnotation,
     ...vocabulary

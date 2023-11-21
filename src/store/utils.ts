@@ -42,9 +42,7 @@ export const writeJSONFile = (handle: FileSystemFileHandle, data: any) => {
   });
 }
 
-export const generateShortId = (filepath: string) => {
-  const str = filepath.substring(0, filepath.lastIndexOf('.'));
-
+export const generateShortId = (str: string) => {
   return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
     .then(hash => {
       const arr = new Uint8Array(hash);

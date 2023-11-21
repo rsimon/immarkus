@@ -1,9 +1,11 @@
-import { Folder as FolderIcon } from 'lucide-react';
 import { Folder } from '@/model';
+import FolderIcon from './FolderIcon.svg';
 
 interface FolderItemProps {
 
   folder: Folder;
+
+  onOpen(): void;
 
 }
 
@@ -14,8 +16,12 @@ export const FolderItem = (props: FolderItemProps) => {
       <div 
         className="folder-item cursor-pointer relative overflow-hidden rounded-md 
           border w-[200px] h-[200px] flex justify-center 
-          items-center text-muted-foreground/30">
-        <img src="/folder-1485.svg" 
+          items-center text-muted-foreground/30"
+          onClick={props.onOpen}>
+
+        <img 
+          src={FolderIcon}
+          alt={`Folder: ${props.folder.name}`}
           className="w-24 h-24 transition-all" />
       </div>
 

@@ -2,6 +2,8 @@ import { Image } from './Image';
 
 export interface Folder {
 
+  id: string;
+
   name: string;
 
   path: string[];
@@ -11,5 +13,7 @@ export interface Folder {
   parent?: FileSystemDirectoryHandle;
 
 }
+
+export interface RootFolder extends Omit<Folder, 'id'> {};
 
 export type FolderItems = { images: Image[], folders: Folder[] };

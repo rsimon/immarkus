@@ -65,16 +65,16 @@ export const useImages = (
 ): LoadedImage | LoadedImage[] => {
   const store = useStore();
 
+  const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
+
   const [images, setImages] = useState<LoadedImage[]>([]);
 
   useEffect(() => {
     if (store) {
-      const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
-
       const promises = imageIds.map(id => store.loadImage(id));
       Promise.all(promises).then(setImages);
     }
-  }, [store]);
+  }, [imageIds.join(','), store]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
