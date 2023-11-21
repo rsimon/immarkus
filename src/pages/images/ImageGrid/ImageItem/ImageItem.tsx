@@ -40,7 +40,7 @@ export const ImageItem = (props: ImageItemProps) => {
           <div className="text-white text-sm">
             <MessagesSquare 
               size={18} 
-              className="inline align-text-bottom mr-0.5" /> 
+              className="inline align-text-bottom mr-1" /> 
               {annotations || 0}
           </div>
 

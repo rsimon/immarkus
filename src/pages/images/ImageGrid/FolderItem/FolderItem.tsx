@@ -14,10 +14,10 @@ export const FolderItem = (props: FolderItemProps) => {
   return (
     <div>
       <div 
-        className="folder-item cursor-pointer relative overflow-hidden rounded-md 
-          border w-[200px] h-[200px] flex justify-center 
-          items-center text-muted-foreground/30"
-          onClick={props.onOpen}>
+        className="folder-item cursor-pointer relative rounded-md 
+          border border-slate-400/20 shadow-sm w-[200px] h-[200px] flex justify-center 
+          items-center bg-muted/80"
+        onClick={props.onOpen}>
 
         <img 
           src={FolderIcon}
