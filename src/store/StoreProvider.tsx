@@ -62,8 +62,9 @@ export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
 
 export const useImages = (
   imageIdOrIds: string | string[],
+  args: { redirect: boolean } = { redirect: false }
 ): LoadedImage | LoadedImage[] => {
-  const store = useStore();
+  const store = useStore(args);
 
   const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
 

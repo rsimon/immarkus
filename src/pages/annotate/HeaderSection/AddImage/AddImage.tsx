@@ -18,9 +18,9 @@ interface AddImageProps {
 
 export const AddImage = (props: AddImageProps) => {
 
-  const store = useStore({ redirect: true });
+  // const store = useStore({ redirect: true });
 
-  const { images } = store;
+  // const { images } = store;
 
   return (
     <DropdownMenu>
@@ -31,6 +31,7 @@ export const AddImage = (props: AddImageProps) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
+        {/* 
         {images.map(image => (
           <DropdownMenuItem 
             key={image.id}
@@ -39,6 +40,7 @@ export const AddImage = (props: AddImageProps) => {
             {image.name}
           </DropdownMenuItem>
         ))}
+        */}
       </DropdownMenuContent>
     </DropdownMenu>
   )

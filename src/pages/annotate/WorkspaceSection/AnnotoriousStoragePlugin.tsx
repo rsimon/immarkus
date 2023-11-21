@@ -25,34 +25,34 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
   const anno = useAnnotator<AnnotoriousImageAnnotator<W3CAnnotation>>();
 
   useEffect(() => {
+    // Wrap the op so that onSaving, onSaved and onError are
+    // called appropriately 
+    const withSaveStatus = (fn: () => Promise<void>) => {
+      props.onSaving();
+      
+      const minWait = new Promise(resolve => 
+        setTimeout(() => resolve(undefined), MIN_SAVE_WAIT));
+
+      const both = Promise.all([minWait, fn()]);
+      both
+        .then(() => props.onSaved())
+        .catch(error => props.onError(error));
+    }
+
     if (anno && store) {
-      const annotations = store.getAnnotations(imageId);
+      store.getAnnotations(imageId).then(annotations => {
+        // @ts-ignore
+        anno.setAnnotations(annotations.filter(a => a.target.selector));
 
-      // @ts-ignore
-      anno.setAnnotations(annotations.filter(a => a.target.selector));
+        anno.on('createAnnotation', annotation =>
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
 
-      // Wrap the op so that onSaving, onSaved and onError are
-      // called appropriately 
-      const withSaveStatus = (fn: () => Promise<void>) => {
-        props.onSaving();
-        
-        const minWait = new Promise(resolve => 
-          setTimeout(() => resolve(undefined), MIN_SAVE_WAIT));
+        anno.on('deleteAnnotation', annotation =>
+          withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
 
-        const both = Promise.all([minWait, fn()]);
-        both
-          .then(() => props.onSaved())
-          .catch(error => props.onError(error));
-      }
-
-      anno.on('createAnnotation', annotation =>
-        withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
-
-      anno.on('deleteAnnotation', annotation =>
-        withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
-
-      anno.on('updateAnnotation', annotation =>
-        withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+        anno.on('updateAnnotation', annotation =>
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+      });
     }
   }, [anno]);
 

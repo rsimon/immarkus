@@ -36,8 +36,9 @@ export const ImageGrid = (props: ImageGridProps) => {
   const onOpenFolder = (folder: Folder) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (image: Image) =>
+  const onOpenImage = (image: Image) => {
     navigate(`/annotate/${image.id}`);
+  }
 
   return (
     <div className="image-grid">

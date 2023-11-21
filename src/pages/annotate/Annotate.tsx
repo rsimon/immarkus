@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold } from '@annotorious/react-manifold';
-import { Image } from '@/model';
-import { useStore } from '@/store';
+import { LoadedImage } from '@/model';
+import { useImages } from '@/store';
 import { HeaderSection, ToolMode, Tool } from './HeaderSection';
 import { OSDViewerManifold } from './OSDViewerManifold';
 import { SavingState } from './SavingState';
@@ -13,14 +13,13 @@ import './Annotate.css';
 
 export const Annotate = () => {
 
-  const store = useStore({ redirect: true });
-
   const navigate = useNavigate();
 
   const params = useParams();
 
-  const [images, setImages] = 
-    useState<Image[]>(params.images.split('&').map(id => store?.getImage(id)).filter(Boolean));
+  const [imageIds, setImageIds] = useState(params.images.split('&'));
+
+  const images = useImages(imageIds, { redirect: true }) as LoadedImage[];
 
   const [tool, setTool] = useState<Tool>('rectangle');
 
@@ -28,32 +27,34 @@ export const Annotate = () => {
 
   useEffect(() => {
     // Update the URL in response to image change
-    navigate(`/annotate/${images.map(i => i.id).join('&')}`);
+    // navigate(`/annotate/${images.map(i => i.id).join('&')}`);
   }, [images]);
 
   return (
     <div className="page annotate h-full w-full">
       <AnnotoriousManifold>
         <OSDViewerManifold>
-          <SavingState.Root>
-            <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-              <HeaderSection
-                images={images} 
-                mode={mode}
-                tool={tool}
-                onAddImage={image => setImages(images => ([...images, image]))} 
-                onChangeMode={setMode}
-                onChangeTool={setTool} />
+          {images.length > 0 && ( 
+            <SavingState.Root>
+              <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                <HeaderSection
+                  images={images} 
+                  mode={mode}
+                  tool={tool}
+                  onAddImage={image => setImageIds(ids => ([...ids, image.id]))} 
+                  onChangeMode={setMode}
+                  onChangeTool={setTool} />
 
-              <WorkspaceSection 
-                images={images} 
-                mode={mode}
-                tool={tool} 
-                onRemoveImage={image => setImages(images => images.filter(i => i.id !== image.id))} />
-            </main>
+                <WorkspaceSection 
+                  images={images} 
+                  mode={mode}
+                  tool={tool} 
+                  onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+              </main>
 
-            <SidebarSection />
-          </SavingState.Root>
+              <SidebarSection />
+            </SavingState.Root>
+          )}
         </OSDViewerManifold>
       </AnnotoriousManifold>
     </div>
