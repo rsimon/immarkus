@@ -1,8 +1,3 @@
 main.page.start.loading .content-wrapper {
   text-align: center;
 }
-
-main.page.start.loading .progress {
-  height: 0.6em;
-  width: 220px;
-}

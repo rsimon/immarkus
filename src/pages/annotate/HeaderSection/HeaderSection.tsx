@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ImagePlus, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
+import { ChevronLeft, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';

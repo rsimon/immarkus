@@ -5,6 +5,9 @@ import { loadVocabulary, VocabularyStore } from './VocabularyStore';
 
 export interface Store extends VocabularyStore {
 
+  // TODO only temporary - to be removed
+  images: Image[];
+
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
@@ -23,7 +26,6 @@ export interface Store extends VocabularyStore {
 
 }
 
-// Shorthand
 const getAnnotationsFile = (image: Image) => {
   const filename = `${image.name.substring(0, image.name.lastIndexOf('.'))}.json`;
   return image.folder.getFileHandle(filename, { create: true });
@@ -186,6 +188,7 @@ export const loadStore = (
   });
 
   resolve({
+    images, // TODO to be removed
     countAnnotations,
     deleteAnnotation,
     getAnnotations,

@@ -22,7 +22,7 @@ export const FolderItem = (props: FolderItemProps) => {
         <img 
           src={FolderIcon}
           alt={`Folder: ${props.folder.name}`}
-          className="w-24 h-24 transition-all" />
+          className="w-20 h-20 transition-all" />
       </div>
 
       <div className="flex justify-center">

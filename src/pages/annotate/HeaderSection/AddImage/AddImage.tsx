@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ImagePlus } from 'lucide-react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
@@ -18,9 +19,11 @@ interface AddImageProps {
 
 export const AddImage = (props: AddImageProps) => {
 
-  // const store = useStore({ redirect: true });
+  const store = useStore();
 
-  // const { images } = store;
+  const { images } = store;
+
+  const currentIds = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
 
   return (
     <DropdownMenu>
@@ -31,16 +34,14 @@ export const AddImage = (props: AddImageProps) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
-        {/* 
         {images.map(image => (
           <DropdownMenuItem 
             key={image.id}
-            disabled={props.current.includes(image)}
+            disabled={currentIds.has(image.id)}
             onSelect={() => props.onAddImage(image)}>
             {image.name}
           </DropdownMenuItem>
         ))}
-        */}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -4,17 +4,15 @@ import { useInitStore } from '@/store/StoreProvider';
 import { Loading } from './Loading';
 import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
+import { storeHandle } from './storedHandles';
 
 import './Start.css';
-import { clearStoredHandles, storeHandle } from './storedHandles';
 
 type State = 'idle' | 'loading' | 'error';
 
 export const Start = () => {
 
   const [state, setState] = useState<State>('idle');
-
-  const [progress, setProgress] = useState(0);
 
   const initStore = useInitStore();
 
@@ -36,7 +34,7 @@ export const Start = () => {
 
       // Loading!
       setState('loading');
-      await initStore(handle, setProgress);
+      await initStore(handle);
       
       // Done - navigate to root
       navigate('/'); 
@@ -51,7 +49,7 @@ export const Start = () => {
       {!window.showDirectoryPicker ? (
         <UnsupportedBrowser />
       ) : state === 'loading' ? (
-        <Loading progress={progress} />
+        <Loading />
       ) : (
         <Open onOpenFolder={onOpenFolder} />
       )}

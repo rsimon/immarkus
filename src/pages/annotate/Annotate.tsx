@@ -27,8 +27,8 @@ export const Annotate = () => {
 
   useEffect(() => {
     // Update the URL in response to image change
-    // navigate(`/annotate/${images.map(i => i.id).join('&')}`);
-  }, [images]);
+    navigate(`/annotate/${imageIds.join('&')}`);
+  }, [imageIds]);
 
   return (
     <div className="page annotate h-full w-full">

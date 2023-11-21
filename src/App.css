@@ -33,7 +33,7 @@ html, body, #app {
 
 .page-root main {
   flex-grow: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 30px 50px;
 }
 
