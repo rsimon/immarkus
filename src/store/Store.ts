@@ -25,6 +25,12 @@ export interface Store extends VocabularyStore {
 
 }
 
+// Shorthand
+const getAnnotationsFile = (image: Image) => {
+  const filename = `${image.name.substring(0, image.name.lastIndexOf('.'))}.json`;
+  return image.folder.getFileHandle(filename, { create: true });
+}
+
 const loadDirectory = async (
   dirHandle: FileSystemDirectoryHandle, 
   path: string[] = [],
@@ -75,19 +81,22 @@ export const loadStore = (
 
   const getAnnotations = (
     imageId: string
-  ): Promise<W3CAnnotation[]> => new Promise((resolve, reject) => {
+  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
     const cached = cachedAnnotations.get(imageId);
     if (cached) {
       resolve(cached);
     } else {
       const image = images.find(i => i.id === imageId);
       if (image) {
-        readJSONFile<W3CAnnotation[]>(image.file)
+        const fileHandle = await getAnnotationsFile(image);
+        const file = await fileHandle.getFile();
+
+        readJSONFile<W3CAnnotation[]>(file)
           .then(annotations => {
             cachedAnnotations.set(imageId, annotations);
             resolve(annotations);
           })
-          .catch(error => {
+          .catch(() => {
             cachedAnnotations.set(imageId, []);
             resolve([]);
           });
@@ -113,15 +122,12 @@ export const loadStore = (
   ): Promise<void> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
-      const filename = `${img.name.substring(0, img.name.lastIndexOf('.'))}.json`;
-
       const annotations = await getAnnotations(imageId);
-      const fileHandle = await img.folder.getFileHandle(filename, { create: true });
-      
       const next = annotations.filter(a => a.id !== annotation.id);
 
       cachedAnnotations.set(imageId, next);
 
+      const fileHandle = await getAnnotationsFile(img);
       await writeJSONFile(fileHandle, next);
       resolve();
     } else {
@@ -154,10 +160,7 @@ export const loadStore = (
   ): Promise<void> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
-      const filename = `${img.name.substring(0, img.name.lastIndexOf('.'))}.json`;
-
       const annotations = await getAnnotations(imageId);
-      const fileHandle = await img.folder.getFileHandle(filename, { create: true });
 
       const exists = annotations.find(a => a.id === annotation.id);
       const next = exists ? 
@@ -166,6 +169,7 @@ export const loadStore = (
       
       cachedAnnotations.set(imageId, next);
 
+      const fileHandle = await getAnnotationsFile(img);
       await writeJSONFile(fileHandle, next);
       resolve();
     } else {

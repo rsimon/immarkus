@@ -1,9 +1,9 @@
-import { MessagesSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { useImages, useStore } from '@/store';
 import { Image, LoadedImage } from '@/model';
-import { ImageActions } from './ImageActions';
+import { FolderItem } from './FolderItem';
+import { ImageItem } from './ImageItem';
 
 import './ImageGrid.css';
 
@@ -21,7 +21,7 @@ export const ImageGrid = () => {
 
   const navigate = useNavigate();
 
-  const onOpen = (image: Image) => () =>
+  const onOpen = (image: Image) =>
     navigate(`/annotate/${image.id}`);
 
   return (
@@ -38,30 +38,17 @@ export const ImageGrid = () => {
       </div>
 
       <ul>
+        {folders.map(folder => (
+          <li key={folder.name}>
+            <FolderItem folder={folder} />
+          </li>
+        ))}
+
         {images.map(image => (
           <li key={image.name}>
-            <div 
-              className="cursor-pointer relative overflow-hidden rounded-md border w-[200px] h-[200px]"
-              onClick={onOpen(image)}>
-              <img
-                loading="lazy"
-                src={URL.createObjectURL(image.data)}
-                alt={image.name}
-                className="h-auto w-auto object-cover transition-all aspect-square"
-              />
-
-              <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full">
-                <div className="text-white text-sm">
-                  <MessagesSquare 
-                    size={18} 
-                    className="inline align-text-bottom mr-0.5" /> 0 {/* store.countAnnotations(image.id) */}
-                </div>
-
-                <div className="absolute bottom-0 right-2 text-white text-sm">
-                  <ImageActions image={image} />
-                </div>
-              </div>
-            </div>
+            <ImageItem 
+              image={image} 
+              onOpen={() => onOpen(image)} />
           </li>
         ))}
       </ul>

@@ -16,7 +16,7 @@ interface ImageActionProps {
 
 }
 
-export const ImageActions = (props: ImageActionProps) => {
+export const ImageItemActions = (props: ImageActionProps) => {
 
   return (
     <DropdownMenu>
