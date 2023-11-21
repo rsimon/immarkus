@@ -27,9 +27,9 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
     anno.deleteBody(body as AnnotationBody);
 
   return (
-    <ul className="flex flex-wrap py-1 pl-1 mb-4">
+    <ul className="flex flex-wrap py-1 pl-1 mb-4 items-center">
       {tags.map(body => body.purpose === 'classifying' ? (
-        <li key={body.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
+        <li key={body.id} className="inline-block mr-1 whitespace-nowrap">
           <EntityBadge 
             entity={getEntity(body.source)} 
             onDelete={() => onDeleteBody(body)}/>
