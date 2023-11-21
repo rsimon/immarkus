@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { StoreProgressHandler, Store, loadStore } from './Store';
-import { Entity, Relation, TextTag, Vocabulary } from '@/model';
+import { Store, loadStore } from './Store';
+import { Entity, LoadedImage, Relation, TextTag, Vocabulary } from '@/model';
 
 interface StoreContextState {
 
@@ -40,8 +40,8 @@ export const StoreProvider = (props: StoreProviderProps) => {
 export const useInitStore = () => {
   const { setStore, setVocabulary } = useContext(StoreContext);
 
-  return (handle: FileSystemDirectoryHandle, onProgress?: StoreProgressHandler) =>
-    loadStore(handle, onProgress).then(store => {
+  return (handle: FileSystemDirectoryHandle) =>
+    loadStore(handle).then(store => {
       setStore(store);
       setVocabulary(store.getVocabulary());
     });
@@ -58,6 +58,26 @@ export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
   }, []);
 
   return store;
+}
+
+export const useImages = (
+  imageIdOrIds: string | string[],
+  args: { redirect: boolean } = { redirect: false }
+): LoadedImage | LoadedImage[] => {
+  const store = useStore(args);
+
+  const [images, setImages] = useState<LoadedImage[]>([]);
+
+  useEffect(() => {
+    if (store) {
+      const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
+
+      const promises = imageIds.map(id => store.loadImage(id));
+      Promise.all(promises).then(setImages);
+    }
+  }, [store, imageIdOrIds]);
+
+  return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
 
 export const useVocabulary = () => {

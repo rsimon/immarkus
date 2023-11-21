@@ -4,8 +4,16 @@ export interface Image {
 
   name: string;
 
-  path: string;
+  path: string[];
+
+  file: File;
+
+  folder: FileSystemDirectoryHandle;
+
+}
+
+export interface LoadedImage extends Image {
 
   data: Blob;
-  
+
 }
