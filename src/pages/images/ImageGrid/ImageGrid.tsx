@@ -97,8 +97,8 @@ export const ImageGrid = (props: ImageGridProps) => {
       <svg xmlns="http://www.w3.org/2000/svg" className="w-0 h-0">
         <defs>
           <linearGradient id="folder-gradient" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="rgba(100,116,139,0.35)" />
-            <stop offset="100%" stopColor="rgba(100,116,139,0.5)" />
+            <stop offset="0%" stopColor="#c2c8d0" />
+            <stop offset="100%" stopColor="#a8afbb" />
           </linearGradient>
         </defs>
       </svg>

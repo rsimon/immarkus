@@ -23,7 +23,7 @@ export const FolderItem = (props: FolderItemProps) => {
         onClick={props.onOpen}>
 
         <svg 
-          className="w-[190px] h-[190px] transition-all drop-shadow" 
+          className="w-[190px] h-[190px] transition-all drop-shadow-md" 
           viewBox="-600 -800 2400 2200" 
           xmlns="http://www.w3.org/2000/svg">
           <path 

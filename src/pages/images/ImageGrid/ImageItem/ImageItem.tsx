@@ -35,7 +35,7 @@ export const ImageItem = (props: ImageItemProps) => {
 
   return (
     <div>
-      <div className="flex items-center justify-center w-[200px] h-[200px]">
+      <div className="flex items-center justify-center w-[180px] h-[200px]">
         <div 
           className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]"
           onClick={props.onOpen}>
