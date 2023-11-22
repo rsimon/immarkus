@@ -39,7 +39,7 @@ export const FolderItem = (props: FolderItemProps) => {
       <div className="ml-2">
         <div>
           <h3
-            className="text-sm pt-1 max-w-[200px] overflow-hidden text-ellipsis">
+            className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
             {props.folder.name}
           </h3>
           <p className="pt-1 text-xs text-muted-foreground">

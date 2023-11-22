@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useRef, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
@@ -14,23 +14,23 @@ interface ImageItemProps {
 
 export const ImageItem = (props: ImageItemProps) => {
 
-  const imageEl = useRef<HTMLImageElement>();
-
   const { image } = props;
 
   const store = useStore({ redirect: true });
 
   const [annotations, setAnnotations] = useState<number | undefined>();
 
-  const [dimensions, setDimensions] = useState([0, 0]);
+  const [dimensions, setDimensions] = useState<[number, number] | undefined>();
 
   useEffect(() => {
     store.countAnnotations(image.id).then(setAnnotations);
   }, []);
 
   const onLoad = (event: SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth, naturalHeight } = event.target as HTMLImageElement;
-    setDimensions([naturalWidth, naturalHeight]);
+    if (!dimensions) {
+      const { naturalWidth, naturalHeight } = event.target as HTMLImageElement;
+      setDimensions([naturalWidth, naturalHeight]);
+    }
   }
 
   return (
@@ -62,13 +62,15 @@ export const ImageItem = (props: ImageItemProps) => {
         </div>
       </div>
       
-      <div className="text-sm ml-1 pt-1 pl-2 max-w-[190px] overflow-hidden">
+      <div className="text-sm ml-1 pl-2 max-w-[190px] overflow-hidden">
         <h3 
           className="overflow-hidden whitespace-nowrap text-ellipsis">
           {image.name}
         </h3>
         <p className="pt-1 text-xs text-muted-foreground">
-          {dimensions[0]} x {dimensions[1]} 
+          {dimensions && (
+            <>{dimensions[0]} x {dimensions[1]}</>
+          )}
         </p>
       </div>
     </div>
