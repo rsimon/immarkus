@@ -27,7 +27,7 @@ export const FolderItem = (props: FolderItemProps) => {
           viewBox="-600 -800 2400 2200" 
           xmlns="http://www.w3.org/2000/svg">
           <path 
-            stroke="rgba(100,116,139,0.3)"
+            stroke="rgba(100,116,139,0.38)"
             fill="url(#folder-gradient)"
             vectorEffect="non-scaling-stroke"
             strokeWidth={1} strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit={10} 
