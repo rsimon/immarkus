@@ -1,16 +1,17 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
+import { ChevronLeft, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewers } from '@annotorious/react-manifold';
-import { Image } from '@/model';
+import { Image, LoadedImage } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
 import { SavingState } from '../SavingState';
 import { AddImage } from './AddImage';
 import { ToolbarButton } from './ToolbarButton';
+import { PaginationWidget } from './Pagination';
 
 interface HeaderSectionProps {
 
-  images: Image[];
+  images: LoadedImage[];
 
   mode: ToolMode;
 
@@ -43,7 +44,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   return (
-    <section className="toolbar border-b p-2 flex justify-between text-sm h-[46px]">
+    <section className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 items-center">
         <div className=" flex items-center">
           <Link className="font-semibold inline" to="/images">
@@ -79,13 +80,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             onClick={onZoom(0.5)} />
         </ToolbarButton>
 
-        <ToolbarButton>
-          <ChevronLeft className="w-8 h-8 p-2" />
-        </ToolbarButton>
-
-        <ToolbarButton>
-          <ChevronRight className="w-8 h-8 p-2" />
-        </ToolbarButton>
+        <PaginationWidget 
+          image={props.images[0]} />
 
         <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
