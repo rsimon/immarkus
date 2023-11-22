@@ -14,12 +14,9 @@
   display: inline-block;
 }
 
-.image-grid li:hover img {
-  transform: scale(1.05);
-}
-
+.image-grid li:hover img,
 .image-grid li:hover svg {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .image-grid li div.image-item {

@@ -1,5 +1,5 @@
 import { Folder } from '@/model';
-import FolderIcon from './FolderIcon.svg';
+import { useStore } from '@/store';
 
 interface FolderItemProps {
 
@@ -11,25 +11,41 @@ interface FolderItemProps {
 
 export const FolderItem = (props: FolderItemProps) => {
 
+  const store = useStore();
+
+  const { images } = store.getFolderContents(props.folder.handle);
+
   return (
     <div>
       <div 
         className="folder-item cursor-pointer relative rounded-md 
-          border border-slate-400/20 shadow-sm w-[200px] h-[200px] flex justify-center 
-          items-center bg-muted/80"
+          w-[200px] h-[200px] flex justify-center items-center"
         onClick={props.onOpen}>
 
-        <img 
-          src={FolderIcon}
-          alt={`Folder: ${props.folder.name}`}
-          className="w-20 h-20 transition-all" />
+        <svg 
+          className="w-[180px] h-[180px] transition-all drop-shadow" 
+          viewBox="-600 -800 2400 2200" 
+          xmlns="http://www.w3.org/2000/svg">
+          <path 
+            stroke="rgba(100,116,139,0.3)"
+            fill="url(#folder-gradient)"
+            vectorEffect="non-scaling-stroke"
+            strokeWidth={1} strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit={10} 
+            d="M -448.981 -800 C -548.981 -800 -600 -751.005 -600 -651.005 C -600 -364.652 -600 455.378 -600 1255.378 C -600 1355.378 -552.058 1400 -452.058 1400 C 447.942 1400 985.618 1400 1652.285 1400 C 1752.285 1400 1800 1349.337 1800 1249.337 C 1800 803.066 1800 145.293 1800 -454.707 C 1800 -554.707 1748.682 -600 1648.682 -600 C 1061.404 -600 1000 -600 700 -600 C 500 -600 442.009 -800 300 -800 C 205.569 -800 -327.066 -800 -448.981 -800 Z" transform="matrix(1, 0, 0, 1, 0, 2.2737367544323206e-13)"/>
+        </svg>
+
       </div>
 
-      <div className="flex justify-center">
-        <h3
-          className="text-sm leading-none pt-3 max-w-[200px] overflow-hidden text-ellipsis">
-          {props.folder.name}
-        </h3>
+      <div className="ml-3">
+        <div>
+          <h3
+            className="text-sm pt-2.5 max-w-[200px] overflow-hidden text-ellipsis">
+            {props.folder.name}
+          </h3>
+          <p className="pt-1 text-xs text-muted-foreground">
+            {images.length == 1 ? '1 Image' : `${images.length} Images`}
+          </p>
+        </div>
       </div>
     </div>
   )
