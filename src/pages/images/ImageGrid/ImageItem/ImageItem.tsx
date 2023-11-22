@@ -35,9 +35,9 @@ export const ImageItem = (props: ImageItemProps) => {
 
   return (
     <div>
-      <div className="p-[5px]">
+      <div className="flex items-center justify-center w-[200px] h-[200px]">
         <div 
-          className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[190px] h-[190px]"
+          className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]"
           onClick={props.onOpen}>
           <img
             onLoad={onLoad}
@@ -62,7 +62,7 @@ export const ImageItem = (props: ImageItemProps) => {
         </div>
       </div>
       
-      <div className="text-sm pt-2 pl-2 max-w-[190px] overflow-hidden">
+      <div className="text-sm ml-1 pt-1 pl-2 max-w-[190px] overflow-hidden">
         <h3 
           className="overflow-hidden whitespace-nowrap text-ellipsis">
           {image.name}

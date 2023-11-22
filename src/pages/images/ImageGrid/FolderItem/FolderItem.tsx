@@ -23,7 +23,7 @@ export const FolderItem = (props: FolderItemProps) => {
         onClick={props.onOpen}>
 
         <svg 
-          className="w-[180px] h-[180px] transition-all drop-shadow" 
+          className="w-[190px] h-[190px] transition-all drop-shadow" 
           viewBox="-600 -800 2400 2200" 
           xmlns="http://www.w3.org/2000/svg">
           <path 
@@ -36,10 +36,10 @@ export const FolderItem = (props: FolderItemProps) => {
 
       </div>
 
-      <div className="ml-3">
+      <div className="ml-2">
         <div>
           <h3
-            className="text-sm pt-2.5 max-w-[200px] overflow-hidden text-ellipsis">
+            className="text-sm pt-1 max-w-[200px] overflow-hidden text-ellipsis">
             {props.folder.name}
           </h3>
           <p className="pt-1 text-xs text-muted-foreground">
