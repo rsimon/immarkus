@@ -23,7 +23,7 @@ export const NavigationSidebar = () => {
         <ul>
           <li>
            <Link 
-              className={pathname === '/images' ? active : undefined} 
+              className={pathname.startsWith('/images') ? active : undefined} 
               to="/images">
               <Image size={18} className="mr-2" /> Images
             </Link>
