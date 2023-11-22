@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useImages, useStore } from '@/store';
 import { Folder, Image, LoadedImage } from '@/model';
 import { FolderItem } from './FolderItem';
@@ -41,7 +41,7 @@ export const ImageGrid = (props: ImageGridProps) => {
   }
 
   return (
-    <div className="image-grid">
+    <div className="image-grid" key={folderId}>
       <div className="space-y-1 headline">
         <h1 className="text-sm text-muted-foreground tracking-tight">
           {folderId ? (
@@ -54,13 +54,13 @@ export const ImageGrid = (props: ImageGridProps) => {
                 <ChevronRight className="h-4 w-4" />
 
                 {currentFolder.path.map((id, idx) => (
-                  <>
+                  <Fragment key={`${idx}-${id}`}>
                     <li key={`${idx}-${id}`}> 
                       <Link className="hover:underline" to={`/images/${id}`}>{store.getFolder(id).name}</Link>
                     </li>
 
                     <ChevronRight className="h-4 w-4" />
-                  </>
+                  </Fragment>
                 ))}
               </ol>
             </nav>
