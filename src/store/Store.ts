@@ -18,6 +18,8 @@ export interface Store extends VocabularyStore {
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
+  getImage(imageId: string): Image;
+
   getRootFolder(): RootFolder;
 
   loadImage(id: string): Promise<LoadedImage>;
@@ -145,6 +147,8 @@ export const loadStore = (
     return { images: imageItems, folders: folderItems };
   }
 
+  const getImage = (id: string) => images.find(f => f.id === id);
+
   const getRootFolder = () => ({
     name: rootDir.name, path: [], handle: rootDir
   });
@@ -194,6 +198,7 @@ export const loadStore = (
     getAnnotations,
     getFolder,
     getFolderContents,
+    getImage,
     getRootFolder,
     loadImage,
     upsertAnnotation,

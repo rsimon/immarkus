@@ -27,7 +27,7 @@ export const AnnotationList = () => {
     <div className="py-2 grow">
       <ul>
         {annotations.get(imageIds[0]).map(annotation => (
-          <li key={annotation.id} onClick={onSelect(annotation)}>
+          <li key={annotation.id}>
             <AnnotationListItem 
               annotation={annotation} 
               onSelect={onSelect(annotation)}

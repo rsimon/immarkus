@@ -1,7 +1,7 @@
 import { Mosaic, MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
-import { PanelLeft, X, ZoomIn, ZoomOut } from 'lucide-react';
-import { Image } from '@/model';
+import { X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Image, LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { AnnotatableImage } from './AnnotatableImage';
@@ -12,7 +12,7 @@ import { useViewers } from '../OSDViewerManifold';
 
 interface WorkspaceSectionProps {
 
-  images: Image[];
+  images: LoadedImage[];
 
   mode: ToolMode;
 

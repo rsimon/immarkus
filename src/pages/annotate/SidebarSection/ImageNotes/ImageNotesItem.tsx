@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
-import { useStore } from '@/store';
+import { useAnnotations, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import { useSavingState } from '../../SavingState';
@@ -29,8 +29,9 @@ export const ImageNotesItem = (props: ImageNotesItemProps) => {
 
   const { setSavingState } = useSavingState();
 
-  const metadata: W3CAnnotation | undefined = 
-    store.getAnnotations(props.image.id).find(a => !hasSelector(a));
+  const annotations = useAnnotations(props.image.id);
+
+  const metadata: W3CAnnotation | undefined  = annotations.find(a => !hasSelector(a));
 
   const note = metadata ?
     Array.isArray(metadata.body) ? 

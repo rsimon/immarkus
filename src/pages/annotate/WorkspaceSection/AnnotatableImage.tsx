@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat, useViewer } from '@annotorious/react';
 import { Annotorious } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
-import { Image } from '@/model';
+import { LoadedImage } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
 import { OSDViewerContext } from '../OSDViewerManifold';
@@ -13,7 +13,7 @@ import '@annotorious/react/annotorious-react.css';
 
 interface AnnotatableImageProps {
 
-  image: Image;
+  image: LoadedImage;
   
   mode: ToolMode;
 

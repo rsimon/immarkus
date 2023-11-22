@@ -2,6 +2,7 @@ import { ReactNode, createContext, useContext, useEffect, useState } from 'react
 import { useNavigate } from 'react-router-dom';
 import { Store, loadStore } from './Store';
 import { Entity, LoadedImage, Relation, TextTag, Vocabulary } from '@/model';
+import { W3CAnnotation } from '@annotorious/react';
 
 interface StoreContextState {
 
@@ -78,6 +79,21 @@ export const useImages = (
   }, [imageIds.join(','), store]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
+}
+
+export const useAnnotations = (
+  imageId: string,
+  args: { redirect: boolean } = { redirect: false }
+): W3CAnnotation[] => {
+  const store = useStore(args);
+
+  const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
+
+  useEffect(() => {
+    store.getAnnotations(imageId).then(setAnnotations);
+  }, [imageId]);
+
+  return annotations;
 }
 
 export const useVocabulary = () => {
