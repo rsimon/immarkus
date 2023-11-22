@@ -1,11 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat, useViewer } from '@annotorious/react';
-import { Annotorious } from '@annotorious/react-manifold';
+import { Annotorious, OSDViewerContext } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../HeaderSection';
-import { OSDViewerContext } from '../OSDViewerManifold';
 import { useSavingState } from '../SavingState';
 import { useDrawingStyles } from './useDrawingStyles';
 

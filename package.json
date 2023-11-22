@@ -16,14 +16,15 @@
     "@vitejs/plugin-react": "^4.0.3",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.28",
+    "svelte": "^4.2.7",
     "tailwindcss": "^3.3.3",
     "typescript": "^4.9.5",
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@annotorious/react": "^3.0.0-pre-alpha-59",
-    "@annotorious/react-manifold": "^0.2.1",
-    "@annotorious/selector-pack": "^0.2.2",
+    "@annotorious/react": "^3.0.0-rc.1",
+    "@annotorious/react-manifold": "^0.3.0",
+    "@annotorious/selector-pack": "^0.3.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",

@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ChevronLeft, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
+import { useViewers } from '@annotorious/react-manifold';
 import { Image } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
-import { useViewers } from '../OSDViewerManifold';
 import { SavingState } from '../SavingState';
 import { AddImage } from './AddImage';
 

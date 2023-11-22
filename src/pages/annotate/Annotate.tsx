@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AnnotoriousManifold } from '@annotorious/react-manifold';
+import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection, ToolMode, Tool } from './HeaderSection';
-import { OSDViewerManifold } from './OSDViewerManifold';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
 import { WorkspaceSection} from './WorkspaceSection';
