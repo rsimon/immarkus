@@ -64,7 +64,7 @@ export const ImageItem = (props: ImageItemProps) => {
       
       <div className="text-sm pt-2 pl-2 max-w-[190px] overflow-hidden">
         <h3 
-          className="overflow-hidden text-ellipsis">
+          className="overflow-hidden whitespace-nowrap text-ellipsis">
           {image.name}
         </h3>
         <p className="pt-1 text-xs text-muted-foreground">
