@@ -20,11 +20,17 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const currentIndex = images.map(i => i.id).indexOf(props.image.id);
 
+  const onChangeImage = (inc: number) => {
+    const nextIdx = Math.min(Math.max(0, currentIndex + inc), images.length - 1);
+    props.onChangeImage(images[nextIdx]);
+  }
+
   return (
     <div className="flex mr-1">
       <ToolbarButton 
+        disabled={currentIndex === 0}
         className="mr-1"
-        onClick={() => props.onChangeImage(images[currentIndex - 1])}>
+        onClick={() => onChangeImage(-1)}>
         <ChevronLeft className="w-5 h-8 py-2 px-0 mr-0.5" />
       </ToolbarButton>
 
@@ -36,7 +42,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
       <ToolbarButton 
         className="ml-1"
-        onClick={() => props.onChangeImage(images[currentIndex + 1])}>
+        disabled={currentIndex === images.length - 1}
+        onClick={() => onChangeImage(1)}>
         <ChevronRight className="w-5 h-8 py-2 px-0" />
       </ToolbarButton>
 
