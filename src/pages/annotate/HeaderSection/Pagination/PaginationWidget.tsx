@@ -12,22 +12,30 @@ interface PaginationWidgetProps {
 
 export const PaginationWidget = (props: PaginationWidgetProps) => {
 
+  const store = useStore();
+
+  const { images } = store.getFolderContents(props.image.folder);
+
+  const currentIndex = images.map(i => i.id).indexOf(props.image.id);
+
   return (
-    <>
-      <ToolbarButton>
-        <ChevronLeft className="w-8 h-8 p-2" />
+    <div className="flex mr-2 ml-1">
+      <ToolbarButton className="mr-1">
+        <ChevronLeft className="w-5 h-8 py-2 px-0 mr-0.5" />
       </ToolbarButton>
 
-      <ToolbarButton>
-        <span className="inline-block p-2">1 / 7</span>
+      <ToolbarButton className="py-1 bg-muted hover:bg-slate-200 ">
+        <span className="w-12 inline-block px-1.5 whitespace-nowrap">
+          {currentIndex} / {images.length}
+        </span>
       </ToolbarButton>
 
-      <ToolbarButton>
-        <ChevronRight className="w-8 h-8 p-2" />
+      <ToolbarButton className="ml-1">
+        <ChevronRight className="w-5 h-8 py-2 px-0" />
       </ToolbarButton>
 
       {/* <ThumbnailStrip image={props.image} /> */}
-    </>
+    </div>
   )
 
 }
