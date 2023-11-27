@@ -41,6 +41,7 @@ export const Annotate = () => {
                   mode={mode}
                   tool={tool}
                   onAddImage={image => setImageIds(ids => ([...ids, image.id]))} 
+                  onChangeImage={image => setImageIds([image.id])}
                   onChangeMode={setMode}
                   onChangeTool={setTool} />
 

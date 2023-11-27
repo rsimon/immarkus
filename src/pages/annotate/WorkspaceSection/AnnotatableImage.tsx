@@ -61,7 +61,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       message: `Could not save the last annotation. Error: ${error.message}`
     });
   }
-
+  
   return (
     <Annotorious source={props.image.id}>
       <OpenSeadragonAnnotator

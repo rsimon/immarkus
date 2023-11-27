@@ -19,6 +19,8 @@ interface HeaderSectionProps {
 
   onAddImage(image: Image): void;
 
+  onChangeImage(image: Image): void;
+
   onChangeTool(tool: Tool): void;
 
   onChangeMode(mode: ToolMode): void;
@@ -68,20 +70,23 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        <ToolbarButton disabled={props.images.length > 1}>
+        <ToolbarButton 
+          disabled={props.images.length > 1}
+          onClick={onZoom(2)}>
           <ZoomIn 
-            className="h-8 w-8 p-2" 
-            onClick={onZoom(2)}/>
+            className="h-8 w-8 p-2" />
         </ToolbarButton>
 
-        <ToolbarButton disabled={props.images.length > 1}>
+        <ToolbarButton 
+          disabled={props.images.length > 1}
+          onClick={onZoom(0.5)}>
           <ZoomOut 
-            className="h-8 w-8 p-2" 
-            onClick={onZoom(0.5)} />
+            className="h-8 w-8 p-2" />
         </ToolbarButton>
 
         <PaginationWidget 
-          image={props.images[0]} />
+          image={props.images[0]} 
+          onChangeImage={props.onChangeImage} />
 
         <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
