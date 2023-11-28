@@ -85,6 +85,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         </ToolbarButton>
 
         <PaginationWidget 
+          disabled={props.images.length > 1}
           image={props.images[0]} 
           onChangeImage={props.onChangeImage} />
 
