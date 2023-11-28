@@ -52,7 +52,7 @@ export const Annotate = () => {
                   images={images} 
                   mode={mode}
                   tool={tool} 
-                  onChangeImage={onChangeImage}
+                  onChangeImages={images => setImageIds(images.map(i => i.id))}
                   onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
               </main>
 

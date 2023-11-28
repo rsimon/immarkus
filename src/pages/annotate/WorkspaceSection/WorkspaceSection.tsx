@@ -16,7 +16,7 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
-  onChangeImage(previous: Image, next: Image): void;
+  onChangeImages(images: Image[]): void;
 
   onRemoveImage(image: Image): void;
 
@@ -54,6 +54,13 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       }
     });
   }, [props.images]);
+
+  const onChangeImage = (windowId: string, image: Image) => {
+    const nextImages = windowMap
+      .map(entry => entry.windowId === windowId ? image : entry.image);
+
+    props.onChangeImages(nextImages);
+  }
   
   return (
     <section className="workspace flex-grow bg-muted">
@@ -69,7 +76,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               windowId={windowId} 
               windowPath={path} 
               image={windowMap.find(t => t.windowId === windowId)!.image}
-              onChangeImage={props.onChangeImage}
+              onChangeImage={(_, next) => onChangeImage(windowId, next)}
               {...props} />
           )} 
           initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
