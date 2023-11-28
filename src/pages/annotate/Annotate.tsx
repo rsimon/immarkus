@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
-import { LoadedImage } from '@/model';
+import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection, ToolMode, Tool } from './HeaderSection';
 import { SavingState } from './SavingState';
@@ -29,6 +29,9 @@ export const Annotate = () => {
     navigate(`/annotate/${imageIds.join('&')}`);
   }, [imageIds]);
 
+  const onChangeImage = (previous: Image, next: Image) =>
+    setImageIds(ids => ids.map(id => id === previous.id ? next.id : id));
+
   return (
     <div className="page annotate h-full w-full">
       <AnnotoriousManifold>
@@ -41,7 +44,7 @@ export const Annotate = () => {
                   mode={mode}
                   tool={tool}
                   onAddImage={image => setImageIds(ids => ([...ids, image.id]))} 
-                  onChangeImage={image => setImageIds([image.id])}
+                  onChangeImage={onChangeImage}
                   onChangeMode={setMode}
                   onChangeTool={setTool} />
 
@@ -49,6 +52,7 @@ export const Annotate = () => {
                   images={images} 
                   mode={mode}
                   tool={tool} 
+                  onChangeImage={onChangeImage}
                   onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
               </main>
 

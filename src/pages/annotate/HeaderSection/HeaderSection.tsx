@@ -7,7 +7,7 @@ import { Separator } from '@/ui/Separator';
 import { SavingState } from '../SavingState';
 import { AddImage } from './AddImage';
 import { ToolbarButton } from './ToolbarButton';
-import { PaginationWidget } from './Pagination';
+import { PaginationWidget } from '../Pagination';
 
 interface HeaderSectionProps {
 
@@ -19,7 +19,7 @@ interface HeaderSectionProps {
 
   onAddImage(image: Image): void;
 
-  onChangeImage(image: Image): void;
+  onChangeImage(previous: Image, next: Image): void;
 
   onChangeTool(tool: Tool): void;
 

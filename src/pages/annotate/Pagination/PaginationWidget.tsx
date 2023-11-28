@@ -1,7 +1,7 @@
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ToolbarButton } from '../ToolbarButton';
+import { ToolbarButton } from '../HeaderSection/ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 
 interface PaginationWidgetProps {
@@ -10,7 +10,7 @@ interface PaginationWidgetProps {
 
   image: LoadedImage;
 
-  onChangeImage(image: Image): void;
+  onChangeImage(previous: Image, next: Image): void;
 
 }
 
@@ -24,7 +24,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const onChangeImage = (inc: number) => {
     const nextIdx = Math.min(Math.max(0, currentIndex + inc), images.length - 1);
-    props.onChangeImage(images[nextIdx]);
+    props.onChangeImage(images[currentIndex], images[nextIdx]);
   }
 
   return (
