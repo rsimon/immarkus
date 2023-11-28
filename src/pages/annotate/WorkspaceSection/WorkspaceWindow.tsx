@@ -23,7 +23,7 @@ interface WorkspaceWindowProps {
 
   onChangeImage(previous: Image, next: Image): void;
 
-  onRemoveImage(image: Image): void;
+  onClose(): void;
 
 }
 
@@ -35,7 +35,7 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
     actions: MosaicRootActions<MosaicKey>
   ) => () => {
     actions.remove(props.windowPath);
-    props.onRemoveImage(props.image);
+    props.onClose();
   }
 
   const onZoom = (factor: number) => () => {

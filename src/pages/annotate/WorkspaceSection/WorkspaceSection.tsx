@@ -61,6 +61,14 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
     props.onChangeImages(nextImages);
   }
+
+  const onClose = (windowId: string) => {
+    const nextImages = windowMap
+      .filter(entry => entry.windowId !== windowId)
+      .map(entry => entry.image);
+
+    props.onChangeImages(nextImages);
+  }
   
   return (
     <section className="workspace flex-grow bg-muted">
@@ -76,8 +84,10 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               windowId={windowId} 
               windowPath={path} 
               image={windowMap.find(t => t.windowId === windowId)!.image}
-              onChangeImage={(_, next) => onChangeImage(windowId, next)}
-              {...props} />
+              mode={props.mode}
+              tool={props.tool}
+              onChangeImage={(_, next) => onChangeImage(windowId, next)} 
+              onClose={() => onClose(windowId)} />
           )} 
           initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
       ) : undefined}
