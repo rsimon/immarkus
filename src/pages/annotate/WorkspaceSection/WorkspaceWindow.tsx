@@ -61,6 +61,7 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
 
           <PaginationWidget
             image={props.image}
+            variant="compact"
             onChangeImage={props.onChangeImage} />
 
           <Separator orientation="vertical" className="h-4 ml-0.5 mr-1" />
