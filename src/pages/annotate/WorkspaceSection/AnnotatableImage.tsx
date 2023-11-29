@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat, useViewer } from '@annotorious/react';
 import { Annotorious, OSDViewerContext } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
@@ -53,6 +53,19 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const onSaved = () => setSavingState({ value: 'success' });
 
+  const options: OpenSeadragon.Options = useMemo(() => ({
+    tileSources: {
+      type: 'image',
+      url: URL.createObjectURL(props.image.data)
+    },
+    gestureSettingsMouse: {
+      clickToZoom: false
+    },
+    showNavigationControl: false,
+    crossOriginPolicy: 'Anonymous',
+    maxZoomLevel: 1000
+  }), [props.image.id]);
+
   const onError = (error: Error) => {
     console.error(error);
 
@@ -61,7 +74,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       message: `Could not save the last annotation. Error: ${error.message}`
     });
   }
-
+  
   return (
     <Annotorious source={props.image.id}>
       <OpenSeadragonAnnotator
@@ -76,18 +89,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <OpenSeadragonViewer
           className="osd-container"
-          options={{
-            tileSources: {
-              type: 'image',
-              url: URL.createObjectURL(props.image.data)
-            },
-            gestureSettingsMouse: {
-              clickToZoom: false
-            },
-            showNavigationControl: false,
-            crossOriginPolicy: 'Anonymous',
-            maxZoomLevel: 1000
-          }} />
+          options={options} />
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />

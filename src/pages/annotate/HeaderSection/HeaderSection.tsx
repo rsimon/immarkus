@@ -1,21 +1,25 @@
 import { Link } from 'react-router-dom';
 import { ChevronLeft, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewers } from '@annotorious/react-manifold';
-import { Image } from '@/model';
+import { Image, LoadedImage } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
 import { SavingState } from '../SavingState';
 import { AddImage } from './AddImage';
+import { ToolbarButton } from './ToolbarButton';
+import { PaginationWidget } from '../Pagination';
 
 interface HeaderSectionProps {
 
-  images: Image[];
+  images: LoadedImage[];
 
   mode: ToolMode;
 
   tool: Tool;
 
   onAddImage(image: Image): void;
+
+  onChangeImage(previous: Image, next: Image): void;
 
   onChangeTool(tool: Tool): void;
 
@@ -42,7 +46,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   return (
-    <section className="toolbar border-b p-2 flex justify-between text-sm h-[46px]">
+    <section className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 items-center">
         <div className=" flex items-center">
           <Link className="font-semibold inline" to="/images">
@@ -66,25 +70,24 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        <button
+        <ToolbarButton 
           disabled={props.images.length > 1}
-          className="text-xs rounded-md hover:bg-muted focus-visible:outline-none 
-            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-            disabled:opacity-25 disabled:hover:bg-transparent">
+          onClick={onZoom(2)}>
           <ZoomIn 
-            className="h-8 w-8 p-2" 
-            onClick={onZoom(2)}/>
-        </button>
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
 
-        <button
+        <ToolbarButton 
           disabled={props.images.length > 1}
-          className="text-xs rounded-md hover:bg-muted focus-visible:outline-none 
-            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-            disabled:opacity-25 disabled:hover:bg-transparent">
+          onClick={onZoom(0.5)}>
           <ZoomOut 
-            className="h-8 w-8 p-2" 
-            onClick={onZoom(0.5)} />
-        </button>
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
+
+        <PaginationWidget 
+          disabled={props.images.length > 1}
+          image={props.images[0]} 
+          onChangeImage={props.onChangeImage} />
 
         <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

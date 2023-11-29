@@ -1,12 +1,10 @@
-import { Mosaic, MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
-import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
-import { X, ZoomIn, ZoomOut } from 'lucide-react';
-import { useViewers } from '@annotorious/react-manifold';
+import { useEffect, useState } from 'react';
+import { Mosaic } from 'react-mosaic-component';
 import { Image, LoadedImage } from '@/model';
-import { Button } from '@/ui/Button';
-import { Separator } from '@/ui/Separator';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../HeaderSection';
+import { WorkspaceWindow } from './WorkspaceWindow';
+import { v4 as uuidv4 } from 'uuid';
 
 import 'react-mosaic-component/react-mosaic-component.css';
 
@@ -17,6 +15,8 @@ interface WorkspaceSectionProps {
   mode: ToolMode;
 
   tool: Tool;
+
+  onChangeImages(images: Image[]): void;
 
   onRemoveImage(image: Image): void;
 
@@ -32,87 +32,64 @@ const createInitialValue= (list: string[], direction = 'row') => {
 }
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
+
+  const [windowMap, setWindowMap] = useState<{ windowId: string, image: LoadedImage }[]>([]);
+
+  useEffect(() => {
+    setWindowMap(entries => {
+      const diff = props.images.length - entries.length;
+
+      if (diff === 0) {
+        return entries.map(({ windowId }, idx) => ({ windowId, image: props.images[idx] }));
+      } else if (diff > 0) {
+        // More images
+        return [
+          ...entries.map(({ windowId }, idx) => ({ windowId, image: props.images[idx] })),
+          ...props.images.slice(-diff).map(image => ({ windowId: uuidv4(), image: image }))
+        ];
+      } else {
+        // Fewer images
+        return entries.slice(0, props.images.length)
+          .map(({ windowId}, idx) => ({ windowId, image: props.images[idx] }));
+      }
+    });
+  }, [props.images]);
+
+  const onChangeImage = (windowId: string, image: Image) => {
+    const nextImages = windowMap
+      .map(entry => entry.windowId === windowId ? image : entry.image);
+
+    props.onChangeImages(nextImages);
+  }
+
+  const onClose = (windowId: string) => {
+    const nextImages = windowMap
+      .filter(entry => entry.windowId !== windowId)
+      .map(entry => entry.image);
+
+    props.onChangeImages(nextImages);
+  }
   
-  const viewers = useViewers();
-
-  const onCloseWindow = (
-    actions: MosaicRootActions<MosaicKey>, 
-    path: MosaicBranch[],
-    imageId: string
-  ) => () => {
-    actions.remove(path);
-    props.onRemoveImage(props.images.find(image => image.id === imageId));
-  }
-
-  const onZoom = (factor: number, imageId: string) => () => {
-    const viewer = viewers.get(imageId);
-    viewer.viewport.zoomBy(factor);
-  }
-
   return (
     <section className="workspace flex-grow bg-muted">
-      {props.images.length === 1 ? (
+      {windowMap.length === 1 ? (
         <AnnotatableImage 
-          image={props.images[0]} 
+          image={windowMap[0].image} 
           mode={props.mode}
           tool={props.tool} />
-      ) : props.images.length > 1 ? (
+      ) : windowMap.length > 1 ? (
         <Mosaic
-          renderTile={(id, path) => (
-            <MosaicWindow 
-              path={path}
-              className="text-xs"
-              createNode={() => id}
-              title={props.images.find(i => i.id === id).name}
-              toolbarControls={(
-                <>
-                  <button onClick={onZoom(2, id)}>
-                    <ZoomIn className="h-4 w-4 mr-2.5 text-muted-foreground hover:text-black" />
-                  </button>
-
-                  <button onClick={onZoom(0.5, id)}>
-                    <ZoomOut className="h-4 w-4 mr-1.5 text-muted-foreground hover:text-black" />
-                  </button>
-
-                  <Separator orientation="vertical" className="h-4 ml-0.5 mr-1" />
-
-                  <MosaicContext.Consumer>
-                    {({ mosaicActions }) => (
-                      <MosaicWindowContext.Consumer>
-                        {({ mosaicWindowActions })  => (
-                          <>
-                            {/*
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              className="h-6 w-6 p-0 -mr-0.5 rounded-full text-muted-foreground hover:text-black"
-                              onClick={() => mosaicWindowActions.split()}>
-                              <PanelLeft className="h-4 w-4" />
-                            </Button>
-                            */}
-
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
-                              onClick={onCloseWindow(mosaicActions, path, id)}>
-                              <X className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                      </MosaicWindowContext.Consumer>
-                    )}
-                  </MosaicContext.Consumer>
-                </>
-              )}>
-
-              <AnnotatableImage 
-                image={props.images.find(i => i.id === id)} 
-                mode={props.mode}
-                tool={props.tool} />
-            </MosaicWindow>
-          )}
-          initialValue={createInitialValue(props.images.map(i => i.id))} />
+          renderTile={(windowId, path) => (
+            <WorkspaceWindow 
+              windowId={windowId} 
+              windowPath={path} 
+              image={windowMap.find(t => t.windowId === windowId)!.image}
+              mode={props.mode}
+              tool={props.tool}
+              onChangeImage={(_, next) => onChangeImage(windowId, next)} 
+              onClose={() => onClose(windowId)} />
+          )} 
+          initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
       ) : undefined}
     </section>
   )
