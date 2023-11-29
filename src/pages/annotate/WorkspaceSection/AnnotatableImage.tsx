@@ -13,6 +13,8 @@ import '@annotorious/react/annotorious-react.css';
 interface AnnotatableImageProps {
 
   image: LoadedImage;
+
+  windowId?: string;
   
   mode: ToolMode;
 
@@ -23,7 +25,7 @@ interface AnnotatableImageProps {
 /**
  * A simple shim that passes the OSD viewer instance upwards to the manifold.
  */
-const ManifoldConnector = (props: { source: string }) => {
+const ManifoldConnector = (props: { id: string }) => {
 
   const viewer = useViewer();
 
@@ -31,10 +33,10 @@ const ManifoldConnector = (props: { source: string }) => {
 
   useEffect(() => {
     if (viewer) {
-      setViewers(m => new Map(m.entries()).set(props.source, viewer));
+      setViewers(m => new Map(m.entries()).set(props.id, viewer));
 
       return () => {
-        setViewers(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== props.source)));
+        setViewers(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== props.id)));
       }
     }
   }, [viewer]);
@@ -85,7 +87,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         style={colorByEntity}
         tool={props.tool}>
 
-        <ManifoldConnector source={props.image.id} />
+        <ManifoldConnector id={props.windowId || props.image.id} />
 
         <OpenSeadragonViewer
           className="osd-container"

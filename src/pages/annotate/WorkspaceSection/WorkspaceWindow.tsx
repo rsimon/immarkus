@@ -39,7 +39,7 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
   }
 
   const onZoom = (factor: number) => () => {
-    const viewer = viewers.get(props.image.id);
+    const viewer = viewers.get(props.windowId);
     viewer.viewport.zoomBy(factor);
   }
 
@@ -97,6 +97,7 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
       )}>
 
       <AnnotatableImage 
+        windowId={props.windowId}
         image={props.image} 
         mode={props.mode}
         tool={props.tool} />
