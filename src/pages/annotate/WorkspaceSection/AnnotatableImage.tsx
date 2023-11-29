@@ -53,7 +53,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const onSaved = () => setSavingState({ value: 'success' });
 
-  const options: OpenSeadragon.Options = useMemo(() => ({
+  const options = useMemo(() => ({
     tileSources: {
       type: 'image',
       url: URL.createObjectURL(props.image.data)
