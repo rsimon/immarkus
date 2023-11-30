@@ -1,6 +1,6 @@
-import { useContext, useEffect, useMemo } from 'react';
-import { AnnotoriousPlugin, OpenSeadragonAnnotator, OpenSeadragonViewer, W3CImageFormat, useViewer } from '@annotorious/react';
-import { Annotorious, OSDViewerContext } from '@annotorious/react-manifold';
+import { useMemo } from 'react';
+import { AnnotoriousPlugin, OpenSeadragonAnnotator, W3CImageFormat } from '@annotorious/react';
+import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
@@ -19,29 +19,6 @@ interface AnnotatableImageProps {
   mode: ToolMode;
 
   tool: Tool;
-
-}
-
-/**
- * A simple shim that passes the OSD viewer instance upwards to the manifold.
- */
-const ManifoldConnector = (props: { id: string }) => {
-
-  const viewer = useViewer();
-
-  const { setViewers } = useContext(OSDViewerContext);
-
-  useEffect(() => {
-    if (viewer) {
-      setViewers(m => new Map(m.entries()).set(props.id, viewer));
-
-      return () => {
-        setViewers(m => new Map(Array.from(m.entries()).filter(([key, _]) => key !== props.id)));
-      }
-    }
-  }, [viewer]);
-
-  return null;
 
 }
 
@@ -78,7 +55,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   }
   
   return (
-    <Annotorious source={props.image.id}>
+    <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
         adapter={W3CImageFormat(props.image.name)}
         autoSave
@@ -87,9 +64,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         style={colorByEntity}
         tool={props.tool}>
 
-        <ManifoldConnector id={props.windowId || props.image.id} />
-
         <OpenSeadragonViewer
+          id={props.windowId || props.image.id}
           className="osd-container"
           options={options} />
 
