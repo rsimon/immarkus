@@ -107,12 +107,12 @@ export const EntityDetails = (props: EntityDetailsProps) => {
               onChange={evt => setEntity(e => ({...e, id: evt.target.value}))}/>
 
             {entity.id && (!isIdAvailable ? (
-              <span className="flex items-center text-xs mt-3 text-red-600">
-                <AlertCircle className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
+              <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
+                <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
               </span>
             ) : (props.entity && !(props.entity.id === entity.id)) || !props.entity && (
-              <span className="flex items-center text-xs mt-3 text-green-600">
-                <CheckCircle2 className="h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
+              <span className="flex items-center text-xs mt-3 text-green-600 whitespace-nowrap">
+                <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
               </span>
             ))}
           </div>
