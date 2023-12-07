@@ -1,3 +1,4 @@
+import { useTransition, animated, easings } from '@react-spring/web';
 import { Image, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
 
@@ -21,8 +22,20 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
 
-  return props.open && (
-    <section className="thumbnail-strip absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
+  const transitions = useTransition([props.open], {
+    from: { maxHeight: 0 },
+    enter: { maxHeight: 100 },
+    leave: { maxHeight: 0 },
+    config:{
+      duration: 150,
+      easing: easings.easeInCubic
+    }
+  })
+
+  return transitions((style, open) => open && (
+    <animated.section 
+      style={style}
+      className="thumbnail-strip overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
       {loadedImages.length > 0 && (
         <ol className="flex gap-2 h-full items-center justify-center">
           {loadedImages.map(image => (
@@ -36,7 +49,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
           ))}
         </ol>
       )}
-    </section>
-  )
+    </animated.section>
+  ))
 
 }
