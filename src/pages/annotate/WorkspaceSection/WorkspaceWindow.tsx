@@ -1,12 +1,12 @@
 import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
-import { X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Redo2, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image, LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../HeaderSection';
-import { useViewers } from '@annotorious/react-manifold';
+import { useAnnotator, useViewers } from '@annotorious/react-manifold';
 import { PaginationWidget } from '../Pagination';
 
 interface WorkspaceWindowProps {
@@ -31,6 +31,8 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
 
   const viewers = useViewers();
 
+  const anno = useAnnotator(props.image.id);
+
   const onCloseWindow = (
     actions: MosaicRootActions<MosaicKey>
   ) => () => {
@@ -52,43 +54,43 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
       toolbarControls={(
         <>
           <button onClick={onZoom(2)}>
-            <ZoomIn className="h-4 w-4 mr-2.5 text-muted-foreground hover:text-black" />
+            <ZoomIn className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
           </button>
 
           <button onClick={onZoom(0.5)}>
-            <ZoomOut className="h-4 w-4 mr-1.5 text-muted-foreground hover:text-black" />
+            <ZoomOut className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
           </button>
+
+          <Separator orientation="vertical" className="h-4 mx-1" />
+
+          <button onClick={() => anno.undo()}>
+            <Undo2 className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+          </button>
+
+          <button onClick={() => anno.redo()}>
+            <Redo2 className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+          </button>
+
+          <Separator orientation="vertical" className="h-4 ml-1" />
 
           <PaginationWidget
             image={props.image}
             variant="compact"
             onChangeImage={props.onChangeImage} />
 
-          <Separator orientation="vertical" className="h-4 ml-0.5 mr-1" />
+          <Separator orientation="vertical" className="h-4 mr-0.5" />
 
           <MosaicContext.Consumer>
             {({ mosaicActions }) => (
               <MosaicWindowContext.Consumer>
                 {({ mosaicWindowActions })  => (
-                  <>
-                    {/*
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="h-6 w-6 p-0 -mr-0.5 rounded-full text-muted-foreground hover:text-black"
-                      onClick={() => mosaicWindowActions.split()}>
-                      <PanelLeft className="h-4 w-4" />
-                    </Button>
-                    */}
-
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
-                      onClick={onCloseWindow(mosaicActions)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    className="h-6 w-6 p-0 rounded-full mr-1 text-muted-foreground hover:text-black"
+                    onClick={onCloseWindow(mosaicActions)}>
+                    <X className="h-4 w-4" />
+                  </Button>
                 )}
               </MosaicWindowContext.Consumer>
             )}
