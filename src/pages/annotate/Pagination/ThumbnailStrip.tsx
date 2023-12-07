@@ -22,7 +22,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
   const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
 
   return props.open && (
-    <section className="thumbnail-strip absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-t">
+    <section className="thumbnail-strip absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
       {loadedImages.length > 0 && (
         <ol className="flex gap-2 h-full items-center justify-center">
           {loadedImages.map(image => (
