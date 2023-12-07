@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, MousePointer2, ZoomIn, ZoomOut } from 'lucide-react';
-import { useViewers } from '@annotorious/react-manifold';
+import { ChevronLeft, MousePointer2, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { Tool, ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
@@ -33,6 +33,10 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const viewers = useViewers();
 
+  const manifold = useAnnotoriousManifold();
+
+  const toolsDisabled = props.images.length > 1;
+
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
       props.onChangeTool(tool);
@@ -43,6 +47,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   const onZoom = (factor: number) => () => {
     const viewer = Array.from(viewers.values())[0];
     viewer.viewport.zoomBy(factor);
+  }
+
+  const onUndo = () => {
+    const anno = manifold.getAnnotator(props.images[0].id);
+    anno.undo();
+  }
+
+  const onRedo = () => {
+    const anno = manifold.getAnnotator(props.images[0].id);
+    anno.redo();
   }
 
   return (
@@ -71,23 +85,41 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <Separator orientation="vertical" className="h-4" />
 
         <ToolbarButton 
-          disabled={props.images.length > 1}
+          disabled={toolsDisabled}
           onClick={onZoom(2)}>
           <ZoomIn 
             className="h-8 w-8 p-2" />
         </ToolbarButton>
 
         <ToolbarButton 
-          disabled={props.images.length > 1}
+          disabled={toolsDisabled}
           onClick={onZoom(0.5)}>
           <ZoomOut 
             className="h-8 w-8 p-2" />
         </ToolbarButton>
 
+        <Separator orientation="vertical" className="h-4" />
+
         <PaginationWidget 
-          disabled={props.images.length > 1}
+          disabled={toolsDisabled}
           image={props.images[0]} 
           onChangeImage={props.onChangeImage} />
+
+        <Separator orientation="vertical" className="h-4" />
+
+        <ToolbarButton
+          disabled={toolsDisabled}
+          onClick={onUndo}>
+          <Undo2 
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          disabled={toolsDisabled}
+          onClick={onRedo}>
+          <Redo2
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
 
         <button 
           className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
