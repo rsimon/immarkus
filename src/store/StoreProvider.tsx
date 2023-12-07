@@ -48,7 +48,7 @@ export const useInitStore = () => {
     });
 }
 
-export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
+export const useStore = (args: { redirect?: boolean } = {}) => {
   const { store } = useContext(StoreContext);
 
   const navigate = args.redirect && useNavigate();
@@ -63,7 +63,7 @@ export const useStore = (args: { redirect: boolean } = { redirect: false }) => {
 
 export const useImages = (
   imageIdOrIds: string | string[],
-  args: { redirect: boolean } = { redirect: false }
+  args: { redirect?: boolean, delay?: number } = {}
 ): LoadedImage | LoadedImage[] => {
   const store = useStore(args);
 
@@ -72,9 +72,16 @@ export const useImages = (
   const [images, setImages] = useState<LoadedImage[]>([]);
 
   useEffect(() => {
-    if (store) {
+    const load = () => {
       const promises = imageIds.map(id => store.loadImage(id));
       Promise.all(promises).then(setImages);
+    }
+
+    if (store) {
+      if (args.delay)
+        setTimeout(() => load(), args.delay);
+      else
+        load();
     }
   }, [imageIds.join(','), store]);
 

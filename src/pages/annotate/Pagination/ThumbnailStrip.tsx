@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useTransition, animated, easings } from '@react-spring/web';
+import { ThumbnailImage } from '@/components/ThumbnailImage';
 import { Image, LoadedImage } from '@/model';
-import { useImages, useStore } from '@/store';
+import { useStore } from '@/store';
 
 interface ThumbnailStripProps {
 
@@ -14,13 +16,15 @@ interface ThumbnailStripProps {
 
 import './ThumbnailStrip.css';
 
+
 export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   const store = useStore();
 
-  const { images } = store.getFolderContents(props.image.folder);
+  // Use a state for instant feedback!
+  const [selected, setSelected] = useState(props.image.id);
 
-  const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
+  const { images } = store.getFolderContents(props.image.folder);
 
   const transitions = useTransition([props.open], {
     from: { maxHeight: 0 },
@@ -30,25 +34,32 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
       duration: 150,
       easing: easings.easeInCubic
     }
-  })
+  });
+
+  const onSelect = (image: Image) => () =>{
+    setSelected(image.id);
+    props.onSelect(image)
+  }
 
   return transitions((style, open) => open && (
     <animated.section 
       style={style}
       className="thumbnail-strip overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
-      {loadedImages.length > 0 && (
-        <ol className="flex gap-2 h-full items-center justify-center">
-          {loadedImages.map(image => (
-            <li key={image.id} className="w-16 h-16" onClick={() => props.onSelect(image)}>
-              <img
-                loading="lazy"
-                src={URL.createObjectURL(image.data)}
-                alt={image.name}
-                className="h-auto w-auto object-cover aspect-square rounded-sm shadow" />
-            </li>
-          ))}
-        </ol>
-      )}
+      <ol className="flex gap-3 h-full items-center justify-center">
+        {images.map(image => (
+          <li 
+            key={image.id} 
+            className="w-14 h-14">
+            <button
+              className={selected === image.id ? 'outline outline-2 outline-offset-2 rounded outline-black' : undefined}
+              onClick={onSelect(image)}>
+              <ThumbnailImage 
+                image={image} 
+                delay={160} />
+            </button>
+          </li>
+        ))}
+      </ol>
     </animated.section>
   ))
 
