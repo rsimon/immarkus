@@ -48,10 +48,9 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
       <ol className="flex gap-3 h-full items-center justify-center">
         {images.map(image => (
           <li 
-            key={image.id} 
-            className="w-14 h-14">
+            key={image.id}>
             <button
-              className={selected === image.id ? 'outline outline-2 outline-offset-2 rounded outline-black' : undefined}
+              className={selected === image.id ? 'block outline outline-2 outline-offset-2 rounded-sm outline-black' : 'block'}
               onClick={onSelect(image)}>
               <ThumbnailImage 
                 image={image} 
