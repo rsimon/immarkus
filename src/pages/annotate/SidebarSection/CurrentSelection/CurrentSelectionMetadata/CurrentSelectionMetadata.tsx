@@ -22,19 +22,30 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const { annotation } = props;
 
-  const tags: W3CAnnotationBody[] = annotation.bodies.filter(b => b.purpose === 'classifying');
-
   const anno = useAnnotoriousManifold();
 
   const { getEntity } = useVocabulary();
 
-  const schemaBodies = tags
+  // Annotation bodies with purpose 'classifying' that have schemas
+  const schemaBodies = (annotation.bodies as W3CAnnotationBody[])
+    .filter(b => b.purpose === 'classifying')
     .map(body => ({ body, entity: getEntity(body.source) }))
     .filter(({ entity }) => entity?.schema?.length > 0);
 
-  const safeKeys = createSafeKeys(schemaBodies);
-
+  // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
+
+  // All other bodies
+  const otherBodies = annotation.bodies.filter(b => {
+    if (b.purpose === 'classifying') {
+      const entity = getEntity((b as W3CAnnotationBody).source);
+      return (!entity?.schema || entity.schema.length === 0);
+    } else {
+      return b.purpose !== 'commenting';
+    }
+  });
+
+  const safeKeys = createSafeKeys(schemaBodies);
 
   const noteKey = `${annotation.id}@note`;
 
@@ -81,7 +92,9 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
     let updatedAnnotation = {
       ...anno.getAnnotation(annotation.id),
-      bodies: noteBody ? [...updatedTags, noteBody ] : updatedTags
+      bodies: noteBody 
+        ? [...updatedTags, ...otherBodies, noteBody ]
+        : [...updatedTags, ...otherBodies ]
     };
 
     anno.updateAnnotation(updatedAnnotation);
