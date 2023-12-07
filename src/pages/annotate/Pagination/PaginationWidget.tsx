@@ -93,7 +93,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
       <ThumbnailStrip 
         image={props.image} 
-        open={false} 
+        open={showThumbnails} 
         onSelect={onSetImage} />
     </div>
   )
