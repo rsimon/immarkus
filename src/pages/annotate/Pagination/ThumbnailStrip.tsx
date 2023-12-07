@@ -1,11 +1,17 @@
-import { LoadedImage } from '@/model';
+import { Image, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
 
 interface ThumbnailStripProps {
 
+  open: boolean;
+
   image: LoadedImage;
 
+  onSelect(image: Image): void;
+
 }
+
+import './ThumbnailStrip.css';
 
 export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
@@ -15,12 +21,12 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
 
-  return (
-    <section className="absolute bg-white left-0 w-full h-20 top-[100%] z-10 shadow-inner border-b border-t">
+  return props.open && (
+    <section className="thumbnail-strip absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-t">
       {loadedImages.length > 0 && (
         <ol className="flex gap-2 h-full items-center justify-center">
           {loadedImages.map(image => (
-            <li key={image.id} className="w-16 h-16">
+            <li key={image.id} className="w-16 h-16" onClick={() => props.onSelect(image)}>
               <img
                 loading="lazy"
                 src={URL.createObjectURL(image.data)}
