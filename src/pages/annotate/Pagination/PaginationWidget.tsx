@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ToolbarButton } from '../HeaderSection/ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
+import { useClickOutside } from './useClickoutside';
 
 interface PaginationWidgetProps {
 
@@ -15,11 +16,15 @@ interface PaginationWidgetProps {
 
   onChangeImage(previous: Image, next: Image): void;
 
+  onAddImage(image: Image): void;
+
 }
 
 export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const store = useStore();
+
+  const el = useRef();
 
   const { images } = store.getFolderContents(props.image.folder);
 
@@ -28,6 +33,12 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
   const [showThumbnails, setShowThumbnails] = useState(false);
 
   const isCompact = props.variant === 'compact';
+
+  useEffect(() => {
+    if (props.disabled) setShowThumbnails(false);
+  }, [props.disabled]);
+
+  useClickOutside(el, () => setShowThumbnails(false));
 
   const onSkipImage = (inc: number) => {
     const nextIdx = Math.min(Math.max(0, currentIndex + inc), images.length - 1);
@@ -38,7 +49,9 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
     props.onChangeImage(images[currentIndex], image);
 
   return (
-    <div className={isCompact ? 'flex mx-1' : 'flex mr-1'}>
+    <div
+      ref={el} 
+      className={isCompact ? 'flex mx-1' : 'flex mr-1'}>
       {isCompact ? (
         <button 
           className="text-muted-foreground hover:text-black disabled:text-muted-foreground/30"
@@ -94,7 +107,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
       <ThumbnailStrip 
         image={props.image} 
         open={showThumbnails} 
-        onSelect={onSetImage} />
+        onSelect={onSetImage} 
+        onAdd={props.onAddImage} />
     </div>
   )
 
