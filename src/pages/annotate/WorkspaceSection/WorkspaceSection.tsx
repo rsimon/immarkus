@@ -16,6 +16,8 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
+  onAddImage(image: Image): void;
+
   onChangeImages(images: Image[]): void;
 
   onRemoveImage(image: Image): void;
@@ -86,6 +88,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               image={windowMap.find(t => t.windowId === windowId)!.image}
               mode={props.mode}
               tool={props.tool}
+              onAddImage={props.onAddImage}
               onChangeImage={(_, next) => onChangeImage(windowId, next)} 
               onClose={() => onClose(windowId)} />
           )} 

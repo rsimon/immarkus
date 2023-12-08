@@ -29,6 +29,9 @@ export const Annotate = () => {
     navigate(`/annotate/${imageIds.join('&')}`);
   }, [imageIds]);
 
+  const onAddImage = (image: Image) =>
+    setImageIds(ids => ([...ids, image.id]));
+
   const onChangeImage = (previous: Image, next: Image) =>
     setImageIds(ids => ids.map(id => id === previous.id ? next.id : id));
 
@@ -43,7 +46,7 @@ export const Annotate = () => {
                   images={images} 
                   mode={mode}
                   tool={tool}
-                  onAddImage={image => setImageIds(ids => ([...ids, image.id]))} 
+                  onAddImage={onAddImage} 
                   onChangeImage={onChangeImage}
                   onChangeMode={setMode}
                   onChangeTool={setTool} />
@@ -52,6 +55,7 @@ export const Annotate = () => {
                   images={images} 
                   mode={mode}
                   tool={tool} 
+                  onAddImage={onAddImage} 
                   onChangeImages={images => setImageIds(images.map(i => i.id))}
                   onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
               </main>

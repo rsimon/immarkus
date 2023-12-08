@@ -6,11 +6,8 @@ export const useClickOutside = (elementRef: React.MutableRefObject<HTMLElement>,
 
   useEffect(() => {
     const handleClickOutside = (event: PointerEvent) => {
-      event.preventDefault()
-
-      if (elementRef && elementRef.current && !elementRef.current.contains(event.target as Node)) {
+      if (elementRef && elementRef.current && !elementRef.current.contains(event.target as Node))
         callbackRef.current()
-      }
 
       return;
     }
