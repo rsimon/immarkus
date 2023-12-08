@@ -54,11 +54,12 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
   return transitions((style, open) => open && (
     <animated.section 
       style={style}
-      className="thumbnail-strip overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
+      className="thumbnail-strip overflow-x-auto absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
       <ol className="flex gap-3 h-full items-center justify-center">
         {images.map(image => (
           <li 
-            key={image.id}>
+            key={image.id}
+            className="flex-shrink-0">
             <ContextMenu>
               <ContextMenuTrigger>
                 <button

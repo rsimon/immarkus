@@ -1,3 +1,9 @@
 .thumbnail-strip {
   box-shadow: 0 3px 2px -3px rgb(0, 0, 0, 0.1);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.thumbnail-strip::-webkit-scrollbar {
+  display: none;
 }
