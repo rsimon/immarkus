@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { ImageIcon, ImagePlus } from 'lucide-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { ThumbnailImage } from '@/components/ThumbnailImage';
 import { Image, LoadedImage } from '@/model';
@@ -27,10 +27,14 @@ import './ThumbnailStrip.css';
 
 export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
+  const el = useRef<HTMLOListElement>();
+
   const store = useStore();
 
   // Use a state for instant feedback!
   const [selected, setSelected] = useState(props.image.id);
+
+  const [scrollable, setScrollable] = useState(false);
 
   const { images } = store.getFolderContents(props.image.folder);
 
@@ -51,15 +55,38 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
     props.onSelect(image)
   }
 
+  const onScroll = (inc: number) => () =>
+    el.current.scrollLeft += inc * 100;
+
+  useLayoutEffect(() => {
+    if (props.open) {
+      if (el.current?.scrollWidth > el.current?.clientWidth)
+        setScrollable(true);
+      else
+        setScrollable(false);
+    }
+  }, [props.open]);
+
   return transitions((style, open) => open && (
     <animated.section 
       style={style}
-      className="thumbnail-strip overflow-x-auto absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
-      <ol className="flex gap-3 h-full items-center justify-center">
+      className="thumbnail-strip flex justify-center overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
+      
+      {scrollable && (
+        <button 
+          onClick={onScroll(-1)}
+          className="absolute top-0 left-0 bg-white/70 h-full text-muted-foreground hover:text-black hover:bg-white/90">
+          <ChevronLeft className="h-8 w-8" strokeWidth={1.2} />
+        </button>
+      )}
+
+      <ol 
+        ref={el}
+        className="flex justify-start px-8 h-full items-center whitespace-nowrap overflow-x-auto">
         {images.map(image => (
           <li 
             key={image.id}
-            className="flex-shrink-0">
+            className="flex-shrink-0 inline-block mx-1.5">
             <ContextMenu>
               <ContextMenuTrigger>
                 <button
@@ -90,6 +117,14 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
           </li>
         ))}
       </ol>
+
+      {scrollable && (
+        <button 
+          onClick={onScroll(1)}
+          className="absolute top-0 right-0 bg-white/70 h-full text-muted-foreground hover:text-black hover:bg-white/90">
+          <ChevronRight className="h-8 w-8" strokeWidth={1.2} />
+        </button>
+      )}
     </animated.section>
   ))
 
