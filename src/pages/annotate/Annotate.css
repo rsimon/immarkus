@@ -76,6 +76,7 @@
   border-top-left-radius: 0;
   box-shadow: none;
   padding: 16px 0;
+  position: relative;
 }
 
 .page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-toolbar.draggable:hover {

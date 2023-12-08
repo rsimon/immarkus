@@ -103,7 +103,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <PaginationWidget 
           disabled={toolsDisabled}
           image={props.images[0]} 
-          onChangeImage={props.onChangeImage} />
+          onChangeImage={props.onChangeImage} 
+          onAddImage={props.onAddImage} />
 
         <Separator orientation="vertical" className="h-4" />
 

@@ -21,6 +21,8 @@ interface WorkspaceWindowProps {
 
   tool: Tool;
 
+  onAddImage(image: Image): void;
+
   onChangeImage(previous: Image, next: Image): void;
 
   onClose(): void;
@@ -76,7 +78,8 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
           <PaginationWidget
             image={props.image}
             variant="compact"
-            onChangeImage={props.onChangeImage} />
+            onChangeImage={props.onChangeImage} 
+            onAddImage={props.onAddImage} />
 
           <Separator orientation="vertical" className="h-4 mr-0.5" />
 

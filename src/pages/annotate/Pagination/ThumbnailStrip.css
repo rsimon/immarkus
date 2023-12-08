@@ -1,3 +1,13 @@
 .thumbnail-strip {
-  box-shadow: 0 3px 3px -3px rgb(0, 0, 0, 0.1);
+  box-shadow: 0 3px 2px -3px rgb(0, 0, 0, 0.1);
+}
+
+.thumbnail-strip ol {
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.thumbnail-strip ol::-webkit-scrollbar {
+  display: none;
 }
