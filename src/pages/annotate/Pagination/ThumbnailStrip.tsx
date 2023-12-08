@@ -56,14 +56,23 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
   }
 
   const onScroll = (inc: number) => () =>
-    el.current.scrollLeft += inc * 100;
+    el.current.scrollLeft += inc * 112;
 
   useLayoutEffect(() => {
     if (props.open) {
-      if (el.current?.scrollWidth > el.current?.clientWidth)
-        setScrollable(true);
-      else
-        setScrollable(false);
+      const updateScrollable = () => {
+        if (el.current?.scrollWidth > el.current?.clientWidth)
+          setScrollable(true);
+        else
+          setScrollable(false);
+      }
+
+      const resizeObserver = new ResizeObserver(() => updateScrollable());
+      resizeObserver.observe(el.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      }
     }
   }, [props.open]);
 
@@ -75,7 +84,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
       {scrollable && (
         <button 
           onClick={onScroll(-1)}
-          className="absolute top-0 left-0 bg-white/70 h-full text-muted-foreground hover:text-black hover:bg-white/90">
+          className="absolute top-0 left-0 bg-white/60 h-full text-muted-foreground hover:text-black hover:bg-white/40">
           <ChevronLeft className="h-8 w-8" strokeWidth={1.2} />
         </button>
       )}
