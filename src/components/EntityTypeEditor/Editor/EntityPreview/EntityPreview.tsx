@@ -1,13 +1,13 @@
 import { Braces } from 'lucide-react';
-import { EntityTypeStub } from '../EntityTypeStub';
 import { getBrightness } from '@/utils/color';
+import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
   NumberPropertyField, 
   TextPropertyField, 
   URIPropertyField 
-} from '../../PropertyFields';
+} from '@/components/PropertyFields';
 
 interface EntityPreviewProps {
 

@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
-import { EntityTypeEditor } from './EntityTypeEditor';
+import { Editor } from './Editor';
 import { useToast } from '@/ui/Toaster';
 
 interface EntityTypeDialogProps {
@@ -16,7 +16,7 @@ interface EntityTypeDialogProps {
 
 }
 
-export const EntityTypeDialog = (props: EntityTypeDialogProps) => {
+export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
 
   const { toast } = useToast();
 
@@ -56,7 +56,7 @@ export const EntityTypeDialog = (props: EntityTypeDialogProps) => {
       )}
 
       <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
-        <EntityTypeEditor 
+        <Editor 
           entityType={props.entityType}
           onSaved={() => onOpenChange(false)} 
           onSaveError={onSaveError} />

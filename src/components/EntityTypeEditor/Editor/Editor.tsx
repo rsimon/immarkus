@@ -7,11 +7,11 @@ import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
 import { getRandomColor, getBrightness } from '@/utils/color';
-import { EntityPreview } from '../EntityPreview/EntityPreview';
+import { EntityPreview } from './EntityPreview/EntityPreview';
 import { Properties } from './PropertyDefinitions/Properties';
 import { EntityTypeStub } from '../EntityTypeStub';
 
-export interface EntityTypeEditorProps {
+export interface EditorProps {
 
   entityType?: EntityType;
 
@@ -24,7 +24,7 @@ export interface EntityTypeEditorProps {
 const validate = (stub: EntityTypeStub): EntityType | undefined =>
   stub.id ? stub as EntityType : undefined;
 
-export const EntityTypeEditor = (props: EntityTypeEditorProps) => {
+export const Editor = (props: EditorProps) => {
 
   const { model, addEntityType, updateEntityType } = useDataModel();
 

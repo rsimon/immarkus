@@ -1,7 +1,7 @@
 import { EntityType } from '@/model';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { EntityTypeDialog } from '@/components/EntityTypeDialog';
+import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
@@ -81,13 +81,13 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
       ))}
 
       <div className="flex justify-end -mt-5 -mb-4">
-        <EntityTypeDialog entityType={entityType}>
+        <EntityTypeEditor entityType={entityType}>
           <Button 
             type="button"
             variant="link" 
             className="text-xs text-muted-foreground p-0.5">
             Edit Schema</Button>
-        </EntityTypeDialog>
+        </EntityTypeEditor>
       </div>
     </div>
   )

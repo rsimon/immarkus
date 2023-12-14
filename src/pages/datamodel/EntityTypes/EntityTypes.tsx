@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { EntityTypeDialog } from '@/components/EntityTypeDialog';
+import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -36,17 +36,17 @@ export const EntityTypes = () => {
         onEditEntityType={setEdited}
         onDeleteEntityType={onDeleteEntityType} />
 
-      <EntityTypeDialog 
+      <EntityTypeEditor 
         open={Boolean(edited)} 
         entityType={edited}
         onOpenChange={open => !open && setEdited(undefined)} />
 
       <div className="flex mt-4">
-        <EntityTypeDialog>
+        <EntityTypeEditor>
           <Button>
             Create New Entity
           </Button>
-        </EntityTypeDialog>
+        </EntityTypeEditor>
       </div>
     </>
   )
