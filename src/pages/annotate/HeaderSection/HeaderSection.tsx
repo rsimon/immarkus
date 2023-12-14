@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, MousePointer2, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
-import { Tool, ToolSelector } from './ToolSelector';
+import { ToolSelector } from './ToolSelector';
 import { Separator } from '@/ui/Separator';
 import { SavingState } from '../SavingState';
 import { AddImage } from './AddImage';
-import { ToolbarButton } from './ToolbarButton';
+import { ToolbarButton } from '../ToolbarButton';
 import { PaginationWidget } from '../Pagination';
+import { Tool, ToolMode } from '../Tool';
 
 interface HeaderSectionProps {
 
@@ -26,8 +27,6 @@ interface HeaderSectionProps {
   onChangeMode(mode: ToolMode): void;
 
 }
-
-export type ToolMode = 'move' | 'draw';
 
 export const HeaderSection = (props: HeaderSectionProps) => {
 

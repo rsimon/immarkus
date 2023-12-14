@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ToolbarButton } from '../HeaderSection/ToolbarButton';
+import { ToolbarButton } from '../ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 import { useClickOutside } from './useClickoutside';
 

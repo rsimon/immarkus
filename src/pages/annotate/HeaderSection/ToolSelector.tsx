@@ -1,4 +1,5 @@
 import { Circle, Square, TriangleRight } from 'lucide-react';
+import { Tool } from '../Tool';
 import {
   Select,
   SelectContent,
@@ -6,8 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-
-export type Tool = 'rectangle' | 'polygon' | 'ellipse';
 
 interface ToolSelectorProps {
 

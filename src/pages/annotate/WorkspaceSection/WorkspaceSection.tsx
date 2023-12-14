@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { Mosaic } from 'react-mosaic-component';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
-import { Tool, ToolMode } from '../HeaderSection';
+import { Tool, ToolMode } from '../Tool';
 import { WorkspaceWindow } from './WorkspaceWindow';
 import { v4 as uuidv4 } from 'uuid';
 
 import 'react-mosaic-component/react-mosaic-component.css';
-import { create } from 'domain';
 
 interface WorkspaceSectionProps {
 
