@@ -1,4 +1,5 @@
-import type { DataModel, EntityType, Tag } from '@/model';
+import type { EntityType, Tag } from '@/model';
+import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from './utils';
 
 export interface DataModelStore {

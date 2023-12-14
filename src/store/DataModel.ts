@@ -1,5 +1,5 @@
-import { EntityType } from './EntityType';
-import { Tag } from './Tag';
+import { EntityType } from '../model/EntityType';
+import { Tag } from '../model/Tag';
 
 export interface DataModel { 
   

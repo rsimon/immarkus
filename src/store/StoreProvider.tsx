@@ -1,7 +1,8 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { Store, loadStore } from './Store';
-import { DataModel, EntityType, LoadedImage, Tag } from '@/model';
 import { W3CAnnotation } from '@annotorious/react';
+import { EntityType, LoadedImage, Tag } from '@/model';
+import { Store, loadStore } from './Store';
+import { DataModel } from './DataModel';
 
 interface StoreContextState {
 

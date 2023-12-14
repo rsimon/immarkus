@@ -1,5 +1,4 @@
-import type { DataModel } from '@/model';
-import { useDataModel } from '@/store';
+import { DataModel, useDataModel } from '@/store';
 import { Color, DrawingStyle, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 export const colorByEntityType = (
