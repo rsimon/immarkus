@@ -45,7 +45,7 @@
     "dequal": "^2.0.3",
     "formik": "^2.4.3",
     "localforage": "^1.10.0",
-    "lucide-react": "^0.270.0",
+    "lucide-react": "^0.280.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-mosaic-component": "^6.1.0",

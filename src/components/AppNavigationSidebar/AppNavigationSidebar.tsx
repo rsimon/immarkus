@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Blocks, Download, Image, Plug, Wand2 } from 'lucide-react';
+import { Download, Image, Plug, Sparkles, ToyBrick } from 'lucide-react';
 
 import './AppNavigationSidebar.css';
 
@@ -33,7 +33,7 @@ export const AppNavigationSidebar = () => {
             <Link 
               className={pathname === '/model' ? active : undefined} 
               to="/model">
-              <Blocks size={18} className="mr-2" />  Data Model
+              <ToyBrick size={18} className="mr-2" />  Data Model
             </Link>
           </li>
 
@@ -41,7 +41,7 @@ export const AppNavigationSidebar = () => {
             <Link 
               className={pathname === '/graph' ? active : undefined} 
               to="/graph">
-              <Wand2 size={18} className="mr-2" />  Knowledge Graph
+              <Sparkles size={18} className="mr-2" />  Knowledge Graph
             </Link>
           </li>
 

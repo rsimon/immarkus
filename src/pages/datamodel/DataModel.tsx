@@ -1,4 +1,4 @@
-import { Braces, Folder, Image } from 'lucide-react';
+import { Cuboid, Folder, Image } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useStore } from '@/store';
@@ -20,7 +20,7 @@ export const Vocabulary = () => {
         <Tabs defaultValue="entityTypes" className="mt-2">
           <TabsList className="gap-2">
             <TabsTrigger value="entityTypes">
-              <Braces size={16} className="mr-2" /> Entity Classes
+              <Cuboid size={16} className="mr-2" /> Entity Classes
             </TabsTrigger>
 
             <TabsTrigger value="imageMetadata">
