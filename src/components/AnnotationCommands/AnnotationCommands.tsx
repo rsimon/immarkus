@@ -11,7 +11,7 @@ import {
   CommandList,
   CommandSeparator
 } from '@/ui/Command';
-import { EntityDetailsDialog } from '../EntityDetails';
+import { EntityTypeDialog } from '../EntityTypeDialog';
 import { EntityType, Tag } from '@/model';
 
 interface AnnotationCommandProps {
@@ -93,11 +93,11 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
         </CommandList>
 
         <div className="p-1 pt-1.5 border-t flex justify-end text-muted-foreground">
-          <EntityDetailsDialog>
+          <EntityTypeDialog>
             <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm mr-2">
               <Braces className="h-3.5 w-3.5 mr-1" /> Create new entity
             </Button>
-          </EntityDetailsDialog>
+          </EntityTypeDialog>
 
           <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm">
             <Spline className="h-3.5 w-3.5 mr-1" /> Create new relation

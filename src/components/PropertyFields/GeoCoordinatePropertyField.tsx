@@ -7,7 +7,7 @@ interface GeoCoordinatePropertyFieldProps {
 
   id: string;
 
-  property: PropertyDefinition;
+  definition: PropertyDefinition;
 
   validate?: boolean;
 
@@ -19,7 +19,7 @@ interface GeoCoordinatePropertyFieldProps {
 
 export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProps) => {
 
-  const { id, property, value, validate, onChange } = props;
+  const { id, definition, value, validate, onChange } = props;
 
   const [lonLat, setLonLat] = useState<[number | undefined, number | undefined]>(value || [undefined, undefined]);
 
@@ -43,8 +43,8 @@ export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProp
     <div className="mb-5">
       <Label
         className="text-xs block mb-2.5">
-        {property.name}
-      </Label> {property.required && !value ? (
+        {definition.name}
+      </Label> {definition.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (
         <span className="text-xs text-red-600 ml-1">must be valid coordinates</span>

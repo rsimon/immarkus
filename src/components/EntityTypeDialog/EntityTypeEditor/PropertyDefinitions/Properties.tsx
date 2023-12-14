@@ -1,17 +1,18 @@
 import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
+import { Button } from '@/ui/Button';
+import { PropertyDefinition } from '@/model';
+import { PropertiesActions } from './PropertiesActions';
+import { PropertyEditorDialog } from './PropertyEditorDialog';
+import { moveArrayItem } from './moveArrayItem';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Button } from '@/ui/Button';
-import { PropertyDefinition } from '@/model';
-import { EntitySchemaPropActions } from './EntitySchemaPropActions';
-import { PropertyDialog } from './PropertyDialog';
-import { moveArrayItem } from './moveArrayItem';
 
-interface EntitySchemaDetailsProps {
+
+interface PropertiesProps {
 
   properties: PropertyDefinition[];
 
@@ -19,7 +20,7 @@ interface EntitySchemaDetailsProps {
 
 }
 
-export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
+export const Properties = (props: PropertiesProps) => {
 
   const { properties } = props; 
 
@@ -92,7 +93,7 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
                       {p.name}
                     </div>
 
-                    <EntitySchemaPropActions 
+                    <PropertiesActions 
                       property={p} 
                       onMoveUp={onMoveProperty(p, true)}
                       onMoveDown={onMoveProperty(p, false)}
@@ -104,14 +105,14 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
             )}
             
             <div className="flex justify-end">
-              <PropertyDialog
+              <PropertyEditorDialog
                 onUpdate={addProperty}>
                 <Button 
                   variant="outline" 
                   className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
                   Add Property
                 </Button>
-              </PropertyDialog>
+              </PropertyEditorDialog>
             </div>
           </div>
         </AccordionContent>

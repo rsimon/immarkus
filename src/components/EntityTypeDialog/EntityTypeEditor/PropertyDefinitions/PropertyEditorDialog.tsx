@@ -1,4 +1,6 @@
 import { ReactNode, useState } from 'react';
+import { PropertyDefinition } from '@/model';
+import { PropertyEditor } from './PropertyEditor';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +9,8 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/ui/Dialog';
-import { PropertyDetails } from '../PropertyDetails';
-import { PropertyDefinition } from '@/model';
 
-interface PropertyDialogProps {
+interface PropertyEditorDialogProps {
 
   property?: PropertyDefinition
 
@@ -20,7 +20,7 @@ interface PropertyDialogProps {
 
 }
 
-export const PropertyDialog = (props: PropertyDialogProps) => {
+export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
 
   const [open, setOpen] = useState(false);
 
@@ -54,7 +54,7 @@ export const PropertyDialog = (props: PropertyDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <PropertyDetails 
+        <PropertyEditor 
           property={props.property} 
           onUpdate={onUpdate} />
       </DialogContent>

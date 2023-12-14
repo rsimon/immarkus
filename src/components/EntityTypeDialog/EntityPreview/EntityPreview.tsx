@@ -1,13 +1,13 @@
 import { Braces } from 'lucide-react';
-import { getBrightness } from './entityColor';
-import { EntityTypeStub } from './EntityDetails';
+import { EntityTypeStub } from '../EntityTypeStub';
+import { getBrightness } from '@/utils/color';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
   NumberPropertyField, 
   TextPropertyField, 
   URIPropertyField 
-} from '../PropertyFields';
+} from '../../PropertyFields';
 
 interface EntityPreviewProps {
 
@@ -46,28 +46,28 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       )}
 
       <div className="mt-2">
-        {(entityType.schema || []).map(property => (
+        {(entityType.properties || []).map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
               <EnumPropertyField 
                 id={property.name}
-                property={property} />
+                definition={property} />
             ) : property.type === 'geocoordinate' ? (
               <GeoCoordinatePropertyField 
                 id={property.name}
-                property={property} />
+                definition={property} />
             ) : property.type === 'number' ? (
               <NumberPropertyField 
                 id={property.name}
-                property={property} />   
+                definition={property} />   
             ) : property.type === 'text' ? (
               <TextPropertyField 
                 id={property.name}
-                property={property} />   
+                definition={property} />   
             ) : property.type === 'uri' ? (
               <URIPropertyField 
                 id={property.name}
-                property={property} />   
+                definition={property} />   
             ) : null}
           </div>
         ))}

@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { ArrowUp, ArrowDown, MoreHorizontal, Pencil, X } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
+import { PropertyEditorDialog } from './PropertyEditorDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
-import { PropertyDialog } from './PropertyDialog';
 
-interface EntitySchemaPropActionsProps {
+interface PropertiesActionsProps {
 
   property: PropertyDefinition;
 
@@ -24,7 +24,7 @@ interface EntitySchemaPropActionsProps {
 
 }
 
-export const EntitySchemaPropActions = (props: EntitySchemaPropActionsProps) => {  
+export const PropertiesActions = (props: PropertiesActionsProps) => {  
 
   const [open, setOpen] = useState(false);
 
@@ -61,14 +61,14 @@ export const EntitySchemaPropActions = (props: EntitySchemaPropActionsProps) => 
           <ArrowDown className="h-4 w-4 mr-2 text-muted-foreground" /> Move down
         </DropdownMenuItem>
 
-        <PropertyDialog
+        <PropertyEditorDialog
           property={props.property}
           onUpdate={onUpdated}>
 
           <DropdownMenuItem>
             <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit
           </DropdownMenuItem>
-        </PropertyDialog>
+        </PropertyEditorDialog>
 
         <DropdownMenuItem onSelect={andClose(props.onDeleteProperty)}>
           <X className="h-4 w-4 mr-2 text-muted-foreground" /> Delete

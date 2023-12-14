@@ -1,7 +1,7 @@
 import { EntityType } from '@/model';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { EntityDetailsDialog } from '@/components/EntityDetails';
+import { EntityTypeDialog } from '@/components/EntityTypeDialog';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
@@ -44,35 +44,35 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
           {property.type === 'enum' ? (
             <EnumPropertyField
               id={key}
-              property={property} 
+              definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'geocoordinate' ? (
             <GeoCoordinatePropertyField
               id={key}
-              property={property} 
+              definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'number' ? (
             <NumberPropertyField
               id={key}
-              property={property} 
+              definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'text' ? (
             <TextPropertyField 
               id={key}
-              property={property} 
+              definition={property} 
               value={props.values[key]}
               validate={props.showErrors} 
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'uri' ? (
             <URIPropertyField 
               id={key}
-              property={property} 
+              definition={property} 
               value={props.values[key]}
               validate={props.showErrors} 
               onChange={value => props.onChange(key, value)} />
@@ -81,13 +81,13 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
       ))}
 
       <div className="flex justify-end -mt-5 -mb-4">
-        <EntityDetailsDialog entityType={entityType}>
+        <EntityTypeDialog entityType={entityType}>
           <Button 
             type="button"
             variant="link" 
             className="text-xs text-muted-foreground p-0.5">
             Edit Schema</Button>
-        </EntityDetailsDialog>
+        </EntityTypeDialog>
       </div>
     </div>
   )

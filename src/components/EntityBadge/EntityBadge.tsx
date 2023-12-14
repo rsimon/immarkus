@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { EntityType } from '@/model';
-import { getForegroundColor } from '@/components/EntityDetails';
+import { getForegroundColor } from '@/utils/color';
 
 interface BadgeEntityProps {
 

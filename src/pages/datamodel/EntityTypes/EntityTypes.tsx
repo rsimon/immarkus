@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { EntityDetailsDialog } from '@/components/EntityDetails';
+import { EntityTypeDialog } from '@/components/EntityTypeDialog';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -27,8 +27,8 @@ export const EntityTypes = () => {
 
   return (
     <>
-      <p className="p-1 mt-4 text-sm max-w-lg leading-6">
-        Use Entity Classes to annotate specific concepts or things, and to record details 
+      <p className="p-1 mt-4 text-sm max-w-xl leading-6">
+        Use Entity Classes to annotate specific concepts or things with your annotations, and record details 
         like the the material of an item, or the number of legs on an animal.
       </p>
 
@@ -36,17 +36,17 @@ export const EntityTypes = () => {
         onEditEntityType={setEdited}
         onDeleteEntityType={onDeleteEntityType} />
 
-      <EntityDetailsDialog 
+      <EntityTypeDialog 
         open={Boolean(edited)} 
         entityType={edited}
         onOpenChange={open => !open && setEdited(undefined)} />
 
       <div className="flex mt-4">
-        <EntityDetailsDialog>
+        <EntityTypeDialog>
           <Button>
             Create New Entity
           </Button>
-        </EntityDetailsDialog>
+        </EntityTypeDialog>
       </div>
     </>
   )

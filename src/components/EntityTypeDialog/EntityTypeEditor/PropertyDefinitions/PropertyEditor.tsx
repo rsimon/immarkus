@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/ui/Select';
 
-interface PropertyDetailsProps {
+interface PropertyEditorProps {
 
   property?: PropertyDefinition;
 
@@ -22,7 +22,7 @@ interface PropertyDetailsProps {
 
 }
 
-export const PropertyDetails = (props: PropertyDetailsProps) => {
+export const PropertyEditor = (props: PropertyEditorProps) => {
 
   const { property } = props;
 

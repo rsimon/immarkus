@@ -1,9 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
-import { EntityDetails } from './EntityDetails';
+import { EntityTypeEditor } from './EntityTypeEditor';
+import { useToast } from '@/ui/Toaster';
 
-interface EntityTypeDetailsDialogProps {
+interface EntityTypeDialogProps {
 
   children?: ReactNode;
 
@@ -15,7 +16,9 @@ interface EntityTypeDetailsDialogProps {
 
 }
 
-export const EntityDetailsDialog = (props: EntityTypeDetailsDialogProps) => {
+export const EntityTypeDialog = (props: EntityTypeDialogProps) => {
+
+  const { toast } = useToast();
 
   const [open, setOpen] = useState(props.open);
 
@@ -30,6 +33,17 @@ export const EntityDetailsDialog = (props: EntityTypeDetailsDialogProps) => {
       props.onOpenChange(open);
   }
 
+  const onSaveError = (error: Error) => {
+    console.error(error);
+    
+    toast({
+      variant: 'destructive',
+      // @ts-ignore
+      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+      description: 'Something went wrong. Could not save entity type.'
+    });   
+  }
+
   return (
     <Dialog 
       open={open} 
@@ -42,9 +56,10 @@ export const EntityDetailsDialog = (props: EntityTypeDetailsDialogProps) => {
       )}
 
       <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
-        <EntityDetails 
+        <EntityTypeEditor 
           entityType={props.entityType}
-          onSaved={() => onOpenChange(false)} />
+          onSaved={() => onOpenChange(false)} 
+          onSaveError={onSaveError} />
       </DialogContent>
     </Dialog>
   )

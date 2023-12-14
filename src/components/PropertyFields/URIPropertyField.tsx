@@ -6,7 +6,7 @@ interface URIPropertyFieldProps {
 
   id: string;
 
-  property: PropertyDefinition;
+  definition: PropertyDefinition;
 
   validate?: boolean;
 
@@ -18,7 +18,7 @@ interface URIPropertyFieldProps {
 
 export const URIPropertyField = (props: URIPropertyFieldProps) => {
 
-  const { id, property, value, validate, onChange } = props;
+  const { id, definition, value, validate, onChange } = props;
 
   const isValidURL = (str: string) => {
     let url: URL;
@@ -39,8 +39,8 @@ export const URIPropertyField = (props: URIPropertyFieldProps) => {
       <Label 
         htmlFor={id}
         className="text-xs block mt-3 mb-1.5">
-        {property.name}
-      </Label> {property.required && !value ? (
+        {definition.name}
+      </Label> {definition.required && !value ? (
         <span className="text-xs text-red-600 ml-1">required</span>
       ) : !isValid && (
         <span className="text-xs text-red-600 ml-1">must be a URI</span>

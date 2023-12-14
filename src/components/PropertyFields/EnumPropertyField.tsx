@@ -12,7 +12,7 @@ interface EnumPropertyFieldProps {
 
   id: string;
 
-  property: EnumPropertyDefinition;
+  definition: EnumPropertyDefinition;
 
   validate?: boolean;
 
@@ -24,16 +24,16 @@ interface EnumPropertyFieldProps {
 
 export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
 
-  const { id, property, value, validate, onChange } = props;
+  const { id, definition, value, validate, onChange } = props;
 
-  const isValid = !validate || !property.required || value;
+  const isValid = !validate || !definition.required || value;
 
   return (
     <div className="mb-5">
       <Label 
         htmlFor={id}
         className="text-xs block mt-3 mb-1.5">
-        {property.name}
+        {definition.name}
       </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
       <Select 
@@ -47,7 +47,7 @@ export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
         <SelectContent>
           <SelectItem value={null}>&nbsp;</SelectItem>
 
-          {property.values.map(option => (
+          {definition.values.map(option => (
             <SelectItem key={option} value={option}>{option}</SelectItem>
           ))}
         </SelectContent>

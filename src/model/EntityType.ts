@@ -6,7 +6,7 @@ export interface EntityType {
 
   color?: string;
 
-  label: string;
+  label?: string;
 
   parentId: string;
 
