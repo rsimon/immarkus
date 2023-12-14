@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { CaseSensitive, Hash, Link2, List, MapPin, XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
 import { EntityType } from '@/model';
-import { Store, useDataModel } from '@/store';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { useToast, ToastTitle } from '@/ui/Toaster';
-import { EntityActions } from './EntityActions';
+import { EntityTypeActions } from './EntityTypeActions';
 import {
   Table,
   TableBody,
@@ -15,29 +15,33 @@ import {
   TableRow,
 } from '@/ui/Table';
 
-export const EntitiesTab = (props: { store: Store }) => {
-
-  const { model, removeEntityType } =  useDataModel();
+export const EntityTypes = () => {
 
   const { toast } = useToast();
 
-  const [editExisting, setEditExisting] = useState<EntityType | undefined>();
+  const { model, removeEntityType } =  useDataModel();
 
-  const onDeleteEntity = (type: EntityType) => () =>
-    removeEntityType(type)
-      .catch(error => {
-        console.error(error);
+  const [edited, setEdited] = useState<EntityType | undefined>();
 
-        toast({
-          variant: 'destructive',
-          // @ts-ignore
-          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-          description: 'Could not delete entity'
-        });    
-      });
+  const onDeleteEntityType = (type: EntityType) => () => removeEntityType(type)
+    .catch(error => {
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        // @ts-ignore
+        title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+        description: 'Could not delete entity'
+      });    
+    });
 
   return (
     <>
+      <p className="p-1 mt-4 text-sm max-w-lg leading-6">
+        Use Entity Classes to annotate specific concepts, and to record details 
+        such as the the material or style of an item, or the number of
+        legs on an animal.
+      </p>
+
       <div className="rounded-md border mt-8">
         <Table>
           <TableHeader className="text-xs">
@@ -89,9 +93,9 @@ export const EntitiesTab = (props: { store: Store }) => {
                   ))}
                 </TableCell>
                 <TableCell className="text-right p-2">
-                  <EntityActions 
-                    onEditEntity={() => setEditExisting(e)} 
-                    onDeleteEntity={onDeleteEntity(e)} />
+                  <EntityTypeActions 
+                    onEditEntityType={() => setEdited(e)} 
+                    onDeleteEntityType={onDeleteEntityType(e)} />
                 </TableCell>
               </TableRow>
             ))}
@@ -100,9 +104,9 @@ export const EntitiesTab = (props: { store: Store }) => {
       </div>
 
       <EntityDetailsDialog 
-        open={Boolean(editExisting)} 
-        entityType={editExisting}
-        onOpenChange={open => !open && setEditExisting(undefined)} />
+        open={Boolean(edited)} 
+        entityType={edited}
+        onOpenChange={open => !open && setEdited(undefined)} />
 
       <div className="flex mt-4">
         <EntityDetailsDialog>

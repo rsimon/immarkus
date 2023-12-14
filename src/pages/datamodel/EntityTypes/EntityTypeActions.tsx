@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Button } from '@/ui/Button';
 import { 
   DropdownMenu,
@@ -6,18 +8,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { useState } from 'react';
 
-interface EntityActionsProps {
+interface EntityTypeActionsProps {
 
-  onEditEntity(): void;
+  onEditEntityType(): void;
 
-  onDeleteEntity(): void;
+  onDeleteEntityType(): void;
 
 }
 
-export const EntityActions = (props: EntityActionsProps) => {
+export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -31,7 +31,7 @@ export const EntityActions = (props: EntityActionsProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent sideOffset={-10}>
-          <DropdownMenuItem onSelect={props.onEditEntity}>
+          <DropdownMenuItem onSelect={props.onEditEntityType}>
             <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit Entity
           </DropdownMenuItem>
 
@@ -45,7 +45,7 @@ export const EntityActions = (props: EntityActionsProps) => {
       <ConfirmedDelete
         open={confirmDelete}
         label="This action will delete the entity from the vocabulary. Existing annotations will not be affected."
-        onConfirm={props.onDeleteEntity}
+        onConfirm={props.onDeleteEntityType}
         onOpenChange={setConfirmDelete} />
     </>
   )

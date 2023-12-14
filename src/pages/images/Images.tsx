@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from 'react';
-import { NavigationSidebar } from '@/components/NavigationSidebar';
+import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useStore } from '@/store';
@@ -22,7 +22,7 @@ export const Images = () => {
 
   return store && (
     <div className="page-root">
-      <NavigationSidebar />
+      <AppNavigationSidebar />
 
       <main className="page images">
         <div className="space-y-1">

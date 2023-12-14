@@ -1,10 +1,10 @@
-import { NavigationSidebar } from '@/components/NavigationSidebar';
+import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 
 export const Markus = () => {
 
   return (
     <div className="page-root">
-      <NavigationSidebar />
+      <AppNavigationSidebar />
 
       <main className="page markus">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Nothing to see here. (Yet.)</h1>

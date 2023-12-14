@@ -1,9 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Blocks, Download, Globe2, Image, Sparkles } from 'lucide-react';
+import { Blocks, Download, Image, Plug, Wand2 } from 'lucide-react';
 
-import './NavigationSidebar.css';
+import './AppNavigationSidebar.css';
 
-export const NavigationSidebar = () => {
+export const AppNavigationSidebar = () => {
 
   const { pathname } = useLocation();
 
@@ -31,17 +31,17 @@ export const NavigationSidebar = () => {
 
           <li>
             <Link 
-              className={pathname === '/vocabulary' ? active : undefined} 
-              to="/vocabulary">
-              <Sparkles size={18} className="mr-2" />  Vocabulary
+              className={pathname === '/model' ? active : undefined} 
+              to="/model">
+              <Blocks size={18} className="mr-2" />  Data Model
             </Link>
           </li>
 
           <li>
             <Link 
-              className={pathname === '/knowledge-graph' ? active : undefined} 
-              to="/knowledge-graph">
-              <Globe2 size={18} className="mr-2" />  Knowledge Graph
+              className={pathname === '/graph' ? active : undefined} 
+              to="/graph">
+              <Wand2 size={18} className="mr-2" />  Knowledge Graph
             </Link>
           </li>
 
@@ -57,7 +57,7 @@ export const NavigationSidebar = () => {
             <Link 
               className={pathname === '/markus' ? active : undefined} 
               to="/markus">
-              <Blocks size={18} className="mr-2 relative -top-0.5" /> MARKUS
+              <Plug size={18} className="mr-2 relative -top-0.5" /> MARKUS
             </Link>
           </li>
         </ul>
