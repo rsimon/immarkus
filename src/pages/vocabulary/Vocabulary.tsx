@@ -8,7 +8,7 @@ import './Vocabulary.css';
 
 export const Vocabulary = () => {
 
-  const store = useStore({ redirect: true });
+  const store = useStore();
 
   return store &&  (
     <div className="page-root">

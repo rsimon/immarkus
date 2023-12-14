@@ -1,10 +1,6 @@
 import { NavigationSidebar } from '@/components/NavigationSidebar';
-import { useStore } from '@/store';
 
 export const Markus = () => {
-
-  // Just put this here so we redirect if the store isn't loaded
-  useStore({ redirect: true });
 
   return (
     <div className="page-root">

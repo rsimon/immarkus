@@ -19,7 +19,7 @@ export const Annotate = () => {
 
   const [imageIds, setImageIds] = useState(params.images.split('&'));
 
-  const images = useImages(imageIds, { redirect: true }) as LoadedImage[];
+  const images = useImages(imageIds) as LoadedImage[];
 
   const [tool, setTool] = useState<Tool>('rectangle');
 

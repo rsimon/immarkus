@@ -14,7 +14,7 @@ export const ThumbnailImage = (props: ThumbnailImageProps) => {
 
   const { image, delay } = props;
 
-  const loaded = useImages(props.image.id, { delay }) as LoadedImage;
+  const loaded = useImages(props.image.id, delay) as LoadedImage;
 
   return loaded ? (
     <img
