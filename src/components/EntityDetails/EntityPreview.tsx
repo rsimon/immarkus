@@ -1,6 +1,6 @@
 import { Braces } from 'lucide-react';
 import { getBrightness } from './entityColor';
-import { EntityStub } from './EntityDetails';
+import { EntityTypeStub } from './EntityDetails';
 import { 
   EnumPropertyField, 
   GeoCoordinatePropertyField, 
@@ -11,15 +11,15 @@ import {
 
 interface EntityPreviewProps {
 
-  entity: EntityStub;
+  entityType: EntityTypeStub;
 
 }
 
 export const EntityPreview = (props: EntityPreviewProps) => {
 
-  const { entity } = props;
+  const { entityType } = props;
 
-  const brightness = getBrightness(entity.color);
+  const brightness = getBrightness(entityType.color);
 
   return (
     <div className="bg-muted px-8 py-6 border-l">
@@ -31,22 +31,22 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         <h3 
           className="rounded-full pl-2.5 pr-3.5 py-1 flex items-center text-xs"
           style={{ 
-            backgroundColor: entity.color,
+            backgroundColor: entityType.color,
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
           <Braces className="inline h-3.5 w-3.5 mr-1.5" />
-          {entity.label || 'Entity Preview'}
+          {entityType.label || 'Entity Preview'}
         </h3>
       </div>
 
-      {entity.description && (
+      {entityType.description && (
         <p className="text-xs text-muted-foreground p-1 mt-1">
-          {entity.description}
+          {entityType.description}
         </p>
       )}
 
       <div className="mt-2">
-        {(entity.schema || []).map(property => (
+        {(entityType.schema || []).map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
               <EnumPropertyField 

@@ -1,11 +1,11 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from './utils';
-import { loadVocabulary, VocabularyStore } from './VocabularyStore';
+import { loadDataModel, DataModelStore } from './DataModelStore';
 
-export interface Store extends VocabularyStore {
+export interface Store extends DataModelStore {
 
-  // TODO only temporary - to be removed
+  // @deprecated
   images: Image[];
 
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
@@ -78,7 +78,7 @@ export const loadStore = (
 
   const { images, folders } = await loadDirectory(rootDir);
 
-  const vocabulary = await loadVocabulary(rootDir);
+  const vocabulary = await loadDataModel(rootDir);
 
   const cachedAnnotations = new Map<string, W3CAnnotation[]>();
 
@@ -192,7 +192,8 @@ export const loadStore = (
   });
 
   resolve({
-    images, // TODO to be removed
+    // @deprecated
+    images,
     countAnnotations,
     deleteAnnotation,
     getAnnotations,

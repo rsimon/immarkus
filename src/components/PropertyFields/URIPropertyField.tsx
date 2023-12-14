@@ -1,4 +1,4 @@
-import { URIProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
@@ -6,7 +6,7 @@ interface URIPropertyFieldProps {
 
   id: string;
 
-  property: URIProperty;
+  property: PropertyDefinition;
 
   validate?: boolean;
 

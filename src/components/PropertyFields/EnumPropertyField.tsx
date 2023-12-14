@@ -1,4 +1,4 @@
-import { EnumProperty } from '@/model';
+import { EnumPropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { 
   Select, 
@@ -12,7 +12,7 @@ interface EnumPropertyFieldProps {
 
   id: string;
 
-  property: EnumProperty;
+  property: EnumPropertyDefinition;
 
   validate?: boolean;
 

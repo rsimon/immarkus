@@ -1,16 +1,16 @@
-import { Vocabulary } from '@/model';
-import { useVocabulary } from '@/store';
+import type { DataModel } from '@/model';
+import { useDataModel } from '@/store';
 import { Color, DrawingStyle, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 export const colorByEntity = (
-  vocabulary: Vocabulary
+  model: DataModel
 ) => (annotation: ImageAnnotation): DrawingStyle => {
 
   const firstEntityBody: W3CAnnotationBody = 
     annotation.bodies.find(b => b.purpose === 'classifying');
 
   if (firstEntityBody) {
-    const entity = vocabulary.entities.find(e => e.id === firstEntityBody.source);
+    const entity = model.entityTypes.find(e => e.id === firstEntityBody.source);
     return entity ? { 
       fill: entity.color as Color
     } : {
@@ -26,10 +26,10 @@ export const colorByEntity = (
 
 export const useDrawingStyles = () => {
 
-  const { vocabulary } = useVocabulary();
+  const { model } = useDataModel();
 
   return {
-    colorByEntity: colorByEntity(vocabulary)
+    colorByEntity: colorByEntity(model)
   }
 
 }

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { dequal } from 'dequal/lite';
 import { AlertCircle, Braces, CheckCircle2, RefreshCcw } from 'lucide-react';
-import { Entity, EntityProperty } from '@/model';
-import { useVocabulary } from '@/store';
+import { EntityType, PropertyDefinition } from '@/model';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -13,13 +12,13 @@ import { EntitySchemaDetails } from './EntitySchemaDetails';
 
 export interface EntityDetailsProps {
 
-  entity?: Entity;
+  entityType?: EntityType;
 
   onSaved(): void;
 
 }
 
-export interface EntityStub {
+export interface EntityTypeStub {
 
   id?: string;
 
@@ -29,52 +28,53 @@ export interface EntityStub {
 
   description?: string;
 
-  schema?: EntityProperty[];
+  schema?: PropertyDefinition[];
 
 }
 
-const validate = (stub: EntityStub): Entity | undefined =>
-  (stub.id && stub.label) ? stub as Entity : undefined;
+const validate = (stub: EntityTypeStub): EntityType | undefined =>
+  (stub.id && stub.label) ? stub as EntityType : undefined;
 
 export const EntityDetails = (props: EntityDetailsProps) => {
 
-  const { vocabulary, addEntity, updateEntity } = useVocabulary();
+  const { model, addEntityType, updateEntityType } = useDataModel();
 
-  const { entities } = vocabulary;
+  const { entityTypes } = model;
 
-  const [entity, setEntity] = useState<EntityStub>(props.entity || {
+  const [entityType, setEntityType] = useState<EntityTypeStub>(props.entityType || {
     color: getRandomColor()
   });
 
-  const isIdAvailable = props.entity ?
+  const isIdAvailable = props.entityType
     // Editing existing - check if entity with the ID is props.entity.id
-    !entities.find(e => e.id === entity.id) || entities.find(e => e.id === entity.id).id === props.entity.id :
+    ? !entityTypes.find(e => e.id === entityType.id) 
+      || entityTypes.find(e => e.id === entityType.id).id === props.entityType.id
 
     // Not editing an existing entity - check if any exists with same ID
-    !entities.find(e => e.id === entity.id);
+    : !entityTypes.find(e => e.id === entityType.id);
 
   const [errors, setErrors] = useState<{ id: boolean, label: boolean } | undefined>();
 
-  const brightness = getBrightness(entity.color);
+  const brightness = getBrightness(entityType.color);
 
   useEffect(() => {
     if (errors)
-      setErrors({ id: !entity.id || !isIdAvailable, label: !entity.label });
-  }, [entity]);
+      setErrors({ id: !entityType.id || !isIdAvailable, label: !entityType.label });
+  }, [entityType]);
 
   const onSave = () => {
-    const valid = isIdAvailable && validate(entity);
+    const valid = isIdAvailable && validate(entityType);
     if (valid) {
       // Save new or update existing?
-      if (props.entity) {
-        updateEntity(valid)
+      if (props.entityType) {
+        updateEntityType(valid)
           .then(() => props.onSaved())
           .catch(error => {
             // TODO error handling
             console.error(error);
           });
       } else {
-        addEntity(valid)
+        addEntityType(valid)
           .then(() => props.onSaved())
           .catch(error => {
             // TODO error handling!
@@ -83,8 +83,8 @@ export const EntityDetails = (props: EntityDetailsProps) => {
       }
     } else {
       setErrors({
-        id: !entity.id || !isIdAvailable,
-        label: !entity.label
+        id: !entityType.id || !isIdAvailable,
+        label: !entityType.label
       });
     }
   }
@@ -100,19 +100,19 @@ export const EntityDetails = (props: EntityDetailsProps) => {
             </Label>{errors?.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
             <Input 
-              disabled={Boolean(props.entity)}
+              disabled={Boolean(props.entityType)}
               id="identifier"
               className={errors?.id ? "mt-1 h-9 mb-1 border-red-500" : "mt-1 h-9"} 
-              value={entity.id || ''} 
-              onChange={evt => setEntity(e => ({...e, id: evt.target.value}))}/>
+              value={entityType.id || ''} 
+              onChange={evt => setEntityType(e => ({...e, id: evt.target.value}))}/>
 
-            {entity.id && (!isIdAvailable ? (
+            {entityType.id && (!isIdAvailable ? (
               <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
                 <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
               </span>
-            ) : (props.entity && !(props.entity.id === entity.id)) || !props.entity && (
+            ) : (props.entityType && !(props.entityType.id === entityType.id)) || !props.entityType && (
               <span className="flex items-center text-xs mt-3 text-green-600 whitespace-nowrap">
-                <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entity.id} is available
+                <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.id} is available
               </span>
             ))}
           </div>
@@ -127,18 +127,18 @@ export const EntityDetails = (props: EntityDetailsProps) => {
                 size="icon" 
                 className={brightness < 0.9 ? 'h-9 w-9 mt-1' : 'h-9 w-9 border shadow-sm mt-1'}
                 style={{ 
-                  backgroundColor: entity.color,
+                  backgroundColor: entityType.color,
                   color: brightness > 0.5 ? '#000' : '#fff' 
                 }}
-                onClick={() => setEntity(e => ({...e, color: getRandomColor() }))}>
+                onClick={() => setEntityType(e => ({...e, color: getRandomColor() }))}>
                 <RefreshCcw className="h-4 w-4" />
               </Button>
 
               <Input 
                 id="color"
                 className="col-span-3 h-9 mt-1" 
-                value={entity.color} 
-                onChange={evt => setEntity(e => ({...e, color: evt.target.value }))}/>
+                value={entityType.color} 
+                onChange={evt => setEntityType(e => ({...e, color: evt.target.value }))}/>
             </div>
           </div>
         </div>
@@ -153,8 +153,8 @@ export const EntityDetails = (props: EntityDetailsProps) => {
 
           <Input
             id="label"
-            value={entity.label || ''}
-            onChange={evt => setEntity(e => ({ ...e, label: evt.target.value }))}
+            value={entityType.label || ''}
+            onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))}
             className={errors?.label ? "h-9 mt-1 mb-1 border-red-500" : "h-9 mt-1 mb-1"} />
               
           <Label 
@@ -165,13 +165,13 @@ export const EntityDetails = (props: EntityDetailsProps) => {
             id="description"
             className="mt-1"
             rows={3} 
-            value={entity.description || ''} 
-            onChange={evt => setEntity(e => ({ ...e, description: evt.target.value }))} />
+            value={entityType.description || ''} 
+            onChange={evt => setEntityType(e => ({ ...e, description: evt.target.value }))} />
         </div>
 
         <EntitySchemaDetails 
-          properties={entity.schema || []}
-          onChange={schema => setEntity(e => ({...e, schema }))} />
+          properties={entityType.schema || []}
+          onChange={schema => setEntityType(e => ({...e, schema }))} />
 
         <Button className="w-full mt-4" onClick={onSave}>
           <Braces className="w-5 h-5 mr-2" /> Save Entity
@@ -179,7 +179,7 @@ export const EntityDetails = (props: EntityDetailsProps) => {
       </div>
 
       <EntityPreview 
-        entity={entity} />
+        entityType={entityType} />
     </article>
   )
 

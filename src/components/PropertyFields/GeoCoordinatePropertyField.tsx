@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { GeoCoordinateProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
@@ -7,7 +7,7 @@ interface GeoCoordinatePropertyFieldProps {
 
   id: string;
 
-  property: GeoCoordinateProperty;
+  property: PropertyDefinition;
 
   validate?: boolean;
 

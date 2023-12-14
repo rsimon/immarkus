@@ -6,16 +6,16 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Button } from '@/ui/Button';
-import { EntityProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { EntitySchemaPropActions } from './EntitySchemaPropActions';
 import { PropertyDialog } from './PropertyDialog';
 import { moveArrayItem } from './moveArrayItem';
 
 interface EntitySchemaDetailsProps {
 
-  properties: EntityProperty[];
+  properties: PropertyDefinition[];
 
-  onChange(schema: EntityProperty[]): void;
+  onChange(schema: PropertyDefinition[]): void;
 
 }
 
@@ -23,16 +23,16 @@ export const EntitySchemaDetails = (props: EntitySchemaDetailsProps) => {
 
   const { properties } = props; 
 
-  const addProperty = (added: EntityProperty) =>
+  const addProperty = (added: PropertyDefinition) =>
     props.onChange([...properties, added]);
 
-  const onMoveProperty = (property: EntityProperty, up: boolean) => () =>
+  const onMoveProperty = (property: PropertyDefinition, up: boolean) => () =>
     props.onChange(moveArrayItem(properties, properties.indexOf(property), up));
 
-  const updateProperty = (updated: EntityProperty, previous: EntityProperty) =>
+  const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) =>
     props.onChange(properties.map(p => p === previous ? updated : p));
 
-  const deleteProperty = (property: EntityProperty) => () =>
+  const deleteProperty = (property: PropertyDefinition) => () =>
     props.onChange(properties.filter(p => p !== property));
 
   return (

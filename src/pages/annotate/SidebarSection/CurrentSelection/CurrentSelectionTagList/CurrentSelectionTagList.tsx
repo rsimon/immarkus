@@ -1,6 +1,6 @@
 import { PlusCircle } from 'lucide-react';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { useVocabulary } from '@/store';
+import { useDataModel } from '@/store';
 import { EntityBadge } from '@/components/EntityBadge';
 import { Button } from '@/ui/Button';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
@@ -19,7 +19,7 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
 
   const anno = useAnnotoriousManifold()
 
-  const { getEntity } = useVocabulary();
+  const { getEntityType } = useDataModel();
 
   const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
 
@@ -31,7 +31,7 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
       {tags.map(body => body.purpose === 'classifying' ? (
         <li key={body.id} className="inline-block mr-1 whitespace-nowrap">
           <EntityBadge 
-            entity={getEntity(body.source)} 
+            entityType={getEntityType(body.source)} 
             onDelete={() => onDeleteBody(body)}/>
         </li>
       ) : null)}

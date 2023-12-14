@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
 import { useFormik } from 'formik';
 import { X } from 'lucide-react';
-import { EntityProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -16,9 +16,9 @@ import {
 
 interface PropertyDetailsProps {
 
-  property?: EntityProperty;
+  property?: PropertyDefinition;
 
-  onUpdate(updated: EntityProperty): void;
+  onUpdate(updated: PropertyDefinition): void;
 
 }
 

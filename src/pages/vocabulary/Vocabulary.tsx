@@ -1,9 +1,8 @@
-import { ArrowLeftRight, Braces, Tags, ListTree } from 'lucide-react';
+import { Braces, Tags, ListTree } from 'lucide-react';
 import { NavigationSidebar } from '@/components/NavigationSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useStore } from '@/store';
 import { EntitiesTab } from './entities/EntitiesTab';
-import { RelationsTab } from './relations/RelationsTab';
 
 import './Vocabulary.css';
 
@@ -26,10 +25,6 @@ export const Vocabulary = () => {
           <TabsList>
             <TabsTrigger value="entities">
               <Braces size={16} className="mr-2" /> Entities
-            </TabsTrigger>
-
-            <TabsTrigger value="relations">
-              <ArrowLeftRight size={16} className="mr-2" />  Relations
             </TabsTrigger>
 
             <TabsTrigger value="tags">
@@ -55,10 +50,6 @@ export const Vocabulary = () => {
 
           <TabsContent value="entities">
             <EntitiesTab store={store} />
-          </TabsContent>
-
-          <TabsContent value="relations">
-            <RelationsTab store={store} />
           </TabsContent>
 
           <TabsContent 

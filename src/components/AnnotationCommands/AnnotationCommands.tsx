@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Braces, Spline, Tags } from 'lucide-react';
-import { useVocabulary } from '@/store';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import {
   Command,
@@ -12,25 +12,25 @@ import {
   CommandSeparator
 } from '@/ui/Command';
 import { EntityDetailsDialog } from '../EntityDetails';
-import { Entity, TextTag } from '@/model';
+import { EntityType, Tag } from '@/model';
 
 interface AnnotationCommandProps {
 
-  onAddEntity(entity: Entity): void;
+  onAddEntityType(type: EntityType): void;
 
-  onAddTag(tag: TextTag): void;
+  onAddTag(tag: Tag): void;
 
 }
 
 export const AnnotationCommands = (props: AnnotationCommandProps) => {
 
-  const { vocabulary, addTag } = useVocabulary();
+  const { model, addTag } = useDataModel();
 
-  const { entities, relations, tags } = vocabulary;
+  const { entityTypes, tags } = model;
 
   const [value, setValue] = useState('');
 
-  const isEmpty = (entities.length + relations.length + tags.length) === 0 && !value;
+  const isEmpty = (entityTypes.length + tags.length) === 0 && !value;
 
   const onCreateNewTag = () => {
     addTag(value);
@@ -59,28 +59,14 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
                 No results
               </CommandEmpty>
 
-              {entities.length > 0 && (
+              {entityTypes.length > 0 && (
                 <CommandGroup heading="Entities">
-                  {entities.map(entity => (
-                    <CommandItem key={entity.id} onSelect={() => props.onAddEntity(entity)}>
+                  {entityTypes.map(entity => (
+                    <CommandItem key={entity.id} onSelect={() => props.onAddEntityType(entity)}>
                       <Braces className="h-4 w-4 mr-2" /> {entity.label}
                     </CommandItem>
                   ))}
                 </CommandGroup>
-              )}
-
-              {relations.length > 0 && (
-                <>
-                  <CommandSeparator />
-
-                  <CommandGroup heading="Relations">
-                    {relations.map(relation => (
-                      <CommandItem key={relation.id}>
-                        <Spline className="h-4 w-4 mr-2" /> {relation.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </>
               )}
 
               {tags.length > 0 || value && (

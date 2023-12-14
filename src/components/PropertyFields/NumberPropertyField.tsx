@@ -1,4 +1,4 @@
-import { NumberProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
@@ -6,7 +6,7 @@ interface NumberPropertyFieldProps {
 
   id: string;
 
-  property: NumberProperty;
+  property: PropertyDefinition;
 
   validate?: boolean;
 

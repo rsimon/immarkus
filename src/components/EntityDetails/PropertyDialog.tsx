@@ -8,13 +8,13 @@ import {
   DialogTrigger
 } from '@/ui/Dialog';
 import { PropertyDetails } from '../PropertyDetails';
-import { EntityProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 
 interface PropertyDialogProps {
 
-  property?: EntityProperty
+  property?: PropertyDefinition
 
-  onUpdate(updated: EntityProperty): void;
+  onUpdate(updated: PropertyDefinition): void;
 
   children: ReactNode;
 
@@ -24,7 +24,7 @@ export const PropertyDialog = (props: PropertyDialogProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const onUpdate = (property: EntityProperty) => {
+  const onUpdate = (property: PropertyDefinition) => {
     props.onUpdate(property);
     setOpen(false);
   }

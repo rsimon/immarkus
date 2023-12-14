@@ -1,13 +1,13 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Entity } from '@/model';
+import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { EntityDetails } from './EntityDetails';
 
-interface EntityDetailsDialogProps {
+interface EntityTypeDetailsDialogProps {
 
   children?: ReactNode;
 
-  entity?: Entity
+  entityType?: EntityType
 
   open?: boolean;
 
@@ -15,7 +15,7 @@ interface EntityDetailsDialogProps {
 
 }
 
-export const EntityDetailsDialog = (props: EntityDetailsDialogProps) => {
+export const EntityDetailsDialog = (props: EntityTypeDetailsDialogProps) => {
 
   const [open, setOpen] = useState(props.open);
 
@@ -43,7 +43,7 @@ export const EntityDetailsDialog = (props: EntityDetailsDialogProps) => {
 
       <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
         <EntityDetails 
-          entity={props.entity}
+          entityType={props.entityType}
           onSaved={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>

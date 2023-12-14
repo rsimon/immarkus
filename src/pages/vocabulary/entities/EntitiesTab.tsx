@@ -1,8 +1,8 @@
 import { useState } from 'react'; 
 import { CaseSensitive, Hash, Link2, List, MapPin, XCircle } from 'lucide-react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
-import { Entity } from '@/model';
-import { Store, useVocabulary } from '@/store';
+import { EntityType } from '@/model';
+import { Store, useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { useToast, ToastTitle } from '@/ui/Toaster';
 import { EntityActions } from './EntityActions';
@@ -17,14 +17,14 @@ import {
 
 export const EntitiesTab = (props: { store: Store }) => {
 
-  const { vocabulary, removeEntity } =  useVocabulary();
+  const { model, removeEntityType } =  useDataModel();
 
   const { toast } = useToast();
 
-  const [editExisting, setEditExisting] = useState<Entity | undefined>();
+  const [editExisting, setEditExisting] = useState<EntityType | undefined>();
 
-  const onDeleteEntity = (entity: Entity) => () =>
-    removeEntity(entity)
+  const onDeleteEntity = (type: EntityType) => () =>
+    removeEntityType(type)
       .catch(error => {
         console.error(error);
 
@@ -52,7 +52,7 @@ export const EntitiesTab = (props: { store: Store }) => {
           </TableHeader>
 
           <TableBody>
-            {vocabulary.entities.length === 0 ? (
+            {model.entityTypes.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={6}
@@ -60,7 +60,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                   No entities
                 </TableCell>
               </TableRow>
-            ) : vocabulary.entities.map(e => (
+            ) : model.entityTypes.map(e => (
               <TableRow key={e.id} className="text-xs">
                 <TableCell className="p-2">
                   <span className="pip" style={{ backgroundColor: e.color }} />
@@ -69,7 +69,7 @@ export const EntitiesTab = (props: { store: Store }) => {
                 <TableCell className="font-medium px-3 py-2 whitespace-nowrap">{e.label}</TableCell>
                 <TableCell className="p-2">{e.description}</TableCell>
                 <TableCell className="p-2">
-                  {e.schema?.map(property => (
+                  {e.properties?.map(property => (
                     <span key={property.name}
                       className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
                         mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
@@ -101,7 +101,7 @@ export const EntitiesTab = (props: { store: Store }) => {
 
       <EntityDetailsDialog 
         open={Boolean(editExisting)} 
-        entity={editExisting}
+        entityType={editExisting}
         onOpenChange={open => !open && setEditExisting(undefined)} />
 
       <div className="flex mt-4">

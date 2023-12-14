@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Store, loadStore } from './Store';
-import { Entity, LoadedImage, Relation, TextTag, Vocabulary } from '@/model';
+import { EntityType, LoadedImage, Tag } from '@/model';
 import { W3CAnnotation } from '@annotorious/react';
+import { DataModel } from '../model/DataModel';
 
 interface StoreContextState {
 
@@ -10,9 +11,9 @@ interface StoreContextState {
 
   setStore: React.Dispatch<React.SetStateAction<Store>>;
 
-  vocabulary: Vocabulary;
+  model: DataModel;
 
-  setVocabulary: React.Dispatch<React.SetStateAction<Vocabulary>>;
+  setModel: React.Dispatch<React.SetStateAction<DataModel>>;
 
 }
 
@@ -28,10 +29,10 @@ export const StoreProvider = (props: StoreProviderProps) => {
 
   const [store, setStore] = useState<Store | undefined>(undefined);
 
-  const [vocabulary, setVocabulary] = useState<Vocabulary>(undefined);
+  const [model, setModel] = useState<DataModel>(undefined);
 
   return (
-    <StoreContext.Provider value={{ store, setStore, vocabulary, setVocabulary }}>
+    <StoreContext.Provider value={{ store, setStore, model, setModel }}>
       {props.children}
     </StoreContext.Provider>
   )
@@ -39,12 +40,12 @@ export const StoreProvider = (props: StoreProviderProps) => {
 }
 
 export const useInitStore = () => {
-  const { setStore, setVocabulary } = useContext(StoreContext);
+  const { setStore, setModel } = useContext(StoreContext);
 
   return (handle: FileSystemDirectoryHandle) =>
     loadStore(handle).then(store => {
       setStore(store);
-      setVocabulary(store.getVocabulary());
+      setModel(store.getDataModel());
     });
 }
 
@@ -103,53 +104,37 @@ export const useAnnotations = (
   return annotations;
 }
 
-export const useVocabulary = () => {
+export const useDataModel = () => {
 
-  const { store, vocabulary, setVocabulary } = useContext(StoreContext);
+  const { store, model, setModel } = useContext(StoreContext);
 
   const setAsync = (p: Promise<void>) =>
-    p.then(() => setVocabulary(store.getVocabulary()));
+    p.then(() => setModel(store.getDataModel()));
 
-  const addEntity = (entity: Entity) =>
-    setAsync(store.addEntity(entity));
+  const addEntityType = (type: EntityType) =>
+    setAsync(store.addEntityType(type));
 
-  const updateEntity = (entity: Entity) => 
-    setAsync(store.updateEntity(entity));
+  const updateEntityType = (type: EntityType) => 
+    setAsync(store.updateEntityType(type));
 
-  const removeEntity = (entityOrId: Entity | string) =>
-    setAsync(store.removeEntity(entityOrId));
+  const removeEntityType = (typeOrId: EntityType | string) =>
+    setAsync(store.removeEntityType(typeOrId));
 
-  const getEntity = (id: string) => 
-    vocabulary.entities.find(e => e.id === id);
+  const getEntityType = (id: string) => 
+    model.entityTypes.find(e => e.id === id);
 
-  const addRelation = (relation: Relation) =>
-    setAsync(store.addRelation(relation));
-
-  const updateRelation = (relation: Relation) =>
-    setAsync(store.updateRelation(relation));
-
-  const removeRelation = (relationOrId: Relation | string) =>
-    setAsync(store.removeRelation(relationOrId));
-
-  const getRelation = (id: string) =>
-    vocabulary.relations.find(r => r.id === id);
-
-  const addTag = (tag: TextTag) =>
+  const addTag = (tag: Tag) =>
     setAsync(store.addTag(tag));
 
-  const removeTag = (tag: TextTag) =>
+  const removeTag = (tag: Tag) =>
     setAsync(store.removeTag(tag));
 
   return { 
-    vocabulary,
-    addEntity,
-    updateEntity,
-    removeEntity,
-    getEntity,
-    addRelation,
-    updateRelation,
-    removeRelation,
-    getRelation,
+    model,
+    addEntityType,
+    updateEntityType,
+    removeEntityType,
+    getEntityType,
     addTag,
     removeTag
   };

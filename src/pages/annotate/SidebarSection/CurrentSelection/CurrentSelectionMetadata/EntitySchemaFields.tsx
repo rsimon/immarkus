@@ -1,4 +1,4 @@
-import { Entity } from '@/model';
+import { EntityType } from '@/model';
 import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { EntityDetailsDialog } from '@/components/EntityDetails';
@@ -17,7 +17,7 @@ interface EntitySchemaFieldsProps {
 
   body: W3CAnnotationBody,
 
-  entity: Entity;
+  entityType: EntityType;
 
   safeKeys: ReturnType<typeof createSafeKeys>;
 
@@ -29,9 +29,9 @@ interface EntitySchemaFieldsProps {
 
 export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
 
-  const { body, entity, safeKeys } = props;
+  const { body, entityType, safeKeys } = props;
 
-  const fields = (entity.schema || [])
+  const fields = (entityType.properties || [])
     .map(property => ({ 
       property, 
       key: safeKeys.getKey(body, property.name)
@@ -81,7 +81,7 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
       ))}
 
       <div className="flex justify-end -mt-5 -mb-4">
-        <EntityDetailsDialog entity={entity}>
+        <EntityDetailsDialog entityType={entityType}>
           <Button 
             type="button"
             variant="link" 

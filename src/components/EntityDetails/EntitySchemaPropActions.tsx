@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowUp, ArrowDown, MoreHorizontal, Pencil, X } from 'lucide-react';
-import { EntityProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import {
   DropdownMenu,
@@ -12,13 +12,13 @@ import { PropertyDialog } from './PropertyDialog';
 
 interface EntitySchemaPropActionsProps {
 
-  property: EntityProperty;
+  property: PropertyDefinition;
 
   onMoveUp(): void;
 
   onMoveDown(): void;
 
-  onUpdateProperty(updated: EntityProperty): void;
+  onUpdateProperty(updated: PropertyDefinition): void;
 
   onDeleteProperty(): void;
 
@@ -33,7 +33,7 @@ export const EntitySchemaPropActions = (props: EntitySchemaPropActionsProps) => 
     fn();
   }
 
-  const onUpdated = (updated: EntityProperty) => {
+  const onUpdated = (updated: PropertyDefinition) => {
     setOpen(false);
     props.onUpdateProperty(updated);
   }

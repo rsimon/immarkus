@@ -1,4 +1,4 @@
-import { TextProperty } from '@/model';
+import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
@@ -6,7 +6,7 @@ interface TextPropertyFieldProps {
 
   id: string;
 
-  property: TextProperty;
+  property: PropertyDefinition;
 
   validate?: boolean;
 
