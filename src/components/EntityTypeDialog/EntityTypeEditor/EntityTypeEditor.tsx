@@ -6,7 +6,7 @@ import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
-import { getRandomColor, getBrightness } from '../../../utils/color';
+import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from '../EntityPreview/EntityPreview';
 import { Properties } from './PropertyDefinitions/Properties';
 import { EntityTypeStub } from '../EntityTypeStub';
