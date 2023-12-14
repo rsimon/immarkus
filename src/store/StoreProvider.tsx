@@ -1,9 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Store, loadStore } from './Store';
-import { EntityType, LoadedImage, Tag } from '@/model';
+import { DataModel, EntityType, LoadedImage, Tag } from '@/model';
 import { W3CAnnotation } from '@annotorious/react';
-import { DataModel } from '../model/DataModel';
 
 interface StoreContextState {
 
@@ -49,24 +47,16 @@ export const useInitStore = () => {
     });
 }
 
-export const useStore = (args: { redirect?: boolean } = {}) => {
+export const useStore = () => {
   const { store } = useContext(StoreContext);
-
-  const navigate = args.redirect && useNavigate();
-
-  useEffect(() => {
-    if (!store && navigate)
-      navigate('/');
-  }, []);
-
   return store;
 }
 
 export const useImages = (
   imageIdOrIds: string | string[],
-  args: { redirect?: boolean, delay?: number } = {}
+  delay?: number
 ): LoadedImage | LoadedImage[] => {
-  const store = useStore(args);
+  const store = useStore();
 
   const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
 
@@ -79,8 +69,8 @@ export const useImages = (
     }
 
     if (store) {
-      if (args.delay)
-        setTimeout(() => load(), args.delay);
+      if (delay)
+        setTimeout(() => load(), delay);
       else
         load();
     }
@@ -89,11 +79,8 @@ export const useImages = (
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
 
-export const useAnnotations = (
-  imageId: string,
-  args: { redirect: boolean } = { redirect: false }
-): W3CAnnotation[] => {
-  const store = useStore(args);
+export const useAnnotations = (imageId: string): W3CAnnotation[] => {
+  const store = useStore();
 
   const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
 

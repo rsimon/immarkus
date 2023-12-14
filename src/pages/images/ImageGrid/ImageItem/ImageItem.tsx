@@ -16,7 +16,7 @@ export const ImageItem = (props: ImageItemProps) => {
 
   const { image } = props;
 
-  const store = useStore({ redirect: true });
+  const store = useStore();
 
   const [annotations, setAnnotations] = useState<number | undefined>();
 

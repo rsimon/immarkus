@@ -9,7 +9,7 @@ export const App = () => {
 
   const store = useStore();
   
-  return (
+  return store ? (
     <Routes>
       <Route path="/">
         <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
@@ -33,21 +33,20 @@ export const App = () => {
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
+  ) : (
+    <Start />
   )
 
 }
 
 const NotFound = () => {
 
-  // Redirects to start if store is not loaded yet
-  useStore({ redirect: true });
-
   return (
     <div className="page-root">
       <NavigationSidebar />
 
       <main className="page not-found">
-        <h2>Nothing to see here. (Yet.)</h2>
+        <h2>Nothing to see here.</h2>
       </main>
     </div>
   )
