@@ -2,7 +2,7 @@ import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Spinner } from '../Spinner';
 
-interface ThumbnailImageProps {
+interface ThumbnailProps {
 
   image: Image;
 
@@ -10,7 +10,7 @@ interface ThumbnailImageProps {
   
 }
 
-export const ThumbnailImage = (props: ThumbnailImageProps) => {
+export const Thumbnail = (props: ThumbnailProps) => {
 
   const { image, delay } = props;
 
