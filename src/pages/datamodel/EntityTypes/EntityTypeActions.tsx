@@ -31,12 +31,12 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent sideOffset={-10}>
-          <DropdownMenuItem onSelect={props.onEditEntityType}>
+          <DropdownMenuItem className="text-xs" onSelect={props.onEditEntityType}>
             <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit Entity
           </DropdownMenuItem>
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>
-            <Trash2 size={16} className="inline text-red-400 relative -top-px mr-2" />
+            <Trash2 size={16} className="inline text-red-400 text-xs relative -top-px mr-2" />
             <span className="text-red-500">Delete Entity</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

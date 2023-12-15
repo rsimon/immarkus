@@ -1,3 +1,4 @@
+import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { EntityTypeActions } from '../EntityTypeActions';
@@ -27,12 +28,11 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
       <Table>
         <TableHeader className="text-xs">
           <TableRow>
-            <TableHead className="w-[40px]"></TableHead>
-            <TableHead className="whitespace-nowrap">Entity Class</TableHead>
-            <TableHead className="whitespace-nowrap">Display Name</TableHead>
-            <TableHead className="whitespace-nowrap">Parent Class</TableHead>
-            <TableHead className="whitespace-nowrap w-[300px]">Description</TableHead>
-            <TableHead className="whitespace-nowrap w-[450px]">Properties</TableHead>
+            <TableHead colSpan={2} className="pl-2 pr-4 whitespace-nowrap">Entity Class</TableHead>
+            <TableHead className="px-2 whitespace-nowrap">Display Name</TableHead>
+            <TableHead className="px-2 whitespace-nowrap">Parent Class</TableHead>
+            <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>
+            <TableHead className="px-2 whitespace-nowrap w-[300px]">Properties</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -48,14 +48,15 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
             </TableRow>
           ) : model.entityTypes.map(e => (
             <TableRow key={e.id} className="text-xs">
-              <TableCell className="p-2">
+              <TableCell className="pl-2 pr-0">
                 <span className="pip" style={{ backgroundColor: e.color }} />
               </TableCell>
-              <TableCell className="whitespace-nowrap px-3 py-2">{e.id}</TableCell>
-              <TableCell className="font-medium px-3 py-2 whitespace-nowrap">{e.label}</TableCell>
-              <TableCell className="p-2">{e.description}</TableCell>
-              <TableCell className="p-2">
-                {/*e.properties?.map(property => (
+              <TableCell className="whitespace-nowrap py-1 pl-0.5 pr-2.5">{e.id}</TableCell>
+              <TableCell className="font-medium p-2 first-letter:whitespace-nowrap py-1 px-2">{e.label}</TableCell>
+              <TableCell className="py-1 px-2">{e.parentId}</TableCell>
+              <TableCell className="py-1 px-2">{e.description}</TableCell>
+              <TableCell className="py-1 px-2">
+                {e.properties?.map(property => (
                   <span key={property.name}
                     className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
                       mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
@@ -72,9 +73,9 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
                     ) : null}
                     {property.name}
                   </span>    
-                ))*/}
+                ))}
               </TableCell>
-              <TableCell className="text-right p-2">
+              <TableCell className="text-right py-1 px-2">
                 <EntityTypeActions 
                   onEditEntityType={() => props.onEditEntityType(e)} 
                   onDeleteEntityType={() => props.onDeleteEntityType(e)} />

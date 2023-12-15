@@ -8,6 +8,7 @@ import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
 import { AddOption } from './AddOption';
 import { PropertyDefinitionStub } from './PropertyDefinitionStub';
+import { PropertyPreview } from './PropertyPreview';
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { PropertyPreview } from './PropertyPreview';
 
 interface PropertyDefinitionEditorProps {
 
@@ -82,18 +82,6 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
           <div className="mt-2">
             <Label 
-              htmlFor="description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
-
-            <Textarea 
-              id="description"
-              rows={3} 
-              value={edited.description || ''} 
-              onChange={evt => setEdited(prop => ({ ...prop, description: evt.target.value }))} />
-          </div>
-
-          <div className="mt-2">
-            <Label 
               htmlFor="type"
               className="inline-block text-xs mb-1.5 ml-0.5">
               Data Type
@@ -126,6 +114,18 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             </Select>
           </div>
 
+          <div className="mt-2">
+            <Label 
+              htmlFor="description"
+              className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
+
+            <Textarea 
+              id="description"
+              rows={3} 
+              value={edited.description || ''} 
+              onChange={evt => setEdited(prop => ({ ...prop, description: evt.target.value }))} />
+          </div>
+          
           {edited.type === 'enum' && (
             <div className="bg-muted p-2 mt-2 rounded-md">
               <div className="mt-2 mb-3 col-span-5">
@@ -161,7 +161,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             </div>
           )}
 
-          <div className="mt-4 sm:justify-start">
+          <div className="mt-5 mb-3 sm:justify-start">
             <Button type="button" onClick={onSubmit}>Save</Button>
           </div>
         </form>

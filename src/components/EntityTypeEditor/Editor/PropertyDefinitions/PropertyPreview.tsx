@@ -52,18 +52,16 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
               id={preview.name}
               definition={preview} />   
           ) : (
-            <>
-              <Label 
-                className="text-xs block mt-3 mb-1.5">
-                {preview.name}
-              </Label>
+            <Label 
+              className="text-xs block mt-3 mb-1.5">
+              {preview.name}
+            </Label>
+          )}
 
-              {preview.description && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  {preview.description}
-                </p>
-              )}
-            </>
+          {preview.description && (
+            <p className="text-xs text-muted-foreground mt-2">
+              {preview.description}
+            </p>
           )}
         </div>
       )}
