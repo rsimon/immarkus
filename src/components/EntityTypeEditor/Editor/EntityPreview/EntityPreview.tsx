@@ -1,4 +1,4 @@
-import { Braces } from 'lucide-react';
+import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
@@ -34,7 +34,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
             backgroundColor: entityType.color,
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
-          <Braces className="inline h-3.5 w-3.5 mr-1.5" />
+          <Cuboid className="inline h-3.5 w-3.5 mr-1.5" />
           {entityType.label || entityType.id || 'Entity Preview'}
         </h3>
       </div>

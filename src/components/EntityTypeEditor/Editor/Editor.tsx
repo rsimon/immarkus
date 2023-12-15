@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertCircle, Braces, CheckCircle2, RefreshCcw } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Cuboid, RefreshCcw } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -134,7 +134,7 @@ export const Editor = (props: EditorProps) => {
           <Input
             id="parent"
             value={entityType.parentId || ''}
-            onChange={evt => setEntityType(e => ({ ...e, p: evt.target.value }))}
+            onChange={evt => setEntityType(e => ({ ...e, parentId: evt.target.value }))}
             className="h-9" />
         </div>
         
@@ -170,7 +170,7 @@ export const Editor = (props: EditorProps) => {
         </div>
 
         <Button className="w-full mt-5 mb-3" onClick={onSave}>
-          <Braces className="w-5 h-5 mr-2" /> Save Entity
+          <Cuboid className="w-5 h-5 mr-2" /> Save Entity
         </Button>
       </div>
 

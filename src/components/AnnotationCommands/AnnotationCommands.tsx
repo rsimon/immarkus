@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Braces, Spline, Tags } from 'lucide-react';
+import { Cuboid, Spline, Tags } from 'lucide-react';
 import { EntityType, Tag } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -63,7 +63,7 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
                 <CommandGroup heading="Entities">
                   {entityTypes.map(entity => (
                     <CommandItem key={entity.id} onSelect={() => props.onAddEntityType(entity)}>
-                      <Braces className="h-4 w-4 mr-2" /> {entity.label}
+                      <Cuboid className="h-4 w-4 mr-2" /> {entity.label}
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -95,7 +95,7 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
         <div className="p-1 pt-1.5 border-t flex justify-end text-muted-foreground">
           <EntityTypeEditor>
             <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm mr-2">
-              <Braces className="h-3.5 w-3.5 mr-1" /> Create new entity
+              <Cuboid className="h-3.5 w-3.5 mr-1" /> Create new entity
             </Button>
           </EntityTypeEditor>
 

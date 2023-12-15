@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { Cuboid, X } from 'lucide-react';
 import { EntityType } from '@/model';
 import { getForegroundColor } from '@/utils/color';
 
@@ -29,7 +29,8 @@ export const EntityBadge = (props: BadgeEntityProps) => {
         backgroundColor,
         color: getForegroundColor(backgroundColor)
       }}>
-      {entityType?.label || 'error'}
+
+      <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || 'error'}
 
       {editable && (
         <button 
