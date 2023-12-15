@@ -35,25 +35,7 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
         {props.children}
       </DialogTrigger>
 
-      <DialogContent className="max-w-md rounded-lg">
-        <DialogHeader>
-          <DialogTitle className="text-left">Entity Property</DialogTitle>
-          <DialogDescription asChild>
-            <div className="text-left text-sm leading-relaxed">
-              <p>
-                Enter a name and type for the property.
-                E.g. name: <strong>Age</strong>, type: <strong>Number</strong>. 
-              </p>
-
-              <p className="mt-2">
-                The <strong>Options</strong> type allows you to define a fixed 
-                set of choices. E.g. name: <strong>Material</strong>,
-                options: <strong>Clay</strong>, <strong>Metal</strong>, <strong>Wood</strong>.
-              </p>
-            </div>
-          </DialogDescription>
-        </DialogHeader>
-
+      <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
         <PropertyDefinitionEditor 
           property={props.property} 
           onSave={onUpdate} />

@@ -35,7 +35,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
           <Braces className="inline h-3.5 w-3.5 mr-1.5" />
-          {entityType.label || 'Entity Preview'}
+          {entityType.label || entityType.id || 'Entity Preview'}
         </h3>
       </div>
 

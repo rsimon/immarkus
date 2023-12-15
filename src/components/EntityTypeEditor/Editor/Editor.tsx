@@ -71,12 +71,12 @@ export const Editor = (props: EditorProps) => {
 
   return (
     <article className="grid grid-cols-2 rounded-lg overflow-hidden">
-      <div className="py-3 px-4">
-        <div className="grid grid-cols-2 gap-2 mt-2 mb-3">
+      <div className="px-6 py-3">
+        <div className="grid grid-cols-2 gap-2 mt-2 mb-1">
           <div>
             <Label 
               htmlFor="identifier"
-              className="text-xs">Entity Class *
+              className="inline-block text-xs mb-1.5 ml-0.5">Entity Class *
             </Label>
             
             {errors?.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
@@ -84,7 +84,7 @@ export const Editor = (props: EditorProps) => {
             <Input 
               disabled={Boolean(props.entityType)}
               id="identifier"
-              className={errors?.id ? "mt-1 h-9 mb-1 border-red-500" : "mt-1 h-9"} 
+              className={errors?.id ? "h-9 border-red-500" : "h-9"} 
               value={entityType.id || ''} 
               onChange={evt => setEntityType(e => ({...e, id: evt.target.value}))}/>
 
@@ -93,7 +93,7 @@ export const Editor = (props: EditorProps) => {
                 <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
               </span>
             ) : (props.entityType && !(props.entityType.id === entityType.id)) || !props.entityType && (
-              <span className="flex items-center text-xs mt-3 text-green-600 whitespace-nowrap">
+              <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
                 <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.id} is available
               </span>
             ))}
@@ -102,12 +102,12 @@ export const Editor = (props: EditorProps) => {
           <div>
             <Label 
               htmlFor="color"
-              className="text-xs">Color</Label>
+              className="inline-block text-xs mb-1.5 ml-0.5">Color</Label>
 
-            <div className="grid grid-cols-4">
+            <div className="grid gap-2 grid-cols-4">
               <Button 
                 size="icon" 
-                className={brightness < 0.9 ? 'h-9 w-9 mt-1' : 'h-9 w-9 border shadow-sm mt-1'}
+                className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
                 style={{ 
                   backgroundColor: entityType.color,
                   color: brightness > 0.5 ? '#000' : '#fff' 
@@ -118,42 +118,58 @@ export const Editor = (props: EditorProps) => {
 
               <Input 
                 id="color"
-                className="col-span-3 h-9 mt-1" 
+                className="col-span-3 h-9" 
                 value={entityType.color} 
                 onChange={evt => setEntityType(e => ({...e, color: evt.target.value }))}/>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-2 mb-4">
+        <div className="mt-2">
+          <Label 
+            htmlFor="parent"
+            className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
+          </Label>
+
+          <Input
+            id="parent"
+            value={entityType.parentId || ''}
+            onChange={evt => setEntityType(e => ({ ...e, p: evt.target.value }))}
+            className="h-9" />
+        </div>
+        
+        <div className="mt-2">
           <Label 
             htmlFor="label"
-            className="text-xs">Display Name
+            className="inline-block text-xs mb-1.5 ml-0.5">Display Name
           </Label>
 
           <Input
             id="label"
             value={entityType.label || ''}
             onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))}
-            className="h-9 mt-1 mb-1" />
-              
+            className="h-9" />
+        </div>
+
+        <div className="mt-2">
           <Label 
             htmlFor="description"
-            className="text-xs">Description</Label>
+            className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
 
           <Textarea 
             id="description"
-            className="mt-1"
             rows={3} 
             value={entityType.description || ''} 
             onChange={evt => setEntityType(e => ({ ...e, description: evt.target.value }))} />
         </div>
 
-        <PropertyDefinitions 
-          properties={entityType.properties || []}
-          onChange={schema => setEntityType(e => ({...e, schema }))} />
+        <div className="mt-3">
+          <PropertyDefinitions 
+            properties={entityType.properties || []}
+            onChange={schema => setEntityType(e => ({...e, schema }))} />
+        </div>
 
-        <Button className="w-full mt-4" onClick={onSave}>
+        <Button className="w-full mt-5 mb-3" onClick={onSave}>
           <Braces className="w-5 h-5 mr-2" /> Save Entity
         </Button>
       </div>
