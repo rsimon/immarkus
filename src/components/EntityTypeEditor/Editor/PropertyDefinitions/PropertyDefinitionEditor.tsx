@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
-import { X } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
-import { AddOption } from './AddOption';
 import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { PropertyPreview } from './PropertyPreview';
 import {
@@ -16,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+import { EnumPropertyDefinition } from './EnumPropertyDefinition';
 
 interface PropertyDefinitionEditorProps {
 
@@ -26,8 +25,6 @@ interface PropertyDefinitionEditorProps {
 }
 
 export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) => {
-
-  const { property } = props;
 
   const [edited, setEdited] = useState<PropertyDefinitionStub>(props.property || {});
 
@@ -113,6 +110,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               </SelectContent>
             </Select>
           </div>
+          
+          {edited.type === 'enum' && (
+            <EnumPropertyDefinition 
+              definition={edited}
+              onAddOption={onAddOption}
+              onRemoveOption={onRemoveOption} />
+          )}
 
           <div className="mt-2">
             <Label 
@@ -125,41 +129,6 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               value={edited.description || ''} 
               onChange={evt => setEdited(prop => ({ ...prop, description: evt.target.value }))} />
           </div>
-          
-          {edited.type === 'enum' && (
-            <div className="bg-muted p-2 mt-2 rounded-md">
-              <div className="mt-2 mb-3 col-span-5">
-                {edited.values.length === 0 ? (
-                  <div className="flex py-3 text-muted-foreground text-xs justify-center">
-                    Add at least one option.
-                  </div>
-                ) : (
-                  <ul className="px-2 text-xs text-muted-foreground">
-                    {edited.values.map(option => (
-                      <li 
-                        className="flex justify-between p-1 border-b last:border-none"
-                        key={option}>
-                        <span>{option}</span>
-
-                        <Button 
-                          onClick={onRemoveOption(option)}
-                          className="align-middle w-6 h-6"
-                          variant="ghost"
-                          type="button"
-                          size="icon">
-                          <X className="w-3 h-3" />
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <div className="grid grid-cols-6 gap-2"> 
-                <AddOption onAddOption={onAddOption} /> 
-              </div>
-            </div>
-          )}
 
           <div className="mt-5 mb-3 sm:justify-start">
             <Button type="button" onClick={onSubmit}>Save</Button>

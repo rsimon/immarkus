@@ -1,3 +1,5 @@
+import { ExternalAuthority } from './ExternalAuthority';
+
 type BasePropertyDefinition = {
 
   name: string, 
@@ -27,6 +29,14 @@ export type EnumPropertyDefinition = BasePropertyDefinition & {
   type: 'enum',
 
   values: string[]
+
+}
+
+export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
+
+  type: 'external_authority',
+
+  authorities: ExternalAuthority[];
 
 }
 

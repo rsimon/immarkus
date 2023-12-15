@@ -23,8 +23,6 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const { model } =  useDataModel();
 
-  console.log(model.entityTypes);
-
   return (
     <div className="rounded-md border mt-6">
       <Table>
