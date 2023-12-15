@@ -62,8 +62,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
         <h3 className="font-semibold mt-1">Property</h3>
 
         <p className="text-left text-xs leading-relaxed mt-1">
-          Use Properties to record specific details in your annotations like 
-          the material of an item, a text transcription, etc.
+          Use Properties to record specific details in your annotations,
+          such as weight, material, age, etc. 
         </p>
         <form onSubmit={onSubmit}>
           <div className="mt-2">

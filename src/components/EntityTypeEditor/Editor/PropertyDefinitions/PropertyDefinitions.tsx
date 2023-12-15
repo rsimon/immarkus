@@ -16,7 +16,7 @@ interface PropertyDefinitionsProps {
 
   properties: PropertyDefinition[];
 
-  onChange(schema: PropertyDefinition[]): void;
+  onChange(properties: PropertyDefinition[]): void;
 
 }
 
@@ -41,33 +41,30 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
       type="single" 
       collapsible 
       className="w-full bg-muted rounded-md p-0">
-      <AccordionItem value="schema" className="border-none">
+      <AccordionItem value="properties" className="border-none">
         <AccordionTrigger 
           className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
             <h3 className="text-sm">
-              Schema
+              {properties.length === 0 
+                ? 'No Properties' 
+                : `${properties.length} Propert${properties.length === 1 ? 'y' : 'ies'}`}
             </h3>
-
-            <div className="text-xs mt-1 text-muted-foreground">
-              {properties.length === 0 ? 
-                'No schema defined' : `${properties.length} propert${properties.length === 1 ? 'y' : 'ies'}`}
-            </div>
           </div>
         </AccordionTrigger>
 
         <AccordionContent>
-          <div className="p-3 pb-0 pt-5 border-t">
+          <div className="p-3 pb-0 pt-3 border-t">
             {properties.length === 0 ? (
               <p 
                 className="text-center flex text-muted-foreground 
-                  px-7 pb-2 justify-center text-xs
+                  px-3 pb-2 justify-center text-xs
                   leading-relaxed">
-                Schemas allow you to record additional properties for 
-                an entity, such as weight, material, age, etc.
+                Use Properties to record specific details in your annotations,
+                such as weight, material, age, etc. 
               </p>
             ) : (
-              <ul className="mb-1">
+              <ul>
                 {properties.map(p => (
                   <li 
                     key={p.name} 

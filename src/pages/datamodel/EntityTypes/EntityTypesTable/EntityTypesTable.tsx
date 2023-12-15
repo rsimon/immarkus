@@ -23,12 +23,14 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const { model } =  useDataModel();
 
+  console.log(model.entityTypes);
+
   return (
     <div className="rounded-md border mt-6">
       <Table>
         <TableHeader className="text-xs">
           <TableRow>
-            <TableHead colSpan={2} className="pl-2 pr-4 whitespace-nowrap">Entity Class</TableHead>
+            <TableHead colSpan={2} className="pl-3 pr-2 whitespace-nowrap">Entity Class</TableHead>
             <TableHead className="px-2 whitespace-nowrap">Display Name</TableHead>
             <TableHead className="px-2 whitespace-nowrap">Parent Class</TableHead>
             <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>

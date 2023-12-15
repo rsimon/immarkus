@@ -166,7 +166,7 @@ export const Editor = (props: EditorProps) => {
         <div className="mt-3">
           <PropertyDefinitions 
             properties={entityType.properties || []}
-            onChange={schema => setEntityType(e => ({...e, schema }))} />
+            onChange={properties => setEntityType(e => ({...e, properties }))} />
         </div>
 
         <Button className="w-full mt-5 mb-3" onClick={onSave}>
