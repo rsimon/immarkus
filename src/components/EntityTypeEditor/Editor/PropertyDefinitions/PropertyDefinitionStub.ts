@@ -4,12 +4,14 @@ export type PropertyDefinitionStub = {
 
   name?: string, 
 
-  type?: PropertyDefinition['type'];
+  description?: string,
+
+  type?: PropertyDefinition['type'],
 
   required?: boolean,
 
-  multiple?: boolean;
+  multiple?: boolean,
 
-  values?: string[];
+  values?: string[]
 
 }

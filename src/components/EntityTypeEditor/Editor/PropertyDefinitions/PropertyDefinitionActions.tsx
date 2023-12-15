@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowUp, ArrowDown, MoreHorizontal, Pencil, X } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
-import { PropertyEditorDialog } from './PropertyEditorDialog';
+import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
 
-interface PropertiesActionsProps {
+interface PropertyDefinitionActionsProps {
 
   property: PropertyDefinition;
 
@@ -24,7 +24,7 @@ interface PropertiesActionsProps {
 
 }
 
-export const PropertiesActions = (props: PropertiesActionsProps) => {  
+export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps) => {  
 
   const [open, setOpen] = useState(false);
 

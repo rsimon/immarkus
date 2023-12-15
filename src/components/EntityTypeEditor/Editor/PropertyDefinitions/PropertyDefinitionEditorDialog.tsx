@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { PropertyDefinition } from '@/model';
-import { PropertyEditor } from './PropertyEditor';
+import { PropertyDefinitionEditor } from './PropertyDefinitionEditor';
 import {
   Dialog,
   DialogContent,
@@ -54,7 +54,7 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <PropertyEditor 
+        <PropertyDefinitionEditor 
           property={props.property} 
           onSave={onUpdate} />
       </DialogContent>

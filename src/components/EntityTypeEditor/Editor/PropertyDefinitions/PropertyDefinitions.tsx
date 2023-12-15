@@ -1,8 +1,8 @@
 import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
-import { PropertiesActions } from './PropertiesActions';
-import { PropertyEditorDialog } from './PropertyEditorDialog';
+import { PropertyDefinitionActions } from './PropertyDefinitionActions';
+import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
 import { moveArrayItem } from './moveArrayItem';
 import {
   Accordion,
@@ -12,7 +12,7 @@ import {
 } from '@/ui/Accordion';
 
 
-interface PropertiesProps {
+interface PropertyDefinitionsProps {
 
   properties: PropertyDefinition[];
 
@@ -20,7 +20,7 @@ interface PropertiesProps {
 
 }
 
-export const Properties = (props: PropertiesProps) => {
+export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
   const { properties } = props; 
 
@@ -93,7 +93,7 @@ export const Properties = (props: PropertiesProps) => {
                       {p.name}
                     </div>
 
-                    <PropertiesActions 
+                    <PropertyDefinitionActions 
                       property={p} 
                       onMoveUp={onMoveProperty(p, true)}
                       onMoveDown={onMoveProperty(p, false)}

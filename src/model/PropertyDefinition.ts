@@ -2,6 +2,8 @@ type BasePropertyDefinition = {
 
   name: string, 
 
+  description?: string; 
+  
   inheritedFrom?: string;
 
   required?: boolean,

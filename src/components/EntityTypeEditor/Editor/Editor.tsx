@@ -8,7 +8,7 @@ import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
 import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from './EntityPreview/EntityPreview';
-import { Properties } from './PropertyDefinitions/Properties';
+import { PropertyDefinitions } from './PropertyDefinitions/PropertyDefinitions';
 import { EntityTypeStub } from '../EntityTypeStub';
 
 export interface EditorProps {
@@ -149,7 +149,7 @@ export const Editor = (props: EditorProps) => {
             onChange={evt => setEntityType(e => ({ ...e, description: evt.target.value }))} />
         </div>
 
-        <Properties 
+        <PropertyDefinitions 
           properties={entityType.properties || []}
           onChange={schema => setEntityType(e => ({...e, schema }))} />
 
