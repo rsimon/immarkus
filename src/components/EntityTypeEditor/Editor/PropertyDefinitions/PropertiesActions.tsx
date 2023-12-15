@@ -63,7 +63,7 @@ export const PropertiesActions = (props: PropertiesActionsProps) => {
 
         <PropertyEditorDialog
           property={props.property}
-          onUpdate={onUpdated}>
+          onSave={onUpdated}>
 
           <DropdownMenuItem>
             <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit

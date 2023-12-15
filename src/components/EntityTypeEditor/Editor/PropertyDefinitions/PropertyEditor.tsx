@@ -1,11 +1,12 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
-import { useFormik } from 'formik';
 import { X } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { AddOption } from './AddOption';
+import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import {
   Select,
   SelectContent,
@@ -18,7 +19,7 @@ interface PropertyEditorProps {
 
   property?: PropertyDefinition;
 
-  onUpdate(updated: PropertyDefinition): void;
+  onSave(definition: PropertyDefinition): void;
 
 }
 
@@ -26,51 +27,35 @@ export const PropertyEditor = (props: PropertyEditorProps) => {
 
   const { property } = props;
 
-  const [options, setOptions] = useState<string[]>(property?.type === 'enum' ? property.values : []);
+  const [edited, setEdited] = useState<PropertyDefinitionStub>(props.property || {});
 
-  const [inputValue, setInputValue] = useState('');
-
-  const formik = useFormik({
-    initialValues: {
-      name: property?.name || '',
-      type: property?.type || '' as 'enum' |  'geocoordinate' | 'number' | 'text' | 'uri'
-    },
-
-    onSubmit: ({ name, type }) => {
-      props.onUpdate({ 
-        type, 
-        name, 
-        values: type === 'enum' && options 
-      });
-    },
-
-    validate: ({ name, type }) => {
-      if (!(name && type))
-        return { type: 'Required' };
-    }
-  });
-
-  const onKeyDown = (evt: React.KeyboardEvent<HTMLInputElement>) => {
-    if (evt.key === 'Enter')
-      onAddOption();
-  }
-
-  const onChangeInput = (evt: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(evt.target.value)
-  }
-
-  const onAddOption = () => {
-    if (inputValue)
-      setOptions(opts => ([...opts, inputValue].slice().sort()));
-
-    setInputValue('');
-  }
+  const onAddOption = (option: string) => 
+    setEdited(prop => ({
+      ...prop, 
+      values: [ ...(prop.values || []),  option].slice().sort()
+    }));
   
   const onRemoveOption = (option: string) => () =>
-    setOptions(opts => opts.filter(o => o !== option));
+    setEdited(prop => ({
+      ...prop, 
+      values: (prop.values || []).filter(o => o !== option)
+    }));
+
+  const onSubmit = (evt: React.FormEvent) => {
+    evt.preventDefault();
+
+    const { name, type } = edited;
+
+    // Validate
+    if (name && type) {
+      props.onSave(edited as PropertyDefinition);
+    } else {
+      // TODO error handling
+    }
+  }
 
   return (
-    <form className="grid gap-2 pt-4" onSubmit={formik.handleSubmit}>
+    <form className="grid gap-2 pt-4" onSubmit={onSubmit}>
       <Label 
         htmlFor="name"
         className="text-sm">
@@ -79,18 +64,18 @@ export const PropertyEditor = (props: PropertyEditorProps) => {
 
       <Input 
         id="name" 
-        value={formik.values.name} 
-        onChange={formik.handleChange}/>
+        value={edited.name || ''} 
+        onChange={evt => setEdited(prop => ({ ...prop, name: evt.target.value }))} />
 
       <Label 
         htmlFor="type"
         className="text-sm mt-3">
-        Type
+        Data Type
       </Label>
 
       <Select
-        value={formik.values.type}
-        onValueChange={t => formik.setFieldValue('type', t)}>
+        value={edited.type}
+        onValueChange={t => setEdited(prop => ({ ...prop, type: t as PropertyDefinition['type']}))}>
         <SelectTrigger className="w-full h-10">
           <SelectValue />
         </SelectTrigger>
@@ -114,16 +99,16 @@ export const PropertyEditor = (props: PropertyEditorProps) => {
         </SelectContent>
       </Select>
 
-      {formik.values.type === 'enum' && (
+      {edited.type === 'enum' && (
         <div className="bg-muted p-2 mt-2 rounded-md">
           <div className="mt-2 mb-3 col-span-5">
-            {options.length === 0 ? (
+            {edited.values.length === 0 ? (
               <div className="flex py-3 text-muted-foreground text-xs justify-center">
                 Add at least one option.
               </div>
             ) : (
               <ul className="px-2 text-xs text-muted-foreground">
-                {options.map(option => (
+                {edited.values.map(option => (
                   <li 
                     className="flex justify-between p-1 border-b last:border-none"
                     key={option}>
@@ -143,25 +128,14 @@ export const PropertyEditor = (props: PropertyEditorProps) => {
             )}
           </div>
 
-          <div className="grid grid-cols-6 gap-2">            
-            <Input 
-              className="col-span-5"
-              value={inputValue} 
-              onChange={onChangeInput} 
-              onKeyDown={onKeyDown} />
-
-            <Button 
-              variant="outline"
-              onClick={onAddOption}
-              type="button">
-              Add
-            </Button>
+          <div className="grid grid-cols-6 gap-2"> 
+            <AddOption onAddOption={onAddOption} /> 
           </div>
         </div>
       )}
 
       <div className="mt-3 sm:justify-start">
-        <Button type="button" onClick={formik.submitForm}>Save</Button>
+        <Button type="button" onClick={onSubmit}>Save</Button>
       </div>
     </form>
   )

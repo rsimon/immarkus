@@ -14,7 +14,7 @@ interface PropertyEditorDialogProps {
 
   property?: PropertyDefinition
 
-  onUpdate(updated: PropertyDefinition): void;
+  onSave(definition: PropertyDefinition): void;
 
   children: ReactNode;
 
@@ -25,7 +25,7 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const onUpdate = (property: PropertyDefinition) => {
-    props.onUpdate(property);
+    props.onSave(property);
     setOpen(false);
   }
 
@@ -56,7 +56,7 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
 
         <PropertyEditor 
           property={props.property} 
-          onUpdate={onUpdate} />
+          onSave={onUpdate} />
       </DialogContent>
     </Dialog>
   )

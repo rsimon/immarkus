@@ -106,7 +106,7 @@ export const Properties = (props: PropertiesProps) => {
             
             <div className="flex justify-end">
               <PropertyEditorDialog
-                onUpdate={addProperty}>
+                onSave={addProperty}>
                 <Button 
                   variant="outline" 
                   className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
