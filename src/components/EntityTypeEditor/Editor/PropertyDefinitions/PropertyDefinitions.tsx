@@ -45,7 +45,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
         <AccordionTrigger 
           className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
-            <h3 className="text-sm">
+            <h3 className="text-xs">
               {properties.length === 0 
                 ? 'No Properties' 
                 : `${properties.length} Propert${properties.length === 1 ? 'y' : 'ies'}`}
@@ -70,25 +70,25 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     key={p.name} 
                     className="flex text-xs w-full justify-between items-center
                       bg-muted-foreground/10 pl-3 pr-2 py-1.5 rounded-sm mb-1.5">
-                    <div>
+                    <div className="flex">
                       {p.type === 'text' ? (
                         <CaseSensitive 
-                          className="inline w-5 h-5 mr-2" />
+                          className="inline w-5 h-5 mr-2 -mt-[1px]" />
                       ) : p.type === 'number' ? (
                         <Hash 
-                          className="inline w-4 h-4 mr-3" />
+                          className="inline w-3.5 h-3.5 mr-3" />
                       ) : p.type === 'enum' ? (
                         <List 
-                          className="inline w-4 h-4 mr-3" />
+                          className="inline w-3.5 h-3.5 mr-3" />
                       ) : p.type === 'uri' ? (
                         <Link2 
-                          className="inline w-4 h-4 mr-3" />
+                          className="inline w-3.5 h-3.5 mr-3" />
                       ) : p.type === 'geocoordinate' ? (
                         <MapPin 
-                          className="inline w-4 h-4 mr-3" />
+                          className="inline w-3.5 h-3.5 mr-3" />
                       ) : p.type === 'external_authority' && (
                         <Database
-                          className="inline w-4 h-4 mr-3" />
+                          className="inline w-3.5 h-3.5 mr-3" />
                       )}
                       {p.name}
                     </div>

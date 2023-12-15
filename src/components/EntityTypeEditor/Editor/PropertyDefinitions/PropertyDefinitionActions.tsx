@@ -53,11 +53,11 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
       <DropdownMenuContent
         onEscapeKeyDown={() => setOpen(false)}
         onPointerDownOutside={() =>setOpen(false)}>
-        <DropdownMenuItem onSelect={andClose(props.onMoveUp)}>
+        <DropdownMenuItem className="text-xs" onSelect={andClose(props.onMoveUp)}>
           <ArrowUp className="h-4 w-4 mr-2 text-muted-foreground" /> Move up
         </DropdownMenuItem>
 
-        <DropdownMenuItem onSelect={andClose(props.onMoveDown)}>
+        <DropdownMenuItem className="text-xs" onSelect={andClose(props.onMoveDown)}>
           <ArrowDown className="h-4 w-4 mr-2 text-muted-foreground" /> Move down
         </DropdownMenuItem>
 
@@ -65,13 +65,13 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
           property={props.property}
           onSave={onUpdated}>
 
-          <DropdownMenuItem>
+          <DropdownMenuItem className="text-xs">
             <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit
           </DropdownMenuItem>
         </PropertyEditorDialog>
 
-        <DropdownMenuItem onSelect={andClose(props.onDeleteProperty)}>
-          <X className="h-4 w-4 mr-2 text-muted-foreground" /> Delete
+        <DropdownMenuItem className="text-xs" onSelect={andClose(props.onDeleteProperty)}>
+          <X className="h-4 w-4 mr-2 text-red-500" /> <span className="text-red-500">Delete</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

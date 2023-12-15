@@ -1,4 +1,5 @@
 import { PropertyDefinition } from '@/model';
+import { ExternalAuthority } from '@/model/ExternalAuthority';
 
 export type PropertyDefinitionStub = {
 
@@ -11,6 +12,8 @@ export type PropertyDefinitionStub = {
   required?: boolean,
 
   multiple?: boolean,
+
+  authorities?: ExternalAuthority[],
 
   values?: string[]
 

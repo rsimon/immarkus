@@ -19,15 +19,21 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
 
   const stub = props.property;
 
-  const preview = 'name' in stub 
-    ? stub as PropertyDefinition 
-    : { ...stub, name: 'Property' } as PropertyDefinition;
+  const preview = {
+    ...stub,
+    name: stub.name || '',
+  } as PropertyDefinition;
 
   return (
     <div className="bg-muted px-8 py-4 border-l">
-      <h2 className="mb-12">
+      <h2 className="font-medium">
         Property Preview
       </h2>
+
+      <p className="text-left text-xs leading-relaxed mt-1 mb-12">
+        This is how your property will appear when editing an entity in 
+        the annotation interface. 
+      </p>
 
       {stub.name && (
         <div className="mt-1" key={preview.name}>

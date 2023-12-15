@@ -125,7 +125,7 @@ export const Editor = (props: EditorProps) => {
           </div>
         </div>
 
-        <div className="mt-2">
+        <div className="mt-3">
           <Label 
             htmlFor="parent"
             className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
@@ -138,7 +138,7 @@ export const Editor = (props: EditorProps) => {
             className="h-9" />
         </div>
         
-        <div className="mt-2">
+        <div className="mt-3">
           <Label 
             htmlFor="label"
             className="inline-block text-xs mb-1.5 ml-0.5">Display Name
@@ -151,7 +151,7 @@ export const Editor = (props: EditorProps) => {
             className="h-9" />
         </div>
 
-        <div className="mt-2">
+        <div className="mt-3">
           <Label 
             htmlFor="description"
             className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
@@ -163,13 +163,13 @@ export const Editor = (props: EditorProps) => {
             onChange={evt => setEntityType(e => ({ ...e, description: evt.target.value }))} />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-5">
           <PropertyDefinitions 
             properties={entityType.properties || []}
             onChange={properties => setEntityType(e => ({...e, properties }))} />
         </div>
 
-        <Button className="w-full mt-5 mb-3" onClick={onSave}>
+        <Button className="w-full mt-7 mb-3" onClick={onSave}>
           <Cuboid className="w-5 h-5 mr-2" /> Save Entity
         </Button>
       </div>

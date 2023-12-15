@@ -24,7 +24,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
   return (
     <div className="bg-muted px-8 py-6 border-l">
       <h2 className="mb-6">
-        Preview
+        Entity Preview
       </h2>
 
       <div className="flex">

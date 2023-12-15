@@ -7,9 +7,7 @@ interface EnumPropertyDefinitionProps {
 
   definition: PropertyDefinitionStub;
 
-  onAddOption(option: string): void;
-
-  onRemoveOption(option: string): void;
+  onUpdate(definition: PropertyDefinitionStub): void;
 
 }
 
@@ -17,8 +15,20 @@ export const EnumPropertyDefinition = (props: EnumPropertyDefinitionProps) => {
 
   const { definition } = props;
 
+  const onAddOption = (option: string) => 
+    props.onUpdate({
+      ...definition, 
+      values: [ ...(definition.values || []),  option].slice().sort()
+    });
+
+  const onRemoveOption = (option: string) => () =>
+    props.onUpdate({
+      ...definition, 
+      values: (definition.values || []).filter(o => o !== option)
+    });
+
   return (
-    <div className="bg-muted p-2 mt-3 rounded-md">
+    <div className="bg-muted p-2 mt-2 rounded-md">
       <div className="mt-1 mb-2 col-span-5">
         {!(definition.values?.length > 0) ? (
           <div className="flex py-3 text-muted-foreground text-xs justify-center">
@@ -33,7 +43,7 @@ export const EnumPropertyDefinition = (props: EnumPropertyDefinitionProps) => {
                 <span>{option}</span>
 
                 <Button 
-                  onClick={() => props.onRemoveOption(option)}
+                  onClick={() => onRemoveOption(option)}
                   className="align-middle w-6 h-6"
                   variant="ghost"
                   type="button"
@@ -47,7 +57,7 @@ export const EnumPropertyDefinition = (props: EnumPropertyDefinitionProps) => {
       </div>
 
       <div className="grid grid-cols-6 gap-2"> 
-        <AddOption onAddOption={props.onAddOption} /> 
+        <AddOption onAddOption={onAddOption} /> 
       </div>
     </div>
   )

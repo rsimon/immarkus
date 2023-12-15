@@ -29,18 +29,6 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
   const [edited, setEdited] = useState<PropertyDefinitionStub>(props.property || {});
 
-  const onAddOption = (option: string) => 
-    setEdited(prop => ({
-      ...prop, 
-      values: [ ...(prop.values || []),  option].slice().sort()
-    }));
-  
-  const onRemoveOption = (option: string) => () =>
-    setEdited(prop => ({
-      ...prop, 
-      values: (prop.values || []).filter(o => o !== option)
-    }));
-
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
@@ -57,14 +45,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
   return (
     <article className="grid grid-cols-2 rounded-lg overflow-hidden">
       <div className="px-6 py-3">
-        <h3 className="font-semibold mt-1">Property</h3>
-
         <p className="text-left text-xs leading-relaxed mt-1">
           Use Properties to record specific details in your annotations,
           such as weight, material, age, etc. 
         </p>
+
         <form onSubmit={onSubmit}>
-          <div className="mt-2">
+          <div className="mt-4">
             <Label 
               htmlFor="name"
               className="inline-block text-xs mb-1.5 ml-0.5">
@@ -78,7 +65,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               onChange={evt => setEdited(prop => ({ ...prop, name: evt.target.value }))} />
           </div>
 
-          <div className="mt-2">
+          <div className="mt-3">
             <Label 
               htmlFor="type"
               className="inline-block text-xs mb-1.5 ml-0.5">
@@ -94,22 +81,22 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
               <SelectContent>
                 <SelectItem value="text">
-                  <CaseSensitive className="inline w-4 h-4 mr-0.5" /> Text
+                  <CaseSensitive className="inline w-4 h-4 mr-1" /> Text
                 </SelectItem>
                 <SelectItem value="number">
-                  <Hash className="inline w-4 h-4 mr-1 mb-0.5" /> Number
+                  <Hash className="inline w-4 h-4 mr-1.5 mb-0.5" /> Number
                 </SelectItem>
                 <SelectItem value="enum">
-                  <List className="inline w-4 h-4 mr-1 mb-0.5" /> Options
+                  <List className="inline w-4 h-4 mr-1.5 mb-0.5" /> Options
                 </SelectItem>
                 <SelectItem value="uri">
-                  <Link2 className="inline w-4 h-4 mr-1 mb-0.5" /> URI
+                  <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" /> URI
                 </SelectItem>
                 <SelectItem value="geocoordinate">
-                  <MapPin className="inline w-4 h-4 mr-1 mb-0.5" /> Geo-coordinate
+                  <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> Geo-coordinate
                 </SelectItem>
                 <SelectItem value="external_authority">
-                  <Database className="inline w-4 h-4 mr-1 mb-0.5" /> External Authority
+                  <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -118,14 +105,14 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           {edited.type === 'enum' ? (
             <EnumPropertyDefinition 
               definition={edited}
-              onAddOption={onAddOption}
-              onRemoveOption={onRemoveOption} />
+              onUpdate={setEdited} />
           ) : edited.type === 'external_authority' && (
             <AuthorityPropertyDefinition 
-              definition={edited} />
+              definition={edited} 
+              onUpdate={setEdited} />
           )}
 
-          <div className="mt-2">
+          <div className="mt-3">
             <Label 
               htmlFor="description"
               className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>

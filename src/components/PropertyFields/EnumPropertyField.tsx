@@ -32,7 +32,7 @@ export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
     <div className="mb-5">
       <Label 
         htmlFor={id}
-        className="text-xs block mt-3 mb-1.5">
+        className="text-xs block mt-3 mb-1.5 ml-0.5">
         {definition.name}
       </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
@@ -47,7 +47,7 @@ export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
         <SelectContent>
           <SelectItem value={null}>&nbsp;</SelectItem>
 
-          {definition.values.map(option => (
+          {(definition.values || []).map(option => (
             <SelectItem key={option} value={option}>{option}</SelectItem>
           ))}
         </SelectContent>
