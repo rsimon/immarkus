@@ -1,4 +1,4 @@
-import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
 import { PropertyDefinitionActions } from './PropertyDefinitionActions';
@@ -83,8 +83,11 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                       ) : p.type === 'uri' ? (
                         <Link2 
                           className="inline w-4 h-4 mr-3" />
-                      ) : p.type === 'geocoordinate' && (
+                      ) : p.type === 'geocoordinate' ? (
                         <MapPin 
+                          className="inline w-4 h-4 mr-3" />
+                      ) : p.type === 'external_authority' && (
+                        <Database
                           className="inline w-4 h-4 mr-3" />
                       )}
                       {p.name}

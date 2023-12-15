@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/ui/Select';
 import { EnumPropertyDefinition } from './EnumPropertyDefinition';
+import { AuthorityPropertyDefinition } from './AuthorityPropertyDefinition';
 
 interface PropertyDefinitionEditorProps {
 
@@ -96,26 +97,32 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                   <CaseSensitive className="inline w-4 h-4 mr-0.5" /> Text
                 </SelectItem>
                 <SelectItem value="number">
-                  <Hash className="inline w-3 h-3 mr-1 mb-0.5" /> Number
+                  <Hash className="inline w-4 h-4 mr-1 mb-0.5" /> Number
                 </SelectItem>
                 <SelectItem value="enum">
-                  <List className="inline w-3 h-3 mr-1 mb-0.5" /> Options
+                  <List className="inline w-4 h-4 mr-1 mb-0.5" /> Options
                 </SelectItem>
                 <SelectItem value="uri">
-                  <Link2 className="inline w-3 h-3 mr-1 mb-0.5" /> URI
+                  <Link2 className="inline w-4 h-4 mr-1 mb-0.5" /> URI
                 </SelectItem>
                 <SelectItem value="geocoordinate">
-                  <MapPin className="inline w-3 h-3 mr-1 mb-0.5" /> Geo-coordinate
+                  <MapPin className="inline w-4 h-4 mr-1 mb-0.5" /> Geo-coordinate
+                </SelectItem>
+                <SelectItem value="external_authority">
+                  <Database className="inline w-4 h-4 mr-1 mb-0.5" /> External Authority
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           
-          {edited.type === 'enum' && (
+          {edited.type === 'enum' ? (
             <EnumPropertyDefinition 
               definition={edited}
               onAddOption={onAddOption}
               onRemoveOption={onRemoveOption} />
+          ) : edited.type === 'external_authority' && (
+            <AuthorityPropertyDefinition 
+              definition={edited} />
           )}
 
           <div className="mt-2">

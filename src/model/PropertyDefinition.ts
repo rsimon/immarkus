@@ -40,6 +40,8 @@ export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
 
 }
 
-export type PropertyDefinition = PrimitivePropertyDefinition | EnumPropertyDefinition;
+export type PropertyDefinition = PrimitivePropertyDefinition 
+  | EnumPropertyDefinition
+  | ExternalAuthorityPropertyDefinition;
 
 
