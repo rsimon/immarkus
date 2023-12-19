@@ -5,11 +5,6 @@
     "type": "IFRAME",
     "url_pattern": "https://maps.cga.harvard.edu/tgaz/placename?n={{query}}"
   }, {
-    "name": "Chinese Text Project",
-    "description": "An online open-access digital library of pre-modern Chinese texts",
-    "type": "IFRAME",
-    "url_pattern": "https://ctext.org/dictionary.pl?if=en&char={{query}}"
-  }, {
     "name": "Wikipedia",
     "description": "The free encyclopedia (English)",
     "type": "IFRAME",
@@ -18,7 +13,7 @@
     "name": "Baidu",
     "description": "Baidu encyclopedia",
     "type": "IFRAME",
-    "url_pattern": "https://baike.baidu.com/search/none?word=bejing{{query}}"
+    "url_pattern": "https://baike.baidu.com/search/none?word={{query}}"
   },{
     "name": "CBDB",
     "description": "China Biographical Database Project",

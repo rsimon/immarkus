@@ -38,7 +38,8 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
         </Label>  
           
-        <ExternalAuthoritySelector definition={props.definition} />   
+        <ExternalAuthoritySelector 
+          definition={props.definition} />   
       </div> 
 
       <Input 

@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { Database } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Database, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
@@ -15,6 +15,8 @@ interface IFrameAuthorityDialogProps {
 } 
 
 export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
+
+  const iframe = useRef<HTMLIFrameElement>();
 
   const { authority } = props;
 
@@ -44,11 +46,30 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
           {authority.description}
         </DialogDescription>
 
-        <Input
-          className="mt-2 h-9"
-          placeholder={`Search ${authority.name}...`} 
-          value={query}
-          onChange={evt => setQuery(evt.target.value)} />
+        <div className="relative mt-2">
+          <Input
+            className="h-9"
+            placeholder={`Search ${authority.name}...`} 
+            value={query}
+            onChange={evt => setQuery(evt.target.value)} />
+
+          <span 
+            className="absolute top-0 right-0 h-full bg-muted border rounded-r">
+            {debounced ? (
+              <a 
+                className="px-4 h-full flex items-center 
+                hover:bg-slate-200/80 hover:disabled:bg-muted"
+                href={authority.url_pattern.replace('{{query}}', debounced)}
+                target="_blank">
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            ) : (
+              <div className="px-4 h-full flex items-center">
+                <ExternalLink className="h-4 w-4 text-muted-foreground/60" />
+              </div>
+            )}
+          </span>
+        </div>
 
         <div className="relative border rounded-md h-[70vh] bg-muted">
           {!loading && !debounced && (
@@ -65,6 +86,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
           {debounced && (
             <iframe 
+              ref={iframe}
               style={{ opacity: loading ? 0 : 1}}
               className="absolute top-0 left-0 w-full h-full"
               onLoad={() => setLoading(false)}
