@@ -5,15 +5,25 @@
     "type": "IFRAME",
     "url_pattern": "https://maps.cga.harvard.edu/tgaz/placename?n={{query}}"
   }, {
+    "name": "Chinese Text Project",
+    "description": "An online open-access digital library of pre-modern Chinese texts",
+    "type": "IFRAME",
+    "url_pattern": "https://ctext.org/dictionary.pl?if=en&char={{query}}"
+  }, {
+    "name": "Wikipedia",
+    "description": "The free encyclopedia (English)",
+    "type": "IFRAME",
+    "url_pattern": "https://en.wikipedia.org/w/index.php?search={{query}}"
+  },{
+    "name": "Baidu",
+    "description": "Baidu encyclopedia",
+    "type": "IFRAME",
+    "url_pattern": "https://baike.baidu.com/search/none?word=bejing{{query}}"
+  },{
     "name": "CBDB",
     "description": "China Biographical Database Project",
     "type": "IFRAME",
     "url_pattern": "https://cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
-  }, {
-    "name": "Manchu",
-    "description": "Manchu texts and objects",
-    "type": "IFRAME",
-    "url_pattern": "https://dh.chinese-empires.eu/comparativus/manchu/manchu.html?keyword={{query}}&output=html"
   }, {
     "name": "DILA (Person)",
     "description": "Buddhist Studies Authority Database Project (Person Search)",
@@ -24,5 +34,15 @@
     "description": "Buddhist Studies Authority Database Project (Place Search)",
     "type": "IFRAME",
     "url_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}"
+  },{
+    "name": "Manchu",
+    "description": "Manchu texts and objects",
+    "type": "IFRAME",
+    "url_pattern": "https://dh.chinese-empires.eu/comparativus/manchu/manchu.html?keyword={{query}}&output=html"
+  },{
+    "name": "Digerati",
+    "description": "Korean personal names",
+    "type": "IFRAME",
+    "url_pattern": "https://dh.chinese-empires.eu/comparativus/digerati/index.html?q={{query}}"
   }]
 }
