@@ -3,7 +3,7 @@ import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
-interface GeoCoordinatePropertyFieldProps {
+interface GeoCoordinateFieldProps {
 
   id: string;
 
@@ -17,7 +17,7 @@ interface GeoCoordinatePropertyFieldProps {
 
 }
 
-export const GeoCoordinatePropertyField = (props: GeoCoordinatePropertyFieldProps) => {
+export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
   const { id, definition, value, validate, onChange } = props;
 

@@ -2,11 +2,12 @@ import { EnumPropertyDefinition, PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { 
-  EnumPropertyField, 
-  GeoCoordinatePropertyField, 
-  NumberPropertyField, 
-  TextPropertyField, 
-  URIPropertyField 
+  EnumField,
+  ExternalAuthorityField,
+  GeoCoordinateField, 
+  NumberField, 
+  TextField, 
+  URIField 
 } from '@/components/PropertyFields';
 
 interface PropertyPreviewProps {
@@ -38,23 +39,27 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
       {stub.name && (
         <div className="mt-1" key={preview.name}>
           {preview.type === 'enum' ? (
-            <EnumPropertyField 
+            <EnumField 
               id={preview.name}
               definition={preview as EnumPropertyDefinition} />
+          ) : preview.type === 'external_authority' ? (
+            <ExternalAuthorityField 
+              id={preview.name}
+              definition={preview} />
           ) : preview.type === 'geocoordinate' ? (
-            <GeoCoordinatePropertyField 
+            <GeoCoordinateField 
               id={preview.name}
               definition={preview} />
           ) : preview.type === 'number' ? (
-            <NumberPropertyField 
+            <NumberField 
               id={preview.name}
               definition={preview} />   
           ) : preview.type === 'text' ? (
-            <TextPropertyField 
+            <TextField 
               id={preview.name}
               definition={preview} />   
           ) : preview.type === 'uri' ? (
-            <URIPropertyField 
+            <URIField 
               id={preview.name}
               definition={preview} />   
           ) : (

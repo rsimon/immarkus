@@ -2,11 +2,12 @@ import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
-  EnumPropertyField, 
-  GeoCoordinatePropertyField, 
-  NumberPropertyField, 
-  TextPropertyField, 
-  URIPropertyField 
+  EnumField,
+  ExternalAuthorityField, 
+  GeoCoordinateField, 
+  NumberField, 
+  TextField, 
+  URIField 
 } from '@/components/PropertyFields';
 
 interface EntityPreviewProps {
@@ -49,23 +50,27 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         {(entityType.properties || []).map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
-              <EnumPropertyField 
+              <EnumField 
+                id={property.name}
+                definition={property} />
+            ) : property.type === 'external_authority' ? (
+              <ExternalAuthorityField 
                 id={property.name}
                 definition={property} />
             ) : property.type === 'geocoordinate' ? (
-              <GeoCoordinatePropertyField 
+              <GeoCoordinateField 
                 id={property.name}
                 definition={property} />
             ) : property.type === 'number' ? (
-              <NumberPropertyField 
+              <NumberField 
                 id={property.name}
                 definition={property} />   
             ) : property.type === 'text' ? (
-              <TextPropertyField 
+              <TextField 
                 id={property.name}
                 definition={property} />   
             ) : property.type === 'uri' ? (
-              <URIPropertyField 
+              <URIField 
                 id={property.name}
                 definition={property} />   
             ) : null}

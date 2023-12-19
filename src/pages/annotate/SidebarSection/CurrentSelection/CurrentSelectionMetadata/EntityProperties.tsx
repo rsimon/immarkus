@@ -3,15 +3,16 @@ import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { 
-  EnumPropertyField, 
-  GeoCoordinatePropertyField, 
-  NumberPropertyField, 
-  TextPropertyField, 
-  URIPropertyField 
+  EnumField,
+  ExternalAuthorityField, 
+  GeoCoordinateField, 
+  NumberField, 
+  TextField, 
+  URIField 
 } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 
-interface EntitySchemaFieldsProps {
+interface EntityPropertiesProps {
 
   showErrors?: boolean;
 
@@ -27,7 +28,7 @@ interface EntitySchemaFieldsProps {
 
 }
 
-export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
+export const EntityProperties = (props: EntityPropertiesProps) => {
 
   const { body, entityType, safeKeys } = props;
 
@@ -42,35 +43,42 @@ export const EntitySchemaFields = (props: EntitySchemaFieldsProps) => {
       {fields.map(({ property, key }) => (
         <div className="mt-2" key={key}>
           {property.type === 'enum' ? (
-            <EnumPropertyField
+            <EnumField
+              id={key}
+              definition={property} 
+              value={props.values[key]}
+              validate={props.showErrors}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'external_authority' ? (
+            <ExternalAuthorityField
               id={key}
               definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'geocoordinate' ? (
-            <GeoCoordinatePropertyField
+            <GeoCoordinateField
               id={key}
               definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'number' ? (
-            <NumberPropertyField
+            <NumberField
               id={key}
               definition={property} 
               value={props.values[key]}
               validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'text' ? (
-            <TextPropertyField 
+            <TextField 
               id={key}
               definition={property} 
               value={props.values[key]}
               validate={props.showErrors} 
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'uri' ? (
-            <URIPropertyField 
+            <URIField 
               id={key}
               definition={property} 
               value={props.values[key]}

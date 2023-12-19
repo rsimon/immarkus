@@ -7,7 +7,7 @@ import {
 } from '@annotorious/react';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { EntitySchemaFields } from './EntitySchemaFields';
+import { EntityProperties } from './EntityProperties';
 import { createSafeKeys } from './PropertyKeys';
 import { CurrentSelectionNote } from './CurrentSelectionNote';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
@@ -102,7 +102,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   return schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
     <form className="mt-2 px-1" onSubmit={onSubmit}>
-      <EntitySchemaFields 
+      <EntityProperties 
         body={schemaBodies[0].body}
         entityType={schemaBodies[0].entityType}
         safeKeys={safeKeys}
@@ -124,7 +124,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
             {entityType.label}
           </h3>
 
-          <EntitySchemaFields
+          <EntityProperties
             body={body}
             entityType={entityType}
             safeKeys={safeKeys}

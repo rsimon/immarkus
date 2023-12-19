@@ -8,7 +8,7 @@ import {
   SelectValue 
 } from '@/ui/Select';
 
-interface EnumPropertyFieldProps {
+interface EnumFieldProps {
 
   id: string;
 
@@ -22,7 +22,7 @@ interface EnumPropertyFieldProps {
 
 }
 
-export const EnumPropertyField = (props: EnumPropertyFieldProps) => {
+export const EnumField = (props: EnumFieldProps) => {
 
   const { id, definition, value, validate, onChange } = props;
 

@@ -2,7 +2,7 @@ import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
-interface TextPropertyFieldProps {
+interface ExternalAuthorityFieldProps {
 
   id: string;
 
@@ -16,7 +16,7 @@ interface TextPropertyFieldProps {
 
 }
 
-export const TextPropertyField = (props: TextPropertyFieldProps) => {
+export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition, value, validate, onChange } = props;
 
