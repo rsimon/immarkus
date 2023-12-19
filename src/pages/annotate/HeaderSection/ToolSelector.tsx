@@ -29,6 +29,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         data-state={props.active ? 'active' : undefined}
         aria-selected={props.active}
         className="flex items-center text-xs rounded-md hover:bg-muted">
+        
         <button 
           onClick={props.onClick}
           className="pl-2 py-2 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">

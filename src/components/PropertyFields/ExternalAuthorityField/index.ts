@@ -1,1 +1,1 @@
-export * from './ExeternalAuthorityField';
+export * from './ExternalAuthorityField';

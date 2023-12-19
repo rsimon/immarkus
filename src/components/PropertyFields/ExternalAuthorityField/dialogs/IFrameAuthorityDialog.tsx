@@ -8,17 +8,15 @@ import { useDebounce } from '@/utils/useDebounce';
 
 interface IFrameAuthorityDialogProps {
 
-  children: ReactNode;
-
   authority: ExternalAuthority;
+
+  onClose(): void;
 
 } 
 
 export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
   const { authority } = props;
-
-  const [open, setOpen] = useState(false);
 
   const [query, setQuery] = useState('');
 
@@ -39,15 +37,11 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   }, [debounced]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {props.children}
-      </DialogTrigger>
-
+    <Dialog open={Boolean(props.authority)} onOpenChange={props.onClose}>
       <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
         <DialogTitle>{authority.name}</DialogTitle>
-        <DialogDescription>
-          <p className="text-xs">{authority.description}</p>
+        <DialogDescription className="text-xs">
+          {authority.description}
         </DialogDescription>
 
         <Input
