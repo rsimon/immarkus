@@ -14,16 +14,17 @@ export const EntityTypes = () => {
 
   const [edited, setEdited] = useState<EntityType | undefined>();
 
-  const onDeleteEntityType = (type: EntityType) => () => removeEntityType(type)
-    .catch(error => {
-      console.error(error);
-      toast({
-        variant: 'destructive',
-        // @ts-ignore
-        title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-        description: 'Could not delete entity'
-      });    
-    });
+  const onDeleteEntityType = (type: EntityType) =>
+    removeEntityType(type)
+      .catch(error => {
+        console.error(error);
+        toast({
+          variant: 'destructive',
+          // @ts-ignore
+          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+          description: 'Could not delete entity'
+        });    
+      });
 
   return (
     <>

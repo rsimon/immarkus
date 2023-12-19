@@ -1,4 +1,4 @@
-import { CaseSensitive, Hash, Link2, List, MapPin } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { EntityTypeActions } from '../EntityTypeActions';
@@ -48,7 +48,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
             </TableRow>
           ) : model.entityTypes.map(e => (
             <TableRow key={e.id} className="text-xs">
-              <TableCell className="pl-2 pr-0">
+              <TableCell className="pl-2 pr-1">
                 <span className="pip" style={{ backgroundColor: e.color }} />
               </TableCell>
               <TableCell className="whitespace-nowrap py-1 pl-0.5 pr-2.5">{e.id}</TableCell>
@@ -60,16 +60,18 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
                   <span key={property.name}
                     className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
                       mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
-                    {property.type === 'text' ? (
-                      <CaseSensitive className="w-4 h-4 mr-0.5" />
-                    ) : property.type === 'number' ? (
-                      <Hash className="w-3 h-3 mr-0.5" />
-                    ) : property.type === 'enum' ? (
+                    {property.type === 'enum' ? (
                       <List className="w-3 h-3 mr-0.5" />
-                    ) : property.type === 'uri' ? (
-                      <Link2 className="w-3 h-3 mr-0.5" />
+                    ): property.type === 'external_authority' ? (
+                      <Database className="w-3 h-3 mr-1" />
                     ) : property.type === 'geocoordinate' ? (
                       <MapPin className="w-3 h-3 mr-0.5" />
+                    ) : property.type === 'number' ? (
+                      <Hash className="w-3 h-3 mr-0.5" />
+                    ) : property.type === 'text' ? (
+                      <CaseSensitive className="w-4 h-4 mr-0.5" />
+                    ) : property.type === 'uri' ? (
+                      <Link2 className="w-3 h-3 mr-0.5" />
                     ) : null}
                     {property.name}
                   </span>    
