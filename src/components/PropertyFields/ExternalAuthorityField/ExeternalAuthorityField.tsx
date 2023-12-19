@@ -25,15 +25,16 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   return (
     <div className="mb-5">
-      <div>
-        <Label
-          htmlFor={id}
-          className="text-xs block mt-3 mb-1.5 ml-0.5">
+      <Label
+        htmlFor={id}
+        className="text-xs mt-3 mb-1 ml-0.5 mr-0.5 flex justify-between items-center">
+        <div>
           {definition.name}
-        </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+          {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+        </div>
 
-        <ExternalAuthoritySelector definition={props.definition} />        
-      </div>
+        <ExternalAuthoritySelector definition={props.definition} />    
+      </Label>    
 
       <Input 
         id={id} 

@@ -18,8 +18,8 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
     <div>
       {authority.type === 'IFRAME' && (
         <IFrameAuthorityDialog authority={authority}>
-          <button>
-            <Search className="h-4 w-4" />
+          <button className="flex items-center hover:bg-slate-200 px-1.5 py-0.5 rounded">
+            <Search className="h-3.5 w-3.5 mr-1" />
             {props.definition.authorities[0].name}
           </button>
         </IFrameAuthorityDialog>

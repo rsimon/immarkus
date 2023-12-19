@@ -46,7 +46,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         </p>
       )}
 
-      <div className="mt-2">
+      <div className="mt-4">
         {(entityType.properties || []).map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
