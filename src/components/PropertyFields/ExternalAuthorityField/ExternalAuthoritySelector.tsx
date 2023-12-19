@@ -14,9 +14,9 @@ interface ExternalAuthoritySelectorProps {
 
   definition: ExternalAuthorityPropertyDefinition;
 
+  onCloseDialog(): void;
+
 }
-
-
 
 export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps) => {
 
@@ -29,6 +29,11 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
   const onOpen = (name: string) => {
     setValue(name);
     setOpen(authorities.find(a => a.name === name));
+  }
+
+  const onClose = () => {
+    setOpen(undefined);
+    props.onCloseDialog();
   }
 
   return ( 
@@ -82,7 +87,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
       {open && (
         <IFrameAuthorityDialog 
           authority={open} 
-          onClose={() => setOpen(undefined)} />
+          onClose={onClose} />
       )}
     </>
   )
