@@ -7,6 +7,8 @@ import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
 import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { PropertyPreview } from './PropertyPreview';
+import { EnumOptions } from './EnumOptions';
+import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
 import {
   Select,
   SelectContent,
@@ -14,8 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { EnumPropertyDefinition } from './EnumPropertyDefinition';
-import { AuthorityPropertyDefinition } from './AuthorityPropertyDefinition';
 
 interface PropertyDefinitionEditorProps {
 
@@ -103,11 +103,11 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           </div>
           
           {edited.type === 'enum' ? (
-            <EnumPropertyDefinition 
+            <EnumOptions 
               definition={edited}
               onUpdate={setEdited} />
           ) : edited.type === 'external_authority' && (
-            <AuthorityPropertyDefinition 
+            <ExternalAuthorityOptions 
               definition={edited} 
               onUpdate={setEdited} />
           )}

@@ -1,12 +1,13 @@
-import { PropertyDefinition } from '@/model';
+import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 
 interface ExternalAuthorityFieldProps {
 
   id: string;
 
-  definition: PropertyDefinition;
+  definition: ExternalAuthorityPropertyDefinition;
 
   validate?: boolean;
 
@@ -24,11 +25,15 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   return (
     <div className="mb-5">
-      <Label
-        htmlFor={id}
-        className="text-xs block mt-3 mb-1.5 ml-0.5">
-        {definition.name}
-      </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+      <div>
+        <Label
+          htmlFor={id}
+          className="text-xs block mt-3 mb-1.5 ml-0.5">
+          {definition.name}
+        </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+
+        <ExternalAuthoritySelector definition={props.definition} />        
+      </div>
 
       <Input 
         id={id} 

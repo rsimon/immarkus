@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { PropertyDefinitionStub } from '../PropertyDefinitionStub';
 import { AddOption } from './AddOption';
 
-interface EnumPropertyDefinitionProps {
+interface EnumOptionsProps {
 
   definition: PropertyDefinitionStub;
 
@@ -11,7 +11,7 @@ interface EnumPropertyDefinitionProps {
 
 }
 
-export const EnumPropertyDefinition = (props: EnumPropertyDefinitionProps) => {
+export const EnumOptions = (props: EnumOptionsProps) => {
 
   const { definition } = props;
 

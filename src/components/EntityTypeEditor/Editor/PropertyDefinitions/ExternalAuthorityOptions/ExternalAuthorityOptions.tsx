@@ -3,7 +3,7 @@ import { useRuntimeConfig } from '@/RuntimeConfig';
 import { Checkbox } from '@/ui/Checkbox';
 import { PropertyDefinitionStub } from '../PropertyDefinitionStub';
 
-interface AuthorityPropertyDefinitionProps {
+interface ExternalAuthorityOptionsProps {
 
   definition: PropertyDefinitionStub;
 
@@ -11,7 +11,7 @@ interface AuthorityPropertyDefinitionProps {
 
 }
 
-export const AuthorityPropertyDefinition = (props: AuthorityPropertyDefinitionProps) => {
+export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) => {
 
   const { authorities } = useRuntimeConfig();
 

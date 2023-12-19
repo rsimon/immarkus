@@ -1,5 +1,5 @@
 export * from './EnumField';
-export * from './ExeternalAuthorityField';
+export * from './ExternalAuthorityField';
 export * from './GeoCoordinateField';
 export * from './NumberField';
 export * from './TextField';

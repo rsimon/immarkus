@@ -2,7 +2,7 @@
   "authorities": [{
     "name": "TGAZ",
     "description": "China Historical GIS placename database",
-    "type": "iframe",
+    "type": "IFRAME",
     "url_pattern": "https://maps.cga.harvard.edu/tgaz/placename?n={{query}}"
   }]
 }
