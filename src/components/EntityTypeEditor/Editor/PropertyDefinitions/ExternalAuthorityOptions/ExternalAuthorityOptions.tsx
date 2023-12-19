@@ -1,3 +1,4 @@
+import { AlertCircle, AlertTriangle } from 'lucide-react';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { Checkbox } from '@/ui/Checkbox';
@@ -32,6 +33,9 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
   const isSelected = (authority: ExternalAuthority) =>
     Boolean((props.definition.authorities || []).find(a => a.name === authority.name));
 
+  const hasValidConfiguration = (a: ExternalAuthority) =>
+    Boolean(a.name) && a.url_pattern?.includes('{{query}}') && a.type === 'IFRAME';
+
   return (
     <div className="bg-muted px-2 py-3 mt-2 rounded-md text-sm">
       <ol>
@@ -47,18 +51,34 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
               <label 
                 htmlFor={authority.name}>
 
-                <span className="block font-medium">
+                <span className="flex font-medium items-center">
                   {authority.name}
+
+                  {!hasValidConfiguration(authority) && (
+                    <span title="Autority is not configured correctly">
+                      <AlertTriangle 
+                        className="ml-1 h-4 w-4 text-orange-500" />
+                    </span>
+                  )}
                 </span>
 
                 {authority.description && (
-                  <span className="text-black/80 text-xs">{authority.description}</span>
+                  <span className="text-black/80 text-xs">
+                    {authority.description}
+                  </span>
                 )}
               </label>
             </div>
           </li>
         ))}
       </ol>
+
+      {(props.definition.authorities || []).length === 0 && (
+        <span className="inline-flex ml-1.5 text-xs text-red-600
+          font-medium mt-3 mb-1">
+          <AlertCircle className="h-3.5 w-3.5 mr-2.5" />  Select at least one authority
+        </span>
+      )}
     </div>
   )
 
