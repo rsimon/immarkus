@@ -35,7 +35,7 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
         {props.children}
       </DialogTrigger>
 
-      <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
+      <DialogContent className="p-0 max-w-4xl max-h-[94vh] overflow-y-auto rounded-lg">
         <PropertyDefinitionEditor 
           property={props.property} 
           onSave={onUpdate} />

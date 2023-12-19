@@ -43,8 +43,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
   }
 
   return (
-    <article className="grid grid-cols-2 rounded-lg overflow-hidden">
-      <div className="px-6 py-3">
+    <article className="grid grid-cols-5 rounded-lg overflow-hidden">
+      <div className="px-6 py-3 col-span-3">
         <p className="text-left text-xs leading-relaxed mt-1">
           Use Properties to record specific details in your annotations,
           such as weight, material, age, etc. 

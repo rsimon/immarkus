@@ -37,7 +37,7 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
       <ol>
         {authorities.map(authority => (
           <li key={authority.name}>
-            <div className="relative pl-8">
+            <div className="relative pl-8 mt-0.5">
               <Checkbox 
                 id={authority.name}
                 className="absolute top-0.5 left-1.5" 

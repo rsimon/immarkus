@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Database } from 'lucide-react';
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
@@ -46,10 +46,13 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
       <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
         <DialogTitle>{authority.name}</DialogTitle>
+        <DialogDescription>
+          <p className="text-xs">{authority.description}</p>
+        </DialogDescription>
 
         <Input
-          className="mt-2"
-          placeholder="Search..." 
+          className="mt-2 h-9"
+          placeholder={`Search ${authority.name}...`} 
           value={query}
           onChange={evt => setQuery(evt.target.value)} />
 

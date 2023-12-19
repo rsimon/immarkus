@@ -26,7 +26,7 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
   } as PropertyDefinition;
 
   return (
-    <div className="bg-muted px-8 py-4 border-l">
+    <div className="bg-muted px-8 py-4 border-l col-span-2">
       <h2 className="font-medium">
         Property Preview
       </h2>

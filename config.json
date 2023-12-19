@@ -4,5 +4,25 @@
     "description": "China Historical GIS placename database",
     "type": "IFRAME",
     "url_pattern": "https://maps.cga.harvard.edu/tgaz/placename?n={{query}}"
+  }, {
+    "name": "CBDB",
+    "description": "China Biographical Database Project",
+    "type": "IFRAME",
+    "url_pattern": "https://cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
+  }, {
+    "name": "Manchu",
+    "description": "Manchu texts and objects",
+    "type": "IFRAME",
+    "url_pattern": "https://dh.chinese-empires.eu/comparativus/manchu/manchu.html?keyword={{query}}&output=html"
+  }, {
+    "name": "DILA (Person)",
+    "description": "Buddhist Studies Authority Database Project (Person Search)",
+    "type": "IFRAME",
+    "url_pattern": "https://authority.dila.edu.tw/person/search.php?per={{query}}"
+  }, {
+    "name": "DILA (Place)",
+    "description": "Buddhist Studies Authority Database Project (Place Search)",
+    "type": "IFRAME",
+    "url_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}"
   }]
 }
