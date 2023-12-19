@@ -37,8 +37,6 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   const [windowMap, setWindowMap] = useState<{ windowId: string, image: LoadedImage }[]>([]);
 
-  const [initialValue, setInitialValue] = useState<ReturnType<typeof createInitialValue>>();
-
   useEffect(() => {
     setWindowMap(entries => {
       const diff = props.images.length - entries.length;
@@ -87,15 +85,14 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
             <WorkspaceWindow 
               windowId={windowId} 
               windowPath={path} 
-              image={windowMap.find(t => t.windowId === windowId)!.image}
+              image={windowMap.find(t => t.windowId === windowId)?.image}
               mode={props.mode}
               tool={props.tool}
               onAddImage={props.onAddImage}
               onChangeImage={(_, next) => onChangeImage(windowId, next)} 
               onClose={() => onClose(windowId)} />
           )} 
-          initialValue={initialValue || createInitialValue(windowMap.map(({ windowId }) => windowId))} 
-          onChange={setInitialValue} />
+          initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
       ) : undefined}
     </section>
   )

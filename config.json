@@ -39,5 +39,10 @@
     "description": "Korean personal names",
     "type": "IFRAME",
     "url_pattern": "https://dh.chinese-empires.eu/comparativus/digerati/index.html?q={{query}}"
+  },{
+    "name": "Hucker Dictionary",
+    "description": "A Dictionary of Official Titles in Imperial China",
+    "type": "IFRAME",
+    "url_pattern": "https://dhumanities.github.io/markus/hucker/index.html?term={{query}}"
   }]
 }
