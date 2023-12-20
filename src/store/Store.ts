@@ -14,7 +14,7 @@ export interface Store extends DataModelStore {
 
   getAnnotations(imageId: string): Promise<W3CAnnotation[]>;
 
-  getFolder(folderId: string): Folder;
+  getFolder(folderId: string | FileSystemDirectoryHandle): Folder;
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
@@ -139,7 +139,10 @@ export const loadStore = (
     }
   });
 
-  const getFolder = (id: string) => folders.find(f => f.id === id);
+  const getFolder = (arg: string | FileSystemDirectoryHandle) =>
+    typeof arg === 'string' 
+      ? folders.find(f => f.id === arg) 
+      : folders.find(f => f.handle === arg);
 
   const getFolderContents = (dir: FileSystemDirectoryHandle): FolderItems => {
     const imageItems = images.filter(i => i.folder === dir);

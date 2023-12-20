@@ -9,6 +9,7 @@ import { AddImage } from './AddImage';
 import { ToolbarButton } from '../ToolbarButton';
 import { PaginationWidget } from '../Pagination';
 import { Tool, ToolMode } from '../Tool';
+import { useStore } from '@/store';
 
 interface HeaderSectionProps {
 
@@ -36,6 +37,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const toolsDisabled = props.images.length > 1;
 
+  const store = useStore();
+
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
       props.onChangeTool(tool);
@@ -59,15 +62,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   const back = props.images.length === 1 
-    // TODO
-    ? '/images'
-    : '/images';
+    ? `/images/${store.getFolder(props.images[0].folder)?.id || ''}`
+    : '/images/';
 
   return (
     <section className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 items-center">
         <div className=" flex items-center">
-          <Link className="font-semibold inline" to="/images">
+          <Link className="font-semibold inline" to={back}>
             <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
               <ChevronLeft className="h-5 w-5" />
             </div>
