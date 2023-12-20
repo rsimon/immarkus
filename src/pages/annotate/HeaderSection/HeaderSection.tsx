@@ -58,6 +58,11 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     anno.redo();
   }
 
+  const back = props.images.length === 1 
+    // TODO
+    ? '/images'
+    : '/images';
+
   return (
     <section className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 items-center">
