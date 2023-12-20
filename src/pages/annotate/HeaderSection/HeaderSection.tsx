@@ -122,7 +122,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         </ToolbarButton>
 
         <button 
-          className="p-2 pr-2.5 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>

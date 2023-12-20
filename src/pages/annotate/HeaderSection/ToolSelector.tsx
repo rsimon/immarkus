@@ -49,19 +49,19 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         className="tool-dropdown">
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs">
-            <Square className="w-3.5 h-3.5 mr-1 mb-[1px]" /> Rectangle
+            <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> Rectangle
           </div>
         </SelectItem>
 
         <SelectItem value="polygon">
           <div className="flex items-center text-xs">
-            <TriangleRight className="w-3.5 h-3.5 mr-1 -rotate-[10deg]" /> Polygon
+            <TriangleRight className="w-3.5 h-3.5 mr-2 -rotate-[10deg]" /> Polygon
           </div>
         </SelectItem>
 
         <SelectItem value="ellipse" >
           <div className="flex items-center text-xs">
-            <Circle className="w-3.5 h-3.5 mr-1 scale-y-90 mb-[1px]" /> Ellipse
+            <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" /> Ellipse
           </div>
         </SelectItem>
       </SelectContent>
