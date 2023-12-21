@@ -1,7 +1,3 @@
-.image-grid .headline {
-  padding-right: 160px;
-}
-
 .image-grid ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, 200px);

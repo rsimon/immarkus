@@ -5,7 +5,7 @@ import { Image, LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { AnnotatableImage } from './AnnotatableImage';
-import { Tool, ToolMode } from '../HeaderSection';
+import { Tool, ToolMode } from '../Tool';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
 import { PaginationWidget } from '../Pagination';
 

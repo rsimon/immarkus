@@ -1,4 +1,5 @@
 import { Circle, Square, TriangleRight } from 'lucide-react';
+import { Tool } from '../Tool';
 import {
   Select,
   SelectContent,
@@ -6,8 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-
-export type Tool = 'rectangle' | 'polygon' | 'ellipse';
 
 interface ToolSelectorProps {
 
@@ -30,6 +29,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         data-state={props.active ? 'active' : undefined}
         aria-selected={props.active}
         className="flex items-center text-xs rounded-md hover:bg-muted">
+        
         <button 
           onClick={props.onClick}
           className="pl-2 py-2 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
@@ -49,19 +49,19 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         className="tool-dropdown">
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs">
-            <Square className="w-3.5 h-3.5 mr-1 mb-[1px]" /> Rectangle
+            <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> Rectangle
           </div>
         </SelectItem>
 
         <SelectItem value="polygon">
           <div className="flex items-center text-xs">
-            <TriangleRight className="w-3.5 h-3.5 mr-1 -rotate-[10deg]" /> Polygon
+            <TriangleRight className="w-3.5 h-3.5 mr-2 -rotate-[10deg]" /> Polygon
           </div>
         </SelectItem>
 
         <SelectItem value="ellipse" >
           <div className="flex items-center text-xs">
-            <Circle className="w-3.5 h-3.5 mr-1 scale-y-90 mb-[1px]" /> Ellipse
+            <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" /> Ellipse
           </div>
         </SelectItem>
       </SelectContent>

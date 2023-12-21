@@ -3,7 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
-import { HeaderSection, ToolMode, Tool } from './HeaderSection';
+import { HeaderSection } from './HeaderSection';
+import { ToolMode, Tool } from './Tool';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
 import { WorkspaceSection} from './WorkspaceSection';
@@ -18,7 +19,7 @@ export const Annotate = () => {
 
   const [imageIds, setImageIds] = useState(params.images.split('&'));
 
-  const images = useImages(imageIds, { redirect: true }) as LoadedImage[];
+  const images = useImages(imageIds) as LoadedImage[];
 
   const [tool, setTool] = useState<Tool>('rectangle');
 

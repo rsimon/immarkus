@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { Mosaic } from 'react-mosaic-component';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
-import { Tool, ToolMode } from '../HeaderSection';
+import { Tool, ToolMode } from '../Tool';
 import { WorkspaceWindow } from './WorkspaceWindow';
 import { v4 as uuidv4 } from 'uuid';
 
 import 'react-mosaic-component/react-mosaic-component.css';
-import { create } from 'domain';
 
 interface WorkspaceSectionProps {
 
@@ -37,8 +36,6 @@ const createInitialValue= (list: string[], direction = 'row') => {
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   const [windowMap, setWindowMap] = useState<{ windowId: string, image: LoadedImage }[]>([]);
-
-  const [initialValue, setInitialValue] = useState<ReturnType<typeof createInitialValue>>();
 
   useEffect(() => {
     setWindowMap(entries => {
@@ -88,15 +85,14 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
             <WorkspaceWindow 
               windowId={windowId} 
               windowPath={path} 
-              image={windowMap.find(t => t.windowId === windowId)!.image}
+              image={windowMap.find(t => t.windowId === windowId)?.image}
               mode={props.mode}
               tool={props.tool}
               onAddImage={props.onAddImage}
               onChangeImage={(_, next) => onChangeImage(windowId, next)} 
               onClose={() => onClose(windowId)} />
           )} 
-          initialValue={initialValue || createInitialValue(windowMap.map(({ windowId }) => windowId))} 
-          onChange={setInitialValue} />
+          initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
       ) : undefined}
     </section>
   )

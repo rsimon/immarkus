@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { NavigationSidebar } from './components/NavigationSidebar';
+import { AppNavigationSidebar } from './components/AppNavigationSidebar';
 import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
 import { useStore } from './store';
 
@@ -9,7 +9,7 @@ export const App = () => {
 
   const store = useStore();
   
-  return (
+  return store ? (
     <Routes>
       <Route path="/">
         <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
@@ -22,9 +22,9 @@ export const App = () => {
 
         <Route path="annotate/:images" element={store ? <Annotate /> : <Start />} />
 
-        <Route path="vocabulary" element={<Vocabulary />} />
+        <Route path="model" element={<Vocabulary />} />
 
-        <Route path="knowledge-graph" element={<KnowledgeGraph />} />
+        <Route path="graph" element={<KnowledgeGraph />} />
 
         <Route path="export" element={<Export />}  />
 
@@ -33,21 +33,20 @@ export const App = () => {
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
+  ) : (
+    <Start />
   )
 
 }
 
 const NotFound = () => {
 
-  // Redirects to start if store is not loaded yet
-  useStore({ redirect: true });
-
   return (
     <div className="page-root">
-      <NavigationSidebar />
+      <AppNavigationSidebar />
 
       <main className="page not-found">
-        <h2>Nothing to see here. (Yet.)</h2>
+        <h2>Nothing to see here.</h2>
       </main>
     </div>
   )

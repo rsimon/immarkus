@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Braces, Spline, Tags } from 'lucide-react';
-import { useVocabulary } from '@/store';
+import { Cuboid, Spline, Tags } from 'lucide-react';
+import { EntityType, Tag } from '@/model';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
+import { EntityTypeEditor } from '../EntityTypeEditor';
 import {
   Command,
   CommandEmpty,
@@ -11,26 +13,24 @@ import {
   CommandList,
   CommandSeparator
 } from '@/ui/Command';
-import { EntityDetailsDialog } from '../EntityDetails';
-import { Entity, TextTag } from '@/model';
 
 interface AnnotationCommandProps {
 
-  onAddEntity(entity: Entity): void;
+  onAddEntityType(type: EntityType): void;
 
-  onAddTag(tag: TextTag): void;
+  onAddTag(tag: Tag): void;
 
 }
 
 export const AnnotationCommands = (props: AnnotationCommandProps) => {
 
-  const { vocabulary, addTag } = useVocabulary();
+  const { model, addTag } = useDataModel();
 
-  const { entities, relations, tags } = vocabulary;
+  const { entityTypes, tags } = model;
 
   const [value, setValue] = useState('');
 
-  const isEmpty = (entities.length + relations.length + tags.length) === 0 && !value;
+  const isEmpty = (entityTypes.length + tags.length) === 0 && !value;
 
   const onCreateNewTag = () => {
     addTag(value);
@@ -59,28 +59,14 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
                 No results
               </CommandEmpty>
 
-              {entities.length > 0 && (
+              {entityTypes.length > 0 && (
                 <CommandGroup heading="Entities">
-                  {entities.map(entity => (
-                    <CommandItem key={entity.id} onSelect={() => props.onAddEntity(entity)}>
-                      <Braces className="h-4 w-4 mr-2" /> {entity.label}
+                  {entityTypes.map(entity => (
+                    <CommandItem key={entity.id} onSelect={() => props.onAddEntityType(entity)}>
+                      <Cuboid className="h-4 w-4 mr-2" /> {entity.label}
                     </CommandItem>
                   ))}
                 </CommandGroup>
-              )}
-
-              {relations.length > 0 && (
-                <>
-                  <CommandSeparator />
-
-                  <CommandGroup heading="Relations">
-                    {relations.map(relation => (
-                      <CommandItem key={relation.id}>
-                        <Spline className="h-4 w-4 mr-2" /> {relation.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </>
               )}
 
               {tags.length > 0 || value && (
@@ -107,11 +93,11 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
         </CommandList>
 
         <div className="p-1 pt-1.5 border-t flex justify-end text-muted-foreground">
-          <EntityDetailsDialog>
+          <EntityTypeEditor>
             <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm mr-2">
-              <Braces className="h-3.5 w-3.5 mr-1" /> Create new entity
+              <Cuboid className="h-3.5 w-3.5 mr-1" /> Create new entity
             </Button>
-          </EntityDetailsDialog>
+          </EntityTypeEditor>
 
           <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm">
             <Spline className="h-3.5 w-3.5 mr-1" /> Create new relation

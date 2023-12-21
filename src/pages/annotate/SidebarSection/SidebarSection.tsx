@@ -29,15 +29,15 @@ export const SidebarSection = () => {
             <Separator orientation="vertical" className="h-4" />
 
             <Tabs.List className="flex gap-1.5 py-0.5 px-2">
-              <Tabs.Trigger value="selection" className="p-2 flex text-xs rounded-md hover:bg-muted">
+              <Tabs.Trigger value="selection" className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
                 <MousePointerSquare className="h-4 w-4 mr-1" /> Selection
               </Tabs.Trigger>
 
-              <Tabs.Trigger value="annotation-list" className="p-2 flex text-xs rounded-md hover:bg-muted">
+              <Tabs.Trigger value="annotation-list" className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
                 <MessagesSquare className="h-4 w-4 mr-1" /> List
               </Tabs.Trigger>
 
-              <Tabs.Trigger value="image-notes" className="p-2 flex text-xs rounded-md hover:bg-muted text-muted-foreground">
+              <Tabs.Trigger value="image-notes" className="p-2 flex items-center text-xs rounded-md hover:bg-muted text-muted-foreground">
                 <Image className="h-4 w-4 mr-1" /> Image Notes
               </Tabs.Trigger>
             </Tabs.List>

@@ -1,14 +1,10 @@
-import { NavigationSidebar } from '@/components/NavigationSidebar';
-import { useStore } from '@/store';
+import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 
 export const KnowledgeGraph = () => {
 
-  // Just put this here so we redirect if the store isn't loaded
-  useStore({ redirect: true });
-
   return (
     <div className="page-root">
-      <NavigationSidebar />
+      <AppNavigationSidebar />
 
       <main className="page graph">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Nothing to see here. (Yet.)</h1>

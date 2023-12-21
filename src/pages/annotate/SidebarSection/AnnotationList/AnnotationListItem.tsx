@@ -1,7 +1,7 @@
 import TimeAgo from 'timeago-react';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
-import { useVocabulary } from '@/store';
+import { useDataModel } from '@/store';
 import { AnnotationListItemActions } from './AnnotationListItemActions';
 
 interface AnnotationListItemProps {
@@ -16,7 +16,7 @@ interface AnnotationListItemProps {
 
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
-  const { getEntity } = useVocabulary();
+  const { getEntityType } = useDataModel();
 
   const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
 
@@ -41,7 +41,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           {tags.map(tag => (
             <li key={tag.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
               <EntityBadge 
-                entity={getEntity(tag.source)} />
+                entityType={getEntityType(tag.source)} />
             </li>
           ))}
         </ul>

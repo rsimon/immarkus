@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ImageAnnotation, createBody } from '@annotorious/react';
-import { Entity } from '@/model';
+import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { AnnotationCommands } from '@/components/AnnotationCommands';
@@ -40,7 +40,7 @@ export const CurrentSelection = () => {
       !commandsOpen && setCommandsOpen(true)
   }
 
-  const onAddEntity = (entity: Entity) => {
+  const onAddEntityType = (entity: EntityType) => {
     const body = createBody(selected, {
       type: 'Dataset',
       purpose: 'classifying',
@@ -86,7 +86,7 @@ export const CurrentSelection = () => {
       <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
         <DialogContent className="p-0 max-w-md rounded-lg">
           <AnnotationCommands 
-            onAddEntity={onAddEntity} 
+            onAddEntityType={onAddEntityType} 
             onAddTag={() => setCommandsOpen(false)} />
         </DialogContent>
       </Dialog>

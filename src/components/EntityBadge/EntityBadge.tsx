@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
-import { Entity } from '@/model';
-import { getForegroundColor } from '@/components/EntityDetails';
+import { Cuboid, X } from 'lucide-react';
+import { EntityType } from '@/model';
+import { getForegroundColor } from '@/utils/color';
 
 interface BadgeEntityProps {
 
-  entity?: Entity;
+  entityType?: EntityType;
 
   onDelete?(): void;
 
@@ -15,9 +15,9 @@ const DEFAULT_COLOR = '#c2c2c2';
 
 export const EntityBadge = (props: BadgeEntityProps) => {
 
-  const { entity } = props;
+  const { entityType } = props;
 
-  const backgroundColor = entity?.color || DEFAULT_COLOR;
+  const backgroundColor = entityType?.color || DEFAULT_COLOR;
 
   const [editable, setEditable] = useState(false);
 
@@ -29,7 +29,8 @@ export const EntityBadge = (props: BadgeEntityProps) => {
         backgroundColor,
         color: getForegroundColor(backgroundColor)
       }}>
-      {entity?.label || 'error'}
+
+      <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || 'error'}
 
       {editable && (
         <button 

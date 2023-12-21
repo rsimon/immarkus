@@ -1,0 +1,83 @@
+import { Cuboid } from 'lucide-react';
+import { getBrightness } from '@/utils/color';
+import { EntityTypeStub } from '../../EntityTypeStub';
+import { 
+  EnumField,
+  ExternalAuthorityField, 
+  GeoCoordinateField, 
+  NumberField, 
+  TextField, 
+  URIField 
+} from '@/components/PropertyFields';
+
+interface EntityPreviewProps {
+
+  entityType: EntityTypeStub;
+
+}
+
+export const EntityPreview = (props: EntityPreviewProps) => {
+
+  const { entityType } = props;
+
+  const brightness = getBrightness(entityType.color);
+
+  return (
+    <div className="bg-muted px-8 py-6 border-l">
+      <h2 className="mb-6">
+        Entity Preview
+      </h2>
+
+      <div className="flex">
+        <h3 
+          className="rounded-full pl-2.5 pr-3.5 py-1 flex items-center text-xs"
+          style={{ 
+            backgroundColor: entityType.color,
+            color: brightness > 0.5 ? '#000' : '#fff' 
+          }}>
+          <Cuboid className="inline h-3.5 w-3.5 mr-1.5" />
+          {entityType.label || entityType.id || 'Entity Preview'}
+        </h3>
+      </div>
+
+      {entityType.description && (
+        <p className="text-xs text-muted-foreground p-1 mt-1">
+          {entityType.description}
+        </p>
+      )}
+
+      <div className="mt-4">
+        {(entityType.properties || []).map(property => (
+          <div className="mt-1" key={property.name}>
+            {property.type === 'enum' ? (
+              <EnumField 
+                id={property.name}
+                definition={property} />
+            ) : property.type === 'external_authority' ? (
+              <ExternalAuthorityField 
+                id={property.name}
+                definition={property} />
+            ) : property.type === 'geocoordinate' ? (
+              <GeoCoordinateField 
+                id={property.name}
+                definition={property} />
+            ) : property.type === 'number' ? (
+              <NumberField 
+                id={property.name}
+                definition={property} />   
+            ) : property.type === 'text' ? (
+              <TextField 
+                id={property.name}
+                definition={property} />   
+            ) : property.type === 'uri' ? (
+              <URIField 
+                id={property.name}
+                definition={property} />   
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+}

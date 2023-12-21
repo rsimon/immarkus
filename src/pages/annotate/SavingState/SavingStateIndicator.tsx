@@ -37,7 +37,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
   }, [savingState]);
 
   return (
-    <div className="saving-state-indicator">
+    <div className="saving-state-indicator ml-1">
       {savingState.value === 'idle' ? (
         <Popover>
           <PopoverTrigger 
@@ -48,7 +48,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
 
           <PopoverContent 
             align="center"
-            className="text-xs flex gap-2 font-medium w-[200px] items-center 
+            className="text-xs flex gap-2 font-medium w-auto items-center px-3.5 py-2.5
             justify-center text-green-600">
             <FolderCheck className="h-4 w-4" />All annotations saved
           </PopoverContent>

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { ToolbarButton } from '../HeaderSection/ToolbarButton';
+import { ToolbarButton } from '../ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 import { useClickOutside } from './useClickoutside';
 
@@ -70,8 +70,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
       {isCompact ? (
         <button 
-          className="text-muted-foreground hover:text-black"
-          disabled={props.disabled}
+          className="text-muted-foreground hover:text-black disabled:text-muted-foreground/30"
+          disabled={props.disabled || images.length < 2}
           onClick={() => setShowThumbnails(show => !show)}>
           <span className="w-8 inline-block whitespace-nowrap">
             {currentIndex + 1} / {images.length}
@@ -79,7 +79,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
         </button>
       ) : (
         <ToolbarButton 
-          disabled={props.disabled}
+          disabled={props.disabled || images.length < 2}
           className="py-1 bg-muted disabled:bg-transparent hover:bg-slate-200"
           onClick={() => setShowThumbnails(show => !show)}>
           <span className="w-12 inline-block px-1.5 whitespace-nowrap">

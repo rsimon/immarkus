@@ -5,9 +5,9 @@ import {
   W3CAnnotationBody, 
   createBody
 } from '@annotorious/react';
-import { useVocabulary } from '@/store';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { EntitySchemaFields } from './EntitySchemaFields';
+import { EntityProperties } from './EntityProperties';
 import { createSafeKeys } from './PropertyKeys';
 import { CurrentSelectionNote } from './CurrentSelectionNote';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
@@ -24,13 +24,13 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const anno = useAnnotoriousManifold();
 
-  const { getEntity } = useVocabulary();
+  const { getEntityType } = useDataModel();
 
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = (annotation.bodies as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
-    .map(body => ({ body, entity: getEntity(body.source) }))
-    .filter(({ entity }) => entity?.schema?.length > 0);
+    .map(body => ({ body, entityType: getEntityType(body.source) }))
+    .filter(({ entityType }) => entityType?.properties?.length > 0);
 
   // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -38,8 +38,8 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   // All other bodies
   const otherBodies = annotation.bodies.filter(b => {
     if (b.purpose === 'classifying') {
-      const entity = getEntity((b as W3CAnnotationBody).source);
-      return (!entity?.schema || entity.schema.length === 0);
+      const entity = getEntityType((b as W3CAnnotationBody).source);
+      return (!entity?.properties || entity.properties.length === 0);
     } else {
       return b.purpose !== 'commenting';
     }
@@ -49,9 +49,9 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const noteKey = `${annotation.id}@note`;
 
-  const getInitialValues = () => schemaBodies.reduce((initialValues, { entity, body }) => ({
+  const getInitialValues = () => schemaBodies.reduce((initialValues, { entityType, body }) => ({
     ...initialValues,
-    ...Object.fromEntries(entity.schema!.map(property => ([
+    ...Object.fromEntries(entityType.properties!.map(property => ([
       safeKeys.getKey(body, property.name), 
       'properties' in body ? body.properties[property.name] : undefined 
     ]))),
@@ -102,9 +102,9 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   return schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
     <form className="mt-2 px-1" onSubmit={onSubmit}>
-      <EntitySchemaFields 
+      <EntityProperties 
         body={schemaBodies[0].body}
-        entity={schemaBodies[0].entity}
+        entityType={schemaBodies[0].entityType}
         safeKeys={safeKeys}
         values={formState} 
         onChange={onChange} />
@@ -118,15 +118,15 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
     </form>
   ) : (
     <form className="mt-2 px-1" onSubmit={onSubmit}>
-      {schemaBodies.map(({ body, entity }, idx) => (
+      {schemaBodies.map(({ body, entityType }) => (
         <div key={body.id} className="pb-4">
           <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
-            {entity.label}
+            {entityType.label}
           </h3>
 
-          <EntitySchemaFields
+          <EntityProperties
             body={body}
-            entity={entity}
+            entityType={entityType}
             safeKeys={safeKeys}
             values={formState}
             onChange={onChange} />

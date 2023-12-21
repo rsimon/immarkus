@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
-import { ThumbnailImage } from '@/components/ThumbnailImage';
+import { Thumbnail } from '@/components/Thumbnail';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import {
@@ -103,7 +103,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
                     ? 'block outline outline-2 outline-offset-2 rounded-sm outline-black' 
                     : 'block hover:outline outline-2 outline-offset-2 rounded-sm outline-black'}
                   onClick={() => onSelect(image)}>
-                  <ThumbnailImage 
+                  <Thumbnail 
                     image={image} 
                     delay={160} />
                 </button>

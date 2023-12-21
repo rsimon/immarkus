@@ -4,7 +4,7 @@ import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
-import { Tool, ToolMode } from '../HeaderSection';
+import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
 import { useDrawingStyles } from './useDrawingStyles';
 
