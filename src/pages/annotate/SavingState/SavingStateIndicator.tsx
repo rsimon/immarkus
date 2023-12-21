@@ -48,7 +48,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
 
           <PopoverContent 
             align="center"
-            className="text-xs flex gap-2 font-medium w-auto items-center px-4 py-3
+            className="text-xs flex gap-2 font-medium w-auto items-center px-3.5 py-2.5
             justify-center text-green-600">
             <FolderCheck className="h-4 w-4" />All annotations saved
           </PopoverContent>

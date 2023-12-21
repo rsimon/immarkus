@@ -22,8 +22,8 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@annotorious/react": "^3.0.0-rc.3",
-    "@annotorious/react-manifold": "^0.6.0",
+    "@annotorious/react": "^3.0.0-rc.8",
+    "@annotorious/react-manifold": "^0.8.0",
     "@annotorious/selector-pack": "^0.4.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
@@ -45,6 +45,7 @@
     "cmdk": "^0.2.0",
     "localforage": "^1.10.0",
     "lucide-react": "^0.280.0",
+    "openseadragon": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-mosaic-component": "^6.1.0",
