@@ -10,6 +10,7 @@ import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from './EntityPreview/EntityPreview';
 import { PropertyDefinitions } from './PropertyDefinitions/PropertyDefinitions';
 import { EntityTypeStub } from '../EntityTypeStub';
+import { ParentBrowser } from './ParentBrowser';
 
 export interface EditorProps {
 
@@ -21,12 +22,18 @@ export interface EditorProps {
 
 }
 
-const validate = (stub: EntityTypeStub): EntityType | undefined =>
-  stub.id ? stub as EntityType : undefined;
+
+interface ValidationErrors {
+
+  invalidId?: boolean;
+
+  invalidParent?: boolean;
+
+}
 
 export const Editor = (props: EditorProps) => {
 
-  const { model, addEntityType, updateEntityType } = useDataModel();
+  const { model, addEntityType, getEntityType, updateEntityType } = useDataModel();
 
   const { entityTypes } = model;
 
@@ -42,17 +49,31 @@ export const Editor = (props: EditorProps) => {
     // Not editing an existing entity - check if any exists with same ID
     : !entityTypes.find(e => e.id === entityType.id);
 
-  const [errors, setErrors] = useState<{ id: boolean } | undefined>();
+  const isValidParent = entityType.parentId 
+    ? Boolean(getEntityType(entityType.parentId)) && !(entityType.parentId === entityType.id)
+    : true;
+  
+  const [errors, setErrors] = useState<ValidationErrors | undefined>();
 
   const brightness = getBrightness(entityType.color);
 
   useEffect(() => {
-    if (errors)
-      setErrors({ id: !entityType.id || !isIdAvailable });
+    if (errors) {
+      setErrors({ 
+        invalidId: !entityType.id || !isIdAvailable,
+        invalidParent: entityType.parentId && !getEntityType(entityType.parentId)
+      });
+    }
   }, [entityType]);
 
+  const validate = (): EntityType | undefined => {
+    return entityType.id && isIdAvailable, isValidParent
+      ? entityType as EntityType
+      : undefined;
+  }
+
   const onSave = () => {
-    const valid = isIdAvailable && validate(entityType);
+    const valid = validate();
 
     if (valid) {
       if (props.entityType) { // Update existing
@@ -65,7 +86,10 @@ export const Editor = (props: EditorProps) => {
           .catch(props.onSaveError);
       }
     } else {
-      setErrors({ id: !entityType.id || !isIdAvailable });
+      setErrors({ 
+        invalidId: !entityType.id || !isIdAvailable,
+        invalidParent: !isValidParent
+      });
     }
   }
 
@@ -79,12 +103,12 @@ export const Editor = (props: EditorProps) => {
               className="inline-block text-xs mb-1.5 ml-0.5">Entity Class *
             </Label>
             
-            {errors?.id && (<span className="text-xs text-red-600 ml-1">required</span>)}
+            {errors?.invalidId && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
             <Input 
               disabled={Boolean(props.entityType)}
               id="identifier"
-              className={errors?.id ? "h-9 border-red-500" : "h-9"} 
+              className={errors?.invalidId ? "h-9 border-red-500" : "h-9"} 
               value={entityType.id || ''} 
               onChange={evt => setEntityType(e => ({...e, id: evt.target.value}))}/>
 
@@ -131,11 +155,26 @@ export const Editor = (props: EditorProps) => {
             className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
           </Label>
 
-          <Input
+          <ParentBrowser
             id="parent"
+            className={errors?.invalidParent ? "border-red-500" : undefined} 
             value={entityType.parentId || ''}
-            onChange={evt => setEntityType(e => ({ ...e, parentId: evt.target.value }))}
-            className="h-9" />
+            onChange={parentId => setEntityType(e => ({ ...e, parentId }))} />
+
+          {entityType.parentId && (isValidParent ? (
+            <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
+              <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is available
+            </span>
+          ) : (
+            <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
+              <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
+                {entityType.parentId === entityType.id ? (
+                  <>{entityType.id} cannot be its own parent</>
+                ) : (
+                  <>No Entity Class called {entityType.parentId}</>
+                )}
+            </span>
+          ))}
         </div>
         
         <div className="mt-3">
