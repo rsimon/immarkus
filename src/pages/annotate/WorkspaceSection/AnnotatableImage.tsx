@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { OpenSeadragon } from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, W3CImageFormat } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
