@@ -32,7 +32,16 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const onSaved = () => setSavingState({ value: 'success' });
 
-  const options = useMemo(() => ({
+  const onError = (error: Error) => {
+    console.error(error);
+
+    setSavingState({
+      value: 'failed',
+      message: `Could not save the last annotation. Error: ${error.message}`
+    });
+  }
+
+  const options: OpenSeadragon.Options = useMemo(() => ({
     tileSources: {
       type: 'image',
       url: URL.createObjectURL(props.image.data)
@@ -44,15 +53,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     crossOriginPolicy: 'Anonymous',
     maxZoomLevel: 1000
   }), [props.image.id]);
-
-  const onError = (error: Error) => {
-    console.error(error);
-
-    setSavingState({
-      value: 'failed',
-      message: `Could not save the last annotation. Error: ${error.message}`
-    });
-  }
   
   return (
     <Annotorious id={props.image.id}>

@@ -22,9 +22,9 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@annotorious/react": "^3.0.0-rc.9",
-    "@annotorious/react-manifold": "^0.9.0",
-    "@annotorious/selector-pack": "^0.5.0",
+    "@annotorious/react": "^3.0.0-rc.15",
+    "@annotorious/react-manifold": "^0.12.0",
+    "@annotorious/selector-pack": "^0.6.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
