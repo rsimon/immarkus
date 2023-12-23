@@ -11,13 +11,22 @@ export const colorByEntityType = (
   if (firstEntityBody) {
     const entityType = model.entityTypes.find(e => e.id === firstEntityBody.source);
     return entityType ? { 
-      fill: entityType.color as Color
+      fill: entityType.color as Color,
+      stroke: entityType.color as Color,
+      strokeOpacity: 1,
+      strokeWidth: 1
     } : {
-      fill: '#000000'
+      fill: '#000000',
+      stroke: '#000000',
+      strokeOpacity: 1,
+      strokeWidth: 1
     };
   } else {
     return {
-      fill: '#000000'
+      fill: '#000000',
+      stroke: '#000000',
+      strokeOpacity: 1,
+      strokeWidth: 1
     }
   }
 
