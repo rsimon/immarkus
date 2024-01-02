@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), splitVendorChunkPlugin()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
+      '@': path.resolve(__dirname, './src')
     }
   }
 })
