@@ -161,12 +161,12 @@ export const Editor = (props: EditorProps) => {
             value={entityType.parentId || ''}
             onChange={parentId => setEntityType(e => ({ ...e, parentId }))} />
 
-          {entityType.parentId && (isValidParent ? (
+          {entityType.parentId && entityType.parentId !== props.entityType?.parentId && (isValidParent ? (
             <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
               <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is available
             </span>
           ) : (
-            <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
+            <span className="flex items-center text-xs mt-2 text-red-600 whitespace-nowrap">
               <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
                 {entityType.parentId === entityType.id ? (
                   <>{entityType.id} cannot be its own parent</>

@@ -1,5 +1,6 @@
 import type { EntityType, Tag } from '@/model';
 import { DataModel } from './DataModel';
+import { createEntityTypeIndex } from './DataModelIndex';
 import { readJSONFile, writeJSONFile } from './utils';
 
 export interface DataModelStore {
@@ -9,6 +10,8 @@ export interface DataModelStore {
   addEntityType(type: EntityType): Promise<void>;
 
   updateEntityType(type: EntityType): Promise<void>;
+
+  searchEntityTypes(query: string): EntityType[];
 
   removeEntityType(typeOrId: EntityType | string): Promise<void>;
 
@@ -34,7 +37,12 @@ export const loadDataModel = (handle: FileSystemDirectoryHandle): Promise<DataMo
 
     });
 
-    const save = () => writeJSONFile(fileHandle, { entityTypes, tags });
+    let index = createEntityTypeIndex(entityTypes);
+
+    const save = () => {
+      index = createEntityTypeIndex(entityTypes);
+      return writeJSONFile(fileHandle, { entityTypes, tags });
+    }
 
     const getDataModel = () => ({ entityTypes, tags });
 
@@ -55,6 +63,8 @@ export const loadDataModel = (handle: FileSystemDirectoryHandle): Promise<DataMo
         return Promise.reject(`Attempt to update entity ${type.id} but does not exist in store`);
       }
     }
+
+    const searchEntityTypes = (query: string) => index.searchEntityTypes(query);
 
     const removeEntityType = (typeOrId: EntityType | string) => {
       const id = typeof typeOrId === 'string' ? typeOrId : typeOrId.id;
@@ -80,6 +90,7 @@ export const loadDataModel = (handle: FileSystemDirectoryHandle): Promise<DataMo
       getDataModel,
       addEntityType,
       updateEntityType,
+      searchEntityTypes,
       removeEntityType,
       addTag,
       removeTag
