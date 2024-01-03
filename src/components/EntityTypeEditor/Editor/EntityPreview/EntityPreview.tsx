@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
+import { PropertyDefinition } from '@/model';
+import { useStore } from '@/store';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
@@ -20,7 +23,20 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const { entityType } = props;
 
+  const store = useStore();
+
   const brightness = getBrightness(entityType.color);
+
+  const inheritedProps: PropertyDefinition[] = useMemo(() => {
+    if (entityType.parentId) {
+      const inherited = store.getEntityType(entityType.parentId, true)?.properties;
+      return (inherited || []);
+    } else {
+      return [];
+    }
+  }, [entityType.parentId]);
+
+  const properties = [...inheritedProps, ...(entityType.properties || [])];
 
   return (
     <div className="bg-muted px-8 py-6 border-l">
@@ -47,7 +63,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       )}
 
       <div className="mt-4">
-        {(entityType.properties || []).map(property => (
+        {properties.map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
               <EnumField 

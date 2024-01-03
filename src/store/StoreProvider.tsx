@@ -108,8 +108,8 @@ export const useDataModel = () => {
   const removeEntityType = (typeOrId: EntityType | string) =>
     setAsync(store.removeEntityType(typeOrId));
 
-  const getEntityType = (id: string) => 
-    model.entityTypes.find(e => e.id === id);
+  const getEntityType = (id: string, inheritProps: boolean = true) => 
+    store.getEntityType(id, inheritProps);
 
   const addTag = (tag: Tag) =>
     setAsync(store.addTag(tag));
