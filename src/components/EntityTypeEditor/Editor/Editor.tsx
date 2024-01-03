@@ -209,7 +209,7 @@ export const Editor = (props: EditorProps) => {
         </div>
 
         <Button className="w-full mt-7 mb-3" onClick={onSave}>
-          <Cuboid className="w-5 h-5 mr-2" /> Save Entity
+          <Cuboid className="w-5 h-5 mr-2" /> Save Entity Class
         </Button>
       </div>
 

@@ -1,8 +1,7 @@
 import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
-import { Label } from '@/ui/Label';
-import { InheritedFrom } from '../InheritedFrom';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface TextFieldProps {
 
@@ -31,25 +30,18 @@ export const TextField = (props: TextFieldProps) => {
     : undefined;
 
   return (
-    <div className="mb-5">
-      <div className="flex justify-between pr-1.5">
-        <div>
-          <Label
-            htmlFor={id}
-            className="text-xs block mt-3 mb-1.5 ml-0.5">
-            {definition.name}
-          </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
-        </div>
-
-        <InheritedFrom definition={definition} />
-      </div>
+    <BasePropertyField 
+      id={id}
+      definition={definition}
+      error={!isValid && 'required'}>
 
       <Input 
         id={id} 
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
         value={value} 
         onChange={onChange} />
-    </div>
+
+    </BasePropertyField>
   )
 
 }

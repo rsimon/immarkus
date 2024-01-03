@@ -3,6 +3,7 @@ import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
+import { InheritedFrom } from '../InheritedFrom';
 
 interface ExternalAuthorityFieldProps {
 
@@ -36,16 +37,24 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     setTimeout(() => input.current.focus(), 1);
 
   return (
-    <div className="mb-5">
-      <div className="mt-3 mb-1 ml-0.5 mr-0.5 flex justify-between items-center">
-        <Label htmlFor={id} className="text-xs">
-          {definition.name}
-          {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
-        </Label>  
+    <div className="mb-3">
+      <div className="ml-0.5 mr-0.5 flex justify-between items-center">
+        <div className="flex-shrink-0">
+          <Label htmlFor={id} className="text-xs">
+            {definition.name}
+            {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+          </Label> 
+        </div> 
           
-        <ExternalAuthoritySelector 
-          definition={props.definition} 
-          onCloseDialog={onCloseDialog} />   
+        <div className="pr-1 flex">
+          <ExternalAuthoritySelector 
+            definition={props.definition} 
+            onCloseDialog={onCloseDialog} />  
+
+          <div className="flex relative -top-[1px]">
+          <InheritedFrom definition={definition} />
+          </div>
+        </div> 
       </div> 
 
       <Input

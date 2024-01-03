@@ -1,6 +1,7 @@
+import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
-import { Label } from '@/ui/Label';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface URIFieldProps {
 
@@ -18,7 +19,9 @@ interface URIFieldProps {
 
 export const URIField = (props: URIFieldProps) => {
 
-  const { id, definition, value, validate, onChange } = props;
+  const { id, definition, validate } = props;
+
+  const value = props.onChange ? props.value || '' : props.value;
 
   const isValidURL = (str: string) => {
     let url: URL;
@@ -29,29 +32,31 @@ export const URIField = (props: URIFieldProps) => {
       return false;  
     }
   
-    return url.protocol === "http:" || url.protocol === "https:";
+    return url.protocol === 'http:' || url.protocol === 'https:';
   }
 
   const isValid = !validate || isValidURL(value);
 
+  const error = definition.required && !value ? 
+    'required' : !isValid && 'msut be a URI';
+
+  const onChange = props.onChange 
+    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
+    : undefined;
+
   return (
-    <div className="mb-5">
-      <Label 
-        htmlFor={id}
-        className="text-xs block mt-3 mb-1.5 ml-0.5">
-        {definition.name}
-      </Label> {definition.required && !value ? (
-        <span className="text-xs text-red-600 ml-1">required</span>
-      ) : !isValid && (
-        <span className="text-xs text-red-600 ml-1">must be a URI</span>
-      )}
+    <BasePropertyField
+      id={id}
+      definition={definition}
+      error={error}>
 
       <Input 
         id={id} 
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
-        value={value || ''} 
-        onChange={evt => onChange(evt.target.value)} />
-    </div>
+        value={value} 
+        onChange={onChange} />
+
+    </BasePropertyField>
   )
 
 }
