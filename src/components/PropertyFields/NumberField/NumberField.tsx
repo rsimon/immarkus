@@ -1,7 +1,6 @@
+import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
-import { Label } from '@/ui/Label';
-import { InheritedFrom } from '../InheritedFrom';
 import { BasePropertyField } from '../BasePropertyField';
 
 interface NumberFieldProps {
@@ -20,7 +19,13 @@ interface NumberFieldProps {
 
 export const NumberField = (props: NumberFieldProps) => {
 
-  const { id, definition, value, validate, onChange } = props;
+  const { id, definition, validate } = props;
+
+  const value = props.onChange ? props.value || '' : props.value;
+
+  const onChange = props.onChange 
+    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(parseFloat(evt.target.value)) 
+    : undefined;
 
   const isValid = !validate || !isNaN(parseFloat(value));
 
@@ -35,9 +40,9 @@ export const NumberField = (props: NumberFieldProps) => {
 
       <Input 
         id={id} 
-        className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
-        value={value || ''} 
-        onChange={evt => onChange(parseFloat(evt.target.value))} />
+        className={isValid ? "mt-0.5" : "h-8 mt-0.5 border-red-500"} 
+        value={value} 
+        onChange={onChange} />
         
     </BasePropertyField>
   )

@@ -12,6 +12,7 @@ import {
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
+import { Separator } from '@/ui/Separator';
 
 interface EntityPreviewProps {
 
@@ -46,11 +47,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         Entity Preview
       </h2>
 
-      <p className="text-left text-xs leading-relaxed mt-1 mb-8">
-       This is how your properties will appear when editing an entity in the annotation interface.
+      <p className="text-left text-xs leading-relaxed text-muted-foreground mt-1 mb-8">
+        This is how your properties will appear when editing an entity in the annotation interface.
       </p>
 
-      <div className="flex">
+      <div className="flex mb-1">
         <h3 
           className="rounded-full pl-2.5 pr-3.5 py-1 flex items-center text-xs"
           style={{ 
@@ -62,13 +63,19 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         </h3>
       </div>
 
-      {entityType.description && (
-        <p className="text-xs text-muted-foreground p-1 mt-1">
-          {entityType.description}
-        </p>
+      {entityType.description ? (
+        <>
+          <p className="text-xs text-muted-foreground p-1 mt-1.5">
+            {entityType.description}
+          </p>
+
+          <Separator className="mt-1.5 mb-3 bg-slate-300/50" />
+        </>
+      ) : (
+        <Separator className="mt-3 mb-3 bg-slate-300/50" />
       )}
 
-      <div className="mt-4">
+      <div>
         {properties.map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (

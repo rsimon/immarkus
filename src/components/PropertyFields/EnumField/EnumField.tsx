@@ -40,7 +40,7 @@ export const EnumField = (props: EnumFieldProps) => {
         value={value}
         onValueChange={props.onChange}>
         
-        <SelectTrigger className="w-full h-8 mt-0.5">
+        <SelectTrigger className="w-full mt-0.5">
           <SelectValue />
         </SelectTrigger>
 

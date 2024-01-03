@@ -37,16 +37,16 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     setTimeout(() => input.current.focus(), 1);
 
   return (
-    <div className="mb-3">
+    <div className="mb-6">
       <div className="ml-0.5 mr-0.5 flex justify-between items-center">
         <div className="flex-shrink-0">
-          <Label htmlFor={id} className="text-xs">
+          <Label htmlFor={id} className="text-xs text-muted-foreground">
             {definition.name}
             {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
           </Label> 
         </div> 
           
-        <div className="pr-1 flex">
+        <div className="pr-1 flex text-muted-foreground">
           <ExternalAuthoritySelector 
             definition={props.definition} 
             onCloseDialog={onCloseDialog} />  
@@ -60,7 +60,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
       <Input
         ref={input}
         id={id} 
-        className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
+        className={isValid ? "mt-0.5" : "mt-0.5 border-red-500"} 
         value={value} 
         onChange={onChange} />
     </div>
