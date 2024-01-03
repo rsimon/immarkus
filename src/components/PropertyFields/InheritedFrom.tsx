@@ -24,7 +24,8 @@ export const InheritedFrom = (props: InheritedFromProps) => {
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger 
-          className="rounded-sm w-6 h-6 relative ml-1 top-[1px] inline-flex justify-center items-center focus-visible:bg-slate-200 focus-visible:outline-none">
+          tabIndex={-1}
+          className="rounded-sm w-6 h-6 relative ml-1 -top-[1px] inline-flex justify-center items-center focus-visible:bg-slate-200 focus-visible:outline-none">
           <Replace className="h-5 w-5 p-0.5 relative text-muted-foreground" />
         </TooltipTrigger>
 

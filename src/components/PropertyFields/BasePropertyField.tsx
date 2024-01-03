@@ -18,12 +18,12 @@ interface BasePropertyFieldProps {
 export const BasePropertyField = (props: BasePropertyFieldProps) => {
 
   return (
-    <div className="mb-3">
+    <div className="mb-8">
       <div className="flex justify-between pr-1">
         <div className="flex-shrink-0">
           <Label
             htmlFor={props.id}
-            className="text-xs inline-block mb-0.5 ml-0.5">
+            className="text-xs inline-block mb-0.5 ml-0.5 text-muted-foreground">
             {props.definition.name}
           </Label> {!props.error && (<span className="text-xs text-red-600 ml-1">{props.error}</span>)}
         </div>
