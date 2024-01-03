@@ -27,7 +27,7 @@ export const AddOption = (props: AddOptionProps) => {
   return (
     <>
       <Input 
-        className="col-span-5"
+        className="col-span-5 bg-white shadow-none"
         value={value} 
         onChange={evt => setValue(evt.target.value)} 
         onKeyDown={onKeyDown} />

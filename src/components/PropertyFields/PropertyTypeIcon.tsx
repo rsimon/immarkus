@@ -17,25 +17,25 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
   const className = props.className || '';
 
   return ( 
-    <div className="inline-block">
+    <div className="inline">
       {type === 'text' ? (
         <CaseSensitive 
-          className={cn('inline w-4.5 h-5 mt-[1px]', className)} />
+          className={cn('w-4.5 h-5 mt-[1px]', className)} />
       ) : type === 'number' ? (
         <Hash 
-          className={cn('inline w-4.5 h-3.5 px-0.5', className)} />
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'enum' ? (
         <List 
-          className={cn('inline w-4.5 h-3.5 px-0.5', className)} />
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'uri' ? (
         <Link2 
-          className={cn('inline w-4.5 h-3.5 px-0.5', className)} />
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'geocoordinate' ? (
         <MapPin 
-          className={cn('inline w-4.5 h-3.5 px-0.5', className)} />
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'external_authority' && (
         <Database
-          className={cn('inline w-4.5 h-3.5 -mt-[2px] px-0.5', className)} />
+          className={cn('w-4.5 h-3.5 -mt-[2px] px-0.5', className)} />
       )}
     </div>
   )

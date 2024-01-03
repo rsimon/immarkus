@@ -108,7 +108,7 @@ export const Editor = (props: EditorProps) => {
             <Input 
               disabled={Boolean(props.entityType)}
               id="identifier"
-              className={errors?.invalidId ? 'border-red-500' : undefined} 
+              className={errors?.invalidId ? 'bg-white border-red-500' : 'bg-white'} 
               value={entityType.id || ''} 
               onChange={evt => setEntityType(e => ({...e, id: evt.target.value}))}/>
 
@@ -142,14 +142,14 @@ export const Editor = (props: EditorProps) => {
 
               <Input 
                 id="color"
-                className="col-span-3" 
+                className="col-span-3 bg-white" 
                 value={entityType.color} 
                 onChange={evt => setEntityType(e => ({...e, color: evt.target.value }))}/>
             </div>
           </div>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-6">
           <Label 
             htmlFor="parent"
             className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
@@ -157,7 +157,7 @@ export const Editor = (props: EditorProps) => {
 
           <ParentBrowser
             id="parent"
-            className={errors?.invalidParent ? "border-red-500" : undefined} 
+            className={errors?.invalidParent ? 'border-red-500 bg-white' : 'bg-white'} 
             value={entityType.parentId || ''}
             onChange={parentId => setEntityType(e => ({ ...e, parentId }))} />
 
@@ -177,7 +177,7 @@ export const Editor = (props: EditorProps) => {
           )}
         </div>
         
-        <div className="mt-3">
+        <div className="mt-6">
           <Label 
             htmlFor="label"
             className="inline-block text-xs mb-1.5 ml-0.5">Display Name
@@ -185,17 +185,19 @@ export const Editor = (props: EditorProps) => {
 
           <Input
             id="label"
+            className="bg-white"
             value={entityType.label || ''}
             onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))} />
         </div>
 
-        <div className="mt-3">
+        <div className="mt-6">
           <Label 
             htmlFor="description"
             className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
 
           <Textarea 
             id="description"
+            className="bg-white"
             rows={3} 
             value={entityType.description || ''} 
             onChange={evt => setEntityType(e => ({ ...e, description: evt.target.value }))} />

@@ -2,11 +2,13 @@ import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
-import { PropertyTypeIcon } from '../PropertyTypeIcon';
+import { cn } from '@/ui/utils';
 
 interface TextFieldProps {
 
   id: string;
+
+  className?: string;
 
   definition: PropertyDefinition;
 
@@ -30,6 +32,8 @@ export const TextField = (props: TextFieldProps) => {
 
   const isValid = !(validate && definition.required && !value);
 
+  const className = cn(props.className, (isValid ? 'mt-0.5' :  "mt-0.5 border-red-500"))
+
   return (
     <BasePropertyField 
       id={id}
@@ -38,7 +42,7 @@ export const TextField = (props: TextFieldProps) => {
 
       <Input 
         id={id} 
-        className={isValid ? "mt-0.5" : "mt-0.5 border-red-500"} 
+        className={className} 
         value={value} 
         onChange={onChange} />
 

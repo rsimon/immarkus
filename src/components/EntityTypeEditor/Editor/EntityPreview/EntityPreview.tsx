@@ -81,26 +81,32 @@ export const EntityPreview = (props: EntityPreviewProps) => {
             {property.type === 'enum' ? (
               <EnumField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />
             ) : property.type === 'external_authority' ? (
               <ExternalAuthorityField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />
             ) : property.type === 'geocoordinate' ? (
               <GeoCoordinateField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />
             ) : property.type === 'number' ? (
               <NumberField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />   
             ) : property.type === 'text' ? (
               <TextField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />   
             ) : property.type === 'uri' ? (
               <URIField 
                 id={property.name}
+                className="bg-white" 
                 definition={property} />   
             ) : null}
           </div>

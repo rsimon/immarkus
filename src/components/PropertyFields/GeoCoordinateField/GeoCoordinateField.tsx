@@ -3,10 +3,13 @@ import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { BasePropertyField } from '../BasePropertyField';
+import { cn } from '@/ui/utils';
 
 interface GeoCoordinateFieldProps {
 
   id: string;
+
+  className?: string;
 
   definition: PropertyDefinition;
 
@@ -43,6 +46,8 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
   const error = definition.required && !value 
     ? 'required' : !isValid && 'must be a valid geo-coordinate';
 
+  const className = isValid ? props.className : cn(props.className, 'border-red-500');
+
   return (
     <BasePropertyField
       id={id}
@@ -57,7 +62,7 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
         <Input 
           id={id} 
-          className={isValid ? "h-8" : "h-8 border-red-500"} 
+          className={className} 
           value={lonLat[1] || ''} 
           onChange={evt => setLonLat(([lon, _]) => ([lon, parseInput(evt)]))} />
 
@@ -68,7 +73,7 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
         <Input 
           id={id} 
-          className={isValid ? "h-8" : "h-8 border-red-500"} 
+          className={className} 
           value={lonLat[0] || ''} 
           onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
       </div>

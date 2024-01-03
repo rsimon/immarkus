@@ -4,10 +4,13 @@ import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 import { InheritedFrom } from '../InheritedFrom';
+import { cn } from '@/ui/utils';
 
 interface ExternalAuthorityFieldProps {
 
   id: string;
+
+  className?: string;
 
   definition: ExternalAuthorityPropertyDefinition;
 
@@ -36,9 +39,11 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const onCloseDialog = () =>
     setTimeout(() => input.current.focus(), 1);
 
+  const className = cn(props.className, (isValid ? 'mt-0.5' : 'mt-0.5 border-red-500'));
+
   return (
     <div className="mb-6">
-      <div className="ml-0.5 mr-0.5 flex justify-between items-center">
+      <div className="ml-0.5 flex justify-between items-center">
         <div className="flex-shrink-0">
           <Label htmlFor={id} className="text-xs text-muted-foreground">
             {definition.name}
@@ -46,13 +51,13 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           </Label> 
         </div> 
           
-        <div className="pr-1 flex text-muted-foreground">
-          <ExternalAuthoritySelector 
+        <div className="flex text-muted-foreground">
+          <ExternalAuthoritySelector
             definition={props.definition} 
             onCloseDialog={onCloseDialog} />  
 
           <div className="flex relative -top-[1px]">
-          <InheritedFrom definition={definition} />
+            <InheritedFrom definition={definition} />
           </div>
         </div> 
       </div> 
@@ -60,9 +65,15 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
       <Input
         ref={input}
         id={id} 
-        className={isValid ? "mt-0.5" : "mt-0.5 border-red-500"} 
+        className={className} 
         value={value} 
         onChange={onChange} />
+
+      {definition.description && (
+        <p className="text-muted-foreground mt-1.5 text-[12px] px-0.5">
+          {definition.description}
+        </p>
+      )}
     </div>
   )
 

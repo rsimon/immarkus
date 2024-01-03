@@ -71,10 +71,11 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     key={p.name} 
                     className="flex text-xs w-full justify-between items-center
                       bg-muted-foreground/10 pl-3 pr-2 py-1.5 rounded-sm mb-1.5">
+                    
                     <div className="flex align-middle">
                       <PropertyTypeIcon 
                         definition={p} 
-                        className="mr-2" /> 
+                        className="mr-2 inline" /> 
                       
                       <div className="relative top-[1px]">{p.name}</div>
                     </div>

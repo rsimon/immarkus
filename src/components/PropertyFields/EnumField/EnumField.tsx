@@ -1,4 +1,5 @@
 import { EnumPropertyDefinition } from '@/model';
+import { BasePropertyField } from '../BasePropertyField';
 import { 
   Select, 
   SelectContent, 
@@ -6,11 +7,13 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
-import { BasePropertyField } from '../BasePropertyField';
+import { cn } from '@/ui/utils';
 
 interface EnumFieldProps {
 
   id: string;
+
+  className?: string;
 
   definition: EnumPropertyDefinition;
 
@@ -40,7 +43,7 @@ export const EnumField = (props: EnumFieldProps) => {
         value={value}
         onValueChange={props.onChange}>
         
-        <SelectTrigger className="w-full mt-0.5">
+        <SelectTrigger className={cn(props.className, 'w-full mt-0.5')}>
           <SelectValue />
         </SelectTrigger>
 

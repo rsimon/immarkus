@@ -2,10 +2,13 @@ import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
+import { cn } from '@/ui/utils';
 
 interface NumberFieldProps {
 
   id: string;
+
+  className?: string;
 
   definition: PropertyDefinition;
 
@@ -32,6 +35,8 @@ export const NumberField = (props: NumberFieldProps) => {
   const error = definition.required && !value ?
     'required' : !isValid && 'must be a number';
 
+  const className = cn(props.className, (isValid ? 'mt-0.5' : 'mt-0.5 border-red-500'));
+
   return (
     <BasePropertyField
       id={id}
@@ -40,7 +45,7 @@ export const NumberField = (props: NumberFieldProps) => {
 
       <Input 
         id={id} 
-        className={isValid ? "mt-0.5" : "h-8 mt-0.5 border-red-500"} 
+        className={className} 
         value={value} 
         onChange={onChange} />
         

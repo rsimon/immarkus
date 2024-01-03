@@ -1,12 +1,12 @@
 import { PropertyDefinition } from '@/model';
 import { Replace } from 'lucide-react';
+import { useStore } from '@/store';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
-import { useStore } from '@/store';
 
 interface InheritedFromProps {
 

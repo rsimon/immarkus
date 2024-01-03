@@ -6,6 +6,7 @@ import {
   ExternalAuthorityField,
   GeoCoordinateField, 
   NumberField, 
+  PropertyTypeIcon, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -41,38 +42,38 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
           {preview.type === 'enum' ? (
             <EnumField 
               id={preview.name}
+              className="bg-white"
               definition={preview as EnumPropertyDefinition} />
           ) : preview.type === 'external_authority' ? (
             <ExternalAuthorityField 
               id={preview.name}
+              className="bg-white"
               definition={preview} />
           ) : preview.type === 'geocoordinate' ? (
             <GeoCoordinateField 
               id={preview.name}
+              className="bg-white"
               definition={preview} />
           ) : preview.type === 'number' ? (
             <NumberField 
               id={preview.name}
+              className="bg-white"
               definition={preview} />   
           ) : preview.type === 'text' ? (
             <TextField 
               id={preview.name}
+              className="bg-white"
               definition={preview} />   
           ) : preview.type === 'uri' ? (
             <URIField 
               id={preview.name}
+              className="bg-white"
               definition={preview} />   
           ) : (
             <Label 
               className="text-xs block mt-3 mb-1.5">
               {preview.name}
             </Label>
-          )}
-
-          {preview.description && (
-            <p className="text-xs text-muted-foreground mt-2">
-              {preview.description}
-            </p>
           )}
         </div>
       )}

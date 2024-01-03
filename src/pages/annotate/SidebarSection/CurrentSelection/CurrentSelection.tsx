@@ -9,6 +9,7 @@ import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
 import { CurrentSelectionTagList } from './CurrentSelectionTagList';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
+import { Separator } from '@/ui/Separator';
 
 export const CurrentSelection = () => {
 
@@ -77,6 +78,8 @@ export const CurrentSelection = () => {
           <CurrentSelectionTagList 
             annotation={selected} 
             onAddTag={() => setCommandsOpen(true)} />
+          
+          <Separator className="mb-4" />
 
           <CurrentSelectionMetadata
             annotation={selected} />

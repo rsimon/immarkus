@@ -63,9 +63,9 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
             </button>       
 
             <SelectTrigger
-              className="text-black border-none -ml-0.5 pr-1.5 pl-0.5 py-1 bg-transparent hover:bg-slate-200 focus:outline-none focus:ring-0 
+              className="text-black flex border-none -ml-0.5 pr-1.5 pl-0.5 py-1 bg-transparent hover:bg-slate-200 focus:outline-none focus:ring-0 
                 focus:ring-ring focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-2 
-                focus-visible:ring-ring focus-visible:ring-offset-2"/>
+                focus-visible:ring-ring focus-visible:ring-offset-2 h-auto"/>
           </div>
           
           <SelectContent
