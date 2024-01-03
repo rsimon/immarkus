@@ -23,6 +23,10 @@ export const URIField = (props: URIFieldProps) => {
 
   const value = props.onChange ? props.value || '' : props.value;
 
+  const onChange = props.onChange 
+    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
+    : undefined;
+
   const isValidURL = (str: string) => {
     let url: URL;
   
@@ -40,10 +44,6 @@ export const URIField = (props: URIFieldProps) => {
   const error = definition.required && !value ? 
     'required' : !isValid && 'msut be a URI';
 
-  const onChange = props.onChange 
-    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
-    : undefined;
-
   return (
     <BasePropertyField
       id={id}
@@ -52,7 +52,7 @@ export const URIField = (props: URIFieldProps) => {
 
       <Input 
         id={id} 
-        className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
+        className={isValid ? "mt-0.5" : "mt-0.5 border-red-500"} 
         value={value} 
         onChange={onChange} />
 

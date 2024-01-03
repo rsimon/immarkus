@@ -4,3 +4,4 @@ export * from './GeoCoordinateField';
 export * from './NumberField';
 export * from './TextField';
 export * from './URIField';
+export * from './PropertyTypeIcon';

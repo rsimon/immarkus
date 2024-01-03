@@ -108,7 +108,7 @@ export const Editor = (props: EditorProps) => {
             <Input 
               disabled={Boolean(props.entityType)}
               id="identifier"
-              className={errors?.invalidId ? "h-9 border-red-500" : "h-9"} 
+              className={errors?.invalidId ? 'border-red-500' : undefined} 
               value={entityType.id || ''} 
               onChange={evt => setEntityType(e => ({...e, id: evt.target.value}))}/>
 
@@ -128,10 +128,10 @@ export const Editor = (props: EditorProps) => {
               htmlFor="color"
               className="inline-block text-xs mb-1.5 ml-0.5">Color</Label>
 
-            <div className="grid gap-2 grid-cols-4">
+            <div className="grid gap-5 grid-cols-4">
               <Button 
                 size="icon" 
-                className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
+                className={brightness < 0.9 ? 'h-10 w-10' : 'h-10 w-10 border shadow-sm'}
                 style={{ 
                   backgroundColor: entityType.color,
                   color: brightness > 0.5 ? '#000' : '#fff' 
@@ -142,7 +142,7 @@ export const Editor = (props: EditorProps) => {
 
               <Input 
                 id="color"
-                className="col-span-3 h-9" 
+                className="col-span-3" 
                 value={entityType.color} 
                 onChange={evt => setEntityType(e => ({...e, color: evt.target.value }))}/>
             </div>
@@ -186,8 +186,7 @@ export const Editor = (props: EditorProps) => {
           <Input
             id="label"
             value={entityType.label || ''}
-            onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))}
-            className="h-9" />
+            onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))} />
         </div>
 
         <div className="mt-3">

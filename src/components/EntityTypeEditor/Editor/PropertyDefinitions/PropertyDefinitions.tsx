@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { PropertyTypeIcon } from '@/components/PropertyFields';
 
 
 interface PropertyDefinitionsProps {
@@ -70,29 +71,12 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     key={p.name} 
                     className="flex text-xs w-full justify-between items-center
                       bg-muted-foreground/10 pl-3 pr-2 py-1.5 rounded-sm mb-1.5">
-                    <div className="flex">
-                      <div>
-                        {p.type === 'text' ? (
-                          <CaseSensitive 
-                            className="inline w-5 h-5 mr-2 -mt-[1px]" />
-                        ) : p.type === 'number' ? (
-                          <Hash 
-                            className="inline w-3.5 h-3.5 mr-3" />
-                        ) : p.type === 'enum' ? (
-                          <List 
-                            className="inline w-3.5 h-3.5 mr-3" />
-                        ) : p.type === 'uri' ? (
-                          <Link2 
-                            className="inline w-3.5 h-3.5 mr-3" />
-                        ) : p.type === 'geocoordinate' ? (
-                          <MapPin 
-                            className="inline w-3.5 h-3.5 mr-3" />
-                        ) : p.type === 'external_authority' && (
-                          <Database
-                            className="inline w-3.5 h-3.5 mr-3 -mt-[2px]" />
-                        )}
-                      </div>
-                      {p.name}
+                    <div className="flex align-middle">
+                      <PropertyTypeIcon 
+                        definition={p} 
+                        className="mr-2" /> 
+                      
+                      <div className="relative top-[1px]">{p.name}</div>
                     </div>
 
                     <PropertyDefinitionActions 
