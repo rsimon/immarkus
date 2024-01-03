@@ -1,6 +1,7 @@
 import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
+import { PropertyTypeIcon } from '@/components/PropertyTypeIcon';
 import { PropertyDefinitionActions } from './PropertyDefinitionActions';
 import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
 import { moveArrayItem } from './moveArrayItem';
@@ -10,8 +11,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { PropertyTypeIcon } from '@/components/PropertyFields';
-
 
 interface PropertyDefinitionsProps {
 

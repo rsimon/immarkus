@@ -20,7 +20,7 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
     <div className="inline">
       {type === 'text' ? (
         <CaseSensitive 
-          className={cn('w-4.5 h-5 mt-[1px]', className)} />
+          className={cn('w-4.5 h-5 relative top-[1px]', className)} />
       ) : type === 'number' ? (
         <Hash 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />

@@ -55,7 +55,7 @@ export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
         </DialogTrigger>
       )}
 
-      <DialogContent className="p-0 max-w-3xl max-h-[94vh] overflow-y-auto rounded-lg">
+      <DialogContent className="p-0 max-w-4xl max-h-[94vh] overflow-y-auto rounded-lg">
         <Editor 
           entityType={props.entityType}
           onSaved={() => onOpenChange(false)} 

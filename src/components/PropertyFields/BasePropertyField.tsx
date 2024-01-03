@@ -1,8 +1,8 @@
+import { ReactNode } from 'react';
+import { Info } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InheritedFrom } from './InheritedFrom';
-import { ReactNode } from 'react';
-import { PropertyTypeIcon } from './PropertyTypeIcon';
 import {
   Tooltip,
   TooltipContent,
@@ -26,53 +26,38 @@ export const BasePropertyField = (props: BasePropertyFieldProps) => {
 
   const { definition } = props;
 
-  const tooltip = 
-    definition.type === 'enum' ? 'Options' : 
-    definition.type === 'external_authority' ? 'External Authority' :
-    definition.type === 'geocoordinate' ? 'Geo-Coordinate' :
-    definition.type === 'measurement' ? 'Measurement' :
-    definition.type === 'number' ? 'Number' :
-    definition.type === 'text' ? 'Text' :
-    definition.type === 'uri' ? 'URI' : undefined;
-
   return (
     <div className="mb-8">
-      <div className="flex items-end justify-between pr-1 mb-1 text-muted-foreground">
-        <div className="flex items-center">
+      <div className="flex items-end justify-between pr-1 mb-1.5">
+        <div className="flex">
           <Label
             htmlFor={props.id}
-            className="text-xs inline-block ml-0.5 ">
+            className="text-sm inline-block ml-0.5 ">
             {definition.name}
           </Label>
 
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger 
-                tabIndex={-1}>
-                <PropertyTypeIcon 
-                  definition={definition} 
-                  className="text-slate-400 ml-0.5" />
-              </TooltipTrigger>
+          {definition.description && (
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger 
+                  tabIndex={-1}>
+                  <Info className="h-3.5 w-3.5 ml-1.5 text-muted-foreground hover:text-black" />
+                </TooltipTrigger>
 
-              <TooltipContent>
-                {tooltip}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                <TooltipContent>
+                  {definition.description}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
 
           {!props.error && (<span className="text-xs text-red-600 ml-1">{props.error}</span>)}
         </div>
-
+        
         <InheritedFrom definition={definition} />
       </div>
 
       {props.children}
-
-      {definition.description && (
-        <p className="text-muted-foreground mt-1.5 text-[12px] px-0.5">
-          {definition.description}
-        </p>
-      )}
     </div>
   )
 

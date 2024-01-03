@@ -42,12 +42,12 @@ export const EntityPreview = (props: EntityPreviewProps) => {
   const properties = [...inheritedProps, ...(entityType.properties || [])];
 
   return (
-    <div className="bg-muted px-8 py-6 border-l">
+    <div className="bg-muted px-12 py-6 border-l">
       <h2>
         Entity Preview
       </h2>
 
-      <p className="text-left text-xs leading-relaxed text-muted-foreground mt-1 mb-8">
+      <p className="text-left text-xs leading-relaxed text-muted-foreground mt-1 mb-6">
         This is how your properties will appear when editing an entity in the annotation interface.
       </p>
 
@@ -69,10 +69,10 @@ export const EntityPreview = (props: EntityPreviewProps) => {
             {entityType.description}
           </p>
 
-          <Separator className="mt-1.5 mb-3 bg-slate-300/50" />
+          <Separator className="mt-3 mb-5 bg-slate-300/50" />
         </>
       ) : (
-        <Separator className="mt-3 mb-3 bg-slate-300/50" />
+        <Separator className="mt-5 mb-5 bg-slate-300/50" />
       )}
 
       <div>

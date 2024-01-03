@@ -6,7 +6,6 @@ import {
   ExternalAuthorityField,
   GeoCoordinateField, 
   NumberField, 
-  PropertyTypeIcon, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
