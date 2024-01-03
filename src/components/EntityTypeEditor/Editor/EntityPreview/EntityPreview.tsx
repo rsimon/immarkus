@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
+import { PropertyDefinition } from '@/model';
+import { useStore } from '@/store';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
@@ -20,13 +23,32 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const { entityType } = props;
 
+  const { parentId } = entityType;
+
+  const store = useStore();
+
   const brightness = getBrightness(entityType.color);
+
+  const inheritedProps: PropertyDefinition[] = useMemo(() => {
+    if (parentId) {
+      const inherited = store.getEntityType(parentId, true)?.properties;
+      return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
+    } else {
+      return [];
+    }
+  }, [parentId]);
+
+  const properties = [...inheritedProps, ...(entityType.properties || [])];
 
   return (
     <div className="bg-muted px-8 py-6 border-l">
-      <h2 className="mb-6">
+      <h2>
         Entity Preview
       </h2>
+
+      <p className="text-left text-xs leading-relaxed mt-1 mb-8">
+       This is how your properties will appear when editing an entity in the annotation interface.
+      </p>
 
       <div className="flex">
         <h3 
@@ -47,7 +69,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       )}
 
       <div className="mt-4">
-        {(entityType.properties || []).map(property => (
+        {properties.map(property => (
           <div className="mt-1" key={property.name}>
             {property.type === 'enum' ? (
               <EnumField 

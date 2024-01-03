@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface GeoCoordinateFieldProps {
 
@@ -39,17 +40,15 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
   const isValid = !validate || isValidCoordinate();
 
-  return (
-    <div className="mb-5">
-      <Label
-        className="text-xs block mb-2.5">
-        {definition.name}
-      </Label> {definition.required && !value ? (
-        <span className="text-xs text-red-600 ml-1">required</span>
-      ) : !isValid && (
-        <span className="text-xs text-red-600 ml-1">must be valid coordinates</span>
-      )}
+  const error = definition.required && !value 
+    ? 'required' : !isValid && 'must be a valid geo-coordinate';
 
+  return (
+    <BasePropertyField
+      id={id}
+      definition={definition}
+      error={error}>
+      
       <div className="flex flex-row gap-2 items-center">
         <Label
           className="text-xs">
@@ -73,7 +72,7 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
           value={lonLat[0] || ''} 
           onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
       </div>
-    </div>
+    </BasePropertyField>
   )
 
 }

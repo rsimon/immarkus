@@ -1,6 +1,8 @@
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { InheritedFrom } from '../InheritedFrom';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface NumberFieldProps {
 
@@ -22,24 +24,22 @@ export const NumberField = (props: NumberFieldProps) => {
 
   const isValid = !validate || !isNaN(parseFloat(value));
 
+  const error = definition.required && !value ?
+    'required' : !isValid && 'must be a number';
+
   return (
-    <div className="mb-5">
-      <Label 
-        htmlFor={id}
-        className="text-xs block mt-3 mb-1.5 ml-0.5">
-        {definition.name} 
-      </Label> {definition.required && !value ? (
-        <span className="text-xs text-red-600 ml-1">required</span>
-      ) : !isValid && (
-        <span className="text-xs text-red-600 ml-1">must be a number</span>
-      )}
+    <BasePropertyField
+      id={id}
+      definition={definition}
+      error={error}>
 
       <Input 
         id={id} 
         className={isValid ? "h-8 mt-0.5" : "h-8 mt-0.5 border-red-500"} 
         value={value || ''} 
         onChange={evt => onChange(parseFloat(evt.target.value))} />
-    </div>
+        
+    </BasePropertyField>
   )
 
 }

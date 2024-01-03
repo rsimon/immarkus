@@ -1,5 +1,4 @@
 import { EnumPropertyDefinition } from '@/model';
-import { Label } from '@/ui/Label';
 import { 
   Select, 
   SelectContent, 
@@ -7,6 +6,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface EnumFieldProps {
 
@@ -28,13 +28,13 @@ export const EnumField = (props: EnumFieldProps) => {
 
   const isValid = !validate || !definition.required || value;
 
+  const error = !isValid && 'required';
+
   return (
-    <div className="mb-5">
-      <Label 
-        htmlFor={id}
-        className="text-xs block mt-3 mb-1.5 ml-0.5">
-        {definition.name}
-      </Label> {!isValid && (<span className="text-xs text-red-600 ml-1">required</span>)}
+    <BasePropertyField
+      id={id}
+      definition={definition}
+      error={error}>
 
       <Select 
         value={value}
@@ -52,7 +52,8 @@ export const EnumField = (props: EnumFieldProps) => {
           ))}
         </SelectContent>
       </Select>
-    </div>
+
+    </BasePropertyField>
   )
 
 }
