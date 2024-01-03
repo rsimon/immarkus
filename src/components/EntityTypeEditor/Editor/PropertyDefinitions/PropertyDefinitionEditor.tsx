@@ -60,7 +60,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
             <Input 
               id="name" 
-              className="h-9"
+              className="bg-white"
               value={edited.name || ''} 
               onChange={evt => setEdited(prop => ({ ...prop, name: evt.target.value }))} />
           </div>
@@ -75,7 +75,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <Select
               value={edited.type}
               onValueChange={t => setEdited(prop => ({ ...prop, type: t as PropertyDefinition['type']}))}>
-              <SelectTrigger className="w-full h-9">
+              <SelectTrigger className="w-full bg-white">
                 <SelectValue />
               </SelectTrigger>
 
@@ -119,6 +119,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
             <Textarea 
               id="description"
+              className="bg-white"
               rows={3} 
               value={edited.description || ''} 
               onChange={evt => setEdited(prop => ({ ...prop, description: evt.target.value }))} />
