@@ -52,18 +52,18 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
           onValueChange={onOpen}>
           <div 
             role="button"
-            className="flex items-center text-xs rounded-md hover:bg-muted">
+            className="flex items-center text-xs rounded-md">
             
             <button 
               onClick={() => onOpen(value)}
-              className="text-xs flex items-center hover:bg-slate-200 px-1.5 py-1 pr-1.5 rounded font-medium
+              className="text-[12px] flex items-center hover:bg-muted px-1.5 py-1 pr-1.5 rounded
                 focus:outline-none focus:ring-0 focus:ring-ring focus:ring-offset-0 focus-visible:outline-none 
                 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0">
               <Search className="h-3.5 w-3.5 mr-1" /> <SelectValue className="pr-0" />
             </button>       
 
             <SelectTrigger
-              className="text-black flex border-none -ml-0.5 pr-1.5 pl-0.5 py-1 bg-transparent hover:bg-slate-200 focus:outline-none focus:ring-0 
+              className="text-black flex border-none -ml-0.5 pr-1 pl-0 py-1 bg-transparent hover:bg-muted focus:outline-none focus:ring-0 
                 focus:ring-ring focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-2 
                 focus-visible:ring-ring focus-visible:ring-offset-2 h-auto"/>
           </div>
