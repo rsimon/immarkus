@@ -78,7 +78,10 @@ export const loadDataModel = (
       const parent = entityTypes.find(e => e.id === type.parentId);
       if (parent) {
         if (parent.properties) {
-          return [...parent.properties, ...(properties || [])];
+          return [
+            ...parent.properties.map(p => ({ ...p, inheritedFrom: parent.id })), 
+            ...(properties || [])
+          ];
         } else {
           return properties;
         }

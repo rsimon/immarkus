@@ -23,18 +23,20 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const { entityType } = props;
 
+  const { parentId } = entityType;
+
   const store = useStore();
 
   const brightness = getBrightness(entityType.color);
 
   const inheritedProps: PropertyDefinition[] = useMemo(() => {
-    if (entityType.parentId) {
-      const inherited = store.getEntityType(entityType.parentId, true)?.properties;
-      return (inherited || []);
+    if (parentId) {
+      const inherited = store.getEntityType(parentId, true)?.properties;
+      return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
     } else {
       return [];
     }
-  }, [entityType.parentId]);
+  }, [parentId]);
 
   const properties = [...inheritedProps, ...(entityType.properties || [])];
 
