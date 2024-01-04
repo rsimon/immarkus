@@ -43,7 +43,7 @@ export const SidebarSection = () => {
             </Tabs.List>
           </section>
 
-          <section className="sidebar-content bg-white flex flex-grow border-l overflow-y-scroll">
+          <section className="sidebar-content bg-white flex flex-grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
                 className="flex flex-grow text-sm justify-center items-center w-full p-3 px-4">

@@ -63,7 +63,7 @@ export const AnnotationCommands = (props: AnnotationCommandProps) => {
                 <CommandGroup heading="Entities">
                   {entityTypes.map(entity => (
                     <CommandItem key={entity.id} onSelect={() => props.onAddEntityType(entity)}>
-                      <Cuboid className="h-4 w-4 mr-2" /> {entity.label}
+                      <Cuboid className="h-4 w-4 mr-2" /> {entity.label || entity.id}
                     </CommandItem>
                   ))}
                 </CommandGroup>
