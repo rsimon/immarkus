@@ -6,6 +6,8 @@ interface AutosuggestProps<T extends { id: string }> {
 
   id?: string;
 
+  tabIndex?: number;
+
   className?: string;
 
   value: string;
@@ -58,6 +60,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
         className: 'relative'
       }}
       inputProps={{
+        tabIndex: props.tabIndex,
         className: inputClass,
         value: props.value,
         onChange: (_, { newValue }) => props.onChange(newValue)

@@ -94,7 +94,8 @@ export const Editor = (props: EditorProps) => {
   }
 
   return (
-    <article className="grid grid-cols-2 rounded-lg overflow-hidden">
+    <article
+      className="grid grid-cols-2 rounded-lg overflow-hidden">
       <div className="px-8 py-3">
         <div className="grid grid-cols-2 gap-2 mt-2 mb-1">
           <div>
@@ -128,7 +129,7 @@ export const Editor = (props: EditorProps) => {
               htmlFor="color"
               className="inline-block text-xs mb-1.5 ml-0.5">Color</Label>
 
-            <div className="grid gap-3 grid-cols-4">
+            <div className="grid grid-cols-4">
               <Button 
                 size="icon" 
                 className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}

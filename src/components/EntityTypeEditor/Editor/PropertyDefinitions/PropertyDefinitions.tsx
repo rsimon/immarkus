@@ -43,7 +43,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
       className="w-full bg-muted rounded-md p-0">
       <AccordionItem value="properties" className="border-none">
         <AccordionTrigger 
-          className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 p-3 m-0 hover:no-underline">
+          className="rounded-md p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
             <h3 className="text-xs">
               {properties.length === 0 

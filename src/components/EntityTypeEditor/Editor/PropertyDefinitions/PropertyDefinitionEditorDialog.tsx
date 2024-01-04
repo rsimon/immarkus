@@ -1,12 +1,9 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { PropertyDefinitionEditor } from './PropertyDefinitionEditor';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger
 } from '@/ui/Dialog';
 
@@ -15,6 +12,8 @@ interface PropertyEditorDialogProps {
   property?: PropertyDefinition
 
   onSave(definition: PropertyDefinition): void;
+
+  onClose?(): void;
 
   children: ReactNode;
 
@@ -27,10 +26,20 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
   const onUpdate = (property: PropertyDefinition) => {
     props.onSave(property);
     setOpen(false);
+
+    if (props.onClose)
+      props.onClose();  
+  }
+
+  const onOpenStateChange = (open: boolean) => {
+    setOpen(open);
+    
+    if (!open && props.onClose)
+      props.onClose();  
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenStateChange}>
       <DialogTrigger asChild>
         {props.children}
       </DialogTrigger>

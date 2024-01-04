@@ -126,7 +126,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           </div>
 
           <div className="mt-5 mb-3 sm:justify-start">
-            <Button type="button" onClick={onSubmit}>Save</Button>
+            <Button type="button" onClick={onSubmit}>Save Property</Button>
           </div>
         </form>
       </div>

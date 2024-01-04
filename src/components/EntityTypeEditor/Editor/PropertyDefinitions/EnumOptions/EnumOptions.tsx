@@ -44,7 +44,7 @@ export const EnumOptions = (props: EnumOptionsProps) => {
 
                 <Button 
                   onClick={() => onRemoveOption(option)}
-                  className="align-middle w-6 h-6"
+                  className="align-middle w-5 h-5 my-0.5"
                   variant="ghost"
                   type="button"
                   size="icon">
