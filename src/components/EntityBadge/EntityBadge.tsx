@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Cuboid, X } from 'lucide-react';
 import { EntityType } from '@/model';
 import { getForegroundColor } from '@/utils/color';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/ui/Tooltip';
 
 interface BadgeEntityProps {
 
@@ -21,7 +27,7 @@ export const EntityBadge = (props: BadgeEntityProps) => {
 
   const [editable, setEditable] = useState(false);
 
-  return (
+  const badge = (
     <span 
       onClick={props.onDelete ? () => setEditable(editable => !editable) : undefined}
       className="rounded-full px-2.5 py-1 inline-flex items-center text-xs h-6 cursor-pointer"
@@ -41,5 +47,19 @@ export const EntityBadge = (props: BadgeEntityProps) => {
       )}
     </span>
   )
+
+  return entityType.description ? (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger tabIndex={-1}>
+          {badge}
+        </TooltipTrigger>
+
+        <TooltipContent>
+          {entityType.description}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ) : badge;
 
 }

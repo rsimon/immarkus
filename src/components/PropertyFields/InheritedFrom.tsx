@@ -33,7 +33,7 @@ export const InheritedFrom = (props: InheritedFromProps) => {
           align="end" 
           alignOffset={-10}
           sideOffset={-6}>
-          <span className="text-muted-foreground">Inherited from</span> <span>{inheritedFrom.label || inheritedFrom.id}</span>
+          <span className="text-white/70">Inherited from</span> <span>{inheritedFrom.label || inheritedFrom.id}</span>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

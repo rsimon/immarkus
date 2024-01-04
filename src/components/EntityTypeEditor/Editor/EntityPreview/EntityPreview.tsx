@@ -47,7 +47,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         Entity Preview
       </h2>
 
-      <p className="text-left text-xs leading-relaxed text-muted-foreground mt-1 mb-6">
+      <p className="text-left text-xs leading-relaxed mt-1 mb-6">
         This is how your properties will appear when editing an entity in the annotation interface.
       </p>
 
