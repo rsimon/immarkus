@@ -20,7 +20,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
 
-  const tags: W3CAnnotationBody[] = props.annotation.bodies.filter(b => b.purpose === 'classifying');
+  const tags: W3CAnnotationBody[] = 
+    props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
   const isEmpty = !note && tags.length === 0;
 

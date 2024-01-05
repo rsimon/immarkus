@@ -27,7 +27,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   const { getEntityType } = useDataModel();
 
   // Annotation bodies with purpose 'classifying' that have schemas
-  const schemaBodies = (annotation.bodies as W3CAnnotationBody[])
+  const schemaBodies = (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
     .map(body => ({ body, entityType: getEntityType(body.source) }))
     .filter(({ entityType }) => entityType?.properties?.length > 0);
@@ -38,7 +38,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   // All other bodies
   const otherBodies = annotation.bodies.filter(b => {
     if (b.purpose === 'classifying') {
-      const entity = getEntityType((b as W3CAnnotationBody).source);
+      const entity = getEntityType((b as unknown as W3CAnnotationBody).source);
       return (!entity?.properties || entity.properties.length === 0);
     } else {
       return b.purpose !== 'commenting';
@@ -81,7 +81,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
           return properties;
       }, {});
 
-      return { annotation: props.annotation.id, ...body, properties } as AnnotationBody;
+      return { annotation: props.annotation.id, ...body, properties } as unknown as AnnotationBody;
     });
 
     const noteBody: AnnotationBody = formState[noteKey] && createBody(annotation, {

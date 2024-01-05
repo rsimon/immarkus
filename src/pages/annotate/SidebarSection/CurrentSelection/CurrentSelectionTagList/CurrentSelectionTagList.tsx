@@ -21,10 +21,10 @@ export const CurrentSelectionTagList = (props: CurrentSelectionTagListProps) => 
 
   const { getEntityType } = useDataModel();
 
-  const tags: W3CAnnotationBody[] = bodies.filter(b => b.purpose === 'classifying');
+  const tags = bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
   const onDeleteBody = (body: W3CAnnotationBody) =>
-    anno.deleteBody(body as AnnotationBody);
+    anno.deleteBody(body as unknown as AnnotationBody);
 
   return (
     <ul className="flex flex-wrap py-1 pl-1 mb-4 items-center">

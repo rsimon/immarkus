@@ -6,8 +6,8 @@ export const colorByEntityType = (
   model: DataModel
 ) => (annotation: ImageAnnotation): DrawingStyle => {
 
-  const firstEntityBody: W3CAnnotationBody =
-    annotation.bodies.find(b => b.purpose === 'classifying');
+  const firstEntityBody =
+    annotation.bodies.find(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody;
 
   if (firstEntityBody) {
     const entityType = model.entityTypes.find(e => e.id === firstEntityBody.source);
