@@ -33,16 +33,11 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
     fn();
   }
 
-  const onUpdated = (updated: PropertyDefinition) => {
-    setOpen(false);
-    props.onUpdateProperty(updated);
-  }
-
   return (
-    <DropdownMenu open={open}>
+    <DropdownMenu open={open} onOpenChange={open => open && setOpen(true)}>
       <DropdownMenuTrigger asChild>
         <Button 
-          onClick={() => setOpen(!open)}
+  
           variant="ghost" 
           size="icon" 
           className="h-5 w-5 text-muted-foreground hover:text-black rounded-full">
@@ -51,8 +46,7 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        onEscapeKeyDown={() => setOpen(false)}
-        onPointerDownOutside={() =>setOpen(false)}>
+        onEscapeKeyDown={() => setOpen(false)}>
         <DropdownMenuItem className="text-xs" onSelect={andClose(props.onMoveUp)}>
           <ArrowUp className="h-4 w-4 mr-2 text-muted-foreground" /> Move up
         </DropdownMenuItem>
@@ -63,7 +57,8 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
 
         <PropertyEditorDialog
           property={props.property}
-          onSave={onUpdated}>
+          onSave={props.onUpdateProperty}
+          onClose={() => setOpen(false)}>
 
           <DropdownMenuItem className="text-xs">
             <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit

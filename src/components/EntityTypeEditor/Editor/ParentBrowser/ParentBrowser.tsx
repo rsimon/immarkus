@@ -6,6 +6,8 @@ interface ParentBrowserProps {
 
   id?: string;
 
+  tabIndex?: number;
+
   className?: string;
 
   value?: string;
@@ -32,6 +34,7 @@ export const ParentBrowser = (props: ParentBrowserProps) => {
   return (
     <Autosuggest 
       id={props.id}
+      tabIndex={props.tabIndex}
       className={props.className}
       value={props.value}
       onChange={props.onChange}

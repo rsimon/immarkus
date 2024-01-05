@@ -6,6 +6,8 @@ interface AutosuggestProps<T extends { id: string }> {
 
   id?: string;
 
+  tabIndex?: number;
+
   className?: string;
 
   value: string;
@@ -26,7 +28,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
     setSuggestions(props.getSuggestions(value));
 
   const inputClass = cn(
-    'flex h-9 w-full rounded-md shadow-sm border border-input bg-muted px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+    'flex h-9 w-full rounded-md shadow-sm border border-input bg-muted px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
     props.className
   );
 
@@ -58,6 +60,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
         className: 'relative'
       }}
       inputProps={{
+        tabIndex: props.tabIndex,
         className: inputClass,
         value: props.value,
         onChange: (_, { newValue }) => props.onChange(newValue)
