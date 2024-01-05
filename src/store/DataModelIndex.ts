@@ -11,8 +11,8 @@ export const createEntityTypeIndex = (entityTypes: EntityType[]): EntityTypeInde
 
   const fuse = new Fuse<EntityType>(entityTypes, { keys: [ 'id', 'label', 'description' ]})
 
-  const searchEntityTypes = (query: string) =>
-    fuse.search(query).map(r => r.item);
+  const searchEntityTypes = (query: string, limit?: number) =>
+    fuse.search(query, { limit: limit || 10 }).map(r => r.item);
 
   return { searchEntityTypes }
 

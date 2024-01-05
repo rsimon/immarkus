@@ -95,9 +95,9 @@ export const Editor = (props: EditorProps) => {
 
   return (
     <article
-      className="grid grid-cols-2 rounded-lg overflow-hidden">
+      className="grid grid-cols-2 rounded-lg">
       <div className="px-8 py-3">
-        <div className="grid grid-cols-2 gap-2 mt-2 mb-1">
+        <div className="grid grid-cols-2 gap-3 mt-2 mb-1">
           <div>
             <Label 
               htmlFor="identifier"
