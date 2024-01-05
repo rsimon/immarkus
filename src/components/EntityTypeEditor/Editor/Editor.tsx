@@ -149,6 +149,19 @@ export const Editor = (props: EditorProps) => {
             </div>
           </div>
         </div>
+        
+        <div className="mt-6">
+          <Label 
+            htmlFor="label"
+            className="inline-block text-xs mb-1.5 ml-0.5">Display Name
+          </Label>
+
+          <Input
+            id="label"
+            className="bg-white"
+            value={entityType.label || ''}
+            onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))} />
+        </div>
 
         <div className="mt-6">
           <Label 
@@ -176,19 +189,6 @@ export const Editor = (props: EditorProps) => {
               <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is a valid parent
             </span>
           )}
-        </div>
-        
-        <div className="mt-6">
-          <Label 
-            htmlFor="label"
-            className="inline-block text-xs mb-1.5 ml-0.5">Display Name
-          </Label>
-
-          <Input
-            id="label"
-            className="bg-white"
-            value={entityType.label || ''}
-            onChange={evt => setEntityType(e => ({ ...e, label: evt.target.value }))} />
         </div>
 
         <div className="mt-6">
