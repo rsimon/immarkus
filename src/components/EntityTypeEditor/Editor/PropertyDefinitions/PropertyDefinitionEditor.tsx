@@ -55,7 +55,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <Label 
               htmlFor="name"
               className="inline-block text-xs mb-1.5 ml-0.5">
-              Name
+              Property Name
             </Label>
 
             <Input 
