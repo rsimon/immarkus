@@ -1,5 +1,5 @@
 import { Autosuggest } from '@/ui/Autosuggest';
-import { useStore } from '@/store';
+import { useDataModel } from '@/store';
 import { EntityType } from '@/model';
 
 interface ParentBrowserProps {
@@ -18,10 +18,10 @@ interface ParentBrowserProps {
 
 export const ParentBrowser = (props: ParentBrowserProps) => {
 
-  const store = useStore();
+  const model = useDataModel();
 
   const getSuggestions = (query: string) => 
-    store.searchEntityTypes(query);
+    model.searchEntityTypes(query);
 
   const renderSuggestion = (type: EntityType) => (
     type.label ? (

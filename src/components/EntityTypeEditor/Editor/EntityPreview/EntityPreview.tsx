@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
 import { PropertyDefinition } from '@/model';
-import { useStore } from '@/store';
+import { useDataModel } from '@/store';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
@@ -26,13 +26,13 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const { parentId } = entityType;
 
-  const store = useStore();
+  const model = useDataModel();
 
   const brightness = getBrightness(entityType.color);
 
   const inheritedProps: PropertyDefinition[] = useMemo(() => {
     if (parentId) {
-      const inherited = store.getEntityType(parentId, true)?.properties;
+      const inherited = model.getEntityType(parentId, true)?.properties;
       return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
     } else {
       return [];

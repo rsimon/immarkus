@@ -1,7 +1,6 @@
 import { Cuboid, Folder, Image } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
-import { useStore } from '@/store';
 import { EntityTypes} from './EntityTypes';
 import { ImageMetadata } from './ImageMetadata';
 import { FolderMetadata } from './FolderMetadata';

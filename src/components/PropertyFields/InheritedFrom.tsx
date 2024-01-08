@@ -1,6 +1,6 @@
 import { PropertyDefinition } from '@/model';
 import { Replace } from 'lucide-react';
-import { useStore } from '@/store';
+import { useDataModel } from '@/store';
 import {
   Tooltip,
   TooltipContent,
@@ -16,9 +16,9 @@ interface InheritedFromProps {
 
 export const InheritedFrom = (props: InheritedFromProps) => {
 
-  const store = useStore();
+  const model = useDataModel();
 
-  const inheritedFrom = store.getEntityType(props.definition.inheritedFrom, false);
+  const inheritedFrom = model.getEntityType(props.definition.inheritedFrom, false);
 
   return inheritedFrom && (
     <TooltipProvider delayDuration={200}>

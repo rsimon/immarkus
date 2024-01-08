@@ -1,9 +1,9 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from './utils';
-import { loadDataModel, DataModelStore } from './DataModelStore';
+import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 
-export interface Store extends DataModelStore {
+export interface Store {
 
   // @deprecated
   images: Image[];
@@ -13,6 +13,8 @@ export interface Store extends DataModelStore {
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
   getAnnotations(imageId: string): Promise<W3CAnnotation[]>;
+
+  getDataModel(): DataModelStore;
 
   getFolder(folderId: string | FileSystemDirectoryHandle): Folder;
 
@@ -78,37 +80,9 @@ export const loadStore = (
 
   const { images, folders } = await loadDirectory(rootDir);
 
-  const vocabulary = await loadDataModel(rootDir);
+  const datamodel = await loadDataModel(rootDir);
 
   const cachedAnnotations = new Map<string, W3CAnnotation[]>();
-
-  const getAnnotations = (
-    imageId: string
-  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
-    const cached = cachedAnnotations.get(imageId);
-    if (cached) {
-      resolve(cached);
-    } else {
-      const image = images.find(i => i.id === imageId);
-      if (image) {
-        const fileHandle = await getAnnotationsFile(image);
-        const file = await fileHandle.getFile();
-
-        readJSONFile<W3CAnnotation[]>(file)
-          .then(data => {
-            const annotations = data || [];
-            cachedAnnotations.set(imageId, annotations);
-            resolve(annotations);
-          })
-          .catch(() => {
-            cachedAnnotations.set(imageId, []);
-            resolve([]);
-          });
-      } else {
-        reject(Error(`Image ${imageId} not found`));
-      }
-    }
-  });
 
   const countAnnotations = (
     imageId: string, withSelectorOnly = true
@@ -138,6 +112,36 @@ export const loadStore = (
       reject(Error(`Image ${imageId} not found`));
     }
   });
+
+  const getAnnotations = (
+    imageId: string
+  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
+    const cached = cachedAnnotations.get(imageId);
+    if (cached) {
+      resolve(cached);
+    } else {
+      const image = images.find(i => i.id === imageId);
+      if (image) {
+        const fileHandle = await getAnnotationsFile(image);
+        const file = await fileHandle.getFile();
+
+        readJSONFile<W3CAnnotation[]>(file)
+          .then(data => {
+            const annotations = data || [];
+            cachedAnnotations.set(imageId, annotations);
+            resolve(annotations);
+          })
+          .catch(() => {
+            cachedAnnotations.set(imageId, []);
+            resolve([]);
+          });
+      } else {
+        reject(Error(`Image ${imageId} not found`));
+      }
+    }
+  });
+
+  const getDataModel = () => datamodel;
 
   const getFolder = (arg: string | FileSystemDirectoryHandle) =>
     typeof arg === 'string' 
@@ -200,13 +204,14 @@ export const loadStore = (
     countAnnotations,
     deleteAnnotation,
     getAnnotations,
+    getDataModel,
     getFolder,
     getFolderContents,
     getImage,
     getRootFolder,
     loadImage,
     upsertAnnotation,
-    ...vocabulary
+
   });
 
 });

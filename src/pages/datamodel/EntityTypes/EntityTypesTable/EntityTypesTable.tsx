@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
@@ -21,7 +22,7 @@ interface EntityTypesTableProps {
 
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
-  const { model } =  useDataModel();
+  const model = useDataModel();
 
   return (
     <div className="rounded-md border mt-6">

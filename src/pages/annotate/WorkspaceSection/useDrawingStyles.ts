@@ -36,7 +36,7 @@ export const colorByEntityType = (
 
 export const useDrawingStyles = () => {
 
-  const { model } = useDataModel();
+  const model = useDataModel();
 
   return {
     colorByEntity: colorByEntityType(model)

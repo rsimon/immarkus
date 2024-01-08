@@ -33,7 +33,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
   );
 
   const containerClass = 
-    'react-autosuggest__suggestions-container absolute mt-1.5 w-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg'
+    'react-autosuggest__suggestions-container absolute mt-1.5 w-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
 
   const suggestionClass =
     'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground';
