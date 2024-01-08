@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';

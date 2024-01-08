@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Cuboid, X } from 'lucide-react';
 import { EntityType } from '@/model';
-import { getForegroundColor } from '@/utils/color';
+import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
 import {
   Tooltip,
   TooltipContent,
@@ -16,8 +16,6 @@ interface BadgeEntityProps {
   onDelete?(): void;
 
 }
-
-const DEFAULT_COLOR = '#c2c2c2';
 
 export const EntityBadge = (props: BadgeEntityProps) => {
 

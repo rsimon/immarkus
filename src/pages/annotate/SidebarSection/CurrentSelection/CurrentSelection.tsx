@@ -86,11 +86,12 @@ export const CurrentSelection = () => {
         </div>
       )}
 
-      <Dialog open={commandsOpen} onOpenChange={setCommandsOpen}>
+      <Dialog 
+        open={commandsOpen} 
+        onOpenChange={setCommandsOpen}>
         <DialogContent className="p-0 max-w-md rounded-lg">
           <AnnotationCommands 
-            onAddEntityType={onAddEntityType} 
-            onAddTag={() => setCommandsOpen(false)} />
+            onAddEntityType={onAddEntityType} />
         </DialogContent>
       </Dialog>
   
