@@ -3,6 +3,7 @@ import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
+import { InfoTooltip } from '../InfoTooltip';
 import { InheritedFrom } from '../InheritedFrom';
 
 interface GeoCoordinateFieldProps {
@@ -46,10 +47,16 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
   return (
     <div className="flex justify-between gap-6 items-center mb-8 text-sm mt-10">
-      <Label
-        className="ml-0.5 mr-3">
-        {definition.name}
-      </Label>
+      <div className="flex mr-3">
+        <Label
+          className="ml-0.5">
+          {definition.name}
+        </Label>
+
+        {definition.description && (
+          <InfoTooltip description={definition.description} />
+        )}
+      </div>
 
       <div className="flex items-center gap-2.5">
         <Input 

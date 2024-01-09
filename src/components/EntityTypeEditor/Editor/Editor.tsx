@@ -194,7 +194,7 @@ export const Editor = (props: EditorProps) => {
         <div className="mt-6">
           <Label 
             htmlFor="description"
-            className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
+            className="inline-block text-xs mb-1.5 ml-0.5">Entity Class Description</Label>
 
           <Textarea 
             id="description"

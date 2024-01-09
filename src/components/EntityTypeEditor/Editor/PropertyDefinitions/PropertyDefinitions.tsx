@@ -60,7 +60,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                 className="text-center flex text-muted-foreground 
                   px-3 pb-2 justify-center text-xs
                   leading-relaxed">
-                Use Properties to record specific details in your annotations,
+                Use Properties to record specific details for an annotated Entity,
                 such as weight, material, age, etc. 
               </p>
             ) : (

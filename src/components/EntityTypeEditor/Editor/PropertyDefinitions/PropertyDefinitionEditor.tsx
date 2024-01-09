@@ -115,7 +115,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           <div className="mt-3">
             <Label 
               htmlFor="description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
+              className="inline-block text-xs mb-1.5 ml-0.5">Property Description</Label>
 
             <Textarea 
               id="description"

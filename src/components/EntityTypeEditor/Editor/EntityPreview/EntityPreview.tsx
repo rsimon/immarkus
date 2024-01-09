@@ -48,7 +48,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
       </h2>
 
       <p className="text-left text-xs leading-relaxed mt-1 mb-6">
-        This is how your properties will appear when editing an entity in the annotation interface.
+        This is how the data entry form for your Entity will appear in the annotation view.
       </p>
 
       <div className="flex mb-1">
@@ -71,8 +71,8 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
           <Separator className="mt-3 mb-5 bg-slate-300/50" />
         </>
-      ) : (
-        <Separator className="mt-5 mb-5 bg-slate-300/50" />
+      ) : properties.length > 0 && (
+        <Separator className="mt-3.5 mb-2.5 bg-slate-300/50" />
       )}
 
       <div>
