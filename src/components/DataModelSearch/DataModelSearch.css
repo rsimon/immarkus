@@ -1,7 +1,7 @@
 .pip-small {
-  border-radius: 2.5px;
+  border-radius: 2px;
   display: inline-block;
-  height: 7px;
-  width: 7px;
+  height: 1.4em;
+  width: 4px;
   margin-bottom: 1.5px;
 }

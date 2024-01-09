@@ -9,6 +9,8 @@ import './DataModelSearch.css';
 
 interface DataModelSearchProps {
 
+  onSelect(type: EntityType): void;
+
 }
 
 export const DataModelSearch = (props: DataModelSearchProps) => {
@@ -85,7 +87,9 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
     )
   }
 
-  const onSelectSuggestion = (type: EntityType) => setPath(p => ([...p, type ]));
+  const onSelectSuggestion = (type: EntityType) => {
+    setPath(p => ([...p, type ]));
+  }
 
   // Clear the query AFTER the path has changed. This will
   // then trigger a call to onGetSuggestions from react-autosuggest.

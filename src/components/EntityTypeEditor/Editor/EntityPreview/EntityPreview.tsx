@@ -42,7 +42,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
   const properties = [...inheritedProps, ...(entityType.properties || [])];
 
   return (
-    <div className="bg-muted px-12 py-6 border-l">
+    <div className="bg-muted px-12 py-6 border-l rounded-r-lg">
       <h2>
         Entity Preview
       </h2>

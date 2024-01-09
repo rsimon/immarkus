@@ -54,17 +54,21 @@ export const createEntityTypeTree = (entityTypes: EntityType[]): EntityTypeTree 
   const getAncestors = (type: EntityType) => walkAncestors(type);
 
   const searchEntityTypes = (query: string, limit?: number): EntityType[] =>
-    fuse.search(query, { limit: limit || 10 }).map(r => { 
-      const { parents, ...type } = r.item;
-      return type;
-    });
+    fuse.search(query, { limit: limit || 10 })
+      .filter(r => r.score < 0.2)
+      .map(r => { 
+        const { parents, ...type } = r.item;
+        return type;
+      });
 
   const searchEntityTypeBranch = (query: string, parentId: string, limit?: number): EntityType[] =>
     fuse.search({
       $and: [{ parents: `=${parentId}`}, { id: query }]
     }, {
       limit: limit || 10
-    }).map(r => {
+    })
+    .filter(r => r.score < 0.6)
+    .map(r => {
       const { parents, ...type } = r.item;
       return type;
     });
@@ -80,6 +84,9 @@ export const createEntityTypeTree = (entityTypes: EntityType[]): EntityTypeTree 
 
     fuse = new Fuse<IndexedEntityType>(records, { 
       keys: [ 'id', 'label', 'description', 'parents' ],
+      shouldSort: true,
+      threshold: 0.6,
+      includeScore: true,
       useExtendedSearch: true
     });
   }
