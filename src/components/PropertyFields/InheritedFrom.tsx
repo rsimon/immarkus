@@ -7,8 +7,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
+import { cn } from '@/ui/utils';
 
 interface InheritedFromProps {
+
+  className?: string;
 
   definition: PropertyDefinition;
 
@@ -20,13 +23,15 @@ export const InheritedFrom = (props: InheritedFromProps) => {
 
   const inheritedFrom = model.getEntityType(props.definition.inheritedFrom, false);
 
+  const className = cn(props.className, 'h-5 w-5 p-0.5 relative text-muted-foreground')
+
   return inheritedFrom && (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger 
           tabIndex={-1}
           className="rounded-sm w-6 h-6 relative ml-1 -top-[1px] inline-flex justify-center items-center focus-visible:bg-slate-200 focus-visible:outline-none">
-          <Replace className="h-5 w-5 p-0.5 relative text-muted-foreground" />
+          <Replace className={className} />
         </TooltipTrigger>
 
         <TooltipContent 
