@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -25,30 +25,24 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
   const { id, definition, value, validate } = props;
 
-  const [lonLat, setLonLat] = useState<[number | undefined, number | undefined]>(value || [undefined, undefined]);
+  const [latStr, setLatStr] = useState(value ? value[0].toString() : '');
+
+  const [lngStr, setLngStr] = useState(value ? value[1].toString() : '');
 
   useEffect(() => {
-    if (props.onChange)
-      props.onChange(lonLat);
-  }, [lonLat]);
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
 
-  const isValidCoordinate = () => {
-
-  }
-
-  const parseInput = (evt: ChangeEvent<HTMLInputElement>) => {
-    const parsed = parseFloat(evt.target.value);
-    return isNaN(parsed) ? undefined : parsed;
-  }
-
-  const isValid = !validate || isValidCoordinate();
+    if (!isNaN(lat) && !isNaN(lng))
+      props.onChange && props.onChange([lat, lng]);
+  }, [latStr, lngStr]);
 
   const error = definition.required && !value 
-    ? 'required' : !isValid && 'must be a valid geo-coordinate';
+    ? 'required' : !value && 'must be a valid geo-coordinate';
 
-  const className = isValid 
-    ? props.className
-    : cn(props.className, 'border-red-500');
+  const className = error 
+    ? cn(props.className, 'border-red-500')
+    : props.className
 
   return (
     <div className="flex justify-between gap-6 items-center mb-8 text-sm mt-10">
@@ -62,8 +56,8 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
           id={id} 
           className={className} 
           placeholder="Lat..."
-          value={lonLat[1] || ''} 
-          onChange={evt => setLonLat(([lon, _]) => ([lon, parseInput(evt)]))} />
+          value={latStr} 
+          onChange={evt => setLatStr(evt.target.value)} />
 
         /
 
@@ -71,8 +65,8 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
           id={id} 
           className={className} 
           placeholder="Lng..."
-          value={lonLat[0] || ''} 
-          onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
+          value={lngStr} 
+          onChange={evt => setLngStr(evt.target.value)} />
 
         <InheritedFrom 
           className="mr-1"
