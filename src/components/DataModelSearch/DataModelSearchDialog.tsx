@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Cuboid } from 'lucide-react';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
@@ -10,6 +10,8 @@ interface DataModelSearchDialogProps {
 
   open: boolean;
 
+  onAddEntityType(type: EntityType): void;
+
   onCancel(): void;
 
 }
@@ -18,9 +20,15 @@ export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
 
   const [selected, setSelected] = useState<EntityType | undefined>();
 
-  const onConfirm = () => {
-    console.log('confirmed', selected);
+  const onOk = () => {
+    if (selected)
+      props.onAddEntityType(selected);
   }
+
+  useEffect(() => {
+    if (!props.open)
+      setSelected(undefined);
+  }, [props.open])
 
   return (
     <Dialog
@@ -29,7 +37,7 @@ export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
       <DialogContent className="p-0 max-w-lg rounded-lg gap-0" closeIcon={false}>
         <DataModelSearch 
           onSelect={setSelected} 
-          onConfirm={onConfirm} />
+          onConfirm={props.onAddEntityType} />
     
         <div className="p-1 pt-1.5 border-t flex justify-between text-muted-foreground">
           <EntityTypeEditor>
@@ -48,7 +56,7 @@ export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
           <Button 
             variant="ghost" 
             className="text-xs h-8 rounded-sm"
-            onClick={onConfirm}>
+            onClick={onOk}>
             OK
           </Button>
         </div>

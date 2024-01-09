@@ -51,6 +51,10 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   const onSelect = (type: EntityType) => {
     setSelected(type);
     props.onSelect(type);
+
+    const hasChildren = model.hasChildTypes(type.id);
+    if (!hasChildren)
+      props.onConfirm(type);
   }
 
   const onSubmitForm = (evt: React.FormEvent) => {
@@ -93,7 +97,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
               {children}
             </div>
           ) : (
-            <div className="flex justify-center items-center p-6 text-sm text-muted-foreground">
+            <div className="flex justify-center items-center p-6 text-xs text-muted-foreground">
               No results
             </div>
           )}

@@ -87,6 +87,7 @@ export const CurrentSelection = () => {
 
       <DataModelSearchDialog 
         open={showSearchDialog} 
+        onAddEntityType={onAddEntityType}
         onCancel={() => setShowSearchDialog(false)} />
   
       <footer>
