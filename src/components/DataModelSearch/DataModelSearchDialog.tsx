@@ -26,7 +26,7 @@ export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
     <Dialog
       open={props.open} 
       onOpenChange={props.onCancel}>
-      <DialogContent className="p-0 max-w-md rounded-lg gap-0" closeIcon={false}>
+      <DialogContent className="p-0 max-w-lg rounded-lg gap-0" closeIcon={false}>
         <DataModelSearch 
           onSelect={setSelected} 
           onConfirm={onConfirm} />

@@ -42,7 +42,10 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   }
 
   const renderSuggestion = (type: EntityType, { isHighlighted }) => (
-    <DataModelSearchResult type={type} highlighted={isHighlighted} />
+    <DataModelSearchResult 
+      type={type} 
+      highlighted={isHighlighted} 
+      selected={selected} />
   )
 
   const onSelect = (type: EntityType) => {

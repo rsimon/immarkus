@@ -9,11 +9,13 @@ interface DataModelSearchResultProps {
 
   highlighted: boolean;
 
+  selected?: EntityType;
+
 }
 
 export const DataModelSearchResult = (props: DataModelSearchResultProps) => {
 
-  const { type, highlighted } = props;
+  const { type, highlighted, selected } = props;
 
   const model = useDataModel();
 
@@ -30,6 +32,10 @@ export const DataModelSearchResult = (props: DataModelSearchResultProps) => {
       
       <div className="flex justify-between text-muted-foreground text-xs">
         <div className="flex items-center">
+          {selected && (
+            <span className="spacer opacity-0 px-2.5 ml-1.5">{selected.label || selected.id}</span>
+          )}
+
           <span 
             className="pip-small ml-1.5"
             style= {{

@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react';
+import { Cuboid, Search, X } from 'lucide-react';
 import { RenderInputComponentProps } from 'react-autosuggest';
 import { EntityType } from '@/model';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
@@ -16,15 +16,15 @@ export const DataModelSearchInput = (props: DataModelSearchInputProps) => {
   const { selected, onClearSearch, ...inputProps } = props;
 
   return (
-    <div className="flex border-b">
+    <div className="flex border-b items-center">
       {selected && (
         <span 
-          className="ml-1.5 px-1.5 py-1 rounded-sm"
+          className="ml-1.5 px-2.5 py-1 rounded-full flex items-center"
           style={{ 
             backgroundColor: selected.color || DEFAULT_COLOR,
             color: getForegroundColor(selected.color || DEFAULT_COLOR)
           }}>
-          {selected.label || selected.id}
+          <Cuboid className="h-3.5 w-3.5 mr-1"/> {selected.label || selected.id}
         </span>
       )}
 
@@ -40,7 +40,7 @@ export const DataModelSearchInput = (props: DataModelSearchInputProps) => {
         <input 
           autoFocus
           {...inputProps} 
-          placeholder="Search..."
+          placeholder={selected ? `Search in ${selected.label || selected.id}...` : 'Search...'}
           className="relative top-[1px] py-1 outline-none px-0.5 text-xs flex-grow" />
       </div>
     </div>    
