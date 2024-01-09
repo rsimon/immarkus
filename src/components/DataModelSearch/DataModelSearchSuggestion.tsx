@@ -3,19 +3,17 @@ import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
 
-interface DataModelSearchResultProps {
+interface DataModelSearchSuggestionProps {
 
   type: EntityType;
 
   highlighted: boolean;
 
-  selected?: EntityType;
-
 }
 
-export const DataModelSearchResult = (props: DataModelSearchResultProps) => {
+export const DataModelSearchSuggestion = (props: DataModelSearchSuggestionProps) => {
 
-  const { type, highlighted, selected } = props;
+  const { type, highlighted } = props;
 
   const model = useDataModel();
 
@@ -27,10 +25,10 @@ export const DataModelSearchResult = (props: DataModelSearchResultProps) => {
 
   return (
     <div 
-      className="pl-1 pr-2 py-1 rounded-sm data-[highlighted]:bg-accent cursor-pointer" 
+      className="dm-search-suggestion pr-2 py-1 rounded-sm data-[highlighted]:bg-accent cursor-pointer" 
       data-highlighted={highlighted ? 'true' : undefined}>
       
-      <div className="flex justify-between text-muted-foreground text-xs">
+      <div className="flex justify-between text-muted-foreground">
         <div className="flex items-center">
           <span 
             className="pip-small ml-1.5"
@@ -53,10 +51,10 @@ export const DataModelSearchResult = (props: DataModelSearchResultProps) => {
 
         <div>
           {children.length > 0 && (
-            <div className="flex text-[11px] items-center mt-[0.5px]">
+            <div className="flex text-xs items-center mt-[0.5px]">
               <ListTree className="w-3.5 h-3.5" />
 
-              <span className="ml-0.5 mt-[0.5px]">
+              <span className="ml-0.5 mt-[0.5px] mr-1">
                 {children.length} child{children.length > 1 && 'ren'}
               </span>
             </div>

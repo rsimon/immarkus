@@ -18,10 +18,10 @@ export const DataModelSearchInput = forwardRef((props: DataModelSearchInputProps
   const { selected, onClearSearch, ...inputProps } = props;
 
   return (
-    <div ref={ref} className="flex border-b items-center">
+    <div ref={ref} className="flex border-b items-center py-1 px-1">
       {selected && (
         <span 
-          className="ml-1.5 mr-0.5 px-2.5 py-1 rounded-full flex items-center"
+          className="ml-1.5 mr-0.5 px-2.5 py-1 rounded-full flex items-center text-xs"
           style={{ 
             backgroundColor: selected.color || DEFAULT_COLOR,
             color: getForegroundColor(selected.color || DEFAULT_COLOR)
@@ -39,7 +39,7 @@ export const DataModelSearchInput = forwardRef((props: DataModelSearchInputProps
           autoFocus
           {...inputProps} 
           placeholder={selected ? `Search in ${selected.label || selected.id}...` : 'Search...'}
-          className="relative top-[1px] py-1 outline-none px-0.5 text-xs flex-grow" />
+          className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
       </div>
 
       <div className="pr-1.5 flex items-center">

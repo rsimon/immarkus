@@ -3,7 +3,7 @@ import ReactAutosuggest from 'react-autosuggest';
 import type { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { DataModelSearchInput } from './DataModelSearchInput';
-import { DataModelSearchResult } from './DataModelSearchResult';
+import { DataModelSearchSuggestion } from './DataModelSearchSuggestion';
 
 import './DataModelSearch.css';
 
@@ -42,10 +42,9 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   }
 
   const renderSuggestion = (type: EntityType, { isHighlighted }) => (
-    <DataModelSearchResult 
+    <DataModelSearchSuggestion 
       type={type} 
-      highlighted={isHighlighted} 
-      selected={selected} />
+      highlighted={isHighlighted} />
   )
 
   const onSelect = (type: EntityType) => {
@@ -83,7 +82,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   return (
     <form 
       onSubmit={onSubmitForm}>
-      <div className="text-xs">
+      <div className="text-sm">
         <ReactAutosuggest 
           alwaysRenderSuggestions
           suggestions={suggestions} 
@@ -93,11 +92,11 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
           shouldRenderSuggestions={() => true}
           renderSuggestion={renderSuggestion}
           renderSuggestionsContainer={({ containerProps, children }) => suggestions.length > 0 ? (
-            <div {...containerProps} className="w-full p-1.5">
+            <div {...containerProps} className="w-full px-1.5 py-2.5">
               {children}
             </div>
           ) : (
-            <div className="flex justify-center items-center p-6 text-xs text-muted-foreground">
+            <div className="flex justify-center items-center p-6 text-sm text-muted-foreground">
               No results
             </div>
           )}
