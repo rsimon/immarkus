@@ -37,10 +37,10 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
       props.onChange && props.onChange([lat, lng]);
   }, [latStr, lngStr]);
 
-  const error = definition.required && !value 
+  const error = validate && definition.required && !value 
     ? 'required' : !value && 'must be a valid geo-coordinate';
 
-  const className = error 
+  const className = validate && error 
     ? cn(props.className, 'border-red-500')
     : props.className
 

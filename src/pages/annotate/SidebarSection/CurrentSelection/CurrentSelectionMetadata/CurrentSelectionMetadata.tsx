@@ -24,12 +24,12 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const anno = useAnnotoriousManifold();
 
-  const { getEntityType } = useDataModel();
+  const model = useDataModel();
 
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
-    .map(body => ({ body, entityType: getEntityType(body.source) }))
+    .map(body => ({ body, entityType: model.getEntityType(body.source, true) }))
     .filter(({ entityType }) => entityType?.properties?.length > 0);
 
   // Note body, if any
@@ -38,7 +38,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   // All other bodies
   const otherBodies = annotation.bodies.filter(b => {
     if (b.purpose === 'classifying') {
-      const entity = getEntityType((b as unknown as W3CAnnotationBody).source);
+      const entity = model.getEntityType((b as unknown as W3CAnnotationBody).source, true);
       return (!entity?.properties || entity.properties.length === 0);
     } else {
       return b.purpose !== 'commenting';

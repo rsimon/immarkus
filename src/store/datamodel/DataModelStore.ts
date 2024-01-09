@@ -47,8 +47,6 @@ export const loadDataModel = (
     }
   }
 
-  const getDataModel = () => ({ entityTypes });
-
   const getEntityType = (id: string, inheritProps = false) => {
     const type = entityTypes.find(e => e.id === id);
 
