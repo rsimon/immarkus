@@ -56,14 +56,8 @@ export const loadDataModel = (
     const buildPropsRecursive = (type: EntityType, properties?: PropertyDefinition[]) => {
       const parent = entityTypes.find(e => e.id === type.parentId);
       if (parent) {
-        if (parent.properties) {
-          return [
-            ...parent.properties.map(p => ({ ...p, inheritedFrom: parent.id })), 
-            ...(properties || [])
-          ];
-        } else {
-          return properties;
-        }
+        const parentProperties = (parent.properties || []).map(p => ({ ...p, inheritedFrom: parent.id }));
+        return buildPropsRecursive(parent, [...parentProperties, ...(properties || [])]);
       } else {
         return properties;
       }
