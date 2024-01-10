@@ -43,7 +43,7 @@ export const DataModelSearchInput = forwardRef((props: DataModelSearchInputProps
       </div>
 
       <div className="pr-1.5 flex items-center">
-        {selected && (        
+        {(selected || inputProps.value) && (        
           <button 
             onClick={onClearSearch}
             className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
