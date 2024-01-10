@@ -1,9 +1,10 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
-import { BasePropertyField } from '../BasePropertyField';
 import { cn } from '@/ui/utils';
+import { InfoTooltip } from '../InfoTooltip';
+import { InheritedFrom } from '../InheritedFrom';
 
 interface GeoCoordinateFieldProps {
 
@@ -23,61 +24,62 @@ interface GeoCoordinateFieldProps {
 
 export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
-  const { id, definition, value, validate, onChange } = props;
+  const { id, definition, value, validate } = props;
 
-  const [lonLat, setLonLat] = useState<[number | undefined, number | undefined]>(value || [undefined, undefined]);
+  const [latStr, setLatStr] = useState(value ? value[0].toString() : '');
+
+  const [lngStr, setLngStr] = useState(value ? value[1].toString() : '');
 
   useEffect(() => {
-    if (props.onChange)
-      props.onChange(lonLat);
-  }, [lonLat]);
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
 
-  const isValidCoordinate = () => {
+    if (!isNaN(lat) && !isNaN(lng))
+      props.onChange && props.onChange([lat, lng]);
+  }, [latStr, lngStr]);
 
-  }
+  const error = validate && definition.required && !value 
+    ? 'required' : !value && 'must be a valid geo-coordinate';
 
-  const parseInput = (evt: ChangeEvent<HTMLInputElement>) => {
-    const parsed = parseFloat(evt.target.value);
-    return isNaN(parsed) ? undefined : parsed;
-  }
-
-  const isValid = !validate || isValidCoordinate();
-
-  const error = definition.required && !value 
-    ? 'required' : !isValid && 'must be a valid geo-coordinate';
-
-  const className = isValid ? props.className : cn(props.className, 'border-red-500');
+  const className = validate && error 
+    ? cn(props.className, 'border-red-500')
+    : props.className
 
   return (
-    <BasePropertyField
-      id={id}
-      definition={definition}
-      error={error}>
-      
-      <div className="flex flex-row gap-2 items-center">
+    <div className="flex justify-between gap-6 items-center mb-8 text-sm mt-10">
+      <div className="flex mr-3">
         <Label
-          className="text-xs">
-          Lat
-        </Label> 
+          className="ml-0.5">
+          {definition.name}
+        </Label>
 
-        <Input 
-          id={id} 
-          className={className} 
-          value={lonLat[1] || ''} 
-          onChange={evt => setLonLat(([lon, _]) => ([lon, parseInput(evt)]))} />
-
-        <Label
-          className="text-xs ml-4">
-          Lon
-        </Label> 
-
-        <Input 
-          id={id} 
-          className={className} 
-          value={lonLat[0] || ''} 
-          onChange={evt => setLonLat(([_, lat]) => ([parseInput(evt), lat]))}/>
+        {definition.description && (
+          <InfoTooltip description={definition.description} />
+        )}
       </div>
-    </BasePropertyField>
+
+      <div className="flex items-center gap-2.5">
+        <Input 
+          id={id} 
+          className={className} 
+          placeholder="Lat..."
+          value={latStr} 
+          onChange={evt => setLatStr(evt.target.value)} />
+
+        /
+
+        <Input 
+          id={id} 
+          className={className} 
+          placeholder="Lng..."
+          value={lngStr} 
+          onChange={evt => setLngStr(evt.target.value)} />
+
+        <InheritedFrom 
+          className="mr-1"
+          definition={definition} />
+      </div>
+    </div>
   )
 
 }

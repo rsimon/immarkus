@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { getBrightness } from '@/utils/color';
 import { PropertyDefinition } from '@/model';
-import { useStore } from '@/store';
+import { useDataModel } from '@/store';
 import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
@@ -26,13 +26,13 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const { parentId } = entityType;
 
-  const store = useStore();
+  const model = useDataModel();
 
   const brightness = getBrightness(entityType.color);
 
   const inheritedProps: PropertyDefinition[] = useMemo(() => {
     if (parentId) {
-      const inherited = store.getEntityType(parentId, true)?.properties;
+      const inherited = model.getEntityType(parentId, true)?.properties;
       return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
     } else {
       return [];
@@ -42,13 +42,13 @@ export const EntityPreview = (props: EntityPreviewProps) => {
   const properties = [...inheritedProps, ...(entityType.properties || [])];
 
   return (
-    <div className="bg-muted px-12 py-6 border-l">
+    <div className="bg-muted px-12 py-6 border-l rounded-r-lg">
       <h2>
         Entity Preview
       </h2>
 
       <p className="text-left text-xs leading-relaxed mt-1 mb-6">
-        This is how your properties will appear when editing an entity in the annotation interface.
+        This is how the data entry form for your Entity will appear in the annotation view.
       </p>
 
       <div className="flex mb-1">
@@ -71,8 +71,8 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
           <Separator className="mt-3 mb-5 bg-slate-300/50" />
         </>
-      ) : (
-        <Separator className="mt-5 mb-5 bg-slate-300/50" />
+      ) : properties.length > 0 && (
+        <Separator className="mt-3.5 mb-2.5 bg-slate-300/50" />
       )}
 
       <div>

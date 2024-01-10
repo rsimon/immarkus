@@ -21,7 +21,7 @@ interface EntityTypesTableProps {
 
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
-  const { model } =  useDataModel();
+  const model = useDataModel();
 
   return (
     <div className="rounded-md border mt-6">

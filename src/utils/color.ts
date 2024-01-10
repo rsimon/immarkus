@@ -1,3 +1,5 @@
+export const DEFAULT_COLOR = '#c2c2c2';
+
 export const getRandomColor = () => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);

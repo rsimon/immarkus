@@ -33,7 +33,7 @@ interface ValidationErrors {
 
 export const Editor = (props: EditorProps) => {
 
-  const { model, addEntityType, getEntityType, updateEntityType } = useDataModel();
+  const model = useDataModel();
 
   const { entityTypes } = model;
 
@@ -50,7 +50,7 @@ export const Editor = (props: EditorProps) => {
     : !entityTypes.find(e => e.id === entityType.id);
 
   const isValidParent = entityType.parentId 
-    ? Boolean(getEntityType(entityType.parentId)) && !(entityType.parentId === entityType.id)
+    ? Boolean(model.getEntityType(entityType.parentId)) && !(entityType.parentId === entityType.id)
     : true;
   
   const [errors, setErrors] = useState<ValidationErrors | undefined>();
@@ -61,7 +61,7 @@ export const Editor = (props: EditorProps) => {
     if (errors) {
       setErrors({ 
         invalidId: !entityType.id || !isIdAvailable,
-        invalidParent: entityType.parentId && !getEntityType(entityType.parentId)
+        invalidParent: entityType.parentId && !model.getEntityType(entityType.parentId)
       });
     }
   }, [entityType]);
@@ -77,11 +77,11 @@ export const Editor = (props: EditorProps) => {
 
     if (valid) {
       if (props.entityType) { // Update existing
-        updateEntityType(valid)
+        model.updateEntityType(valid)
           .then(() => props.onSaved())
           .catch(props.onSaveError);
       } else { // Save new
-        addEntityType(valid)
+        model.addEntityType(valid)
           .then(() => props.onSaved())
           .catch(props.onSaveError);
       }
@@ -194,7 +194,7 @@ export const Editor = (props: EditorProps) => {
         <div className="mt-6">
           <Label 
             htmlFor="description"
-            className="inline-block text-xs mb-1.5 ml-0.5">Description</Label>
+            className="inline-block text-xs mb-1.5 ml-0.5">Entity Class Description</Label>
 
           <Textarea 
             id="description"

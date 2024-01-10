@@ -1,23 +1,15 @@
-import type { EntityType, PropertyDefinition, Tag } from '@/model';
+import type { EntityType, PropertyDefinition } from '@/model';
 import { DataModel } from './DataModel';
-import { createEntityTypeIndex } from './DataModelIndex';
-import { readJSONFile, writeJSONFile } from './utils';
+import { readJSONFile, writeJSONFile } from '../utils';
+import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
 
-export interface DataModelStore {
-
-  getDataModel(): DataModel;
+export interface DataModelStore extends DataModel, EntityTypeTree {
 
   getEntityType(id: string, inheritProps?: boolean): EntityType | undefined;
 
   addEntityType(type: EntityType): Promise<void>;
 
-  addTag(tag: Tag): Promise<void>;
-
   removeEntityType(typeOrId: EntityType | string): Promise<void>;
-
-  removeTag(tag: Tag): Promise<void>;
-
-  searchEntityTypes(query: string): EntityType[];
   
   updateEntityType(type: EntityType): Promise<void>;
 
@@ -31,19 +23,17 @@ export const loadDataModel = (
 
   const file = await fileHandle.getFile();
 
-  let { entityTypes, tags } = (await readJSONFile<DataModel>(file) || {
+  let { entityTypes } = (await readJSONFile<DataModel>(file) || {
 
-    entityTypes: [],
-
-    tags: []
+    entityTypes: []
 
   });
 
-  let index = createEntityTypeIndex(entityTypes);
+  const tree = createEntityTypeTree(entityTypes);
 
-  const save = () => {
-    index = createEntityTypeIndex(entityTypes);
-    return writeJSONFile(fileHandle, { entityTypes, tags });
+  const rebuildAndSave = () => {
+    tree.rebuild(entityTypes);
+    return writeJSONFile(fileHandle, { entityTypes });
   }
 
   /** API **/
@@ -51,22 +41,11 @@ export const loadDataModel = (
   const addEntityType = (type: EntityType) => {
     if (!entityTypes.find(e => e.id === type.id)) {
       entityTypes = [...entityTypes, type];
-      return save();
+      return rebuildAndSave();
     } else {
       return Promise.reject(`Entity with ID ${type.id} already exists`);
     }
   }
-
-  const addTag = (tag: Tag) => {
-    if (!tags.includes(tag)) {
-      tags = [...tags, tag];
-      return save();
-    } else { 
-      return Promise.reject(`Tag ${tag} already exists`);
-    }
-  }
-
-  const getDataModel = () => ({ entityTypes, tags });
 
   const getEntityType = (id: string, inheritProps = false) => {
     const type = entityTypes.find(e => e.id === id);
@@ -101,37 +80,28 @@ export const loadDataModel = (
     }
   }
 
-  const removeTag = (tag: Tag) => {
-    tags = tags.filter(t => t !== tag);
-    return save();
-  }
-
   const removeEntityType = (typeOrId: EntityType | string) => {
     const id = typeof typeOrId === 'string' ? typeOrId : typeOrId.id;
     entityTypes = entityTypes.filter(e => e.id !== id);
-    return save();
+    return rebuildAndSave();
   }
-
-  const searchEntityTypes = (query: string) => index.searchEntityTypes(query);
 
   const updateEntityType = (type: EntityType) => {
     if (entityTypes.find(e => e.id === type.id)) {
       entityTypes = entityTypes.map(e => e.id === type.id ? type : e);
-      return save();
+      return rebuildAndSave();
     } else {
       return Promise.reject(`Attempt to update entity ${type.id} but does not exist in store`);
     }
   }
 
   resolve({
+    ...tree, 
+    get entityTypes() { return entityTypes },
     addEntityType,
-    addTag,
-    getDataModel,
     getEntityType,
     removeEntityType,
-    removeTag,
-    searchEntityTypes,
-    updateEntityType,
+    updateEntityType
   });
 
 });

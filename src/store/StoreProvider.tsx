@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { EntityType, LoadedImage, Tag } from '@/model';
+import { EntityType, LoadedImage } from '@/model';
 import { Store, loadStore } from './Store';
-import { DataModel } from './DataModel';
+import { DataModelStore } from './datamodel';
 
 interface StoreContextState {
 
@@ -10,9 +10,9 @@ interface StoreContextState {
 
   setStore: React.Dispatch<React.SetStateAction<Store>>;
 
-  model: DataModel;
+  model: DataModelStore;
 
-  setModel: React.Dispatch<React.SetStateAction<DataModel>>;
+  setModel: React.Dispatch<React.SetStateAction<DataModelStore>>;
 
 }
 
@@ -28,7 +28,7 @@ export const StoreProvider = (props: StoreProviderProps) => {
 
   const [store, setStore] = useState<Store | undefined>(undefined);
 
-  const [model, setModel] = useState<DataModel>(undefined);
+  const [model, setModel] = useState<DataModelStore>(undefined);
 
   return (
     <StoreContext.Provider value={{ store, setStore, model, setModel }}>
@@ -97,34 +97,26 @@ export const useDataModel = () => {
   const { store, model, setModel } = useContext(StoreContext);
 
   const setAsync = (p: Promise<void>) =>
-    p.then(() => setModel(store.getDataModel()));
+    p.then(() => setModel({...store.getDataModel()}));
 
+  /** 
+   * Override methods that modify the model and update the model
+   * instance in the state, so that it becomes reactive.
+   */
   const addEntityType = (type: EntityType) =>
-    setAsync(store.addEntityType(type));
+    setAsync(model.addEntityType(type));
 
   const updateEntityType = (type: EntityType) => 
-    setAsync(store.updateEntityType(type));
+    setAsync(model.updateEntityType(type));
 
   const removeEntityType = (typeOrId: EntityType | string) =>
-    setAsync(store.removeEntityType(typeOrId));
-
-  const getEntityType = (id: string, inheritProps: boolean = true) => 
-    store.getEntityType(id, inheritProps);
-
-  const addTag = (tag: Tag) =>
-    setAsync(store.addTag(tag));
-
-  const removeTag = (tag: Tag) =>
-    setAsync(store.removeTag(tag));
+    setAsync(model.removeEntityType(typeOrId));
 
   return { 
-    model,
+    ...model,
     addEntityType,
     updateEntityType,
-    removeEntityType,
-    getEntityType,
-    addTag,
-    removeTag
+    removeEntityType
   };
 
 }
