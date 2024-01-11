@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { Pencil } from 'lucide-react';
+import { Pen } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
@@ -63,7 +63,7 @@ export const URIField = (props: URIFieldProps) => {
           onChange={onChange} 
           onBlur={() => setEditable(false)} />
       ) : (
-        <div className="flex h-9 w-full rounded-md border border-bg-border pl-2.5 pr-1 items-center">
+        <div className="flex h-9 w-full rounded-md border border-input/60 pl-2.5 pr-1 items-center">
           <a 
             href={value} 
             className="flex-grow text-blue-500 hover:underline"
@@ -72,7 +72,7 @@ export const URIField = (props: URIFieldProps) => {
           <button 
             onClick={() => setEditable(true)}
             className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
-            <Pencil
+            <Pen
               className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
           </button>
         </div>
