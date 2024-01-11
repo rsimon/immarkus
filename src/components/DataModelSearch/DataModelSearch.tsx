@@ -61,7 +61,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
 
     const type = model.getEntityType(query);
     if (type)
-      onSelect(type);  
+      onSelect(type);
   }
 
   // After the selection changed, clear the query and update suggestions

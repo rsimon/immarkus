@@ -172,7 +172,7 @@ export const Editor = (props: EditorProps) => {
           <ParentBrowser
             id="parent"
             className={errors?.invalidParent ? 'border-red-500 bg-white' : 'bg-white'} 
-            value={entityType.parentId || ''}
+            value={entityType.parentId}
             onChange={parentId => setEntityType(e => ({ ...e, parentId }))} />
 
           {!isValidParent ? (

@@ -62,8 +62,8 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
       inputProps={{
         tabIndex: props.tabIndex,
         className: inputClass,
-        value: props.value,
-        onChange: (_, { newValue }) => props.onChange(newValue)
+        value: props.value || '',
+        onChange: (_, { newValue }) => props.onChange && props.onChange(newValue)
       }} />
   )
   

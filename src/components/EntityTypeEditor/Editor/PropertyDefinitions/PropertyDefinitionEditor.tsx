@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Spline } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -9,6 +9,7 @@ import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
+import { RelationOptions } from './RelationOptions';
 import {
   Select,
   SelectContent,
@@ -95,6 +96,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 <SelectItem value="geocoordinate">
                   <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> Geo-coordinate
                 </SelectItem>
+                <SelectItem value="relation">
+                  <Spline className="inline w-4 h-4 mr-1.5 mb-0.5" /> Relation
+                </SelectItem>
                 <SelectItem value="external_authority">
                   <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
                 </SelectItem>
@@ -106,8 +110,12 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <EnumOptions 
               definition={edited}
               onUpdate={setEdited} />
-          ) : edited.type === 'external_authority' && (
+          ) : edited.type === 'external_authority' ? (
             <ExternalAuthorityOptions 
+              definition={edited} 
+              onUpdate={setEdited} />
+          ) : edited.type === 'relation' && (
+            <RelationOptions
               definition={edited} 
               onUpdate={setEdited} />
           )}
