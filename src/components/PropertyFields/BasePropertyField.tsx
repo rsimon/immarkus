@@ -34,7 +34,7 @@ export const BasePropertyField = (props: BasePropertyFieldProps) => {
             <InfoTooltip description={definition.description} />
           )}
 
-          {!props.error && (<span className="text-xs text-red-600 ml-1">{props.error}</span>)}
+          {props.error && (<span className="text-xs text-red-600 ml-1">{props.error}</span>)}
         </div>
         
         <InheritedFrom definition={definition} />

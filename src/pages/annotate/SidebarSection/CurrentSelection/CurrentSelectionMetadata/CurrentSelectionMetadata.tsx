@@ -6,13 +6,12 @@ import {
   W3CAnnotationBody, 
   createBody
 } from '@annotorious/react';
-import { PropertyValidation, useValidation } from '@/components/PropertyFields';
+import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { EntityProperties } from './EntityProperties';
 import { createSafeKeys } from './PropertyKeys';
 import { CurrentSelectionNote } from './CurrentSelectionNote';
-
 
 interface CurrentSelectionMetadataProps {
 
