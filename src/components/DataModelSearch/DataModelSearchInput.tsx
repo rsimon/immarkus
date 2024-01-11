@@ -49,7 +49,7 @@ export const DataModelSearchInput = forwardRef((props: DataModelSearchInputProps
             className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
             <X
               strokeWidth={1.7}
-              className="w-6 h-6 p-1 text-muted-foreground hover:bg-muted hover:text-black rounded-full" />
+              className="w-6 h-6 p-1 text-muted-foreground hover:text-black" />
           </button>
         )}
 

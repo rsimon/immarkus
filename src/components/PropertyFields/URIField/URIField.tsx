@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { Pencil } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
@@ -23,6 +24,8 @@ export const URIField = (props: URIFieldProps) => {
 
   const { id, definition } = props;
 
+  const [editable, setEditable] = useState(!props.value);
+
   const value = props.onChange ? props.value || '' : props.value;
 
   const { showErrors, isValid } = useValidation((str: string) => {
@@ -41,8 +44,7 @@ export const URIField = (props: URIFieldProps) => {
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const error = (showErrors && !isValid) 
-    ? value ? 'must be a URI' : 'required' : '';
+  const error = showErrors && value && !isValid && 'must be a URI';
 
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 
@@ -52,12 +54,29 @@ export const URIField = (props: URIFieldProps) => {
       definition={definition}
       error={error}>
 
-      <Input 
-        id={id} 
-        className={className} 
-        value={value} 
-        onChange={onChange} />
+      {editable ? (
+        <Input 
+          autoFocus
+          id={id} 
+          className={className} 
+          value={value} 
+          onChange={onChange} 
+          onBlur={() => setEditable(false)} />
+      ) : (
+        <div className="flex h-9 w-full rounded-md border border-bg-border pl-2.5 pr-1 items-center">
+          <a 
+            href={value} 
+            className="flex-grow text-blue-500 hover:underline"
+            target="_blank">{value}</a>
 
+          <button 
+            onClick={() => setEditable(true)}
+            className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
+            <Pencil
+              className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
+          </button>
+        </div>
+      )}
     </BasePropertyField>
   )
 
