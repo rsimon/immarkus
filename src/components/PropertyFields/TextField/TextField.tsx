@@ -2,6 +2,7 @@ import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
+import { cn } from '@/ui/utils';
 
 interface TextFieldProps {
 
@@ -28,7 +29,7 @@ export const TextField = (props: TextFieldProps) => {
     : undefined;
 
   // const className = cn(props.className, (isValid ? 'mt-0.5' :  "mt-0.5 border-red-500"));
-  const className = 'mt-0.5';
+  const className = cn(props.className,'mt-0.5');
 
   return (
     <BasePropertyField 

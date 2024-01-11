@@ -15,9 +15,9 @@ const PropertyValidationContext = createContext<PropertyValidationContextValue>(
 
 interface PropertyValidationProps {
 
-  showErrors: boolean;
+  showErrors?: boolean;
 
-  onChange(valid: boolean): void;
+  onChange?(valid: boolean): void;
 
   children: ReactNode;
 
@@ -25,7 +25,7 @@ interface PropertyValidationProps {
 
 export const PropertyValidation = (props: PropertyValidationProps) => {
 
-  const { showErrors } = props;
+  const showErrors = props.showErrors || false;
 
   const [validationStates, setValidationStates] = useState<{ [id: string]: boolean }>({});
 
@@ -36,7 +36,7 @@ export const PropertyValidation = (props: PropertyValidationProps) => {
     setTotalState(isValid);
   }, [validationStates]);
 
-  useEffect(() => props.onChange(totalState), [totalState]);
+  useEffect(() => props.onChange && props.onChange(totalState), [totalState]);
 
   return (
     <PropertyValidationContext.Provider value={{ setValidationStates, showErrors }}>

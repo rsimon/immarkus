@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
+import { Separator } from '@/ui/Separator';
 import { getBrightness } from '@/utils/color';
 import { PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
@@ -9,10 +10,10 @@ import {
   ExternalAuthorityField, 
   GeoCoordinateField, 
   NumberField, 
+  PropertyValidation, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
-import { Separator } from '@/ui/Separator';
 
 interface EntityPreviewProps {
 
@@ -75,43 +76,45 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         <Separator className="mt-3.5 mb-2.5 bg-slate-300/50" />
       )}
 
-      <div>
-        {properties.map(property => (
-          <div className="mt-1" key={property.name}>
-            {property.type === 'enum' ? (
-              <EnumField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />
-            ) : property.type === 'external_authority' ? (
-              <ExternalAuthorityField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />
-            ) : property.type === 'geocoordinate' ? (
-              <GeoCoordinateField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />
-            ) : property.type === 'number' ? (
-              <NumberField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />   
-            ) : property.type === 'text' ? (
-              <TextField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />   
-            ) : property.type === 'uri' ? (
-              <URIField 
-                id={property.name}
-                className="bg-white" 
-                definition={property} />   
-            ) : null}
-          </div>
-        ))}
-      </div>
+      <PropertyValidation>
+        <div>
+          {properties.map(property => (
+            <div className="mt-1" key={property.name}>
+              {property.type === 'enum' ? (
+                <EnumField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />
+              ) : property.type === 'external_authority' ? (
+                <ExternalAuthorityField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />
+              ) : property.type === 'geocoordinate' ? (
+                <GeoCoordinateField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />
+              ) : property.type === 'number' ? (
+                <NumberField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />   
+              ) : property.type === 'text' ? (
+                <TextField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />   
+              ) : property.type === 'uri' ? (
+                <URIField 
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />   
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </PropertyValidation>
     </div>
   )
 
