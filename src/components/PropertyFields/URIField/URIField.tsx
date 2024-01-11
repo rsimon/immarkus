@@ -63,10 +63,10 @@ export const URIField = (props: URIFieldProps) => {
           onChange={onChange} 
           onBlur={() => setEditable(false)} />
       ) : (
-        <div className="flex h-9 w-full rounded-md border border-input/60 pl-2.5 pr-1 items-center">
+        <div className="flex h-9 w-full shadow-sm bg-muted rounded-md border border-input/60 pl-2.5 pr-1 items-center">
           <a 
             href={value} 
-            className="flex-grow text-blue-500 hover:underline"
+            className="flex-grow text-sky-700 hover:underline"
             target="_blank">{value}</a>
 
           <button 
