@@ -14,8 +14,6 @@ import { Button } from '@/ui/Button';
 
 interface EntityPropertiesProps {
 
-  showErrors?: boolean;
-
   body: W3CAnnotationBody,
 
   entityType: EntityType;
@@ -47,42 +45,36 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'external_authority' ? (
             <ExternalAuthorityField
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'geocoordinate' ? (
             <GeoCoordinateField
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'number' ? (
             <NumberField
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors}
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'text' ? (
             <TextField 
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors} 
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'uri' ? (
             <URIField 
               id={key}
               definition={property} 
               value={props.values[key]}
-              validate={props.showErrors} 
               onChange={value => props.onChange(key, value)} />
           ) : null }
         </div>
