@@ -26,7 +26,7 @@ export const NumberField = (props: NumberFieldProps) => {
   const [value, setValue] = useState(props.value ? props.value.toString() : '');
 
   const { showErrors, isValid } = useValidation((str: string) => {
-    return !str || !isNaN(parseFloat(str));
+    return !str || !isNaN(parseFloat(str));
   }, [value]);
 
   useEffect(() => {
