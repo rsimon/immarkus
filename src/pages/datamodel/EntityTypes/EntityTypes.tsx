@@ -45,7 +45,7 @@ export const EntityTypes = () => {
       <div className="flex mt-4">
         <EntityTypeEditor>
           <Button>
-            Create New Entity
+            Create New Entity Class
           </Button>
         </EntityTypeEditor>
       </div>

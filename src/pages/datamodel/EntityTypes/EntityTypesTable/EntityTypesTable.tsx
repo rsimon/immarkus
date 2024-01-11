@@ -43,7 +43,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
               <TableCell
                 colSpan={6}
                 className="h-24 text-center text-muted-foreground">
-                No entities
+                No entity classes
               </TableCell>
             </TableRow>
           ) : model.entityTypes.map(e => (

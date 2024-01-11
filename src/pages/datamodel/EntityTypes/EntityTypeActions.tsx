@@ -44,7 +44,7 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label="This action will delete the entity from the vocabulary. Existing annotations will not be affected."
+        label="This action will delete the entity class from the vocabulary. Existing annotations will not be affected."
         onConfirm={props.onDeleteEntityType}
         onOpenChange={setConfirmDelete} />
     </>

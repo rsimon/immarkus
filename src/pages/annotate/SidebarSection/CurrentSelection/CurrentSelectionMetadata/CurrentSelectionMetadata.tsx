@@ -1,16 +1,18 @@
 import { FormEvent, useState } from 'react';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { 
   AnnotationBody, 
   ImageAnnotation, 
   W3CAnnotationBody, 
   createBody
 } from '@annotorious/react';
+import { PropertyValidation, useValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { EntityProperties } from './EntityProperties';
 import { createSafeKeys } from './PropertyKeys';
 import { CurrentSelectionNote } from './CurrentSelectionNote';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+
 
 interface CurrentSelectionMetadataProps {
 
@@ -59,6 +61,10 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const [formState, setFormState] = useState<{[key: string]: string}>(getInitialValues());
 
+  const [valid, setIsValid] = useState(false);
+
+  const [showValidationErrors, setShowValidationErrors] = useState(false); 
+ 
   const onChange = (key: string, value: any) =>
     setFormState(state => ({
       ...state, 
@@ -68,88 +74,100 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    const updatedTags = schemaBodies.map(({ body }) => {
-      const properties = Object.entries(formState).reduce((properties, [key, value]) => {
-        const name = safeKeys.getName(key);
-
-        // This will return undefined if this key is not in this body
-        const expectedKey = safeKeys.getKey(body, name);
-
-        if (expectedKey == key)
-          return { ...properties, [name as string]: value };
-        else
-          return properties;
-      }, {});
-
-      return { annotation: props.annotation.id, ...body, properties } as unknown as AnnotationBody;
-    });
-
-    const noteBody: AnnotationBody = formState[noteKey] && createBody(annotation, {
-      type: 'TextualBody',
-      purpose: 'commenting',
-      value: formState[noteKey]
-    });
-
-    let updatedAnnotation = {
-      ...anno.getAnnotation(annotation.id),
-      bodies: noteBody 
-        ? [...updatedTags, ...otherBodies, noteBody ]
-        : [...updatedTags, ...otherBodies ]
-    };
-
-    anno.updateAnnotation(updatedAnnotation);
+    if (valid) {
+      const updatedTags = schemaBodies.map(({ body }) => {
+        const properties = Object.entries(formState).reduce((properties, [key, value]) => {
+          const name = safeKeys.getName(key);
+  
+          // This will return undefined if this key is not in this body
+          const expectedKey = safeKeys.getKey(body, name);
+  
+          if (expectedKey == key)
+            return { ...properties, [name as string]: value };
+          else
+            return properties;
+        }, {});
+  
+        return { annotation: props.annotation.id, ...body, properties } as unknown as AnnotationBody;
+      });
+  
+      const noteBody: AnnotationBody = formState[noteKey] && createBody(annotation, {
+        type: 'TextualBody',
+        purpose: 'commenting',
+        value: formState[noteKey]
+      });
+  
+      let updatedAnnotation = {
+        ...anno.getAnnotation(annotation.id),
+        bodies: noteBody 
+          ? [...updatedTags, ...otherBodies, noteBody ]
+          : [...updatedTags, ...otherBodies ]
+      };
+  
+      anno.updateAnnotation(updatedAnnotation);
+    } else {
+      setShowValidationErrors(true);
+    }
   }
 
-  return schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
-    <form className="mt-2 px-1" onSubmit={onSubmit}>
-      <EntityProperties 
-        body={schemaBodies[0].body}
-        entityType={schemaBodies[0].entityType}
-        safeKeys={safeKeys}
-        values={formState} 
-        onChange={onChange} />
+  return (
+    <PropertyValidation
+      showErrors={showValidationErrors}
+      onChange={setIsValid}>
 
-      <CurrentSelectionNote
-        id={noteKey}
-        value={formState[noteKey]}
-        onChange={value => onChange(noteKey, value)} />
+      {schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
+          <form className="mt-2 px-1" onSubmit={onSubmit}>
+            <EntityProperties 
+              body={schemaBodies[0].body}
+              entityType={schemaBodies[0].entityType}
+              safeKeys={safeKeys}
+              values={formState} 
+              onChange={onChange} />
 
-      <Button className="mt-3 h-8" type="submit">Save</Button>
-    </form>
-  ) : (
-    <form className="mt-2 px-1" onSubmit={onSubmit}>
-      {schemaBodies.map(({ body, entityType }) => (
-        <div key={body.id} className="pb-4">
-          <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
-            {entityType.label}
-          </h3>
+            <CurrentSelectionNote
+              id={noteKey}
+              value={formState[noteKey]}
+              onChange={value => onChange(noteKey, value)} />
 
-          <EntityProperties
-            body={body}
-            entityType={entityType}
-            safeKeys={safeKeys}
-            values={formState}
-            onChange={onChange} />
-        </div>
-      ))}
+            <Button className="mt-3 h-8" type="submit">Save</Button>
+          </form>
+      ) : (
+        <form className="mt-2 px-1" onSubmit={onSubmit}>
+          {schemaBodies.map(({ body, entityType }) => (
+            <div key={body.id} className="pb-4">
+              <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
+                {entityType.label}
+              </h3>
 
-      <CurrentSelectionNote
-        id={noteKey}
-        value={formState[noteKey]}
-        onChange={value => onChange(noteKey, value)} />
+              <EntityProperties
+                body={body}
+                entityType={entityType}
+                safeKeys={safeKeys}
+                values={formState}
+                onChange={onChange} />
+            </div>
+          ))}
 
-      <Button className="mt-0 h-8" type="submit">Save</Button>
-    </form>
-  ) : (
-    <form className="mt-2 px-1" onSubmit={onSubmit}>
-      <CurrentSelectionNote
-        defaultOpen
-        id={noteKey}
-        value={formState[noteKey]}
-        onChange={value => onChange(noteKey, value)} />
+          <CurrentSelectionNote
+            id={noteKey}
+            value={formState[noteKey]}
+            onChange={value => onChange(noteKey, value)} />
 
-      <Button className="mt-2 h-8" type="submit">Save</Button>
-    </form>
-  );
+          <Button className="mt-0 h-8" type="submit">Save</Button>
+        </form>
+      ) : (
+        <form className="mt-2 px-1" onSubmit={onSubmit}>
+          <CurrentSelectionNote
+            defaultOpen
+            id={noteKey}
+            value={formState[noteKey]}
+            onChange={value => onChange(noteKey, value)} />
 
+          <Button className="mt-2 h-8" type="submit">Save</Button>
+        </form>
+      )}
+
+    </PropertyValidation>
+  )
+  
 }
