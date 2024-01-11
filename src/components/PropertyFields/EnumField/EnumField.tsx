@@ -27,15 +27,10 @@ export const EnumField = (props: EnumFieldProps) => {
 
   const { id, definition, value, onChange } = props;
 
-  // const isValid = !validate || !definition.required || value;
-
-  // const error = !isValid && 'required';
-
   return (
     <BasePropertyField
       id={id}
-      definition={definition}
-      error={''}>
+      definition={definition}>
 
       <Select 
         value={value}

@@ -3,7 +3,6 @@ import { Info } from 'lucide-react';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
-import { cn } from '@/ui/utils';
 import { InheritedFrom } from '../InheritedFrom';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 import {
@@ -34,8 +33,6 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const input = useRef<HTMLInputElement>();
 
   const value = props.onChange ? props.value || '' : props.value;
-  
-  const isValid = !(definition.required && !value);
 
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
@@ -44,17 +41,12 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const onCloseDialog = () =>
     setTimeout(() => input.current.focus(), 1);
 
-  const className = cn(props.className, (isValid ? 'mt-0.5' : 'mt-0.5 border-red-500'));
-
   return (
     <div className="mb-8">
       <div className="ml-0.5 flex justify-between items-center pr-1">
         <div className="flex flex-shrink-0">
           <Label htmlFor={id} >
             {definition.name}
-            {!isValid && (
-              <span className="text-xs text-red-600 ml-1">required</span>
-            )}
           </Label> 
 
           {definition.description && (
@@ -87,7 +79,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
       <Input
         ref={input}
         id={id} 
-        className={className} 
+        className="mt-0.5"
         value={value} 
         onChange={onChange} />
     </div>
