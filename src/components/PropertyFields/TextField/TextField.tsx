@@ -2,7 +2,6 @@ import { ChangeEvent } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
-import { cn } from '@/ui/utils';
 
 interface TextFieldProps {
 
@@ -12,8 +11,6 @@ interface TextFieldProps {
 
   definition: PropertyDefinition;
 
-  validate?: boolean;
-
   value?: string;
 
   onChange?(value: string): void;
@@ -22,7 +19,7 @@ interface TextFieldProps {
 
 export const TextField = (props: TextFieldProps) => {
 
-  const { id, definition, validate } = props;
+  const { id, definition } = props;
 
   const value = props.onChange ? props.value || '' : props.value;
 
@@ -30,22 +27,19 @@ export const TextField = (props: TextFieldProps) => {
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const isValid = !(validate && definition.required && !value);
-
-  const className = cn(props.className, (isValid ? 'mt-0.5' :  "mt-0.5 border-red-500"))
+  // const className = cn(props.className, (isValid ? 'mt-0.5' :  "mt-0.5 border-red-500"));
+  const className = 'mt-0.5';
 
   return (
     <BasePropertyField 
       id={id}
-      definition={definition}
-      error={!isValid && 'required'}>
+      definition={definition}>
 
       <Input 
         id={id} 
         className={className} 
         value={value} 
         onChange={onChange} />
-
     </BasePropertyField>
   )
 

@@ -17,8 +17,6 @@ interface EnumFieldProps {
 
   definition: EnumPropertyDefinition;
 
-  validate?: boolean;
-
   value?: string;
 
   onChange?(value: string): void;
@@ -27,17 +25,17 @@ interface EnumFieldProps {
 
 export const EnumField = (props: EnumFieldProps) => {
 
-  const { id, definition, value, validate, onChange } = props;
+  const { id, definition, value, onChange } = props;
 
-  const isValid = !validate || !definition.required || value;
+  // const isValid = !validate || !definition.required || value;
 
-  const error = !isValid && 'required';
+  // const error = !isValid && 'required';
 
   return (
     <BasePropertyField
       id={id}
       definition={definition}
-      error={error}>
+      error={''}>
 
       <Select 
         value={value}

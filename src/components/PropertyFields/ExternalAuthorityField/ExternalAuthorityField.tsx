@@ -21,8 +21,6 @@ interface ExternalAuthorityFieldProps {
 
   definition: ExternalAuthorityPropertyDefinition;
 
-  validate?: boolean;
-
   value?: string;
 
   onChange?(value: string): void;
@@ -31,13 +29,13 @@ interface ExternalAuthorityFieldProps {
 
 export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
-  const { id, definition, validate } = props;
+  const { id, definition } = props;
 
   const input = useRef<HTMLInputElement>();
 
   const value = props.onChange ? props.value || '' : props.value;
   
-  const isValid = !(validate && definition.required && !value);
+  const isValid = !(definition.required && !value);
 
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 

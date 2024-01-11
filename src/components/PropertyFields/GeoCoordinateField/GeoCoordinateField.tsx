@@ -14,8 +14,6 @@ interface GeoCoordinateFieldProps {
 
   definition: PropertyDefinition;
 
-  validate?: boolean;
-
   value?: [number, number];
 
   onChange?(value: [number, number]): void;
@@ -24,7 +22,7 @@ interface GeoCoordinateFieldProps {
 
 export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
 
-  const { id, definition, value, validate } = props;
+  const { id, definition, value } = props;
 
   const [latStr, setLatStr] = useState(value ? value[0].toString() : '');
 
@@ -38,10 +36,10 @@ export const GeoCoordinateField = (props: GeoCoordinateFieldProps) => {
       props.onChange && props.onChange([lat, lng]);
   }, [latStr, lngStr]);
 
-  const error = validate && definition.required && !value 
+  const error = definition.required && !value 
     ? 'required' : !value && 'must be a valid geo-coordinate';
 
-  const className = validate && error 
+  const className = error 
     ? cn(props.className, 'border-red-500')
     : props.className
 

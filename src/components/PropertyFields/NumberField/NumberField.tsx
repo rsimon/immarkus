@@ -1,7 +1,8 @@
-import { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
+import { useValidation } from '../PropertyValidation';
 import { cn } from '@/ui/utils';
 
 interface NumberFieldProps {
@@ -12,9 +13,7 @@ interface NumberFieldProps {
 
   definition: PropertyDefinition;
 
-  validate?: boolean;
-
-  value?: string;
+  value?: number;
 
   onChange?(value: number): void;
 
@@ -22,20 +21,25 @@ interface NumberFieldProps {
 
 export const NumberField = (props: NumberFieldProps) => {
 
-  const { id, definition, validate } = props;
+  const { id, definition } = props;
 
-  const value = props.onChange ? props.value || '' : props.value;
+  const [value, setValue] = useState(props.value ? props.value.toString() : '');
 
-  const onChange = props.onChange 
-    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(parseFloat(evt.target.value)) 
-    : undefined;
+  const { showErrors, isValid } = useValidation((str: string) => {
+    return !str || !isNaN(parseFloat(str));
+  }, [value]);
 
-  const isValid = !validate || !isNaN(parseFloat(value));
+  useEffect(() => {
+    const num = parseFloat(value);
 
-  const error = definition.required && !value ?
-    'required' : !isValid && 'must be a number';
+    if (!isNaN(num))
+      props.onChange && props.onChange(num);
+  }, [value]);
 
-  const className = cn(props.className, (isValid ? 'mt-0.5' : 'mt-0.5 border-red-500'));
+  const error = (showErrors && !isValid) 
+    ? value ? 'must be a number' : 'required' : '';
+
+  const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 
   return (
     <BasePropertyField
@@ -47,8 +51,7 @@ export const NumberField = (props: NumberFieldProps) => {
         id={id} 
         className={className} 
         value={value} 
-        onChange={onChange} />
-        
+        onChange={evt => setValue(evt.target.value)} />
     </BasePropertyField>
   )
 

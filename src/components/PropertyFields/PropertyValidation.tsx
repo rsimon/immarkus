@@ -46,7 +46,7 @@ export const PropertyValidation = (props: PropertyValidationProps) => {
 
 }
 
-const useAbstractValidation = () => {
+export const useAbstractValidation = () => {
   const { showErrors, setValidationStates } = useContext(PropertyValidationContext);
 
   const [isValid, _setIsValid] = useState(false);
@@ -71,14 +71,10 @@ export const useValidation = <T extends any[]>(
   validationFunction: ValidationFunction<T>,
   args: T
 ) => {
-
   const { showErrors, isValid, setIsValid } = useAbstractValidation();
 
-  useEffect(() => {
-    setIsValid(validationFunction(...args));
-  }, [setIsValid, validationFunction, args]);
+  useEffect(() => setIsValid(validationFunction(...args)), [...args]);
 
-  return { showErrors, isValid, setIsValid };
-
+  return { showErrors, isValid };
 }
 

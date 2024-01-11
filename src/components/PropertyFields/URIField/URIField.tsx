@@ -25,7 +25,7 @@ export const URIField = (props: URIFieldProps) => {
 
   const value = props.onChange ? props.value || '' : props.value;
 
-  const { showErrors, isValid, setIsValid } = useValidation((str: string) => {
+  const { showErrors, isValid } = useValidation((str: string) => {
     let url: URL;
   
     try {
@@ -41,10 +41,10 @@ export const URIField = (props: URIFieldProps) => {
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const error = definition.required && !value ? 
-    'required' : !isValid && 'must be a URI';
+  const error = (showErrors && !isValid) 
+    ? value ? 'must be a URI' : 'required' : '';
 
-  const className = cn(props.className, (showErrors && !isValid ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
+  const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 
   return (
     <BasePropertyField
