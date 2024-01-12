@@ -1,5 +1,5 @@
 import { PropertyDefinition } from '@/model';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Spline } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { cn } from '@/ui/utils';
 
 interface PropertyTypeIconProps {
@@ -18,27 +18,30 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
 
   return ( 
     <div className="inline">
-      {type === 'text' ? (
-        <CaseSensitive 
-          className={cn('w-4.5 h-5 relative top-[1px]', className)} />
-      ) : type === 'number' ? (
-        <Hash 
-          className={cn('w-4.5 h-3.5 px-0.5', className)} />
-      ) : type === 'enum' ? (
+      {type === 'enum' ? (
         <List 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
-      ) : type === 'uri' ? (
-        <Link2 
-          className={cn('w-4.5 h-3.5 px-0.5', className)} />
+      ) : type === 'external_authority' ? (
+        <Database
+          className={cn('w-4.5 h-3.5 -mt-[2px] px-0.5', className)} />
       ) : type === 'geocoordinate' ? (
         <MapPin 
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
+      ) : type === 'measurement' ? (
+        <Ruler 
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
+      ) : type === 'number' ? (
+        <Hash 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'relation' ? (
         <Spline
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
-      ) : type === 'external_authority' && (
-        <Database
-          className={cn('w-4.5 h-3.5 -mt-[2px] px-0.5', className)} />
+      ) : type === 'text' ? (
+        <CaseSensitive 
+          className={cn('w-4.5 h-5 relative top-[1px]', className)} />
+      ) : type === 'uri' && (
+        <Link2 
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       )}
     </div>
   )

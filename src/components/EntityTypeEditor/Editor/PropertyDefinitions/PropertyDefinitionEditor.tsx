@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Spline } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -95,6 +95,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 </SelectItem>
                 <SelectItem value="geocoordinate">
                   <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> Geo-coordinate
+                </SelectItem>
+                <SelectItem value="measurement">
+                  <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> Measurement
                 </SelectItem>
                 <SelectItem value="relation">
                   <Spline className="inline w-4 h-4 mr-1.5 mb-0.5" /> Relation

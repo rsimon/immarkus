@@ -5,6 +5,7 @@ import {
   EnumField,
   ExternalAuthorityField,
   GeoCoordinateField, 
+  MeasurementField,
   NumberField, 
   PropertyValidation, 
   TextField, 
@@ -52,6 +53,11 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 definition={preview} />
             ) : preview.type === 'geocoordinate' ? (
               <GeoCoordinateField 
+                id={preview.name}
+                className="bg-white"
+                definition={preview} />
+            ) : preview.type === 'measurement' ? (
+              <MeasurementField 
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />
