@@ -9,6 +9,7 @@ import {
   EnumField,
   ExternalAuthorityField, 
   GeoCoordinateField, 
+  MeasurementField, 
   NumberField, 
   PropertyValidation, 
   TextField, 
@@ -94,6 +95,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                 <GeoCoordinateField 
                   id={property.name}
                   className="bg-white" 
+                  definition={property} />
+              ) : property.type === 'measurement' ? (
+                <MeasurementField 
+                  id={property.name}
+                  className="bg-white"
                   definition={property} />
               ) : property.type === 'number' ? (
                 <NumberField 

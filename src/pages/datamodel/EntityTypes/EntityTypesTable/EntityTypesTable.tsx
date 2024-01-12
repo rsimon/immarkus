@@ -1,4 +1,4 @@
-import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { EntityTypeActions } from '../EntityTypeActions';
@@ -66,6 +66,8 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
                       <Database className="w-3 h-3 mr-1" />
                     ) : property.type === 'geocoordinate' ? (
                       <MapPin className="w-3 h-3 mr-0.5" />
+                    ) : property.type === 'measurement' ? (
+                      <Ruler className="w-3 h-3 mr-1" />
                     ) : property.type === 'number' ? (
                       <Hash className="w-3 h-3 mr-0.5" />
                     ) : property.type === 'text' ? (

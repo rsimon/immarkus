@@ -6,6 +6,7 @@ import {
   EnumField,
   ExternalAuthorityField, 
   GeoCoordinateField, 
+  MeasurementField, 
   NumberField, 
   TextField, 
   URIField 
@@ -54,6 +55,12 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'geocoordinate' ? (
             <GeoCoordinateField
+              id={key}
+              definition={property} 
+              value={props.values[key]}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'measurement' ? (
+            <MeasurementField
               id={key}
               definition={property} 
               value={props.values[key]}
