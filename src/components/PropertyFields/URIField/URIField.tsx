@@ -29,6 +29,9 @@ export const URIField = (props: URIFieldProps) => {
   const value = props.onChange ? props.value || '' : props.value;
 
   const { showErrors, isValid } = useValidation((str: string) => {
+    if (!str)
+      return true;
+
     let url: URL;
   
     try {
@@ -36,7 +39,7 @@ export const URIField = (props: URIFieldProps) => {
     } catch (_) {
       return false;  
     }
-  
+
     return url.protocol === 'http:' || url.protocol === 'https:';
   }, [value]);
 
@@ -63,10 +66,10 @@ export const URIField = (props: URIFieldProps) => {
           onChange={onChange} 
           onBlur={() => setEditable(false)} />
       ) : (
-        <div className={cn('flex h-9 w-full shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
+        <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
           <a 
             href={value} 
-            className="flex-grow text-sky-700 hover:underline"
+            className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
             target="_blank">{value}</a>
 
           <button 
