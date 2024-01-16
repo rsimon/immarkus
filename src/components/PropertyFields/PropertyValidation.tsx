@@ -49,7 +49,7 @@ export const PropertyValidation = (props: PropertyValidationProps) => {
 export const useAbstractValidation = () => {
   const { showErrors, setValidationStates } = useContext(PropertyValidationContext);
 
-  const [isValid, _setIsValid] = useState(false);
+  const [isValid, _setIsValid] = useState(true);
 
   const id = useMemo(() => uuidv4(), []);
 
@@ -59,7 +59,7 @@ export const useAbstractValidation = () => {
   }, [id]);
 
   useEffect(() => {
-    setValidationStates(s => ({...s, [id]: false }))
+    setValidationStates(s => ({...s, [id]: true }))
   }, [id]);
 
   return { showErrors, isValid, setIsValid };

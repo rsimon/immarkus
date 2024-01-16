@@ -29,6 +29,9 @@ export const URIField = (props: URIFieldProps) => {
   const value = props.onChange ? props.value || '' : props.value;
 
   const { showErrors, isValid } = useValidation((str: string) => {
+    if (!str)
+      return true;
+
     let url: URL;
   
     try {
@@ -36,7 +39,7 @@ export const URIField = (props: URIFieldProps) => {
     } catch (_) {
       return false;  
     }
-  
+
     return url.protocol === 'http:' || url.protocol === 'https:';
   }, [value]);
 
