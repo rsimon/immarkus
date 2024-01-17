@@ -24,8 +24,8 @@
     "vite": "^5.0.10"
   },
   "dependencies": {
-    "@annotorious/react": "3.0.0-rc.17",
-    "@annotorious/react-manifold": "3.0.0-rc.17",
+    "@annotorious/react": "3.0.0-rc.18",
+    "@annotorious/react-manifold": "3.0.0-rc.18",
     "@annotorious/selector-pack": "3.0.0-rc.17",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
