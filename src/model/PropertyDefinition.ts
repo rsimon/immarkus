@@ -19,7 +19,6 @@ export type PrimitivePropertyDefinition = BasePropertyDefinition & {
   type: 'geocoordinate' 
     | 'measurement'
     | 'number'
-    | 'text'
     | 'uri'
 
 }
@@ -40,8 +39,17 @@ export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
 
 }
 
+export type TextPropertyDefinition = BasePropertyDefinition & {
+
+  type: 'text',
+
+  size?: 'L'
+
+}
+
 export type PropertyDefinition = PrimitivePropertyDefinition 
   | EnumPropertyDefinition
-  | ExternalAuthorityPropertyDefinition;
+  | ExternalAuthorityPropertyDefinition
+  | TextPropertyDefinition;
 
 

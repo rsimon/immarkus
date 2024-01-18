@@ -1,8 +1,9 @@
 import { ChangeEvent } from 'react';
-import { PropertyDefinition } from '@/model';
+import { TextPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
-import { BasePropertyField } from '../BasePropertyField';
+import { Textarea } from '@/ui/Textarea';
 import { cn } from '@/ui/utils';
+import { BasePropertyField } from '../BasePropertyField';
 
 interface TextFieldProps {
 
@@ -10,7 +11,7 @@ interface TextFieldProps {
 
   className?: string;
 
-  definition: PropertyDefinition;
+  definition: TextPropertyDefinition;
 
   value?: string;
 
@@ -25,10 +26,9 @@ export const TextField = (props: TextFieldProps) => {
   const value = props.onChange ? props.value || '' : props.value;
 
   const onChange = props.onChange 
-    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
+    ? (evt: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  // const className = cn(props.className, (isValid ? 'mt-0.5' :  "mt-0.5 border-red-500"));
   const className = cn(props.className,'mt-0.5');
 
   return (
@@ -36,11 +36,19 @@ export const TextField = (props: TextFieldProps) => {
       id={id}
       definition={definition}>
 
-      <Input 
-        id={id} 
-        className={className} 
-        value={value} 
-        onChange={onChange} />
+      {definition.size === 'L' ? (
+        <Textarea 
+          id={id} 
+          className={className} 
+          value={value} 
+          onChange={onChange} />
+      ) : (
+        <Input 
+          id={id} 
+          className={className} 
+          value={value} 
+          onChange={onChange} />
+      )}
     </BasePropertyField>
   )
 

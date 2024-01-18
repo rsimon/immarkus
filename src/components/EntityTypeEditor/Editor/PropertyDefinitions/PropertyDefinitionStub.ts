@@ -7,6 +7,8 @@ export type PropertyDefinitionStub = {
 
   description?: string,
 
+  size?: 'L',
+
   type?: PropertyDefinition['type'],
 
   required?: boolean,

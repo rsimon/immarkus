@@ -115,21 +115,21 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
       onChange={setIsValid}>
 
       {schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
-          <form className="mt-2 px-1" onSubmit={onSubmit}>
-            <EntityProperties 
-              body={schemaBodies[0].body}
-              entityType={schemaBodies[0].entityType}
-              safeKeys={safeKeys}
-              values={formState} 
-              onChange={onChange} />
+        <form className="mt-2 px-1" onSubmit={onSubmit}>
+          <EntityProperties 
+            body={schemaBodies[0].body}
+            entityType={schemaBodies[0].entityType}
+            safeKeys={safeKeys}
+            values={formState} 
+            onChange={onChange} />
 
-            <CurrentSelectionNote
-              id={noteKey}
-              value={formState[noteKey]}
-              onChange={value => onChange(noteKey, value)} />
+          <CurrentSelectionNote
+            id={noteKey}
+            value={formState[noteKey]}
+            onChange={value => onChange(noteKey, value)} />
 
-            <Button className="mt-3 h-8" type="submit">Save</Button>
-          </form>
+          <Button className="mt-3 h-8" type="submit">Save</Button>
+        </form>
       ) : (
         <form className="mt-2 px-1" onSubmit={onSubmit}>
           {schemaBodies.map(({ body, entityType }) => (
