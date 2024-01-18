@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+import { TextOptions } from './TextOptions';
 
 interface PropertyDefinitionEditorProps {
 
@@ -109,9 +110,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <EnumOptions 
               definition={edited}
               onUpdate={setEdited} />
-          ) : edited.type === 'external_authority' && (
+          ) : edited.type === 'external_authority' ? (
             <ExternalAuthorityOptions 
               definition={edited} 
+              onUpdate={setEdited} />
+          ) : edited.type === 'text' && (
+            <TextOptions
+              definition={edited}
               onUpdate={setEdited} />
           )}
 
