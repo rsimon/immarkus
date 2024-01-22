@@ -43,7 +43,7 @@ export const EnumOptions = (props: EnumOptionsProps) => {
                 <span>{option}</span>
 
                 <Button 
-                  onClick={() => onRemoveOption(option)}
+                  onClick={onRemoveOption(option)}
                   className="align-middle w-5 h-5 my-0.5"
                   variant="ghost"
                   type="button"
