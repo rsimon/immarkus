@@ -14,8 +14,11 @@ const repairLegacyAuthorityDefinitions = (types: EntityType[]): EntityType[] =>
       return {
         ...e,
         properties: e.properties.map(p => p.type === 'external_authority'
-          // @ts-ignore
-          ? { ...p, authorities: p.authorities.map(a => typeof myVar === 'string' ? a : a.name) }
+          ? { 
+              ...p, 
+              // @ts-ignore
+              authorities: p.authorities.map(a => typeof a === 'string' ? a : a?.name).filter(Boolean)
+            }
           : p)
       } as EntityType;
     } else {
@@ -28,7 +31,7 @@ const repairLegacyAuthorityDefinitions = (types: EntityType[]): EntityType[] =>
  * Basic data model integrity: Entity Classes whose `parentId` field
  * points to a non-existing type are turned into root classes.
  */
-const removeMissingParentIds = (types: EntityType[]): EntityType[] => {
+export const removeMissingParentIds = (types: EntityType[]): EntityType[] => {
   const ids = new Set(types.map(t => t.id));
 
   return types.map(t => !t.parentId || ids.has(t.parentId) ? t : {
@@ -37,7 +40,7 @@ const removeMissingParentIds = (types: EntityType[]): EntityType[] => {
   });
 }
 
-export const repair = (types: EntityType[]): EntityType[] => {
+export const repairDataModel = (types: EntityType[]): EntityType[] => {
   let modernized = repairLegacyAuthorityDefinitions(types);
 
   modernized = removeMissingParentIds(modernized);

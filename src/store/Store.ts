@@ -2,6 +2,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
+import { repairAnnotations } from './integrity/annotationIntegrity';
 
 export interface Store {
 
@@ -127,7 +128,7 @@ export const loadStore = (
 
         readJSONFile<W3CAnnotation[]>(file)
           .then(data => {
-            const annotations = data || [];
+            const annotations = repairAnnotations(data || [], datamodel);
             cachedAnnotations.set(imageId, annotations);
             resolve(annotations);
           })
