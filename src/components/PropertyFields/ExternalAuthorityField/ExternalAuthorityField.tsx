@@ -41,9 +41,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const onCloseDialog = () => {
-    setEditable(true);
-  }
+  const onCloseDialog = () => setEditable(true);
 
   return (
     <div className="mb-8">
@@ -87,7 +85,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           className={cn(props.className, 'mt-0.5')}
           value={value} 
           onChange={onChange} 
-          onBlur={() => setEditable(false)} />
+          onBlur={() => setEditable(!isURI)} />
       ) : (
         <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
           <a 
