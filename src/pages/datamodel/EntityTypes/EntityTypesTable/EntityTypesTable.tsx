@@ -1,15 +1,13 @@
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
-import { EntityType } from '@/model';
+import { CaseSensitive, ChevronRight, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
+import { TreeNode } from 'primereact/treenode';
+import { TreeTable } from 'primereact/treetable';
+import { Column } from 'primereact/column';
+import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
+import { Button } from '@/ui/Button';
 import { EntityTypeActions } from '../EntityTypeActions';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/ui/Table';
+
+import './EntityTypesTable.css';
 
 interface EntityTypesTableProps {
 
@@ -23,73 +21,120 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const model = useDataModel();
 
-  return (
-    <div className="rounded-md border mt-6">
-      <Table>
-        <TableHeader className="text-xs">
-          <TableRow>
-            <TableHead colSpan={2} className="pl-3 pr-2 whitespace-nowrap">Entity Class</TableHead>
-            <TableHead className="px-2 whitespace-nowrap">Display Name</TableHead>
-            <TableHead className="px-2 whitespace-nowrap">Parent Class</TableHead>
-            <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>
-            <TableHead className="px-2 whitespace-nowrap w-[300px]">Properties</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
+  const toTreeNode = (type: EntityType) => ({
+    id: type.id,
+    key: type.id,
+    label: type.id,
+    data: { ...type },
+    get children() {
+      return model.getChildTypes(type.id).map(toTreeNode)
+    }
+  })
 
-        <TableBody>
-          {model.entityTypes.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={6}
-                className="h-24 text-center text-muted-foreground">
-                No entity classes
-              </TableCell>
-            </TableRow>
-          ) : model.entityTypes.map(e => (
-            <TableRow key={e.id} className="text-xs">
-              <TableCell className="pl-2 pr-1">
-                <span className="pip" style={{ backgroundColor: e.color }} />
-              </TableCell>
-              <TableCell className="whitespace-nowrap py-1 pl-0.5 pr-2.5">{e.id}</TableCell>
-              <TableCell className="font-medium p-2 first-letter:whitespace-nowrap py-1 px-2">{e.label}</TableCell>
-              <TableCell className="py-1 px-2">{e.parentId}</TableCell>
-              <TableCell className="py-1 px-2">{e.description}</TableCell>
-              <TableCell className="py-1 px-2">
-                {e.properties?.map(property => (
-                  <span key={property.name}
-                    className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
-                      mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
-                    {property.type === 'enum' ? (
-                      <List className="w-3 h-3 mr-0.5" />
-                    ): property.type === 'external_authority' ? (
-                      <Database className="w-3 h-3 mr-1" />
-                    ) : property.type === 'geocoordinate' ? (
-                      <MapPin className="w-3 h-3 mr-0.5" />
-                    ) : property.type === 'measurement' ? (
-                      <Ruler className="w-3 h-3 mr-1" />
-                    ) : property.type === 'number' ? (
-                      <Hash className="w-3 h-3 mr-0.5" />
-                    ) : property.type === 'text' ? (
-                      <CaseSensitive className="w-4 h-4 mr-0.5" />
-                    ) : property.type === 'uri' ? (
-                      <Link2 className="w-3 h-3 mr-0.5" />
-                    ) : null}
-                    {property.name}
-                  </span>    
-                ))}
-              </TableCell>
-              <TableCell className="text-right py-1 px-2">
-                <EntityTypeActions 
-                  onEditEntityType={() => props.onEditEntityType(e)} 
-                  onDeleteEntityType={() => props.onDeleteEntityType(e)} />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+  const nodes: TreeNode[] = model.getRootTypes().map(toTreeNode);
 
+  const togglerTemplate = (node: TreeNode, options: any) => 
+    model.hasChildTypes(node.data.id) ? (
+      <Button 
+        variant="ghost" 
+        size="icon"
+        style={{ 
+          marginLeft: `${options.props.level * 8}px`
+        }}
+        className={`ml-0.5 rounded-full ${options.containerClassName}`} onClick={options.onClick}>
+        <ChevronRight 
+          style={{ transform: options.expanded ? 'rotateZ(90deg)' : undefined}}
+          className="h-4 w-4 mb-0.5" />
+      </Button>
+    ) : (
+      <span className="inline-block" style={{ width: `${options.props.level * 8 +  40}px`}} />
+    );
+
+  const idTemplate = (node: TreeNode) => (
+    <span>
+      <span className="pip ml-1 mr-1.5" style={{ backgroundColor: node.data.color }} />
+      <span>{node.data.id}</span>
+    </span>
   )
 
+  const displayNameTemplate = (node: TreeNode) => (
+    <span className="font-medium">{node.data.label}</span>
+  )
+
+  const actionsTemplate = (node: TreeNode) => (
+    <span className="text-right py-1 px-2">
+      <EntityTypeActions 
+        onEditEntityType={() => props.onEditEntityType(node.data)} 
+        onDeleteEntityType={() => props.onDeleteEntityType(node.data)} />
+    </span>
+  )
+
+  const propertiesTemplate = (node: TreeNode) => (
+    <span>
+      {node.data.properties?.map((property: PropertyDefinition) => (
+        <span key={property.name}
+          className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
+            mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
+          {property.type === 'enum' ? (
+            <List className="w-3 h-3 mr-0.5" />
+          ): property.type === 'external_authority' ? (
+            <Database className="w-3 h-3 mr-1" />
+          ) : property.type === 'geocoordinate' ? (
+            <MapPin className="w-3 h-3 mr-0.5" />
+          ) : property.type === 'measurement' ? (
+            <Ruler className="w-3 h-3 mr-1" />
+          ) : property.type === 'number' ? (
+            <Hash className="w-3 h-3 mr-0.5" />
+          ) : property.type === 'text' ? (
+            <CaseSensitive className="w-4 h-4 mr-0.5" />
+          ) : property.type === 'uri' ? (
+            <Link2 className="w-3 h-3 mr-0.5" />
+          ) : null}
+          {property.name}
+        </span>    
+      ))}
+    </span>
+  )
+
+  const headerClass = "pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left";
+
+  return (
+    <div className="relative rounded-md border mt-6 w-full overflow-auto">
+      <TreeTable 
+        value={nodes} 
+        className="w-full caption-bottom text-sm"
+        togglerTemplate={togglerTemplate}
+        emptyMessage={(
+          <div className="h-24 flex items-center justify-center text-center text-muted-foreground">
+            No entity classes
+          </div>
+        )}>
+
+        <Column
+          expander
+          header="Entity Class" 
+          headerClassName={headerClass}
+          body={idTemplate} />
+
+        <Column 
+          header="Display Name" 
+          headerClassName={headerClass}
+          body={displayNameTemplate} />
+
+        <Column 
+        header="Description"
+        headerClassName={headerClass}
+        field="description" />
+
+        <Column
+          header="Properties"
+          headerClassName={headerClass}
+          body={propertiesTemplate} />
+
+        <Column 
+          body={actionsTemplate} />
+      </TreeTable>
+    </div>
+  )
+  
 }

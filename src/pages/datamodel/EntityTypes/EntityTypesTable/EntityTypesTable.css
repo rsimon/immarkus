@@ -1,0 +1,63 @@
+table.p-treetable-table {
+  table-layout: auto;
+}
+
+.p-treetable-table tr {
+  border-bottom: 1px solid #e2e8f0;
+  font-size: .8rem;
+}
+
+.p-treetable-table tr:hover {
+  background-color: rgba(241, 245, 249, 0.5);
+}
+
+.p-treetable-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.p-treetable-table th {
+  height: 3rem;
+  font-weight: 500;
+  overflow: hidden;
+  padding: 0 0.5rem;
+
+}
+
+.p-treetable-table th:first-child {
+  padding-left: 0.75rem;
+  white-space: nowrap;
+}
+
+.p-treetable-table td {
+  padding: 0.5rem 0.5rem;
+  vertical-align: middle;
+}
+
+.p-treetable-table td:first-child {
+  white-space: nowrap;
+}
+
+.p-treetable-table td:first-child {
+  position: relative;
+  top:1px;
+}
+
+.p-treetable-table td:nth-child(2) {
+  white-space: nowrap;
+}
+
+.p-treetable-table td:nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
+}
+
+.p-treetable-table td:nth-child(4) {
+  width: 240px;
+}
+
+.p-treetable-table td:last-child {
+  width: 80px;
+  text-align: right;
+}
