@@ -1,8 +1,9 @@
-import { ChangeEvent, useRef } from 'react';
-import { Info } from 'lucide-react';
+import { ChangeEvent, useState } from 'react';
+import { Info, Pen } from 'lucide-react';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { cn } from '@/ui/utils';
 import { InheritedFrom } from '../InheritedFrom';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 import {
@@ -30,16 +31,17 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition } = props;
 
-  const input = useRef<HTMLInputElement>();
-
   const value = props.onChange ? props.value || '' : props.value;
+
+  const isURI = value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value) : false;
+
+  const [editable, setEditable] = useState(!isURI);
 
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const onCloseDialog = () =>
-    setTimeout(() => input.current.focus(), 1);
+  const onCloseDialog = () => setEditable(true);
 
   return (
     <div className="mb-8">
@@ -76,12 +78,29 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
         </div> 
       </div> 
 
-      <Input
-        ref={input}
-        id={id} 
-        className="mt-0.5"
-        value={value} 
-        onChange={onChange} />
+      {editable ? (
+        <Input
+          autoFocus
+          id={id} 
+          className={cn(props.className, 'mt-0.5')}
+          value={value} 
+          onChange={onChange} 
+          onBlur={() => setEditable(!isURI)} />
+      ) : (
+        <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
+          <a 
+            href={value} 
+            className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
+            target="_blank">{value}</a>
+
+          <button 
+            onClick={() => setEditable(true)}
+            className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
+            <Pen
+              className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
+          </button>
+        </div>
+      )}
     </div>
   )
 
