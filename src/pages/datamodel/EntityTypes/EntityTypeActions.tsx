@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { EntityType } from '@/model';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { 
   DropdownMenu,
@@ -11,6 +13,8 @@ import {
 
 interface EntityTypeActionsProps {
 
+  entityType: EntityType;
+
   onEditEntityType(): void;
 
   onDeleteEntityType(): void;
@@ -19,7 +23,15 @@ interface EntityTypeActionsProps {
 
 export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
+  const datamodel = useDataModel();
+
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const children = datamodel.getChildTypes(props.entityType.id);
+
+  const message = children.length > 0
+    ? `This action will delete the entity class from the vocabulary. ${children.length} child class${children.length > 1 ? 'es' : ''} will be moved to the root of your data model.` 
+    : "This action will delete the entity class from the vocabulary."
 
   return (
     <>
@@ -44,7 +56,7 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label="This action will delete the entity class from the vocabulary. Existing annotations will not be affected."
+        label={message}
         onConfirm={props.onDeleteEntityType}
         onOpenChange={setConfirmDelete} />
     </>

@@ -2,7 +2,7 @@ import type { EntityType, PropertyDefinition } from '@/model';
 import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
-import { modernize } from './modernize';
+import { removeMissingParentIds, repairDataModel } from '../integrity';
 
 export interface DataModelStore extends DataModel, EntityTypeTree {
 
@@ -30,7 +30,7 @@ export const loadDataModel = (
 
   });
 
-  entityTypes = modernize(entityTypes);
+  entityTypes = repairDataModel(entityTypes);
 
   const tree = createEntityTypeTree(entityTypes);
 
@@ -79,7 +79,11 @@ export const loadDataModel = (
 
   const removeEntityType = (typeOrId: EntityType | string) => {
     const id = typeof typeOrId === 'string' ? typeOrId : typeOrId.id;
-    entityTypes = entityTypes.filter(e => e.id !== id);
+    const next = entityTypes.filter(e => e.id !== id);
+
+    // Repair the graph, in case the removed entity had children
+    entityTypes = removeMissingParentIds(next);
+
     return rebuildAndSave();
   }
 

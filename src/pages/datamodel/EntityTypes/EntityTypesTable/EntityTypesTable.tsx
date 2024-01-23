@@ -64,6 +64,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
   const actionsTemplate = (node: TreeNode) => (
     <span className="text-right py-1 px-2">
       <EntityTypeActions 
+        entityType={node.data}
         onEditEntityType={() => props.onEditEntityType(node.data)} 
         onDeleteEntityType={() => props.onDeleteEntityType(node.data)} />
     </span>
