@@ -10,7 +10,7 @@ interface IFrameAuthorityDialogProps {
 
   authority: ExternalAuthority;
 
-  onClose(): void;
+  onClose(identifier?: string): void;
 
 } 
 
@@ -27,6 +27,19 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   const debounced = useDebounce(query, 150);
 
   useEffect(() => {
+    const onMessage = (evt: MessageEvent) => {
+      const { data } = evt; // e.g. 'hvd_90032'
+      console.log(evt);
+    }
+
+    window.addEventListener('message', onMessage);
+
+    return () => {
+      window.removeEventListener('message', onMessage);
+    }
+  }, []);
+
+  useEffect(() => {
     setQuery('');
     setLoading(false);
   }, [open]);
@@ -39,7 +52,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   }, [debounced]);
 
   return (
-    <Dialog open={Boolean(props.authority)} onOpenChange={props.onClose}>
+    <Dialog open={Boolean(props.authority)} onOpenChange={() => props.onClose()}>
       <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
         <DialogTitle>{authority.name}</DialogTitle>
         <DialogDescription className="text-xs">
