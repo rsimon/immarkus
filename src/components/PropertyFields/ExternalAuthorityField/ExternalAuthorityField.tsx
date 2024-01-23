@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { Info, Pen } from 'lucide-react';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
@@ -28,6 +28,22 @@ interface ExternalAuthorityFieldProps {
 
 }
 
+const matchPattern = (input: string, pattern: string) => {
+  const markerIdx = pattern.indexOf('{{id}}');
+
+  if (markerIdx === -1)
+    return input === pattern;
+
+  const prefix = pattern.substring(0, markerIdx);
+  const suffix = pattern.substring(markerIdx + '{{id}}'.length);
+
+  if (input.startsWith(prefix) && input.endsWith(suffix)) {
+    const startIdx = prefix.length;
+    const endIdx = input.length - suffix.length;
+    return input.substring(startIdx, endIdx);    
+  }
+}
+
 export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition } = props;
@@ -42,6 +58,11 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const [editable, setEditable] = useState(!isURI);
 
+  useEffect(() => {
+    if (editable)
+     setTimeout(() => input.current.focus(), 1);
+  }, [editable])
+
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
@@ -55,9 +76,17 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     setTimeout(() => input.current.focus(), 1);
   }
 
+  const formatIdentifier = (id: string) => {
+    const matchedId = authorities.reduce((resolved, a) => {
+      return resolved || a.canonical_id_pattern && matchPattern(id, a.canonical_id_pattern)
+    }, undefined as string)
+
+    return matchedId || id;
+  }
+
   return (
     <div className="mb-8">
-      <div className="ml-0.5 flex justify-between items-center pr-1">
+      <div className="ml-0.5 mb-1.5 flex justify-between items-center pr-1">
         <div className="flex flex-shrink-0">
           <Label htmlFor={id} >
             {definition.name}
@@ -103,7 +132,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           <a 
             href={value} 
             className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
-            target="_blank">{value}</a>
+            target="_blank">{formatIdentifier(value)}</a>
 
           <button 
             onClick={() => setEditable(true)}

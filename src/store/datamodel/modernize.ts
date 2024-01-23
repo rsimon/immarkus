@@ -25,8 +25,6 @@ export const modernize = (types: EntityType[]): EntityType[] => {
     }
   });
 
-  console.log('modernized to ', modernized);
-
   return modernized;
 
 }

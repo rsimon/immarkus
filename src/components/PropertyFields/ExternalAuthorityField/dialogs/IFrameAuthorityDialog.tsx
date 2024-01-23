@@ -29,8 +29,12 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   useEffect(() => {
     const onMessage = (evt: MessageEvent) => {
       const { data } = evt;
-      if (data)
-        props.onClose(data);
+      if (data) {
+        if (authority.canonical_id_pattern)
+          props.onClose(authority.canonical_id_pattern.replace('{{id}}', data));
+        else
+          props.onClose(data);
+      }
     }
 
     window.addEventListener('message', onMessage);
@@ -73,7 +77,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
               <a 
                 className="px-4 h-full flex items-center 
                 hover:bg-slate-200/80 hover:disabled:bg-muted"
-                href={authority.url_pattern.replace('{{query}}', debounced)}
+                href={(authority.external_url_pattern || authority.search_pattern).replace('{{query}}', debounced)}
                 target="_blank">
                 <ExternalLink className="h-4 w-4" />
               </a>
@@ -104,7 +108,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
               style={{ opacity: loading ? 0 : 1}}
               className="absolute top-0 left-0 w-full h-full"
               onLoad={() => setLoading(false)}
-              src={authority.url_pattern.replace('{{query}}', debounced)} />
+              src={authority.search_pattern.replace('{{query}}', debounced)} />
           )}
         </div>
       </DialogContent>

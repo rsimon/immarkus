@@ -3,46 +3,48 @@
     "name": "TGAZ",
     "description": "China Historical GIS placename database",
     "type": "IFRAME",
-    "url_pattern": "https://dhumanities.github.io/markus/gis/index.html?n={{query}}"
+    "search_pattern": "https://dhumanities.github.io/markus/gis/index.html?n={{query}}",
+    "external_url_pattern": "https://maps.cga.harvard.edu/tgaz/placename?n={{query}}",
+    "canonical_id_pattern": "https://maps.cga.harvard.edu/tgaz/placename/{{id}}"
   }, {
     "name": "Wikipedia",
     "description": "The free encyclopedia (English)",
     "type": "IFRAME",
-    "url_pattern": "https://en.wikipedia.org/w/index.php?search={{query}}"
+    "search_pattern": "https://en.wikipedia.org/w/index.php?search={{query}}"
   },{
     "name": "Baidu",
     "description": "Baidu encyclopedia",
     "type": "IFRAME",
-    "url_pattern": "https://baike.baidu.com/search/none?word={{query}}"
+    "search_pattern": "https://baike.baidu.com/search/none?word={{query}}"
   },{
     "name": "CBDB",
     "description": "China Biographical Database Project",
     "type": "IFRAME",
-    "url_pattern": "https://cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
+    "search_pattern": "https://cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
   }, {
     "name": "DILA (Person)",
     "description": "Buddhist Studies Authority Database Project (Person Search)",
     "type": "IFRAME",
-    "url_pattern": "https://authority.dila.edu.tw/person/search.php?per={{query}}"
+    "search_pattern": "https://authority.dila.edu.tw/person/search.php?per={{query}}"
   }, {
     "name": "DILA (Place)",
     "description": "Buddhist Studies Authority Database Project (Place Search)",
     "type": "IFRAME",
-    "url_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}"
+    "search_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}"
   },{
     "name": "Manchu",
     "description": "Manchu texts and objects",
     "type": "IFRAME",
-    "url_pattern": "https://dh.chinese-empires.eu/comparativus/manchu/manchu.html?keyword={{query}}&output=html"
+    "search_pattern": "https://dh.chinese-empires.eu/comparativus/manchu/manchu.html?keyword={{query}}&output=html"
   },{
     "name": "Digerati",
     "description": "Korean personal names",
     "type": "IFRAME",
-    "url_pattern": "https://dh.chinese-empires.eu/comparativus/digerati/index.html?q={{query}}"
+    "search_pattern": "https://dh.chinese-empires.eu/comparativus/digerati/index.html?q={{query}}"
   },{
     "name": "Hucker Dictionary",
     "description": "A Dictionary of Official Titles in Imperial China",
     "type": "IFRAME",
-    "url_pattern": "https://dhumanities.github.io/markus/hucker/index.html?term={{query}}"
+    "search_pattern": "https://dhumanities.github.io/markus/hucker/index.html?term={{query}}"
   }]
 }

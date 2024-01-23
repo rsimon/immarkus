@@ -34,7 +34,7 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
     Boolean((props.definition.authorities || []).find(a => a === authority.name));
 
   const hasValidConfiguration = (a: ExternalAuthority) =>
-    Boolean(a.name) && a.url_pattern?.includes('{{query}}') && a.type === 'IFRAME';
+    Boolean(a.name) && a.search_pattern?.includes('{{query}}') && a.type === 'IFRAME';
 
   return (
     <div className="bg-muted px-2 py-3 mt-2 rounded-md text-sm">
