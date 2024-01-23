@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
+import { cn } from '@/ui/utils';
 
 interface ExternalAuthorityFieldProps {
 
@@ -79,7 +80,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
       <Input
         ref={input}
         id={id} 
-        className="mt-0.5"
+        className={cn(props.className, 'mt-0.5')}
         value={value} 
         onChange={onChange} />
     </div>
