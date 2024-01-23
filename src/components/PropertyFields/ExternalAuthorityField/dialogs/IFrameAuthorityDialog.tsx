@@ -28,8 +28,9 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
   useEffect(() => {
     const onMessage = (evt: MessageEvent) => {
-      const { data } = evt; // e.g. 'hvd_90032'
-      console.log(evt);
+      const { data } = evt;
+      if (data)
+        props.onClose(data);
     }
 
     window.addEventListener('message', onMessage);

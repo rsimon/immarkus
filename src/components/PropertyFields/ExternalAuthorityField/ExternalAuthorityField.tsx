@@ -41,7 +41,15 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
     : undefined;
 
-  const onCloseDialog = () => setEditable(true);
+  const onCloseDialog = (identifier?: string) => { 
+    console.log('dialog closed', identifier);
+    if (identifier && props.onChange) {
+      console.log('changing', identifier);
+      props.onChange(identifier);
+    }
+
+    setEditable(true);
+  }
 
   return (
     <div className="mb-8">

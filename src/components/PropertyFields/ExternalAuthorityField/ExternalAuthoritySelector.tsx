@@ -14,7 +14,7 @@ interface ExternalAuthoritySelectorProps {
 
   definition: ExternalAuthorityPropertyDefinition;
 
-  onCloseDialog(): void;
+  onCloseDialog(identifier?: string): void;
 
 }
 
@@ -31,9 +31,9 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
     setOpen(authorities.find(a => a.name === name));
   }
 
-  const onClose = () => {
+  const onClose = (identifier?: string) => {
     setOpen(undefined);
-    props.onCloseDialog();
+    props.onCloseDialog(identifier);
   }
 
   return ( 
