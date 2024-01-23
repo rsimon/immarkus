@@ -2,13 +2,13 @@ import { AlertCircle, AlertTriangle } from 'lucide-react';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { Checkbox } from '@/ui/Checkbox';
-import { PropertyDefinitionStub } from '../PropertyDefinitionStub';
+import { ExternalAuthorityPropertyDefinition } from '@/model';
 
 interface ExternalAuthorityOptionsProps {
 
-  definition: PropertyDefinitionStub;
+  definition: Partial<ExternalAuthorityPropertyDefinition>;
 
-  onUpdate(definition: PropertyDefinitionStub): void;
+  onUpdate(definition: Partial<ExternalAuthorityPropertyDefinition>): void;
 
 }
 
@@ -20,21 +20,21 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
     const next = checked 
       ? { // Add authority 
           ...props.definition,
-          authorities: [...(props.definition.authorities || []), authority]
+          authorities: [...(props.definition.authorities || []), authority.name]
         }
       : { // Remove authority
           ...props.definition,
-          authorities: (props.definition.authorities || []).filter(a => a.name !== authority.name)
+          authorities: (props.definition.authorities || []).filter(a => a !== authority.name)
         };
 
     props.onUpdate(next);
   }
 
   const isSelected = (authority: ExternalAuthority) =>
-    Boolean((props.definition.authorities || []).find(a => a.name === authority.name));
+    Boolean((props.definition.authorities || []).find(a => a === authority.name));
 
   const hasValidConfiguration = (a: ExternalAuthority) =>
-    Boolean(a.name) && a.url_pattern?.includes('{{query}}') && a.type === 'IFRAME';
+    Boolean(a.name) && a.search_pattern?.includes('{{query}}') && a.type === 'IFRAME';
 
   return (
     <div className="bg-muted px-2 py-3 mt-2 rounded-md text-sm">

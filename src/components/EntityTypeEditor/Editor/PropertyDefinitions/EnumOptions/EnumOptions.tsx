@@ -1,13 +1,13 @@
 import { Button } from '@/ui/Button';
 import { X } from 'lucide-react';
-import { PropertyDefinitionStub } from '../PropertyDefinitionStub';
 import { AddOption } from './AddOption';
+import { EnumPropertyDefinition } from '@/model';
 
 interface EnumOptionsProps {
 
-  definition: PropertyDefinitionStub;
+  definition: Partial<EnumPropertyDefinition>;
 
-  onUpdate(definition: PropertyDefinitionStub): void;
+  onUpdate(definition: Partial<EnumPropertyDefinition>): void;
 
 }
 

@@ -6,6 +6,10 @@ export interface ExternalAuthority {
 
   type: 'IFRAME';
 
-  url_pattern?: string;
+  search_pattern?: string;
+
+  external_url_pattern?: string;
+
+  canonical_id_pattern?: string;
 
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Database, ExternalLink } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
@@ -10,7 +10,7 @@ interface IFrameAuthorityDialogProps {
 
   authority: ExternalAuthority;
 
-  onClose(): void;
+  onClose(identifier?: string): void;
 
 } 
 
@@ -27,6 +27,24 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   const debounced = useDebounce(query, 150);
 
   useEffect(() => {
+    const onMessage = (evt: MessageEvent) => {
+      const { data } = evt;
+      if (data) {
+        if (authority.canonical_id_pattern)
+          props.onClose(authority.canonical_id_pattern.replace('{{id}}', data));
+        else
+          props.onClose(data);
+      }
+    }
+
+    window.addEventListener('message', onMessage);
+
+    return () => {
+      window.removeEventListener('message', onMessage);
+    }
+  }, []);
+
+  useEffect(() => {
     setQuery('');
     setLoading(false);
   }, [open]);
@@ -39,7 +57,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   }, [debounced]);
 
   return (
-    <Dialog open={Boolean(props.authority)} onOpenChange={props.onClose}>
+    <Dialog open={Boolean(props.authority)} onOpenChange={() => props.onClose()}>
       <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
         <DialogTitle>{authority.name}</DialogTitle>
         <DialogDescription className="text-xs">
@@ -59,7 +77,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
               <a 
                 className="px-4 h-full flex items-center 
                 hover:bg-slate-200/80 hover:disabled:bg-muted"
-                href={authority.url_pattern.replace('{{query}}', debounced)}
+                href={(authority.external_url_pattern || authority.search_pattern).replace('{{query}}', debounced)}
                 target="_blank">
                 <ExternalLink className="h-4 w-4" />
               </a>
@@ -90,7 +108,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
               style={{ opacity: loading ? 0 : 1}}
               className="absolute top-0 left-0 w-full h-full"
               onLoad={() => setLoading(false)}
-              src={authority.url_pattern.replace('{{query}}', debounced)} />
+              src={authority.search_pattern.replace('{{query}}', debounced)} />
           )}
         </div>
       </DialogContent>

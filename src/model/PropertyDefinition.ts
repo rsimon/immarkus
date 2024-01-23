@@ -35,7 +35,7 @@ export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
 
   type: 'external_authority',
 
-  authorities: ExternalAuthority[];
+  authorities: string[];
 
 }
 

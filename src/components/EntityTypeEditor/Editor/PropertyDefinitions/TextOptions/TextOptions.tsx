@@ -1,11 +1,11 @@
+import { TextPropertyDefinition } from '@/model';
 import { Switch } from '@/ui/Switch';
-import { PropertyDefinitionStub } from '../PropertyDefinitionStub';
 
 interface TextOptionsProps {
 
-  definition: PropertyDefinitionStub;
+  definition: Partial<TextPropertyDefinition>;
 
-  onUpdate(definition: PropertyDefinitionStub): void;
+  onUpdate(definition: Partial<TextPropertyDefinition>): void;
 
 }
 

@@ -1,6 +1,5 @@
 import { EnumPropertyDefinition, PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
-import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { 
   EnumField,
   ExternalAuthorityField,
@@ -14,7 +13,7 @@ import {
 
 interface PropertyPreviewProps {
 
-  property: PropertyDefinitionStub;
+  property: Partial<PropertyDefinition>;
 
 }
 
