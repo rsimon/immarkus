@@ -16,7 +16,7 @@ export const modernize = (types: EntityType[]): EntityType[] => {
         ...e,
         properties: e.properties.map(p => p.type === 'external_authority'
           // @ts-ignore
-          ? { ...p, authorities: p.authorities.map(a => 'name' in a ? a.name : a) }
+          ? { ...p, authorities: p.authorities.map(a => typeof myVar === 'string' ? a : a.name) }
           : p)
       } as EntityType;
     } else {
