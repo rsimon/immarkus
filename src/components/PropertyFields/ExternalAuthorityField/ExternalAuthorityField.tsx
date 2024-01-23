@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface ExternalAuthorityFieldProps {
 
@@ -30,6 +31,8 @@ interface ExternalAuthorityFieldProps {
 export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition } = props;
+
+  const { authorities } = useRuntimeConfig();
 
   const input = useRef<HTMLInputElement>();
 
@@ -78,7 +81,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           
         <div className="flex text-muted-foreground">
           <ExternalAuthoritySelector
-            definition={props.definition} 
+            authorities={authorities.filter(a => (props.definition.authorities || []).includes(a.name))} 
             onCloseDialog={onCloseDialog} />  
 
           <div className="flex relative -top-[1px]">

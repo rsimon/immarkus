@@ -5,7 +5,6 @@ import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
-import { PropertyDefinitionStub } from './PropertyDefinitionStub';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
@@ -28,7 +27,7 @@ interface PropertyDefinitionEditorProps {
 
 export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) => {
 
-  const [edited, setEdited] = useState<PropertyDefinitionStub>(props.property || {});
+  const [edited, setEdited] = useState<Partial<PropertyDefinition>>(props.property || {});
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();

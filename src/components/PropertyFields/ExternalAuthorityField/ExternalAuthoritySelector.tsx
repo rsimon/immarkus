@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { ExternalAuthority, ExternalAuthorityPropertyDefinition } from '@/model';
+import { ExternalAuthority } from '@/model';
 import { IFrameAuthorityDialog } from './dialogs';
 import {
   Select,
@@ -12,7 +12,7 @@ import {
 
 interface ExternalAuthoritySelectorProps {
 
-  definition: ExternalAuthorityPropertyDefinition;
+  authorities: ExternalAuthority[];
 
   onCloseDialog(identifier?: string): void;
 
@@ -20,7 +20,7 @@ interface ExternalAuthoritySelectorProps {
 
 export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps) => {
 
-  const authorities = props.definition.authorities || []; 
+  const { authorities } = props; 
 
   const [value, setValue] = useState(authorities.length > 0 ? authorities[0].name : undefined);
 
@@ -44,7 +44,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
           className="text-xs inline-flex items-center hover:bg-slate-200 px-1.5 rounded font-medium
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0">
           <Search className="h-3.5 w-3.5 mr-1" />
-          {props.definition.authorities[0].name}
+          {authorities[0].name}
         </button>
       ) : authorities.length > 1 ? (
         <Select 
