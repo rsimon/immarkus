@@ -2,7 +2,7 @@ import type { EntityType, PropertyDefinition } from '@/model';
 import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
-import { modernize } from './modernize';
+import { repair } from './repair';
 
 export interface DataModelStore extends DataModel, EntityTypeTree {
 
@@ -30,7 +30,7 @@ export const loadDataModel = (
 
   });
 
-  entityTypes = modernize(entityTypes);
+  entityTypes = repair(entityTypes);
 
   const tree = createEntityTypeTree(entityTypes);
 
