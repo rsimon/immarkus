@@ -119,7 +119,10 @@ export const loadStore = (
   ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
     const cached = cachedAnnotations.get(imageId);
     if (cached) {
-      resolve(cached);
+      // A precaution. The data model could have changed meanwhile
+      const repaired = repairAnnotations(cached, datamodel);
+      cachedAnnotations.set(imageId, repaired);
+      resolve(repaired);
     } else {
       const image = images.find(i => i.id === imageId);
       if (image) {
