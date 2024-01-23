@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { Info, Pen } from 'lucide-react';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
@@ -31,6 +31,8 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition } = props;
 
+  const input = useRef<HTMLInputElement>();
+
   const value = props.onChange ? props.value || '' : props.value;
 
   const isURI = value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value) : false;
@@ -42,13 +44,12 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     : undefined;
 
   const onCloseDialog = (identifier?: string) => { 
-    console.log('dialog closed', identifier);
-    if (identifier && props.onChange) {
-      console.log('changing', identifier);
+    if (identifier && props.onChange)
       props.onChange(identifier);
-    }
 
     setEditable(true);
+
+    setTimeout(() => input.current.focus(), 1);
   }
 
   return (
@@ -88,7 +89,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
       {editable ? (
         <Input
-          autoFocus
+          ref={input}
           id={id} 
           className={cn(props.className, 'mt-0.5')}
           value={value} 

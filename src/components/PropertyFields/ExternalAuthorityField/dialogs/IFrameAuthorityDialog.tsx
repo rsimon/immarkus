@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Database, ExternalLink } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
