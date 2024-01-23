@@ -1,5 +1,6 @@
 table.p-treetable-table {
   table-layout: auto;
+  overflow: hidden;
 }
 
 .p-treetable-table tr {

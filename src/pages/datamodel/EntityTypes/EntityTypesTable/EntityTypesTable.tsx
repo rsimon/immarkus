@@ -99,7 +99,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
   const headerClass = "pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left";
 
   return (
-    <div className="relative rounded-md border mt-6 w-full overflow-x-auto">
+    <div className="relative rounded-md border mt-6 w-full">
       <TreeTable 
         value={nodes} 
         className="w-full caption-bottom text-sm"
