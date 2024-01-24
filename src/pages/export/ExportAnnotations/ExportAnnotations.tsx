@@ -48,7 +48,7 @@ export const ExportAnnotations = () => {
       <li>
         <section className="w-full py-2 flex flex-row gap-20 justify-between">
           <div>
-            <h3 className="font-medium mb-1">
+            <h3 className="font-medium mb-1 leading-relaxed">
               All Annotations
             </h3>
 

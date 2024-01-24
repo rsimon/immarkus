@@ -1,8 +1,25 @@
+import { Link } from 'react-router-dom';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Separator } from '@/ui/Separator';
 import { ExportAnnotations } from './ExportAnnotations';
+import { ExportDataModel } from './ExportDataModel';
 
-export const Export = () => {
+interface ExportProps {
+  
+  tab: 'annotations' | 'model'
+
+}
+
+const NavListItem = (props: { path: string, label: string, active?: boolean }) => (
+  <li 
+    className={props.active 
+      ? 'bg-muted px-3 py-1.5 rounded w-full my-2'
+      : 'px-3 py-1.5 rounded w-full my-2'}>
+    <Link to={props.path}>{props.label}</Link>
+  </li>
+)
+
+export const Export = (props: ExportProps) => {
 
   return (
     <div className="page-root">
@@ -23,7 +40,16 @@ export const Export = () => {
           <aside className="py-4">
             <nav className="w-44">
               <ol>
-                <li className="bg-muted px-3 py-1.5 rounded w-full my-2">Annotations</li>
+                <NavListItem 
+                  path="/export/model" 
+                  label="Data Model" 
+                  active={props.tab === 'model'} />
+
+                <NavListItem 
+                  path="/export/annotations" 
+                  label="Annotations" 
+                  active={props.tab === 'annotations'} />
+
                 <li className="px-3 py-1.5 text-muted-foreground/50">Metadata</li>
                 <li className="px-3 py-1.5 text-muted-foreground/50">Images</li>
               </ol>
@@ -31,7 +57,11 @@ export const Export = () => {
           </aside>
 
           <section className="pl-12 py-2 flex-grow">
-            <ExportAnnotations />
+            {props.tab === 'model' ? (
+              <ExportDataModel />
+            ) : (
+              <ExportAnnotations />
+            )}
           </section>
         </div>
       </main>

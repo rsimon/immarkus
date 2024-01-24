@@ -47,7 +47,7 @@ export const AppNavigationSidebar = () => {
 
           <li>
             <Link 
-              className={pathname === '/export' ? active : undefined} 
+              className={pathname.startsWith('/export') ? active : undefined} 
               to="/export">
               <Download size={18} className="mr-2 relative -top-0.5" /> Export
             </Link>

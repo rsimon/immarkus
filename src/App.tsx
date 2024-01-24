@@ -26,7 +26,11 @@ export const App = () => {
 
         <Route path="graph" element={<KnowledgeGraph />} />
 
-        <Route path="export" element={<Export />}  />
+        <Route path="export">
+          <Route index element={<Navigate to="/export/model" />} />
+          <Route path="model" element={<Export tab="model" />} />
+          <Route path="annotations" element={<Export tab="annotations" />} />
+        </Route>
 
         <Route path="markus" element={<Markus />} />
 
