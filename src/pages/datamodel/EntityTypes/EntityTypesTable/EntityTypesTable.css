@@ -55,6 +55,7 @@ table.p-treetable-table {
 }
 
 .p-treetable-table td:nth-child(4) {
+  white-space: nowrap;
   width: 240px;
 }
 

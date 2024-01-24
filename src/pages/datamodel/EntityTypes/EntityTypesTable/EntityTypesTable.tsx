@@ -8,6 +8,7 @@ import { Button } from '@/ui/Button';
 import { EntityTypeActions } from '../EntityTypeActions';
 
 import './EntityTypesTable.css';
+import { PropertyListTooltip } from './PropertyListTooltip';
 
 interface EntityTypesTableProps {
 
@@ -61,20 +62,11 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
     <span className="font-medium">{node.data.label}</span>
   )
 
-  const actionsTemplate = (node: TreeNode) => (
-    <span className="text-right py-1 px-2">
-      <EntityTypeActions 
-        entityType={node.data}
-        onEditEntityType={() => props.onEditEntityType(node.data)} 
-        onDeleteEntityType={() => props.onDeleteEntityType(node.data)} />
-    </span>
-  )
-
   const propertiesTemplate = (node: TreeNode) => (
-    <span>
-      {node.data.properties?.map((property: PropertyDefinition) => (
+    <span className="whitespace-nowrap">
+      {(node.data.properties || []).slice(0, 3).map((property: PropertyDefinition) => (
         <span key={property.name}
-          className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs 
+          className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs whitespace-nowrap
             mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
           {property.type === 'enum' ? (
             <List className="w-3 h-3 mr-0.5" />
@@ -94,6 +86,19 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           {property.name}
         </span>    
       ))}
+
+      {node.data.properties?.length > 3 && (
+        <PropertyListTooltip entityType={node.data} />
+      )}
+    </span>
+  )
+
+  const actionsTemplate = (node: TreeNode) => (
+    <span className="text-right py-1 px-2">
+      <EntityTypeActions 
+        entityType={node.data}
+        onEditEntityType={() => props.onEditEntityType(node.data)} 
+        onDeleteEntityType={() => props.onDeleteEntityType(node.data)} />
     </span>
   )
 
