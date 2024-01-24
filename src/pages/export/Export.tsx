@@ -21,7 +21,7 @@ export const Export = () => {
 
         <div className="flex flex-row">
           <aside className="py-4">
-            <nav className="w-52">
+            <nav className="w-44">
               <ol>
                 <li className="bg-muted px-3 py-1.5 rounded w-full my-2">Annotations</li>
                 <li className="px-3 py-1.5 text-muted-foreground/50">Metadata</li>

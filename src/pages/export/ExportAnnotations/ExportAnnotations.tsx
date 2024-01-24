@@ -46,14 +46,14 @@ export const ExportAnnotations = () => {
   return (
     <ul className="py-2">
       <li>
-        <section className="w-full py-2 flex flex-row gap-16 justify-between">
+        <section className="w-full py-2 flex flex-row gap-20 justify-between">
           <div>
             <h3 className="font-medium mb-1">
               All Annotations
             </h3>
 
             <p className="text-sm">
-              All annotations, on all images in this work folder, as a flat list
+              All annotations, on all images in your current work folder, as a flat list
               in <a className="underline underline-offset-4 hover:text-primary" href="https://www.w3.org/TR/annotation-model/" target="_blank">W3C Web Annotation format</a>.
             </p>
           </div>
