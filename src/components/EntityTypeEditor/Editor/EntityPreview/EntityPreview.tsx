@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { Separator } from '@/ui/Separator';
 import { getBrightness } from '@/utils/color';
-import { PropertyDefinition } from '@/model';
+import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
-import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
   ExternalAuthorityField, 
@@ -18,7 +17,7 @@ import {
 
 interface EntityPreviewProps {
 
-  entityType: EntityTypeStub;
+  entityType: Partial<EntityType>;
 
 }
 

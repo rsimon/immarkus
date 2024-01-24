@@ -9,7 +9,6 @@ import { Textarea } from '@/ui/Textarea';
 import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from './EntityPreview/EntityPreview';
 import { PropertyDefinitions } from './PropertyDefinitions/PropertyDefinitions';
-import { EntityTypeStub } from '../EntityTypeStub';
 import { ParentBrowser } from './ParentBrowser';
 
 export interface EditorProps {
@@ -37,7 +36,7 @@ export const Editor = (props: EditorProps) => {
 
   const { entityTypes } = model;
 
-  const [entityType, setEntityType] = useState<EntityTypeStub>(props.entityType || {
+  const [entityType, setEntityType] = useState<Partial<EntityType>>(props.entityType || {
     color: getRandomColor()
   });
 
