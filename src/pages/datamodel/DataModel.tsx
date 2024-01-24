@@ -29,12 +29,6 @@ export const Vocabulary = () => {
             <TabsTrigger value="folderMetadata">
               <Folder size={16} className="mr-2" /> Folder Metadata
             </TabsTrigger>
-
-            {/*
-            <TabsTrigger value="tags">
-              <Tags size={16} className="mr-2" /> Tags
-            </TabsTrigger>
-            */}
           </TabsList>
 
           <TabsContent value="entityTypes">

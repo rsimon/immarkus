@@ -1,6 +1,8 @@
-import { Folder, Image, RootFolder } from '@/model';
-import { Store } from '@/store';
 import { W3CAnnotation } from '@annotorious/react';
+import { Download } from 'lucide-react';
+import { Store, useStore } from '@/store';
+import { Button } from '@/ui/Button';
+import { Folder, Image, RootFolder } from '@/model';
 
 export const exportAnnotations = (store: Store) => {
 
@@ -23,8 +25,6 @@ export const exportAnnotations = (store: Store) => {
   }, Promise.resolve([]))
 
   annotations.then(annotations => {
-    console.log('downloading', annotations);
-
     const str = JSON.stringify(annotations);
     const data = new TextEncoder().encode(str);
     const blob = new Blob([data], {
@@ -36,5 +36,38 @@ export const exportAnnotations = (store: Store) => {
     anchor.download = 'annotations.json';
     anchor.click();
   });
+
+}
+
+export const ExportAnnotations = () => {
+
+  const store = useStore();
+
+  return (
+    <ul className="py-2">
+      <li>
+        <section className="w-full py-2 flex flex-row gap-16 justify-between">
+          <div>
+            <h3 className="font-medium mb-1">
+              All Annotations
+            </h3>
+
+            <p className="text-sm">
+              All annotations, on all images in this work folder, as a flat list
+              in <a className="underline underline-offset-4 hover:text-primary" href="https://www.w3.org/TR/annotation-model/" target="_blank">W3C Web Annotation format</a>.
+            </p>
+          </div>
+
+          <div>
+            <Button 
+              className="whitespace-nowrap flex gap-2"
+              onClick={() => exportAnnotations(store)}>
+              <Download className="h-4 w-4" /> JSON-LD
+            </Button>
+          </div>
+        </section>
+      </li>
+    </ul>
+  )
 
 }
