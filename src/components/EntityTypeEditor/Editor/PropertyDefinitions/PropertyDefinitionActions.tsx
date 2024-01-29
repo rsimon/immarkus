@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ArrowUp, ArrowDown, MoreHorizontal, Pencil, X } from 'lucide-react';
+import { PropertyDefinitionEditorDialog } from '@/components/PropertyDefinitionEditor';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
-import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +11,10 @@ import {
 } from '@/ui/DropdownMenu';
 
 interface PropertyDefinitionActionsProps {
+
+  editorHint: string;
+
+  previewHint: string;
 
   property: PropertyDefinition;
 
@@ -55,7 +59,9 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
           <ArrowDown className="h-4 w-4 mr-2 text-muted-foreground" /> Move down
         </DropdownMenuItem>
 
-        <PropertyEditorDialog
+        <PropertyDefinitionEditorDialog
+          editorHint={props.editorHint}
+          previewHint={props.previewHint}
           property={props.property}
           onSave={props.onUpdateProperty}
           onClose={() => setOpen(false)}>
@@ -63,7 +69,7 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
           <DropdownMenuItem className="text-xs">
             <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit
           </DropdownMenuItem>
-        </PropertyEditorDialog>
+        </PropertyDefinitionEditorDialog>
 
         <DropdownMenuItem className="text-xs" onSelect={andClose(props.onDeleteProperty)}>
           <X className="h-4 w-4 mr-2 text-red-500" /> <span className="text-red-500">Delete</span>

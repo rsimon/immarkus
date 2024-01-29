@@ -1,9 +1,8 @@
-import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
 import { PropertyTypeIcon } from '@/components/PropertyTypeIcon';
+import { PropertyDefinitionEditorDialog } from '@/components/PropertyDefinitionEditor';
 import { PropertyDefinitionActions } from './PropertyDefinitionActions';
-import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
 import { moveArrayItem } from './moveArrayItem';
 import {
   Accordion,
@@ -35,6 +34,12 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
   const deleteProperty = (property: PropertyDefinition) => () =>
     props.onChange(properties.filter(p => p !== property));
+
+  const editorHint = 
+    'Use Properties to record specific details in your annotations, such as weight, material, age, etc.';
+
+  const previewHint =
+    'This is how your property will appear when editing an entity in the annotation interface.';
 
   return (
     <Accordion
@@ -80,6 +85,8 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     </div>
 
                     <PropertyDefinitionActions 
+                      editorHint={editorHint}
+                      previewHint={previewHint}
                       property={p} 
                       onMoveUp={onMoveProperty(p, true)}
                       onMoveDown={onMoveProperty(p, false)}
@@ -91,14 +98,16 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
             )}
             
             <div className="flex justify-end">
-              <PropertyEditorDialog
+              <PropertyDefinitionEditorDialog
+                editorHint={editorHint}
+                previewHint={previewHint}
                 onSave={addProperty}>
                 <Button 
                   variant="outline" 
                   className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
                   Add Property
                 </Button>
-              </PropertyEditorDialog>
+              </PropertyDefinitionEditorDialog>
             </div>
           </div>
         </AccordionContent>

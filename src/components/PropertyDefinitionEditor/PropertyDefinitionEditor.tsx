@@ -5,7 +5,7 @@ import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
-import { PropertyPreview } from './PropertyPreview';
+import { PropertyPreview } from '../EntityTypeEditor/Editor/PropertyDefinitions/PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
 import {
@@ -18,6 +18,10 @@ import {
 import { TextOptions } from './TextOptions';
 
 interface PropertyDefinitionEditorProps {
+
+  editorHint: string;
+
+  previewHint: string;
 
   property?: PropertyDefinition;
 
@@ -46,8 +50,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     <article className="grid grid-cols-5 rounded-lg overflow-hidden">
       <div className="px-6 py-3 col-span-3">
         <p className="text-left text-xs leading-relaxed mt-1">
-          Use Properties to record specific details in your annotations,
-          such as weight, material, age, etc. 
+          {props.editorHint}
         </p>
 
         <form onSubmit={onSubmit}>
