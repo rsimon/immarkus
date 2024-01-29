@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Image } from '@/model';
-import { MoreVertical, PanelTop } from 'lucide-react';
+import { Info, MoreVertical, PanelTop } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +13,8 @@ interface ImageActionProps {
   className?: string;
 
   image: Image;
+
+  onSelect(): void;
 
 }
 
@@ -28,9 +30,13 @@ export const ImageItemActions = (props: ImageActionProps) => {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
+        <DropdownMenuItem onSelect={props.onSelect}>
+          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Image metadata
+        </DropdownMenuItem>
+
         <DropdownMenuItem asChild>
           <Link to={`/annotate/${props.image.id}`}>
-            <PanelTop size={18} className="inline text-muted-foreground relative -top-px mr-2" />Open image
+            <PanelTop className="h-4 w-4 text-muted-foreground mr-2" />Open image
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

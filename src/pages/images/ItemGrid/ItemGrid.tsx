@@ -26,10 +26,14 @@ export const ItemGrid = (props: ItemGridProps) => {
   const onOpenFolder = (folder: Folder) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (image: Image) => {
-    // navigate(`/annotate/${image.id}`);
+  const onOpenImage = (image: Image) =>
+    navigate(`/annotate/${image.id}`);
+  
+  const onSelectFolder = (folder: Folder) =>
+    props.onSelect({ type: 'folder', ...folder });
+
+  const onSelectImage = (image: Image) =>
     props.onSelect({ type: 'image', ...image });
-  }
 
   return (
     <div className="image-grid">
@@ -46,7 +50,8 @@ export const ItemGrid = (props: ItemGridProps) => {
           <li key={image.id}>
             <ImageItem 
               image={image} 
-              onOpen={() => onOpenImage(image)} />
+              onOpen={() => onOpenImage(image)} 
+              onSelect={() => onSelectImage(image)}/>
           </li>
         ))}
       </ul>
