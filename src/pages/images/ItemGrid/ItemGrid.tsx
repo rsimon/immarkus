@@ -3,6 +3,7 @@ import { useImages } from '@/store';
 import { Folder, Image, LoadedImage } from '@/model';
 import { FolderItem } from './FolderItem';
 import { ImageItem } from './ImageItem';
+import { GridItem } from './Item';
 
 import './ItemGrid.css';
 
@@ -11,6 +12,8 @@ interface ItemGridProps {
   folders: Folder[];
 
   images: Image[];
+
+  onSelect(item: GridItem): void;
 
 }
 
@@ -24,7 +27,8 @@ export const ItemGrid = (props: ItemGridProps) => {
     navigate(`/images/${folder.id}`);
 
   const onOpenImage = (image: Image) => {
-    navigate(`/annotate/${image.id}`);
+    // navigate(`/annotate/${image.id}`);
+    props.onSelect({ type: 'image', ...image });
   }
 
   return (

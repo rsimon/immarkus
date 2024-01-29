@@ -1,30 +1,45 @@
+import { useEffect, useRef } from 'react';
 import { useTransition, animated, easings } from '@react-spring/web';
+import { GridItem } from '../ItemGrid';
 
 interface MetadataDrawerProps {
 
-  open?: boolean;
+  item?: GridItem;
+
+  onClose(): void;
 
 }
 
 export const MetadataDrawer = (props: MetadataDrawerProps) => {
 
-  /*
-  const transition = useTransition([props.open], {
-    from: { maxHeight: 0 },
-    enter: { maxHeight: 100 },
-    leave: { maxHeight: 0 },
+  const previous = useRef<GridItem | undefined>();
+
+  const shouldAnimate = 
+    // Drawer currently closed, and should open
+    !previous.current && props.item ||
+    // Drawer currently open, and should close
+    previous.current && !props.item;
+
+  const transition = useTransition([props.item], {
+    from: { maxWidth: 0 },
+    enter: { maxWidth: 200 },
+    leave: { maxWidth: 0 },
     config:{
-      duration: 150,
+      duration: shouldAnimate ? 150 : 0,
       easing: easings.easeInCubic
     }
   });
 
-  return transition((style, open) => open && (
-    <animated.section 
-      style={style}>
+  useEffect(() => {
+    previous.current = props.item;
+  }, [props.item]);
 
-    </animated.section>
+  return transition((style, item) => item && (
+    <animated.div 
+      style={style}
+      className="bg-red-400 w-[200px] relative">
+
+    </animated.div>
   ))
-  */
 
 }

@@ -1,16 +1,19 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useStore } from '@/store';
 import { ItemGrid } from './ItemGrid';
 import { MetadataDrawer } from './MetadataDrawer';
+import { GridItem } from './ItemGrid/Item';
 
 export const Images = () => {
 
   const store = useStore();
 
   const { folder } = useParams();
+
+  const [selected, setSelected] = useState<GridItem | undefined>();
 
   const navigate = useNavigate();
 
@@ -65,10 +68,13 @@ export const Images = () => {
 
           <ItemGrid 
             folders={folders} 
-            images={images} />
+            images={images} 
+            onSelect={setSelected} />
         </div>
 
-        <div className="bg-red-400 w-[200px] relative" />
+        <MetadataDrawer 
+          item={selected}
+          onClose={() => setSelected(undefined)}/>
       </main>
     </div>
   )
