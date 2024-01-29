@@ -5,9 +5,10 @@ import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
-import { PropertyPreview } from '../EntityTypeEditor/Editor/PropertyDefinitions/PropertyPreview';
+import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
+import { TextOptions } from './TextOptions';
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { TextOptions } from './TextOptions';
 
 interface PropertyDefinitionEditorProps {
 
@@ -141,7 +141,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
         </form>
       </div>
 
-      <PropertyPreview property={edited} />
+      <PropertyPreview 
+        hint={props.previewHint}
+        property={edited} />
     </article>
   )
 

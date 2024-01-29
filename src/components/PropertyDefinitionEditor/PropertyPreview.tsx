@@ -13,6 +13,8 @@ import {
 
 interface PropertyPreviewProps {
 
+  hint: string;
+
   property: Partial<PropertyDefinition>;
 
 }
@@ -33,8 +35,7 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
       </h2>
 
       <p className="text-left text-xs leading-relaxed mt-1 mb-12">
-        This is how your property will appear when editing an entity in 
-        the annotation interface. 
+        {props.hint}
       </p>
 
       <PropertyValidation>

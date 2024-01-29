@@ -37,6 +37,24 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
 
 }
 
+const loadFromFile = (file: File) =>
+  readJSONFile<DataModel>(file)
+    .then(data => {
+      const { entityTypes, folderSchemas, imageSchemas } = data;
+      return {
+        entityTypes: entityTypes || [],
+        folderSchemas: folderSchemas || [],
+        imageSchemas: imageSchemas || []
+      }
+    })
+    .catch(() => {
+      return { 
+        entityTypes: [],
+        folderSchemas: [],
+        imageSchemas: []
+      }
+    });
+
 export const loadDataModel = (
   handle: FileSystemDirectoryHandle
 ): Promise<DataModelStore> => new Promise(async resolve => {
@@ -45,15 +63,7 @@ export const loadDataModel = (
 
   const file = await fileHandle.getFile();
 
-  let { entityTypes, imageSchemas, folderSchemas } = (await readJSONFile<DataModel>(file) || {
-
-    entityTypes: [],
-
-    folderSchemas: [],
-
-    imageSchemas: []
-
-  });
+  let { entityTypes, imageSchemas, folderSchemas } = await loadFromFile(file);
 
   entityTypes = repairDataModel(entityTypes);
 
