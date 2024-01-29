@@ -49,7 +49,7 @@ export const ImageItem = (props: ImageItemProps) => {
             className="h-auto w-auto object-cover transition-all aspect-square"
           />
 
-          <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full">
+          <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full pointer-events-auto">
             <div className="text-white text-sm">
               <MessagesSquare 
                 size={18} 
@@ -57,7 +57,7 @@ export const ImageItem = (props: ImageItemProps) => {
                 {annotations || 0}
             </div>
 
-            <div className="absolute bottom-0 right-2 text-white text-sm pointer-events-auto">
+            <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
               <ImageItemActions 
                 image={image} 
                 onSelect={props.onSelect}/>

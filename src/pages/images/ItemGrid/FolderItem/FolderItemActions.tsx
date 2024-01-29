@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Image } from '@/model';
-import { Info, MoreVertical, PanelTop } from 'lucide-react';
+import { Folder } from '@/model';
+import { FolderIcon, Info, MoreVertical } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,17 +8,17 @@ import {
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
 
-interface ImageItemActionProps {
+interface FolderItemActionProps {
 
   className?: string;
 
-  image: Image;
+  folder: Folder;
 
   onSelect(): void;
 
 }
 
-export const ImageItemActions = (props: ImageItemActionProps) => {
+export const FolderItemActions = (props: FolderItemActionProps) => {
 
   return (
     <DropdownMenu>
@@ -31,12 +31,12 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
 
       <DropdownMenuContent>
         <DropdownMenuItem onSelect={props.onSelect}>
-          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Image metadata
+          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Folder metadata
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link to={`/annotate/${props.image.id}`}>
-            <PanelTop className="h-4 w-4 text-muted-foreground mr-2" /> Open image
+          <Link to={`/images/${props.folder.id}`}>
+            <FolderIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

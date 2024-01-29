@@ -36,13 +36,14 @@ export const ItemGrid = (props: ItemGridProps) => {
     props.onSelect({ type: 'image', ...image });
 
   return (
-    <div className="image-grid">
+    <div className="item-grid">
       <ul>
         {props.folders.map(folder => (
           <li key={folder.id}>
             <FolderItem
               folder={folder} 
-              onOpen={() => onOpenFolder(folder)} />
+              onOpen={() => onOpenFolder(folder)} 
+              onSelect={() => onSelectFolder(folder)}/>
           </li>
         ))}
 

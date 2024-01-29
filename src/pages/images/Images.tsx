@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -23,6 +23,11 @@ export const Images = () => {
     navigate('/404');
 
   const { folders, images } = useMemo(() => store.getFolderContents(currentFolder.handle), [currentFolder]);
+
+  useEffect(() => {
+    // Reset selection when folder changes
+    setSelected(undefined);
+  }, [folder]);
 
   return store && (
     <div className="page-root">
