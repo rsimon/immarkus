@@ -1,6 +1,6 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
-import { generateShortId, readImageFile, readJSONFile, writeJSONFile } from './utils';
+import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 
@@ -13,7 +13,7 @@ export interface Store {
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  getAnnotations(imageId: string): Promise<W3CAnnotation[]>;
+  getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
 
   getDataModel(): DataModelStore;
 
@@ -115,14 +115,21 @@ export const loadStore = (
   });
 
   const getAnnotations = (
-    imageId: string
+    imageId: string,
+    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
   ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
+
+    const filterByOpts = (annotations: W3CAnnotation[]) =>
+      opts.type === 'image' ? annotations.filter(a => hasSelector(a))  :
+      opts.type === 'metadata' ? annotations.filter(a => !hasSelector) :
+      annotations;
+
     const cached = cachedAnnotations.get(imageId);
     if (cached) {
       // A precaution. The data model could have changed meanwhile
       const repaired = repairAnnotations(cached, datamodel);
       cachedAnnotations.set(imageId, repaired);
-      resolve(repaired);
+      resolve(filterByOpts(repaired));
     } else {
       const image = images.find(i => i.id === imageId);
       if (image) {
@@ -133,7 +140,7 @@ export const loadStore = (
           .then(data => {
             const annotations = repairAnnotations(data || [], datamodel);
             cachedAnnotations.set(imageId, annotations);
-            resolve(annotations);
+            resolve(filterByOpts(annotations));
           })
           .catch(() => {
             cachedAnnotations.set(imageId, []);

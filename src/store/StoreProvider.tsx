@@ -82,16 +82,31 @@ export const useImages = (
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
 
-export const useAnnotations = (imageId: string): W3CAnnotation[] => {
+export const useAnnotations = (
+  imageId: string,
+  opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+): W3CAnnotation[] => {
   const store = useStore();
 
   const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
 
   useEffect(() => {
-    store.getAnnotations(imageId).then(setAnnotations);
+    store.getAnnotations(imageId, opts).then(setAnnotations);
   }, [imageId]);
 
   return annotations;
+}
+
+export const useImageMetadata = (imageId: string): W3CAnnotation | undefined => {
+  const store = useStore();
+
+  const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
+  
+  useEffect(() => {
+    store.getAnnotations(imageId, { type: 'metadata' }).then(setAnnotations);
+  }, [imageId]);
+
+  return annotations.length > 0 ? annotations[0] : undefined;
 }
 
 export const useDataModel = () => {
