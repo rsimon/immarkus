@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { W3CAnnotation } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType, LoadedImage } from '@/model';
 import { Store, loadStore } from './Store';
 import { DataModelStore } from './datamodel';
@@ -97,16 +97,48 @@ export const useAnnotations = (
   return annotations;
 }
 
-export const useImageMetadata = (imageId: string): W3CAnnotation | undefined => {
+export const useImageMetadata = (imageId: string) => {
   const store = useStore();
 
-  const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
+  const [data, setData] = 
+    useState<{ annotation: W3CAnnotation, metadata: W3CAnnotationBody }>({ annotation: undefined, metadata: undefined });
   
   useEffect(() => {
-    store.getAnnotations(imageId, { type: 'metadata' }).then(setAnnotations);
+    store.getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
+      if (annotations.length > 1)
+        console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`);
+
+      if (annotations.length === 1) {
+        const annotation = annotations[0];
+
+        if (Array.isArray(annotation.body)) {
+          if (annotation.body.length !== 1) {
+            console.warn(`Integrity error: metadata annotation for image ${imageId} has != 1 body`);
+          } else {
+            const metadata = annotation.body[0];
+            setData({ annotation, metadata });
+          }
+        } else if (!annotation.body) {
+          console.warn(`Integrity error: metadata annotation for image ${imageId} has no body`);
+        } else {
+          const metadata = annotation.body;
+          setData({ annotation, metadata });
+        }
+      }
+    });
   }, [imageId]);
 
-  return annotations.length > 0 ? annotations[0] : undefined;
+  const updateMetadata = (metadata: W3CAnnotationBody) => {
+    const next = { 
+      ...data.annotation,
+      body: metadata
+    };
+
+    store.upsertAnnotation(imageId, next);
+  }
+
+  return { metadata: data.metadata, updateMetadata };
+
 }
 
 export const useDataModel = () => {
