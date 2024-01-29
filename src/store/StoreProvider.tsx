@@ -3,6 +3,8 @@ import { W3CAnnotation } from '@annotorious/react';
 import { EntityType, LoadedImage } from '@/model';
 import { Store, loadStore } from './Store';
 import { DataModelStore } from './datamodel';
+import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
+import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
 
 interface StoreContextState {
 
@@ -106,17 +108,41 @@ export const useDataModel = () => {
   const addEntityType = (type: EntityType) =>
     setAsync(model.addEntityType(type));
 
-  const updateEntityType = (type: EntityType) => 
-    setAsync(model.updateEntityType(type));
+  const addFolderSchema = (schema: FolderMetadataSchema) =>
+    setAsync(model.addFolderSchema(schema));
+
+  const addImageSchema = (schema: ImageMetadataSchema) =>
+    setAsync(model.addImageSchema(schema));
 
   const removeEntityType = (typeOrId: EntityType | string) =>
     setAsync(model.removeEntityType(typeOrId));
 
+  const removeFolderSchema = (schemaOrName: FolderMetadataSchema | string) =>
+    setAsync(model.removeFolderSchema(schemaOrName));
+
+  const removeImageSchema = (schemaOrName: ImageMetadataSchema | string) =>
+    setAsync(model.removeImageSchema(schemaOrName));
+
+  const updateEntityType = (type: EntityType) => 
+    setAsync(model.updateEntityType(type));
+
+  const updateFolderSchema = (schema: FolderMetadataSchema) =>
+    setAsync(model.updateFolderSchema(schema));
+
+  const updateImageSchema = (schema: ImageMetadataSchema) =>
+    setAsync(model.updateImageSchema(schema));
+
   return { 
     ...model,
     addEntityType,
+    addFolderSchema,
+    addImageSchema,
+    removeEntityType,
+    removeFolderSchema,
+    removeImageSchema,
     updateEntityType,
-    removeEntityType
+    updateFolderSchema,
+    updateImageSchema
   };
 
 }
