@@ -40,7 +40,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   useEffect(() => setSelected(props.image.id), [props.image.id]);
 
-  const transitions = useTransition([props.open], {
+  const transition = useTransition([props.open], {
     from: { maxHeight: 0 },
     enter: { maxHeight: 100 },
     leave: { maxHeight: 0 },
@@ -76,7 +76,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
     }
   }, [props.open]);
 
-  return transitions((style, open) => open && (
+  return transition((style, open) => open && (
     <animated.section 
       style={style}
       className="thumbnail-strip flex justify-center overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">

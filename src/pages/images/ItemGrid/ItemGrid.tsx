@@ -4,9 +4,9 @@ import { Folder, Image, LoadedImage } from '@/model';
 import { FolderItem } from './FolderItem';
 import { ImageItem } from './ImageItem';
 
-import './ImageGrid.css';
+import './ItemGrid.css';
 
-interface ImageGridProps {
+interface ItemGridProps {
 
   folders: Folder[];
 
@@ -14,7 +14,7 @@ interface ImageGridProps {
 
 }
 
-export const ImageGrid = (props: ImageGridProps) => {
+export const ItemGrid = (props: ItemGridProps) => {
 
   const images = useImages(props.images.map(i => i.id)) as LoadedImage[];
 
