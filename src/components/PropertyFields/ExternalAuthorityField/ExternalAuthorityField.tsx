@@ -59,9 +59,9 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const [editable, setEditable] = useState(!isURI);
 
   useEffect(() => {
-    if (editable)
-     setTimeout(() => input.current.focus(), 1);
-  }, [editable])
+    if (props.onChange && editable)
+      setTimeout(() => input.current.focus(), 1);
+  }, [editable]);
 
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
@@ -77,6 +77,8 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   }
 
   const formatIdentifier = (id: string) => {
+    if (!id) return;
+
     const matchedId = authorities.reduce((resolved, a) => {
       return resolved || a.canonical_id_pattern && matchPattern(id, a.canonical_id_pattern)
     }, undefined as string)
