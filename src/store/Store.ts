@@ -147,7 +147,8 @@ export const loadStore = (
             resolve([]);
           });
       } else {
-        reject(Error(`Image ${imageId} not found`));
+        console.warn(`Image ${imageId} not found`);
+        resolve([]);
       }
     }
   });

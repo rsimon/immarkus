@@ -44,10 +44,10 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
       <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto py-4 px-6">
         {item.type === 'folder' ? (
           <FolderMetadataPanel 
-            folder={props.item as FolderGridItem}/>
+            folder={item as FolderGridItem}/>
         ) : item.type === 'image' && (
           <ImageMetadataPanel 
-            image={props.item as ImageGridItem}/>
+            image={item as ImageGridItem}/>
         )}
       </aside>
 
