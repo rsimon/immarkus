@@ -40,10 +40,18 @@ export const removeMissingParentIds = (types: EntityType[]): EntityType[] => {
   });
 }
 
+export const removeInheritedProps = (types: EntityType[]): EntityType[] => types.map(type => ({
+  ...type,
+  properties: type.properties 
+    ? type.properties.filter(p => !p.inheritedFrom) 
+    : undefined
+}));
+
 export const repairDataModel = (types: EntityType[]): EntityType[] => {
   let modernized = repairLegacyAuthorityDefinitions(types);
 
   modernized = removeMissingParentIds(modernized);
-
+  modernized = removeInheritedProps(modernized);
+  
   return modernized;
 }
