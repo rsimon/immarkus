@@ -102,7 +102,7 @@ export const useImageMetadata = (imageId: string) => {
 
   const [data, setData] = 
     useState<{ annotation: W3CAnnotation, metadata: W3CAnnotationBody }>({ annotation: undefined, metadata: undefined });
-  
+
   useEffect(() => {
     store.getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
       if (annotations.length > 1)
@@ -129,12 +129,13 @@ export const useImageMetadata = (imageId: string) => {
   }, [imageId]);
 
   const updateMetadata = (metadata: W3CAnnotationBody) => {
+    // TODO what if there is no data.annotation?
     const next = { 
       ...data.annotation,
       body: metadata
     };
 
-    store.upsertAnnotation(imageId, next);
+    // store.upsertAnnotation(imageId, next);
   }
 
   return { metadata: data.metadata, updateMetadata };

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PropertyDefinition } from '@/model';
 import { useDataModel, useImageMetadata } from '@/store';
@@ -33,17 +34,38 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
     ? model.getImageSchema(metadata.source || 'default') 
     : model.getImageSchema('default');
 
-  const getValue = (definition: PropertyDefinition) => {
-    if (metadata && 'properties' in metadata)
-      return metadata.properties[definition.name];
+  const getInitialValues = () => {
+    if (schema && metadata && 'properties' in metadata) {
+      const entries = (schema.properties || []).map(definition => (
+        [definition.name, metadata.properties[definition.name]]
+      )).filter(t => Boolean(t[1]));
+
+      return Object.fromEntries(entries);      
+    } else {
+      return {};
+    }
   }
 
-  const onChange = (definition: PropertyDefinition, value: any) => {
-    console.log('change', definition.name, value);
+  const [formState, setFormState] = useState<{[key: string]: any}>(getInitialValues());
+
+  const getValue = (definition: PropertyDefinition) => formState[definition.name];
+
+  const onChange = (definition: PropertyDefinition, value: any) =>
+    setFormState(s => ({
+      ...s,
+      [definition.name]: value
+    }));
+
+  const onSave = () => {
+    const next = {
+      ...metadata,
+      properties: formState
+    };
+
+    updateMetadata(next);
   }
 
-  const onOpen = () =>
-    navigate(`/annotate/${props.image.id}`);
+  const onOpen = () => navigate(`/annotate/${props.image.id}`);
 
   return (
     <PropertyValidation>
@@ -108,7 +130,10 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
         </div>
 
         <div className="pt-2 pb-4">
-          <Button disabled className="w-full mb-2">
+          <Button 
+            disabled={false} 
+            className="w-full mb-2"
+            onClick={onSave}>
             Save Metadata
           </Button>
 
