@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { PropertyDefinition } from '@/model';
 import { useDataModel, useImageMetadata } from '@/store';
 import { ImageGridItem } from '../ItemGrid';
@@ -11,6 +12,8 @@ import {
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
+import { Button } from '@/ui/Button';
+import { PanelTop } from 'lucide-react';
 
 interface ImageMetadataPanelProps {
 
@@ -19,6 +22,8 @@ interface ImageMetadataPanelProps {
 }
 
 export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
+
+  const navigate = useNavigate();
 
   const model = useDataModel();
 
@@ -37,9 +42,12 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
     console.log('change', definition.name, value);
   }
 
+  const onOpen = () =>
+    navigate(`/annotate/${props.image.id}`);
+
   return (
     <PropertyValidation>
-      {props.image && (
+      <div className="flex flex-col justify-between h-full">
         <div>
           <h2 className="leading-relaxed mr-5 mb-8 font-medium">
             {props.image.name}
@@ -98,7 +106,20 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
             <div>No schema...</div>
           )}
         </div>
-      )}
+
+        <div className="pt-2 pb-4">
+          <Button disabled className="w-full mb-2">
+            Save Metadata
+          </Button>
+
+          <Button 
+            variant="outline"
+            className="w-full"
+            onClick={onOpen}>
+            <PanelTop className="h-4 w-4 mr-2" /> Open Image
+          </Button>
+        </div>
+      </div>
     </PropertyValidation>
   )
 

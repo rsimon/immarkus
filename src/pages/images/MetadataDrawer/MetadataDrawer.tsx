@@ -41,21 +41,21 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
     <animated.div 
       style={style}
       className="flex-grow-0 flex-shrink-0 relative border-l shadow-sm">
-      <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto py-4 px-6">
+      <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto py-4 px-6 box-border">
+        <button 
+          onClick={props.onClose}
+          className="absolute left-[300px] top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+          <X className="w-5 h-5 p-0.5" />
+        </button>
+
         {item.type === 'folder' ? (
           <FolderMetadataPanel 
-            folder={item as FolderGridItem}/>
+            folder={item as FolderGridItem} />
         ) : item.type === 'image' && (
           <ImageMetadataPanel 
-            image={item as ImageGridItem}/>
+            image={item as ImageGridItem} />
         )}
       </aside>
-
-      <button 
-        onClick={props.onClose}
-        className="absolute left-[300px] top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
-        <X className="w-5 h-5 p-0.5" />
-      </button>
     </animated.div>
   ))
 
