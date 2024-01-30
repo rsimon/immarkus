@@ -121,7 +121,7 @@ export const loadStore = (
 
     const filterByOpts = (annotations: W3CAnnotation[]) =>
       opts.type === 'image' ? annotations.filter(a => hasSelector(a))  :
-      opts.type === 'metadata' ? annotations.filter(a => !hasSelector) :
+      opts.type === 'metadata' ? annotations.filter(a => !hasSelector(a)) :
       annotations;
 
     const cached = cachedAnnotations.get(imageId);

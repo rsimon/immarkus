@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PropertyDefinition } from '@/model';
 import { useDataModel, useImageMetadata } from '@/store';
@@ -34,19 +34,17 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
     ? model.getImageSchema(metadata.source || 'default') 
     : model.getImageSchema('default');
 
-  const getInitialValues = () => {
+  const [formState, setFormState] = useState<{[key: string]: any}>({});
+
+  useEffect(() => {
     if (schema && metadata && 'properties' in metadata) {
       const entries = (schema.properties || []).map(definition => (
         [definition.name, metadata.properties[definition.name]]
       )).filter(t => Boolean(t[1]));
 
-      return Object.fromEntries(entries);      
-    } else {
-      return {};
-    }
-  }
-
-  const [formState, setFormState] = useState<{[key: string]: any}>(getInitialValues());
+      setFormState(Object.fromEntries(entries));   
+    } 
+  }, [schema, metadata]);
 
   const getValue = (definition: PropertyDefinition) => formState[definition.name];
 

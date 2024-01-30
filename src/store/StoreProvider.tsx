@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { v4 as uuidv4 } from 'uuid';
 import { EntityType, LoadedImage } from '@/model';
 import { Store, loadStore } from './Store';
 import { DataModelStore } from './datamodel';
@@ -129,13 +130,24 @@ export const useImageMetadata = (imageId: string) => {
   }, [imageId]);
 
   const updateMetadata = (metadata: W3CAnnotationBody) => {
-    // TODO what if there is no data.annotation?
-    const next = { 
-      ...data.annotation,
-      body: metadata
+    const annotation: Partial<W3CAnnotation> = data.annotation || {
+      '@context': 'http://www.w3.org/ns/anno.jsonld',
+      type: 'Annotation',
+      id: uuidv4(),
+      target: {
+        source: imageId
+      }
     };
 
-    // store.upsertAnnotation(imageId, next);
+    const next = { 
+      ...annotation,
+      body: {
+        ...metadata,
+        purpose: 'describing'
+      }
+    } as W3CAnnotation;
+
+    store.upsertAnnotation(imageId, next);
   }
 
   return { metadata: data.metadata, updateMetadata };
