@@ -19,7 +19,7 @@ export const SidebarSection = () => {
   }, [selected]);
 
   return (
-    <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col">
+    <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
       <Tabs.Root 
         asChild      
         value={tab}
