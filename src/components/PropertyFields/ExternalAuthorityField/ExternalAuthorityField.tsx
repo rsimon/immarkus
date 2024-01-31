@@ -1,5 +1,6 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { Info, Pen } from 'lucide-react';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -12,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
-import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface ExternalAuthorityFieldProps {
 
@@ -57,11 +57,6 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const isURI = value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value) : false;
 
   const [editable, setEditable] = useState(!isURI);
-
-  useEffect(() => {
-    if (props.onChange && editable)
-      setTimeout(() => input.current.focus(), 1);
-  }, [editable]);
 
   const onChange = props.onChange 
     ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
