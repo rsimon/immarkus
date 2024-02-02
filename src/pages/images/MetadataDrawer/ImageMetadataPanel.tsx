@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { PropertyDefinition } from '@/model';
+import { dequal } from 'dequal/lite';
+import { ImageMetadataSchema, PropertyDefinition } from '@/model';
 import { useDataModel, useImageMetadata } from '@/store';
 import { ImageGridItem } from '../ItemGrid';
 import { 
@@ -15,11 +16,24 @@ import {
 } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { PanelTop, ToyBrick } from 'lucide-react';
+import { W3CAnnotationBody } from '@annotorious/react';
 
 interface ImageMetadataPanelProps {
 
   image: ImageGridItem;
 
+}
+
+const parseBody = (body: W3CAnnotationBody, schema: ImageMetadataSchema) => {
+  if (schema && body && 'properties' in body) {
+    const entries = (schema.properties || []).map(definition => (
+      [definition.name, body.properties[definition.name]]
+    )).filter(t => Boolean(t[1]));
+
+    return Object.fromEntries(entries);
+  } else {
+    return {};
+  }
 }
 
 export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
@@ -37,22 +51,28 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
   const [formState, setFormState] = useState<{[key: string]: any}>({});
 
   useEffect(() => {
-    if (schema && metadata && 'properties' in metadata) {
-      const entries = (schema.properties || []).map(definition => (
-        [definition.name, metadata.properties[definition.name]]
-      )).filter(t => Boolean(t[1]));
-
-      setFormState(Object.fromEntries(entries));   
+    if (metadata && schema) {
+      const values = parseBody(metadata, schema);
+      setFormState(values);    
     } 
   }, [schema, metadata]);
+
+  const hasChanges = schema && !dequal(formState, parseBody(metadata, schema));
 
   const getValue = (definition: PropertyDefinition) => formState[definition.name];
 
   const onChange = (definition: PropertyDefinition, value: any) =>
-    setFormState(s => ({
-      ...s,
-      [definition.name]: value
-    }));
+    setFormState(s => {
+      const next = {...s};
+
+      if (value) {
+        next[definition.name] = value;
+      } else {
+        delete next[definition.name];
+      }
+
+      return next;
+    });
 
   const onSave = () => {
     const next = {
@@ -136,7 +156,7 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
         <div className="pt-2 pb-4">
           {schema && (
             <Button 
-              disabled={false} 
+              disabled={!hasChanges} 
               className="w-full mb-2"
               onClick={onSave}>
               Save Metadata

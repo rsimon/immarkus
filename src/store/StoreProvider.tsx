@@ -148,6 +148,8 @@ export const useImageMetadata = (imageId: string) => {
     } as W3CAnnotation;
 
     store.upsertAnnotation(imageId, next);
+
+    setData({ annotation: next, metadata: next.body as W3CAnnotationBody })
   }
 
   return { metadata: data.metadata, updateMetadata };
