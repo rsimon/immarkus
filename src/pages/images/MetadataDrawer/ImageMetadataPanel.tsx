@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PropertyDefinition } from '@/model';
 import { useDataModel, useImageMetadata } from '@/store';
 import { ImageGridItem } from '../ItemGrid';
@@ -14,7 +14,7 @@ import {
   URIField 
 } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
-import { PanelTop } from 'lucide-react';
+import { PanelTop, ToyBrick } from 'lucide-react';
 
 interface ImageMetadataPanelProps {
 
@@ -68,7 +68,7 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
   return (
     <PropertyValidation>
       <div className="flex flex-col justify-between h-full">
-        <div>
+        <div className="flex flex-col flex-grow">
           <h2 className="leading-relaxed mr-5 mb-8 font-medium">
             {props.image.name}
           </h2>
@@ -123,17 +123,25 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
               ))}
             </ul>
           ) : (
-            <div>No schema...</div>
+            <div className="flex flex-col text-sm items-center px-2 justify-center text-center flex-grow leading-loose text-muted-foreground">
+              <span>
+                No image metadata model.<br/>
+                Go to <Link to="/model" className="inline-block text-black hover:bg-muted px-1 rounded-sm"><ToyBrick className="inline h-4 w-4 align-text-top" /> Data Model</Link> to 
+                define one.
+              </span>
+            </div>
           )}
         </div>
 
         <div className="pt-2 pb-4">
-          <Button 
-            disabled={false} 
-            className="w-full mb-2"
-            onClick={onSave}>
-            Save Metadata
-          </Button>
+          {schema && (
+            <Button 
+              disabled={false} 
+              className="w-full mb-2"
+              onClick={onSave}>
+              Save Metadata
+            </Button>
+          )}
 
           <Button 
             variant="outline"
