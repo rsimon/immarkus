@@ -8,6 +8,8 @@ interface ImageItemProps {
 
   image: LoadedImage;
 
+  selected?: boolean;
+
   onOpen(): void;
 
   onSelect(): void;
@@ -39,7 +41,8 @@ export const ImageItem = (props: ImageItemProps) => {
     <div>
       <div className="flex items-center justify-center w-[180px] h-[200px]">
         <div 
-          className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+          data-selected={props.selected ? true : undefined}
+          className="data-[selected]:outline outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
           <img
             onLoad={onLoad}
             loading="lazy"

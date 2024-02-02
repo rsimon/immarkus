@@ -13,6 +13,8 @@ interface ItemGridProps {
 
   images: Image[];
 
+  selected?: GridItem;
+
   onSelect(item: GridItem): void;
 
 }
@@ -51,6 +53,7 @@ export const ItemGrid = (props: ItemGridProps) => {
           <li key={image.id}>
             <ImageItem 
               image={image} 
+              selected={props.selected?.id === image.id}
               onOpen={() => onOpenImage(image)} 
               onSelect={() => onSelectImage(image)}/>
           </li>

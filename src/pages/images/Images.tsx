@@ -74,6 +74,7 @@ export const Images = () => {
           <ItemGrid 
             folders={folders} 
             images={images} 
+            selected={selected}
             onSelect={setSelected} />
         </div>
 
