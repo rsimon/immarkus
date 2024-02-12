@@ -6,13 +6,13 @@ import { Button } from '@/ui/Button';
 import { ImageMetadataForm, hasChanges } from '@/components/ImageMetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
 
-interface ImageNotesItemProps {
+interface ImageMetadataSectionProps {
 
   image: Image;
 
 }
 
-export const ImageNotesItem = (props: ImageNotesItemProps) => {
+export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
   const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
 

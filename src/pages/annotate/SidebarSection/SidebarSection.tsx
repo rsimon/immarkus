@@ -5,7 +5,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { CurrentSelection } from './CurrentSelection';
 import { AnnotationList } from './AnnotationList';
-import { ImageNotes } from './ImageNotes';
+import { ImageMetadata } from './ImageMetadata';
 
 export const SidebarSection = () => {
 
@@ -38,7 +38,7 @@ export const SidebarSection = () => {
               </Tabs.Trigger>
 
               <Tabs.Trigger value="image-notes" className="p-2 flex items-center text-xs rounded-md hover:bg-muted text-muted-foreground">
-                <Image className="h-4 w-4 mr-1" /> Image Notes
+                <Image className="h-4 w-4 mr-1" /> Metadata
               </Tabs.Trigger>
             </Tabs.List>
           </section>
@@ -60,7 +60,7 @@ export const SidebarSection = () => {
 
             <Tabs.Content value="image-notes" asChild>
               <div className="flex-grow text-sm justify-center items-center w-full p-3 px-4">
-                <ImageNotes />
+                <ImageMetadata />
               </div> 
             </Tabs.Content>
           </section>

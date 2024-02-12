@@ -1,8 +1,8 @@
 import { useStore } from '@/store';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
-import { ImageNotesItem } from './ImageNotesItem';
+import { ImageMetadataSection } from './ImageMetadataSection';
 
-export const ImageNotes = () => {
+export const ImageMetadata = () => {
 
   const anno = useAnnotoriousManifold();
 
@@ -12,7 +12,7 @@ export const ImageNotes = () => {
 
   return images.length === 1 ? (
     <div className="py-2 grow">
-      <ImageNotesItem image={images[0]} />
+      <ImageMetadataSection image={images[0]} />
     </div>
   ) : (
     <div className="py-2 grow">
@@ -23,7 +23,7 @@ export const ImageNotes = () => {
               {image.name}
             </h2>
 
-            <ImageNotesItem image={image} />
+            <ImageMetadataSection image={image} />
           </li>
         ))}
       </ul>
