@@ -3,7 +3,7 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { Image } from '@/model';
 import { useImageMetadata } from '@/store';
 import { Button } from '@/ui/Button';
-import { ImageMetadataForm, hasChanges } from '@/components/ImageMetadataForm';
+import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
 
 interface ImageMetadataSectionProps {

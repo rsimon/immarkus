@@ -21,6 +21,8 @@ export interface Store {
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
+  getFolderMetadata(folderId: string): Promise<W3CAnnotation>;
+
   getImage(imageId: string): Image;
 
   getRootFolder(): RootFolder;
@@ -166,6 +168,17 @@ export const loadStore = (
     return { images: imageItems, folders: folderItems };
   }
 
+  const getFolderMetadata = (folderId: string): Promise<W3CAnnotation> => {
+    const f = getFolder(folderId);
+    if (f) {
+      return f.handle.getFileHandle('_immarkus.metadata.json', { create: true })
+        .then(handle => handle.getFile())
+        .then(file => readJSONFile<W3CAnnotation>(file))
+    } else {
+      return Promise.reject();
+    }
+  }
+
   const getImage = (id: string) => images.find(f => f.id === id);
 
   const getRootFolder = () => ({
@@ -219,11 +232,11 @@ export const loadStore = (
     getDataModel,
     getFolder,
     getFolderContents,
+    getFolderMetadata,
     getImage,
     getRootFolder,
     loadImage,
-    upsertAnnotation,
-
+    upsertAnnotation
   });
 
 });
