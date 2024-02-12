@@ -34,7 +34,7 @@ export const EntityBadge = (props: BadgeEntityProps) => {
         color: getForegroundColor(backgroundColor)
       }}>
 
-      <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || 'error'}
+      <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || entityType?.id || 'error'}
 
       {editable && (
         <button 
