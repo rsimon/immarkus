@@ -16,7 +16,7 @@ interface PropertyDefinitionActionsProps {
 
   previewHint: string;
 
-  property: PropertyDefinition;
+  definition: PropertyDefinition;
 
   onMoveUp(): void;
 
@@ -62,7 +62,7 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
         <PropertyDefinitionEditorDialog
           editorHint={props.editorHint}
           previewHint={props.previewHint}
-          property={props.property}
+          property={props.definition}
           onSave={props.onUpdateProperty}
           onClose={() => setOpen(false)}>
 

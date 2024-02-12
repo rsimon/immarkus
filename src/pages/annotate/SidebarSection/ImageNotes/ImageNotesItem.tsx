@@ -21,7 +21,7 @@ export const ImageNotesItem = (props: ImageNotesItemProps) => {
 
   const { setSavingState } = useSavingState();
 
-  const metadata = useImageMetadata(props.image.id);
+  const { metadata } = useImageMetadata(props.image.id);
 
   const note = metadata ?
     Array.isArray(metadata.body) ? 

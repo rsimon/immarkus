@@ -1,11 +1,14 @@
-import { PropertyDefinitionEditorDialog } from '@/components/PropertyDefinitionEditor';
+import { PropertyDefinitionEditorDialog, moveArrayItem } from '@/components/PropertyDefinitionEditor';
 import { PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
+import { MetadataListItem } from '../MetadataListItem';
 
 export const ImageMetadata = () => {
 
   const model = useDataModel();
+
+  const properties = model.getImageSchema('default')?.properties || [];
 
   const editorHint = 
     'Add Properties to record specific details for your images, such as title, source, date, etc.';
@@ -13,26 +16,32 @@ export const ImageMetadata = () => {
   const previewHint =
     'This is how your property will appear when editing metadata in the image gallery.';
 
-  const onSave = (definition: PropertyDefinition) => {
-    // For testing only!
+  const onChange = (updated: PropertyDefinition[]) => {
     const schema = model.getImageSchema('default');
     if (schema) {
       model.updateImageSchema({
         ...schema,
-        properties: [
-          ...(schema.properties || []),
-          definition
-        ]
+        properties: updated
       });
     } else {
       model.addImageSchema({
         name: 'default',
-        properties: [definition]
+        properties: updated
       });
     }
   }
 
-  const properties = model.getImageSchema('default')?.properties;
+  const addProperty = (added: PropertyDefinition) =>
+    onChange([...properties, added]);
+
+  const moveProperty = (definition: PropertyDefinition, up: boolean) =>
+    onChange(moveArrayItem(properties, properties.indexOf(definition), up));
+
+  const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) =>
+    onChange(properties.map(p => p === previous ? updated : p));
+
+  const deleteProperty = (definition: PropertyDefinition) =>
+    onChange(properties.filter(d => d !== definition));
 
   return (
     <>
@@ -40,18 +49,31 @@ export const ImageMetadata = () => {
         Define a metadata schema to record structured information about your images. 
       </p>
 
-      <ul>
-        {properties?.length > 0 && properties.map(p => (
-          <li key={p.name}>{p.name}</li>
-        ))}
-      </ul>
+      {properties.length === 0 ? (
+        <div className="h-8 mt-3" />
+      ) : (
+        <ul className="max-w-sm mt-8 mb-12">
+          {properties.map(definition => (
+            <li key={definition.name}>
+              <MetadataListItem 
+                editorHint={editorHint}
+                previewHint={previewHint}
+                definition={definition} 
+                onMoveUp={() => moveProperty(definition, true)}
+                onMoveDown={() => moveProperty(definition, false)}
+                onUpdateProperty={updated => updateProperty(updated, definition)}
+                onDeleteProperty={() => deleteProperty(definition)} />
+            </li>
+          ))}
+        </ul>
+      )}
 
       <PropertyDefinitionEditorDialog
         editorHint={editorHint}
         previewHint={previewHint}
-        onSave={onSave}>
+        onSave={addProperty}>
         <Button>
-          Add Property
+          Add Metadata Property
         </Button>
       </PropertyDefinitionEditorDialog>
     </>

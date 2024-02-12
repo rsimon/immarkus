@@ -1,9 +1,11 @@
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
 import { PropertyTypeIcon } from '@/components/PropertyTypeIcon';
-import { PropertyDefinitionEditorDialog } from '@/components/PropertyDefinitionEditor';
-import { PropertyDefinitionActions } from './PropertyDefinitionActions';
-import { moveArrayItem } from './moveArrayItem';
+import { 
+  moveArrayItem, 
+  PropertyDefinitionEditorDialog, 
+  PropertyDefinitionActions 
+} from '@/components/PropertyDefinitionEditor';
 import {
   Accordion,
   AccordionContent,
@@ -26,7 +28,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
   const addProperty = (added: PropertyDefinition) =>
     props.onChange([...properties, added]);
 
-  const onMoveProperty = (property: PropertyDefinition, up: boolean) => () =>
+  const moveProperty = (property: PropertyDefinition, up: boolean) => () =>
     props.onChange(moveArrayItem(properties, properties.indexOf(property), up));
 
   const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) =>
@@ -87,9 +89,9 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     <PropertyDefinitionActions 
                       editorHint={editorHint}
                       previewHint={previewHint}
-                      property={p} 
-                      onMoveUp={onMoveProperty(p, true)}
-                      onMoveDown={onMoveProperty(p, false)}
+                      definition={p} 
+                      onMoveUp={moveProperty(p, true)}
+                      onMoveDown={moveProperty(p, false)}
                       onUpdateProperty={updated => updateProperty(updated, p)}
                       onDeleteProperty={deleteProperty(p)} />
                   </li>
