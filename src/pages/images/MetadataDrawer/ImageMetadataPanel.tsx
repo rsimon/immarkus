@@ -1,28 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { dequal } from 'dequal/lite';
 import { useImageMetadata } from '@/store';
 import { ImageGridItem } from '../ItemGrid';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { ImageMetadataForm } from '@/components/ImageMetadataForm';
+import { ImageMetadataForm, hasChanges } from '@/components/ImageMetadataForm';
 
 interface ImageMetadataPanelProps {
 
   image: ImageGridItem;
 
-}
-
-const hasChanges = (a: W3CAnnotationBody, b: W3CAnnotationBody) => {
-  if (a === undefined && b === undefined)
-    return false;
-
-  const propertiesA = a && 'properties' in a ? a.properties : {};
-  const propertiesB = b && 'properties' in b ? b.properties : {};
-
-  return !dequal(propertiesA, propertiesB);
 }
 
 export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {

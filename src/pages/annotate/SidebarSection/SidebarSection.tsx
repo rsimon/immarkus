@@ -59,7 +59,7 @@ export const SidebarSection = () => {
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div className="flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3 px-4">
+              <div className="flex-grow text-sm justify-center items-center w-full p-3 px-4">
                 <ImageNotes />
               </div> 
             </Tabs.Content>
