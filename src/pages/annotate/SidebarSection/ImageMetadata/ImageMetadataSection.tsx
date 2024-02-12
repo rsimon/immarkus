@@ -26,10 +26,12 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
   return (
     <PropertyValidation>
-      <div className="flex flex-col flex-grow w-full">
-        <ImageMetadataForm
-          metadata={formState}
-          onChange={setFormState} />
+      <div className="flex flex-col flex-grow justify-between w-full">
+        <div>
+          <ImageMetadataForm
+            metadata={formState}
+            onChange={setFormState} />
+        </div>
 
         <Button 
           disabled={!hasChanges(metadata, formState)} 
