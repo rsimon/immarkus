@@ -62,7 +62,7 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
     props.onChange(next);
   }
 
-  return Boolean(schema) ?
+  return schema && metadata ?
     (schema.properties || []).map(definition => (
       <div className="mt-2" key={definition.name}>
         {definition.type === 'enum' ? (

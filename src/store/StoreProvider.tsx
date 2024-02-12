@@ -121,10 +121,13 @@ export const useImageMetadata = (imageId: string) => {
           }
         } else if (!annotation.body) {
           console.warn(`Integrity error: metadata annotation for image ${imageId} has no body`);
+          setData({ annotation, metadata: {} });
         } else {
           const metadata = annotation.body;
           setData({ annotation, metadata });
         }
+      } else {
+        setData({ annotation: undefined, metadata: {} });
       }
     });
   }, [imageId]);
