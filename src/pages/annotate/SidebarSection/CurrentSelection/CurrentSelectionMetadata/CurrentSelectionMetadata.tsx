@@ -58,7 +58,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
     ]))),
   }), { [noteKey]: note?.value });
 
-  const [formState, setFormState] = useState<{[key: string]: string}>(getInitialValues());
+  const [formState, setFormState] = useState<{[key: string]: any}>(getInitialValues());
 
   const [valid, setIsValid] = useState(false);
 

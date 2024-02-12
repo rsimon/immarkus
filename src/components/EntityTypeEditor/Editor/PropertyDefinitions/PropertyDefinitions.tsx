@@ -1,10 +1,11 @@
-import { CaseSensitive, Database, Hash, Link2, List, MapPin } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { PropertyDefinition } from '@/model';
 import { PropertyTypeIcon } from '@/components/PropertyTypeIcon';
-import { PropertyDefinitionActions } from './PropertyDefinitionActions';
-import { PropertyEditorDialog } from './PropertyDefinitionEditorDialog';
-import { moveArrayItem } from './moveArrayItem';
+import { 
+  moveArrayItem, 
+  PropertyDefinitionEditorDialog, 
+  PropertyDefinitionActions 
+} from '@/components/PropertyDefinitionEditor';
 import {
   Accordion,
   AccordionContent,
@@ -27,7 +28,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
   const addProperty = (added: PropertyDefinition) =>
     props.onChange([...properties, added]);
 
-  const onMoveProperty = (property: PropertyDefinition, up: boolean) => () =>
+  const moveProperty = (property: PropertyDefinition, up: boolean) => () =>
     props.onChange(moveArrayItem(properties, properties.indexOf(property), up));
 
   const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) =>
@@ -35,6 +36,12 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
   const deleteProperty = (property: PropertyDefinition) => () =>
     props.onChange(properties.filter(p => p !== property));
+
+  const editorHint = 
+    'Use Properties to record specific details in your annotations, such as weight, material, age, etc.';
+
+  const previewHint =
+    'This is how your property will appear when editing an entity in the annotation interface.';
 
   return (
     <Accordion
@@ -80,9 +87,11 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                     </div>
 
                     <PropertyDefinitionActions 
-                      property={p} 
-                      onMoveUp={onMoveProperty(p, true)}
-                      onMoveDown={onMoveProperty(p, false)}
+                      editorHint={editorHint}
+                      previewHint={previewHint}
+                      definition={p} 
+                      onMoveUp={moveProperty(p, true)}
+                      onMoveDown={moveProperty(p, false)}
                       onUpdateProperty={updated => updateProperty(updated, p)}
                       onDeleteProperty={deleteProperty(p)} />
                   </li>
@@ -91,14 +100,16 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
             )}
             
             <div className="flex justify-end">
-              <PropertyEditorDialog
+              <PropertyDefinitionEditorDialog
+                editorHint={editorHint}
+                previewHint={previewHint}
                 onSave={addProperty}>
                 <Button 
                   variant="outline" 
                   className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
                   Add Property
                 </Button>
-              </PropertyEditorDialog>
+              </PropertyDefinitionEditorDialog>
             </div>
           </div>
         </AccordionContent>

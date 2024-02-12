@@ -3,18 +3,23 @@ import { useImages } from '@/store';
 import { Folder, Image, LoadedImage } from '@/model';
 import { FolderItem } from './FolderItem';
 import { ImageItem } from './ImageItem';
+import { GridItem } from './Item';
 
-import './ImageGrid.css';
+import './ItemGrid.css';
 
-interface ImageGridProps {
+interface ItemGridProps {
 
   folders: Folder[];
 
   images: Image[];
 
+  selected?: GridItem;
+
+  onSelect(item: GridItem): void;
+
 }
 
-export const ImageGrid = (props: ImageGridProps) => {
+export const ItemGrid = (props: ItemGridProps) => {
 
   const images = useImages(props.images.map(i => i.id)) as LoadedImage[];
 
@@ -23,18 +28,24 @@ export const ImageGrid = (props: ImageGridProps) => {
   const onOpenFolder = (folder: Folder) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (image: Image) => {
+  const onOpenImage = (image: Image) =>
     navigate(`/annotate/${image.id}`);
-  }
+  
+  const onSelectFolder = (folder: Folder) =>
+    props.onSelect({ type: 'folder', ...folder });
+
+  const onSelectImage = (image: Image) =>
+    props.onSelect({ type: 'image', ...image });
 
   return (
-    <div className="image-grid">
+    <div className="item-grid">
       <ul>
         {props.folders.map(folder => (
           <li key={folder.id}>
             <FolderItem
               folder={folder} 
-              onOpen={() => onOpenFolder(folder)} />
+              onOpen={() => onOpenFolder(folder)} 
+              onSelect={() => onSelectFolder(folder)}/>
           </li>
         ))}
 
@@ -42,7 +53,9 @@ export const ImageGrid = (props: ImageGridProps) => {
           <li key={image.id}>
             <ImageItem 
               image={image} 
-              onOpen={() => onOpenImage(image)} />
+              selected={props.selected?.id === image.id}
+              onOpen={() => onOpenImage(image)} 
+              onSelect={() => onSelectImage(image)}/>
           </li>
         ))}
       </ul>

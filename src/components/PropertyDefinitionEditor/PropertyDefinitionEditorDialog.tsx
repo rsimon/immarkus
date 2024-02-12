@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { PropertyDefinition } from '@/model';
 import { PropertyDefinitionEditor } from './PropertyDefinitionEditor';
 import {
@@ -8,6 +8,10 @@ import {
 } from '@/ui/Dialog';
 
 interface PropertyEditorDialogProps {
+
+  editorHint: string;
+
+  previewHint: string;
 
   property?: PropertyDefinition
 
@@ -19,7 +23,7 @@ interface PropertyEditorDialogProps {
 
 }
 
-export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
+export const PropertyDefinitionEditorDialog = (props: PropertyEditorDialogProps) => {
 
   const [open, setOpen] = useState(false);
 
@@ -46,6 +50,8 @@ export const PropertyEditorDialog = (props: PropertyEditorDialogProps) => {
 
       <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
         <PropertyDefinitionEditor 
+          editorHint={props.editorHint}
+          previewHint={props.previewHint}
           property={props.property} 
           onSave={onUpdate} />
       </DialogContent>

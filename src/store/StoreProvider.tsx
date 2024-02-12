@@ -1,8 +1,11 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
-import { W3CAnnotation } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { v4 as uuidv4 } from 'uuid';
 import { EntityType, LoadedImage } from '@/model';
 import { Store, loadStore } from './Store';
 import { DataModelStore } from './datamodel';
+import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
+import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
 
 interface StoreContextState {
 
@@ -80,16 +83,77 @@ export const useImages = (
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
 
-export const useAnnotations = (imageId: string): W3CAnnotation[] => {
+export const useAnnotations = (
+  imageId: string,
+  opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+): W3CAnnotation[] => {
   const store = useStore();
 
   const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
 
   useEffect(() => {
-    store.getAnnotations(imageId).then(setAnnotations);
+    store.getAnnotations(imageId, opts).then(setAnnotations);
   }, [imageId]);
 
   return annotations;
+}
+
+export const useImageMetadata = (imageId: string) => {
+  const store = useStore();
+
+  const [data, setData] = 
+    useState<{ annotation: W3CAnnotation, metadata: W3CAnnotationBody }>({ annotation: undefined, metadata: undefined });
+
+  useEffect(() => {
+    store.getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
+      if (annotations.length > 1)
+        console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`);
+
+      if (annotations.length === 1) {
+        const annotation = annotations[0];
+
+        if (Array.isArray(annotation.body)) {
+          if (annotation.body.length !== 1) {
+            console.warn(`Integrity error: metadata annotation for image ${imageId} has != 1 body`);
+          } else {
+            const metadata = annotation.body[0];
+            setData({ annotation, metadata });
+          }
+        } else if (!annotation.body) {
+          console.warn(`Integrity error: metadata annotation for image ${imageId} has no body`);
+        } else {
+          const metadata = annotation.body;
+          setData({ annotation, metadata });
+        }
+      }
+    });
+  }, [imageId]);
+
+  const updateMetadata = (metadata: W3CAnnotationBody) => {
+    const annotation: Partial<W3CAnnotation> = data.annotation || {
+      '@context': 'http://www.w3.org/ns/anno.jsonld',
+      type: 'Annotation',
+      id: uuidv4(),
+      target: {
+        source: imageId
+      }
+    };
+
+    const next = { 
+      ...annotation,
+      body: {
+        ...metadata,
+        purpose: 'describing'
+      }
+    } as W3CAnnotation;
+
+    store.upsertAnnotation(imageId, next);
+
+    setData({ annotation: next, metadata: next.body as W3CAnnotationBody })
+  }
+
+  return { metadata: data.metadata, updateMetadata };
+
 }
 
 export const useDataModel = () => {
@@ -106,17 +170,41 @@ export const useDataModel = () => {
   const addEntityType = (type: EntityType) =>
     setAsync(model.addEntityType(type));
 
-  const updateEntityType = (type: EntityType) => 
-    setAsync(model.updateEntityType(type));
+  const addFolderSchema = (schema: FolderMetadataSchema) =>
+    setAsync(model.addFolderSchema(schema));
+
+  const addImageSchema = (schema: ImageMetadataSchema) =>
+    setAsync(model.addImageSchema(schema));
 
   const removeEntityType = (typeOrId: EntityType | string) =>
     setAsync(model.removeEntityType(typeOrId));
 
+  const removeFolderSchema = (schemaOrName: FolderMetadataSchema | string) =>
+    setAsync(model.removeFolderSchema(schemaOrName));
+
+  const removeImageSchema = (schemaOrName: ImageMetadataSchema | string) =>
+    setAsync(model.removeImageSchema(schemaOrName));
+
+  const updateEntityType = (type: EntityType) => 
+    setAsync(model.updateEntityType(type));
+
+  const updateFolderSchema = (schema: FolderMetadataSchema) =>
+    setAsync(model.updateFolderSchema(schema));
+
+  const updateImageSchema = (schema: ImageMetadataSchema) =>
+    setAsync(model.updateImageSchema(schema));
+
   return { 
     ...model,
     addEntityType,
+    addFolderSchema,
+    addImageSchema,
+    removeEntityType,
+    removeFolderSchema,
+    removeImageSchema,
     updateEntityType,
-    removeEntityType
+    updateFolderSchema,
+    updateImageSchema
   };
 
 }

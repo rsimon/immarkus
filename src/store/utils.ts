@@ -1,3 +1,5 @@
+import { W3CAnnotation } from '@annotorious/react';
+
 export const readImageFile = (file: File): Promise<Blob> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -54,4 +56,13 @@ export const generateShortId = (str: string) => {
       return shortId;
     });
 }
+
+export const hasSelector = (annotation: W3CAnnotation) => {
+  if (!annotation.target)
+    return false;
+
+  const targets = Array.isArray(annotation.target) ? annotation.target : [annotation.target]
+  return targets.some(t => t.selector);
+}
+
 

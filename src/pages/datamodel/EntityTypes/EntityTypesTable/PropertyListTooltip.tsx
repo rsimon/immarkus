@@ -44,7 +44,7 @@ export const PropertyListTooltip = (props: PropertyListTooltipProps) => {
         <TooltipContent>
           <ul className="text-white">
             {props.entityType.properties.map(p => (
-              <li className="my-1 flex gap-2">
+              <li key={p.name} className="my-1 flex gap-2">
                 <div className="flex gap-1">
                   <PropertyTypeIcon definition={p} />
                   <span>{p.name}</span>

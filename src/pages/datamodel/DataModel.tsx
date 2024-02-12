@@ -13,7 +13,7 @@ export const Vocabulary = () => {
     <div className="page-root">
       <AppNavigationSidebar />
 
-      <main className="page data-model">
+      <main className="page data-model px-12 py-6">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Data Model</h1>
 
         <Tabs defaultValue="entityTypes" className="mt-2">

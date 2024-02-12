@@ -8,6 +8,7 @@ import { Textarea } from '@/ui/Textarea';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
+import { TextOptions } from './TextOptions';
 import {
   Select,
   SelectContent,
@@ -15,9 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { TextOptions } from './TextOptions';
 
 interface PropertyDefinitionEditorProps {
+
+  editorHint: string;
+
+  previewHint: string;
 
   property?: PropertyDefinition;
 
@@ -46,8 +50,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     <article className="grid grid-cols-5 rounded-lg overflow-hidden">
       <div className="px-6 py-3 col-span-3">
         <p className="text-left text-xs leading-relaxed mt-1">
-          Use Properties to record specific details in your annotations,
-          such as weight, material, age, etc. 
+          {props.editorHint}
         </p>
 
         <form onSubmit={onSubmit}>
@@ -138,7 +141,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
         </form>
       </div>
 
-      <PropertyPreview property={edited} />
+      <PropertyPreview 
+        hint={props.previewHint}
+        property={edited} />
     </article>
   )
 
