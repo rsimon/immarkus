@@ -59,9 +59,7 @@ export const SidebarSection = () => {
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div className="flex-grow text-sm justify-center items-center w-full p-3 px-4">
-                <ImageMetadata />
-              </div> 
+              <ImageMetadata />
             </Tabs.Content>
           </section>
         </>
