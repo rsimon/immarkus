@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImageMetadata } from '@/store';
 import { ImageGridItem } from '../ItemGrid';
@@ -26,13 +26,18 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
     setFormState(metadata);    
   }, [metadata]);
 
-  const onSave = () => updateMetadata(formState);
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    updateMetadata(formState);
+  }
 
   const onOpen = () => navigate(`/annotate/${props.image.id}`);
 
   return (
     <PropertyValidation>
-      <div className="flex flex-col justify-between h-full">
+      <form 
+        className="flex flex-col justify-between h-full"
+        onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">
           <h2 className="leading-relaxed mr-5 mb-8 font-medium">
             {props.image.name}
@@ -47,18 +52,19 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
           <Button 
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
-            onClick={onSave}>
+            type="submit">
             Save Metadata
           </Button>
 
           <Button 
             variant="outline"
             className="w-full"
+            type="button"
             onClick={onOpen}>
             <PanelTop className="h-4 w-4 mr-2" /> Open Image
           </Button>
         </div>
-      </div>
+      </form>
     </PropertyValidation>
   )
 

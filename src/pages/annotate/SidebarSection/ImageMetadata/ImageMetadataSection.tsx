@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { Image } from '@/model';
 import { useImageMetadata } from '@/store';
@@ -22,11 +22,16 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
     setFormState(metadata);    
   }, [metadata]);
 
-  const onSave = () => updateMetadata(formState);
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    updateMetadata(formState);
+  }
 
   return (
     <PropertyValidation>
-      <div className="flex flex-col flex-grow justify-between w-full">
+      <form 
+        className="flex flex-col flex-grow justify-between w-full"
+        onSubmit={onSubmit}>
         <div>
           <ImageMetadataForm
             metadata={formState}
@@ -35,11 +40,10 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
         <Button 
           disabled={!hasChanges(metadata, formState)} 
-          className="w-full mb-2"
-          onClick={onSave}>
+          className="w-full mb-2">
           Save Metadata
         </Button>
-      </div>
+      </form>
     </PropertyValidation>
   )
 
