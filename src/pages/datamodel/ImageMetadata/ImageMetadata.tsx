@@ -73,7 +73,7 @@ export const ImageMetadata = () => {
         previewHint={previewHint}
         onSave={addProperty}>
         <Button>
-          Add Metadata Property
+          Add Image Property
         </Button>
       </PropertyDefinitionEditorDialog>
     </>
