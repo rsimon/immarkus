@@ -12,8 +12,6 @@ export const AnnotationList = () => {
   const store = useStore();
 
   const onSelect = (annotation: ImageAnnotation) => () => {
-    console.log('select', annotation);
-
     manifold.setSelected(annotation.id);
 
     const annotator = manifold.findAnnotator(annotation.id);
