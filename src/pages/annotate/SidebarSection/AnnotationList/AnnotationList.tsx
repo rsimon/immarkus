@@ -12,6 +12,8 @@ export const AnnotationList = () => {
   const store = useStore();
 
   const onSelect = (annotation: ImageAnnotation) => () => {
+    console.log('select', annotation);
+
     manifold.setSelected(annotation.id);
 
     const annotator = manifold.findAnnotator(annotation.id);
@@ -27,7 +29,7 @@ export const AnnotationList = () => {
     <div className="py-2 grow">
       <ul>
         {annotations.get(imageIds[0]).map(annotation => (
-          <li key={annotation.id}>
+          <li key={annotation.id} onClick={onSelect(annotation)}>
             <AnnotationListItem 
               annotation={annotation} 
               onSelect={onSelect(annotation)}
