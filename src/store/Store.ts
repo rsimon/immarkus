@@ -174,7 +174,7 @@ export const loadStore = (
   const getFolderMetadata = (folderId: string): Promise<W3CAnnotation> => {
     const folder = getFolder(folderId);
     if (folder) {
-      return folder.handle.getFileHandle('_immarkus.metadata.json', { create: true })
+      return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
         .then(handle => handle.getFile())
         .then(file => readJSONFile<W3CAnnotation>(file))
     } else {
@@ -229,7 +229,7 @@ export const loadStore = (
   const upsertFolderMetadata = (folderId: string, annotation: W3CAnnotation): Promise<void> => {
     const folder = getFolder(folderId);
     if (folder) {
-      return folder.handle.getFileHandle('_immarkus.metadata.json', { create: true })
+      return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
         .then(handle => writeJSONFile(handle, annotation))
     } else {
       return Promise.reject(`Missing folder: ${folderId}`);
