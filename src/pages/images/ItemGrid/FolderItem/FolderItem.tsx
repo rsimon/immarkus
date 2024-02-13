@@ -16,7 +16,7 @@ export const FolderItem = (props: FolderItemProps) => {
 
   const store = useStore();
 
-  const { images } = store.getFolderContents(props.folder.handle);
+  const { images, folders } = store.getFolderContents(props.folder.handle);
 
   return (
     <div>
@@ -51,7 +51,14 @@ export const FolderItem = (props: FolderItemProps) => {
             {props.folder.name}
           </h3>
           <p className="pt-1 text-xs text-muted-foreground">
-            {images.length == 1 ? '1 Image' : `${images.length} Images`}
+            {images.length === 0 && folders.length === 0 ? 
+                'Empty' : 
+              images.length > 0 && folders.length > 0 ?
+                `${images.length} Image${images.length > 1 ? 's' : ''} · ${folders.length} Subfolder${folders.length > 1 ? 's' : ''}` :
+              images.length > 0 ?
+                `${images.length} Image${images.length > 1 ? 's' : ''}` :
+                `${folders.length} Subfolder${folders.length > 1 ? 's' : ''}`
+            }
           </p>
         </div>
       </div>
