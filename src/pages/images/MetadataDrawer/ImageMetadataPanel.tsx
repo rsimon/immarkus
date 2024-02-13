@@ -6,7 +6,7 @@ import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { ImageMetadataForm, hasChanges } from '@/components/ImageMetadataForm';
+import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 
 interface ImageMetadataPanelProps {
 

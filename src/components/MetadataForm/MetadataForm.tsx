@@ -13,17 +13,19 @@ import {
   URIField 
 } from '@/components/PropertyFields';
 
-interface ImageMetadataFormProps {
+interface MetadataFormProps {
 
   metadata: W3CAnnotationBody;
+
+  properties?: PropertyDefinition[];
 
   onChange(metadata: W3CAnnotationBody): void;
 
 }
 
-const parseBody = (body?: W3CAnnotationBody, schema?: ImageMetadataSchema) => {
-  if (schema && body && 'properties' in body) {
-    const entries = (schema.properties || []).map(definition => (
+const parseBody = (body?: W3CAnnotationBody, properties?: PropertyDefinition[]) => {
+  if (body && 'properties' in body) {
+    const entries = (properties || []).map(definition => (
       [definition.name, body.properties[definition.name]]
     )).filter(t => Boolean(t[1]));
 
@@ -33,17 +35,11 @@ const parseBody = (body?: W3CAnnotationBody, schema?: ImageMetadataSchema) => {
   }
 }
 
-export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
+export const MetadataForm = (props: MetadataFormProps) => {
 
-  const model = useDataModel();
+  const { metadata, properties } = props;
 
-  const { metadata } = props;
-
-  const schema = metadata 
-    ? model.getImageSchema(metadata.source || 'default') 
-    : model.getImageSchema('default');
-
-  const formState = parseBody(metadata, schema);
+  const formState = parseBody(metadata, properties);
   
   const getValue = (definition: PropertyDefinition) => formState[definition.name];
 
@@ -62,8 +58,8 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
     props.onChange(next);
   }
 
-  return schema && metadata ?
-    (schema.properties || []).map(definition => (
+  return properties && metadata ?
+    (properties || []).map(definition => (
       <div className="mt-2" key={definition.name}>
         {definition.type === 'enum' ? (
           <EnumField

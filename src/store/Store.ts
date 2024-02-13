@@ -3,6 +3,7 @@ import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
+import { write } from 'fs';
 
 export interface Store {
 
@@ -21,6 +22,8 @@ export interface Store {
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
+  getFolderMetadata(folderId: string): Promise<W3CAnnotation>;
+
   getImage(imageId: string): Image;
 
   getRootFolder(): RootFolder;
@@ -28,6 +31,8 @@ export interface Store {
   loadImage(id: string): Promise<LoadedImage>;
 
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
+
+  upsertFolderMetadata(folderId: string, annotation: W3CAnnotation): Promise<void>;
 
 }
 
@@ -166,6 +171,17 @@ export const loadStore = (
     return { images: imageItems, folders: folderItems };
   }
 
+  const getFolderMetadata = (folderId: string): Promise<W3CAnnotation> => {
+    const folder = getFolder(folderId);
+    if (folder) {
+      return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
+        .then(handle => handle.getFile())
+        .then(file => readJSONFile<W3CAnnotation>(file))
+    } else {
+      return Promise.reject();
+    }
+  }
+
   const getImage = (id: string) => images.find(f => f.id === id);
 
   const getRootFolder = () => ({
@@ -210,6 +226,16 @@ export const loadStore = (
     }
   });
 
+  const upsertFolderMetadata = (folderId: string, annotation: W3CAnnotation): Promise<void> => {
+    const folder = getFolder(folderId);
+    if (folder) {
+      return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
+        .then(handle => writeJSONFile(handle, annotation))
+    } else {
+      return Promise.reject(`Missing folder: ${folderId}`);
+    }
+  }
+
   resolve({
     // @deprecated
     images,
@@ -219,11 +245,12 @@ export const loadStore = (
     getDataModel,
     getFolder,
     getFolderContents,
+    getFolderMetadata,
     getImage,
     getRootFolder,
     loadImage,
     upsertAnnotation,
-
+    upsertFolderMetadata
   });
 
 });
