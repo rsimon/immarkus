@@ -19,7 +19,6 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
   useEffect(() => {
-    console.log('effect!', metadata);
     setFormState(metadata);    
   }, [metadata]);
 

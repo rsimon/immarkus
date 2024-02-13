@@ -26,7 +26,7 @@ export const useFolderMetadata = (folderId: string) => {
       }
     } as W3CAnnotation;
 
-    // TODO store.upsertFolderMetadata(folderId, next);
+    store.upsertFolderMetadata(folderId, next);
 
     setAnnotation(next);
   }
