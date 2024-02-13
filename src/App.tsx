@@ -30,6 +30,7 @@ export const App = () => {
           <Route index element={<Navigate to="/export/model" />} />
           <Route path="model" element={<Export tab="model" />} />
           <Route path="annotations" element={<Export tab="annotations" />} />
+          <Route path="metadata" element={<Export tab="metadata" />} />
         </Route>
 
         <Route path="markus" element={<Markus />} />

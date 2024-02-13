@@ -1,9 +1,8 @@
-import { W3CAnnotation } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
-import { write } from 'fs';
 
 export interface Store {
 
@@ -25,6 +24,8 @@ export interface Store {
   getFolderMetadata(folderId: string): Promise<W3CAnnotation>;
 
   getImage(imageId: string): Image;
+
+  getImageMetadata(imageId: string): Promise<W3CAnnotationBody | undefined>;
 
   getRootFolder(): RootFolder;
 
@@ -184,6 +185,29 @@ export const loadStore = (
 
   const getImage = (id: string) => images.find(f => f.id === id);
 
+  const getImageMetadata = (imageId: string): Promise<W3CAnnotationBody | undefined> =>
+    getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
+      if (annotations.length > 1)
+        console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`);
+
+      if (annotations.length === 0)
+        return;
+  
+      const annotation = annotations[0];
+
+      if (Array.isArray(annotation.body)) {
+        if (annotation.body.length !== 1) {
+          console.warn(`Integrity error: metadata annotation for image ${imageId} has != 1 body`);
+        } else {
+          return annotation.body[0] as W3CAnnotationBody;
+        }
+      } else if (!annotation.body) {
+        console.warn(`Integrity error: metadata annotation for image ${imageId} has no body`);
+      } else {
+        return annotation.body;
+      }
+    });
+
   const getRootFolder = () => ({
     name: rootDir.name, path: [], handle: rootDir
   });
@@ -247,6 +271,7 @@ export const loadStore = (
     getFolderContents,
     getFolderMetadata,
     getImage,
+    getImageMetadata,
     getRootFolder,
     loadImage,
     upsertAnnotation,

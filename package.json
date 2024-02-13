@@ -52,6 +52,7 @@
     "localforage": "^1.10.0",
     "lucide-react": "^0.311.0",
     "openseadragon": "^4.1.0",
+    "papaparse": "^5.4.1",
     "primereact": "^10.3.3",
     "react": "^18.2.0",
     "react-autosuggest": "^10.1.0",

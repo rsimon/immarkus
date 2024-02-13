@@ -3,10 +3,11 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Separator } from '@/ui/Separator';
 import { ExportAnnotations } from './ExportAnnotations';
 import { ExportDataModel } from './ExportDataModel';
+import { ExportMetadata } from './ExportMetadata';
 
 interface ExportProps {
   
-  tab: 'annotations' | 'model'
+  tab: 'annotations' | 'model' | 'metadata'
 
 }
 
@@ -50,7 +51,11 @@ export const Export = (props: ExportProps) => {
                   label="Annotations" 
                   active={props.tab === 'annotations'} />
 
-                <li className="px-3 py-1.5 text-muted-foreground/50">Metadata</li>
+                <NavListItem
+                  path="/export/metadata"
+                  label="Metadata"
+                  active={props.tab === 'metadata'} />
+
                 <li className="px-3 py-1.5 text-muted-foreground/50">Images</li>
               </ol>
             </nav>
@@ -59,8 +64,10 @@ export const Export = (props: ExportProps) => {
           <section className="pl-12 py-2 flex-grow">
             {props.tab === 'model' ? (
               <ExportDataModel />
-            ) : (
+            ) : props.tab === 'annotations' ? (
               <ExportAnnotations />
+            ) : (
+              <ExportMetadata />
             )}
           </section>
         </div>
