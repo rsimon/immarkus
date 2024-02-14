@@ -6,7 +6,7 @@ import { MetadataListItem } from './MetadataListItem';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Textarea } from '@/ui/Textarea';
-import { Cuboid, Rows3 } from 'lucide-react';
+import { Cuboid, Plus, PlusCircle, Rows3 } from 'lucide-react';
 
 interface MetadataSchemaEditorProps {
 
@@ -101,33 +101,46 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
         {(schema?.properties || []).length === 0 ? (
           <div className="my-6 py-5 bg-muted w-full rounded-sm text-muted-foreground text-sm flex justify-center items-center">
-            No Properties
+            <PropertyDefinitionEditorDialog
+              editorHint={props.editorHint}
+              previewHint={props.previewHint}
+              onSave={addProperty}>
+              <Button className="flex items-center" variant="ghost">
+                <PlusCircle className="h-4 w-4 mr-1.5" /> Add Property
+              </Button>
+            </PropertyDefinitionEditorDialog>
           </div>
         ) : (
-          <ul className="max-w-sm mt-8 mb-12">
-            {(schema?.properties || []).map(definition => (
-              <li key={definition.name}>
-                <MetadataListItem 
-                  editorHint={props.editorHint}
-                  previewHint={props.previewHint}
-                  definition={definition} 
-                  onMoveUp={() => moveProperty(definition, true)}
-                  onMoveDown={() => moveProperty(definition, false)}
-                  onUpdateProperty={updated => updateProperty(updated, definition)}
-                  onDeleteProperty={() => deleteProperty(definition)} />
-              </li>
-            ))}
-          </ul>
-        )}
+          <div className="mt-6 pt-2 pb-4 px-4 bg-muted w-full rounded-sm text-muted-foreground text-sm">
+            <ul>
+              {(schema?.properties || []).map(definition => (
+                <li key={definition.name}>
+                  <MetadataListItem 
+                    editorHint={props.editorHint}
+                    previewHint={props.previewHint}
+                    definition={definition} 
+                    onMoveUp={() => moveProperty(definition, true)}
+                    onMoveDown={() => moveProperty(definition, false)}
+                    onUpdateProperty={updated => updateProperty(updated, definition)}
+                    onDeleteProperty={() => deleteProperty(definition)} />
+                </li>
+              ))}
+            </ul>
 
-        {/* <PropertyDefinitionEditorDialog
-          editorHint={props.editorHint}
-          previewHint={props.previewHint}
-          onSave={addProperty}>
-          <Button>
-            Add Metadata Property
-          </Button>
-            </PropertyDefinitionEditorDialog> */}
+            <div className="flex justify-end">
+              <PropertyDefinitionEditorDialog
+                editorHint={props.editorHint}
+                previewHint={props.previewHint}
+                onSave={addProperty}>
+                <Button 
+                  variant="outline" 
+                  className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
+                  Add Property
+                </Button>
+              </PropertyDefinitionEditorDialog>
+            </div>
+          </div>
+        )}
 
         <Button className="w-full mt-7" onClick={onSave}>
           <Rows3 className="w-4 h-4 mr-2" /> Save Schema

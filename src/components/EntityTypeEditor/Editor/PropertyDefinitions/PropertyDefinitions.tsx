@@ -106,7 +106,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                 onSave={addProperty}>
                 <Button 
                   variant="outline" 
-                  className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5" >
+                  className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
                   Add Property
                 </Button>
               </PropertyDefinitionEditorDialog>
