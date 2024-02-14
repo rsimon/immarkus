@@ -31,6 +31,11 @@ export const ImageMetadata = () => {
 
   return (
     <div>
+      <p className="p-1 mt-4 text-sm max-w-2xl leading-6">
+        Use schemas to record structured information about your images, such as title, author or source.
+        Create multiple schemas to describe different types of images, e.g. 'Map' vs. 'Photo' etc.
+      </p>
+
       <MetadataTable
         schemas={model.imageSchemas}
         onEditSchema={setEdited}
@@ -38,19 +43,17 @@ export const ImageMetadata = () => {
 
       <div className="mt-4">
         <MetadataSchemaEditorDialog
-          caption="Define schemas to record structured information about your images. Create multiple schemas for different image types, e.g. 'Map' vs. 'Photo'."
           editorHint={editorHint}
           previewHint={previewHint}
           onSave={onSave}>
           <Button>
-            <Rows3 className="w-4 h-4 mr-2" /> New Schema
+            <Rows3 className="w-4 h-4 mr-2" /> New Image Schema
           </Button>
         </MetadataSchemaEditorDialog>
       </div>
 
       <MetadataSchemaEditorDialog
         open={Boolean(edited)} 
-        caption="Define a metadata schema to record structured information about your images."
         editorHint={editorHint}
         previewHint={previewHint}
         schema={edited}

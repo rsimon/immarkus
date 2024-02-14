@@ -6,8 +6,6 @@ import { MetadataSchema } from '@/model';
 
 interface MetadataSchemaEditorDialogProps {
 
-  caption: string;
-
   editorHint: string;
 
   previewHint: string;
@@ -57,7 +55,6 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
 
       <DialogContent className="p-0 max-w-xl my-8 rounded-lg">
         <MetadataSchemaEditor 
-          caption={props.caption} 
           editorHint={props.editorHint} 
           previewHint={props.previewHint} 
           schema={props.schema}

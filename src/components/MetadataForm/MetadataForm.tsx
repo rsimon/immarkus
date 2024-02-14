@@ -1,8 +1,7 @@
 import { ToyBrick } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { ImageMetadataSchema, PropertyDefinition } from '@/model';
-import { useDataModel } from '@/store';
+import { PropertyDefinition } from '@/model';
 import { 
   EnumField, 
   ExternalAuthorityField, 

@@ -10,8 +10,6 @@ import { Cuboid, Plus, PlusCircle, Rows3 } from 'lucide-react';
 
 interface MetadataSchemaEditorProps {
 
-  caption: string;
-
   editorHint: string;
 
   previewHint: string;
@@ -67,10 +65,6 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
   return (
     <article>
       <div className="p-5">
-        <p className="text-sm leading-6 max-w-[60ch] pr-12">
-          {props.caption}
-        </p>
-
         <div className="mt-6">
           <Label 
             htmlFor="name"
