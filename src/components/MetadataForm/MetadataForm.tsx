@@ -75,6 +75,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
   const onChangeValue = (definition: PropertyDefinition, value: any) => {
     const next = {
       ...metadata,
+      source: selectedSchema.name,
       properties: formState
     };
 
