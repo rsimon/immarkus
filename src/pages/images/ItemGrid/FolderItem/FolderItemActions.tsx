@@ -31,7 +31,7 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
 
       <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Folder metadata
+          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Information
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
