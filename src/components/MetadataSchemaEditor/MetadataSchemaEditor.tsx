@@ -1,47 +1,53 @@
 import { PropertyDefinitionEditorDialog, moveArrayItem } from '@/components/PropertyDefinitionEditor';
-import { PropertyDefinition } from '@/model';
+import { MetadataSchema, PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
-import { MetadataListItem } from '../../components/MetadataSchemaEditor/MetadataListItem';
+import { MetadataListItem } from './MetadataListItem';
 
-interface MetadataProps {
+interface MetadataSchemaEditorProps {
+
+  caption: string;
 
   editorHint: string;
 
   previewHint: string;
 
-  properties: PropertyDefinition[];
+  schema?: MetadataSchema;
 
-  onChange(updated: PropertyDefinition[]): void;
+  onChange(updated: MetadataSchema): void;
 
 }
 
-export const Metadata = (props: MetadataProps) => {
+export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
-  const { properties, onChange } = props;
+  const { schema } = props;
 
-  const addProperty = (added: PropertyDefinition) =>
-    onChange([...properties, added]);
+  const addProperty = (added: PropertyDefinition) => {
+    // onChange([...properties, added]);
+  }
 
-  const moveProperty = (definition: PropertyDefinition, up: boolean) =>
-    onChange(moveArrayItem(properties, properties.indexOf(definition), up));
+  const moveProperty = (definition: PropertyDefinition, up: boolean) => {
+    // onChange(moveArrayItem(properties, properties.indexOf(definition), up));
+  }
 
-  const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) =>
-    onChange(properties.map(p => p === previous ? updated : p));
+  const updateProperty = (updated: PropertyDefinition, previous: PropertyDefinition) => {
+    // onChange(properties.map(p => p === previous ? updated : p));
+  }
 
-  const deleteProperty = (definition: PropertyDefinition) =>
-    onChange(properties.filter(d => d !== definition));
+  const deleteProperty = (definition: PropertyDefinition) => {
+    // onChange(properties.filter(d => d !== definition));
+  }
 
   return (
     <>
       <p className="p-1 mt-4 text-sm max-w-xl leading-6">
-        Define a metadata schema to record structured information about your images. 
+        {props.caption}
       </p>
 
-      {properties.length === 0 ? (
+      {schema?.properties.length === 0 ? (
         <div className="h-8 mt-3" />
       ) : (
         <ul className="max-w-sm mt-8 mb-12">
-          {properties.map(definition => (
+          {(schema?.properties || []).map(definition => (
             <li key={definition.name}>
               <MetadataListItem 
                 editorHint={props.editorHint}

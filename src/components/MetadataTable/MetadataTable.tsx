@@ -11,11 +11,12 @@ import {
   TableRow,
 } from '@/ui/Table';
 
+
 interface MetadataTableProps {
 
   schemas?: MetadataSchema[];
 
-  onEditSchema(schema: string): void;
+  // onEditSchema(schema: string): void;
 
   onDeleteSchema(schema: string): void;
 
@@ -28,7 +29,7 @@ export const MetadataTable = (props: MetadataTableProps) => {
       <Table>
         <TableHeader className="text-xs">
           <TableRow>
-            <TableHead className="pl-3 pr-2 whitespace-nowrap">Schema</TableHead>
+            <TableHead className="px-3 whitespace-nowrap">Schema</TableHead>
             <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>
             <TableHead className="px-2 whitespace-nowrap w-[340px]">Properties</TableHead>
             <TableHead></TableHead>
@@ -46,7 +47,9 @@ export const MetadataTable = (props: MetadataTableProps) => {
             </TableRow>
           ) : props.schemas.map(schema => (
             <TableRow key={schema.name} className="text-xs">
-              <TableCell className="whitespace-nowrap py-1 pl-0.5 pr-2.5">{schema.name}</TableCell>
+              <TableCell className="whitespace-nowrap py-1 px-3 font-medium">
+                {schema.name}
+              </TableCell>
               <TableCell className="font-medium p-2 first-letter:whitespace-nowrap py-1 px-2">{schema.description}</TableCell>
               <TableCell className="py-1 px-2">
                 <span className="whitespace-nowrap">
@@ -80,7 +83,7 @@ export const MetadataTable = (props: MetadataTableProps) => {
               </TableCell>
               <TableCell className="text-right py-1 px-2">
                 <MetadataTableActions
-                  onEditSchema={() => props.onEditSchema(schema.name)} 
+                  onEditSchema={() => console.log('edit')} 
                   onDeleteSchema={() => props.onDeleteSchema(schema.name)} />
               </TableCell>
             </TableRow>

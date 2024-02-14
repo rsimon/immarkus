@@ -1,12 +1,12 @@
-import { PropertyDefinition } from '@/model';
+import { MetadataTable } from '@/components/MetadataTable';
+import { MetadataSchema } from '@/model';
 import { useDataModel } from '@/store';
-import { Metadata } from '../Metadata';
+import { Button } from '@/ui/Button';
+import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
 
 export const ImageMetadata = () => {
 
   const model = useDataModel();
-
-  const properties = model.getImageSchema('default')?.properties || [];
 
   const editorHint = 
     'Add Properties to record specific details for your images, such as title, source, date, etc.';
@@ -14,7 +14,8 @@ export const ImageMetadata = () => {
   const previewHint =
     'This is how your property will appear when editing metadata in the image gallery.';
 
-  const onChange = (updated: PropertyDefinition[]) => {
+  const onChange = (updated: MetadataSchema) => {
+    /*
     const schema = model.getImageSchema('default');
     if (schema) {
       model.updateImageSchema({
@@ -27,13 +28,31 @@ export const ImageMetadata = () => {
         properties: updated
       });
     }
+    */
   }
+
+  const onDelete = (schemaName: string) => {
+    console.log('deleting', schemaName);
+  }
+
   return (
-    <Metadata 
-      editorHint={editorHint} 
-      previewHint={previewHint} 
-      properties={properties} 
-      onChange={onChange} />
+    <div>
+      <MetadataTable
+        schemas={model.imageSchemas}
+        onDeleteSchema={onDelete} />
+
+      <div className="mt-4">
+        <MetadataSchemaEditorDialog
+          caption="Define a metadata schema to record structured information about your images."
+          editorHint={editorHint}
+          previewHint={previewHint}
+          onChange={onChange}>
+          <Button>
+            Add Image Schema
+          </Button>
+        </MetadataSchemaEditorDialog>
+      </div>
+    </div>
   )
 
 }
