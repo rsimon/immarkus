@@ -1,12 +1,16 @@
+import { useState } from 'react';
 import { MetadataTable } from '@/components/MetadataTable';
 import { MetadataSchema } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
+import { Rows3 } from 'lucide-react';
 
 export const ImageMetadata = () => {
 
   const model = useDataModel();
+
+  const [edited, setEdited] = useState<MetadataSchema | undefined>();
 
   const editorHint = 
     'Add Properties to record specific details for your images, such as title, source, date, etc.';
@@ -14,7 +18,7 @@ export const ImageMetadata = () => {
   const previewHint =
     'This is how your property will appear when editing metadata in the image gallery.';
 
-  const onChange = (updated: MetadataSchema) => {
+  const onSave = (updated: MetadataSchema) => {
     /*
     const schema = model.getImageSchema('default');
     if (schema) {
@@ -39,6 +43,7 @@ export const ImageMetadata = () => {
     <div>
       <MetadataTable
         schemas={model.imageSchemas}
+        onEditSchema={setEdited}
         onDeleteSchema={onDelete} />
 
       <div className="mt-4">
@@ -46,12 +51,21 @@ export const ImageMetadata = () => {
           caption="Define a metadata schema to record structured information about your images."
           editorHint={editorHint}
           previewHint={previewHint}
-          onChange={onChange}>
+          onSave={onSave}>
           <Button>
-            Add Image Schema
+            <Rows3 className="w-4 h-4 mr-2" /> Add Schema
           </Button>
         </MetadataSchemaEditorDialog>
       </div>
+
+      <MetadataSchemaEditorDialog
+        open={Boolean(edited)} 
+        caption="Define a metadata schema to record structured information about your images."
+        editorHint={editorHint}
+        previewHint={previewHint}
+        schema={edited}
+        onSave={onSave}
+        onOpenChange={open => !open && setEdited(undefined)} />
     </div>
   )
 

@@ -16,7 +16,7 @@ interface MetadataTableProps {
 
   schemas?: MetadataSchema[];
 
-  // onEditSchema(schema: string): void;
+  onEditSchema(schema: MetadataSchema): void;
 
   onDeleteSchema(schema: string): void;
 
@@ -83,7 +83,7 @@ export const MetadataTable = (props: MetadataTableProps) => {
               </TableCell>
               <TableCell className="text-right py-1 px-2">
                 <MetadataTableActions
-                  onEditSchema={() => console.log('edit')} 
+                  onEditSchema={() => props.onEditSchema(schema)} 
                   onDeleteSchema={() => props.onDeleteSchema(schema.name)} />
               </TableCell>
             </TableRow>

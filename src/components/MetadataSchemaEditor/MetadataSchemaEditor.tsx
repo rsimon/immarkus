@@ -6,6 +6,7 @@ import { MetadataListItem } from './MetadataListItem';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Textarea } from '@/ui/Textarea';
+import { Cuboid, Rows3 } from 'lucide-react';
 
 interface MetadataSchemaEditorProps {
 
@@ -17,13 +18,17 @@ interface MetadataSchemaEditorProps {
 
   schema?: MetadataSchema;
 
-  onChange(updated: MetadataSchema): void;
+  onSave(schema: MetadataSchema): void;
 
 }
 
 export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
   const [schema, setSchema] = useState<Partial<MetadataSchema>>(props.schema || {});
+
+  const onSave = () => {
+    console.log('save', schema);
+  }
 
   const addProperty = (added: PropertyDefinition) =>
     setSchema(s => ({ 
@@ -106,14 +111,18 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
           </ul>
         )}
 
-        <PropertyDefinitionEditorDialog
+        {/* <PropertyDefinitionEditorDialog
           editorHint={props.editorHint}
           previewHint={props.previewHint}
           onSave={addProperty}>
           <Button>
             Add Metadata Property
           </Button>
-        </PropertyDefinitionEditorDialog>
+            </PropertyDefinitionEditorDialog> */}
+
+        <Button className="w-full mt-7" onClick={onSave}>
+          <Rows3 className="w-4 h-4 mr-2" /> Save Schema
+        </Button>
       </div>
     </article>
   )

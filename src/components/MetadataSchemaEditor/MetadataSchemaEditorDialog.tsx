@@ -12,11 +12,13 @@ interface MetadataSchemaEditorDialogProps {
 
   previewHint: string;
 
-  children: ReactNode;
+  children?: ReactNode;
 
   open?: boolean;
 
-  onChange(updated: MetadataSchema): void;
+  schema?: MetadataSchema;
+
+  onSave(schema: MetadataSchema): void;
 
   onOpenChange?(open: boolean): void;
 
@@ -66,7 +68,8 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
           caption={props.caption} 
           editorHint={props.editorHint} 
           previewHint={props.previewHint} 
-          onChange={props.onChange} />
+          schema={props.schema}
+          onSave={props.onSave} />
       </DialogContent>
     </Dialog>
   )
