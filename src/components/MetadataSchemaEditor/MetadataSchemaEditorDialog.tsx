@@ -61,7 +61,7 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
         </DialogTrigger>
       )}
 
-      <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
+      <DialogContent className="p-0 max-w-xl my-8 rounded-lg">
         <MetadataSchemaEditor 
           caption={props.caption} 
           editorHint={props.editorHint} 
