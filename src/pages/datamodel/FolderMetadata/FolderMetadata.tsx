@@ -1,6 +1,5 @@
 import { PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
-import { Metadata } from '../Metadata';
 
 export const FolderMetadata = () => {
 
@@ -28,12 +27,6 @@ export const FolderMetadata = () => {
       });
     }
   }
-  return (
-    <Metadata 
-      editorHint={editorHint} 
-      previewHint={previewHint} 
-      properties={properties} 
-      onChange={onChange} />
-  )
+  return null;
 
 }
