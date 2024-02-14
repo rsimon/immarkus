@@ -35,8 +35,14 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
   const [selectedSchema, setSelectedSchema] = useState<MetadataSchema | undefined>();
 
   useEffect(() => {
-    if (metadata)
-      setSelectedSchema(model.getImageSchema(metadata.source));
+    if (schemas.length === 1) {
+      // No need for user selection if only one schema available!
+      setSelectedSchema(schemas[0]);
+    } else {
+      // If more than one schema, choose based on metadata source
+      if (metadata)
+        setSelectedSchema(model.getImageSchema(metadata.source));
+    }
   }, [metadata]);
 
   const onChangeSchema = (name: string) => {
@@ -55,8 +61,11 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
         define one.
       </span>
     </div>
-  ) : schemas.length === 1 ? (
-    <div/>
+  ) : schemas.length === 1 && selectedSchema ? (
+    <MetadataForm 
+      metadata={metadata} 
+      properties={selectedSchema.properties}
+      onChange={props.onChange} />
   ) : (
     <div className="text-sm">
       <div className="flex gap-4 items-center">
