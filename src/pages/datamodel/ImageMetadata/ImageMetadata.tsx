@@ -38,12 +38,12 @@ export const ImageMetadata = () => {
 
       <div className="mt-4">
         <MetadataSchemaEditorDialog
-          caption="Define a metadata schema to record structured information about your images."
+          caption="Define schemas to record structured information about your images. Create multiple schemas for different image types, e.g. 'Map' vs. 'Photo'."
           editorHint={editorHint}
           previewHint={previewHint}
           onSave={onSave}>
           <Button>
-            <Rows3 className="w-4 h-4 mr-2" /> Add Schema
+            <Rows3 className="w-4 h-4 mr-2" /> New Schema
           </Button>
         </MetadataSchemaEditorDialog>
       </div>
