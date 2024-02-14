@@ -57,54 +57,56 @@ export const MetadataForm = (props: MetadataFormProps) => {
     props.onChange(next);
   }
 
-  return properties && metadata ?
-    (properties || []).map(definition => (
-      <div className="mt-2" key={definition.name}>
-        {definition.type === 'enum' ? (
-          <EnumField
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'external_authority' ? (
-          <ExternalAuthorityField
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'geocoordinate' ? (
-          <GeoCoordinateField
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'measurement' ? (
-          <MeasurementField
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'number' ? (
-          <NumberField
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'text' ? (
-          <TextField 
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : definition.type === 'uri' ? (
-          <URIField 
-            id={definition.name}
-            definition={definition} 
-            value={getValue(definition)}
-            onChange={value => onChange(definition, value)} />
-        ) : null }
-      </div>
-    )
+  return properties && metadata ? (
+    <div>
+      {(properties || []).map(definition => (
+        <div className="mt-2" key={definition.name}>
+          {definition.type === 'enum' ? (
+            <EnumField
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'external_authority' ? (
+            <ExternalAuthorityField
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'geocoordinate' ? (
+            <GeoCoordinateField
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'measurement' ? (
+            <MeasurementField
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'number' ? (
+            <NumberField
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'text' ? (
+            <TextField 
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : definition.type === 'uri' ? (
+            <URIField 
+              id={definition.name}
+              definition={definition} 
+              value={getValue(definition)}
+              onChange={value => onChange(definition, value)} />
+          ) : null}
+        </div>
+      ))}
+    </div>
   ) : (
     <div className="flex flex-col text-sm items-center px-2 justify-center text-center flex-grow leading-loose text-muted-foreground">
       <span>

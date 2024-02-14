@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { ToyBrick } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { MetadataSchema } from '@/model';
 import { useDataModel } from '@/store';
+import { Separator } from '@/ui/Separator';
 import { MetadataForm } from './MetadataForm';
 import { 
   Select, 
@@ -11,7 +13,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
-import { MetadataSchema } from '@/model';
 
 interface ImageMetadataFormProps {
 
@@ -59,7 +60,7 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
   ) : (
     <div className="text-sm">
       <div className="flex gap-4 items-center">
-        <span>Schema</span>
+        <span className="font-medium">Schema</span>
 
         <Select value={selectedSchema?.name} onValueChange={onChangeSchema}>
           <SelectTrigger className="flex-grow">
@@ -73,6 +74,8 @@ export const ImageMetadataForm = (props: ImageMetadataFormProps) => {
           </SelectContent>
         </Select>
       </div>
+
+      <Separator className="mt-5 mb-5" />
 
       {selectedSchema && (
         <MetadataForm 
