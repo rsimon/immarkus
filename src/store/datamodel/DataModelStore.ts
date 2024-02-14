@@ -3,7 +3,7 @@ import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
 import { removeMissingParentIds, repairDataModel } from '../integrity';
-import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
+import { ImageMetadataSchema } from '@/model/MetadataSchema';
 import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
 
 export interface DataModelStore extends DataModel, EntityTypeTree {

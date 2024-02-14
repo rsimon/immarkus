@@ -1,4 +1,4 @@
-import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
+import { ImageMetadataSchema } from '@/model/MetadataSchema';
 import { EntityType } from '../../model/EntityType';
 import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
 

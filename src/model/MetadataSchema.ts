@@ -1,9 +1,11 @@
 import { PropertyDefinition } from './PropertyDefinition';
 
-export interface FolderMetadataSchema {
+export interface MetadataSchema {
 
   name: string;
 
+  description?: string;
+  
   properties?: PropertyDefinition[];
 
 }
