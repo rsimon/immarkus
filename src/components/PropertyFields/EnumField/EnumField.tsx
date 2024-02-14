@@ -1,5 +1,6 @@
 import { EnumPropertyDefinition } from '@/model';
 import { BasePropertyField } from '../BasePropertyField';
+import { cn } from '@/ui/utils';
 import { 
   Select, 
   SelectContent, 
@@ -7,7 +8,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
-import { cn } from '@/ui/utils';
 
 interface EnumFieldProps {
 

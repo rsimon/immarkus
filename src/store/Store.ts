@@ -123,7 +123,7 @@ export const loadStore = (
   const getAnnotations = (
     imageId: string,
     opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
-  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
+  ): Promise<W3CAnnotation[]> => new Promise(async resolve => {
 
     const filterByOpts = (annotations: W3CAnnotation[]) =>
       opts.type === 'image' ? annotations.filter(a => hasSelector(a))  :

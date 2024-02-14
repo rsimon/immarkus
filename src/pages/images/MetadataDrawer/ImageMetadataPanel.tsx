@@ -53,7 +53,7 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
             type="submit">
-            Save Metadata
+            Save
           </Button>
 
           <Button 
