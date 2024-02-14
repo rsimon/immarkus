@@ -19,25 +19,15 @@ export const ImageMetadata = () => {
     'This is how your property will appear when editing metadata in the image gallery.';
 
   const onSave = (updated: MetadataSchema) => {
-    /*
-    const schema = model.getImageSchema('default');
-    if (schema) {
-      model.updateImageSchema({
-        ...schema,
-        properties: updated
-      });
-    } else {
-      model.addImageSchema({
-        name: 'default',
-        properties: updated
-      });
-    }
-    */
+    const previous = model.getImageSchema(updated.name);
+    if (previous)
+      model.updateImageSchema(updated);
+    else
+      model.addImageSchema(updated);
   }
 
-  const onDelete = (schemaName: string) => {
-    console.log('deleting', schemaName);
-  }
+  const onDelete = (schemaName: string) =>
+    model.removeImageSchema(schemaName);
 
   return (
     <div>

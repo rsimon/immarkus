@@ -26,8 +26,6 @@ interface MetadataSchemaEditorDialogProps {
 
 export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProps) => {
 
-  const { toast } = useToast();
-
   const [open, setOpen] = useState(props.open);
 
   useEffect(() => {
@@ -41,15 +39,9 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
       props.onOpenChange(open);
   }
 
-  const onSaveError = (error: Error) => {
-    console.error(error);
-    
-    toast({
-      variant: 'destructive',
-      // @ts-ignore
-      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-      description: 'Something went wrong. Could not save schema.'
-    });   
+  const onSave = (schema: MetadataSchema) => {
+    props.onSave(schema);
+    onOpenChange(false);
   }
 
   return (
@@ -69,7 +61,7 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
           editorHint={props.editorHint} 
           previewHint={props.previewHint} 
           schema={props.schema}
-          onSave={props.onSave} />
+          onSave={onSave} />
       </DialogContent>
     </Dialog>
   )

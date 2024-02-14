@@ -26,8 +26,15 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
   const [schema, setSchema] = useState<Partial<MetadataSchema>>(props.schema || {});
 
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+
   const onSave = () => {
-    console.log('save', schema);
+    if (schema.name) {
+      setErrors({});
+      props.onSave(schema as MetadataSchema);
+    } else {
+      setErrors({ name: true });
+    }
   }
 
   const addProperty = (added: PropertyDefinition) =>
@@ -70,9 +77,11 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
             className="inline-block text-xs mb-1.5 ml-0.5">Schema Name
           </Label>
 
+          {errors.name && (<span className="text-xs text-red-600 ml-1">required</span>)}
+
           <Input
             id="name"
-            className="bg-white"
+            className={errors.name ? 'bg-white border-red-500' : 'bg-white'} 
             value={schema.name || ''}
             onChange={evt => setSchema(s => ({ ...s, name: evt.target.value }))} />
         </div>
