@@ -8,6 +8,8 @@ interface MetadataSchemaEditorDialogProps {
 
   editorHint: string;
 
+  existingSchemas: MetadataSchema[];
+
   previewHint: string;
 
   children?: ReactNode;
@@ -58,6 +60,7 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
           editorHint={props.editorHint} 
           previewHint={props.previewHint} 
           schema={props.schema}
+          existingSchemas={props.existingSchemas}
           onSave={onSave} />
       </DialogContent>
     </Dialog>

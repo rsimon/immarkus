@@ -45,6 +45,7 @@ export const ImageMetadata = () => {
         <MetadataSchemaEditorDialog
           editorHint={editorHint}
           previewHint={previewHint}
+          existingSchemas={model.imageSchemas}
           onSave={onSave}>
           <Button>
             <Rows3 className="w-4 h-4 mr-2" /> New Image Schema
@@ -57,6 +58,7 @@ export const ImageMetadata = () => {
         editorHint={editorHint}
         previewHint={previewHint}
         schema={edited}
+        existingSchemas={model.imageSchemas}
         onSave={onSave}
         onOpenChange={open => !open && setEdited(undefined)} />
     </div>

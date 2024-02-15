@@ -45,6 +45,7 @@ export const FolderMetadata = () => {
         <MetadataSchemaEditorDialog
           editorHint={editorHint}
           previewHint={previewHint}
+          existingSchemas={model.folderSchemas}
           onSave={onSave}>
           <Button>
             <Rows3 className="w-4 h-4 mr-2" /> New Folder Schema
@@ -57,6 +58,7 @@ export const FolderMetadata = () => {
         editorHint={editorHint}
         previewHint={previewHint}
         schema={edited}
+        existingSchemas={model.folderSchemas}
         onSave={onSave}
         onOpenChange={open => !open && setEdited(undefined)} />
     </div>

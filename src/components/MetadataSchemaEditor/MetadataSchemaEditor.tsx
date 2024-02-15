@@ -6,12 +6,14 @@ import { MetadataListItem } from './MetadataListItem';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Textarea } from '@/ui/Textarea';
-import { PlusCircle, Rows3 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, PlusCircle, Rows3 } from 'lucide-react';
 import { MetadataSchemaPreview } from './MetadataSchemaPreview';
 
 interface MetadataSchemaEditorProps {
 
   editorHint: string;
+
+  existingSchemas: MetadataSchema[];
 
   previewHint: string;
 
@@ -27,12 +29,22 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
+  const isNameAvailable = props.schema
+    // Editing existing - check if schema with the name is props.schema.name
+    ? !props.existingSchemas.some(s => s.name === schema.name) 
+      || props.existingSchemas.find(s => s.name === schema.name).name === props.schema.name
+
+    // Not editing an existing entity - check if any exists with same ID
+    : !props.existingSchemas.some(s => s.name === schema.name);
+
   const onSave = () => {
     if (schema.name) {
-      setErrors({});
-      props.onSave(schema as MetadataSchema);
+      if (!props.existingSchemas.some(s => s.name === schema.name)) {
+        setErrors({});
+        props.onSave(schema as MetadataSchema);
+      }
     } else {
-      setErrors({ name: true });
+      setErrors({ name_missing: true });
     }
   }
 
@@ -73,13 +85,23 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
             className="inline-block text-xs mb-1.5 ml-0.5">Schema Name
           </Label>
 
-          {errors.name && (<span className="text-xs text-red-600 ml-1">required</span>)}
+          {errors.name_missing && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
           <Input
             id="name"
-            className={errors.name ? 'bg-white border-red-500' : 'bg-white'} 
+            className={errors.name_missing ? 'bg-white border-red-500' : 'bg-white'} 
             value={schema.name || ''}
             onChange={evt => setSchema(s => ({ ...s, name: evt.target.value }))} />
+
+          {schema.name && (!isNameAvailable ? (
+            <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
+              <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
+            </span>
+          ) : ((props.schema && isNameAvailable) || !props.schema) && (
+            <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
+              <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
+            </span>
+          ))}
         </div>
 
         <div className="mt-6">
