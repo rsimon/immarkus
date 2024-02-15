@@ -27,11 +27,13 @@ export const ImageMetadata = () => {
     } else {
       if (previous) {
         // An 'update' that renamed the unique name!
-        model.removeImageSchema(previous.name);
         renameImageSchema(previous.name, updated.name, store);
-      }
 
-      model.addImageSchema(updated);
+        model.removeImageSchema(previous)
+        .then(() => model.addImageSchema(updated));
+      } else {
+        model.addImageSchema(updated);
+      }
     }
   }
 

@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { MetadataTable } from '@/components/MetadataTable';
 import { MetadataSchema } from '@/model';
-import { useDataModel } from '@/store';
+import { useDataModel, useStore } from '@/store';
+import { renameFolderSchema } from '@/store/integrity';
 import { Button } from '@/ui/Button';
 import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
 import { Rows3 } from 'lucide-react';
 
 export const FolderMetadata = () => {
+
+  const store = useStore();
 
   const model = useDataModel();
 
@@ -22,10 +25,15 @@ export const FolderMetadata = () => {
     if (previous && previous.name === updated.name) {
       model.updateFolderSchema(updated);
     } else {
-      if (previous)
-        model.removeFolderSchema(previous);
+      if (previous) {
+        // An 'update' that renamed the unique name!
+        renameFolderSchema(previous.name, updated.name, store);
 
-      model.addFolderSchema(updated);
+        model.removeFolderSchema(previous)
+          .then(() => model.addFolderSchema(updated));
+      } else {
+        model.addFolderSchema(updated);
+      }
     }
   }
 
