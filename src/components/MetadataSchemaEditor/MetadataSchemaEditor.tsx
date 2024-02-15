@@ -39,7 +39,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
   const onSave = () => {
     if (schema.name) {
-      if (!props.existingSchemas.some(s => s.name === schema.name)) {
+      if (isNameAvailable) {
         setErrors({});
         props.onSave(schema as MetadataSchema, props.schema);
       }
