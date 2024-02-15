@@ -50,7 +50,9 @@ export const MetadataTable = (props: MetadataTableProps) => {
               <TableCell className="whitespace-nowrap py-1 px-3 font-medium">
                 {schema.name}
               </TableCell>
-              <TableCell className="font-medium p-2 first-letter:whitespace-nowrap py-1 px-2">{schema.description}</TableCell>
+              <TableCell className="font-medium p-2 whitespace-nowrap overflow-hidden text-ellipsis py-1 px-2">
+                {schema.description}
+              </TableCell>
               <TableCell className="py-1 px-2">
                 <span className="whitespace-nowrap">
                   {(schema.properties || []).slice(0, 3).map((property: PropertyDefinition) => (
