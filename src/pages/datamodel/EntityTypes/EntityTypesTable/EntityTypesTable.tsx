@@ -2,13 +2,13 @@ import { CaseSensitive, ChevronRight, Database, Hash, Link2, List, MapPin, Ruler
 import { TreeNode } from 'primereact/treenode';
 import { TreeTable } from 'primereact/treetable';
 import { Column } from 'primereact/column';
+import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { EntityTypeActions } from '../EntityTypeActions';
+import { EntityTypeActions } from './EntityTypeActions';
 
 import './EntityTypesTable.css';
-import { PropertyListTooltip } from './PropertyListTooltip';
 
 interface EntityTypesTableProps {
 
@@ -88,7 +88,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
       ))}
 
       {node.data.properties?.length > 3 && (
-        <PropertyListTooltip entityType={node.data} />
+        <PropertyListTooltip properties={node.data.properties} />
       )}
     </span>
   )

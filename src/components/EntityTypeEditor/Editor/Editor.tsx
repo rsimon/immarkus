@@ -21,7 +21,6 @@ export interface EditorProps {
 
 }
 
-
 interface ValidationErrors {
 
   invalidId?: boolean;

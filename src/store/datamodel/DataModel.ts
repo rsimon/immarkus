@@ -1,13 +1,11 @@
-import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
-import { EntityType } from '../../model/EntityType';
-import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
+import { EntityType, MetadataSchema } from '@/model';
 
 export interface DataModel {
 
   entityTypes: EntityType[];
 
-  folderSchemas: FolderMetadataSchema[];
+  folderSchemas: MetadataSchema[];
   
-  imageSchemas: ImageMetadataSchema[];
+  imageSchemas: MetadataSchema[];
 
 }

@@ -29,9 +29,9 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent>
+      <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Image metadata
+          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Information
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>

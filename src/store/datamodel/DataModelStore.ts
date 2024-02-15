@@ -1,10 +1,8 @@
-import type { EntityType, PropertyDefinition } from '@/model';
+import type { EntityType,MetadataSchema, PropertyDefinition } from '@/model';
 import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
 import { removeMissingParentIds, repairDataModel } from '../integrity';
-import { ImageMetadataSchema } from '@/model/ImageMetadataSchema';
-import { FolderMetadataSchema } from '@/model/FolderMetadataSchema';
 
 export interface DataModelStore extends DataModel, EntityTypeTree {
 
@@ -18,22 +16,22 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   updateEntityType(type: EntityType): Promise<void>;
 
   // Folder metadata schemas
-  getFolderSchema(name: string): FolderMetadataSchema | undefined;
+  getFolderSchema(name: string): MetadataSchema | undefined;
 
-  addFolderSchema(schema: FolderMetadataSchema): Promise<void>;
+  addFolderSchema(schema: MetadataSchema): Promise<void>;
 
-  removeFolderSchema(schemaOrName: FolderMetadataSchema | string): Promise<void>;
+  removeFolderSchema(schemaOrName: MetadataSchema | string): Promise<void>;
 
-  updateFolderSchema(schema: FolderMetadataSchema): Promise<void>;
+  updateFolderSchema(schema: MetadataSchema): Promise<void>;
 
   // Image metadata schemas
-  getImageSchema(name: string): ImageMetadataSchema | undefined;
+  getImageSchema(name: string): MetadataSchema | undefined;
 
-  addImageSchema(schema: ImageMetadataSchema): Promise<void>;
+  addImageSchema(schema: MetadataSchema): Promise<void>;
 
-  removeImageSchema(schemaOrName: ImageMetadataSchema | string): Promise<void>;
+  removeImageSchema(schemaOrName: MetadataSchema | string): Promise<void>;
 
-  updateImageSchema(schema: ImageMetadataSchema): Promise<void>;
+  updateImageSchema(schema: MetadataSchema): Promise<void>;
 
 }
 
@@ -88,7 +86,7 @@ export const loadDataModel = (
     }
   }
 
-  const addFolderSchema = (schema: ImageMetadataSchema) => {
+  const addFolderSchema = (schema: MetadataSchema) => {
     if (!folderSchemas.find(s => s.name === schema.name)) {
       folderSchemas = [...folderSchemas, schema];
       return save();
@@ -97,7 +95,7 @@ export const loadDataModel = (
     }
   }
 
-  const addImageSchema = (schema: ImageMetadataSchema) => {
+  const addImageSchema = (schema: MetadataSchema) => {
     if (!imageSchemas.find(s => s.name === schema.name)) {
       imageSchemas = [...imageSchemas, schema];
       return save();
@@ -149,13 +147,13 @@ export const loadDataModel = (
     return rebuildEntityTypeTreeAndSave();
   }
 
-  const removeFolderSchema = (schemaOrName: FolderMetadataSchema | string) => {
+  const removeFolderSchema = (schemaOrName: MetadataSchema | string) => {
     const name = typeof schemaOrName === 'string' ? schemaOrName : schemaOrName.name;
     folderSchemas = folderSchemas.filter(s => s.name !== name);
     return save();
   }
 
-  const removeImageSchema = (schemaOrName: ImageMetadataSchema | string) => {
+  const removeImageSchema = (schemaOrName: MetadataSchema | string) => {
     const name = typeof schemaOrName === 'string' ? schemaOrName : schemaOrName.name;
     imageSchemas = imageSchemas.filter(s => s.name !== name);
     return save();
@@ -170,7 +168,7 @@ export const loadDataModel = (
     }
   }
 
-  const updateFolderSchema = (schema: FolderMetadataSchema) => {
+  const updateFolderSchema = (schema: MetadataSchema) => {
     if (folderSchemas.find(s => s.name === schema.name)) {
       folderSchemas = folderSchemas.map(s => s.name === schema.name ? schema : s);
       return save();
@@ -179,7 +177,7 @@ export const loadDataModel = (
     }
   }
 
-  const updateImageSchema = (schema: ImageMetadataSchema) => {
+  const updateImageSchema = (schema: MetadataSchema) => {
     if (imageSchemas.find(s => s.name === schema.name)) {
       imageSchemas = imageSchemas.map(s => s.name === schema.name ? schema : s);
       return save();

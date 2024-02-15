@@ -23,8 +23,8 @@ interface MetadataListItemProps {
 export const MetadataListItem = (props: MetadataListItemProps) => {
 
   return (
-    <div className="border rounded-sm px-3 py-2 mb-2 text-sm shadow-sm flex justify-between items-center">
-      <div className="flex gap-2">  
+    <div className="border w-full bg-white mt-2 rounded-sm px-3 py-2 text-sm shadow-sm flex justify-between items-center">
+      <div className="flex items-center gap-2">  
         <PropertyTypeIcon definition={props.definition} /> {props.definition.name}
       </div>
 

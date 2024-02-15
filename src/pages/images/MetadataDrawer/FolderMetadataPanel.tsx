@@ -47,7 +47,7 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
             type="submit">
-            Save Metadata
+            Save
           </Button>
         </div>
       </form>

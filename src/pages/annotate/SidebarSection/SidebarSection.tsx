@@ -59,7 +59,10 @@ export const SidebarSection = () => {
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <ImageMetadata />
+              <div 
+                className="w-full pt-1.5">
+                <ImageMetadata />
+              </div>
             </Tabs.Content>
           </section>
         </>

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { StoreContext } from '../StoreProvider';
-import { EntityType, FolderMetadataSchema, ImageMetadataSchema } from '@/model';
+import { EntityType, MetadataSchema } from '@/model';
 
 export const useDataModel = () => {
 
@@ -16,28 +16,28 @@ export const useDataModel = () => {
   const addEntityType = (type: EntityType) =>
     setAsync(model.addEntityType(type));
 
-  const addFolderSchema = (schema: FolderMetadataSchema) =>
+  const addFolderSchema = (schema: MetadataSchema) =>
     setAsync(model.addFolderSchema(schema));
 
-  const addImageSchema = (schema: ImageMetadataSchema) =>
+  const addImageSchema = (schema: MetadataSchema) =>
     setAsync(model.addImageSchema(schema));
 
   const removeEntityType = (typeOrId: EntityType | string) =>
     setAsync(model.removeEntityType(typeOrId));
 
-  const removeFolderSchema = (schemaOrName: FolderMetadataSchema | string) =>
+  const removeFolderSchema = (schemaOrName: MetadataSchema | string) =>
     setAsync(model.removeFolderSchema(schemaOrName));
 
-  const removeImageSchema = (schemaOrName: ImageMetadataSchema | string) =>
+  const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
     setAsync(model.removeImageSchema(schemaOrName));
 
   const updateEntityType = (type: EntityType) => 
     setAsync(model.updateEntityType(type));
 
-  const updateFolderSchema = (schema: FolderMetadataSchema) =>
+  const updateFolderSchema = (schema: MetadataSchema) =>
     setAsync(model.updateFolderSchema(schema));
 
-  const updateImageSchema = (schema: ImageMetadataSchema) =>
+  const updateImageSchema = (schema: MetadataSchema) =>
     setAsync(model.updateImageSchema(schema));
 
   return { 

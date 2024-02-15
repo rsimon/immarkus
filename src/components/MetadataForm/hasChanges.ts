@@ -5,6 +5,9 @@ export const hasChanges = (a: W3CAnnotationBody, b: W3CAnnotationBody) => {
   if (a === undefined && b === undefined)
     return false;
 
+  if (a?.source !== b?.source)
+    return true;
+
   const propertiesA = a && 'properties' in a ? a.properties : {};
   const propertiesB = b && 'properties' in b ? b.properties : {};
 
