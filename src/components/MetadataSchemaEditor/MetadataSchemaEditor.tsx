@@ -6,7 +6,8 @@ import { MetadataListItem } from './MetadataListItem';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Textarea } from '@/ui/Textarea';
-import { Cuboid, Plus, PlusCircle, Rows3 } from 'lucide-react';
+import { PlusCircle, Rows3 } from 'lucide-react';
+import { MetadataSchemaPreview } from './MetadataSchemaPreview';
 
 interface MetadataSchemaEditorProps {
 
@@ -63,7 +64,8 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
     }));
 
   return (
-    <article>
+    <article
+      className="grid grid-cols-2 rounded-lg">
       <div className="p-5">
         <div className="mt-6">
           <Label 
@@ -140,6 +142,8 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
           <Rows3 className="w-4 h-4 mr-2" /> Save Schema
         </Button>
       </div>
+
+      <MetadataSchemaPreview schema={schema} />
     </article>
   )
 
