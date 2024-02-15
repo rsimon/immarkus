@@ -1,4 +1,5 @@
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { v4 as uuidv4 } from 'uuid';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
@@ -34,6 +35,8 @@ export interface Store {
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
   upsertFolderMetadata(folderId: string, annotation: W3CAnnotation): Promise<void>;
+  
+  upsertImageMetadata(imageId: string, metadata: W3CAnnotationBody): Promise<void>;
 
 }
 
@@ -185,15 +188,20 @@ export const loadStore = (
 
   const getImage = (id: string) => images.find(f => f.id === id);
 
-  const getImageMetadata = (imageId: string): Promise<W3CAnnotationBody | undefined> =>
+  const _getImageMetadataAnnotation = (imageId: string): Promise<W3CAnnotation | undefined> =>
     getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
       if (annotations.length > 1)
         console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`);
-
+      
       if (annotations.length === 0)
         return;
-  
-      const annotation = annotations[0];
+
+      return annotations[0];
+    });
+
+  const getImageMetadata = (imageId: string): Promise<W3CAnnotationBody | undefined> =>
+    _getImageMetadataAnnotation(imageId).then(annotation => {
+      if (!annotation) return;
 
       if (Array.isArray(annotation.body)) {
         if (annotation.body.length !== 1) {
@@ -260,6 +268,28 @@ export const loadStore = (
     }
   }
 
+  const upsertImageMetadata = (imageId: string, metadata: W3CAnnotationBody): Promise<void> =>
+    _getImageMetadataAnnotation(imageId).then(existing => {
+      const annotation = existing || {
+        '@context': 'http://www.w3.org/ns/anno.jsonld',
+        type: 'Annotation',
+        id: uuidv4(),
+        target: {
+          source: imageId
+        }
+      };
+  
+      const next = { 
+        ...annotation,
+        body: {
+          ...metadata,
+          purpose: 'describing'
+        }
+      } as W3CAnnotation;
+  
+      upsertAnnotation(imageId, next);
+    });
+
   resolve({
     // @deprecated
     images,
@@ -275,7 +305,8 @@ export const loadStore = (
     getRootFolder,
     loadImage,
     upsertAnnotation,
-    upsertFolderMetadata
+    upsertFolderMetadata,
+    upsertImageMetadata
   });
 
 });

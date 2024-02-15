@@ -19,7 +19,7 @@ interface MetadataSchemaEditorProps {
 
   schema?: MetadataSchema;
 
-  onSave(schema: MetadataSchema): void;
+  onSave(schema: MetadataSchema, previous?: MetadataSchema): void;
 
 }
 
@@ -41,7 +41,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
     if (schema.name) {
       if (!props.existingSchemas.some(s => s.name === schema.name)) {
         setErrors({});
-        props.onSave(schema as MetadataSchema);
+        props.onSave(schema as MetadataSchema, props.schema);
       }
     } else {
       setErrors({ name_missing: true });

@@ -18,12 +18,15 @@ export const FolderMetadata = () => {
   const previewHint =
     'This is how your property will appear when editing metadata in the image gallery.';
 
-  const onSave = (updated: MetadataSchema) => {
-    const previous = model.getFolderSchema(updated.name);
-    if (previous)
+  const onSave = (updated: MetadataSchema, previous?: MetadataSchema) => {
+    if (previous && previous.name === updated.name) {
       model.updateFolderSchema(updated);
-    else
+    } else {
+      if (previous)
+        model.removeFolderSchema(previous);
+
       model.addFolderSchema(updated);
+    }
   }
 
   const onDelete = (schemaName: string) =>

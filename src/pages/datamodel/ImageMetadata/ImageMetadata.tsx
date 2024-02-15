@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { MetadataTable } from '@/components/MetadataTable';
 import { MetadataSchema } from '@/model';
-import { useDataModel } from '@/store';
+import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
 import { Rows3 } from 'lucide-react';
+import { renameImageSchema } from '@/store/integrity';
 
 export const ImageMetadata = () => {
+
+  const store = useStore();
 
   const model = useDataModel();
 
@@ -18,12 +21,18 @@ export const ImageMetadata = () => {
   const previewHint =
     'This is how your property will appear when editing metadata in the image gallery.';
 
-  const onSave = (updated: MetadataSchema) => {
-    const previous = model.getImageSchema(updated.name);
-    if (previous)
+  const onSave = (updated: MetadataSchema, previous?: MetadataSchema) => {
+    if (previous && previous.name === updated.name) {
       model.updateImageSchema(updated);
-    else
+    } else {
+      if (previous) {
+        // An 'update' that renamed the unique name!
+        model.removeImageSchema(previous.name);
+        renameImageSchema(previous.name, updated.name, store);
+      }
+
       model.addImageSchema(updated);
+    }
   }
 
   const onDelete = (schemaName: string) =>

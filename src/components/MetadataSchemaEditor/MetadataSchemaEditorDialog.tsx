@@ -18,7 +18,7 @@ interface MetadataSchemaEditorDialogProps {
 
   schema?: MetadataSchema;
 
-  onSave(schema: MetadataSchema): void;
+  onSave(schema: MetadataSchema, previous?: MetadataSchema): void;
 
   onOpenChange?(open: boolean): void;
 
@@ -39,8 +39,8 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
       props.onOpenChange(open);
   }
 
-  const onSave = (schema: MetadataSchema) => {
-    props.onSave(schema);
+  const onSave = (schema: MetadataSchema, previous?: MetadataSchema) => {
+    props.onSave(schema, previous);
     onOpenChange(false);
   }
 
