@@ -90,7 +90,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                   id={property.name}
                   className="bg-white" 
                   definition={property} />
-              ) : property.type === 'geocoordinates' ? (
+              ) : property.type === 'geocoordinate' ? (
                 <GeoCoordinatesField 
                   id={property.name}
                   className="bg-white" 

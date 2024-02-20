@@ -53,7 +53,7 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
               definition={property} 
               value={props.values[key]}
               onChange={value => props.onChange(key, value)} />
-          ) : property.type === 'geocoordinates' ? (
+          ) : property.type === 'geocoordinate' ? (
             <GeoCoordinatesField
               id={key}
               definition={property} 

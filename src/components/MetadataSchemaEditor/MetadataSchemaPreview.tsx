@@ -33,7 +33,7 @@ export const MetadataSchemaPreview = (props: MetadataSchemaPreviewProps) => {
                   id={definition.name}
                   className="bg-white"
                   definition={definition} />
-              ) : definition.type === 'geocoordinates' ? (
+              ) : definition.type === 'geocoordinate' ? (
                 <GeoCoordinatesField
                   id={definition.name}
                   className="bg-white"

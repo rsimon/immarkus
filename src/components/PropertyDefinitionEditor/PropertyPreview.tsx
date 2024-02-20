@@ -51,7 +51,7 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />
-            ) : preview.type === 'geocoordinates' ? (
+            ) : preview.type === 'geocoordinate' ? (
               <GeoCoordinatesField 
                 id={preview.name}
                 className="bg-white"

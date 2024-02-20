@@ -24,7 +24,7 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
       ) : type === 'external_authority' ? (
         <Database
           className={cn('w-4.5 h-3.5 -mt-[2px] px-0.5', className)} />
-      ) : type === 'geocoordinates' ? (
+      ) : type === 'geocoordinate' ? (
         <MapPin 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'measurement' ? (

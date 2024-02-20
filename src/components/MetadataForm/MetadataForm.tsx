@@ -135,7 +135,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
                 definition={definition} 
                 value={getValue(definition)}
                 onChange={value => onChangeValue(definition, value)} />
-            ) : definition.type === 'geocoordinates' ? (
+            ) : definition.type === 'geocoordinate' ? (
               <GeoCoordinatesField
                 id={definition.name}
                 definition={definition} 
