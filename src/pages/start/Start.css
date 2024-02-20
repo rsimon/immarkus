@@ -4,3 +4,11 @@ main.page.start {
   height: 100%;
   justify-content: center;
 }
+
+.page-root .version {
+  bottom: 20px;
+  color: #64748b; /* text-muted-foreground */
+  font-size: 0.8em;
+  position: absolute;
+  right: 20px;
+}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import preval from 'preval.macro';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';
@@ -44,6 +45,8 @@ export const Start = () => {
     }
   }
 
+  const buildDate = preval`module.exports = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date())`;
+
   return ( 
     <div className="page-root">
       {!window.showDirectoryPicker ? (
@@ -53,6 +56,10 @@ export const Start = () => {
       ) : (
         <Open onOpenFolder={onOpenFolder} />
       )}
+
+      <div className="version">
+        Version 0.3.0 · {buildDate}
+      </div>
     </div>
   )
 

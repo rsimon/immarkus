@@ -1,5 +1,3 @@
-import { ExternalAuthority } from './ExternalAuthority';
-
 type BasePropertyDefinition = {
 
   name: string, 
