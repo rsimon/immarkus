@@ -1,50 +1,7 @@
-import Papa from 'papaparse';
 import { Download } from 'lucide-react';
-import { Store, useStore } from '@/store';
+import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { PropertyDefinition } from '@/model';
-
-const toString = (definition: PropertyDefinition, value?: any) => {
-  if (!value)
-    return '';
-
-  if (definition.type === 'measurement')
-    return `${value.value} ${value.unit}`;
-  else if (definition.type === 'geocoordinate')
-    return `${value[0]}/${value[1]}`;
-  else
-    return value.toString();
-}
-
-export const exportImageMetadataCSV = async (store: Store) => {
-  const { images } = store;
-
-  const schema = store.getDataModel().getImageSchema('default');
-  if (!schema) return;
-
-  Promise.all(images.map(image => store.getImageMetadata(image.id).then(metadata => ({ image, metadata }))))
-    .then(results => results.map(({ image, metadata }) => {
-      const entries = (schema.properties || []).map(definition => {
-        const properties = metadata && 'properties' in metadata ? metadata.properties || {} : {};
-        return [definition.name, toString(definition, properties[definition.name])]
-      });
-
-      return Object.fromEntries([['image', image.name], ...entries]);
-    }))
-    .then(rows => {
-      const csv = Papa.unparse(rows);
-
-      const data = new TextEncoder().encode(csv);
-      const blob = new Blob([data], {
-        type: 'text/csv;charset=utf-8'
-      });
-  
-      const anchor = document.createElement('a');
-      anchor.href = URL.createObjectURL(blob);
-      anchor.download = 'image_metadata.csv';
-      anchor.click();
-    });
-}
+import { exportImageMetadataCSV } from './exportImageMetadata';
 
 export const ExportMetadata = () => {
 

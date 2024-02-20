@@ -191,7 +191,7 @@ export const loadStore = (
   const _getImageMetadataAnnotation = (imageId: string): Promise<W3CAnnotation | undefined> =>
     getAnnotations(imageId, { type: 'metadata' }).then(annotations => {
       if (annotations.length > 1)
-        console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`);
+        console.warn(`Integrity error: multiple metadata annotations for image ${imageId}`, annotations);
       
       if (annotations.length === 0)
         return;
