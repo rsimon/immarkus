@@ -3,7 +3,7 @@ import { Label } from '@/ui/Label';
 import { 
   EnumField,
   ExternalAuthorityField,
-  GeoCoordinateField, 
+  GeoCoordinatesField, 
   MeasurementField,
   NumberField, 
   PropertyValidation, 
@@ -51,8 +51,8 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />
-            ) : preview.type === 'geocoordinate' ? (
-              <GeoCoordinateField 
+            ) : preview.type === 'geocoordinates' ? (
+              <GeoCoordinatesField 
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />

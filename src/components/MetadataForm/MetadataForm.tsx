@@ -7,7 +7,7 @@ import { Separator } from '@/ui/Separator';
 import { 
   EnumField, 
   ExternalAuthorityField, 
-  GeoCoordinateField, 
+  GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
   TextField, 
@@ -135,8 +135,8 @@ export const MetadataForm = (props: MetadataFormProps) => {
                 definition={definition} 
                 value={getValue(definition)}
                 onChange={value => onChangeValue(definition, value)} />
-            ) : definition.type === 'geocoordinate' ? (
-              <GeoCoordinateField
+            ) : definition.type === 'geocoordinates' ? (
+              <GeoCoordinatesField
                 id={definition.name}
                 definition={definition} 
                 value={getValue(definition)}

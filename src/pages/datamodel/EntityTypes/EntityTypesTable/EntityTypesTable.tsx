@@ -72,7 +72,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
             <List className="w-3 h-3 mr-0.5" />
           ): property.type === 'external_authority' ? (
             <Database className="w-3 h-3 mr-1" />
-          ) : property.type === 'geocoordinate' ? (
+          ) : property.type === 'geocoordinates' ? (
             <MapPin className="w-3 h-3 mr-0.5" />
           ) : property.type === 'measurement' ? (
             <Ruler className="w-3 h-3 mr-1" />

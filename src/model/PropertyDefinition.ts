@@ -16,7 +16,7 @@ type BasePropertyDefinition = {
 
 export type PrimitivePropertyDefinition = BasePropertyDefinition & {
 
-  type: 'geocoordinate' 
+  type: 'geocoordinates' 
     | 'measurement'
     | 'number'
     | 'uri'

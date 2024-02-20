@@ -7,7 +7,7 @@ import { useDataModel } from '@/store';
 import { 
   EnumField,
   ExternalAuthorityField, 
-  GeoCoordinateField, 
+  GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
@@ -90,8 +90,8 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                   id={property.name}
                   className="bg-white" 
                   definition={property} />
-              ) : property.type === 'geocoordinate' ? (
-                <GeoCoordinateField 
+              ) : property.type === 'geocoordinates' ? (
+                <GeoCoordinatesField 
                   id={property.name}
                   className="bg-white" 
                   definition={property} />

@@ -10,7 +10,7 @@ const toString = (definition: PropertyDefinition, value?: any) => {
 
   if (definition.type === 'measurement')
     return `${value.value} ${value.unit}`;
-  else if (definition.type === 'geocoordinate')
+  else if (definition.type === 'geocoordinates')
     return `${value[0]}/${value[1]}`;
   else
     return value.toString();

@@ -5,7 +5,7 @@ import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { 
   EnumField,
   ExternalAuthorityField, 
-  GeoCoordinateField, 
+  GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
   TextField, 
@@ -53,8 +53,8 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
               definition={property} 
               value={props.values[key]}
               onChange={value => props.onChange(key, value)} />
-          ) : property.type === 'geocoordinate' ? (
-            <GeoCoordinateField
+          ) : property.type === 'geocoordinates' ? (
+            <GeoCoordinatesField
               id={key}
               definition={property} 
               value={props.values[key]}
