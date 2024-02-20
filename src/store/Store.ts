@@ -6,8 +6,9 @@ import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 
 export interface Store {
+  
+  folders: Folder[];
 
-  // @deprecated
   images: Image[];
 
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
@@ -291,7 +292,7 @@ export const loadStore = (
     });
 
   resolve({
-    // @deprecated
+    folders,
     images,
     countAnnotations,
     deleteAnnotation,
