@@ -58,7 +58,7 @@ export const Start = () => {
       )}
 
       <div className="version">
-        Version 0.3.0 · {buildDate}
+        Version 0.3.0 · Build {buildDate}
       </div>
     </div>
   )
