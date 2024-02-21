@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
 import { Thumbnail } from '@/components/Thumbnail';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -32,8 +32,6 @@ export const AddImage = (props: AddImageProps) => {
 
   const onOpenFolder = (folder: Folder | RootFolder) => {
     setCurrentFolder(folder);
-    console.log('setting items', folder);
-
     setItems(store.getFolderContents(folder.handle));
   }
 
@@ -41,6 +39,15 @@ export const AddImage = (props: AddImageProps) => {
     setOpen(false);
     props.onAddImage(image);
   }
+
+  useEffect(() => {
+    // Reset to root when closing
+    if (!open) {
+      const root = store.getRootFolder();
+      setCurrentFolder(root); 
+      setItems(store.getFolderContents(root.handle));
+    }
+  }, [open]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -53,7 +60,7 @@ export const AddImage = (props: AddImageProps) => {
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">
-        <div className="px-0.5 py-2 mb-1 flex border-b items-center text-sm">
+        <div className="px-0.5 py-2 mb-2 flex border-b items-center text-sm">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
           <input 
