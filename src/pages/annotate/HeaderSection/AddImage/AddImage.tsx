@@ -33,7 +33,7 @@ export const AddImage = (props: AddImageProps) => {
         <ImagePlus className="h-4 w-4 mr-1" /> Add image
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent>
+      <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
         {images.map(image => (
           <DropdownMenuItem 
             key={image.id}
