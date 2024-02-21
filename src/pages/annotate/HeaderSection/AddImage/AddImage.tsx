@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
+import { useSearch } from './useSearch';
 
 interface AddImageProps {
 
@@ -22,11 +23,15 @@ export const AddImage = (props: AddImageProps) => {
 
   const store = useStore();
 
-  const [open, setOpen] = useState(false);
+  const search = useSearch();
 
   const openImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
-  
+
+  const [open, setOpen] = useState(false);
+
   const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder>(store.getRootFolder());
+
+  const [query, setQuery] = useState<string>('');
 
   const [items, setItems] = useState<FolderItems>(store.getFolderContents(store.getRootFolder().handle));
 
@@ -49,6 +54,12 @@ export const AddImage = (props: AddImageProps) => {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (query) {
+      console.log(search(query));
+    }
+  }, [query]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
@@ -60,13 +71,15 @@ export const AddImage = (props: AddImageProps) => {
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">
-        <div className="px-0.5 py-2 mb-2 flex border-b items-center text-sm">
+        <div className="px-0.5 py-2 mb-2 flex border-b items-center">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
           <input 
             autoFocus
             placeholder="Search..."
-            className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
+            className="relative top-[1px] py-1 outline-none px-0.5 flex-grow text-sm" 
+            value={query} 
+            onChange={evt => setQuery(evt.target.value)} />
         </div>
         
         {currentFolder.parent && (
