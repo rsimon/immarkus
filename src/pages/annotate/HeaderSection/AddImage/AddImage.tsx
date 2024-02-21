@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react';
-import { ImagePlus } from 'lucide-react';
-import { FolderItems, Image } from '@/model';
+import { ArrowLeft, ImagePlus } from 'lucide-react';
+import { Thumbnail } from '@/components/Thumbnail';
+import { FolderIcon } from '@/components/FolderIcon';
+import { Folder, FolderItems, Image, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
-import { Thumbnail } from '@/components/Thumbnail';
 
 interface AddImageProps {
 
@@ -23,9 +24,18 @@ export const AddImage = (props: AddImageProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const [filtered, setFiltered] = useState<FolderItems>(store.getFolderContents(store.getRootFolder().handle));
+  const openImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
+  
+  const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder>(store.getRootFolder());
 
-  const addedImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
+  const [items, setItems] = useState<FolderItems>(store.getFolderContents(store.getRootFolder().handle));
+
+  const onOpenFolder = (folder: Folder | RootFolder) => {
+    setCurrentFolder(folder);
+    console.log('setting items', folder);
+
+    setItems(store.getFolderContents(folder.handle));
+  }
 
   const onAddImage = (image: Image) => {
     setOpen(false);
@@ -44,16 +54,39 @@ export const AddImage = (props: AddImageProps) => {
         <div>
           <input></input>
         </div>
-        <div className="h-[420px] overflow-y-auto p-2">
-          <ul>
-            {filtered.images.map(image => (
-              <li key={image.id} className="mt-0.5 p-2 hover:bg-muted rounded-lg cursor-pointer">
+        
+        {currentFolder.parent && (
+          <div className="px-2">
+            <button 
+              className="flex w-full text-xs items-center p-2 rounded-md hover:bg-muted"
+              onClick={() => onOpenFolder(store.getFolder(currentFolder.parent))}>
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              <div>
+                {currentFolder.parent.name}
+              </div>
+            </button>
+          </div>
+        )}
+        <div className="h-[420px] overflow-y-auto px-1.5 pb-2">
+          <ul className="text-xs">
+            {items.folders.map(folder => (
+              <li key={folder.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
                 <button 
-                  disabled={addedImages.has(image.id)}
-                  className={`flex gap-3 items-start text-xs ${addedImages.has(image.id) ? 'opacity-60' : ''}`}
+                  className="flex gap-3 w-full items-start"
+                  onClick={() => onOpenFolder(folder)}>
+                  <FolderIcon className="w-14 h-14 -ml-[1px] drop-shadow-md" />
+                  <div className="py-1">{folder.name}</div>
+                </button>
+              </li>
+            ))}
+            {items.images.map(image => (
+              <li key={image.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
+                <button 
+                  disabled={openImages.has(image.id)}
+                  className={`flex gap-3 w-full items-start ${openImages.has(image.id) ? 'opacity-60' : ''}`}
                   onClick={() => onAddImage(image)}>
                   <Thumbnail image={image} /> 
-                  <div className="line-clamp-3 overflow-hidden text-ellipsis">
+                  <div className="line-clamp-3 py-0.5 overflow-hidden text-ellipsis">
                     {image.name}
                   </div>
                 </button>

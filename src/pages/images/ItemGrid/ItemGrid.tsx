@@ -59,15 +59,6 @@ export const ItemGrid = (props: ItemGridProps) => {
           </li>
         ))}
       </ul>
-
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-0 h-0">
-        <defs>
-          <linearGradient id="folder-gradient" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#c2c8d0" />
-            <stop offset="100%" stopColor="#a8afbb" />
-          </linearGradient>
-        </defs>
-      </svg>
     </div>
   );
 }
