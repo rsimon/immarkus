@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ArrowLeft, ImagePlus } from 'lucide-react';
+import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
 import { Thumbnail } from '@/components/Thumbnail';
 import { FolderIcon } from '@/components/FolderIcon';
 import { Folder, FolderItems, Image, RootFolder } from '@/model';
@@ -50,9 +50,16 @@ export const AddImage = (props: AddImageProps) => {
         <ImagePlus className="h-4 w-4 mr-1" /> Add image
       </PopoverTrigger>
 
-      <PopoverContent className="w-[400px] p-0">
-        <div>
-          <input></input>
+      <PopoverContent 
+        sideOffset={0}
+        className="w-[400px] p-0 shadow-lg">
+        <div className="px-0.5 py-2 mb-1 flex border-b items-center text-sm">
+          <Search className="w-8 h-4 px-2 text-muted-foreground" />
+          
+          <input 
+            autoFocus
+            placeholder="Search..."
+            className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
         </div>
         
         {currentFolder.parent && (
