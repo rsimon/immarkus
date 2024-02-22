@@ -95,7 +95,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 <SelectItem value="uri">
                   <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" /> URI
                 </SelectItem>
-                <SelectItem value="geocoordinates">
+                <SelectItem value="geocoordinate">
                   <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> Geo-coordinates
                 </SelectItem>
                 <SelectItem value="measurement">
