@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
+import { ArrowLeft, Check, ImagePlus, Search } from 'lucide-react';
 import { Thumbnail } from '@/components/Thumbnail';
 import { FolderIcon } from '@/components/FolderIcon';
 import { Folder, FolderItems, Image, RootFolder } from '@/model';
@@ -27,6 +27,8 @@ export const AddImage = (props: AddImageProps) => {
 
   const openImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
 
+  const isOpen = (image: Image) => openImages.has(image.id)
+
   const [open, setOpen] = useState(false);
 
   const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder>(store.getRootFolder());
@@ -51,6 +53,7 @@ export const AddImage = (props: AddImageProps) => {
       const root = store.getRootFolder();
       setCurrentFolder(root); 
       setItems(store.getFolderContents(root.handle));
+      setQuery('');
     }
   }, [open]);
 
@@ -101,7 +104,7 @@ export const AddImage = (props: AddImageProps) => {
             </button>
           </div>
         )}
-        <div className="h-[420px] overflow-y-auto px-2.5 pb-2">
+        <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
             {items.folders.map(folder => (
               <li key={folder.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
@@ -114,13 +117,24 @@ export const AddImage = (props: AddImageProps) => {
               </li>
             ))}
             {items.images.map(image => (
-              <li key={image.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
+              <li 
+                key={image.id} 
+                className={`mt-0.5 py-2 px-3 rounded-lg cursor-pointer${isOpen(image) ?  '' : ' hover:bg-muted'}`}>
                 <button 
-                  disabled={openImages.has(image.id)}
-                  className={`flex gap-3 w-full items-start ${openImages.has(image.id) ? 'opacity-60' : ''}`}
+                  disabled={isOpen(image)}
+                  className="flex gap-3 w-full"
                   onClick={() => onAddImage(image)}>
-                  <Thumbnail image={image} /> 
-                  <div className="line-clamp-3 py-0.5 overflow-hidden text-ellipsis">
+                  {isOpen(image) ? (
+                    <div className="relative">
+                      <Thumbnail image={image} /> 
+                      <div className="absolute w-full h-full top-0 left-0 bg-white/60 flex items-center justify-center">
+                        <Check className="text-black h-10 w-10" />
+                      </div>
+                    </div>
+                  ) : (
+                    <Thumbnail image={image} /> 
+                  )}
+                  <div className="flex-grow line-clamp-3 overflow-hidden text-ellipsis text-left">
                     {image.name}
                   </div>
                 </button>
