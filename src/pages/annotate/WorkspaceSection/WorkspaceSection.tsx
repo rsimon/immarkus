@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Mosaic } from 'react-mosaic-component';
+import { Mosaic, MosaicNode } from 'react-mosaic-component';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../Tool';
@@ -24,8 +24,16 @@ interface WorkspaceSectionProps {
 
 }
 
+const initial = {
+  "direction": "row",
+  "first": "a",
+  "second": "b",
+  "splitPercentage": 40
+} as MosaicNode<string>;
+
 const createInitialValue= (list: string[], direction = 'row') => {
   const [first, ...rest] = list;
+
   return {
     direction,
     first,
@@ -35,9 +43,25 @@ const createInitialValue= (list: string[], direction = 'row') => {
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
-  const [windowMap, setWindowMap] = useState<{ windowId: string, image: LoadedImage }[]>([]);
+  const [value, setValue] = useState<MosaicNode<string>>();
+  
+  // const [windowMap, setWindowMap] = useState<{ windowId: string, image: LoadedImage }[]>([]);
+
 
   useEffect(() => {
+    if (props.images.length > 1) {
+      console.log('rendering initial view');
+
+      const view = createInitialValue(props.images.map(i => i.id));
+
+      console.log(view);
+
+      setValue(view);
+    } else {
+      console.log('not enough images');
+    }
+
+    /*
     setWindowMap(entries => {
       const diff = props.images.length - entries.length;
 
@@ -55,15 +79,19 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
           .map(({ windowId}, idx) => ({ windowId, image: props.images[idx] }));
       }
     });
-  }, [props.images]);
+    */
+  }, [props.images?.map(i => i.id).join()]);
 
+  /*
   const onChangeImage = (windowId: string, image: Image) => {
     const nextImages = windowMap
       .map(entry => entry.windowId === windowId ? image : entry.image);
 
     props.onChangeImages(nextImages);
   }
+  */
 
+  /*
   const onClose = (windowId: string) => {
     const nextImages = windowMap
       .filter(entry => entry.windowId !== windowId)
@@ -71,29 +99,17 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
     props.onChangeImages(nextImages);
   }
+  */
   
   return (
     <section className="workspace flex-grow bg-muted">
-      {windowMap.length === 1 ? (
-        <AnnotatableImage 
-          image={windowMap[0].image} 
-          mode={props.mode}
-          tool={props.tool} />
-      ) : windowMap.length > 1 ? (
-        <Mosaic
-          renderTile={(windowId, path) => (
-            <WorkspaceWindow 
-              windowId={windowId} 
-              windowPath={path} 
-              image={windowMap.find(t => t.windowId === windowId)?.image}
-              mode={props.mode}
-              tool={props.tool}
-              onAddImage={props.onAddImage}
-              onChangeImage={(_, next) => onChangeImage(windowId, next)} 
-              onClose={() => onClose(windowId)} />
-          )} 
-          initialValue={createInitialValue(windowMap.map(({ windowId }) => windowId))} />
-      ) : undefined}
+      {value && (
+        <Mosaic<string>
+          renderTile={id => (<div>{id}</div>)}
+          value={value}
+          onChange={setValue}
+        />
+      )}
     </section>
   )
 
