@@ -56,7 +56,14 @@ export const AddImage = (props: AddImageProps) => {
 
   useEffect(() => {
     if (query) {
-      console.log(search(query));
+      const items = search(query);
+
+      const folders = items.filter(i => 'handle' in i) as Folder[];
+      const images = items.filter(i => 'file' in i) as Image[];
+
+      setItems({ folders, images });
+    } else {
+      setItems(store.getFolderContents(currentFolder.handle));
     }
   }, [query]);
 
@@ -71,7 +78,7 @@ export const AddImage = (props: AddImageProps) => {
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">
-        <div className="px-0.5 py-2 mb-2 flex border-b items-center">
+        <div className="px-1 py-2 mb-2 flex border-b items-center">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
           <input 
@@ -82,7 +89,7 @@ export const AddImage = (props: AddImageProps) => {
             onChange={evt => setQuery(evt.target.value)} />
         </div>
         
-        {currentFolder.parent && (
+        {currentFolder.parent && !query && (
           <div className="px-2">
             <button 
               className="flex w-full text-xs items-center p-2 rounded-md hover:bg-muted"
@@ -94,7 +101,7 @@ export const AddImage = (props: AddImageProps) => {
             </button>
           </div>
         )}
-        <div className="h-[420px] overflow-y-auto px-1.5 pb-2">
+        <div className="h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
             {items.folders.map(folder => (
               <li key={folder.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
