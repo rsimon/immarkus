@@ -65,7 +65,16 @@ export const Editor = (props: EditorProps) => {
   }, [entityType]);
 
   const validate = (): EntityType | undefined => {
-    return entityType.id && isIdAvailable, isValidParent
+    const allPropertiesValid = (entityType.properties || []).every(d => 
+      d.type === 'enum' ||
+      d.type === 'external_authority' ||
+      d.type === 'geocoordinate' ||
+      d.type === 'measurement' ||
+      d.type === 'number' ||
+      d.type === 'text' ||
+      d.type === 'uri');
+
+    return allPropertiesValid && entityType.id && isIdAvailable && isValidParent
       ? entityType as EntityType
       : undefined;
   }
