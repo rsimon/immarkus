@@ -19,7 +19,7 @@ export interface Store {
 
   getDataModel(): DataModelStore;
 
-  getFolder(folderId: string | FileSystemDirectoryHandle): Folder;
+  getFolder(folderId: string | FileSystemDirectoryHandle): Folder | RootFolder;
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
@@ -168,7 +168,9 @@ export const loadStore = (
   const getFolder = (arg: string | FileSystemDirectoryHandle) =>
     typeof arg === 'string' 
       ? folders.find(f => f.id === arg) 
-      : folders.find(f => f.handle === arg);
+      : arg === rootDir 
+        ? getRootFolder() 
+        : folders.find(f => f.handle === arg);
 
   const getFolderContents = (dir: FileSystemDirectoryHandle): FolderItems => {
     const imageItems = images.filter(i => i.folder === dir);

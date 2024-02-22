@@ -61,14 +61,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     anno.redo();
   }
 
+  const folder = store.getFolder(props.images[0].folder);
+
   const back = props.images.length === 1 
-    ? `/images/${store.getFolder(props.images[0].folder)?.id || ''}`
+    ? `/images/${folder && ('id' in folder) ? folder.id : ''}`
     : '/images/';
 
   return (
     <section className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 items-center">
-        <div className=" flex items-center">
+        <div className="flex items-center">
           <Link className="font-semibold inline" to={back}>
             <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
               <ChevronLeft className="h-5 w-5" />
