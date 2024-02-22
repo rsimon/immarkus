@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicNode } from 'react-mosaic-component';
+import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../Tool';
@@ -34,23 +35,47 @@ const createInitialValue= (list: string[], direction = 'row') => {
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
+  // Association between image ID and Mosaic window ID
+  const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
+
+  // Mosaic state
   const [value, setValue] = useState<MosaicNode<string>>();
   
   useEffect(() => {
     if (props.images.length > 1) {
-      setValue(createInitialValue(props.images.map(i => i.id)));
+      const diff = props.images.length - windowMap.current.length;
+
+      const next = (diff === 0) 
+        // Same length - replace
+        ? windowMap.current.map(({ windowId }, idx) => ({ windowId, image: props.images[idx] }))
+        : diff > 0
+          // More images
+          ? [
+              ...windowMap.current.map(({ windowId }, idx) => ({ windowId, image: props.images[idx] })),
+              ...props.images.slice(-diff).map(image => ({ windowId: uuidv4(), image: image }))
+            ]
+          // Fewer images
+          : windowMap.current.slice(0, props.images.length)
+              .map(({ windowId}, idx) => ({ windowId, image: props.images[idx] }));
+
+      windowMap.current = next;
+
+      setValue(createInitialValue(next.map(t => t.windowId)));
     }
   }, [props.images]);
 
-  const onChangeImage = (currentImageId: string, nextImage: Image) => {
-    const nextImages = props.images
-      .map(i => i.id === currentImageId ? nextImage : i);
+  const onChangeImage = (windowId: string, nextImage: Image) => {
+    const nextImages = windowMap.current
+      .map(entry => entry.windowId === windowId ? nextImage : entry.image);
 
     props.onChangeImages(nextImages);
   }
 
-  const onClose = (imageId: string) => {
-    const nextImages = props.images.filter(i => i.id !== imageId)
+  const onClose = (windowId: string) => {
+    const nextImages = windowMap.current
+      .filter(entry => entry.windowId !== windowId)
+      .map(entry => entry.image);
+
     props.onChangeImages(nextImages);
   }
   
@@ -63,16 +88,16 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
           tool={props.tool} />
       ) : props.images.length > 1 && (
         <Mosaic<string>
-          renderTile={(imageId, path) => props.images.find(image => image.id === imageId) && (
+          renderTile={(windowId, path) => (
             <WorkspaceWindow 
-              windowId={imageId} 
+              windowId={windowId} 
               windowPath={path} 
-              image={props.images.find(image => image.id === imageId)}
+              image={windowMap.current.find(t => t.windowId === windowId)?.image}
               mode={props.mode}
               tool={props.tool}
               onAddImage={props.onAddImage}
-              onChangeImage={(_, next) => onChangeImage(imageId, next)} 
-              onClose={() => onClose(imageId)} />
+              onChangeImage={(_, next) => onChangeImage(windowId, next)} 
+              onClose={() => onClose(windowId)} />
           )}
           value={value}
           onChange={setValue}
