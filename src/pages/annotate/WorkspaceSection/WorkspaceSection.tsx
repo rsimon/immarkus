@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mosaic, MosaicNode } from 'react-mosaic-component';
+import { Mosaic, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
 import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
@@ -22,15 +22,6 @@ interface WorkspaceSectionProps {
 
   onRemoveImage(image: Image): void;
 
-}
-
-const createInitialValue= (list: string[], direction = 'row') => {
-  const [first, ...rest] = list;
-  return {
-    direction,
-    first,
-    second: rest.length === 1 ? rest[0] : createInitialValue(rest, direction === 'row' ? 'column' : 'row')
-  };
 }
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
@@ -60,7 +51,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
       windowMap.current = next;
 
-      setValue(createInitialValue(next.map(t => t.windowId)));
+      setValue(createBalancedTreeFromLeaves(next.map(t => t.windowId)));
     }
   }, [props.images]);
 
