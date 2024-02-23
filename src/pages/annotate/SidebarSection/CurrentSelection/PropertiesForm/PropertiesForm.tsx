@@ -42,7 +42,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
 
   // All other bodies
-  const otherBodies = annotation.bodies.filter(b => b.purpose !== 'classifying');
+  const otherBodies = annotation.bodies.filter(b => b.purpose !== 'classifying' && b.purpose !== 'commenting');
 
   const safeKeys = createSafeKeys(schemaBodies);
 
@@ -103,7 +103,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           ? [...updatedEntityTags, ...otherBodies, noteBody ]
           : [...updatedEntityTags, ...otherBodies ]
       };
-  
+
       anno.updateAnnotation(updatedAnnotation);
     } else {
       setShowValidationErrors(true);
@@ -117,16 +117,18 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     }
   }
 
+  const hasNote = formState[noteKey] !== undefined;
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
       onChange={setIsValid}>
 
-      <form className="grow pt-3 flex flex-col" onSubmit={onSubmit}>
+      <form className="grow pt-1 flex flex-col" onSubmit={onSubmit}>
         <div className="flex-grow">
           {schemaBodies.length > 0 && schemaBodies.length === 1 ? (
             <div>
-              <div className="flex justify-between items-center pb-4">
+              <div className="flex justify-between items-center pt-3 pb-4">
                 <EntityBadge entityType={schemaBodies[0].entityType} />
 
                 <PropertiesFormSectionActions 
@@ -184,19 +186,18 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             </Accordion>
           )}
 
+          {hasNote && (
+            <Note
+              id={noteKey}
+              value={formState[noteKey]}
+              onChange={value => onChange(noteKey, value)} />
+          )}
+
           <PropertiesFormActions 
-            onAddTag={props.onAddTag} />
-
-
-
-          {/*
-
-          <Note
-            id={noteKey}
-            value={formState[noteKey]}
-            onChange={value => onChange(noteKey, value)} />
-              
-          */}
+            hasNote={hasNote}
+            onAddTag={props.onAddTag} 
+            onAddNote={() => onChange(noteKey, '')} 
+            onClearNote={() => onChange(noteKey, undefined)}/>
         </div>
 
         <Button className="w-full" type="submit">Save</Button> 

@@ -1,12 +1,7 @@
-import { useState } from 'react';
-import { PlusCircle } from 'lucide-react';
-import { Button } from '@/ui/Button';
-import { Textarea } from '@/ui/Textarea';
 import { Label } from '@/ui/Label';
+import { Textarea } from '@/ui/Textarea';
 
 interface NoteProps {
-
-  defaultOpen?: boolean;
 
   id: string;
 
@@ -18,30 +13,13 @@ interface NoteProps {
 
 export const Note = (props: NoteProps) => {
 
-  const [showNote, setShowNote] = useState(Boolean(props.value) || props.defaultOpen);
-
-  return showNote ? (
-    <div>
-      <Label 
-        htmlFor={props.id}
-        className="text-xs block mb-1 mt-3">Note</Label>
-
+  return (
+    <div className="mt-4">
       <Textarea 
         id={props.id}
-        className="mb-2"
         rows={4}
         value={props.value || ''} 
         onChange={evt => props.onChange(evt.target.value)} />
-    </div>
-  ) : (
-    <div className="mb-2">
-      <Button 
-        variant="ghost" 
-        type="button"
-        className="text-xs px-1.5 py-3.5 h-6 font-normal rounded-full whitespace-nowrap -ml-1.5"
-        onClick={() => setShowNote(true)}>
-        <PlusCircle className="h-4 w-4 mr-1" /> Add Note
-      </Button>
     </div>
   )
 
