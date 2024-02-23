@@ -146,7 +146,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               <Separator />
             </div>
           ) : (
-            <Accordion type="multiple">
+            <Accordion type="multiple" defaultValue={schemaBodies.map(({ body }) => body.id)}>
               {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
                 <AccordionItem 
                   key={body.id} 
@@ -154,7 +154,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
                   <div className="flex justify-between items-center">
                     <div className="flex-grow">
-                      <AccordionTrigger >
+                      <AccordionTrigger className="hover:no-underline">
                         <EntityBadge entityType={entityType} />
                       </AccordionTrigger>
                     </div>
