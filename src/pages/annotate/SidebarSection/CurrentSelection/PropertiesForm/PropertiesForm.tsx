@@ -1,18 +1,20 @@
 import { FormEvent, useState } from 'react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
+import { EntityBadge } from '@/components/EntityBadge';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { createSafeKeys } from './PropertyKeys';
 import { Note } from '../Note';
-import { PropertiesFormSection } from '../PropertiesFormSection';
+import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { keys } from 'localforage';
 
 interface PropertiesFormProps {
 
@@ -102,6 +104,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     }
   }
 
+  const hasSchemaFields = (body: W3CAnnotationBody) => {
+    if (body.source) {
+      const schema = model.getEntityType(body.source);
+      return (schema?.properties || []).length > 0;
+    }
+  }
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -126,14 +135,20 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       ) : (
         <Accordion type="multiple">
           <form className="mt-2 px-1" onSubmit={onSubmit}>
-            {schemaBodies.map(({ body, entityType }) => (
+            {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
               <AccordionItem 
                 key={body.id} 
-                value={body.id}
-                className="pb-4">
-                <AccordionTrigger>
-                  Foo
-                </AccordionTrigger>
+                value={body.id}>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex-grow">
+                    <AccordionTrigger >
+                      <EntityBadge entityType={entityType} />
+                    </AccordionTrigger>
+                  </div>
+
+                  <PropertiesFormSectionActions entityType={entityType} />
+                </div>
 
                 <AccordionContent>
                   <PropertiesFormSection
@@ -144,6 +159,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                     onChange={onChange} />
                 </AccordionContent>
               </AccordionItem>
+            ) : (
+              <div
+                key={body.id}
+                className="flex justify-between items-center border-b">
+                <EntityBadge entityType={entityType} />
+                <PropertiesFormSectionActions entityType={entityType} />
+              </div>
             ))}
 
             <Note

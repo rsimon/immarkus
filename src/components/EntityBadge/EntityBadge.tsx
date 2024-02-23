@@ -35,7 +35,7 @@ export const EntityBadge = (props: BadgeEntityProps) => {
   return entityType?.description ? (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger tabIndex={-1}>
+        <TooltipTrigger tabIndex={-1} asChild>
           {badge}
         </TooltipTrigger>
 
