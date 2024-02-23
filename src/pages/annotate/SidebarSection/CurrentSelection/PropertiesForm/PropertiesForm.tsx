@@ -14,7 +14,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { keys } from 'localforage';
 
 interface PropertiesFormProps {
 
