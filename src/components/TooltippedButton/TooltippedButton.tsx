@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
-import { VariantProps } from 'class-variance-authority';
-import { Button, buttonVariants } from '@/ui/Button';
+import { ReactNode, forwardRef } from 'react';
+import { Button } from '@/ui/Button';
 import {
   Tooltip,
   TooltipContent,
@@ -8,25 +7,33 @@ import {
   TooltipTrigger,
 } from '@/ui/Tooltip';
 
-interface TooltippedButtonProps extends 
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> {
+interface TooltippedButtonProps {
 
   asChild?: boolean;
+
+  className?: string;
+
+  children: ReactNode;
+
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   
   tooltip: ReactNode;
+
+  type?: 'submit' | 'button';
   
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+
 }
 
-export const TooltippedButton = (props: TooltippedButtonProps) => {
+export const TooltippedButton = forwardRef<HTMLButtonElement, TooltippedButtonProps>((props, ref) => {
 
   const { children, tooltip, ...rest } = props;
 
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger tabIndex={-1}>
-          <Button {...rest}>
+        <TooltipTrigger tabIndex={-1} asChild>
+          <Button {...rest} ref={ref}>
             {props.children}
           </Button>
 
@@ -39,4 +46,4 @@ export const TooltippedButton = (props: TooltippedButtonProps) => {
     </TooltipProvider>
   )
 
-}
+});

@@ -7,6 +7,12 @@ import { Button } from '@/ui/Button';
 import { createSafeKeys } from './PropertyKeys';
 import { Note } from '../Note';
 import { PropertiesFormSection } from '../PropertiesFormSection';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/ui/Accordion';
 
 interface PropertiesFormProps {
 
@@ -118,25 +124,36 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           <Button className="mt-3 h-8" type="submit">Save</Button>
         </form>
       ) : (
-        <form className="mt-2 px-1" onSubmit={onSubmit}>
-          {schemaBodies.map(({ body, entityType }) => (
-            <div key={body.id} className="pb-4">
-              <PropertiesFormSection
-                body={body}
-                entityType={entityType}
-                safeKeys={safeKeys}
-                values={formState}
-                onChange={onChange} />
-            </div>
-          ))}
+        <Accordion type="multiple">
+          <form className="mt-2 px-1" onSubmit={onSubmit}>
+            {schemaBodies.map(({ body, entityType }) => (
+              <AccordionItem 
+                key={body.id} 
+                value={body.id}
+                className="pb-4">
+                <AccordionTrigger>
+                  Foo
+                </AccordionTrigger>
 
-          <Note
-            id={noteKey}
-            value={formState[noteKey]}
-            onChange={value => onChange(noteKey, value)} />
+                <AccordionContent>
+                  <PropertiesFormSection
+                    body={body}
+                    entityType={entityType}
+                    safeKeys={safeKeys}
+                    values={formState}
+                    onChange={onChange} />
+                </AccordionContent>
+              </AccordionItem>
+            ))}
 
-          <Button className="mt-0 h-8" type="submit">Save</Button>
-        </form>
+            <Note
+              id={noteKey}
+              value={formState[noteKey]}
+              onChange={value => onChange(noteKey, value)} />
+
+            <Button className="mt-0 h-8" type="submit">Save</Button>
+          </form>
+        </Accordion>
       ) : (
         <form className="mt-2 px-1" onSubmit={onSubmit}>
           <Note
