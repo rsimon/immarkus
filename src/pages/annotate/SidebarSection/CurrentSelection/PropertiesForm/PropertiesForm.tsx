@@ -15,10 +15,13 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Separator } from '@/ui/Separator';
+import { PropertiesFormActions } from './PropertiesFormActions';
 
 interface PropertiesFormProps {
 
   annotation: ImageAnnotation;
+
+  onAddTag(): void;
 
 }
 
@@ -119,86 +122,85 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       showErrors={showValidationErrors}
       onChange={setIsValid}>
 
-      {schemaBodies.length > 0 && schemaBodies.length === 1 ? (
-        <form className="px-1 pt-3" onSubmit={onSubmit}>
-          <div className="flex justify-between items-center pb-4">
-            <EntityBadge entityType={schemaBodies[0].entityType} />
+      <form className="grow pt-3 flex flex-col" onSubmit={onSubmit}>
+        <div className="flex-grow">
+          {schemaBodies.length > 0 && schemaBodies.length === 1 ? (
+            <div>
+              <div className="flex justify-between items-center pb-4">
+                <EntityBadge entityType={schemaBodies[0].entityType} />
 
-            <PropertiesFormSectionActions 
-              entityType={schemaBodies[0].entityType} 
-              onDeleteBody={() => onDeleteBody(schemaBodies[0].body)} />
-          </div>
+                <PropertiesFormSectionActions 
+                  entityType={schemaBodies[0].entityType} 
+                  onDeleteBody={() => onDeleteBody(schemaBodies[0].body)} />
+              </div>
 
-          <PropertiesFormSection 
-            body={schemaBodies[0].body}
-            entityType={schemaBodies[0].entityType}
-            safeKeys={safeKeys}
-            values={formState} 
-            onChange={onChange} />
-        </form>
-      ) : (
-        <Accordion type="multiple">
-          <form className="px-1" onSubmit={onSubmit}>
-            {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
-              <AccordionItem 
-                key={body.id} 
-                value={body.id}>
+              <PropertiesFormSection 
+                body={schemaBodies[0].body}
+                entityType={schemaBodies[0].entityType}
+                safeKeys={safeKeys}
+                values={formState} 
+                onChange={onChange} />
 
-                <div className="flex justify-between items-center">
-                  <div className="flex-grow">
-                    <AccordionTrigger >
-                      <EntityBadge entityType={entityType} />
-                    </AccordionTrigger>
+              <Separator />
+            </div>
+          ) : (
+            <Accordion type="multiple">
+              {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
+                <AccordionItem 
+                  key={body.id} 
+                  value={body.id}>
+
+                  <div className="flex justify-between items-center">
+                    <div className="flex-grow">
+                      <AccordionTrigger >
+                        <EntityBadge entityType={entityType} />
+                      </AccordionTrigger>
+                    </div>
+
+                    <PropertiesFormSectionActions 
+                      entityType={entityType} 
+                      onDeleteBody={() => onDeleteBody(body)} />
                   </div>
 
+                  <AccordionContent>
+                    <PropertiesFormSection
+                      body={body}
+                      entityType={entityType}
+                      safeKeys={safeKeys}
+                      values={formState}
+                      onChange={onChange} />
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (
+                <div
+                  key={body.id}
+                  className="flex py-4 justify-between items-center border-b">
+                  <EntityBadge entityType={entityType} />
                   <PropertiesFormSectionActions 
                     entityType={entityType} 
                     onDeleteBody={() => onDeleteBody(body)} />
                 </div>
+              ))}
+            </Accordion>
+          )}
 
-                <AccordionContent>
-                  <PropertiesFormSection
-                    body={body}
-                    entityType={entityType}
-                    safeKeys={safeKeys}
-                    values={formState}
-                    onChange={onChange} />
-                </AccordionContent>
-              </AccordionItem>
-            ) : (
-              <div
-                key={body.id}
-                className="flex py-4 justify-between items-center border-b">
-                <EntityBadge entityType={entityType} />
-                <PropertiesFormSectionActions 
-                  entityType={entityType} 
-                  onDeleteBody={() => onDeleteBody(body)} />
-              </div>
-            ))}
-
-            <Note
-              id={noteKey}
-              value={formState[noteKey]}
-              onChange={value => onChange(noteKey, value)} />
-
-            <Button className="mt-0 h-8" type="submit">Save</Button>
-          </form>
-        </Accordion>
-      )}
-
-      <Separator />
+          <PropertiesFormActions 
+            onAddTag={props.onAddTag} />
 
 
 
-      {/*
+          {/*
 
-      <Note
-        id={noteKey}
-        value={formState[noteKey]}
-        onChange={value => onChange(noteKey, value)} />
-          <Button className="mt-3 h-8" type="submit">Save</Button> 
-      */}
+          <Note
+            id={noteKey}
+            value={formState[noteKey]}
+            onChange={value => onChange(noteKey, value)} />
+              
+          */}
+        </div>
 
+        <Button className="w-full" type="submit">Save</Button> 
+      </form>
     </PropertyValidation>
   )
   

@@ -71,11 +71,9 @@ export const CurrentSelection = () => {
           </div>
         </div>
       ) : (
-        <div className="grow">
-          <PropertiesForm 
-            annotation={selected} 
-            /* onAddTag={() => setShowSearchDialog(true)}  */ />
-        </div>
+        <PropertiesForm 
+          annotation={selected} 
+          onAddTag={() => setShowSearchDialog(true)} />
       )}
 
       <DataModelSearchDialog 
@@ -86,7 +84,7 @@ export const CurrentSelection = () => {
       <footer>
         <ConfirmedDelete
           variant="destructive" 
-          className="w-full mt-6 mb-2"
+          className="w-full mt-2 mb-2"
           label="This action will delete the annotation permanently."
           onConfirm={onDelete}>
           <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
