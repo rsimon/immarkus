@@ -14,6 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Separator } from '@/ui/Separator';
 
 interface PropertiesFormProps {
 
@@ -57,6 +58,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const [valid, setIsValid] = useState(false);
 
   const [showValidationErrors, setShowValidationErrors] = useState(false); 
+
+  const onDeleteBody = (body: W3CAnnotationBody) =>
+    anno.deleteBody(body as unknown as AnnotationBody);
  
   const onChange = (key: string, value: any) =>
     setFormState(state => ({
@@ -115,25 +119,26 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       showErrors={showValidationErrors}
       onChange={setIsValid}>
 
-      {schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
-        <form className="mt-2 px-1" onSubmit={onSubmit}>
+      {schemaBodies.length > 0 && schemaBodies.length === 1 ? (
+        <form className="px-1 pt-3" onSubmit={onSubmit}>
+          <div className="flex justify-between items-center pb-4">
+            <EntityBadge entityType={schemaBodies[0].entityType} />
+
+            <PropertiesFormSectionActions 
+              entityType={schemaBodies[0].entityType} 
+              onDeleteBody={() => onDeleteBody(schemaBodies[0].body)} />
+          </div>
+
           <PropertiesFormSection 
             body={schemaBodies[0].body}
             entityType={schemaBodies[0].entityType}
             safeKeys={safeKeys}
             values={formState} 
             onChange={onChange} />
-
-          <Note
-            id={noteKey}
-            value={formState[noteKey]}
-            onChange={value => onChange(noteKey, value)} />
-
-          <Button className="mt-3 h-8" type="submit">Save</Button>
         </form>
       ) : (
         <Accordion type="multiple">
-          <form className="mt-2 px-1" onSubmit={onSubmit}>
+          <form className="px-1" onSubmit={onSubmit}>
             {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
               <AccordionItem 
                 key={body.id} 
@@ -146,7 +151,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                     </AccordionTrigger>
                   </div>
 
-                  <PropertiesFormSectionActions entityType={entityType} />
+                  <PropertiesFormSectionActions 
+                    entityType={entityType} 
+                    onDeleteBody={() => onDeleteBody(body)} />
                 </div>
 
                 <AccordionContent>
@@ -161,9 +168,11 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             ) : (
               <div
                 key={body.id}
-                className="flex justify-between items-center border-b">
+                className="flex py-4 justify-between items-center border-b">
                 <EntityBadge entityType={entityType} />
-                <PropertiesFormSectionActions entityType={entityType} />
+                <PropertiesFormSectionActions 
+                  entityType={entityType} 
+                  onDeleteBody={() => onDeleteBody(body)} />
               </div>
             ))}
 
@@ -175,17 +184,20 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             <Button className="mt-0 h-8" type="submit">Save</Button>
           </form>
         </Accordion>
-      ) : (
-        <form className="mt-2 px-1" onSubmit={onSubmit}>
-          <Note
-            defaultOpen
-            id={noteKey}
-            value={formState[noteKey]}
-            onChange={value => onChange(noteKey, value)} />
-
-          <Button className="mt-2 h-8" type="submit">Save</Button>
-        </form>
       )}
+
+      <Separator />
+
+
+
+      {/*
+
+      <Note
+        id={noteKey}
+        value={formState[noteKey]}
+        onChange={value => onChange(noteKey, value)} />
+          <Button className="mt-3 h-8" type="submit">Save</Button> 
+      */}
 
     </PropertyValidation>
   )

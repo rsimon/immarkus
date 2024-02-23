@@ -7,6 +7,8 @@ interface PropertiesFormSectionActionsProps {
 
   entityType: EntityType;
 
+  onDeleteBody(): void;
+
 }
 
 export const PropertiesFormSectionActions = (props: PropertiesFormSectionActionsProps) => {
@@ -28,7 +30,8 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
         size="icon" 
         type="button"
         className="rounded-full h-8 w-8 -ml-1 hover:text-red-500"
-        tooltip="Delete tag">
+        tooltip="Delete tag"
+        onClick={props.onDeleteBody}>
         <Trash2 className="h-4 w-4" />
       </TooltippedButton>
     </div>

@@ -15,6 +15,8 @@ interface TooltippedButtonProps {
 
   children: ReactNode;
 
+  onClick?(): void;
+
   size?: 'default' | 'sm' | 'lg' | 'icon';
   
   tooltip: ReactNode;
@@ -32,7 +34,7 @@ export const TooltippedButton = forwardRef<HTMLButtonElement, TooltippedButtonPr
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger tabIndex={-1} asChild>
+        <TooltipTrigger asChild>
           <Button {...rest} ref={ref}>
             {props.children}
           </Button>
