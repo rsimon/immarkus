@@ -16,7 +16,7 @@ interface PropertiesFormActionsProps {
 export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
   
   return (
-    <div className="py-2 flex gap-1 justify-between text-muted-foreground">
+    <div className="py-2 flex gap-1 justify-between text-muted-foreground mb-4">
       <Button 
         variant="ghost" 
         type="button"

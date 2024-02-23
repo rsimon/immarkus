@@ -1,21 +1,22 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
+import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
+import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
 import { Note } from '../Note';
 import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
+import { PropertiesFormActions } from './PropertiesFormActions';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Separator } from '@/ui/Separator';
-import { PropertiesFormActions } from './PropertiesFormActions';
 
 interface PropertiesFormProps {
 
@@ -48,15 +49,17 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const noteKey = `${annotation.id}@note`;
 
-  const getInitialValues = () => schemaBodies.reduce((initialValues, { entityType, body }) => ({
-    ...initialValues,
-    ...Object.fromEntries((entityType.properties || []).map(property => ([
-      safeKeys.getKey(body, property.name), 
-      'properties' in body ? body.properties[property.name] : undefined 
-    ]))),
-  }), { [noteKey]: note?.value });
+  const initialValues = useMemo(() => (
+    schemaBodies.reduce((initialValues, { entityType, body }) => ({
+      ...initialValues,
+      ...Object.fromEntries((entityType.properties || []).map(property => ([
+        safeKeys.getKey(body, property.name), 
+        'properties' in body ? body.properties[property.name] : undefined 
+      ]))),
+    }), { [noteKey]: note?.value })
+  ), [annotation]);
 
-  const [formState, setFormState] = useState<{[key: string]: any}>(getInitialValues());
+  const [formState, setFormState] = useState<{[key: string]: any}>(initialValues);
 
   const [valid, setIsValid] = useState(false);
 
@@ -70,6 +73,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       ...state, 
       [key]: value
     }));
+
+  const hasChanges = !dequal(formState, initialValues);
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -200,7 +205,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onClearNote={() => onChange(noteKey, undefined)}/>
         </div>
 
-        <Button className="w-full" type="submit">Save</Button> 
+        <Button 
+          disabled={!hasChanges}
+          className="w-full" 
+          type="submit">Save</Button> 
       </form>
     </PropertyValidation>
   )
