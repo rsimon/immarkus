@@ -22,13 +22,13 @@ export const EntityBadge = (props: BadgeEntityProps) => {
 
   const badge = (
     <span
-      className="rounded-full px-2.5 py-1 inline-flex items-center text-xs h-6 cursor-pointer"
+      className="rounded-full pl-2.5 pr-3 py-1 inline-flex items-center text-xs h-6 cursor-pointer"
       style={{ 
         backgroundColor,
         color: getForegroundColor(backgroundColor)
       }}>
 
-      <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || entityType?.id || 'error'}
+      <Cuboid className="h-3.5 w-3.5 mr-1.5"/> {entityType?.label || entityType?.id || 'error'}
     </span>
   )
 

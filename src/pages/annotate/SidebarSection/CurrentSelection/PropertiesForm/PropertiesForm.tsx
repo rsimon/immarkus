@@ -31,14 +31,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
 
   // All other bodies
-  const otherBodies = annotation.bodies.filter(b => {
-    if (b.purpose === 'classifying') {
-      const entity = model.getEntityType((b as unknown as W3CAnnotationBody).source, true);
-      return (!entity?.properties || entity.properties.length === 0);
-    } else {
-      return b.purpose !== 'commenting';
-    }
-  });
+  const otherBodies = annotation.bodies.filter(b => b.purpose !== 'classifying');
 
   const safeKeys = createSafeKeys(schemaBodies);
 
@@ -68,7 +61,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     evt.preventDefault();
 
     if (valid) {
-      const updatedTags = schemaBodies.map(({ body }) => {
+      const updatedEntityTags = schemaBodies.map(({ body }) => {
         const properties = Object.entries(formState).reduce((properties, [key, value]) => {
           const name = safeKeys.getName(key);
   
@@ -93,8 +86,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       let updatedAnnotation = {
         ...anno.getAnnotation(annotation.id),
         bodies: noteBody 
-          ? [...updatedTags, ...otherBodies, noteBody ]
-          : [...updatedTags, ...otherBodies ]
+          ? [...updatedEntityTags, ...otherBodies, noteBody ]
+          : [...updatedEntityTags, ...otherBodies ]
       };
   
       anno.updateAnnotation(updatedAnnotation);
@@ -128,10 +121,6 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
         <form className="mt-2 px-1" onSubmit={onSubmit}>
           {schemaBodies.map(({ body, entityType }) => (
             <div key={body.id} className="pb-4">
-              <h3 className="text-xs font-semibold mt-3 text-muted-foreground">
-                {entityType.label}
-              </h3>
-
               <PropertiesFormSection
                 body={body}
                 entityType={entityType}

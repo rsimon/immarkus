@@ -1,8 +1,10 @@
-import { EntityType } from '@/model';
-import { createSafeKeys } from '../PropertiesForm/PropertyKeys';
+import { Settings, Trash2 } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { Button } from '@/ui/Button';
+import { EntityType } from '@/model';
+import { EntityBadge } from '@/components/EntityBadge';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
+import { TooltippedButton } from '@/components/TooltippedButton';
+import { createSafeKeys } from '../PropertiesForm/PropertyKeys';
 import { 
   EnumField,
   ExternalAuthorityField, 
@@ -12,7 +14,6 @@ import {
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
-import { EntityBadge } from '@/components/EntityBadge';
 
 interface PropertiesFormSectionProps {
 
@@ -40,12 +41,28 @@ export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
   
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-6">
         <EntityBadge entityType={entityType} />
 
-        <div>
-          <button>edit</button>
-          <button>delete</button>
+        <div className="flex text-muted-foreground">
+          <EntityTypeEditor entityType={entityType}>
+            <TooltippedButton 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full h-8 w-8"
+              tooltip="Edit schema">
+              <Settings className="h-4 w-4" />
+            </TooltippedButton>
+          </EntityTypeEditor>
+
+          <TooltippedButton 
+            variant="ghost" 
+            size="icon" 
+            type="button"
+            className="rounded-full h-8 w-8 -ml-1 hover:text-red-500"
+            tooltip="Delete tag">
+            <Trash2 className="h-4 w-4" />
+          </TooltippedButton>
         </div>
       </div>
       
@@ -97,16 +114,6 @@ export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
             ) : null }
           </div>
         ))}
-
-        <div className="flex justify-end -mt-5 -mb-4">
-          <EntityTypeEditor entityType={entityType}>
-            <Button 
-              type="button"
-              variant="link" 
-              className="text-xs text-muted-foreground p-0.5">
-              Edit Schema</Button>
-          </EntityTypeEditor>
-        </div>
       </div>
     </div>
   )
