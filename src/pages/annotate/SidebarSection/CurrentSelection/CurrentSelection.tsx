@@ -1,14 +1,12 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ImageAnnotation, createBody } from '@annotorious/react';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
-import { CurrentSelectionTagList } from './CurrentSelectionTagList';
-import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
-import { Separator } from '@/ui/Separator';
 import { DataModelSearchDialog } from '@/components/DataModelSearch';
+import { PropertiesForm } from './PropertiesForm';
 
 export const CurrentSelection = () => {
 
@@ -73,16 +71,9 @@ export const CurrentSelection = () => {
           </div>
         </div>
       ) : (
-        <div className="grow">
-          <CurrentSelectionTagList 
-            annotation={selected} 
-            onAddTag={() => setShowSearchDialog(true)} />
-          
-          <Separator className="mb-4" />
-
-          <CurrentSelectionMetadata
-            annotation={selected} />
-        </div>
+        <PropertiesForm 
+          annotation={selected} 
+          onAddTag={() => setShowSearchDialog(true)} />
       )}
 
       <DataModelSearchDialog 
@@ -93,7 +84,7 @@ export const CurrentSelection = () => {
       <footer>
         <ConfirmedDelete
           variant="destructive" 
-          className="w-full mt-6 mb-2"
+          className="w-full mt-2 mb-2"
           label="This action will delete the annotation permanently."
           onConfirm={onDelete}>
           <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation

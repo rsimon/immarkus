@@ -1,7 +1,6 @@
-import { EntityType } from '@/model';
-import { createSafeKeys } from './PropertyKeys';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { EntityTypeEditor } from '@/components/EntityTypeEditor';
+import { EntityType } from '@/model';
+import { createSafeKeys } from '../PropertiesForm/PropertyKeys';
 import { 
   EnumField,
   ExternalAuthorityField, 
@@ -11,9 +10,8 @@ import {
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
-import { Button } from '@/ui/Button';
 
-interface EntityPropertiesProps {
+interface PropertiesFormSectionProps {
 
   body: W3CAnnotationBody,
 
@@ -27,7 +25,7 @@ interface EntityPropertiesProps {
 
 }
 
-export const EntityProperties = (props: EntityPropertiesProps) => {
+export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
 
   const { body, entityType, safeKeys } = props;
 
@@ -37,7 +35,7 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
       key: safeKeys.getKey(body, property.name)
     }));
   
-  return (
+  return (      
     <div>
       {fields.map(({ property, key }) => (
         <div className="mt-2" key={key}>
@@ -86,16 +84,6 @@ export const EntityProperties = (props: EntityPropertiesProps) => {
           ) : null }
         </div>
       ))}
-
-      <div className="flex justify-end -mt-5 -mb-4">
-        <EntityTypeEditor entityType={entityType}>
-          <Button 
-            type="button"
-            variant="link" 
-            className="text-xs text-muted-foreground p-0.5">
-            Edit Schema</Button>
-        </EntityTypeEditor>
-      </div>
     </div>
   )
 
