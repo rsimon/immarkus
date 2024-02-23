@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Cuboid, X } from 'lucide-react';
+import { Cuboid } from 'lucide-react';
 import { EntityType } from '@/model';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
 import {
@@ -13,8 +12,6 @@ interface BadgeEntityProps {
 
   entityType?: EntityType;
 
-  onDelete?(): void;
-
 }
 
 export const EntityBadge = (props: BadgeEntityProps) => {
@@ -23,11 +20,8 @@ export const EntityBadge = (props: BadgeEntityProps) => {
 
   const backgroundColor = entityType?.color || DEFAULT_COLOR;
 
-  const [editable, setEditable] = useState(false);
-
   const badge = (
-    <span 
-      onClick={props.onDelete ? () => setEditable(editable => !editable) : undefined}
+    <span
       className="rounded-full px-2.5 py-1 inline-flex items-center text-xs h-6 cursor-pointer"
       style={{ 
         backgroundColor,
@@ -35,14 +29,6 @@ export const EntityBadge = (props: BadgeEntityProps) => {
       }}>
 
       <Cuboid className="h-3.5 w-3.5 mr-1"/> {entityType?.label || entityType?.id || 'error'}
-
-      {editable && (
-        <button 
-          className="ml-1 -mr-1"
-          onClick={props.onDelete}>
-          <X className="h-3.5 w-3.5" />
-        </button>
-      )}
     </span>
   )
 

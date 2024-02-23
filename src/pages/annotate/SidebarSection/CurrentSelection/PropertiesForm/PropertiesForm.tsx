@@ -1,25 +1,20 @@
 import { FormEvent, useState } from 'react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
-import { 
-  AnnotationBody, 
-  ImageAnnotation, 
-  W3CAnnotationBody, 
-  createBody
-} from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { EntityProperties } from './EntityProperties';
 import { createSafeKeys } from './PropertyKeys';
-import { CurrentSelectionNote } from './CurrentSelectionNote';
+import { Note } from '../Note';
+import { PropertiesFormSection } from '../PropertiesFormSection';
 
-interface CurrentSelectionMetadataProps {
+interface PropertiesFormProps {
 
   annotation: ImageAnnotation;
 
 }
 
-export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) => {
+export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const { annotation } = props;
 
@@ -30,8 +25,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
-    .map(body => ({ body, entityType: model.getEntityType(body.source, true) }))
-    .filter(({ entityType }) => entityType?.properties?.length > 0);
+    .map(body => ({ body, entityType: model.getEntityType(body.source, true) }));
 
   // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -52,7 +46,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
   const getInitialValues = () => schemaBodies.reduce((initialValues, { entityType, body }) => ({
     ...initialValues,
-    ...Object.fromEntries(entityType.properties!.map(property => ([
+    ...Object.fromEntries((entityType.properties || []).map(property => ([
       safeKeys.getKey(body, property.name), 
       'properties' in body ? body.properties[property.name] : undefined 
     ]))),
@@ -116,14 +110,14 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
 
       {schemaBodies.length > 0 ? schemaBodies.length === 1 ? (
         <form className="mt-2 px-1" onSubmit={onSubmit}>
-          <EntityProperties 
+          <PropertiesFormSection 
             body={schemaBodies[0].body}
             entityType={schemaBodies[0].entityType}
             safeKeys={safeKeys}
             values={formState} 
             onChange={onChange} />
 
-          <CurrentSelectionNote
+          <Note
             id={noteKey}
             value={formState[noteKey]}
             onChange={value => onChange(noteKey, value)} />
@@ -138,7 +132,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
                 {entityType.label}
               </h3>
 
-              <EntityProperties
+              <PropertiesFormSection
                 body={body}
                 entityType={entityType}
                 safeKeys={safeKeys}
@@ -147,7 +141,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
             </div>
           ))}
 
-          <CurrentSelectionNote
+          <Note
             id={noteKey}
             value={formState[noteKey]}
             onChange={value => onChange(noteKey, value)} />
@@ -156,7 +150,7 @@ export const CurrentSelectionMetadata = (props: CurrentSelectionMetadataProps) =
         </form>
       ) : (
         <form className="mt-2 px-1" onSubmit={onSubmit}>
-          <CurrentSelectionNote
+          <Note
             defaultOpen
             id={noteKey}
             value={formState[noteKey]}

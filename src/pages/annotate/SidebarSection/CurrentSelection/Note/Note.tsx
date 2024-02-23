@@ -4,7 +4,7 @@ import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import { Label } from '@/ui/Label';
 
-interface CurrentSelectionNoteProps {
+interface NoteProps {
 
   defaultOpen?: boolean;
 
@@ -16,7 +16,7 @@ interface CurrentSelectionNoteProps {
 
 }
 
-export const CurrentSelectionNote = (props: CurrentSelectionNoteProps) => {
+export const Note = (props: NoteProps) => {
 
   const [showNote, setShowNote] = useState(Boolean(props.value) || props.defaultOpen);
 

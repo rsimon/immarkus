@@ -1,14 +1,12 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { ImageAnnotation, createBody } from '@annotorious/react';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { CurrentSelectionMetadata } from './CurrentSelectionMetadata';
-import { CurrentSelectionTagList } from './CurrentSelectionTagList';
-import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
-import { Separator } from '@/ui/Separator';
 import { DataModelSearchDialog } from '@/components/DataModelSearch';
+import { PropertiesForm } from './PropertiesForm';
 
 export const CurrentSelection = () => {
 
@@ -74,14 +72,9 @@ export const CurrentSelection = () => {
         </div>
       ) : (
         <div className="grow">
-          <CurrentSelectionTagList 
+          <PropertiesForm 
             annotation={selected} 
-            onAddTag={() => setShowSearchDialog(true)} />
-          
-          <Separator className="mb-4" />
-
-          <CurrentSelectionMetadata
-            annotation={selected} />
+            /* onAddTag={() => setShowSearchDialog(true)}  */ />
         </div>
       )}
 
