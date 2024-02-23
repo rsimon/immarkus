@@ -20,7 +20,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
           variant="ghost" 
           size="icon" 
           className="rounded-full h-8 w-8"
-          tooltip="Edit schema">
+          tooltip="Edit entity schema">
           <Settings className="h-4 w-4" />
         </TooltippedButton>
       </EntityTypeEditor>
@@ -30,7 +30,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
         size="icon" 
         type="button"
         className="rounded-full h-8 w-8 -ml-1 hover:text-red-500"
-        tooltip="Delete tag"
+        tooltip="Delete this tag"
         onClick={props.onDeleteBody}>
         <Trash2 className="h-4 w-4" />
       </TooltippedButton>
