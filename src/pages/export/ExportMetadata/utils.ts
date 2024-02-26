@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { serializePropertyValue } from '@/utils/serialize';
 
 export interface SchemaField { schema: string, definition: PropertyDefinition };
 
@@ -9,24 +10,12 @@ export const aggregateSchemaFields = (schemas: MetadataSchema[]): SchemaField[] 
     [...agg, ...schema.properties.map(d => ({ schema: schema.name, definition: d }))]
   ), []);
 
-export const serializeField = (definition: PropertyDefinition, value?: any) => {
-  if (!value)
-    return '';
-
-  if (definition.type === 'measurement')
-    return `${value.value} ${value.unit}`;
-  else if (definition.type === 'geocoordinate')
-    return `${value[0]}/${value[1]}`;
-  else
-    return value.toString();
-}
-
 export const zipMetadata = (columns: SchemaField[], metadata?: W3CAnnotationBody) => {
   const properties = metadata && 'properties' in metadata ? metadata.properties || {} : {};
 
   const entries = columns.map(column => {
     const columnValue = column.schema === metadata?.source 
-      ? serializeField(column.definition, properties[column.definition.name])
+      ? serializePropertyValue(column.definition, properties[column.definition.name])
       : '';
 
     return [`${column.schema}: ${column.definition.name}`, columnValue]
