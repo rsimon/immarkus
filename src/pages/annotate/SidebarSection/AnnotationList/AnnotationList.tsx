@@ -2,6 +2,12 @@ import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator } from '@annotorious
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/ui/Accordion';
 
 export const AnnotationList = () => {
 
@@ -42,14 +48,14 @@ export const AnnotationList = () => {
       </ul>
     </div>
   ) : (
-    <div className="py-2 grow">
-      <ul>
-        {Array.from(annotations.keys()).map(source => (
-          <li key={source}>
-            <h2 className="text-xs font-medium mb-2">
-              {store.getImage(source).name}
-            </h2>
+    <Accordion className="py-2 grow" type="multiple">
+      {Array.from(annotations.keys()).map(source => (
+        <AccordionItem key={source} value={source}>
+          <AccordionTrigger className="text-xs font-medium mb-2">
+            {store.getImage(source).name}
+          </AccordionTrigger>
 
+          <AccordionContent>
             <ul>
               {annotations.get(source).map(annotation => (
                 <li key={annotation.id} onClick={onClick(annotation)}>
@@ -60,10 +66,10 @@ export const AnnotationList = () => {
                 </li>
               ))}
             </ul>
-          </li>
-        ))}
-      </ul>
-    </div>  
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>  
   )
 
 }
