@@ -2,10 +2,13 @@ import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
-import { PropertyDefinition } from '@/model';
+import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { serializePropertyValue } from '@/utils/serialize';
+import { ReactNode } from 'react';
+import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface AnnotationListItemProps {
 
@@ -17,13 +20,27 @@ interface AnnotationListItemProps {
 
 }
 
-const getValuePreviewsForSchema = (schema: PropertyDefinition[], body: W3CAnnotationBody) => {
+const getValuePreviewsForSchema = (
+  schema: PropertyDefinition[], 
+  body: W3CAnnotationBody, 
+  authorities: ExternalAuthority[]
+) => {
   if ('properties' in body) {
-    return schema.reduce<string[]>((previews, definition) => {
+    return schema.reduce<ReactNode[]>((previews, definition) => {
       const value = body.properties[definition.name];
       if (value) {
         const serialized = serializePropertyValue(definition, value);
-        return [...previews, serialized ];
+
+        console.log('def', definition.type, serialized);
+
+        const node = 
+          definition.type === 'uri' ? 
+            (<a href={serialized} target="_blank" className="text-sky-700 hover:underline">{serialized}</a>) :
+          definition.type === 'external_authority' 
+            ? (<a href={value} target="_blank" className="text-sky-700 hover:underline">{formatIdentifier(value, authorities)}</a>)
+            : (<span>{serialized}</span>);
+
+        return [...previews, node ];
       } else {
         return previews;
       }
@@ -36,6 +53,8 @@ const getValuePreviewsForSchema = (schema: PropertyDefinition[], body: W3CAnnota
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const { getEntityType } = useDataModel();
+
+  const { authorities } = useRuntimeConfig();
 
   const entityTags: W3CAnnotationBody[] = 
     props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
@@ -52,10 +71,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
-  const valuePreviews = entityTags.reduce<string[]>((values, body) => {
+  const valuePreviews = entityTags.reduce<ReactNode[]>((values, body) => {
     const schema = getEntityType(body.source);
     if (schema) {
-      return [...values, ...getValuePreviewsForSchema(schema.properties || [], body)];
+      return [...values, ...getValuePreviewsForSchema(schema.properties || [], body, authorities)];
     } else {
       console.error('Reference to missing entity class:', body.source);
       return values;
@@ -76,8 +95,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         </ul>
       )}
 
-      <div className="px-0.5 pt-1">
-        {valuePreviews.join(' · ')}
+      <div className="line-clamp-2 px-0.5 pt-1">
+        {valuePreviews.map((node, idx) =>
+          <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
+        )}
       </div>
     
       {note && (

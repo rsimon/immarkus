@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
+import { formatIdentifier } from './util';
 
 interface ExternalAuthorityFieldProps {
 
@@ -26,22 +27,6 @@ interface ExternalAuthorityFieldProps {
 
   onChange?(value: string): void;
 
-}
-
-const matchPattern = (input: string, pattern: string) => {
-  const markerIdx = pattern.indexOf('{{id}}');
-
-  if (markerIdx === -1)
-    return input === pattern;
-
-  const prefix = pattern.substring(0, markerIdx);
-  const suffix = pattern.substring(markerIdx + '{{id}}'.length);
-
-  if (input.startsWith(prefix) && input.endsWith(suffix)) {
-    const startIdx = prefix.length;
-    const endIdx = input.length - suffix.length;
-    return input.substring(startIdx, endIdx);    
-  }
 }
 
 export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
@@ -69,16 +54,6 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     setEditable(true);
 
     setTimeout(() => input.current.focus(), 1);
-  }
-
-  const formatIdentifier = (id: string) => {
-    if (!id) return;
-
-    const matchedId = authorities.reduce((resolved, a) => {
-      return resolved || a.canonical_id_pattern && matchPattern(id, a.canonical_id_pattern)
-    }, undefined as string)
-
-    return matchedId || id;
   }
 
   return (
@@ -129,7 +104,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           <a 
             href={value} 
             className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
-            target="_blank">{formatIdentifier(value)}</a>
+            target="_blank">{formatIdentifier(value, authorities)}</a>
 
           <button 
             onClick={() => setEditable(true)}
