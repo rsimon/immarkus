@@ -1,8 +1,18 @@
 import { Bounds, W3CImageAnnotation, W3CImageFormat } from '@annotorious/annotorious';
 import { LoadedImage } from '@/model';
 
-const cropImage = async (image: LoadedImage, bounds: Bounds): Promise<Buffer> =>
-  new Promise<Buffer>((resolve, reject) => {
+export interface Snippet {
+
+  height: number;
+
+  width: number;
+
+  data: Buffer;
+
+}
+
+const cropImage = async (image: LoadedImage, bounds: Bounds) =>
+  new Promise<Snippet>((resolve, reject) => {
     const img = document.createElement('img');
 
     img.onload = () => {
@@ -21,10 +31,22 @@ const cropImage = async (image: LoadedImage, bounds: Bounds): Promise<Buffer> =>
 
       context.drawImage(img, bounds.minX, bounds.minY, width, height, 0, 0, width, height);
 
-      const dataURL = canvas.toDataURL();
-      const buffer = Buffer.from(dataURL.split(',')[1], 'base64'); // Convert data URL to Buffer
+      canvas.toBlob(blob => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const arrayBuffer = new Uint8Array(reader.result as ArrayBuffer);
 
-      resolve(buffer);
+          const snippet: Snippet = {
+            height: bounds.maxY - bounds.minY,
+            width: bounds.maxX - bounds.minX,
+            data: arrayBuffer as Buffer
+          };
+
+          resolve(snippet);
+        }
+
+        reader.readAsArrayBuffer(blob);
+      }, 'image/png'); 
     };
 
     img.onerror = error => reject(error);
@@ -32,8 +54,8 @@ const cropImage = async (image: LoadedImage, bounds: Bounds): Promise<Buffer> =>
     img.src = URL.createObjectURL(image.data);
   });
 
-export const getImageSnippet = (image: LoadedImage, annotation: W3CImageAnnotation): Promise<Buffer> =>
-  new Promise<Buffer>((resolve, reject) => {
+export const getImageSnippet = (image: LoadedImage, annotation: W3CImageAnnotation) =>
+  new Promise<Snippet>((resolve, reject) => {
     const adapter = W3CImageFormat(image.name);
     const { parsed } = adapter.parse(annotation);
 
@@ -44,6 +66,6 @@ export const getImageSnippet = (image: LoadedImage, annotation: W3CImageAnnotati
 
     const bbox = parsed.target.selector.geometry.bounds;
     return cropImage(image, bbox)
-      .then(buffer => resolve(buffer))
+      .then(snippet => resolve(snippet))
       .catch(error => reject(error));
   });
