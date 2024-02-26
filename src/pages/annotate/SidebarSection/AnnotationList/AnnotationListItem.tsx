@@ -1,16 +1,17 @@
+import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
+import { Button } from '@/ui/Button';
 import { serializePropertyValue } from '@/utils/serialize';
-import { AnnotationListItemActions } from './AnnotationListItemActions';
 
 interface AnnotationListItemProps {
 
   annotation: ImageAnnotation;
 
-  onSelect(): void;
+  onEdit(): void;
 
   onDelete(): void;
 
@@ -62,7 +63,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
   }, []);
 
   return (
-    <div className="relative border mb-2 rounded text-xs shadow-sm px-2 pt-2.5 pb-2 bg-white">
+    <div className="relative border mb-2 rounded text-xs shadow-sm px-2 pt-2.5 pb-2 bg-white cursor-pointer">
       {entityTags.length > 0 && (
         <ul 
           className="line-clamp-1 mr-8">
@@ -86,22 +87,32 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
       )}
 
       {isEmpty && (
-        <div className="pt-3.5 pb-5 flex justify-center text-muted-foreground">
+        <div className="pt-5 -mb-2.5 flex justify-center text-muted-foreground">
           Empty annotation
         </div>
       )}
 
-      {lastEdit && (
-        <div className="text-xs text-muted-foreground/80 px-1 pt-1">
-          <Moment format="LT MMM DD">
-            {lastEdit}
-          </Moment>
-        </div>
-      )}
+      <div className="pl-0.5 pt-3 flex justify-between items-center">
+        {lastEdit ? (
+          <div className="text-gray-400">
+            <Moment format="LT MMM DD">
+              {lastEdit}
+            </Moment>
+          </div>
+        ) : (
+          <div />
+        )}
 
-      <AnnotationListItemActions 
-        onSelectAnnotation={props.onSelect} 
-        onDeleteAnnotation={props.onDelete} />
+        <div className="flex">
+          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-gray-400 hover:text-black">
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+
+          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 -ml-1.5 text-red-400 hover:text-red-600">
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 

@@ -11,7 +11,12 @@ export const AnnotationList = () => {
 
   const store = useStore();
 
-  const onSelect = (annotation: ImageAnnotation) => () => {
+  const onClick = (annotation: ImageAnnotation) => () => {
+    const annotator = manifold.findAnnotator(annotation.id);
+    (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
+  }
+
+  const onEdit = (annotation: ImageAnnotation) => () => {
     manifold.setSelected(annotation.id);
 
     const annotator = manifold.findAnnotator(annotation.id);
@@ -27,10 +32,10 @@ export const AnnotationList = () => {
     <div className="py-2 grow">
       <ul>
         {annotations.get(imageIds[0]).map(annotation => (
-          <li key={annotation.id} onClick={onSelect(annotation)}>
+          <li key={annotation.id} onClick={onClick(annotation)}>
             <AnnotationListItem 
               annotation={annotation} 
-              onSelect={onSelect(annotation)}
+              onEdit={onEdit(annotation)}
               onDelete={onDelete(annotation)} />
           </li>
         ))}
@@ -47,10 +52,10 @@ export const AnnotationList = () => {
 
             <ul>
               {annotations.get(source).map(annotation => (
-                <li key={annotation.id} onClick={onSelect(annotation)}>
+                <li key={annotation.id} onClick={onClick(annotation)}>
                   <AnnotationListItem 
                     annotation={annotation} 
-                    onSelect={onSelect(annotation)}
+                    onEdit={onEdit(annotation)}
                     onDelete={onDelete(annotation)} />
                 </li>
               ))}
