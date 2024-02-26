@@ -1,4 +1,4 @@
-import TimeAgo from 'timeago-react';
+import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel } from '@/store';
@@ -62,7 +62,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
       {lastEdit && (
         <div className="text-xs text-muted-foreground/80 px-1 pt-1">
-          <TimeAgo datetime={lastEdit} />
+          <Moment format="LT MMM DD">
+            {lastEdit}
+          </Moment>
         </div>
       )}
 
