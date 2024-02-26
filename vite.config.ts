@@ -19,8 +19,7 @@ export default defineConfig({
       ],
       output: {
         manualChunks: {
-          'openseadragon': ['openseadragon'],
-          'primereact': ['primereact']
+          'openseadragon': ['openseadragon']
         }
       }
     }
