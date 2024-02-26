@@ -51,8 +51,8 @@ export const AnnotationList = () => {
     <Accordion className="py-2 grow" type="multiple">
       {Array.from(annotations.keys()).map(source => (
         <AccordionItem key={source} value={source}>
-          <AccordionTrigger className="text-xs font-medium mb-2">
-            {store.getImage(source).name}
+          <AccordionTrigger className="text-xs font-medium mb-2 hover:no-underline overflow-hidden">
+            <span className="whitespace-nowrap overflow-hidden text-ellipsis pr-1">{store.getImage(source).name}</span>
           </AccordionTrigger>
 
           <AccordionContent>
