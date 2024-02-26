@@ -3,6 +3,7 @@ import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { exportAnnotationsAsExcel } from './exportExcel';
 import { exportAnnotationsAsJSONLD } from './exportJSONLD';
+import { exportImageSnippet } from './exportImageSnippet';
 
 export const ExportAnnotations = () => {
 
@@ -11,7 +12,7 @@ export const ExportAnnotations = () => {
   return (
     <ul className="py-2">
       <li>
-        <section className="w-full py-2 flex flex-row gap-20 justify-between">
+        <div className="w-full py-2 flex flex-row gap-20 justify-between">
           <div>
             <h3 className="font-medium mb-1 leading-relaxed">
               All Annotations
@@ -30,11 +31,11 @@ export const ExportAnnotations = () => {
               <Download className="h-4 w-4" /> JSON-LD
             </Button>
           </div>
-        </section>
+        </div>
       </li>
 
       <li>
-        <section className="w-full py-2 flex flex-row gap-20 justify-between">
+        <div className="w-full py-2 flex flex-row gap-20 justify-between">
           <div>
             <h3 className="font-medium mb-1 leading-relaxed">
               Annotations and Images
@@ -53,7 +54,29 @@ export const ExportAnnotations = () => {
               <Download className="h-4 w-4" /> XLS
             </Button>
           </div>
-        </section>
+        </div>
+      </li>
+
+      <li>
+        <div className="w-full py-2 flex flex-row gap-20 justify-between">
+          <div>
+            <h3 className="font-medium mb-1 leading-relaxed">
+              Dummy Image Snippet
+            </h3>
+
+            <p className="text-sm">
+              For testing only.
+            </p>
+          </div>
+
+          <div>
+            <Button 
+              className="whitespace-nowrap flex gap-2"
+              onClick={() => exportImageSnippet(store)}>
+              <Download className="h-4 w-4" /> Image
+            </Button>
+          </div>
+        </div>
       </li>
     </ul>
   )
