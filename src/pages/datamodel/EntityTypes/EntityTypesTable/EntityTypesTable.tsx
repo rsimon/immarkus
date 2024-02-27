@@ -32,7 +32,17 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
     }
   })
 
-  const nodes: TreeNode[] = model.getRootTypes().map(toTreeNode);
+  const nodes: TreeNode[] = model.getRootTypes()
+    .slice().sort((a, b) => {
+      const aHasChildren = model.hasChildTypes(a.id);
+      const bHasChildren = model.hasChildTypes(b.id);
+
+      if (aHasChildren && !bHasChildren) return 1;
+
+      if (bHasChildren && !aHasChildren) return 1;
+
+      return a.id.localeCompare(b.id);
+    }).map(toTreeNode);
 
   const togglerTemplate = (node: TreeNode, options: any) => 
     model.hasChildTypes(node.data.id) ? (
