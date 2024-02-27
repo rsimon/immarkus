@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
@@ -9,6 +10,7 @@ import { serializePropertyValue } from '@/utils/serialize';
 import { ReactNode } from 'react';
 import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
 import { useRuntimeConfig } from '@/RuntimeConfig';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 
 interface AnnotationListItemProps {
 
@@ -56,6 +58,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const { authorities } = useRuntimeConfig();
 
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   const entityTags: W3CAnnotationBody[] = 
     props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
@@ -72,7 +76,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
   const valuePreviews = entityTags.reduce<ReactNode[]>((values, body) => {
-    const schema = getEntityType(body.source);
+    const schema = getEntityType(body.source, true);
     if (schema) {
       return [...values, ...getValuePreviewsForSchema(schema.properties || [], body, authorities)];
     } else {
@@ -82,59 +86,75 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
   }, []);
 
   return (
-    <div className="relative border mb-2 rounded text-xs shadow-sm px-2 pt-2.5 pb-2 bg-white cursor-pointer">
-      {entityTags.length > 0 && (
-        <ul 
-          className="line-clamp-1 mr-8">
-          {entityTags.map(tag => (
-            <li key={tag.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
-              <EntityBadge 
-                entityType={getEntityType(tag.source)} />
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="line-clamp-2 px-0.5 pt-1">
-        {valuePreviews.map((node, idx) =>
-          <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
+    <>
+      <div className="relative border mb-2 rounded text-xs shadow-sm px-2 pt-2.5 pb-2 bg-white cursor-pointer">
+        {entityTags.length > 0 && (
+          <ul 
+            className="line-clamp-1 mr-8">
+            {entityTags.map(tag => (
+              <li key={tag.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
+                <EntityBadge 
+                  entityType={getEntityType(tag.source)} />
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
-    
-      {note && (
-        <p className="line-clamp-2 pl-0.5 pr-5 pt-1 pb-0.5 italic text-muted-foreground">
-          {note.value}
-        </p>
-      )}
 
-      {isEmpty && (
-        <div className="pt-5 -mb-2.5 flex justify-center text-muted-foreground">
-          Empty annotation
+        <div className="line-clamp-2 px-0.5 pt-1">
+          {valuePreviews.map((node, idx) =>
+            <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
+          )}
         </div>
-      )}
+      
+        {note && (
+          <p className="line-clamp-2 pl-0.5 pr-5 pt-1 pb-0.5 italic text-muted-foreground">
+            {note.value}
+          </p>
+        )}
 
-      <div className="pl-0.5 pt-3 flex justify-between items-center">
-        {lastEdit ? (
-          <div className="text-gray-400">
-            <Moment format="LT MMM DD">
-              {lastEdit}
-            </Moment>
+        {isEmpty && (
+          <div className="pt-5 -mb-2.5 flex justify-center text-muted-foreground">
+            Empty annotation
           </div>
-        ) : (
-          <div />
         )}
 
-        <div className="flex">
-          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-gray-400 hover:text-black">
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
+        <div className="pl-0.5 pt-3 flex justify-between items-center">
+          {lastEdit ? (
+            <div className="text-gray-400">
+              <Moment format="LT MMM DD">
+                {lastEdit}
+              </Moment>
+            </div>
+          ) : (
+            <div />
+          )}
 
-          <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 -ml-1.5 text-red-400 hover:text-red-600">
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full h-8 w-8 text-gray-400 hover:text-black"
+              onClick={props.onEdit}>
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full h-8 w-8 -ml-1.5 text-red-400 hover:text-red-600"
+              onClick={() => setConfirmDelete(true)}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+
+      <ConfirmedDelete
+        open={confirmDelete}
+        label="This action will delete the annotation permanently."
+        onConfirm={props.onDelete}
+        onOpenChange={setConfirmDelete} />
+    </>
   )
 
 }
