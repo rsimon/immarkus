@@ -45,7 +45,9 @@ export const Start = () => {
     }
   }
 
-  const buildDate = preval`module.exports = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date())`;
+  const buildDate = 
+    new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      .format(new Date(process.env.BUILD_DATE));
 
   return ( 
     <div className="page-root">
@@ -58,7 +60,7 @@ export const Start = () => {
       )}
 
       <div className="version">
-        Version 0.3.0 · Build {buildDate}
+        Version {process.env.PACKAGE_VERSION} · Build {buildDate}
       </div>
     </div>
   )

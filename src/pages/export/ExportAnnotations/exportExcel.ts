@@ -1,91 +1,188 @@
-import {  W3CImageAnnotation } from '@annotorious/react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
-import { Store } from '@/store';
-import { Image } from '@/model';
-import { Snippet, getImageSnippet } from './getImageSnippet';
+import { DataModelStore, Store } from '@/store';
+import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
+import { ImageSnippet, getAnntotationsWithSnippets } from './ImageSnippet';
+import { EntityType, Image, PropertyDefinition } from '@/model';
+import { serializePropertyValue } from '@/utils/serialize';
 
-interface AnnotationWithSnippet {
-
-  annotation: W3CImageAnnotation;
+interface ImageAnnotationSnippetTuple {
 
   image: Image;
 
-  snippet: Snippet;
+  annotation: W3CImageAnnotation;
+
+  snippet?: ImageSnippet;
 
 }
 
-const getAnnotations = (image: Image, store: Store): Promise<AnnotationWithSnippet[]> =>
-  store.loadImage(image.id).then(loaded =>
-    store.getAnnotations(image.id).then(annotations => 
-      Promise.all(annotations.map(a => {
-        const annotation = a as W3CImageAnnotation;
-        return getImageSnippet(loaded, annotation).then(snippet => (
-          { annotation, image, snippet }
-        ))
-      }))
-    )
-  );
+const addImageToCell = (
+  workbook: any,
+  worksheet: any,
+  snippet: ImageSnippet,
+  row: number
+) => {
+  const embeddedImage = workbook.addImage({
+    buffer: snippet.data,
+    extension: 'jpg',
+  });
 
-export const exportAnnotationsAsExcel = (store: Store) => {
-  const { images } = store;
+  const aspectRatio = snippet.width / snippet.height;
+  const boxAspectRatio = 300 / 100;
 
-  const annotations = images.reduce<Promise<AnnotationWithSnippet[]>>((promise, image) => promise.then(all =>
-    getAnnotations(image, store).then(annotations => ([...all, ...annotations]))
-  ), Promise.resolve([]));
+  let scaledWidth: number;
+  let scaledHeight: number;
 
-  annotations.then(annotations => {
-    const workbook = new ExcelJS.Workbook();
+  if (aspectRatio > boxAspectRatio) {
+    scaledWidth = 300;
+    scaledHeight = scaledWidth / aspectRatio;
+  } else {
+    scaledHeight = 100;
+    scaledWidth = scaledHeight * aspectRatio;
+  }
 
-    workbook.creator = 'IMMARKUS';
-    workbook.lastModifiedBy = 'IMMARKUS';
-    workbook.created = new Date();
-    workbook.modified = new Date();
-  
-    const worksheet = workbook.addWorksheet('Annotations');
-    
-    worksheet.columns = [
-      { header: 'Snippet', key: 'snippet', width: 30 },
-      { header: 'Image Filename', key: 'image', width: 30 },
-      { header: 'Annotation ID', key: 'id', width: 20 },
-      { header: 'Created', key: 'created', width: 20 },
-      { header: 'Target', key: 'target', width: 20 }
-    ];
+  worksheet.addImage(embeddedImage, {
+    tl: { col: 0, row },
+    ext: { width: scaledWidth, height: scaledHeight }
+  });
 
-    annotations.forEach(({ annotation, image, snippet }, index) => {
-      const embeddedImage = workbook.addImage({
-        buffer: snippet.data,
-        extension: 'png',
-      });
+  worksheet.lastRow.height = 100;
+}
 
-      worksheet.addRow({
+/**
+ * Creates a list of all PropertyDefinitions in this EntityType, and all
+ * children.
+ */
+const enumerateChildren = (root: EntityType, model: DataModelStore): EntityType[] => {
+
+  const enumerateChildrenRecursive = (type: EntityType): EntityType[] => {
+    const children = model.getChildTypes(type.id);
+
+    if (children.length === 0) {
+      return [type];
+    } else {
+      return children.reduce<EntityType[]>((all, child) => {
+        return [...all, ...enumerateChildrenRecursive(child)];
+      }, [type]);
+    }
+  }
+
+  return enumerateChildrenRecursive(root);
+}
+
+const aggregateSchemaFields = (types: EntityType[]): PropertyDefinition[] =>
+  types.reduce<PropertyDefinition[]>((agg, type) => (  
+    [...agg, ...(type.properties || [])]
+  ), []);
+
+const createWorksheet = (
+  workbook: any, 
+  annotations: ImageAnnotationSnippetTuple[], 
+  entityType: EntityType,
+  model: DataModelStore
+) => {
+  const types = enumerateChildren(entityType, model);
+
+  const schema = aggregateSchemaFields(types);
+
+  const worksheet = workbook.addWorksheet(entityType.label || entityType.id);
+
+  worksheet.columns = [
+    { header: 'Snippet', key: 'snippet', width: 30 },
+    { header: 'Image Filename', key: 'image', width: 30 },
+    { header: 'Annotation ID', key: 'id', width: 20 },
+    { header: 'Created', key: 'created', width: 20 },
+    { header: 'Entity Class', key: 'entity', width: 20 },
+    ...schema.map(field => ({
+      header: field.name,
+      key: field.name,
+      width: 20
+    }))
+  ];
+
+  const isDescendant = (body: W3CAnnotationBody) => {
+    // Body has no source - definitely not a descendant
+    if (!body.source)
+      return false;
+
+    // Body points to this entity type - count as a descendant
+    if (body.source === entityType.id)
+      return true;
+
+    // Otherwise, look at the parent types for this type
+    const t = model.getEntityType(body.source);
+    if (!t)
+      return false;
+
+    const ancestors = model.getAncestors(t);
+    if (ancestors.length === 0)
+      return false;
+
+    return ancestors.some(e => e.id === entityType.id);
+  }
+
+  let rowIndex = 1;
+
+  annotations.forEach(({ annotation, image, snippet }) => {
+    // All bodies that point to this entity, or to an entity that's a child of this entity
+    const entityBodies = (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
+      .filter(isDescendant);
+
+    entityBodies.forEach(body => {
+      // Fixed columns
+      const row = {
         image: image.name,
         id: annotation.id,
         created: annotation.created,
-        target: JSON.stringify(annotation.target)
-      });
+        entity: body.source
+      };
 
-      const aspectRatio = snippet.width / snippet.height;
-      const boxAspectRatio = 300 / 100;
+      // Schema columns
+      const entries = Object.entries('properties' in body ? body.properties || {} : {});
+      entries.forEach(([key, value]) => row[key] = value);
 
-      let scaledWidth: number;
-      let scaledHeight: number;
+      worksheet.addRow(row);
 
-      if (aspectRatio > boxAspectRatio) {
-        scaledWidth = 300;
-        scaledHeight = scaledWidth / aspectRatio;
-      } else {
-        scaledHeight = 100;
-        scaledWidth = scaledHeight * aspectRatio;
-      }
+      if (snippet)
+        addImageToCell(workbook, worksheet, snippet, rowIndex);
 
-      worksheet.addImage(embeddedImage, {
-        tl: { col: 0, row: index + 1 },
-        ext: { width: scaledWidth, height: scaledHeight }
-      });
-
-      worksheet.lastRow.height = 100;
+      rowIndex += 1;
     });
+  });
 
+  // Auto-fit column widths
+  worksheet.columns.forEach(column => {
+    const lengths = column.values.map(v => v.toString().length);
+    const maxLength = Math.max(...lengths.filter(v => typeof v === 'number'));
+    column.width = maxLength;
+  });
+
+  worksheet.columns[0].width = 30;
+}
+
+export const exportAnnotationsAsExcel = (store: Store) => {
+  const model = store.getDataModel();
+  const { images } = store;
+
+  const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image) => 
+    promise.then(all =>
+        getAnntotationsWithSnippets(image, store)
+          .then(t => ([
+            ...all,
+            ...t.map(({ annotation, snippet }) => ({ image, annotation, snippet }))
+          ]))
+  ), Promise.resolve([]));
+
+  promise.then(annotations => {
+    const workbook = new ExcelJS.Workbook();
+
+    workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
+    workbook.lastModifiedBy = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
+    workbook.created = new Date();
+    workbook.modified = new Date();
+
+    // Create one worksheet per root entity type
+    model.getRootTypes().forEach(entityType => createWorksheet(workbook, annotations, entityType, model));
+  
     workbook.xlsx.writeBuffer().then(buffer => {
       const blob = new Blob([buffer], {
         type: 'application/vnd.ms-excel'
