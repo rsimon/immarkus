@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import preval from 'preval.macro';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';

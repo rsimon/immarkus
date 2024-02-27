@@ -15,7 +15,7 @@ export interface ImageSnippet {
 const cropImage = async (
   image: LoadedImage, 
   bounds: Bounds
-) => new Promise<ImageSnippet>((resolve, reject) => {
+) => new Promise<ImageSnippet>((resolve, reject) => setTimeout(() => {
   const img = document.createElement('img');
 
   img.onload = () => {
@@ -55,7 +55,7 @@ const cropImage = async (
   img.onerror = error => reject(error);
 
   img.src = URL.createObjectURL(image.data);
-});
+}, 100));
 
 export const getImageSnippet = (
   image: LoadedImage, 
@@ -84,4 +84,4 @@ export const getAnntotationsWithSnippets = (
           .catch(() => ({ annotation }))
       }))
     )
-  );
+  )

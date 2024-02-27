@@ -159,18 +159,28 @@ const createWorksheet = (
   worksheet.columns[0].width = 30;
 }
 
-export const exportAnnotationsAsExcel = (store: Store) => {
+export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: number) => void)) => {
   const model = store.getDataModel();
+
   const { images } = store;
 
-  const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image) => 
-    promise.then(all =>
-        getAnntotationsWithSnippets(image, store)
-          .then(t => ([
+  // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
+  const progressIncrement = 100 / (images.length + 2);
+  onProgress(progressIncrement);
+
+  const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image, idx) => {
+    return promise.then(all => {
+      return getAnntotationsWithSnippets(image, store)
+        .then(t => { 
+          onProgress((idx + 2) * progressIncrement);
+
+          return [
             ...all,
             ...t.map(({ annotation, snippet }) => ({ image, annotation, snippet }))
-          ]))
-  ), Promise.resolve([]));
+          ]
+        });
+      })
+    }, Promise.resolve([]));
 
   promise.then(annotations => {
     const workbook = new ExcelJS.Workbook();
@@ -184,6 +194,8 @@ export const exportAnnotationsAsExcel = (store: Store) => {
     model.getRootTypes().forEach(entityType => createWorksheet(workbook, annotations, entityType, model));
   
     workbook.xlsx.writeBuffer().then(buffer => {
+      onProgress(100);
+
       const blob = new Blob([buffer], {
         type: 'application/vnd.ms-excel'
       });
