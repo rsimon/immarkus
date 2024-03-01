@@ -117,7 +117,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasSchemaFields = (body: W3CAnnotationBody) => {
     if (body.source) {
-      const schema = model.getEntityType(body.source);
+      const schema = model.getEntityType(body.source, true);
       return (schema?.properties || []).length > 0;
     }
   }
