@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "To cite the software when you use it in research or teaching, please use the following:"
+authors:
+- family-names: "De Weerdt"
+  given-names: "Hilde"
+- family-names: "Simon"
+  given-names: "Rainer"
+- family-names: "Sunkyu"
+  given-names: "Lee"
+- family-names: "Stojević"
+  given-names: "Iva"
+- family-names: "Meister"
+  given-names: "Meret"
+- family-names: "Wangzhi"
+  given-names: "Xi"
+title: "IMMARKUS: Image Annotation"
+url: "https://immarkus.xmarkus.org"
+date-released: 2024
