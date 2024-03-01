@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Download, Image, Info, Plug, Sparkles, ToyBrick } from 'lucide-react';
+import { ArrowUpRightFromSquare, Download, HelpCircle, Image, Info, Plug, Sparkles, ToyBrick } from 'lucide-react';
 
 import './AppNavigationSidebar.css';
 
@@ -67,6 +67,13 @@ export const AppNavigationSidebar = () => {
               to="/about">
               <Info size={18} className="mr-2 relative -top-[1px]" /> About
             </Link>
+          </li>
+
+          <li>
+            <a
+              href="https://github.com/rsimon/immarkus/wiki" target="_blank">
+              <HelpCircle size={18} className="mr-2 relative -top-[1px]" /> Help
+            </a>
           </li>
         </ul>
       </nav>
