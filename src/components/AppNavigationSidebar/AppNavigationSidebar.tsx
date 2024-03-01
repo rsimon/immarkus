@@ -70,8 +70,7 @@ export const AppNavigationSidebar = () => {
           </li>
 
           <li>
-            <a 
-              className={pathname === '/about' ? active : undefined} 
+            <a
               href="https://github.com/rsimon/immarkus/wiki" target="_blank">
               <HelpCircle size={18} className="mr-2 relative -top-[1px]" /> Help
             </a>
