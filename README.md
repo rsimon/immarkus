@@ -44,9 +44,9 @@ You can run `npm run preview` to serve the built distribution from a development
 
 <div>
   <img align="center" src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/ku_leuven_logo.svg" alt="KU Leuven logo" style="width: 120px" />
-
+  &nbsp; &nbsp;
   <img align="center" src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/european_research_council_logo.svg" alt="European Research Council logo" style="width: 70px" />
-
+  &nbsp; &nbsp;
   <img align="center" src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/europe_flag.svg" alt="Flag of Europe" style="width: 90px" />
 </div>
 
