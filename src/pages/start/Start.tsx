@@ -45,7 +45,7 @@ export const Start = () => {
     }
   }
 
-  const buildDate = preval`module.exports = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date())`;
+  const buildDate = preval`module.exports = new Intl.DateTimeFormat('de', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date())`;
 
   return ( 
     <div className="page-root">

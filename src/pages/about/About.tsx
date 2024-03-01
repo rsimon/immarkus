@@ -23,28 +23,66 @@ export const About = () => {
           innovation programme (Grant agreement No. 101019509).
         </p>
 
-        <h2 className="p-1 mt-6 font-semibold max-w-xl leading-6">
-          How to cite this software:
-        </h2>
-
-        <h3 className="p-1 mt-4 text-sm max-w-xl font-semibold leading-6">Platform</h3>
-        <p className="px-1 text-sm max-w-xl leading-6">
-          Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Meret Meister, and Xi Wangzhi.
-          IMMARKUS: Image Annotation. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
+        <p className="p-1 mt-3 text-sm max-w-xl leading-6">
+          To cite the software when you use it in your research or teaching, please use 
+          the following bibliographic information:
         </p>
 
-        <h3 className="p-1 mt-4 text-sm max-w-xl font-semibold leading-6">Code</h3>
-        <p className="px-1 text-sm max-w-xl leading-6">
-          Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://github.com/rsimon/immarkus" target="_blank">github.com/rsimon/immarkus</a>.    
-        </p>
+        <dl>
+          <dt className="p-1 mt-4 mb-2 text-sm max-w-xl font-semibold leading-6">
+            Platform
+          </dt>
 
-        <h3 className="p-1 mt-4 text-sm max-w-xl font-semibold leading-6">Instructions</h3>
-        <p className="px-1 text-sm max-w-xl leading-6">
-          Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions 
-          for Image Annotation in IMMARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
-        </p>
+          <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
+            Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Meret Meister, and Xi Wangzhi.
+            IMMARKUS: Image Annotation. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
+          </dd>
+          
+          <dt className="px-1 mt-6 mb-2 text-sm max-w-xl font-semibold leading-6">
+            Code
+          </dt>
 
-        <h3 className="p-1 mt-4 text-sm max-w-xl font-semibold leading-6">Instructional videos</h3>
+          <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
+            Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://github.com/rsimon/immarkus" target="_blank">github.com/rsimon/immarkus</a>.    
+          </dd>
+
+          <dt className="p-1 mt-6 mb-2 text-sm max-w-xl font-semibold leading-6">
+            Instructions
+          </dt>
+
+          <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
+            Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions 
+            for Image Annotation in IMMARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
+          </dd>
+        </dl>
+
+        <div className="max-w-xl flex justify-between items-end mt-6 mb-16 pr-3">
+          <a 
+            href="https://www.kuleuven.be/" 
+            target="_blank" 
+            title="KU Leuven">
+            <img
+              className="h-10" 
+              src="/images/ku_leuven_logo.svg" 
+              alt="KU Leuven logo" />
+          </a>
+
+          <a 
+            href="https://erc.europa.eu/homepage" 
+            target="_blank" 
+            className="flex items-end gap-6"
+            title="European Research Council">
+            <img 
+              className="w-16 translate-y-2.5"
+              src="/images/european_research_council_logo.svg" 
+              alt="Logo of the European Research Council" />
+
+            <img
+              className="h-10"
+              src="/images/europe_flag.svg"
+              alt="Flag of Europe" />
+          </a>
+        </div>
       </main>
     </div>
   )
