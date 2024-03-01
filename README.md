@@ -22,22 +22,21 @@ __Platform__
 
 ```
 Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Meret Meister, 
-and Xi Wangzhi. IMMARKUS: Image Annotation. 2024. 
-[immarkus.xmarkus.org](https://immarkus.xmarkus.org).
+and Xi Wangzhi. IMMARKUS: Image Annotation. 2024. https://immarkus.xmarkus.org.
 ```
 
 __Code__
 
 ```
 Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024. 
-[github.com/rsimon/immarkus](https://github.com/rsimon/immarkus).
+https://github.com/rsimon/immarkus.
 ```
 
 __Instructions__
 
 ```
 Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions
-for Image Annotation in IMMARKUS. 2024.[immarkus.xmarkus.org](https://immarkus.xmarkus.org).
+for Image Annotation in IMMARKUS. 2024. https://immarkus.xmarkus.org.
 ```
 
 ## Installation
