@@ -42,9 +42,11 @@ __Instructions__
 
 You can run `npm run preview` to serve the built distribution from a development server, or `npm start` to run IMMARKUS from source code.
 
-<img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/ku_leuven_logo.svg" alt="KU Leuven logo" style="width: 120px; padding: 0 20px 12px 0;" />
+<div style="display:flex">
+  <img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/ku_leuven_logo.svg" alt="KU Leuven logo" style="width: 120px; padding: 0 20px 12px 0;" />
 
-<img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/european_research_council_logo.svg" alt="European Research Council logo" style="width: 70px" />
+  <img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/european_research_council_logo.svg" alt="European Research Council logo" style="width: 70px" />
 
-<img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/europe_flag.svg" alt="Flag of Europe" style="width: 90px" />
+  <img src="https://raw.githubusercontent.com/rsimon/immarkus/main/public/images/europe_flag.svg" alt="Flag of Europe" style="width: 90px" />
+</div>
 
