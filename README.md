@@ -1,6 +1,6 @@
-# Image Annotation for the X-MARKUS Environment
+# IMMARKUS
 
-An image annotation platform for the MARKUS platform.
+An image annotation environment for the [MARKUS platform](https://dh.chinese-empires.eu/markus/).
 
 ## Acknowledgements
 
