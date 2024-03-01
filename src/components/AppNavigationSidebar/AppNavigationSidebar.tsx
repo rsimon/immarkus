@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Download, Image, Plug, Sparkles, ToyBrick } from 'lucide-react';
+import { Download, Image, Info, Plug, Sparkles, ToyBrick } from 'lucide-react';
 
 import './AppNavigationSidebar.css';
 
@@ -58,6 +58,14 @@ export const AppNavigationSidebar = () => {
               className={pathname === '/markus' ? active : undefined} 
               to="/markus">
               <Plug size={18} className="mr-2 relative -top-0.5" /> MARKUS
+            </Link>
+          </li>
+
+          <li>
+            <Link 
+              className={pathname === '/about' ? active : undefined} 
+              to="/about">
+              <Info size={18} className="mr-2 relative -top-[1px]" /> About
             </Link>
           </li>
         </ul>
