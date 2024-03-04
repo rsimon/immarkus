@@ -52,7 +52,7 @@ export const About = () => {
 
           <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
             Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions 
-            for Image Annotation in IMMARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
+            for Image Annotation in IMMARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">github.com/rsimon/immarkus/wiki</a>.
           </dd>
         </dl>
 

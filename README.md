@@ -39,6 +39,13 @@ Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions
 for Image Annotation in IMMARKUS. 2024. https://immarkus.xmarkus.org.
 ```
 
+__Wiki__
+
+```
+Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Image Annotation in
+IMMARKUS Wiki. 2024. https://github.com/rsimon/immarkus/wiki.
+```
+
 ## Installation
 
 - Clone this repository
