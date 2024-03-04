@@ -28,7 +28,7 @@ export const App = () => {
         <Route path="graph" element={<KnowledgeGraph />} />
 
         <Route path="export">
-          <Route index element={<Navigate to="/export/model" />} />
+          <Route index element={<Navigate to="/export/annotations" />} />
           <Route path="model" element={<Export tab="model" />} />
           <Route path="annotations" element={<Export tab="annotations" />} />
           <Route path="metadata" element={<Export tab="metadata" />} />
