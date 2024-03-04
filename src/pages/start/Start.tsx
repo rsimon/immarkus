@@ -7,8 +7,6 @@ import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 import { storeHandle } from './storedHandles';
 
-import './Start.css';
-
 type State = 'idle' | 'loading' | 'error';
 
 export const Start = () => {
@@ -49,6 +47,10 @@ export const Start = () => {
 
   return ( 
     <div className="page-root">
+      <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
+        v0.3.0 · Build {buildDate}
+      </div>
+
       {!window.showDirectoryPicker ? (
         <UnsupportedBrowser />
       ) : state === 'loading' ? (
@@ -56,10 +58,6 @@ export const Start = () => {
       ) : (
         <Open onOpenFolder={onOpenFolder} />
       )}
-
-      <div className="version">
-        Version 0.3.0 · Build {buildDate}
-      </div>
     </div>
   )
 
