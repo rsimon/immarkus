@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react';
+import { FileJson } from 'lucide-react';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 
@@ -22,27 +22,23 @@ export const ExportDataModel = () => {
   return (
     <ul className="py-2">
       <li>
-        <section className="w-full py-2 flex flex-row gap-20 justify-between">
-          <div>
-            <h3 className="font-medium mb-1 leading-relaxed">
-              IMMARKUS Data Model
-            </h3>
+        <div className="max-w-xl py-2">
+          <h3 className="font-medium leading-relaxed">
+            IMMARKUS Data Model
+          </h3>
 
-            <p className="text-sm leading-relaxed">
-              Your data model in the original, proprietary IMMARKUS JSON format. This file is the 
-              same you will find in your work folder as <code className="text-muted-foreground">_immarkus.model.json</code>, 
-              and is re-published here for convenience.
-            </p>
-          </div>
+          <p className="text-sm pt-3 pb-5 leading-relaxed">
+            Your data model in proprietary IMMARKUS JSON format. This file is the 
+            same you will find in your work folder as <code className="text-muted-foreground">_immarkus.model.json</code>, 
+            and is re-published here for convenience.
+          </p>
 
-          <div>
-            <Button 
-              className="whitespace-nowrap flex gap-2"
-              onClick={() => exportDataModel()}>
-              <Download className="h-4 w-4" /> JSON
-            </Button>
-          </div>
-        </section>
+          <Button 
+            className="whitespace-nowrap flex gap-3 w-36 justify-center"
+            onClick={() => exportDataModel()}>
+            <FileJson className="h-5 w-5" /> JSON
+          </Button>
+        </div>
       </li>
     </ul>
   )

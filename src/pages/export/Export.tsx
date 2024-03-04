@@ -12,11 +12,12 @@ interface ExportProps {
 }
 
 const NavListItem = (props: { path: string, label: string, active?: boolean }) => (
-  <li 
-    className={props.active 
-      ? 'bg-muted px-3 py-1.5 rounded w-full my-2'
-      : 'px-3 py-1.5 rounded w-full my-2'}>
-    <Link to={props.path}>{props.label}</Link>
+  <li>
+    <Link 
+      to={props.path}
+      className={props.active 
+        ? 'block bg-muted px-3 py-1.5 rounded w-full my-2'
+        : 'block px-3 py-1.5 rounded w-full my-2'}>{props.label}</Link>
   </li>
 )
 
@@ -42,21 +43,19 @@ export const Export = (props: ExportProps) => {
             <nav className="w-44">
               <ol>
                 <NavListItem 
-                  path="/export/model" 
-                  label="Data Model" 
-                  active={props.tab === 'model'} />
-
-                <NavListItem 
                   path="/export/annotations" 
                   label="Annotations" 
                   active={props.tab === 'annotations'} />
+
+                <NavListItem 
+                  path="/export/model" 
+                  label="Data Model" 
+                  active={props.tab === 'model'} />
 
                 <NavListItem
                   path="/export/metadata"
                   label="Metadata"
                   active={props.tab === 'metadata'} />
-
-                <li className="px-3 py-1.5 text-muted-foreground/50">Images</li>
               </ol>
             </nav>
           </aside>
