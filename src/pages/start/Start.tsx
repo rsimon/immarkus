@@ -43,13 +43,13 @@ export const Start = () => {
   }
 
   const buildDate = 
-    new Intl.DateTimeFormat('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    new Intl.DateTimeFormat('de', { day: '2-digit', month: '2-digit', year: 'numeric' })
       .format(new Date(process.env.BUILD_DATE));
 
   return ( 
     <div className="page-root">
       <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
-        v0.3.0 · Build {buildDate}
+        v{process.env.PACKAGE_VERSION} · Build {buildDate}
       </div>
 
       {!window.showDirectoryPicker ? (
