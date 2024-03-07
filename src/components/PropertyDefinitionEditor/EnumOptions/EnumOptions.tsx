@@ -15,11 +15,14 @@ export const EnumOptions = (props: EnumOptionsProps) => {
 
   const { definition } = props;
 
-  const onAddOption = (option: string) => 
-    props.onUpdate({
-      ...definition, 
-      values: [ ...(definition.values || []),  option].slice().sort()
-    });
+  const onAddOption = (option: string) => {
+    if (!(definition.values || []).includes(option)) {
+      props.onUpdate({
+        ...definition, 
+        values: [ ...(definition.values || []),  option].slice().sort()
+      });
+    }
+  }
 
   const onRemoveOption = (option: string) => () =>
     props.onUpdate({
