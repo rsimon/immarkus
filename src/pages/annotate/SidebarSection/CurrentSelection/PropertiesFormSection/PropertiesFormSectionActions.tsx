@@ -2,6 +2,7 @@ import { Settings, Trash2 } from 'lucide-react';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { TooltippedButton } from '@/components/TooltippedButton';
 import { EntityType } from '@/model';
+import { useDataModel } from '@/store';
 
 interface PropertiesFormSectionActionsProps {
 
@@ -13,9 +14,14 @@ interface PropertiesFormSectionActionsProps {
 
 export const PropertiesFormSectionActions = (props: PropertiesFormSectionActionsProps) => {
 
+  const model = useDataModel();
+
+  // For the editor, we need to EXCLUDE inherited properties
+  const withoutInherited = model.getEntityType(props.entityType.id);
+
   return (
     <div className="flex text-muted-foreground">
-      <EntityTypeEditor entityType={props.entityType}>
+      <EntityTypeEditor entityType={withoutInherited}>
         <TooltippedButton 
           variant="ghost" 
           size="icon" 
