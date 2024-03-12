@@ -1,3 +1,4 @@
+import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
 
 interface EntityTypeDetailsProps {
@@ -8,8 +9,13 @@ interface EntityTypeDetailsProps {
 
 export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
+  const { type } = props;
+
   return (
-    <aside></aside>
+    <aside>
+      <h2><EntityBadge entityType={type} /></h2>
+      <p>{type.description}</p>
+    </aside>
   )
   
 }
