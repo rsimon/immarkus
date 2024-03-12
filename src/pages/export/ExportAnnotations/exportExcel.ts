@@ -3,7 +3,6 @@ import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { ImageSnippet, getAnntotationsWithSnippets } from './ImageSnippet';
 import { EntityType, Image, PropertyDefinition } from '@/model';
-import { serializePropertyValue } from '@/utils/serialize';
 
 interface ImageAnnotationSnippetTuple {
 

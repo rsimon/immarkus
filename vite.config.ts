@@ -27,8 +27,12 @@ export default defineConfig({
         'quill'
       ],
       output: {
+        entryFileNames: 'assets/immarkus-[hash].js',
+        assetFileNames: 'assets/immarkus-[hash].[ext]',
         manualChunks: {
-          'openseadragon': ['openseadragon']
+          'dep-annotorious': ['@annotorious/react'],
+          'dep-exceljs': ['exceljs/dist/exceljs.min.js'],
+          'dep-primereact': ['primereact/treetable']
         }
       }
     }
