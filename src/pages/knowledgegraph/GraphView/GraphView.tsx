@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { ForceGraph } from './ForceGraph';
-import { GraphNode } from '../Graph';
+import { GraphNode } from '../Types';
 import { useGraph } from './useGraph';
 
 import './GraphView.css';

@@ -1,13 +1,12 @@
+import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView/GraphView';
-import { GraphNode } from './Graph';
+import { GraphNode } from './Types';
+import { SelectionDetails } from './SelectionDetails';
 
 export const KnowledgeGraph = () => {
 
-  const onSelect = (node: GraphNode) => {
-    // TODO
-    console.log('selected node', node.id);
-  }
+  const [selected, setSelected] = useState<GraphNode | undefined>();
 
   return (
     <div className="page-root">
@@ -24,7 +23,12 @@ export const KnowledgeGraph = () => {
         */}
 
         <GraphView 
-          onSelect={onSelect} />
+          onSelect={setSelected} />
+
+        {selected && (
+          <SelectionDetails
+            selected={selected} />
+        )}
       </main>
     </div>
   )

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useStore } from '@/store';
-import { Graph, GraphLink, GraphNode } from '../Graph';
+import { Graph, GraphLink, GraphNode } from '../Types';
 
 export const useGraph = () => {
 

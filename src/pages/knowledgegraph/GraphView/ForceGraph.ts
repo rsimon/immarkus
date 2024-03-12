@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { Graph, GraphLink, GraphNode } from '../Graph';
+import { Graph, GraphLink, GraphNode } from '../Types';
 
 interface DragEvent extends d3.D3DragEvent<SVGGElement, unknown, unknown> {
 
@@ -34,7 +34,7 @@ const drag = (simulation: d3.Simulation<GraphNode, GraphLink>) => {
 export const ForceGraph = (graph: Graph, opts: {
   height: number,
   width: number,
-  onSelect?(node: GraphNode): void
+  onSelect?(node?: GraphNode): void
 }): SVGSVGElement => {
   const links = graph.links.map(d => Object.create(d));
   const nodes = graph.nodes.map(d => Object.create(d));
@@ -44,7 +44,13 @@ export const ForceGraph = (graph: Graph, opts: {
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(opts.width / 2, opts.height / 2));
 
-  const svg = d3.create('svg');
+  const svg = d3.create('svg')
+    .on('click', (event: MouseEvent, foo) => {
+      const target = event.target as SVGElement;
+
+      if (target.tagName.toLowerCase() !== 'circle' && opts.onSelect)
+        opts.onSelect(undefined);
+  });
 
   const container = svg.append('g');
 
