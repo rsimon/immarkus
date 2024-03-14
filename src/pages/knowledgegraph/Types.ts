@@ -6,15 +6,21 @@ export interface Graph {
 
   links: GraphLink[];
 
+  maxDegree: number;
+
+  maxLinkWeight: number;
+
   minDegree: number;
 
-  maxDegree: number;
+  minLinkWeight: number;
 
 }
 
 export interface GraphNode extends d3.SimulationNodeDatum {
 
   id: string;
+
+  label: string;
 
   type: 'IMAGE' | 'ENTITY_TYPE';
 
@@ -28,6 +34,6 @@ export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
   
   target: string;
   
-  value?: number
+  value: number
 
 }

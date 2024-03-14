@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { PALETTE } from './Palette';
 import { Graph, GraphLink, GraphNode } from '../Types';
 
 interface DragEvent extends d3.D3DragEvent<SVGGElement, unknown, unknown> {
@@ -30,9 +31,16 @@ const drag = (simulation: d3.Simulation<GraphNode, GraphLink>) => {
       .on('end', dragended);
 }
 
-const MAX_NODE_SIZE = 14;
+const NODE_STROKE_WIDTH = 1.5;
 
-const MIN_NODE_SIZE = 4;
+const MAX_NODE_SIZE = 10;
+const MIN_NODE_SIZE = 5;
+
+const MAX_LINK_WIDTH = 3;
+const MIN_LINK_WIDTH = 1;
+
+const LABEL_OFFSET_X = 12;
+const LABEL_OFFSET_Y = 12;
 
 // Based on https://observablehq.com/@garciaguillermoa/force-directed-graph
 export const ForceGraph = (graph: Graph, opts: {
@@ -43,10 +51,11 @@ export const ForceGraph = (graph: Graph, opts: {
   const links = graph.links.map(d => Object.create(d));
   const nodes = graph.nodes.map(d => Object.create(d));
 
-  console.log(graph);
+  // Node size scaling factor
+  const nodeScale = (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
 
-  // Size scaling factor
-  const k = (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
+  // Link stroke width scaling factor
+  const linkScale = (MAX_LINK_WIDTH - MIN_LINK_WIDTH) / (graph.maxLinkWeight - graph.minLinkWeight);
 
   const simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink<GraphNode, GraphLink>(links).id(d => d.id))
@@ -68,7 +77,8 @@ export const ForceGraph = (graph: Graph, opts: {
       .attr('stroke-opacity', 0.6)
     .selectAll('line')
     .data(links)
-    .join('line');
+    .join('line')
+      .attr('stroke-width', n => linkScale * n.value + MIN_LINK_WIDTH)
 
   const node = container.append('g')
     .selectAll('.node')
@@ -78,22 +88,23 @@ export const ForceGraph = (graph: Graph, opts: {
       .call(drag(simulation));
 
   node.append('circle')
-    .attr('r', n => k * n.degree + MIN_NODE_SIZE)
-    .attr('fill', n => n.type === 'IMAGE' ? 'rgb(230, 85, 13)' : 'rgb(158, 202, 225)')
-    .attr('stroke', n => n.type === 'IMAGE' ? 'rgb(161, 59, 9)' : 'rgb(110, 141, 157)')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', NODE_STROKE_WIDTH)
+    .attr('r', n => nodeScale * n.degree + MIN_NODE_SIZE)
+    .attr('fill', n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'])
     .on('click', (_: MouseEvent, node: GraphNode) => {
       if (opts.onSelect) opts.onSelect(node);
     });
   
   node.append('text')
     .text(function(d) {
-      return d.id;
+      return d.label
     })
     .style('fill', '#000')
     .style('font-size', '12px')
     .style('pointer-events', 'none')
-    .attr('x', 10)
-    .attr('y', 10);
+    .attr('x', LABEL_OFFSET_X)
+    .attr('y', LABEL_OFFSET_Y);
 
   simulation.on('tick', () => {
     link
@@ -112,16 +123,17 @@ export const ForceGraph = (graph: Graph, opts: {
     container.attr('transform', transform.toString());
 
     // Counter scale relevant properties
-    link.attr('stroke-width', `${1 / transform.k}`);
+    link.attr('stroke-width', 
+      (n: GraphLink) => `${(linkScale * n.value + MIN_LINK_WIDTH) / transform.k}`);
 
     node.selectAll('circle')
-      .attr('r', (n: GraphNode) => (k * n.degree + MIN_NODE_SIZE) / transform.k)
-      .attr('stroke-width', `${1 / transform.k}`);
+      .attr('r', (n: GraphNode) => (nodeScale * n.degree + MIN_NODE_SIZE) / transform.k)
+      .attr('stroke-width', `${NODE_STROKE_WIDTH / transform.k}`);
 
     node.selectAll('text')
       .style('font-size', `${12 / transform.k}px`)
-      .attr('x', 10 / transform.k)
-      .attr('y', 10 / transform.k);
+      .attr('x', LABEL_OFFSET_X / transform.k)
+      .attr('y', LABEL_OFFSET_Y / transform.k);
   }));
 
   return svg.node();

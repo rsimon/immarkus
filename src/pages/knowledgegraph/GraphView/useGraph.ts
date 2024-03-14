@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { EntityType, Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode } from '../Types';
-import { EntityType, Image } from '@/model';
 
 export const useGraph = () => {
 
@@ -36,12 +36,14 @@ export const useGraph = () => {
       const nodes: GraphNode[] = [
         ...images.map(image => ({ 
             id: image.id, 
+            label: image.name,
             type: 'IMAGE', 
             degree: getImageDegree(image) 
           } as GraphNode)),
 
         ...datamodel.entityTypes.map(type => ({ 
             id: type.id, 
+            label: type.label || type.id,
             type: 'ENTITY_TYPE',
             degree: getEntityTypeDegree(type)
           } as GraphNode)),
@@ -61,7 +63,7 @@ export const useGraph = () => {
               const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
   
               const links: GraphLink[] = 
-                bodies.filter(b => b.source).map(b => ({ source: image.id, target: b.source }));
+                bodies.filter(b => b.source).map(b => ({ source: image.id, target: b.source, value: 1 }));
               
               return [...all, ...links ];
             } else {
@@ -78,8 +80,37 @@ export const useGraph = () => {
   
           return [...all, ...entityLinks];
       }, []);
+
+      // Flatten links
+      const flattened = links.reduce<GraphLink[]>((agg, link) => {
+        const existing = agg.find(l => l.source === link.source && l.target === link.target);
+        if (existing) {
+          return agg.map(l => l === existing ? { ...existing, value: existing.value + 1 } : l);
+        } else {
+          return [...agg, link];
+        }
+      }, []);
+
+      let minLinkWeight = flattened.length === 0 ? 0 : Infinity;
+
+      let maxLinkWeight = 1;
+
+      flattened.forEach(link => {
+        if (link.value > maxLinkWeight)
+          maxLinkWeight = link.value;
+
+        if (link.value < minLinkWeight)
+          minLinkWeight = link.value;
+      });
   
-      setGraph({ nodes, links, minDegree, maxDegree });
+      setGraph({ 
+        nodes, 
+        links: flattened, 
+        minDegree, 
+        maxDegree,
+        minLinkWeight,
+        maxLinkWeight
+      });
     });
   }, []);
 
