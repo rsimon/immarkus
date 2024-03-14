@@ -6,13 +6,19 @@ export interface Graph {
 
   links: GraphLink[];
 
+  minDegree: number;
+
+  maxDegree: number;
+
 }
 
 export interface GraphNode extends d3.SimulationNodeDatum {
 
   id: string;
 
-  type: 'IMAGE' | 'ENTITY_CLASS'
+  type: 'IMAGE' | 'ENTITY_TYPE';
+
+  degree: number;
   
 }
 

@@ -17,7 +17,7 @@ export const SelectionDetails = (props: SelectionDetailsProps) => {
 
   return (
     <div className="absolute top-8 right-8 bg-white/80 backdrop-blur-sm rounded p-4 shadow-sm border">
-      {type === 'ENTITY_CLASS' ? (
+      {type === 'ENTITY_TYPE' ? (
         <EntityTypeDetails 
           type={store.getDataModel().getEntityType(id)} />
       ) : (

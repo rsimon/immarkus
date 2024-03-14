@@ -30,6 +30,10 @@ const drag = (simulation: d3.Simulation<GraphNode, GraphLink>) => {
       .on('end', dragended);
 }
 
+const MAX_NODE_SIZE = 14;
+
+const MIN_NODE_SIZE = 4;
+
 // Based on https://observablehq.com/@garciaguillermoa/force-directed-graph
 export const ForceGraph = (graph: Graph, opts: {
   height: number,
@@ -38,6 +42,11 @@ export const ForceGraph = (graph: Graph, opts: {
 }): SVGSVGElement => {
   const links = graph.links.map(d => Object.create(d));
   const nodes = graph.nodes.map(d => Object.create(d));
+
+  console.log(graph);
+
+  // Size scaling factor
+  const k = (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
 
   const simulation = d3.forceSimulation(nodes)
     .force('link', d3.forceLink<GraphNode, GraphLink>(links).id(d => d.id))
@@ -69,7 +78,7 @@ export const ForceGraph = (graph: Graph, opts: {
       .call(drag(simulation));
 
   node.append('circle')
-    .attr('r', 5)
+    .attr('r', n => k * n.degree + MIN_NODE_SIZE)
     .attr('fill', n => n.type === 'IMAGE' ? 'rgb(230, 85, 13)' : 'rgb(158, 202, 225)')
     .attr('stroke', n => n.type === 'IMAGE' ? 'rgb(161, 59, 9)' : 'rgb(110, 141, 157)')
     .on('click', (_: MouseEvent, node: GraphNode) => {
@@ -106,7 +115,7 @@ export const ForceGraph = (graph: Graph, opts: {
     link.attr('stroke-width', `${1 / transform.k}`);
 
     node.selectAll('circle')
-      .attr('r', 5 / transform.k)
+      .attr('r', (n: GraphNode) => (k * n.degree + MIN_NODE_SIZE) / transform.k)
       .attr('stroke-width', `${1 / transform.k}`);
 
     node.selectAll('text')
