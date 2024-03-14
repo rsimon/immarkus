@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Thumbnail } from '@/components/Thumbnail';
-import { Image } from '@/model';
-import { useStore } from '@/store';
+import { Image, LoadedImage } from '@/model';
+import { useImages, useStore } from '@/store';
 import { W3CAnnotation } from '@annotorious/react';
+import { ImageIcon, MessagesSquare, Scaling, X } from 'lucide-react';
+import { useImageDimensions } from '@/utils/useImageDimensions';
+import { Button } from '@/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface ImageDetailsProps {
 
@@ -16,7 +19,13 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
   const store = useStore();
 
+  const loaded = useImages(props.image.id, 100) as LoadedImage;
+
+  const { onLoad, dimensions } = useImageDimensions();
+
   const [annotations, setAnnotations] = useState<W3CAnnotation[] | undefined>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     store.getAnnotations(image.id).then(setAnnotations);
@@ -24,15 +33,34 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
   return (
     <aside>
-      <h2>{image.name}</h2>
-      <figure>
-        <Thumbnail image={image} />
-      </figure>
-      <p>
-        {annotations && (
-          <span>{annotations.length} annotations</span>
+      <header className="h-32 overflow-hidden relative">
+        {loaded && (
+          <img 
+            onLoad={onLoad}
+            className="w-full h-full rounded-tl rounded-tr object-cover" src={URL.createObjectURL(loaded.data)} />
         )}
-      </p>
+      </header>
+
+      <div className="px-3 py-4 text-sm">
+        <h2 className="whitespace-nowrap overflow-hidden text- text-ellipsis mb-0.5">{image.name}</h2>
+        <div className="text-muted-foreground text-xs flex gap-1.5 mb-8">
+          <div className="mb-0.5 flex gap-1 items-center">
+            {annotations ? annotations.length : 0} Annotations
+          </div>  
+          <div>·</div>
+          <div className="mb-0.5 flex gap-1 items-center">
+            {dimensions && (
+              <>{dimensions[0]} x {dimensions[1]}</>
+            )}
+          </div>
+        </div>
+
+        <Button 
+          className="w-full"
+          onClick={() => navigate(`/annotate/${image.id}`)}>
+          Open Image
+        </Button>
+      </div>
     </aside>
   )
   
