@@ -53,7 +53,7 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
           <img
             src={URL.createObjectURL(new Blob([snippet.data]))}
             alt={image.name}
-            className="w-20 h-20 object-cover aspect-square rounded-sm shadow border border-black/20" />
+            className="w-20 h-20 object-cover aspect-square rounded-sm border" />
         </li>
       ))}
     </ul>

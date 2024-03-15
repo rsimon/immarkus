@@ -23,18 +23,18 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
       <div className="p-4">
         <h2><EntityBadge entityType={type} /></h2>
         {type.description && (
-          <p className="px-0.5 pt-2 text-sm text-muted-foreground">
+          <p className="px-0.5 pt-2 text-xs text-muted-foreground">
             {type.description}
           </p>
         )}
       </div>
 
-      <div className="bg-muted">
+      <div className="bg-gray-300/20 pb-1.5">
         {linkedNodes.map(node => (
           <section 
             key={node.id} 
             className="p-4 border-t">
-            <h3 className="text-sm mb-3 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+            <h3 className="text-xs mb-3 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
               {node.label}
             </h3>
 
