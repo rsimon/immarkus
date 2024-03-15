@@ -20,7 +20,7 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
 
   const image = useImages(props.imageId) as LoadedImage;
 
-  const [snippets, setSnippets] = useState<ImageSnippet[]>();
+  const [snippets, setSnippets] = useState<ImageSnippet[]>([]);
 
   useEffect(() => {
     if (!image) return;
@@ -33,9 +33,8 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
         return bodies.some(b => b.source === entityType.id);
       }) as W3CImageAnnotation[];
 
-      Promise
-        .all(relevant.map(annotation => getImageSnippet(image, annotation)))
-        .then(setSnippets);
+      relevant.map(annotation => getImageSnippet(image, annotation)
+        .then(snippet => setSnippets(s => [...s, snippet])));
     });
   }, [image]);
 
@@ -43,9 +42,9 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
 
   return image && snippets && (
     <div>
-      {snippets.map((snippet, idx) => (
+      {snippets.map(snippet => (
         <img
-          key={`${idx}-${new Date().getTime()}`}
+          key={snippet.annotation.id}
           src={URL.createObjectURL(new Blob([snippet.data]))}
           alt={image.name}
           className="w-14 h-14 object-cover aspect-square rounded-sm shadow border border-black/20" />
