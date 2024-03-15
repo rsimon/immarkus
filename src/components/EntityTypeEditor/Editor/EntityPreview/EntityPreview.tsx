@@ -2,13 +2,12 @@ import { useMemo } from 'react';
 import { Cuboid } from 'lucide-react';
 import { Separator } from '@/ui/Separator';
 import { getBrightness } from '@/utils/color';
-import { PropertyDefinition } from '@/model';
+import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
-import { EntityTypeStub } from '../../EntityTypeStub';
 import { 
   EnumField,
   ExternalAuthorityField, 
-  GeoCoordinateField, 
+  GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
@@ -18,7 +17,7 @@ import {
 
 interface EntityPreviewProps {
 
-  entityType: EntityTypeStub;
+  entityType: Partial<EntityType>;
 
 }
 
@@ -92,7 +91,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                   className="bg-white" 
                   definition={property} />
               ) : property.type === 'geocoordinate' ? (
-                <GeoCoordinateField 
+                <GeoCoordinatesField 
                   id={property.name}
                   className="bg-white" 
                   definition={property} />

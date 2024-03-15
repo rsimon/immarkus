@@ -17,7 +17,7 @@ interface DataModelSearchProps {
 
 export const DataModelSearch = (props: DataModelSearchProps) => {
 
-  const model = useDataModel();
+  const datamodel = useDataModel();
 
   const [query, setQuery] = useState('');
 
@@ -25,20 +25,29 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
 
   const [suggestions, setSuggestions] = useState<EntityType[]>([]);
 
-  const onGetSuggestions = ({ value }: { value: string }) => {   
+  const updateSuggestions = (value?: string) => {
     if (selected) {
       // There is a selected class - search in branch or show all
       if (value)
-        setSuggestions(model.searchEntityTypeBranch(value, selected.id));
+        setSuggestions(datamodel.searchEntityTypeBranch(value, selected.id));
       else
-        setSuggestions(model.getChildTypes(selected.id));
+        setSuggestions(datamodel.getChildTypes(selected.id));
     } else {
       // No selection - search all or show root classes
       if (value)
-        setSuggestions(model.searchEntityTypes(value))
+        setSuggestions(datamodel.searchEntityTypes(value))
       else
-        setSuggestions(model.getRootTypes())
+        setSuggestions(datamodel.getRootTypes())
     }
+  }
+
+  // Re-render suggestions if the data model changed
+  useEffect(() => { 
+    updateSuggestions(query);
+  }, [datamodel.entityTypes]);
+
+  const onGetSuggestions = ({ value }: { value: string }) => {   
+    updateSuggestions(value);
   }
 
   const renderSuggestion = (type: EntityType, { isHighlighted }) => (
@@ -51,7 +60,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
     setSelected(type);
     props.onSelect(type);
 
-    const hasChildren = model.hasChildTypes(type.id);
+    const hasChildren = datamodel.hasChildTypes(type.id);
     if (!hasChildren)
       props.onConfirm(type);
   }
@@ -59,7 +68,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   const onSubmitForm = (evt: React.FormEvent) => {
     evt.preventDefault();
 
-    const type = model.getEntityType(query);
+    const type = datamodel.getEntityType(query);
     if (type)
       onSelect(type);
   }
@@ -69,9 +78,9 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
     setQuery('');
 
     if (selected)
-      setSuggestions(model.getChildTypes(selected.id))
+      setSuggestions(datamodel.getChildTypes(selected.id))
     else
-      setSuggestions(model.getRootTypes());
+      setSuggestions(datamodel.getRootTypes());
   }, [ selected ]);
 
   const onClearSearch = () => {

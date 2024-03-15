@@ -13,7 +13,7 @@ export const Vocabulary = () => {
     <div className="page-root">
       <AppNavigationSidebar />
 
-      <main className="page data-model">
+      <main className="page data-model px-12 py-6">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Data Model</h1>
 
         <Tabs defaultValue="entityTypes" className="mt-2">
@@ -23,18 +23,12 @@ export const Vocabulary = () => {
             </TabsTrigger>
 
             <TabsTrigger value="imageMetadata">
-              <Image size={16} className="mr-2" /> Image Metadata
+              <Image size={16} className="mr-2" /> Image Schemas
             </TabsTrigger>
 
             <TabsTrigger value="folderMetadata">
-              <Folder size={16} className="mr-2" /> Folder Metadata
+              <Folder size={16} className="mr-2" /> Folder Schemas
             </TabsTrigger>
-
-            {/*
-            <TabsTrigger value="tags">
-              <Tags size={16} className="mr-2" /> Tags
-            </TabsTrigger>
-            */}
           </TabsList>
 
           <TabsContent value="entityTypes">

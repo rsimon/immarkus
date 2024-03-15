@@ -9,7 +9,6 @@ import { Textarea } from '@/ui/Textarea';
 import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from './EntityPreview/EntityPreview';
 import { PropertyDefinitions } from './PropertyDefinitions/PropertyDefinitions';
-import { EntityTypeStub } from '../EntityTypeStub';
 import { ParentBrowser } from './ParentBrowser';
 
 export interface EditorProps {
@@ -21,7 +20,6 @@ export interface EditorProps {
   onSaveError(error: Error): void;
 
 }
-
 
 interface ValidationErrors {
 
@@ -37,7 +35,7 @@ export const Editor = (props: EditorProps) => {
 
   const { entityTypes } = model;
 
-  const [entityType, setEntityType] = useState<EntityTypeStub>(props.entityType || {
+  const [entityType, setEntityType] = useState<Partial<EntityType>>(props.entityType || {
     color: getRandomColor()
   });
 
@@ -67,7 +65,16 @@ export const Editor = (props: EditorProps) => {
   }, [entityType]);
 
   const validate = (): EntityType | undefined => {
-    return entityType.id && isIdAvailable, isValidParent
+    const allPropertiesValid = (entityType.properties || []).every(d => 
+      d.type === 'enum' ||
+      d.type === 'external_authority' ||
+      d.type === 'geocoordinate' ||
+      d.type === 'measurement' ||
+      d.type === 'number' ||
+      d.type === 'text' ||
+      d.type === 'uri');
+
+    return allPropertiesValid && entityType.id && isIdAvailable && isValidParent
       ? entityType as EntityType
       : undefined;
   }

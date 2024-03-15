@@ -4,7 +4,7 @@ import { Alert, AlertTitle, AlertDescription } from '@/ui/Alert';
 export const UnsupportedBrowser = () => {
 
   return (
-    <main className="page start unsupported">
+    <main className="page start unsupported w-full flex items-center justify-center">
       <div className="content-wrapper">
         <Alert variant="destructive" className="max-w-2xl">
           <AlertCircle className="h-4 w-4" />

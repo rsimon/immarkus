@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInitStore } from '@/store/StoreProvider';
+import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 import { storeHandle } from './storedHandles';
-
-import './Start.css';
 
 type State = 'idle' | 'loading' | 'error';
 
@@ -44,8 +42,16 @@ export const Start = () => {
     }
   }
 
+  const buildDate = 
+    new Intl.DateTimeFormat('de', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      .format(new Date(process.env.BUILD_DATE));
+
   return ( 
     <div className="page-root">
+      <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
+        v{process.env.PACKAGE_VERSION} · Build {buildDate}
+      </div>
+
       {!window.showDirectoryPicker ? (
         <UnsupportedBrowser />
       ) : state === 'loading' ? (

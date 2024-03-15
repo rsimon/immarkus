@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'; 
 import { FolderCheck, FolderSync, FolderX } from 'lucide-react';
+import { useSavingState } from './useSavingState';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
-import { useSavingState } from './useSavingState';
 
 interface SavingStateIndicatorProps {
 

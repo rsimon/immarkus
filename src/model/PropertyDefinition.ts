@@ -1,5 +1,3 @@
-import { ExternalAuthority } from './ExternalAuthority';
-
 type BasePropertyDefinition = {
 
   name: string, 
@@ -35,11 +33,11 @@ export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
 
   type: 'external_authority',
 
-  authorities: ExternalAuthority[];
+  authorities: string[];
 
 }
 
-export type RelationProperty = BasePropertyDefinition & {
+export type RelationPropertyDefinition = BasePropertyDefinition & {
 
   type: 'relation',
 
@@ -60,7 +58,7 @@ export type TextPropertyDefinition = BasePropertyDefinition & {
 export type PropertyDefinition = PrimitivePropertyDefinition 
   | EnumPropertyDefinition
   | ExternalAuthorityPropertyDefinition
-  | RelationProperty
+  | RelationPropertyDefinition
   | TextPropertyDefinition;
 
 

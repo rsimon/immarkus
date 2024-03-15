@@ -4,6 +4,7 @@ import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } f
 import { useStore } from './store';
 
 import './App.css';
+import { About } from './pages/about';
 
 export const App = () => {
 
@@ -26,9 +27,16 @@ export const App = () => {
 
         <Route path="graph" element={<KnowledgeGraph />} />
 
-        <Route path="export" element={<Export />}  />
+        <Route path="export">
+          <Route index element={<Navigate to="/export/annotations" />} />
+          <Route path="model" element={<Export tab="model" />} />
+          <Route path="annotations" element={<Export tab="annotations" />} />
+          <Route path="metadata" element={<Export tab="metadata" />} />
+        </Route>
 
         <Route path="markus" element={<Markus />} />
+
+        <Route path="about" element={<About />} />
 
         <Route path="*" element={<NotFound />} />
       </Route>

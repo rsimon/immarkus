@@ -5,7 +5,7 @@ import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { CurrentSelection } from './CurrentSelection';
 import { AnnotationList } from './AnnotationList';
-import { ImageNotes } from './ImageNotes';
+import { ImageMetadata } from './ImageMetadata';
 
 export const SidebarSection = () => {
 
@@ -19,7 +19,7 @@ export const SidebarSection = () => {
   }, [selected]);
 
   return (
-    <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col">
+    <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
       <Tabs.Root 
         asChild      
         value={tab}
@@ -28,17 +28,17 @@ export const SidebarSection = () => {
           <section className="toolbar border-b h-[46px] flex items-center flex-shrink-0">
             <Separator orientation="vertical" className="h-4" />
 
-            <Tabs.List className="flex gap-1.5 py-0.5 px-2">
-              <Tabs.Trigger value="selection" className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
+            <Tabs.List className="flex gap-1.5 py-0.5 px-3">
+              <Tabs.Trigger value="selection" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
                 <MousePointerSquare className="h-4 w-4 mr-1" /> Selection
               </Tabs.Trigger>
 
-              <Tabs.Trigger value="annotation-list" className="p-2 flex items-center text-xs rounded-md hover:bg-muted">
+              <Tabs.Trigger value="annotation-list" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
                 <MessagesSquare className="h-4 w-4 mr-1" /> List
               </Tabs.Trigger>
 
-              <Tabs.Trigger value="image-notes" className="p-2 flex items-center text-xs rounded-md hover:bg-muted text-muted-foreground">
-                <Image className="h-4 w-4 mr-1" /> Image Notes
+              <Tabs.Trigger value="image-notes" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted text-muted-foreground">
+                <Image className="h-4 w-4 mr-1" /> Metadata
               </Tabs.Trigger>
             </Tabs.List>
           </section>
@@ -46,7 +46,7 @@ export const SidebarSection = () => {
           <section className="sidebar-content bg-white flex flex-grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
-                className="flex flex-grow text-sm justify-center items-center w-full p-3 px-4">
+                className="flex flex-grow text-sm justify-center items-center w-full pt-1 pb-3 px-4">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>
@@ -59,9 +59,10 @@ export const SidebarSection = () => {
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div className="flex-grow text-sm justify-center items-center w-full text-muted-foreground p-3 px-4">
-                <ImageNotes />
-              </div> 
+              <div 
+                className="w-full pt-1.5">
+                <ImageMetadata />
+              </div>
             </Tabs.Content>
           </section>
         </>
