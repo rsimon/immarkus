@@ -1,7 +1,7 @@
 import { useStore } from '@/store';
 import { Graph, GraphNode } from '../Types';
-import { EntityTypeDetails } from './EntityTypeDetails';
-import { ImageDetails } from './ImageDetails';
+import { EntityTypeDetails } from './EntityTypeDetails/EntityTypeDetails';
+import { ImageDetails } from './ImageDetails/ImageDetails';
 
 interface SelectionDetailsProps {
 

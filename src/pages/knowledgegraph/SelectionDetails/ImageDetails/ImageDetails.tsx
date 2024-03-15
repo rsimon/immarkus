@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Image, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
 import { W3CAnnotation } from '@annotorious/react';
-import { ImageIcon, MessagesSquare, Scaling, X } from 'lucide-react';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Button } from '@/ui/Button';
 import { useNavigate } from 'react-router-dom';
