@@ -58,7 +58,7 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
       ))}
     </ul>
   ) : (
-    <Skeleton className="w-20 h-20" /> 
+    <Skeleton className="w-20 h-20 bg-white" /> 
   )
 
 }

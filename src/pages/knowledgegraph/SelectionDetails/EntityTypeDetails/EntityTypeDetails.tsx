@@ -2,6 +2,7 @@ import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
 import { Graph } from '../../Types';
 import { AnnotatedEntities } from './AnnotatedEntities';
+import { Separator } from '@/ui/Separator';
 
 interface EntityTypeDetailsProps {
 
@@ -18,8 +19,8 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
   const linkedNodes = props.graph.getLinkedNodes(type.id);
 
   return (
-    <aside className="p-4 max-h-[400px] overflow-y-scroll">
-      <div>
+    <aside className="max-h-[80vh] overflow-y-scroll">
+      <div className="p-4">
         <h2><EntityBadge entityType={type} /></h2>
         {type.description && (
           <p className="px-0.5 pt-2 text-sm text-muted-foreground">
@@ -28,10 +29,12 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
         )}
       </div>
 
-      <div>
+      <div className="bg-muted">
         {linkedNodes.map(node => (
-          <section key={node.id}>
-            <h3 className="mt-5 mb-1.5 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+          <section 
+            key={node.id} 
+            className="p-4 border-t">
+            <h3 className="text-sm mb-3 font-medium whitespace-nowrap overflow-hidden text-ellipsis">
               {node.label}
             </h3>
 
