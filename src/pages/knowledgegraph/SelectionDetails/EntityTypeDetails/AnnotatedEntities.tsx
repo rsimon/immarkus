@@ -3,6 +3,7 @@ import { EntityType, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { W3CImageAnnotation } from '@annotorious/react';
+import { Skeleton } from '@/ui/Skeleton';
 
 interface AnnotatedEntitiesProps {
 
@@ -20,10 +21,12 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
 
   const image = useImages(props.imageId) as LoadedImage;
 
-  const [snippets, setSnippets] = useState<ImageSnippet[]>([]);
+  const [snippets, setSnippets] = useState<ImageSnippet[]>();
 
   useEffect(() => {
     if (!image) return;
+
+    setSnippets(undefined);
 
     // When the image has loaded, get all annotations for this
     // entity type, and clip their snippets
@@ -33,23 +36,29 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
         return bodies.some(b => b.source === entityType.id);
       }) as W3CImageAnnotation[];
 
-      relevant.map(annotation => getImageSnippet(image, annotation)
-        .then(snippet => setSnippets(s => [...s, snippet])));
+      if (relevant.length === 0) {
+        setSnippets([]);
+      } else {
+        relevant.map(annotation => getImageSnippet(image, annotation)
+          .then(snippet => setSnippets(s => [...(s || []), snippet])));
+      }
     });
-  }, [image]);
+  }, [image, entityType]);
 
-  console.log(snippets);
-
-  return image && snippets && (
-    <div>
+  return (image && snippets) ? (
+    <ul className="flex flex-wrap gap-2">
       {snippets.map(snippet => (
-        <img
-          key={snippet.annotation.id}
-          src={URL.createObjectURL(new Blob([snippet.data]))}
-          alt={image.name}
-          className="w-14 h-14 object-cover aspect-square rounded-sm shadow border border-black/20" />
+        <li 
+          key={snippet.annotation.id}>
+          <img
+            src={URL.createObjectURL(new Blob([snippet.data]))}
+            alt={image.name}
+            className="w-20 h-20 object-cover aspect-square rounded-sm shadow border border-black/20" />
+        </li>
       ))}
-    </div>
+    </ul>
+  ) : (
+    <Skeleton className="w-20 h-20" /> 
   )
 
 }

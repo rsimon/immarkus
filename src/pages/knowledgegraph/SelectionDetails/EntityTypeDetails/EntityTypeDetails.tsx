@@ -18,18 +18,28 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
   const linkedNodes = props.graph.getLinkedNodes(type.id);
 
   return (
-    <aside className="p-4">
+    <aside className="p-4 max-h-[400px] overflow-y-scroll">
       <div>
         <h2><EntityBadge entityType={type} /></h2>
-        <p className="px-0.5 py-2 text-sm text-muted-foreground">{type.description}</p>
+        {type.description && (
+          <p className="px-0.5 pt-2 text-sm text-muted-foreground">
+            {type.description}
+          </p>
+        )}
       </div>
 
       <div>
         {linkedNodes.map(node => (
-          <AnnotatedEntities 
-            key={node.id}
-            imageId={node.id} 
-            entityType={type} />
+          <section key={node.id}>
+            <h3 className="mt-5 mb-1.5 text-sm font-medium whitespace-nowrap overflow-hidden text-ellipsis">
+              {node.label}
+            </h3>
+
+            <AnnotatedEntities 
+              key={node.id}
+              imageId={node.id} 
+              entityType={type} />
+          </section>
         ))}
       </div>
     </aside>
