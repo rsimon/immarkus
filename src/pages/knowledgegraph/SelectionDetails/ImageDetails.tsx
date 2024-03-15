@@ -28,7 +28,7 @@ export const ImageDetails = (props: ImageDetailsProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    store.getAnnotations(image.id).then(setAnnotations);
+    store.getAnnotations(image.id, { type: 'image' }).then(setAnnotations);
   }, [store, image]);
 
   return (

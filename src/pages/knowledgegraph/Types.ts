@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 
 export interface Graph {
 
-  nodes: GraphNode[];
+  getLinkedNodes(nodeId: string): GraphNode[];
 
   links: GraphLink[];
 
@@ -13,6 +13,8 @@ export interface Graph {
   minDegree: number;
 
   minLinkWeight: number;
+
+  nodes: GraphNode[];
 
 }
 

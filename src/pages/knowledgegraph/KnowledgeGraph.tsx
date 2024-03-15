@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { GraphView, Legend } from './GraphView';
+import { GraphView, Legend, useGraph } from './GraphView';
 import { GraphNode } from './Types';
 import { SelectionDetails } from './SelectionDetails';
 
 export const KnowledgeGraph = () => {
+
+  const graph = useGraph();
 
   const [selected, setSelected] = useState<GraphNode | undefined>();
 
@@ -23,12 +25,14 @@ export const KnowledgeGraph = () => {
         */}
 
         <GraphView 
+          graph={graph}
           onSelect={setSelected} />
 
         <Legend />
 
         {selected && (
           <SelectionDetails
+            graph={graph}
             selected={selected} />
         )}
       </main>

@@ -1,11 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { ForceGraph } from './ForceGraph';
-import { GraphNode } from '../Types';
+import { Graph, GraphNode } from '../Types';
 import { useGraph } from './useGraph';
 
 import './GraphView.css';
 
 interface GraphViewProps {
+
+  graph: Graph;
 
   onSelect?(node: GraphNode): void;
 
@@ -13,9 +15,9 @@ interface GraphViewProps {
 
 export const GraphView = (props: GraphViewProps) => {
 
-  const el = useRef<HTMLDivElement>(null);
+  const { graph } = props;
 
-  const graph = useGraph();
+  const el = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!graph) return;
