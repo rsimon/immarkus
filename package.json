@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@types/chroma-js": "^2.4.4",
+    "@types/d3": "^7.4.3",
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.57",
     "@types/react-autosuggest": "^10.1.11",
@@ -48,6 +49,7 @@
     "chroma-js": "^2.4.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "d3": "^7.8.5",
     "dequal": "^2.0.3",
     "exceljs": "^4.4.0",
     "fuse.js": "^7.0.0",

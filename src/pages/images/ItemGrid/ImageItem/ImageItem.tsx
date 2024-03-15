@@ -3,6 +3,7 @@ import { MessagesSquare } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
 import { useStore } from '@/store';
+import { useImageDimensions } from '@/utils/useImageDimensions';
 
 interface ImageItemProps {
 
@@ -24,18 +25,11 @@ export const ImageItem = (props: ImageItemProps) => {
 
   const [annotations, setAnnotations] = useState<number | undefined>();
 
-  const [dimensions, setDimensions] = useState<[number, number] | undefined>();
+  const { onLoad, dimensions } = useImageDimensions();
 
   useEffect(() => {
     store.countAnnotations(image.id).then(setAnnotations);
   }, []);
-
-  const onLoad = (event: SyntheticEvent<HTMLImageElement>) => {
-    if (!dimensions) {
-      const { naturalWidth, naturalHeight } = event.target as HTMLImageElement;
-      setDimensions([naturalWidth, naturalHeight]);
-    }
-  }
 
   return (
     <div>

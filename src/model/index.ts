@@ -1,4 +1,3 @@
-export * from './Annotation';
 export * from './EntityType';
 export * from './ExternalAuthority';
 export * from './Folder';

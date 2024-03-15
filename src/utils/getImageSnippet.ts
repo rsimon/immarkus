@@ -1,8 +1,10 @@
-import { Bounds, W3CImageAnnotation, W3CImageFormat } from '@annotorious/annotorious';
+import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/annotorious';
 import { Image, LoadedImage } from '@/model';
 import { Store } from '@/store';
 
 export interface ImageSnippet {
+
+  annotation: ImageAnnotation;
 
   height: number;
 
@@ -14,8 +16,10 @@ export interface ImageSnippet {
 
 const cropImage = async (
   image: LoadedImage, 
-  bounds: Bounds
+  annotation: ImageAnnotation
 ) => new Promise<ImageSnippet>((resolve, reject) => setTimeout(() => {
+  const { bounds } = annotation.target.selector.geometry;
+
   const img = document.createElement('img');
 
   img.onload = () => {
@@ -42,6 +46,7 @@ const cropImage = async (
         const data = new Uint8Array(reader.result as ArrayBuffer);
 
         resolve({
+          annotation,
           height: bounds.maxY - bounds.minY,
           width: bounds.maxX - bounds.minX,
           data
@@ -67,8 +72,7 @@ export const getImageSnippet = (
   if (!parsed)
     return Promise.reject('Failed to parse annotation');
 
-  const { bounds } = parsed.target.selector.geometry;
-  return cropImage(image, bounds);
+  return cropImage(image, parsed);
 }
 
 export const getAnntotationsWithSnippets = (
