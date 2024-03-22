@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image, MessagesSquare, MousePointerSquare } from 'lucide-react';
+import { Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
 import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
@@ -30,7 +30,7 @@ export const SidebarSection = () => {
 
             <Tabs.List className="flex gap-1.5 py-0.5 px-3">
               <Tabs.Trigger value="selection" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
-                <MousePointerSquare className="h-4 w-4 mr-1" /> Selection
+                <SquareMousePointer className="h-4 w-4 mr-1" /> Selection
               </Tabs.Trigger>
 
               <Tabs.Trigger value="annotation-list" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
