@@ -14,6 +14,8 @@ interface AutosuggestProps<T extends { id: string }> {
 
   value: string;
 
+  placeholder?: string;
+
   getSuggestions: (query: string) => T[];
 
   renderSuggestion: (suggestion: T) => ReactNode;
@@ -65,6 +67,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
         disabled: props.disabled,
         tabIndex: props.tabIndex,
         className: inputClass,
+        placeholder: props.placeholder,
         value: props.value || '',
         onChange: (_, { newValue }) => props.onChange && props.onChange(newValue)
       }} />

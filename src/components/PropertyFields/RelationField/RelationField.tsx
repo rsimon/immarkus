@@ -4,6 +4,7 @@ import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
 import { Autosuggest } from '@/ui/Autosuggest';
 import { useEntityInstanceSearch } from './useAnnotationSearch';
+import { useDataModel } from '@/store';
 
 interface RelationFieldProps {
 
@@ -24,6 +25,10 @@ export const RelationField = (props: RelationFieldProps) => {
   const [value, setValue] = useState('');
   
   const className = cn(props.className, 'mt-0.5');
+
+  const datamodel = useDataModel();
+
+  const entityType = datamodel.getEntityType(props.definition.targetType);
 
   const search = useEntityInstanceSearch({ 
     type: props.definition.targetType,
@@ -47,6 +52,7 @@ export const RelationField = (props: RelationFieldProps) => {
         disabled={!search.initialized}
         className={className}
         value={value}
+        placeholder={entityType && `Search '${entityType.label || entityType.id}' annotations...`}
         onChange={setValue}
         getSuggestions={getSuggestions}
         renderSuggestion={renderSuggestion} />
