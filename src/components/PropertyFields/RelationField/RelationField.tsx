@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RelationPropertyDefinition } from '@/model';
 import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
@@ -21,14 +21,19 @@ interface RelationFieldProps {
 }
 
 export const RelationField = (props: RelationFieldProps) => {
-
-  const [value, setValue] = useState('');
   
+  const [value, setValue] = useState(props.value);
+
   const className = cn(props.className, 'mt-0.5');
 
   const datamodel = useDataModel();
 
   const entityType = datamodel.getEntityType(props.definition.targetType);
+
+  useEffect(() => {
+    if (props.onChange)
+      props.onChange(value);
+  }, [value, props.onChange]);
 
   const search = useEntityInstanceSearch({ 
     type: props.definition.targetType,
