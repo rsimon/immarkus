@@ -3,7 +3,7 @@ import { RelationPropertyDefinition } from '@/model';
 import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
 import { Autosuggest } from '@/ui/Autosuggest';
-import { useEntityInstanceSearch } from './useAnnotationSearch';
+import { EntityInstance, useEntityInstanceSearch } from './useEntityInstanceSearch';
 import { useDataModel } from '@/store';
 
 interface RelationFieldProps {
@@ -14,15 +14,15 @@ interface RelationFieldProps {
 
   definition: RelationPropertyDefinition;
 
-  value?: string;
+  value?: { type: string; instance: string };
 
-  onChange?(value: string): void;
+  onChange?(value: { type: string; instance: string }): void;
 
 }
 
 export const RelationField = (props: RelationFieldProps) => {
   
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState<EntityInstance>(props.value);
 
   const className = cn(props.className, 'mt-0.5');
 
@@ -40,9 +40,17 @@ export const RelationField = (props: RelationFieldProps) => {
     field: props.definition.labelProperty
   });
 
+  const onChange = (instance: string) =>
+    setValue({ type: props.definition.targetType, ...value, instance });
+
+  const onSelect = (item: EntityInstance & { id: string }) => {
+    const { id, ...instance } = item;
+    setValue(instance);
+  }
+  
   const getSuggestions = (query: string) => 
     search.initialized 
-      ? search.searchEntityInstances(query).map(id => ({ id }))
+      ? search.searchEntityInstances(query).map(i => ({ id: i.instance, ...i }))
       : [];
 
   const renderSuggestion = ({ id }) => id;
@@ -52,13 +60,14 @@ export const RelationField = (props: RelationFieldProps) => {
       id={props.id}
       definition={props.definition}>
 
-      <Autosuggest 
+      <Autosuggest
         id={props.id}
         disabled={!search.initialized}
         className={className}
-        value={value}
+        value={value?.instance}
         placeholder={entityType && `Search '${entityType.label || entityType.id}' annotations...`}
-        onChange={setValue}
+        onChange={onChange}
+        onSelect={onSelect}
         getSuggestions={getSuggestions}
         renderSuggestion={renderSuggestion} />
     </BasePropertyField>

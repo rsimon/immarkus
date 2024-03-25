@@ -22,6 +22,8 @@ interface AutosuggestProps<T extends { id: string }> {
 
   onChange(value: string): void;
 
+  onSelect?(selected: T): void;
+
 }
 
 export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>) => {
@@ -51,6 +53,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
   return (
     <ReactAutosuggest
       suggestions={suggestions} 
+      onSuggestionSelected={(_, arg) => props.onSelect && props.onSelect(arg.suggestion)}
       onSuggestionsFetchRequested={onGetSuggestions}
       onSuggestionsClearRequested={() => setSuggestions([])}
       getSuggestionValue={suggestion => suggestion.id}

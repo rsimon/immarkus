@@ -3,13 +3,21 @@ import Fuse from 'fuse.js';
 import { Store, useStore } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
-interface EntityInstanceSearchProps {
+export interface EntityInstanceSearchProps {
 
   type: string;
 
   field: string;
 
   searchInherited?: boolean;
+
+}
+
+export interface EntityInstance {
+
+  instance: string;
+
+  type: string;
 
 }
 
@@ -25,29 +33,30 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
 
   const store = useStore();
 
-  const [fuse, setFuse] = useState<Fuse<string> | undefined>();
+  const [fuse, setFuse] = useState<Fuse<EntityInstance> | undefined>();
 
   useEffect(() => {
     listAllAnnotations(store).then(annotations => {
       // Reduce to the bodies that reference the relevant target 
       // type (and its children, if requested)
-      const relevantTypes = new Set(
-        searchInherited 
-          ? store.getDataModel().getDescendants(props.type).map(t => t.id)
-          : [props.type]
-      );
-
-      console.log('recursive', searchInherited);
-      console.log(Array.from(relevantTypes));
+      const relevantTypes = searchInherited 
+        ? store.getDataModel().getDescendants(props.type).map(t => t.id)
+        : [props.type];
 
       const relevantBodies = annotations.reduce<W3CAnnotationBody[]>((agg, a) => {
         const bodies = Array.isArray(a.body) ? a.body : [a.body];
-        return [...agg, ...bodies.filter(b => relevantTypes.has(b.source) && 'properties' in b)];
+        return [...agg, ...bodies.filter(b => relevantTypes.includes(b.source) && 'properties' in b)];
       }, []);
 
-      const distinctValues = new Set(relevantBodies.map(b => (b as any).properties[props.field]));
+      const distinctValues = relevantBodies.reduce<EntityInstance[]>((agg, body) => {
+        const fieldValue = (body as any).properties[props.field];
 
-      const fuse = new Fuse<string>(Array.from(distinctValues), { 
+        const exists = agg.some(({ instance }) => instance === fieldValue);
+        return exists ? agg : [...agg, { instance: fieldValue, type: body.source }];
+      }, []);
+
+      const fuse = new Fuse<EntityInstance>(distinctValues, { 
+        keys: [ 'instance' ],
         shouldSort: true,
         threshold: 0.6,
         includeScore: true,
@@ -58,11 +67,17 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
     });
   }, []);
 
-  const searchEntityInstances = (query: string, limit?: number) =>
+  const getEntityInstance = (instance: string): EntityInstance | undefined => {
+    const matches = fuse.search(instance).map(result => result.item);
+    return matches.length > 0 ? matches[0] : undefined;
+  }    
+
+  const searchEntityInstances = (query: string, limit?: number): EntityInstance[] =>
     fuse?.search(query, { limit: limit || 10 }).map(result => result.item);
 
   return { 
     initialized: fuse !== undefined,
+    getEntityInstance,
     searchEntityInstances
   };
 
