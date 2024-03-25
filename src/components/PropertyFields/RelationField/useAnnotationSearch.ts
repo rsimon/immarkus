@@ -9,6 +9,8 @@ interface EntityInstanceSearchProps {
 
   field: string;
 
+  searchInherited?: boolean;
+
 }
 
 const listAllAnnotations = (store: Store) => 
@@ -18,16 +20,29 @@ const listAllAnnotations = (store: Store) =>
 
 export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
 
+  // default to true
+  const searchInherited = props.searchInherited === undefined ? true : props.searchInherited;
+
   const store = useStore();
 
   const [fuse, setFuse] = useState<Fuse<string> | undefined>();
 
   useEffect(() => {
     listAllAnnotations(store).then(annotations => {
-      // Reduce to the bodies that reference the relevant target type
+      // Reduce to the bodies that reference the relevant target 
+      // type (and its children, if requested)
+      const relevantTypes = new Set(
+        searchInherited 
+          ? store.getDataModel().getDescendants(props.type).map(t => t.id)
+          : [props.type]
+      );
+
+      console.log('recursive', searchInherited);
+      console.log(Array.from(relevantTypes));
+
       const relevantBodies = annotations.reduce<W3CAnnotationBody[]>((agg, a) => {
         const bodies = Array.isArray(a.body) ? a.body : [a.body];
-        return [...agg, ...bodies.filter(b => b.source === props.type && 'properties' in b)];
+        return [...agg, ...bodies.filter(b => relevantTypes.has(b.source) && 'properties' in b)];
       }, []);
 
       const distinctValues = new Set(relevantBodies.map(b => (b as any).properties[props.field]));
