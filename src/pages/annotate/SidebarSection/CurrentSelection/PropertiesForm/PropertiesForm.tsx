@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
@@ -64,6 +64,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const [valid, setIsValid] = useState(false);
 
   const [showValidationErrors, setShowValidationErrors] = useState(false); 
+
+  useEffect(() => {
+    setFormState(initialValues);
+  }, [initialValues]);
 
   const onDeleteBody = (body: W3CAnnotationBody) =>
     anno.deleteBody(body as unknown as AnnotationBody);
