@@ -6,6 +6,8 @@ interface AutosuggestProps<T extends { id: string }> {
 
   id?: string;
 
+  disabled?: boolean;
+
   tabIndex?: number;
 
   className?: string;
@@ -45,7 +47,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
   )
 
   return (
-    <ReactAutosuggest 
+    <ReactAutosuggest
       suggestions={suggestions} 
       onSuggestionsFetchRequested={onGetSuggestions}
       onSuggestionsClearRequested={() => setSuggestions([])}
@@ -60,6 +62,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
         className: 'relative'
       }}
       inputProps={{
+        disabled: props.disabled,
         tabIndex: props.tabIndex,
         className: inputClass,
         value: props.value || '',

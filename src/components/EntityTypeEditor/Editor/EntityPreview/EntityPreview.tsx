@@ -11,6 +11,7 @@ import {
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
+  RelationField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -107,7 +108,12 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                 <NumberField 
                   id={property.name}
                   className="bg-white" 
-                  definition={property} />   
+                  definition={property} /> 
+              ) : property.type === 'relation' ? (
+                <RelationField
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />     
               ) : property.type === 'text' ? (
                 <TextField 
                   id={property.name}
