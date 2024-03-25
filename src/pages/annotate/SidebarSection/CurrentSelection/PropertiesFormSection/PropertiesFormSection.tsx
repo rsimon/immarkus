@@ -7,6 +7,7 @@ import {
   GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
+  RelationField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -65,6 +66,12 @@ export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
               onChange={value => props.onChange(key, value)} />
           ) : property.type === 'number' ? (
             <NumberField
+              id={key}
+              definition={property} 
+              value={props.values[key]}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'relation' ? (
+            <RelationField
               id={key}
               definition={property} 
               value={props.values[key]}
