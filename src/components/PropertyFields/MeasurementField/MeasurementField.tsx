@@ -44,6 +44,10 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
     }
   }, [valueStr, unit, isValid]);
 
+  useEffect(() => {
+    setValueStr(props.value?.toString() || '');
+  }, [props.value]);
+
   const error = showErrors && !isValid && (
     (valueStr && unit) 
       ? 'value must be a number'

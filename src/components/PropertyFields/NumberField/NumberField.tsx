@@ -36,6 +36,10 @@ export const NumberField = (props: NumberFieldProps) => {
       props.onChange && props.onChange(num);
   }, [value]);
 
+  useEffect(() => {
+    setValue(props.value?.toString() || '');
+  }, [props.value]);
+
   const error = (showErrors && !isValid) 
     ? value ? 'must be a number' : 'required' : '';
 
