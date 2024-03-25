@@ -35,6 +35,10 @@ export const RelationField = (props: RelationFieldProps) => {
       props.onChange(value);
   }, [value, props.onChange]);
 
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
+
   const search = useEntityInstanceSearch({ 
     type: props.definition.targetType,
     field: props.definition.labelProperty

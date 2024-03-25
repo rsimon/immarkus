@@ -47,6 +47,11 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
     }
   }, [latStr, lngStr, isValid]);
 
+  useEffect(() => {
+    setLatStr(value ? value[0].toString() : '');
+    setLngStr(value ? value[1].toString() : '');
+  }, [value]);
+
   const error = showErrors && 
     (latStr || lngStr) && !isValid && 'must be valid coordinates';
 
