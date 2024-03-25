@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
 import type { EntityType } from '@/model';
 import { useDataModel } from '@/store';
-import { DataModelSearchInput } from './DataModelSearchInput';
-import { DataModelSearchSuggestion } from './DataModelSearchSuggestion';
+import { EntityTypeBrowserInput } from './EntityTypeBrowserInput';
+import { EntityTypeBrowserSuggestion } from './EntityTypeBrowserSuggestion';
 
-import './DataModelSearch.css';
+import './EntityTypeBrowser.css';
 
-interface DataModelSearchProps {
+interface EntityTypeBrowserProps {
 
   onSelect(type: EntityType): void;
 
@@ -15,7 +15,7 @@ interface DataModelSearchProps {
 
 }
 
-export const DataModelSearch = (props: DataModelSearchProps) => {
+export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
 
   const datamodel = useDataModel();
 
@@ -51,7 +51,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
   }
 
   const renderSuggestion = (type: EntityType, { isHighlighted }) => (
-    <DataModelSearchSuggestion 
+    <EntityTypeBrowserSuggestion 
       type={type} 
       highlighted={isHighlighted} />
   )
@@ -110,7 +110,7 @@ export const DataModelSearch = (props: DataModelSearchProps) => {
             </div>
           )}
           renderInputComponent={inputProps => (
-            <DataModelSearchInput 
+            <EntityTypeBrowserInput 
               {...inputProps} 
               selected={selected} 
               onClearSearch={onClearSearch} />

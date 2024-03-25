@@ -31,8 +31,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const brightness = getBrightness(entityType.color);
 
+  const hasValidParent = parentId &&
+    Boolean(model.getEntityType(entityType.parentId)) && !(entityType.parentId === entityType.id)
+
   const inheritedProps: PropertyDefinition[] = useMemo(() => {
-    if (parentId) {
+    if (hasValidParent) {
       const inherited = model.getEntityType(parentId, true)?.properties;
       return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
     } else {

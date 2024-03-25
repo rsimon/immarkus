@@ -5,7 +5,7 @@ import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifol
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { DataModelSearchDialog } from '@/components/DataModelSearch';
+import { EntityTypeBrowserDialog } from '@/components/EntityTypeBrowser';
 import { PropertiesForm } from './PropertiesForm';
 
 export const CurrentSelection = () => {
@@ -76,7 +76,7 @@ export const CurrentSelection = () => {
           onAddTag={() => setShowSearchDialog(true)} />
       )}
 
-      <DataModelSearchDialog 
+      <EntityTypeBrowserDialog 
         open={showSearchDialog} 
         onAddEntityType={onAddEntityType}
         onCancel={() => setShowSearchDialog(false)} />

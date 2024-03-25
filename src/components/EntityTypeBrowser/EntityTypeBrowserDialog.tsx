@@ -4,9 +4,9 @@ import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent } from '@/ui/Dialog';
-import { DataModelSearch } from './DataModelSearch';
+import { EntityTypeBrowser } from './EntityTypeBrowser';
 
-interface DataModelSearchDialogProps {
+interface EntityTypeBrowserDialogProps {
 
   open: boolean;
 
@@ -16,7 +16,7 @@ interface DataModelSearchDialogProps {
 
 }
 
-export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
+export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => {
 
   const [selected, setSelected] = useState<EntityType | undefined>();
 
@@ -35,7 +35,7 @@ export const DataModelSearchDialog = (props: DataModelSearchDialogProps) => {
       open={props.open} 
       onOpenChange={props.onCancel}>
       <DialogContent className="p-0 max-w-lg rounded-lg gap-0" closeIcon={false}>
-        <DataModelSearch 
+        <EntityTypeBrowser 
           onSelect={setSelected} 
           onConfirm={props.onAddEntityType} />
     

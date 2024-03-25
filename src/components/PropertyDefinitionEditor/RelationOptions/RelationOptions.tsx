@@ -1,4 +1,4 @@
-import { DataModelSearch } from '@/components/DataModelSearch';
+import { EntityTypeBrowser } from '@/components/EntityTypeBrowser';
 import { EntityType, RelationPropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Label } from '@/ui/Label';
@@ -44,7 +44,7 @@ export const RelationOptions = (props: RelationOptionsProps) => {
           Target Entity Class
         </Label>
 
-        <DataModelSearch 
+        <EntityTypeBrowser 
           onSelect={onChangeTargetType}
           onConfirm={onChangeTargetType} />
       </div>
