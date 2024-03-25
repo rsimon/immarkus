@@ -71,6 +71,7 @@ export const Editor = (props: EditorProps) => {
       d.type === 'geocoordinate' ||
       d.type === 'measurement' ||
       d.type === 'number' ||
+      d.type === 'relation' ||
       d.type === 'text' ||
       d.type === 'uri');
 

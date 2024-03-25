@@ -7,6 +7,7 @@ import {
   MeasurementField,
   NumberField, 
   PropertyValidation, 
+  RelationField,
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -63,6 +64,11 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 definition={preview} />
             ) : preview.type === 'number' ? (
               <NumberField 
+                id={preview.name}
+                className="bg-white"
+                definition={preview} />   
+            ) : preview.type === 'relation' ? (
+              <RelationField 
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />   

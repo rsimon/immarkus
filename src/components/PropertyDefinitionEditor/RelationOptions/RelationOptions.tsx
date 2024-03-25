@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { DataModelSearch } from '@/components/DataModelSearch';
 import { EntityType, RelationPropertyDefinition } from '@/model';
+import { useDataModel } from '@/store';
 import { Label } from '@/ui/Label';
 import {
   Select,
@@ -20,13 +20,16 @@ interface RelationOptionsProps {
 
 export const RelationOptions = (props: RelationOptionsProps) => {
 
-  const [target, setTarget] = useState<EntityType>();
+  const datamodel = useDataModel();
 
-  const onSelect = (type: EntityType) => setTarget(type);
+  const target = props.definition.targetType ?
+    datamodel.getEntityType(props.definition.targetType, true) : undefined;
 
-  const onConfirm = (type: EntityType) => {
+  const onChangeTargetType = (type: EntityType) =>
+    props.onUpdate({...props.definition, targetType: type.id });
 
-  }
+  const onChangeLabelProperty = (name: string) =>
+    props.onUpdate({ ...props.definition, labelProperty: name });
 
   return (
     <div className="bg-muted px-2 py-3 mt-2 rounded-md text-sm">
@@ -42,8 +45,8 @@ export const RelationOptions = (props: RelationOptionsProps) => {
         </Label>
 
         <DataModelSearch 
-          onSelect={onSelect}
-          onConfirm={onConfirm} />
+          onSelect={onChangeTargetType}
+          onConfirm={onChangeTargetType} />
       </div>
 
       <div className="mt-4">
@@ -53,14 +56,19 @@ export const RelationOptions = (props: RelationOptionsProps) => {
           Display Label
         </Label>
 
-        <Select>
+        <Select 
+          value={props.definition.labelProperty} 
+          onValueChange={onChangeLabelProperty}>
+            
           <SelectTrigger className="w-full bg-white">
             <SelectValue />
           </SelectTrigger>
 
           <SelectContent>
-            {(target?.properties || []).map(property => (
-              <SelectItem value={property.name}>
+            {target && (target.properties || []).map(property => (
+              <SelectItem 
+                key={property.name}
+                value={property.name}>
                 {property.name}
               </SelectItem>
             ))}

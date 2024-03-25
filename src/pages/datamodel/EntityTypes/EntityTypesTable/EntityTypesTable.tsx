@@ -1,4 +1,3 @@
-import { CaseSensitive, ChevronRight, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
 import { TreeNode } from 'primereact/treenode';
 import { TreeTable } from 'primereact/treetable';
 import { Column } from 'primereact/column';
@@ -7,6 +6,17 @@ import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { EntityTypeActions } from './EntityTypeActions';
+import { 
+  CaseSensitive, 
+  ChevronRight, 
+  Database, 
+  Hash, 
+  Link2, 
+  List, 
+  MapPin, 
+  Ruler, 
+  Spline 
+} from 'lucide-react';
 
 import './EntityTypesTable.css';
 
@@ -88,6 +98,8 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
             <Ruler className="w-3 h-3 mr-1" />
           ) : property.type === 'number' ? (
             <Hash className="w-3 h-3 mr-0.5" />
+          ) : property.type === 'relation' ? (
+            <Spline className="w-3 h-3 mr-0.5" />
           ) : property.type === 'text' ? (
             <CaseSensitive className="w-4 h-4 mr-0.5" />
           ) : property.type === 'uri' ? (
