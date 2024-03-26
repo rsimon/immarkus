@@ -34,12 +34,12 @@ export const RelationOptions = (props: RelationOptionsProps) => {
 
   return (
     <div className="bg-muted px-3 pt-3 pb-4 mt-4 mb-6 rounded-md text-sm">
-      <p className="text-xs leading-relaxed px-0.5 mb-6">
-        Relations connect one annotated entity to another. Select
-        the <strong>target entity class</strong> you wish to link
-        to. Then, choose an <strong>identifying property</strong> from the 
+      <p className="text-xs leading-relaxed px-0.5 mt-0.5 mb-7">
+        Relations connect one annotated entity to another. First, select
+        the <strong>target entity class</strong> you wish to link to.
+        Then, choose an <strong>identifying property</strong> from the 
         target class (e.g. a name). IMMARKUS will provide autocomplete 
-        suggestions based on your selection.
+        suggestions for the target entity based on your selection.
       </p>
 
       <div>
