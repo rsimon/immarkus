@@ -2,7 +2,7 @@ import { Autosuggest } from '@/ui/Autosuggest';
 import { useDataModel } from '@/store';
 import { EntityType } from '@/model';
 
-interface ParentBrowserProps {
+interface EntityTypeSearchSimpleProps {
 
   id?: string;
 
@@ -12,11 +12,11 @@ interface ParentBrowserProps {
 
   value?: string;
 
-  onChange(value: string): void;
+  onChange?(value: string): void;
 
 }
 
-export const ParentBrowser = (props: ParentBrowserProps) => {
+export const EntityTypeSearchSimple = (props: EntityTypeSearchSimpleProps) => {
 
   const model = useDataModel();
 

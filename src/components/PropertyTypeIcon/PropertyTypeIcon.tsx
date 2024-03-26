@@ -1,5 +1,5 @@
 import { PropertyDefinition } from '@/model';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { cn } from '@/ui/utils';
 
 interface PropertyTypeIconProps {
@@ -32,6 +32,9 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'number' ? (
         <Hash 
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
+      ) : type === 'relation' ? (
+        <Spline
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'text' ? (
         <CaseSensitive 

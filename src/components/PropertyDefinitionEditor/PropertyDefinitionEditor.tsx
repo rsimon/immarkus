@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -8,6 +8,7 @@ import { Textarea } from '@/ui/Textarea';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
+import { RelationOptions } from './RelationOptions';
 import { TextOptions } from './TextOptions';
 import {
   Select,
@@ -40,7 +41,14 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
     // Validate
     if (name && type) {
-      props.onSave(edited as PropertyDefinition);
+      // Should refactor this, so that each relation
+      // can provide its own validity check
+      const isValidIfRelation = type === 'relation' 
+        && edited.targetType
+        && edited.labelProperty;
+
+      if (isValidIfRelation)
+        props.onSave(edited as PropertyDefinition);
     } else {
       // TODO error handling
     }
@@ -101,6 +109,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 <SelectItem value="measurement">
                   <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> Measurement
                 </SelectItem>
+                <SelectItem value="relation">
+                  <Spline className="inline w-4 h-4 mr-1.5 mb-0.5" /> Relation
+                </SelectItem>
                 <SelectItem value="external_authority">
                   <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
                 </SelectItem>
@@ -114,6 +125,10 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               onUpdate={setEdited} />
           ) : edited.type === 'external_authority' ? (
             <ExternalAuthorityOptions 
+              definition={edited} 
+              onUpdate={setEdited} />
+          ) : edited.type === 'relation' ? (
+            <RelationOptions
               definition={edited} 
               onUpdate={setEdited} />
           ) : edited.type === 'text' && (

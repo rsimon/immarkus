@@ -6,17 +6,23 @@ interface AutosuggestProps<T extends { id: string }> {
 
   id?: string;
 
+  disabled?: boolean;
+
   tabIndex?: number;
 
   className?: string;
 
   value: string;
 
+  placeholder?: string;
+
   getSuggestions: (query: string) => T[];
 
   renderSuggestion: (suggestion: T) => ReactNode;
 
   onChange(value: string): void;
+
+  onSelect?(selected: T): void;
 
 }
 
@@ -45,8 +51,9 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
   )
 
   return (
-    <ReactAutosuggest 
+    <ReactAutosuggest
       suggestions={suggestions} 
+      onSuggestionSelected={(_, arg) => props.onSelect && props.onSelect(arg.suggestion)}
       onSuggestionsFetchRequested={onGetSuggestions}
       onSuggestionsClearRequested={() => setSuggestions([])}
       getSuggestionValue={suggestion => suggestion.id}
@@ -60,10 +67,12 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
         className: 'relative'
       }}
       inputProps={{
+        disabled: props.disabled,
         tabIndex: props.tabIndex,
         className: inputClass,
-        value: props.value,
-        onChange: (_, { newValue }) => props.onChange(newValue)
+        placeholder: props.placeholder,
+        value: props.value || '',
+        onChange: (_, { newValue }) => props.onChange && props.onChange(newValue)
       }} />
   )
   

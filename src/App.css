@@ -19,6 +19,7 @@
 
 html, body, #app {
   color: var(--font-dark);
+  font-display: optional;
   font-family: Inter;
   margin: 0;
   height: 100%;

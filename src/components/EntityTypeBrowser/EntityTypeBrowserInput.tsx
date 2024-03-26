@@ -5,7 +5,7 @@ import { EntityType } from '@/model';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
 import { Separator } from '@/ui/Separator';
 
-interface DataModelSearchInputProps extends RenderInputComponentProps {
+interface EntityTypeBrowserInputProps extends RenderInputComponentProps {
 
   selected?: EntityType; 
 
@@ -13,7 +13,7 @@ interface DataModelSearchInputProps extends RenderInputComponentProps {
 
 }
 
-export const DataModelSearchInput = forwardRef((props: DataModelSearchInputProps, ref: React.Ref<HTMLDivElement>) => {
+export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputProps, ref: React.Ref<HTMLDivElement>) => {
 
   const { selected, onClearSearch, ...inputProps } = props;
 

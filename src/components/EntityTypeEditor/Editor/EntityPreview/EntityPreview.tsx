@@ -11,6 +11,7 @@ import {
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
+  RelationField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -31,8 +32,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
 
   const brightness = getBrightness(entityType.color);
 
+  const hasValidParent = parentId &&
+    Boolean(model.getEntityType(entityType.parentId)) && !(entityType.parentId === entityType.id)
+
   const inheritedProps: PropertyDefinition[] = useMemo(() => {
-    if (parentId) {
+    if (hasValidParent) {
       const inherited = model.getEntityType(parentId, true)?.properties;
       return (inherited || []).map(p => p.inheritedFrom ? p : ({ ...p, inheritedFrom: parentId }));
     } else {
@@ -104,7 +108,12 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                 <NumberField 
                   id={property.name}
                   className="bg-white" 
-                  definition={property} />   
+                  definition={property} /> 
+              ) : property.type === 'relation' ? (
+                <RelationField
+                  id={property.name}
+                  className="bg-white" 
+                  definition={property} />     
               ) : property.type === 'text' ? (
                 <TextField 
                   id={property.name}

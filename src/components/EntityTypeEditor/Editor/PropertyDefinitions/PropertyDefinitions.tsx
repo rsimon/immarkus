@@ -12,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { useDataModel } from '@/store';
 
 interface PropertyDefinitionsProps {
 
@@ -24,6 +25,18 @@ interface PropertyDefinitionsProps {
 export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
   const { properties } = props; 
+
+  const datamodel = useDataModel();
+
+  const getRelationTargetLabel = (typeId: string) => {
+    const entity = datamodel.getEntityType(typeId);
+
+    return entity ? (
+      <span className="bg-black/10 rounded px-1 text-black/70">
+        {entity?.label || entity?.id}
+      </span>
+    ) : null;
+  }
 
   const addProperty = (added: PropertyDefinition) =>
     props.onChange([...properties, added]);
@@ -83,7 +96,10 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                         definition={p} 
                         className="mr-2 inline" /> 
                       
-                      <div className="relative top-[1px]">{p.name}</div>
+                      <div className="relative top-[1px] inline-flex gap-1">
+                        {p.name}
+                        {p.type === 'relation' && getRelationTargetLabel(p.targetType)}
+                      </div>
                     </div>
 
                     <PropertyDefinitionActions 

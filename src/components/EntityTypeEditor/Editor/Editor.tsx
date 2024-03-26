@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, Cuboid, RefreshCcw } from 'lucide-react';
+import { EntityTypeSearchSimple } from '@/components/EntityTypeSearchSimple';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -9,7 +10,6 @@ import { Textarea } from '@/ui/Textarea';
 import { getRandomColor, getBrightness } from '@/utils/color';
 import { EntityPreview } from './EntityPreview/EntityPreview';
 import { PropertyDefinitions } from './PropertyDefinitions/PropertyDefinitions';
-import { ParentBrowser } from './ParentBrowser';
 
 export interface EditorProps {
 
@@ -71,6 +71,7 @@ export const Editor = (props: EditorProps) => {
       d.type === 'geocoordinate' ||
       d.type === 'measurement' ||
       d.type === 'number' ||
+      d.type === 'relation' ||
       d.type === 'text' ||
       d.type === 'uri');
 
@@ -176,10 +177,10 @@ export const Editor = (props: EditorProps) => {
             className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
           </Label>
 
-          <ParentBrowser
+          <EntityTypeSearchSimple
             id="parent"
             className={errors?.invalidParent ? 'border-red-500 bg-white' : 'bg-white'} 
-            value={entityType.parentId || ''}
+            value={entityType.parentId}
             onChange={parentId => setEntityType(e => ({ ...e, parentId }))} />
 
           {!isValidParent ? (
