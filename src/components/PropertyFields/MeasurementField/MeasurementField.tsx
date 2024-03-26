@@ -45,7 +45,8 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
   }, [valueStr, unit, isValid]);
 
   useEffect(() => {
-    setValueStr(props.value?.toString() || '');
+    setValueStr(props.value?.value.toString() || '');
+    setUnit(props.value?.unit || '');
   }, [props.value]);
 
   const error = showErrors && !isValid && (
