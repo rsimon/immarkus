@@ -43,9 +43,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     if (name && type) {
       // Should refactor this, so that each relation
       // can provide its own validity check
-      const isValidIfRelation = type === 'relation' 
-        && edited.targetType
-        && edited.labelProperty;
+      const isValidIfRelation = type !== 'relation' ||
+        (edited.targetType && edited.labelProperty);
 
       if (isValidIfRelation)
         props.onSave(edited as PropertyDefinition);
