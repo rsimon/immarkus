@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Spline } from 'lucide-react';
 import { RelationPropertyDefinition } from '@/model';
-import { cn } from '@/ui/utils';
-import { BasePropertyField } from '../BasePropertyField';
-import { Autosuggest } from '@/ui/Autosuggest';
-import { EntityInstance, useEntityInstanceSearch } from './useEntityInstanceSearch';
 import { useDataModel } from '@/store';
+import { Autosuggest } from '@/ui/Autosuggest';
+import { Label } from '@/ui/Label';
+import { cn } from '@/ui/utils';
+import { EntityInstance, useEntityInstanceSearch } from './useEntityInstanceSearch';
+import { InfoTooltip } from '../InfoTooltip';
+import { InheritedFrom } from '../InheritedFrom';
 
 interface RelationFieldProps {
 
@@ -21,6 +24,8 @@ interface RelationFieldProps {
 }
 
 export const RelationField = (props: RelationFieldProps) => {
+
+  const { definition } = props;
   
   const [value, setValue] = useState<EntityInstance>(props.value);
 
@@ -28,7 +33,8 @@ export const RelationField = (props: RelationFieldProps) => {
 
   const datamodel = useDataModel();
 
-  const entityType = datamodel.getEntityType(props.definition.targetType);
+  const entityType = useMemo(() =>
+    datamodel.getEntityType(props.definition.targetType), [props.definition]);
 
   useEffect(() => {
     if (props.onChange)
@@ -60,21 +66,40 @@ export const RelationField = (props: RelationFieldProps) => {
   const renderSuggestion = ({ id }) => id;
 
   return (
-    <BasePropertyField 
-      id={props.id}
-      definition={props.definition}>
+    <div className="mb-8">
+      <div className="flex items-end justify-between pr-1 mb-1.5">
+        <div className="flex">
+          <Label
+            htmlFor={props.id}
+            className="text-sm inline-block ml-0.5 ">
+            {definition.name}
+          </Label>
+
+          <div 
+            className="inline-flex text-xs items-center gap-1 ml-1.5 mr-1 bg-black/10 pl-1 pr-1.5 rounded text-black/70">
+            <Spline className="h-3.5 w-3.5" />
+            {entityType.label || entityType.id}
+          </div>
+
+          {definition.description && (
+            <InfoTooltip description={definition.description} />
+          )}
+        </div>
+        
+        <InheritedFrom definition={definition} />
+      </div>
 
       <Autosuggest
         id={props.id}
         disabled={!search.initialized}
         className={className}
         value={value?.instance}
-        placeholder={entityType && `Search '${entityType.label || entityType.id}' annotations...`}
+        placeholder={entityType && `Search '${entityType.label || entityType.id}' tags...`}
         onChange={onChange}
         onSelect={onSelect}
         getSuggestions={getSuggestions}
         renderSuggestion={renderSuggestion} />
-    </BasePropertyField>
+    </div>
   );
 
 }
