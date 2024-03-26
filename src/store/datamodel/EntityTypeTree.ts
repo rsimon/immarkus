@@ -64,7 +64,7 @@ export const createEntityTypeTree = (entityTypes: EntityType[]): EntityTypeTree 
 
   const getDescendants = (typeOrId: EntityType | string) => {
     const start = typeof typeOrId === 'string' ? findEntityType(typeOrId) : typeOrId;
-    return walkDescendants(start.id, [start]);
+    return start ? walkDescendants(start.id, [start]) : [];
   }
 
   const searchEntityTypes = (query: string, limit?: number): EntityType[] =>

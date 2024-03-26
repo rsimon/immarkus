@@ -28,6 +28,8 @@ const listAllAnnotations = (store: Store) =>
 
 export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
 
+  const { type, field } = props;
+
   // default to true
   const searchInherited = props.searchInherited === undefined ? true : props.searchInherited;
 
@@ -40,8 +42,8 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
       // Reduce to the bodies that reference the relevant target 
       // type (and its children, if requested)
       const relevantTypes = searchInherited 
-        ? store.getDataModel().getDescendants(props.type).map(t => t.id)
-        : [props.type];
+        ? store.getDataModel().getDescendants(type).map(t => t.id)
+        : [type];
 
       const relevantBodies = annotations.reduce<W3CAnnotationBody[]>((agg, a) => {
         const bodies = Array.isArray(a.body) ? a.body : [a.body];
@@ -49,7 +51,7 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
       }, []);
 
       const distinctValues = relevantBodies.reduce<EntityInstance[]>((agg, body) => {
-        const fieldValue = (body as any).properties[props.field];
+        const fieldValue = (body as any).properties[field];
 
         const exists = agg.some(({ instance }) => instance === fieldValue);
         return exists ? agg : [...agg, { instance: fieldValue, type: body.source }];
@@ -65,7 +67,7 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
 
       setFuse(fuse);
     });
-  }, []);
+  }, [type, field , searchInherited]);
 
   const getEntityInstance = (instance: string): EntityInstance | undefined => {
     const matches = fuse.search(instance).map(result => result.item);

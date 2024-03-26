@@ -27,7 +27,7 @@ export const RelationOptions = (props: RelationOptionsProps) => {
     datamodel.getEntityType(props.definition.targetType, true) : undefined;
 
   const onChangeTargetType = (type: string) =>
-    props.onUpdate({...props.definition, targetType: type });
+    props.onUpdate({...props.definition, targetType: type, labelProperty: undefined });
 
   const onChangeLabelProperty = (name: string) =>
     props.onUpdate({ ...props.definition, labelProperty: name });
