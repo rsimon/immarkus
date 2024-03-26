@@ -30,7 +30,12 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
   const getRelationTargetLabel = (typeId: string) => {
     const entity = datamodel.getEntityType(typeId);
-    return entity?.label || entity?.id;
+
+    return entity ? (
+      <span className="bg-black/10 rounded px-1 text-black/70">
+        {entity?.label || entity?.id}
+      </span>
+    ) : null;
   }
 
   const addProperty = (added: PropertyDefinition) =>
@@ -93,11 +98,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                       
                       <div className="relative top-[1px] inline-flex gap-1">
                         {p.name}
-                        {p.type === 'relation' && (
-                          <span className="bg-black/10 rounded px-1 text-black/70">
-                            {getRelationTargetLabel(p.targetType)}
-                          </span>
-                        )}
+                        {p.type === 'relation' && getRelationTargetLabel(p.targetType)}
                       </div>
                     </div>
 
