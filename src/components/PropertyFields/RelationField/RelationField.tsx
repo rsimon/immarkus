@@ -76,7 +76,7 @@ export const RelationField = (props: RelationFieldProps) => {
           </Label>
 
           <div 
-            className="inline-flex text-xs items-center gap-1 ml-1.5 mr-1 bg-black/10 pl-1 pr-1.5 rounded text-black/70">
+            className="inline-flex text-xs items-center gap-1 ml-1.5 mr-1 relative bottom-[1px] border pl-1 pr-1.5 rounded text-black/70">
             <Spline className="h-3.5 w-3.5" />
             {entityType.label || entityType.id}
           </div>
