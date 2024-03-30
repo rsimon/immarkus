@@ -23,11 +23,11 @@ export const Vocabulary = () => {
             </TabsTrigger>
 
             <TabsTrigger value="imageMetadata">
-              <Image size={16} className="mr-2" /> Image Schemas
+              <Image size={16} className="mr-2" /> Image Metadata
             </TabsTrigger>
 
             <TabsTrigger value="folderMetadata">
-              <Folder size={16} className="mr-2" /> Folder Schemas
+              <Folder size={16} className="mr-2" /> Folder Metadata
             </TabsTrigger>
           </TabsList>
 
