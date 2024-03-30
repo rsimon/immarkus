@@ -9,7 +9,7 @@ export const About = () => {
       <main className="page about px-12 py-6">
         <h1 className="text-xl font-semibold tracking-tight mb-4">About</h1>
 
-        <p className="p-1 mt-3 text-sm max-w-xl leading-6">
+        <p className="p-1 mt-3 text-sm max-w-2xl leading-6">
           IMMARKUS: Image Annotation has been developed by Prof. Dr. Hilde De 
           Weerdt, <a className="text-sky-700 hover:underline" href="https://rainersimon.io" target="_blank">Dr. Rainer Simon</a>, 
           Dr. Lee Sunkyu, Dr. Iva Stojević, Meret Meister, and Xi Wangzhi as part of the 

@@ -57,7 +57,7 @@ export const AppNavigationSidebar = () => {
             <Link 
               className={pathname === '/markus' ? active : undefined} 
               to="/markus">
-              <Plug size={18} className="mr-2 relative -top-0.5" /> MARKUS
+              <Plug size={18} className="mr-2 relative -top-0.5" /> X-MARKUS
             </Link>
           </li>
 
