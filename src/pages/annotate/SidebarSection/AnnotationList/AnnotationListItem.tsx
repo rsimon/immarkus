@@ -33,8 +33,6 @@ const getValuePreviewsForSchema = (
       if (value) {
         const serialized = serializePropertyValue(definition, value);
 
-        console.log('def', definition.type, serialized);
-
         const node = 
           definition.type === 'uri' ? 
             (<a href={serialized} target="_blank" className="text-sky-700 hover:underline">{serialized}</a>) :
@@ -67,11 +65,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const isEmpty = !note && entityTags.length === 0;
 
-  const timestamps = props.annotation.bodies
-    .map(b => b.created)
-    .filter(Boolean)
-    .map(d => new Date(d))
-    .slice().sort();
+  const timestamps = [
+    props.annotation.target.created,
+    ...props.annotation.bodies.map(b => b.created)
+  ].filter(Boolean).map(d => new Date(d));
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
@@ -113,7 +110,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         )}
 
         {isEmpty && (
-          <div className="pt-5 -mb-2.5 flex justify-center text-muted-foreground">
+          <div className="pt-3.5 flex justify-center text-muted-foreground">
             Empty annotation
           </div>
         )}
