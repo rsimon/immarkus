@@ -3,14 +3,14 @@ import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator } from '@annotorious
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
+import { SelectFilter } from './SelectFilter';
+import { DEFAULT_SORTING, SelectSortOrder } from './SelectSortOrder';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { DEFAULT_SORTING, SelectSortOrder } from './SelectSortOrder';
-import { SelectFilter } from './SelectFilter';
 
 export const AnnotationList = () => {
 
