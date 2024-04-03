@@ -104,8 +104,10 @@ export const MetadataForm = (props: MetadataFormProps) => {
             <span className="font-medium">Schema</span>
     
             <Select value={selectedSchema?.name} onValueChange={onChangeSchema}>
-              <SelectTrigger className="flex-grow">
-                <SelectValue />
+              <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
+                <span className="overflow-hidden text-ellipsis">
+                  <SelectValue />
+                </span>
               </SelectTrigger>
     
               <SelectContent>

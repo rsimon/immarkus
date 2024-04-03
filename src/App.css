@@ -37,3 +37,7 @@ html, body, #app {
   overflow-y: auto;
 }
 
+svg {
+  flex: 0 0 auto;
+}
+
