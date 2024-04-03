@@ -8,6 +8,8 @@ interface ImageAnnotationSnippetTuple {
 
   image: Image;
 
+  path: string[];
+
   annotation: W3CImageAnnotation;
 
   snippet?: ImageSnippet;
@@ -77,8 +79,10 @@ const createWorksheet = (
   workbook: any, 
   annotations: ImageAnnotationSnippetTuple[], 
   entityType: EntityType,
-  model: DataModelStore
+  store: Store
 ) => {
+  const model = store.getDataModel();
+
   const types = enumerateChildren(entityType, model);
 
   const schema = aggregateSchemaFields(types);
@@ -88,6 +92,7 @@ const createWorksheet = (
   worksheet.columns = [
     { header: 'Snippet', key: 'snippet', width: 30 },
     { header: 'Image Filename', key: 'image', width: 30 },
+    { header: 'Folder Name', key: 'folder', width: 30 },
     { header: 'Annotation ID', key: 'id', width: 20 },
     { header: 'Created', key: 'created', width: 20 },
     { header: 'Entity Class', key: 'entity', width: 20 },
@@ -98,6 +103,8 @@ const createWorksheet = (
     }))
   ];
 
+  // Tests if the given entity body is a descendant of the
+  // current 'entityType' arg.
   const isDescendant = (body: W3CAnnotationBody) => {
     // Body has no source - definitely not a descendant
     if (!body.source)
@@ -121,7 +128,7 @@ const createWorksheet = (
 
   let rowIndex = 1;
 
-  annotations.forEach(({ annotation, image, snippet }) => {
+  annotations.forEach(({ annotation, image, path, snippet }) => {
     // All bodies that point to this entity, or to an entity that's a child of this entity
     const entityBodies = (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
       .filter(isDescendant);
@@ -130,6 +137,7 @@ const createWorksheet = (
       // Fixed columns
       const row = {
         image: image.name,
+        folder: path.join('/'),
         id: annotation.id,
         created: annotation.created,
         entity: body.source
@@ -163,21 +171,27 @@ export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: n
 
   const { images } = store;
 
+  const root = store.getRootFolder().handle;
+
   // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
   const progressIncrement = 100 / (images.length + 2);
   onProgress(progressIncrement);
 
   const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image, idx) => {
     return promise.then(all => {
-      return getAnntotationsWithSnippets(image, store)
-        .then(t => { 
-          onProgress((idx + 2) * progressIncrement);
+      // While we're at it, resolve image folder path
+      return root.resolve(image.folder).then(path => {
+        return getAnntotationsWithSnippets(image, store)
+          .then(t => { 
+            onProgress((idx + 2) * progressIncrement);
 
-          return [
-            ...all,
-            ...t.map(({ annotation, snippet }) => ({ image, annotation, snippet }))
-          ]
-        });
+            return [
+              ...all,
+              ...t.map(({ annotation, snippet }) => 
+                ({ image, path: [root.name, ...path], annotation, snippet }))
+            ]
+          });
+        })
       })
     }, Promise.resolve([]));
 
@@ -190,7 +204,7 @@ export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: n
     workbook.modified = new Date();
 
     // Create one worksheet per root entity type
-    model.getRootTypes().forEach(entityType => createWorksheet(workbook, annotations, entityType, model));
+    model.getRootTypes().forEach(entityType => createWorksheet(workbook, annotations, entityType, store));
   
     workbook.xlsx.writeBuffer().then(buffer => {
       onProgress(100);
