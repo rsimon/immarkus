@@ -39,8 +39,10 @@ export const Open = (props: OpenProps) => {
               </Button>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-4">
-            Open an existing work folder, or a new folder with image files.
+          
+          <p className="text-xs text-muted-foreground mt-4 max-w-sm leading-relaxed">
+            Open an existing work folder, or a new folder with image files. New to
+            IMMARKUS? <a className="text-sky-700 underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">Learn more</a>.
           </p>
         </div>
       </main>
@@ -50,7 +52,7 @@ export const Open = (props: OpenProps) => {
           Developed by Prof. Dr. Hilde De Weerdt, Dr. Rainer Simon, Dr. Lee Sunkyu, Dr. 
           Iva Stojević, Meret Meister, and Xi Wangzhi with funding from the European 
           Research Council under the Horizon 2020 programme, grant agreement No. 
-          101019509. <a className="text-sky-700 underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">Learn more</a>.
+          101019509.
         </div>
       </footer>
     </div>
