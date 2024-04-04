@@ -39,7 +39,7 @@ export const RelationField = (props: RelationFieldProps) => {
   useEffect(() => {
     if (props.onChange)
       props.onChange(value);
-  }, [value, props.onChange]);
+  }, [value]);
 
   useEffect(() => {
     setValue(props.value);

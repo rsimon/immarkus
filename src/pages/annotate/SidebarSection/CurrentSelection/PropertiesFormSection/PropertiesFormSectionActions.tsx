@@ -16,6 +16,9 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
 
   const model = useDataModel();
 
+  // const ancestors = model.getAncestors(props.entityType);
+  // console.log('ancestors', ancestors);
+
   // For the editor, we need to EXCLUDE inherited properties
   const withoutInherited = model.getEntityType(props.entityType.id);
 

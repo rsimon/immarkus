@@ -35,9 +35,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const model = useDataModel();
 
   // Annotation bodies with purpose 'classifying' that have schemas
-  const schemaBodies = (annotation.bodies as unknown as W3CAnnotationBody[])
+  const schemaBodies = useMemo(() => (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
-    .map(body => ({ body, entityType: model.getEntityType(body.source, true) }));
+    .map(body => ({ body, entityType: model.getEntityType(body.source, true) })), [annotation]);
 
   // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -45,7 +45,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   // All other bodies
   const otherBodies = annotation.bodies.filter(b => b.purpose !== 'classifying' && b.purpose !== 'commenting');
 
-  const safeKeys = createSafeKeys(schemaBodies);
+  const safeKeys = useMemo(() => createSafeKeys(schemaBodies), [schemaBodies]);
 
   const noteKey = `${annotation.id}@note`;
 
@@ -57,7 +57,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
         'properties' in body ? body.properties[property.name] : undefined 
       ]))),
     }), { [noteKey]: note?.value })
-  ), [annotation]);
+  ), [schemaBodies]);
 
   const [formState, setFormState] = useState<{[key: string]: any}>(initialValues);
 
@@ -126,7 +126,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     }
   }
 
-  const hasNote = formState[noteKey] !== undefined;
+  const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
   return (
     <PropertyValidation
