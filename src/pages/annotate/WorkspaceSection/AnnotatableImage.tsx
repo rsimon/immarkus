@@ -52,7 +52,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     },
     showNavigationControl: false,
     crossOriginPolicy: 'Anonymous',
-    maxZoomLevel: 1000
+    minZoomLevel: 0.1,
+    maxZoomLevel: 100
   }), [props.image.id]);
   
   return (
