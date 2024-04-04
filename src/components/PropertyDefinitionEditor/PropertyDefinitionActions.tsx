@@ -41,7 +41,6 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
     <DropdownMenu open={open} onOpenChange={open => open && setOpen(true)}>
       <DropdownMenuTrigger asChild>
         <Button 
-  
           variant="ghost" 
           size="icon" 
           className="h-5 w-5 text-muted-foreground hover:text-black rounded-full">
