@@ -2,9 +2,7 @@ import * as d3 from 'd3';
 import { PALETTE } from './Palette';
 import { Graph, GraphLink, GraphNode } from '../Types';
 
-interface DragEvent extends d3.D3DragEvent<SVGGElement, unknown, unknown> {
-
-}
+interface DragEvent extends d3.D3DragEvent<SVGGElement, unknown, unknown> {}
 
 const drag = (simulation: d3.Simulation<GraphNode, GraphLink>) => {
   
@@ -48,8 +46,8 @@ export const ForceGraph = (graph: Graph, opts: {
   width: number,
   onSelect?(node?: GraphNode): void
 }): SVGSVGElement => {
-  const links = graph.links.map(d => Object.create(d));
-  const nodes = graph.nodes.map(d => Object.create(d));
+  const linkData = graph.links.map(d => Object.create(d));
+  const nodeData = graph.nodes.map(d => Object.create(d));
 
   // Node size scaling factor
   const nodeScale = (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
@@ -57,8 +55,8 @@ export const ForceGraph = (graph: Graph, opts: {
   // Link stroke width scaling factor
   const linkScale = (MAX_LINK_WIDTH - MIN_LINK_WIDTH) / (graph.maxLinkWeight - graph.minLinkWeight);
 
-  const simulation = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink<GraphNode, GraphLink>(links).id(d => d.id))
+  const simulation = d3.forceSimulation(nodeData)
+    .force('link', d3.forceLink<GraphNode, GraphLink>(linkData).id(d => d.id))
     .force('charge', d3.forceManyBody())
     .force('center', d3.forceCenter(opts.width / 2, opts.height / 2));
 
@@ -71,49 +69,79 @@ export const ForceGraph = (graph: Graph, opts: {
   });
 
   const container = svg.append('g');
-
-  const link = container.append('g')
+  
+  let links = container.append('g')
       .attr('stroke', '#999')
       .attr('stroke-opacity', 0.6)
     .selectAll('line')
-    .data(links)
+    .data(linkData)
     .join('line')
-      .attr('stroke-width', n => linkScale * n.value + MIN_LINK_WIDTH)
+      .attr('stroke-width', n => linkScale * n.value + MIN_LINK_WIDTH);
 
-  const node = container.append('g')
+  let nodes = container.append('g')
     .selectAll('.node')
-    .data(nodes)
-    .join('g')
+    .data(nodeData, (n: GraphNode) => n.id)
+    .enter()
+    .append('circle')
       .attr('class', 'node')
-      .call(drag(simulation));
-
-  node.append('circle')
-    .attr('stroke', '#fff')
-    .attr('stroke-width', NODE_STROKE_WIDTH)
-    .attr('r', n => nodeScale * n.degree + MIN_NODE_SIZE)
-    .attr('fill', n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'])
+      .attr('stroke', '#fff')
+      .attr('stroke-width', NODE_STROKE_WIDTH)
+      .attr('r', n => nodeScale * n.degree + MIN_NODE_SIZE)
+      .attr('fill', n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'])
+    .call(drag(simulation))
     .on('click', (_: MouseEvent, node: GraphNode) => {
+      update();
       if (opts.onSelect) opts.onSelect(node);
     });
-  
-  node.append('text')
-    .text(function(d) {
-      return d.label
-    })
-    .style('fill', '#000')
-    .style('font-size', '12px')
-    .style('pointer-events', 'none')
-    .attr('x', LABEL_OFFSET_X)
-    .attr('y', LABEL_OFFSET_Y);
+
+  const update = () => {
+    const totalNodes = graph.nodes.length;
+    const renderedNodes = container.selectAll('.node').size();
+
+    if (renderedNodes === totalNodes) {
+      // Randomly remove some nodes
+      const filtered = nodeData.filter(() => Math.random() > 0.5);
+
+      // Update existing nodes
+      const updated = nodes.data(filtered, (n: GraphNode) => n.id);
+
+      // Remove nodes that are not in the filtered data
+      updated.exit().remove();
+    } else {
+      console.log('adding all');
+
+      // Append new nodes
+      const updatedData = graph.nodes.map(d => Object.create(d));
+      const updated = nodes.data(updatedData, (n: GraphNode) => n.id);
+
+
+
+      updated
+        .enter()
+        .append('circle')
+          .attr('class', 'node')
+          .attr('stroke', '#fff')
+          .attr('stroke-width', NODE_STROKE_WIDTH)
+          .attr('r', n => nodeScale * n.degree + MIN_NODE_SIZE)
+          .attr('fill', n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'])
+        .call(drag(simulation));
+
+      console.log(updated.enter().size());
+      
+      nodes = nodes.merge(updated);
+
+      simulation.nodes(nodeData);
+    }
+  }
 
   simulation.on('tick', () => {
-    link
+    links
       .attr('x1', d => d.source.x)
       .attr('y1', d => d.source.y)
       .attr('x2', d => d.target.x)
       .attr('y2', d => d.target.y);
 
-    node
+    nodes
       .attr('transform', d => `translate(${d.x}, ${d.y})`);
   });
 
@@ -123,14 +151,14 @@ export const ForceGraph = (graph: Graph, opts: {
     container.attr('transform', transform.toString());
 
     // Counter scale relevant properties
-    link.attr('stroke-width', 
+    links.attr('stroke-width', 
       (n: GraphLink) => `${(linkScale * n.value + MIN_LINK_WIDTH) / transform.k}`);
 
-    node.selectAll('circle')
+    nodes.selectAll('circle')
       .attr('r', (n: GraphNode) => (nodeScale * n.degree + MIN_NODE_SIZE) / transform.k)
       .attr('stroke-width', `${NODE_STROKE_WIDTH / transform.k}`);
 
-    node.selectAll('text')
+    nodes.selectAll('text')
       .style('font-size', `${12 / transform.k}px`)
       .attr('x', LABEL_OFFSET_X / transform.k)
       .attr('y', LABEL_OFFSET_Y / transform.k);

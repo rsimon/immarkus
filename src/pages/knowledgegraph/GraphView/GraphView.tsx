@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { ForceGraph } from './ForceGraph';
+import { ForceGraph } from './ForceGraph_old_2';
 import { Graph, GraphNode } from '../Types';
-import { useGraph } from './useGraph';
+import ForceGraph2D, { NodeObject } from 'react-force-graph-2d';
 
 import './GraphView.css';
+import { PALETTE } from './Palette';
 
 interface GraphViewProps {
 
@@ -19,27 +20,36 @@ export const GraphView = (props: GraphViewProps) => {
 
   const el = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!graph) return;
+  const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
+    ctx.fillStyle = node.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'];
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5 / scale;
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, 6 / scale, 0, 2 * Math.PI, false);
+    ctx.fill();
+    ctx.stroke();
 
-    const { clientWidth, clientHeight } = el.current;
+    ctx.fillStyle = 'black'; // Set text color
+    ctx.font = `${11 / scale}px Arial`;
+    ctx.fillText(node.label, node.x + 10 / scale, node.y + 5 / scale); 
+  }
 
-    const svg = ForceGraph(graph, {
-      height: clientHeight,
-      width: clientWidth,
-      onSelect: props.onSelect
-    });
-    
-    while (el.current.firstChild)
-      el.current.removeChild(el.current.lastChild);
-    
-    el.current.appendChild(svg);
-  }, [graph]);
+  const onNodeHover = (node?: NodeObject<GraphNode>) => {
+    if (node)
+      el.current.style.cursor = 'pointer';
+    else 
+      el.current.style.cursor = 'auto';
+  }
 
   return (
-    <div 
-      ref={el} 
-      className="knowledge-graph-container w-full h-full" />
+    <div ref={el}>
+      <ForceGraph2D 
+        graphData={graph} 
+        linkWidth={3}
+        nodeCanvasObject={canvasObject}
+        nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
+        onNodeHover={onNodeHover}/>
+    </div>
   )
 
 }
