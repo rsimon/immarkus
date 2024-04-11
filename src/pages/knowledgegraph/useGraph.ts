@@ -114,6 +114,9 @@ export const useGraph = () => {
           minLinkWeight = link.value;
       });
 
+      /**
+       * Returns nodes connected to this node through a direct link.
+       */
       const getLinkedNodes = (nodeId: string) => {
         // Note that we don't expect links that connect a node to itself here!
         const linkedIds = flattened
@@ -123,8 +126,22 @@ export const useGraph = () => {
         return linkedIds.map(id => nodes.find(n => n.id === id));
       }
 
+      /**
+       * Returns nodes connected to this node through the given number
+       * of hops. If hops is 1, this will return the same as getLinkedNodes.
+       */
+      const getNeighbourhood = (nodeId: string, hops: number) => {
+        if (hops < 1) return [];
+
+        if (hops === 1) return getLinkedNodes(nodeId);
+
+        // TODO
+        return [];
+      }
+
       setGraph({ 
         getLinkedNodes,
+        getNeighbourhood,
         // force-graph seems to mutate in place sometimes - clone data!
         nodes: nodes.map(n => ({...n})), 
         links: flattened.map(l => ({...l})),

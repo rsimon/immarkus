@@ -30,7 +30,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
   return (
     <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
       <button 
-        className="bg-white/80 backdrop-blur-sm text-sm text-muted-foreground hover:bg-muted py-1.5 px-3 rounded-full border border-gray-300 flex items-center justify-between"
+        className="bg-white/80 backdrop-blur-sm text-sm text-muted-foreground hover:bg-muted py-1.5 px-3 rounded-full border border-gray-200 flex items-center justify-between"
         onClick={() => setOpen(open => !open)}>
         <span className="flex gap-2 items-center">
           <Settings className="h-4 w-4" /> Settings
