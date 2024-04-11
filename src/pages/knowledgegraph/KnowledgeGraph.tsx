@@ -18,7 +18,7 @@ export const KnowledgeGraph = () => {
       <AppNavigationSidebar />
 
       <main className="page graph relative">
-        <div className="absolute top-4 left-6">
+        <div className="absolute top-4 left-6 z-10">
           <h1 className="text-xl font-semibold tracking-tight mb-1">
             <span className="bg-white/70 backdrop-blur-sm">
               Knowledge Graph
