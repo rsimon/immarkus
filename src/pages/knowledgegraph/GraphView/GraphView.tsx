@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { Graph, GraphNode } from '../Types';
-import { PALETTE } from './Palette';
+import { PALETTE } from '../Palette';
 
 import './GraphView.css';
 

@@ -1,4 +1,4 @@
-import { PALETTE } from '../GraphView/Palette';
+import { PALETTE } from '../Palette';
 
 export const Legend = () => {
 
