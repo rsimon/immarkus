@@ -3,6 +3,8 @@ import ForceGraph2D, { NodeObject, ForceGraphMethods } from 'react-force-graph-2
 import { Graph, GraphNode } from '../Types';
 import { PALETTE } from './Palette';
 
+import './GraphView.css';
+
 interface GraphViewProps {
 
   graph: Graph;
@@ -67,7 +69,7 @@ export const GraphView = (props: GraphViewProps) => {
     if (node)
       el.current.style.cursor = 'pointer';
     else 
-      el.current.style.cursor = 'auto';
+      el.current.style.cursor = 'default';
   }
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export const GraphView = (props: GraphViewProps) => {
   }, [graph]);
 
   return (
-    <div ref={el} className="w-full h-full">
+    <div ref={el} className="graph-view w-full h-full">
       {dimensions && (
         <ForceGraph2D 
           ref={fg}
