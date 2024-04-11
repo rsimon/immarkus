@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
@@ -42,7 +42,7 @@ export const KnowledgeGraph = () => {
           settings={settings}
           selected={selectedNodes}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
-          onUpdateViewport={transform => setTransform(() => transform)} />
+          onUpdateViewport={transform => setTransform(() => transform)}/>
 
         <SettingsPanel 
           settings={settings}
@@ -53,6 +53,7 @@ export const KnowledgeGraph = () => {
         {selectedNodes.length > 0 && (
           <DetailsPopup
             anchor={selectedNodes[0]}
+            graph={graph}
             transform={transform} />
         )}
       </main>

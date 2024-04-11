@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 import { NodeObject } from 'react-force-graph-2d';
-import { GraphNode, GraphViewportTransform } from '../Types';
+import { useStore } from '@/store';
+import { EntityTypeDetails } from './EntityTypeDetails';
+import { ImageDetails } from './ImageDetails';
+import { Graph, GraphNode, GraphViewportTransform } from '../Types';
 import {
-  useFloating,
-  shift,
-  inline,
-  autoUpdate,
   autoPlacement,
-  offset
+  autoUpdate,
+  inline,
+  offset,
+  shift,
+  useFloating
 } from '@floating-ui/react';
-
 
 interface DetailsPopupProps {
 
-  anchor?: NodeObject<GraphNode>;
+  anchor: NodeObject<GraphNode>;
+
+  graph: Graph;
 
   transform?: GraphViewportTransform;
 
@@ -36,16 +40,19 @@ export const DetailsPopup = (props: DetailsPopupProps) => {
 
   const { anchor, transform } = props;
 
-  const [open, setOpen] = useState(false);
+  const { id, type } = anchor;
+
+  const store = useStore();
+
+  const [x, setX] = useState<number | undefined>();
+  const [y, setY] = useState<number | undefined>();
 
   const { refs, floatingStyles } = useFloating({
     placement: 'top',
-    open,
-    onOpenChange: setOpen,
     middleware: [
       inline(), 
-      offset(10),
-      autoPlacement(),
+      offset(14),
+      autoPlacement({ allowedPlacements: ['left-end', 'left-start', 'right-end', 'right-start']}),
       shift({ crossAxis: true })
     ],
     whileElementsMounted: autoUpdate
@@ -54,25 +61,35 @@ export const DetailsPopup = (props: DetailsPopupProps) => {
   useEffect(() => {
     if (anchor && transform) {
       const { x, y } = transform(anchor.x, anchor.y);
-      const rect = new DOMRect(x, y, 1, 1);
 
-      refs.setReference({
-        getBoundingClientRect: () => rect,
-        getClientRects: () => toClientRects(rect)
-      });
-
-      setOpen(true);
-    } else {
-      setOpen(false)
+      // Primitives, so we avoid unnecessary re-renders!
+      setX(x);
+      setY(y);
     }
   }, [anchor, transform]);
 
-  return open && (
+  useEffect(() => {
+    const rect = new DOMRect(x, y, 1, 1);
+
+    refs.setReference({
+      getBoundingClientRect: () => rect,
+      getClientRects: () => toClientRects(rect)
+    });
+  }, [x, y]);
+
+  return (
     <div 
-      className="text-white bg-black p-1 rounded"
+      className="max-h-[50vh] overflow-y-scroll rounded-md w-[300px] bg-white backdrop-blur-sm shadow-md border z-20"
       ref={refs.setFloating}
       style={floatingStyles}>
-      Floating
+      {type === 'ENTITY_TYPE' ? (
+        <EntityTypeDetails 
+          graph={props.graph}
+          type={store.getDataModel().getEntityType(id)} />
+      ) : (
+        <ImageDetails
+          image={store.getImage(id)} />
+      )}
     </div>
   )
 

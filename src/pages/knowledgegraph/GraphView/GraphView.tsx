@@ -15,7 +15,7 @@ interface GraphViewProps {
 
   onSelect?(node?: NodeObject<GraphNode>): void;
 
-  onUpdateViewport(transform: GraphViewportTransform): void;
+  onUpdateViewport?(transform: GraphViewportTransform): void;
 
 }
 
@@ -125,7 +125,7 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
-  const onRenderFrame = (ctx: CanvasRenderingContext2D, globalScale: number) => {
+  const onUpdate = () => {
     const { left, top } = el.current.getBoundingClientRect();
 
     const graph = fg.current;
@@ -135,7 +135,7 @@ export const GraphView = (props: GraphViewProps) => {
       return { x: pt.x + left, y: pt.y + top };
     }
 
-    props.onUpdateViewport(transform);
+    props.onUpdateViewport && props.onUpdateViewport(transform);
   }
 
   return (
@@ -153,7 +153,8 @@ export const GraphView = (props: GraphViewProps) => {
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           onBackgroundClick={() => props.onSelect(undefined)}
           onNodeClick={n => props.onSelect(n as GraphNode)}
-          onRenderFramePost={onRenderFrame}/>
+          onNodeHover={onNodeHover}
+          onRenderFramePost={onUpdate}/>
       )}
     </div>
   )
