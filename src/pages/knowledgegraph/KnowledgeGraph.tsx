@@ -36,8 +36,7 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
-          showIsolatedNodes={!settings.hideIsolatedNodes}
-          showLabels={!settings.hideLabels}
+          settings={settings}
           selected={selectedNodes}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 

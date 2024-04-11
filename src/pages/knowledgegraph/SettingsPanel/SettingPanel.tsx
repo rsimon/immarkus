@@ -76,7 +76,8 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Don't show text labels for graph nodes.
+                Don't show text labels for graph nodes. A hover tooltip
+                will be used instead.
               </p>
             </div>
           </div>
