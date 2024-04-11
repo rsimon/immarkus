@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { GraphView, Legend, useGraph } from './GraphView';
-import { GraphNode } from './Types';
+import { GraphView, Legend } from './GraphView';
+import { GraphNode, GraphSettings } from './Types';
 import { SelectionDetails } from './SelectionDetails';
+import { SettingsPanel } from './SettingsPanel';
+import { useGraph } from './useGraph';
 
 export const KnowledgeGraph = () => {
 
@@ -10,12 +12,14 @@ export const KnowledgeGraph = () => {
 
   const [selected, setSelected] = useState<GraphNode | undefined>();
 
+  const [settings, setSettings] = useState<GraphSettings>({});
+
   return (
     <div className="page-root">
       <AppNavigationSidebar />
 
       <main className="page graph relative">
-        <div className="absolute top-4 left-6">
+        <div className="absolute top-4 left-6 z-10">
           <h1 className="text-xl font-semibold tracking-tight mb-1">
             <span className="bg-white/70 backdrop-blur-sm">
               Knowledge Graph
@@ -31,7 +35,13 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
+          showIsolatedNodes={!settings.hideIsolatedNodes}
+          showLabels={!settings.hideLabels}
           onSelect={setSelected} />
+
+        <SettingsPanel 
+          settings={settings}
+          onChangeSettings={setSettings} />
 
         <Legend />
 

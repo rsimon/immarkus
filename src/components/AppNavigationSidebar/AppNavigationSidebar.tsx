@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowUpRightFromSquare, Download, HelpCircle, Image, Info, Plug, Sparkles, ToyBrick } from 'lucide-react';
+import { Download, HelpCircle, Image, Info, Plug, ToyBrick, Waypoints } from 'lucide-react';
 
 import './AppNavigationSidebar.css';
 
@@ -41,7 +41,7 @@ export const AppNavigationSidebar = () => {
             <Link 
               className={pathname === '/graph' ? active : undefined} 
               to="/graph">
-              <Sparkles size={18} className="mr-2" />  Knowledge Graph
+              <Waypoints size={18} className="mr-2" />  Knowledge Graph
             </Link>
           </li>
 
