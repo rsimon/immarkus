@@ -44,7 +44,7 @@ export const KnowledgeGraph = () => {
 
         <Legend />
 
-        {false && (
+        {selected && (
           <SelectionDetails
             graph={graph}
             selected={selected} />

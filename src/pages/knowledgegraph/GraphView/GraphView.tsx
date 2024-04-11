@@ -11,7 +11,7 @@ interface GraphViewProps {
 
   showLabels?: boolean;
 
-  onSelect?(node: GraphNode): void;
+  onSelect?(node?: GraphNode): void;
 
 }
 
@@ -56,8 +56,6 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.fill();
     ctx.stroke();
 
-    console.log('render');
-
     if (props.showLabels) {
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
@@ -100,6 +98,8 @@ export const GraphView = (props: GraphViewProps) => {
           nodeVisibility={nodeFilter}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
+          onBackgroundClick={() => props.onSelect(undefined)}
+          onNodeClick={n => props.onSelect(n as GraphNode)}
           onNodeHover={onNodeHover} />
       )}
     </div>
