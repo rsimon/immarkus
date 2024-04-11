@@ -3,7 +3,7 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView, Legend, useGraph } from './GraphView';
 import { GraphNode } from './Types';
 import { SelectionDetails } from './SelectionDetails';
-import { Filters } from './Filters';
+import { GraphSettings } from './GraphSettings';
 
 export const KnowledgeGraph = () => {
 
@@ -37,8 +37,8 @@ export const KnowledgeGraph = () => {
           showIsolatedNodes={showIsolatedNodes}
           onSelect={setSelected} />
 
-        <Filters 
-          onToggleIsolated={() => setShowIsolatedNodes(show => !show)} />
+        <GraphSettings 
+          onHideIsolated={checked => setShowIsolatedNodes(!checked)} />
 
         <Legend />
 
