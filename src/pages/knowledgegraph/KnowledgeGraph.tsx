@@ -3,12 +3,15 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView, Legend, useGraph } from './GraphView';
 import { GraphNode } from './Types';
 import { SelectionDetails } from './SelectionDetails';
+import { Filters } from './Filters';
 
 export const KnowledgeGraph = () => {
 
   const graph = useGraph();
 
   const [selected, setSelected] = useState<GraphNode | undefined>();
+
+  const [showIsolatedNodes, setShowIsolatedNodes] = useState(true);
 
   return (
     <div className="page-root">
@@ -31,7 +34,11 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
+          showIsolatedNodes={showIsolatedNodes}
           onSelect={setSelected} />
+
+        <Filters 
+          onToggleIsolated={() => setShowIsolatedNodes(show => !show)} />
 
         <Legend />
 
