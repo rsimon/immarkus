@@ -30,7 +30,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
   return (
     <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
       <button 
-        className="bg-white/80 backdrop-blur-sm text-sm text-muted-foreground hover:bg-muted py-1.5 px-3 rounded-full border border-gray-300 flex items-center justify-between"
+        className="bg-white/80 backdrop-blur-sm text-sm text-muted-foreground hover:bg-muted py-1.5 px-3 rounded-full border border-gray-200 flex items-center justify-between"
         onClick={() => setOpen(open => !open)}>
         <span className="flex gap-2 items-center">
           <Settings className="h-4 w-4" /> Settings
@@ -65,18 +65,19 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div className="p-3">
             <div className="flex items-center gap-2 justify-between">
                 <Label htmlFor="show-isolated">
-                  Show labels
+                  Hide labels
                 </Label>
 
                 <Switch 
-                  checked={!props.settings.hideLabels}
+                  checked={props.settings.hideLabels}
                   id="display-labels"
                   onCheckedChange={checked => 
-                    props.onChangeSettings({...props.settings, hideLabels: !checked})} />
+                    props.onChangeSettings({...props.settings, hideLabels: checked})} />
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Display text labels for graph nodes.
+                Don't show text labels for graph nodes. A hover tooltip
+                will be used instead.
               </p>
             </div>
           </div>

@@ -2,6 +2,8 @@ export interface Graph {
 
   getLinkedNodes(nodeId: string): GraphNode[];
 
+  getNeighbourhood(nodeId: string, hops: number): GraphNode[];
+
   links: GraphLink[];
 
   maxDegree: number;

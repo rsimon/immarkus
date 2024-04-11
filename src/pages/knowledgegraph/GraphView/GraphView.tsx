@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import ForceGraph2D, { NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
-import { Graph, GraphNode } from '../Types';
-import { PALETTE } from './Palette';
+import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
+import { Graph, GraphNode, GraphSettings } from '../Types';
+import { PALETTE } from '../Palette';
 
 import './GraphView.css';
 
@@ -9,9 +9,9 @@ interface GraphViewProps {
 
   graph: Graph;
 
-  showIsolatedNodes?: boolean;
+  settings: GraphSettings;
 
-  showLabels?: boolean;
+  selected: GraphNode[];
 
   onSelect?(node?: GraphNode): void;
 
@@ -37,18 +37,36 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [dimensions, setDimensions] = useState<[number, number] | undefined>();
 
-  const nodeFilter = useMemo(() => (props.showIsolatedNodes 
-    ? undefined
-    : (node: NodeObject<GraphNode>) => node.degree > 0
-  ), [props.showIsolatedNodes]);
+  // The selected neighbourhood (if any): IDs of selected nodes + directly connected nodes
+  const neighbourhood: Set<string> = useMemo(() => {
+    if (!graph) return new Set([]);
+
+    return props.selected.length > 0 ? 
+      new Set(props.selected.reduce<string[]>((all, selected) => (
+        [...all, selected.id, ...graph.getLinkedNodes(selected.id).map(n => n.id)]
+      ), [])) : new Set([])
+  }, [graph, props.selected]);
+
+  // Shorthands
+  const hasSelection = props.selected.length > 0;
+  const selectedIds = new Set(props.selected.map(n => n.id));
+
+  const nodeFilter = useMemo(() => (props.settings.hideIsolatedNodes 
+    ? (node: NodeObject<GraphNode>) => node.degree > 0
+    : undefined
+  ), [props.settings]);
 
   useEffect(() => {
-    if (fg.current && props.showIsolatedNodes) fg.current.zoomToFit(400, 100)
-  }, [props.showIsolatedNodes]);
+    if (fg.current && !props.settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
+  }, [props.settings.hideIsolatedNodes]);
 
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
+    // Node should fade out if there is a selection, and this node is not in the neighbourhood
+    const isFaded = hasSelection && !neighbourhood.has(node.id);
+
+    ctx.globalAlpha = isFaded ? 0.12 : 1;
     ctx.fillStyle = node.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'];
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 1 / scale;
@@ -58,11 +76,14 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.fill();
     ctx.stroke();
 
-    if (props.showLabels) {
+    // Faded nodes never get labels
+    if (!props.settings.hideLabels && !isFaded) {
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
       ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
     }
+
+    ctx.globalAlpha = 1;
   }
 
   const onNodeHover = (node?: NodeObject<GraphNode>) => {
@@ -88,6 +109,20 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }, [graph]);
 
+  const getLinkWidth = (link: LinkObject) => {
+    if (hasSelection) {
+      const targetId: string = (link.target as any).id || link.target;
+      const sourceId: string = (link.source as any).id || link.source;
+
+      if (selectedIds.has(targetId) || selectedIds.has(sourceId))
+        return linkScale * link.value + MIN_LINK_WIDTH;
+      else 
+        return 0.00001; // Don't set to 0 because force-graph will use default width!
+    } else {
+      return linkScale * link.value + MIN_LINK_WIDTH;
+    }
+  }
+
   return (
     <div ref={el} className="graph-view w-full h-full">
       {dimensions && (
@@ -96,7 +131,8 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkWidth={({ value }) => linkScale * value + MIN_LINK_WIDTH}
+          linkWidth={getLinkWidth}
+          nodeLabel={props.settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
           nodeVisibility={nodeFilter}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}

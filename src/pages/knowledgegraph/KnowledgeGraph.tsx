@@ -11,7 +11,7 @@ export const KnowledgeGraph = () => {
 
   const graph = useGraph();
 
-  const [selected, setSelected] = useState<GraphNode | undefined>();
+  const [selectedNodes, setSelectedNodes] = useState<GraphNode[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
@@ -36,9 +36,9 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
-          showIsolatedNodes={!settings.hideIsolatedNodes}
-          showLabels={!settings.hideLabels}
-          onSelect={setSelected} />
+          settings={settings}
+          selected={selectedNodes}
+          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 
         <SettingsPanel 
           settings={settings}
@@ -46,10 +46,10 @@ export const KnowledgeGraph = () => {
 
         <Legend />
 
-        {selected && (
+        {selectedNodes.length > 0 && (
           <SelectionDetails
             graph={graph}
-            selected={selected} />
+            selected={selectedNodes[0]} />
         )}
       </main>
     </div>
