@@ -63,7 +63,15 @@ export const useGraph = () => {
       let minDegree = result.length === 0 ? 0 : Infinity;
 
       let maxDegree = 0;
-  
+
+      nodes.forEach(n => {
+        if (n.degree > maxDegree)
+          maxDegree = n.degree; 
+
+        if (n.degree < minDegree)
+          minDegree = n.degree;
+      });
+
       const links =
         result.reduce<GraphLink[]>((all, { annotations, image }) => {
           // N annotations on this image, each carrying 0 to M entity links
@@ -81,12 +89,6 @@ export const useGraph = () => {
             }
           }, []);
 
-          if (entityLinks.length > maxDegree)
-            maxDegree = entityLinks.length; 
-
-          if (entityLinks.length < minDegree)
-            minDegree = entityLinks.length;
-  
           return [...all, ...entityLinks];
       }, []);
 

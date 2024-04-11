@@ -51,7 +51,7 @@ export const GraphView = (props: GraphViewProps) => {
 
     ctx.fillStyle = node.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'];
     ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1.5 / scale;
+    ctx.lineWidth = 1 / scale;
 
     ctx.beginPath();
     ctx.arc(node.x, node.y, r / scale, 0, 2 * Math.PI, false);
