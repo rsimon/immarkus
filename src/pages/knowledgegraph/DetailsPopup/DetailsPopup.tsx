@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ForceGraphMethods, NodeObject } from 'react-force-graph-2d';
-import { GraphNode } from '../Types';
+import { NodeObject } from 'react-force-graph-2d';
+import { GraphNode, GraphViewportTransform } from '../Types';
 import {
   useFloating,
   shift,
@@ -13,9 +13,9 @@ import {
 
 interface DetailsPopupProps {
 
-  selected?: NodeObject<GraphNode>;
+  anchor?: NodeObject<GraphNode>;
 
-  forceGraph: ForceGraphMethods;
+  transform?: GraphViewportTransform;
 
 }
 
@@ -34,14 +34,14 @@ const toClientRects = (rect: DOMRect) => ({
 
 export const DetailsPopup = (props: DetailsPopupProps) => {
 
-  const { selected, forceGraph } = props;
+  const { anchor, transform } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { refs, floatingStyles } = useFloating({
     placement: 'top',
-    open: isOpen,
-    onOpenChange: setIsOpen,
+    open,
+    onOpenChange: setOpen,
     middleware: [
       inline(), 
       offset(10),
@@ -52,24 +52,22 @@ export const DetailsPopup = (props: DetailsPopupProps) => {
   });
 
   useEffect(() => {
-    if (selected && forceGraph) {
-      const { x, y } = selected;
-
-      const pt = forceGraph.graph2ScreenCoords(x, y);
-
-      // TODO
-      const rect = new DOMRect(pt.x + 250, pt.y, 1, 1);
+    if (anchor && transform) {
+      const { x, y } = transform(anchor.x, anchor.y);
+      const rect = new DOMRect(x, y, 1, 1);
 
       refs.setReference({
         getBoundingClientRect: () => rect,
         getClientRects: () => toClientRects(rect)
       });
 
-      setIsOpen(true);
+      setOpen(true);
+    } else {
+      setOpen(false)
     }
-  }, [selected, forceGraph]);
+  }, [anchor, transform]);
 
-  return isOpen && (
+  return open && (
     <div 
       className="text-white bg-black p-1 rounded"
       ref={refs.setFloating}

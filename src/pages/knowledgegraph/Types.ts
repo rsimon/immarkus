@@ -47,3 +47,5 @@ export interface GraphSettings {
   hideLabels?: boolean;
 
 }
+
+export type GraphViewportTransform = ((x: number, y: number) => ({ x: number, y: number }));

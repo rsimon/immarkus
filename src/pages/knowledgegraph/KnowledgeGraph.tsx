@@ -1,22 +1,22 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
-import { GraphNode, GraphSettings } from './Types';
+import { GraphNode, GraphSettings, GraphViewportTransform } from './Types';
 import { SettingsPanel } from './SettingsPanel';
 import { useGraph } from './useGraph';
-import { ForceGraphMethods, NodeObject } from 'react-force-graph-2d';
+import { NodeObject } from 'react-force-graph-2d';
 import { DetailsPopup } from './DetailsPopup';
 
 export const KnowledgeGraph = () => {
 
   const graph = useGraph();
 
-  const fg = useRef<ForceGraphMethods>();
-
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
+
+  const [transform, setTransform] = useState<GraphViewportTransform | undefined>();
 
   return (
     <div className="page-root">
@@ -38,12 +38,11 @@ export const KnowledgeGraph = () => {
         </div>
 
         <GraphView 
-          ref={fg}
           graph={graph}
           settings={settings}
           selected={selectedNodes}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
-          onUpdateViewport={() => setSelectedNodes(sel => sel ? [...sel] : sel)} />
+          onUpdateViewport={transform => setTransform(() => transform)} />
 
         <SettingsPanel 
           settings={settings}
@@ -51,16 +50,10 @@ export const KnowledgeGraph = () => {
 
         <Legend />
 
-        {/* selectedNodes.length > 0 && (
-          <SelectionDetails
-            graph={graph}
-            selected={selectedNodes[0]} />
-        ) */}
-        
         {selectedNodes.length > 0 && (
           <DetailsPopup
-            forceGraph={fg.current}
-            selected={selectedNodes[0]} />
+            anchor={selectedNodes[0]}
+            transform={transform} />
         )}
       </main>
     </div>

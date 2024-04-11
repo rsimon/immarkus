@@ -1,6 +1,6 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
-import { Graph, GraphNode, GraphSettings } from '../Types';
+import { Graph, GraphNode, GraphSettings, GraphViewportTransform } from '../Types';
 import { PALETTE } from '../Palette';
 
 import './GraphView.css';
@@ -15,7 +15,7 @@ interface GraphViewProps {
 
   onSelect?(node?: NodeObject<GraphNode>): void;
 
-  onUpdateViewport(): void;
+  onUpdateViewport(transform: GraphViewportTransform): void;
 
 }
 
@@ -25,7 +25,7 @@ const MIN_NODE_SIZE = 5;
 const MAX_LINK_WIDTH = 3;
 const MIN_LINK_WIDTH = 1;
 
-export const GraphView = forwardRef<ForceGraphMethods, GraphViewProps>((props, forwarded) => {
+export const GraphView = (props: GraphViewProps) => {
 
   const { graph } = props;
 
@@ -125,10 +125,17 @@ export const GraphView = forwardRef<ForceGraphMethods, GraphViewProps>((props, f
     }
   }
 
-  useImperativeHandle(forwarded, () => fg.current);
+  const onRenderFrame = (ctx: CanvasRenderingContext2D, globalScale: number) => {
+    const { left, top } = el.current.getBoundingClientRect();
 
-  const onUpdate = () => {
-    console.log('update');
+    const graph = fg.current;
+
+    const transform: GraphViewportTransform = (x: number, y: number) => {
+      const pt = graph.graph2ScreenCoords(x, y);
+      return { x: pt.x + left, y: pt.y + top };
+    }
+
+    props.onUpdateViewport(transform);
   }
 
   return (
@@ -146,9 +153,9 @@ export const GraphView = forwardRef<ForceGraphMethods, GraphViewProps>((props, f
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           onBackgroundClick={() => props.onSelect(undefined)}
           onNodeClick={n => props.onSelect(n as GraphNode)}
-          onRenderFramePost={props.onUpdateViewport}/>
+          onRenderFramePost={onRenderFrame}/>
       )}
     </div>
   )
 
-});
+}
