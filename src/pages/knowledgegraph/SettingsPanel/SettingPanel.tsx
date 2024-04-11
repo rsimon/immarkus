@@ -65,18 +65,18 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div className="p-3">
             <div className="flex items-center gap-2 justify-between">
                 <Label htmlFor="show-isolated">
-                  Show labels
+                  Hide labels
                 </Label>
 
                 <Switch 
-                  checked={!props.settings.hideLabels}
+                  checked={props.settings.hideLabels}
                   id="display-labels"
                   onCheckedChange={checked => 
-                    props.onChangeSettings({...props.settings, hideLabels: !checked})} />
+                    props.onChangeSettings({...props.settings, hideLabels: checked})} />
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Display text labels for graph nodes.
+                Don't show text labels for graph nodes.
               </p>
             </div>
           </div>
