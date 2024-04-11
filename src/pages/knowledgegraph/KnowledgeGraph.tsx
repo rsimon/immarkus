@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings } from './Types';
-import { SelectionDetails } from './SelectionDetails';
 import { SettingsPanel } from './SettingsPanel';
 import { useGraph } from './useGraph';
+import { ForceGraphMethods, NodeObject } from 'react-force-graph-2d';
+import { DetailsPopup } from './DetailsPopup';
 
 export const KnowledgeGraph = () => {
 
   const graph = useGraph();
 
-  const [selectedNodes, setSelectedNodes] = useState<GraphNode[]>([]);
+  const fg = useRef<ForceGraphMethods>();
+
+  const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
@@ -35,10 +38,12 @@ export const KnowledgeGraph = () => {
         </div>
 
         <GraphView 
+          ref={fg}
           graph={graph}
           settings={settings}
           selected={selectedNodes}
-          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
+          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
+          onUpdateViewport={() => setSelectedNodes(sel => sel ? [...sel] : sel)} />
 
         <SettingsPanel 
           settings={settings}
@@ -46,9 +51,15 @@ export const KnowledgeGraph = () => {
 
         <Legend />
 
-        {selectedNodes.length > 0 && (
+        {/* selectedNodes.length > 0 && (
           <SelectionDetails
             graph={graph}
+            selected={selectedNodes[0]} />
+        ) */}
+        
+        {selectedNodes.length > 0 && (
+          <DetailsPopup
+            forceGraph={fg.current}
             selected={selectedNodes[0]} />
         )}
       </main>
