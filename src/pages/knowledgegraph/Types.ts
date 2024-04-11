@@ -39,3 +39,11 @@ export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
   value: number
 
 }
+
+export interface GraphSettings {
+
+  hideIsolatedNodes?: boolean;
+
+  hideLabels?: boolean;
+
+}

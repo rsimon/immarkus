@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView, Legend, useGraph } from './GraphView';
-import { GraphNode } from './Types';
+import { GraphNode, GraphSettings } from './Types';
 import { SelectionDetails } from './SelectionDetails';
-import { GraphSettings } from './GraphSettings';
+import { SettingsPanel } from './SettingsPanel';
 
 export const KnowledgeGraph = () => {
 
@@ -11,7 +11,7 @@ export const KnowledgeGraph = () => {
 
   const [selected, setSelected] = useState<GraphNode | undefined>();
 
-  const [showIsolatedNodes, setShowIsolatedNodes] = useState(true);
+  const [settings, setSettings] = useState<GraphSettings>({});
 
   return (
     <div className="page-root">
@@ -34,11 +34,13 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
-          showIsolatedNodes={showIsolatedNodes}
+          showIsolatedNodes={!settings.hideIsolatedNodes}
+          showLabels={!settings.hideLabels}
           onSelect={setSelected} />
 
-        <GraphSettings 
-          onHideIsolated={checked => setShowIsolatedNodes(!checked)} />
+        <SettingsPanel 
+          settings={settings}
+          onChangeSettings={setSettings} />
 
         <Legend />
 

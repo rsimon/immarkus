@@ -3,14 +3,17 @@ import { Settings, X } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Switch } from '@/ui/Switch';
 import { Label } from '@/ui/Label';
+import { GraphSettings } from '../Types';
 
-interface GraphSettingsProps {
+interface SettingsPanelProps {
 
-  onHideIsolated(checked: boolean): void;
+  settings: GraphSettings;
+
+  onChangeSettings(changed: GraphSettings): void;
 
 }
 
-export const GraphSettings = (props: GraphSettingsProps) => {
+export const SettingsPanel = (props: SettingsPanelProps) => {
 
   const [open, setOpen] = useState(false);
 
@@ -49,11 +52,13 @@ export const GraphSettings = (props: GraphSettingsProps) => {
 
                 <Switch 
                   id="show-isolated" 
-                  onCheckedChange={props.onHideIsolated} />
+                  checked={props.settings.hideIsolatedNodes}
+                  onCheckedChange={checked => 
+                    props.onChangeSettings({...props.settings, hideIsolatedNodes: checked})} />
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Removes unused entity classes and images without entity annotations from the graph.
+                Remove unused entity classes and images without entity annotations from the graph.
               </p>
             </div>
 
@@ -64,11 +69,14 @@ export const GraphSettings = (props: GraphSettingsProps) => {
                 </Label>
 
                 <Switch 
-                  id="display-labels" />
+                  checked={!props.settings.hideLabels}
+                  id="display-labels"
+                  onCheckedChange={checked => 
+                    props.onChangeSettings({...props.settings, hideLabels: !checked})} />
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Show text labels for image and entity classes.
+                Show text labels for images and entity classes.
               </p>
             </div>
           </div>

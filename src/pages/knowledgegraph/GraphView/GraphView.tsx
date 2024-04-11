@@ -9,6 +9,8 @@ interface GraphViewProps {
 
   showIsolatedNodes?: boolean;
 
+  showLabels?: boolean;
+
   onSelect?(node: GraphNode): void;
 
 }
@@ -54,9 +56,13 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = 'black'; 
-    ctx.font = `${11 / scale}px Arial`;
-    ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
+    console.log('render');
+
+    if (props.showLabels) {
+      ctx.fillStyle = 'black'; 
+      ctx.font = `${11 / scale}px Arial`;
+      ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
+    }
   }
 
   const onNodeHover = (node?: NodeObject<GraphNode>) => {
