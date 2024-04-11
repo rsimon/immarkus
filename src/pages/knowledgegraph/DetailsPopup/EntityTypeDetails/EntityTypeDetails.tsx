@@ -19,7 +19,7 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
   const linkedNodes = props.graph.getLinkedNodes(type.id);
 
   return (
-    <aside className="max-h-[80vh] overflow-y-scroll">
+    <aside>
       <div className="p-4">
         <h2><EntityBadge entityType={type} /></h2>
         {type.description && (

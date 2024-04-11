@@ -1,19 +1,22 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
-import { GraphNode, GraphSettings } from './Types';
-import { SelectionDetails } from './SelectionDetails';
+import { GraphNode, GraphSettings, GraphViewportTransform } from './Types';
 import { SettingsPanel } from './SettingsPanel';
 import { useGraph } from './useGraph';
+import { NodeObject } from 'react-force-graph-2d';
+import { DetailsPopup } from './DetailsPopup';
 
 export const KnowledgeGraph = () => {
 
   const graph = useGraph();
 
-  const [selectedNodes, setSelectedNodes] = useState<GraphNode[]>([]);
+  const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
+
+  const [transform, setTransform] = useState<GraphViewportTransform | undefined>();
 
   return (
     <div className="page-root">
@@ -38,7 +41,8 @@ export const KnowledgeGraph = () => {
           graph={graph}
           settings={settings}
           selected={selectedNodes}
-          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
+          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
+          onUpdateViewport={transform => setTransform(() => transform)}/>
 
         <SettingsPanel 
           settings={settings}
@@ -47,9 +51,10 @@ export const KnowledgeGraph = () => {
         <Legend />
 
         {selectedNodes.length > 0 && (
-          <SelectionDetails
+          <DetailsPopup
+            anchor={selectedNodes[0]}
             graph={graph}
-            selected={selectedNodes[0]} />
+            transform={transform} />
         )}
       </main>
     </div>

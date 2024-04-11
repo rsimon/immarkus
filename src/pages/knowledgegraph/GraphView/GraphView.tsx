@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
-import { Graph, GraphNode, GraphSettings } from '../Types';
+import { Graph, GraphNode, GraphSettings, GraphViewportTransform } from '../Types';
 import { PALETTE } from '../Palette';
 
 import './GraphView.css';
@@ -13,7 +13,9 @@ interface GraphViewProps {
 
   selected: GraphNode[];
 
-  onSelect?(node?: GraphNode): void;
+  onSelect?(node?: NodeObject<GraphNode>): void;
+
+  onUpdateViewport?(transform: GraphViewportTransform): void;
 
 }
 
@@ -123,6 +125,19 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
+  const onUpdate = () => {
+    const { left, top } = el.current.getBoundingClientRect();
+
+    const graph = fg.current;
+
+    const transform: GraphViewportTransform = (x: number, y: number) => {
+      const pt = graph.graph2ScreenCoords(x, y);
+      return { x: pt.x + left, y: pt.y + top };
+    }
+
+    props.onUpdateViewport && props.onUpdateViewport(transform);
+  }
+
   return (
     <div ref={el} className="graph-view w-full h-full">
       {dimensions && (
@@ -138,7 +153,8 @@ export const GraphView = (props: GraphViewProps) => {
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           onBackgroundClick={() => props.onSelect(undefined)}
           onNodeClick={n => props.onSelect(n as GraphNode)}
-          onNodeHover={onNodeHover} />
+          onNodeHover={onNodeHover}
+          onRenderFramePost={onUpdate}/>
       )}
     </div>
   )
