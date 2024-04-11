@@ -1,5 +1,3 @@
-import * as d3 from 'd3';
-
 export interface Graph {
 
   getLinkedNodes(nodeId: string): GraphNode[];
@@ -18,7 +16,7 @@ export interface Graph {
 
 }
 
-export interface GraphNode extends d3.SimulationNodeDatum {
+export interface GraphNode {
 
   id: string;
 
@@ -30,7 +28,7 @@ export interface GraphNode extends d3.SimulationNodeDatum {
   
 }
 
-export interface GraphLink extends d3.SimulationLinkDatum<GraphNode> {
+export interface GraphLink {
 
   source: string;
   

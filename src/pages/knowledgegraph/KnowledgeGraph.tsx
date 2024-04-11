@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { GraphView, Legend, useGraph } from './GraphView';
+import { GraphView, Legend } from './GraphView';
 import { GraphNode, GraphSettings } from './Types';
 import { SelectionDetails } from './SelectionDetails';
 import { SettingsPanel } from './SettingsPanel';
+import { useGraph } from './useGraph';
 
 export const KnowledgeGraph = () => {
 

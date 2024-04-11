@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType, Image } from '@/model';
 import { useStore } from '@/store';
-import { Graph, GraphLink, GraphNode } from '../Types';
+import { Graph, GraphLink, GraphNode } from './Types';
 
 export const useGraph = () => {
 
@@ -19,7 +19,7 @@ export const useGraph = () => {
 
   useEffect(() => {
     Promise.all(promises).then(result => {
-      const annotations = result.reduce<W3CAnnotation[]>((all, { image, annotations }) => (
+      const annotations = result.reduce<W3CAnnotation[]>((all, { annotations }) => (
         [...all, ...annotations]
       ), []);
 
@@ -123,8 +123,9 @@ export const useGraph = () => {
 
       setGraph({ 
         getLinkedNodes,
-        nodes, 
-        links: flattened, 
+        // force-graph seems to mutate in place sometimes - clone data!
+        nodes: nodes.map(n => ({...n})), 
+        links: flattened.map(l => ({...l})),
         minDegree, 
         maxDegree,
         minLinkWeight,

@@ -65,7 +65,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div className="p-3">
             <div className="flex items-center gap-2 justify-between">
                 <Label htmlFor="show-isolated">
-                  Display text labels
+                  Show labels
                 </Label>
 
                 <Switch 
@@ -76,7 +76,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">
-                Show text labels for images and entity classes.
+                Display text labels for graph nodes.
               </p>
             </div>
           </div>
