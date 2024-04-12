@@ -10,11 +10,15 @@ interface GraphViewProps {
 
   graph: Graph;
 
+  isFullscreen: boolean;
+
   settings: GraphSettings;
 
   selected: GraphNode[];
 
   pinned: NodeObject<GraphNode>[];
+
+  onBackgroundClick(): void;
 
   onSelect(node?: NodeObject<GraphNode>): void;
 
@@ -95,6 +99,12 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }, [graph]);
 
+  useEffect(() => {
+    // Resize the canvas when fullscreen mode changes
+    const { clientWidth, clientHeight } = el.current;
+    setDimensions([clientWidth, clientHeight]);
+  }, [props.isFullscreen]);
+
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
@@ -119,6 +129,11 @@ export const GraphView = (props: GraphViewProps) => {
     }
 
     ctx.globalAlpha = 1;
+  }
+
+  const onBackgroundClick = () => {
+    props.onSelect(undefined);
+    props.onBackgroundClick();
   }
 
   const onNodeDragEnd = (node: NodeObject<GraphNode>) => {
@@ -163,7 +178,7 @@ export const GraphView = (props: GraphViewProps) => {
           nodeVisibility={nodeFilter}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
-          onBackgroundClick={() => props.onSelect(undefined)}
+          onBackgroundClick={onBackgroundClick}
           onNodeClick={n => props.onSelect(n as GraphNode)}
           onNodeDragEnd={onNodeDragEnd}
           onNodeHover={onNodeHover} />

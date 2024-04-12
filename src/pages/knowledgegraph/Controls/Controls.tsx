@@ -34,14 +34,17 @@ export const Controls = (props: ControlsProps) => {
 
       <TooltippedButton 
         size="icon"
-        variant="outline"
-        className="rounded-full bg-white/70 backdrop-blur-sm"
-        tooltip="Fullscreen">
+        variant={props.isFullScreen ? undefined : 'outline'}
+        className={props.isFullScreen 
+          ? 'rounded-full bg-black '
+          : 'rounded-full bg-white/70 backdrop-blur-sm'}
+        tooltip="Toggle fullscreen"
+        onClick={props.onToggleFullscreen}>
         <Fullscreen className="h-5 w-5" />
       </TooltippedButton>
 
       <TooltippedButton 
-        variant={props.settingsOpen ? undefined : "outline"}
+        variant={props.settingsOpen ? undefined : 'outline'}
         className={props.settingsOpen 
           ? 'gap-2 pl-3.5 pr-4 rounded-full border'
           : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm'}
