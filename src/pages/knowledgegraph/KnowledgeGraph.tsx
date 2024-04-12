@@ -3,10 +3,11 @@ import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
-import { GraphNode, GraphSettings, GraphViewportTransform } from './Types';
+import { GraphNode, GraphSettings } from './Types';
 import { useGraph } from './useGraph';
 import { Controls } from './Controls';
-import { DetailsPopup } from './DetailsPopup';
+import { SelectionDetails } from './SelectionDetails';
+import { SettingsPanel } from './SettingsPanel';
 
 export const KnowledgeGraph = () => {
 
@@ -18,7 +19,7 @@ export const KnowledgeGraph = () => {
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
-  const [transform, setTransform] = useState<GraphViewportTransform | undefined>();
+  const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
   return (
     <div className="page-root">
@@ -45,25 +46,34 @@ export const KnowledgeGraph = () => {
           selected={selectedNodes}
           pinned={pinnedNodes}
           onPin={node => setPinnedNodes(n => ([...n, node]))}
-          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
-          onUpdateViewport={transform => setTransform(() => transform)}/>
+          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 
         <Legend />
 
         <Controls 
           isFullScreen={false} 
           hasPinnedNodes={pinnedNodes.length > 0} 
-          settingsOpen={false}
+          settingsOpen={showSettingsPanel}
           onToggleFullscreen={() => console.log('toggle fullscreen')} 
-          onToggleSettings={() => console.log('toggle fullscreen')} 
+          onToggleSettings={() => setShowSettingsPanel(open => !open)}
           onUnpinAllNodes={() => setPinnedNodes([])} />
 
-        {selectedNodes.length > 0 && (
-          <DetailsPopup
-            anchor={selectedNodes[0]}
-            graph={graph}
-            transform={transform} />
-        )}
+        <aside 
+          className="absolute right-2 top-0 bottom-16 w-[360px] p-4 flex flex-col 
+            gap-2 overflow-hidden pointer-events-none z-10">
+          <div className="flex-grow relative overflow-y-auto rounded-b">
+            {selectedNodes.length > 0 && (
+              <SelectionDetails
+                selected={selectedNodes[0]}
+                graph={graph} />
+            )}
+          </div>
+
+          <SettingsPanel 
+            open={showSettingsPanel} 
+            settings={settings}
+            onChangeSettings={setSettings} />
+        </aside>
       </main>
     </div>
   )

@@ -21,7 +21,7 @@ interface ControlsProps {
 export const Controls = (props: ControlsProps) => {
 
   return (
-    <div className="absolute bottom-6 right-7 flex gap-2.5">
+    <div className="absolute bottom-6 right-6 flex gap-2.5">
       {props.hasPinnedNodes && (
         <TooltippedButton
           size="icon"
@@ -41,9 +41,12 @@ export const Controls = (props: ControlsProps) => {
       </TooltippedButton>
 
       <TooltippedButton 
-        variant="outline"
-        className="gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm"
-        tooltip="View and filter settings">
+        variant={props.settingsOpen ? undefined : "outline"}
+        className={props.settingsOpen 
+          ? 'gap-2 pl-3.5 pr-4 rounded-full border'
+          : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm'}
+        tooltip="View and filter settings"
+        onClick={props.onToggleSettings}>
         <Settings className="h-5 w-5" /> Settings
       </TooltippedButton>
     </div>
