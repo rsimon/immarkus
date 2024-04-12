@@ -1,16 +1,16 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImageMetadata } from '@/store';
-import { ImageGridItem } from '../ItemGrid';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
+import { Image } from '@/model';
 
 interface ImageMetadataPanelProps {
 
-  image: ImageGridItem;
+  image: Image;
 
 }
 

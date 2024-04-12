@@ -18,7 +18,7 @@ export const SelectionDetails = (props: SelectionDetailsProps) => {
   const store = useStore();
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-md shadow border pointer-events-auto">
+    <div className="bg-white/80 backdrop-blur-sm rounded-md shadow-lg border pointer-events-auto">
       {type === 'ENTITY_TYPE' ? (
         <EntityTypeDetails 
           graph={props.graph}

@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { W3CAnnotation } from '@annotorious/react';
 import { Image, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
-import { W3CAnnotation } from '@annotorious/react';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Button } from '@/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
+import { AnnotationsTab } from './AnnotationsTab/AnnotationsTab';
+import { MetadataTab } from './MetadataTab';
 
 interface ImageDetailsProps {
 
@@ -32,7 +35,7 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
   return (
     <aside>
-      <header className="h-32 overflow-hidden relative">
+      <header className="h-32 overflow-hidden relative border-b">
         {loaded && (
           <img 
             onLoad={onLoad}
@@ -42,17 +45,37 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
       <div className="px-3 py-4 text-sm">
         <h2 className="whitespace-nowrap overflow-hidden text- text-ellipsis mb-0.5">{image.name}</h2>
-        <div className="text-muted-foreground text-xs flex gap-1.5 mb-8">
-          <div className="mb-0.5 flex gap-1 items-center">
-            {annotations ? annotations.length : 0} Annotations
-          </div>  
-          <div>·</div>
-          <div className="mb-0.5 flex gap-1 items-center">
-            {dimensions && (
-              <>{dimensions[0]} x {dimensions[1]}</>
-            )}
-          </div>
+        <div className="text-muted-foreground text-xs mb-4">
+          {dimensions && (
+            <>{dimensions[0]} x {dimensions[1]}</>
+          )}
         </div>
+
+        <Tabs defaultValue="annotations">
+          <TabsList className="gap-2 mb-4">
+            <TabsTrigger
+              value="annotations" 
+              className="text-xs font-normal">
+              {annotations ? annotations.length : 0} Annotations
+            </TabsTrigger>
+
+            <TabsTrigger 
+              value="information"
+              className="text-xs font-normal">
+              Information
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="annotations">
+            {annotations && (
+              <AnnotationsTab annotations={annotations} />
+            )}
+          </TabsContent>
+
+          <TabsContent value="information">
+            <MetadataTab image={image} />
+          </TabsContent>
+        </Tabs>
 
         <Button 
           className="w-full"

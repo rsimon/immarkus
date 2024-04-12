@@ -42,14 +42,6 @@ export const Vocabulary = () => {
           <TabsContent value="folderMetadata">
             <FolderMetadata />
           </TabsContent>
-
-          {/* 
-          <TabsContent value="tags">
-            <p className="text-muted-foreground text-sm mt-4 max-w-lg leading-6">
-              Use tags for simple, freeform labeling. 
-            </p>
-          </TabsContent>
-          */}
         </Tabs>
       </main>
     </div>

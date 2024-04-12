@@ -3,14 +3,12 @@ import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
-import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { serializePropertyValue } from '@/utils/serialize';
 import { ReactNode } from 'react';
-import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { useValuePreviews } from '@/utils/useValuePreviews';
 
 interface AnnotationListItemProps {
 
@@ -22,44 +20,16 @@ interface AnnotationListItemProps {
 
 }
 
-const getValuePreviewsForSchema = (
-  schema: PropertyDefinition[], 
-  body: W3CAnnotationBody, 
-  authorities: ExternalAuthority[]
-) => {
-  if ('properties' in body) {
-    return schema.reduce<ReactNode[]>((previews, definition) => {
-      const value = body.properties[definition.name];
-      if (value) {
-        const serialized = serializePropertyValue(definition, value);
-
-        const node = 
-          definition.type === 'uri' ? 
-            (<a href={serialized} target="_blank" className="text-sky-700 hover:underline">{serialized}</a>) :
-          definition.type === 'external_authority' 
-            ? (<a href={value} target="_blank" className="text-sky-700 hover:underline">{formatIdentifier(value, authorities)}</a>)
-            : (<span>{serialized}</span>);
-
-        return [...previews, node ];
-      } else {
-        return previews;
-      }
-    }, []);
-  } else {
-    return [];  
-  }
-}
-
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const { getEntityType } = useDataModel();
-
-  const { authorities } = useRuntimeConfig();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const entityTags: W3CAnnotationBody[] = 
     props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
+
+  const valuePreviews = useValuePreviews(entityTags);
 
   const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
 
@@ -71,16 +41,6 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
   ].filter(Boolean).map(d => new Date(d));
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
-
-  const valuePreviews = entityTags.reduce<ReactNode[]>((values, body) => {
-    const schema = getEntityType(body.source, true);
-    if (schema) {
-      return [...values, ...getValuePreviewsForSchema(schema.properties || [], body, authorities)];
-    } else {
-      console.error('Reference to missing entity class:', body.source);
-      return values;
-    }
-  }, []);
 
   return (
     <>
