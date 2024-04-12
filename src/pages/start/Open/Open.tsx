@@ -40,7 +40,7 @@ export const Open = (props: OpenProps) => {
             )}
           </div>
           
-          <p className="text-xs text-muted-foreground mt-4 max-w-sm leading-relaxed">
+          <p className="text-xs text-muted-foreground mt-4 leading-relaxed max-w-sm mx-auto">
             Open an existing work folder, or a new folder with image files. New to
             IMMARKUS? <a className="text-sky-700 underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">Learn more</a>.
           </p>
