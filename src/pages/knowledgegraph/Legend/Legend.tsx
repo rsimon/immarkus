@@ -3,8 +3,8 @@ import { PALETTE } from '../Palette';
 export const Legend = () => {
 
   return (
-    <div className="absolute bottom-6 left-8 text-sm bg-white/70 backdrop-blur-sm px-1 py-0.5 rounded">
-      <ul className="flex gap-10">
+    <div className="absolute bottom-7 left-7 text-sm bg-white/70 backdrop-blur-sm px-1 py-0.5 rounded">
+      <ul className="flex gap-8">
         <li className="flex gap-2 items-center">
           <span 
             style={{ backgroundColor: PALETTE['orange']}} 

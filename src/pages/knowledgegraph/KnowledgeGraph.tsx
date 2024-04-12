@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
+import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings, GraphViewportTransform } from './Types';
-import { SettingsPanel } from './SettingsPanel';
 import { useGraph } from './useGraph';
-import { NodeObject } from 'react-force-graph-2d';
+import { Controls } from './Controls';
 import { DetailsPopup } from './DetailsPopup';
 
 export const KnowledgeGraph = () => {
@@ -13,6 +13,8 @@ export const KnowledgeGraph = () => {
   const graph = useGraph();
 
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
+
+  const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
@@ -41,14 +43,20 @@ export const KnowledgeGraph = () => {
           graph={graph}
           settings={settings}
           selected={selectedNodes}
+          pinned={pinnedNodes}
+          onPin={node => setPinnedNodes(n => ([...n, node]))}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])}
           onUpdateViewport={transform => setTransform(() => transform)}/>
 
-        <SettingsPanel 
-          settings={settings}
-          onChangeSettings={setSettings} />
-
         <Legend />
+
+        <Controls 
+          isFullScreen={false} 
+          hasPinnedNodes={pinnedNodes.length > 0} 
+          settingsOpen={false}
+          onToggleFullscreen={() => console.log('toggle fullscreen')} 
+          onToggleSettings={() => console.log('toggle fullscreen')} 
+          onUnpinAllNodes={() => setPinnedNodes([])} />
 
         {selectedNodes.length > 0 && (
           <DetailsPopup

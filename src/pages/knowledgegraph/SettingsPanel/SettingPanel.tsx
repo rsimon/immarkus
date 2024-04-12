@@ -64,15 +64,15 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
             <div className="p-3">
             <div className="flex items-center gap-2 justify-between">
-                <Label htmlFor="show-isolated">
-                  Hide labels
-                </Label>
+              <Label htmlFor="show-isolated">
+                Hide labels
+              </Label>
 
-                <Switch 
-                  checked={props.settings.hideLabels}
-                  id="display-labels"
-                  onCheckedChange={checked => 
-                    props.onChangeSettings({...props.settings, hideLabels: checked})} />
+              <Switch 
+                checked={props.settings.hideLabels}
+                id="display-labels"
+                onCheckedChange={checked => 
+                  props.onChangeSettings({...props.settings, hideLabels: checked})} />
               </div>
 
               <p className="text-muted-foreground text-xs mt-1 pr-12">

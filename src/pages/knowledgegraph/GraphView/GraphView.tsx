@@ -4,6 +4,7 @@ import { Graph, GraphNode, GraphSettings, GraphViewportTransform } from '../Type
 import { PALETTE } from '../Palette';
 
 import './GraphView.css';
+import { usePrevious } from '@/utils/usePrevious';
 
 interface GraphViewProps {
 
@@ -13,7 +14,11 @@ interface GraphViewProps {
 
   selected: GraphNode[];
 
-  onSelect?(node?: NodeObject<GraphNode>): void;
+  pinned: NodeObject<GraphNode>[];
+
+  onSelect(node?: NodeObject<GraphNode>): void;
+
+  onPin(node: NodeObject<GraphNode>): void;
 
   onUpdateViewport?(transform: GraphViewportTransform): void;
 
@@ -28,6 +33,8 @@ const MIN_LINK_WIDTH = 1;
 export const GraphView = (props: GraphViewProps) => {
 
   const { graph } = props;
+
+  const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);
 
   const nodeScale = graph && (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
 
@@ -62,6 +69,32 @@ export const GraphView = (props: GraphViewProps) => {
     if (fg.current && !props.settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
   }, [props.settings.hideIsolatedNodes]);
 
+  useEffect(() => {
+    // Trivial solution for now
+    if (previousPinned?.length > 0 && props.pinned?.length === 0) {
+      previousPinned.forEach(n => {
+        n.fx = undefined;
+        n.fy = undefined;
+      })
+    }
+  }, [props.pinned]);
+
+  useEffect(() => {
+    const onResize = () => {
+      const { clientWidth, clientHeight } = el.current;
+      setDimensions([clientWidth, clientHeight]);
+    }
+
+    window.addEventListener('resize', onResize);
+
+    // Initial size
+    onResize();
+    
+    return () => {
+      window.removeEventListener('resize', onResize);
+    }
+  }, [graph]);
+
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
@@ -88,28 +121,20 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.globalAlpha = 1;
   }
 
+  const onNodeDragEnd = (node: NodeObject<GraphNode>) => {
+    // Pin this node
+    node.fx = node.x;
+    node.fy = node.y;
+
+    props.onPin(node);
+  }
+
   const onNodeHover = (node?: NodeObject<GraphNode>) => {
     if (node)
       el.current.style.cursor = 'pointer';
     else 
       el.current.style.cursor = 'default';
   }
-
-  useEffect(() => {
-    const onResize = () => {
-      const { clientWidth, clientHeight } = el.current;
-      setDimensions([clientWidth, clientHeight]);
-    }
-
-    window.addEventListener('resize', onResize);
-
-    // Initial size
-    onResize();
-    
-    return () => {
-      window.removeEventListener('resize', onResize);
-    }
-  }, [graph]);
 
   const getLinkWidth = (link: LinkObject) => {
     if (hasSelection) {
@@ -125,7 +150,7 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
-  const onUpdate = () => {
+  const onRender = () => {
     const { left, top } = el.current.getBoundingClientRect();
 
     const graph = fg.current;
@@ -153,8 +178,9 @@ export const GraphView = (props: GraphViewProps) => {
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           onBackgroundClick={() => props.onSelect(undefined)}
           onNodeClick={n => props.onSelect(n as GraphNode)}
+          onNodeDragEnd={onNodeDragEnd}
           onNodeHover={onNodeHover}
-          onRenderFramePost={onUpdate}/>
+          onRenderFramePost={onRender}/>
       )}
     </div>
   )
