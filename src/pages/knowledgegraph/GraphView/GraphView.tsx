@@ -179,6 +179,7 @@ export const GraphView = (props: GraphViewProps) => {
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           onBackgroundClick={onBackgroundClick}
+          onLinkClick={onBackgroundClick}
           onNodeClick={n => props.onSelect(n as GraphNode)}
           onNodeDragEnd={onNodeDragEnd}
           onNodeHover={onNodeHover} />
