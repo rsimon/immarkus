@@ -5,9 +5,9 @@ import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings } from './Types';
 import { useGraph } from './useGraph';
-import { Controls } from './Controls';
-import { SelectionDetails } from './SelectionDetails';
+import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
+import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 
 export const KnowledgeGraph = () => {
 
@@ -58,31 +58,30 @@ export const KnowledgeGraph = () => {
 
         <Legend />
 
-        <Controls 
-          isFullScreen={isFullscreen} 
-          hasPinnedNodes={pinnedNodes.length > 0} 
-          settingsOpen={showSettingsPanel}
-          onToggleFullscreen={() => seIsFullscreen(fullscreen => !fullscreen)}
-          onToggleSettings={() => setShowSettingsPanel(open => !open)}
-          onUnpinAllNodes={() => setPinnedNodes([])} />
-
-        <aside 
-          className="absolute right-2 top-0 bottom-16 w-[360px] p-4 flex flex-col 
-            gap-2 overflow-hidden pointer-events-none z-10">
-          <div className="flex-grow relative overflow-y-auto rounded-b">
-            {selectedNodes.length > 0 && (
-              <SelectionDetails
-                selected={selectedNodes[0]}
-                graph={graph} />
-            )}
+        <div className="absolute top-0 right-0 h-full flex">
+          <div className="relative">
+            <div className="absolute right-2 bottom-16 w-[360px] p-4 overflow-hidden pointer-events-none z-10">
+              <SettingsPanel 
+                open={showSettingsPanel} 
+                settings={settings}
+                onChangeSettings={setSettings} />
+            </div>
+              
+            <GraphControls 
+              isFullScreen={isFullscreen} 
+              hasPinnedNodes={pinnedNodes.length > 0} 
+              settingsOpen={showSettingsPanel}
+              onToggleFullscreen={() => seIsFullscreen(fullscreen => !fullscreen)}
+              onToggleSettings={() => setShowSettingsPanel(open => !open)}
+              onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
 
-          <SettingsPanel 
-            open={showSettingsPanel} 
-            settings={settings}
-            onChangeSettings={setSettings} />
-        </aside>
-      </main>
+          <SelectionDetailsDrawer 
+            graph={graph}
+            selected={selectedNodes[0]} 
+            onClose={() => setSelectedNodes([])} />
+        </div>
+      </main> 
     </div>
   )
 }

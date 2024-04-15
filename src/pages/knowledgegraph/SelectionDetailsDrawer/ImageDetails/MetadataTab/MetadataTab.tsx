@@ -1,20 +1,20 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { useFolderMetadata } from '@/store';
-import { FolderGridItem } from '../ItemGrid';
-import { PropertyValidation } from '@/components/PropertyFields';
-import { Button } from '@/ui/Button';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
+import { PropertyValidation } from '@/components/PropertyFields';
+import { Image } from '@/model';
+import { useImageMetadata } from '@/store';
+import { Button } from '@/ui/Button';
+import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 
-interface FolderMetadataPanelProps {
+interface MetadataTabProps {
 
-  folder: FolderGridItem;
+  image: Image;
 
 }
 
-export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
+export const MetadataTab = (props: MetadataTabProps) => {
 
-  const { metadata, updateMetadata } = useFolderMetadata(props.folder?.id);
+  const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
@@ -30,19 +30,15 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="flex flex-col justify-between h-full py-4 px-6"
+        className="flex-grow flex flex-col justify-betwee p-3 pt-5 pb-2"
         onSubmit={onSubmit}>
-        <div className="flex flex-col flex-grow">
-          <h2 className="leading-relaxed mr-5 mb-8 font-medium">
-            {props.folder.name}
-          </h2>
-          
-          <FolderMetadataForm
+        <div className="flex flex-col flex-grow">          
+          <ImageMetadataForm
             metadata={formState}
             onChange={setFormState} />
         </div>
 
-        <div className="pt-2 pb-4">        
+        <div className="pt-2">        
           <Button 
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
@@ -51,6 +47,7 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
           </Button>
         </div>
       </form>
+
     </PropertyValidation>
   )
 

@@ -1,5 +1,7 @@
-import React from 'react';
-import { PropertyDefinition } from '@/model';
+import { ReactNode } from 'react';
+import { ExternalAuthority, PropertyDefinition } from '@/model';
+import { W3CAnnotationBody } from '@annotorious/react';
+import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
 
 export const serializePropertyValue = (definition: PropertyDefinition, value?: any): string => {
   if (!value)
@@ -14,3 +16,4 @@ export const serializePropertyValue = (definition: PropertyDefinition, value?: a
   else
     return value.toString();
 }
+

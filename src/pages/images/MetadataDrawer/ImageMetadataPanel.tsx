@@ -1,16 +1,16 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImageMetadata } from '@/store';
-import { ImageGridItem } from '../ItemGrid';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
+import { Image } from '@/model';
 
 interface ImageMetadataPanelProps {
 
-  image: ImageGridItem;
+  image: Image;
 
 }
 
@@ -36,7 +36,7 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="flex flex-col justify-between h-full"
+        className="flex flex-col justify-between h-full py-4 px-6"
         onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">
           <h2 className="leading-relaxed mr-5 mb-8 font-medium">

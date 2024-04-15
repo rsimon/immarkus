@@ -51,6 +51,7 @@ export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
         <li 
           key={snippet.annotation.id}>
           <img
+            loading="lazy"
             src={URL.createObjectURL(new Blob([snippet.data]))}
             alt={image.name}
             className="w-20 h-20 object-cover aspect-square rounded-sm border" />
