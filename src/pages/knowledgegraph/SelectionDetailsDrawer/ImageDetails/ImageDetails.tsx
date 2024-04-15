@@ -46,7 +46,7 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
       <div className="p-3 text-sm">
         <h2 className="whitespace-nowrap overflow-hidden text- text-ellipsis mb-0.5">{image.name}</h2>
-        <div className="text-muted-foreground text-xs flex gap-1.5 mb-2">
+        <div className="text-muted-foreground text-xs flex gap-1.5 mb-4">
           <div className="mb-0.5 flex gap-1 items-center">
             {annotations ? annotations.length : 0} Annotations
           </div>  
@@ -83,12 +83,6 @@ export const ImageDetails = (props: ImageDetailsProps) => {
             <MetadataTab image={image} />
           </TabsContent>
         </Tabs>
-
-        <Button 
-          className="w-full"
-          onClick={() => navigate(`/annotate/${image.id}`)}>
-          Open Image
-        </Button>
       </div>
     </div>
   )

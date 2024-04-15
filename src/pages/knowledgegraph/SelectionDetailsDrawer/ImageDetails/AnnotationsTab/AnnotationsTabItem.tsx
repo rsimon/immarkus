@@ -39,9 +39,11 @@ export const AnnotationsTabItem = (props: AnnotationsTabItemProps) => {
         </ul>
       )}
 
-      {valuePreviews.map((node, idx) =>
-        <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
-      )}
+      <div className="px-0.5 text-xs">
+        {valuePreviews.map((node, idx) =>
+          <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
+        )}
+      </div>
     </div>
   )
 

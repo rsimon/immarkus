@@ -13,14 +13,16 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
   const { authorities } = useRuntimeConfig();
 
   return (
-    <div>
+    <ul>
       {props.annotations.map(annotation => (
-        <AnnotationsTabItem 
-          key={annotation.id}
-          annotation={annotation}
-          authorities={authorities} />
+        <li className="border rounded mb-2 p-2">
+          <AnnotationsTabItem 
+            key={annotation.id}
+            annotation={annotation}
+            authorities={authorities} />
+        </li>
       ))}
-    </div>
+    </ul>
   )
 
 }
