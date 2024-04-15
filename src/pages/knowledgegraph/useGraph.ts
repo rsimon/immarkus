@@ -29,7 +29,7 @@ export const useGraph = (includeFolders?: boolean) => {
 
       const getFolderDegree = (folder: Folder) => {
         const { folders, images } = store.getFolderContents(folder.handle);
-        return folders.length +  images.length;
+        return folders.length +  images.length + (folder.parent ? 1 : 0);
       }
 
       const getImageDegree = (image: Image) => {
@@ -42,11 +42,19 @@ export const useGraph = (includeFolders?: boolean) => {
           .filter(b => b.source)
           .map(b => b.source));
 
-        return entityIds.size;
+        const isSubFolder = 'id' in store.getFolder(image.folder);
+
+        return includeFolders 
+          // Add degree of one, if we are displaying folder links
+          ? entityIds.size + (isSubFolder ? 1 : 0)
+          : entityIds.size;
       }
 
-      const getEntityTypeDegree = (type: EntityType) =>
-        entityBodies.filter(b => b.source === type.id).length;
+      const getEntityTypeDegree = (type: EntityType) => {
+        const images = entityBodies.filter(b => b.source === type.id).length;
+        const childTypes = datamodel.getChildTypes(type.id).length;
+        return type.parentId ? images + childTypes + 1 : images + childTypes;
+      }
 
       const nodes: GraphNode[] = [
         ...(includeFolders ? folders.map(folder => ({

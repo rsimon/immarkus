@@ -1,7 +1,9 @@
 import { useTransition, animated, easings } from '@react-spring/web';
-import { Switch } from '@/ui/Switch';
+import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { Switch } from '@/ui/Switch';
 import { GraphSettings } from '../Types';
+import { Microscope } from 'lucide-react';
 
 interface SettingsPanelProps {
 
@@ -82,6 +84,15 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
           Remove unused entity classes and images without entity annotations from the graph.
+        </p>
+      </div>
+
+      <div className="px-3 py-4">
+        <Button className="w-full">
+          <Microscope className="h-5 w-5 mr-2" /> Graph Filters
+        </Button>
+        <p className="text-center text-muted-foreground text-xs pt-2 px-4">
+          Apply custom filter conditions to the graph.
         </p>
       </div>
     </animated.div>
