@@ -3,6 +3,8 @@ import { Grip, Plus } from 'lucide-react';
 import { useDraggable } from '@neodrag/react';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
+import { BuildStep } from './BuildStep';
+import { buildState } from './createConditionBuildState';
 import { 
   Select, 
   SelectContent, 
@@ -10,7 +12,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
-import { Separator } from '@/ui/Separator';
 
 interface QueryBuilderProps {
 
@@ -20,9 +21,13 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
   const el = useRef(null);
 
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
   const store = useStore();
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const datamodel = store.getDataModel();
+
+  const [state, setState] = useState<BuildStep[]>(buildState());
 
 	useDraggable(el, {
     position,
@@ -41,62 +46,21 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
         </div>
 
         <div className="text-xs flex items-center gap-2 pt-2">
-          <Select defaultValue="all">
-            <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-              <span className="overflow-hidden text-ellipsis text-xs">
-                <SelectValue />
-              </span>
-            </SelectTrigger>
+          {state.map(step => (
+            <Select defaultValue={step.options[0]}>
+              <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
+                <span className="overflow-hidden text-ellipsis text-xs">
+                  <SelectValue />
+                </span>
+              </SelectTrigger>
 
-            <SelectContent>
-              <SelectItem className="text-xs" value="all">All nodes</SelectItem>
-              <SelectItem value="entityTypes">Entity classes</SelectItem>
-              <SelectItem value="images">All Images</SelectItem>
-              <SelectItem value="folders">Folders</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <span>where</span>
-
-          <Select defaultValue="all">
-            <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-              <span className="overflow-hidden text-ellipsis text-xs">
-                <SelectValue />
-              </span>
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="all">Material</SelectItem>
-              <SelectItem value="entityTypes">Entity classes</SelectItem>
-              <SelectItem value="images">Images</SelectItem>
-              <SelectItem value="folders">Folders</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select>
-            <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-              <span className="overflow-hidden text-ellipsis">
-                <SelectValue />
-              </span>
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="is_defined">is defined</SelectItem>
-              <SelectItem value="is">is</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select>
-            <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-              <span className="overflow-hidden text-ellipsis">
-                <SelectValue />
-              </span>
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="wood">Wood</SelectItem>
-            </SelectContent>
-          </Select>.
+              <SelectContent>
+                {step.options.map(option => (
+                  <SelectItem key={option} className="text-xs" value={option}>{option}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ))}
         </div>
 
         <div className="pt-2">
