@@ -72,7 +72,23 @@ export const useGraph = () => {
           minDegree = n.degree;
       });
 
-      const links =
+      // Parent-relationship links between entity classes
+      const modelHierarchyLinks = datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
+        if (type.parentId) {
+          const parent = datamodel.getEntityType(type.parentId);
+          if (parent) {
+            // Create link from parent to this entity
+            return [...all, { source: parent.id, target: type.id, value: 1 }];
+          } else {
+            return all;
+          }
+        } else {
+          return all;
+        }
+      }, []);
+
+      // Links between annotations and entity types
+      const annotationLinks =
         result.reduce<GraphLink[]>((all, { annotations, image }) => {
           // N annotations on this image, each carrying 0 to M entity links
           const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
@@ -91,6 +107,8 @@ export const useGraph = () => {
 
           return [...all, ...entityLinks];
       }, []);
+
+      const links = [...modelHierarchyLinks, ...annotationLinks];
 
       // Flatten links
       const flattened = links.reduce<GraphLink[]>((agg, link) => {
