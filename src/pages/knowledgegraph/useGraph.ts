@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { EntityType, Image } from '@/model';
+import { EntityType, Folder, Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode } from './Types';
 
-export const useGraph = () => {
+export const useGraph = (includeFolders?: boolean) => {
 
   const store = useStore();
 
@@ -12,7 +12,7 @@ export const useGraph = () => {
 
   const [graph, setGraph] = useState<Graph>();
 
-  const { images } = store;
+  const { images, folders } = store;
 
   const promises = images.map(image => 
     store.getAnnotations(image.id, { type: 'image' }).then(annotations => ({ annotations, image })));
@@ -26,6 +26,11 @@ export const useGraph = () => {
       const entityBodies = annotations.reduce<W3CAnnotationBody[]>((all, annotation) => (
         [...all, ...(Array.isArray(annotation.body) ? annotation.body : [annotation.body])]
       ), []).filter(b => b.source);
+
+      const getFolderDegree = (folder: Folder) => {
+        // TODO
+        return 1;
+      }
 
       const getImageDegree = (image: Image) => {
         const annotations = result.find(t => t.image.id === image.id).annotations;
@@ -44,6 +49,13 @@ export const useGraph = () => {
         entityBodies.filter(b => b.source === type.id).length;
 
       const nodes: GraphNode[] = [
+        ...(includeFolders ? folders.map(folder => ({
+          id: folder.id,
+          label: folder.name,
+          type: 'FOLDER',
+          degree: getFolderDegree(folder),
+        } as GraphNode)) : []),
+
         ...images.map(image => ({ 
             id: image.id, 
             label: image.name,
@@ -72,9 +84,34 @@ export const useGraph = () => {
           minDegree = n.degree;
       });
 
+      // Links between folders & subfolderss
+      const subfolderLinks = includeFolders ? folders.reduce<GraphLink[]>((all, folder) => {
+        if (folder.parent) {
+          const parent = store.getFolder(folder.parent);
+          if (parent && 'id' in parent) {
+            return [...all, { source: parent.id, target: folder.id, value: 1 }]
+          } else {
+            return all;
+          }
+        } else {
+          return all;
+        }
+      }, []) : [];
+
+      // Links between images and subfolders
+      const imageFolderLinks = includeFolders ? images.reduce<GraphLink[]>((all, image) => {
+        const parentFolder = store.getFolder(image.folder);
+        if ('id' in parentFolder) {
+          return [...all, { source: parentFolder.id, target: image.id, value: 1 }]
+        } else {
+          return all;
+        }
+      }, []) : [];
+
       // Parent-relationship links between entity classes
       const modelHierarchyLinks = datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
         if (type.parentId) {
+          // Being defensive... make sure the parent ID actually exists
           const parent = datamodel.getEntityType(type.parentId);
           if (parent) {
             // Create link from parent to this entity
@@ -108,7 +145,12 @@ export const useGraph = () => {
           return [...all, ...entityLinks];
       }, []);
 
-      const links = [...modelHierarchyLinks, ...annotationLinks];
+      const links = [
+        ...subfolderLinks, 
+        ...imageFolderLinks, 
+        ...modelHierarchyLinks, 
+        ...annotationLinks
+      ];
 
       // Flatten links
       const flattened = links.reduce<GraphLink[]>((agg, link) => {
@@ -169,7 +211,7 @@ export const useGraph = () => {
         maxLinkWeight
       });
     });
-  }, []);
+  }, [includeFolders]);
 
   return graph;
 

@@ -11,13 +11,13 @@ import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 
 export const KnowledgeGraph = () => {
 
-  const graph = useGraph();
-
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<GraphSettings>({});
+
+  const graph = useGraph(settings.includeFolders);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
@@ -56,7 +56,8 @@ export const KnowledgeGraph = () => {
           onPin={node => setPinnedNodes(n => ([...n, node]))}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 
-        <Legend />
+        <Legend 
+          includeFolders={settings.includeFolders} />
 
         <div className="absolute top-0 right-0 h-full flex">
           <div className="relative">

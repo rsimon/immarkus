@@ -111,8 +111,11 @@ export const GraphView = (props: GraphViewProps) => {
     // Node should fade out if there is a selection, and this node is not in the neighbourhood
     const isFaded = hasSelection && !neighbourhood.has(node.id);
 
+    const color = node.type === 'IMAGE' 
+      ? PALETTE['blue'] : node.type === 'ENTITY_TYPE' ? PALETTE['green'] : PALETTE['purple'];
+
     ctx.globalAlpha = isFaded ? 0.12 : 1;
-    ctx.fillStyle = node.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue'];
+    ctx.fillStyle = color;
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 1 / scale;
 

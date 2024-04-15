@@ -32,12 +32,49 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       style={style}>
       <div className="p-3">
         <div className="flex items-center gap-2 justify-between">
-          <Label htmlFor="show-isolated">
+          <Label htmlFor="hide-labels">
+            Hide labels
+          </Label>
+
+          <Switch 
+            checked={props.settings.hideLabels}
+            id="hide-labels"
+            onCheckedChange={checked => 
+              props.onChangeSettings({...props.settings, hideLabels: checked})} />
+        </div>
+
+        <p className="text-muted-foreground text-xs mt-1 pr-12">
+          Don't show text labels for graph nodes. A hover tooltip
+          will be used instead.
+        </p>
+      </div>
+
+      <div className="p-3">
+        <div className="flex items-center gap-2 justify-between">
+          <Label htmlFor="include-folders">
+            Include subfolders in graph
+          </Label>
+
+          <Switch 
+            checked={props.settings.includeFolders}
+            id="include-folders"
+            onCheckedChange={checked => 
+              props.onChangeSettings({...props.settings, includeFolders: checked})} />
+        </div>
+
+        <p className="text-muted-foreground text-xs mt-1 pr-12">
+          Include subfolders inside your workfolder as nodes in the graph.
+        </p>
+      </div>
+
+      <div className="p-3">
+        <div className="flex items-center gap-2 justify-between">
+          <Label htmlFor="hide-isolated">
             Hide unconnected nodes
           </Label>
 
           <Switch 
-            id="show-isolated" 
+            id="hide-isolated" 
             checked={props.settings.hideIsolatedNodes}
             onCheckedChange={checked => 
               props.onChangeSettings({...props.settings, hideIsolatedNodes: checked})} />
@@ -45,25 +82,6 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
           Remove unused entity classes and images without entity annotations from the graph.
-        </p>
-      </div>
-
-      <div className="p-3">
-      <div className="flex items-center gap-2 justify-between">
-        <Label htmlFor="show-isolated">
-          Hide labels
-        </Label>
-
-        <Switch 
-          checked={props.settings.hideLabels}
-          id="display-labels"
-          onCheckedChange={checked => 
-            props.onChangeSettings({...props.settings, hideLabels: checked})} />
-        </div>
-
-        <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Don't show text labels for graph nodes. A hover tooltip
-          will be used instead.
         </p>
       </div>
     </animated.div>
