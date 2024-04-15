@@ -3,6 +3,8 @@ import { EntityType } from '@/model';
 import { Graph } from '../../Types';
 import { AnnotatedEntities } from './AnnotatedEntities';
 import { Separator } from '@/ui/Separator';
+import { Button } from '@/ui/Button';
+import { useNavigate } from 'react-router-dom';
 
 interface EntityTypeDetailsProps {
 
@@ -18,6 +20,10 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
   const linkedNodes = props.graph.getLinkedNodes(type.id);
 
+  const navigate = useNavigate();
+
+  const onOpen = (id: string) => navigate(`/annotate/${id}`);
+
   return (
     <aside>
       <div className="p-4">
@@ -29,7 +35,7 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
         )}
       </div>
 
-      <div className="bg-gray-300/20 pb-1.5">
+      <div className="pb-1.5">
         {linkedNodes.map(node => (
           <section 
             key={node.id} 
@@ -42,6 +48,16 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
               key={node.id}
               imageId={node.id} 
               entityType={type} />
+
+            <p>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="mt-3 text-xs"
+                onClick={() => onOpen(node.id)}>
+                Open Image
+              </Button>
+            </p>
           </section>
         ))}
       </div>
