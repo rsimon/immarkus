@@ -34,14 +34,22 @@ export const ImageDetails = (props: ImageDetailsProps) => {
     store.getAnnotations(image.id, { type: 'image' }).then(setAnnotations);
   }, [store, image]);
 
+  const onOpen = () => navigate(`/annotate/${props.image.id}`);
+
   return (
     <div className="h-full flex flex-col overflow-y-auto">
       <header className="h-48 basis-48 flex-shrink-0 overflow-hidden relative border-b">
         {loaded && (
           <img 
             onLoad={onLoad}
-            className="object-cover" src={URL.createObjectURL(loaded.data)} />
+            className="object-cover object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
         )}
+
+        <Button 
+          className="absolute bottom-3 right-2 rounded-full px-4 py-1.5 h-auto"
+          onClick={onOpen}>
+          Open Image
+        </Button>
       </header>
 
       <div className="text-sm flex flex-col flex-grow">
