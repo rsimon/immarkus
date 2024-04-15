@@ -28,8 +28,8 @@ export const useGraph = (includeFolders?: boolean) => {
       ), []).filter(b => b.source);
 
       const getFolderDegree = (folder: Folder) => {
-        // TODO
-        return 1;
+        const { folders, images } = store.getFolderContents(folder.handle);
+        return folders.length +  images.length;
       }
 
       const getImageDegree = (image: Image) => {

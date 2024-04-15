@@ -52,7 +52,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <div className="p-3">
         <div className="flex items-center gap-2 justify-between">
           <Label htmlFor="include-folders">
-            Include subfolders in graph
+            Show sub-folders as nodes
           </Label>
 
           <Switch 
@@ -63,7 +63,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Include subfolders inside your workfolder as nodes in the graph.
+          Include sub-folders inside your workfolder as nodes in the graph.
         </p>
       </div>
 
