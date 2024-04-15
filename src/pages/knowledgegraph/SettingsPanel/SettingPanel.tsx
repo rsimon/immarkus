@@ -13,6 +13,8 @@ interface SettingsPanelProps {
 
   onChangeSettings(changed: GraphSettings): void;
 
+  onToggleQueryBuilder(): void;
+
 }
 
 export const SettingsPanel = (props: SettingsPanelProps) => {
@@ -88,11 +90,13 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       </div>
 
       <div className="px-3 py-4">
-        <Button className="w-full">
-          <Microscope className="h-5 w-5 mr-2" /> Graph Filters
+        <Button 
+          className="w-full"
+          onClick={props.onToggleQueryBuilder}>
+          <Microscope className="h-5 w-5 mr-2" /> Query Builder
         </Button>
-        <p className="text-center text-muted-foreground text-xs pt-2 px-4">
-          Apply custom filter conditions to the graph.
+        <p className="text-center text-muted-foreground text-xs pt-1 px-4">
+          Explore your graph with query conditions.
         </p>
       </div>
     </animated.div>

@@ -8,6 +8,7 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
+import { QueryBuilder } from './QueryBuilder';
 
 export const KnowledgeGraph = () => {
 
@@ -20,6 +21,8 @@ export const KnowledgeGraph = () => {
   const graph = useGraph(settings.includeFolders);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
+
+  const [showQueryBuilder, setShowQueryBuilder] = useState(false);
 
   const [isFullscreen, seIsFullscreen] = useState(false);
 
@@ -65,7 +68,8 @@ export const KnowledgeGraph = () => {
               <SettingsPanel 
                 open={showSettingsPanel} 
                 settings={settings}
-                onChangeSettings={setSettings} />
+                onChangeSettings={setSettings} 
+                onToggleQueryBuilder={() => setShowQueryBuilder(show => !show)} />
             </div>
               
             <GraphControls 
@@ -82,6 +86,10 @@ export const KnowledgeGraph = () => {
             selected={selectedNodes[0]} 
             onClose={() => setSelectedNodes([])} />
         </div>
+
+        {showQueryBuilder && (
+          <QueryBuilder />
+        )}
       </main> 
     </div>
   )
