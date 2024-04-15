@@ -8,6 +8,7 @@ import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { AnnotationsTab } from './AnnotationsTab/AnnotationsTab';
 import { MetadataTab } from './MetadataTab';
+import { Info, MessagesSquare } from 'lucide-react';
 
 interface ImageDetailsProps {
 
@@ -34,35 +35,41 @@ export const ImageDetails = (props: ImageDetailsProps) => {
   }, [store, image]);
 
   return (
-    <aside>
-      <header className="h-32 overflow-hidden relative border-b">
+    <div>
+      <header className="h-48 overflow-hidden relative border-b">
         {loaded && (
           <img 
             onLoad={onLoad}
-            className="w-full h-full rounded-tl rounded-tr object-cover" src={URL.createObjectURL(loaded.data)} />
+            className="w-full h-full object-cover" src={URL.createObjectURL(loaded.data)} />
         )}
       </header>
 
-      <div className="px-3 py-4 text-sm">
+      <div className="p-3 text-sm">
         <h2 className="whitespace-nowrap overflow-hidden text- text-ellipsis mb-0.5">{image.name}</h2>
-        <div className="text-muted-foreground text-xs mb-4">
-          {dimensions && (
-            <>{dimensions[0]} x {dimensions[1]}</>
-          )}
+        <div className="text-muted-foreground text-xs flex gap-1.5 mb-2">
+          <div className="mb-0.5 flex gap-1 items-center">
+            {annotations ? annotations.length : 0} Annotations
+          </div>  
+          <div>·</div>
+          <div className="mb-0.5 flex gap-1 items-center">
+            {dimensions && (
+              <>{dimensions[0]} x {dimensions[1]}</>
+            )}
+          </div>
         </div>
 
         <Tabs defaultValue="annotations">
-          <TabsList className="gap-2 mb-4">
+          <TabsList className="gap-2 mb-4 -mx-0.5">
             <TabsTrigger
               value="annotations" 
               className="text-xs font-normal">
-              {annotations ? annotations.length : 0} Annotations
+              <MessagesSquare className="h-3.5 w-3.5 mr-1.5" />Annotations
             </TabsTrigger>
 
             <TabsTrigger 
               value="information"
               className="text-xs font-normal">
-              Information
+              <Info className="h-3.5 w-3.5 mr-1.5" />Information
             </TabsTrigger>
           </TabsList>
 
@@ -83,7 +90,7 @@ export const ImageDetails = (props: ImageDetailsProps) => {
           Open Image
         </Button>
       </div>
-    </aside>
+    </div>
   )
   
 }

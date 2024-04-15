@@ -54,7 +54,7 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
       <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto box-border">
         <button 
           onClick={props.onClose}
-          className="absolute right-2 bg-white/90 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+          className="absolute right-2 bg-white/80 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
           <X className="w-6 h-6 p-0.5" />
         </button>
 
