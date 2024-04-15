@@ -1,8 +1,11 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
+import { cn } from '@/ui/utils';
 
 interface MetadataDrawerProps <T extends unknown>{
+
+  className?: string;
 
   content: (data: T) => ReactNode;
 
@@ -42,15 +45,17 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     previous.current = props.data;
   }, [props.data]);
 
+  const className = cn(props.className, 'flex-grow-0 flex-shrink-0 relative border-l shadow-sm');
+
   return transition((style, d) => d && (
     <animated.div 
       style={style}
-      className="flex-grow-0 flex-shrink-0 relative border-l shadow-sm">
-      <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto py-4 px-6 box-border">
+      className={className}>
+      <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto box-border">
         <button 
           onClick={props.onClose}
-          className="absolute left-[300px] top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
-          <X className="w-5 h-5 p-0.5" />
+          className="absolute right-2 bg-white/90 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+          <X className="w-6 h-6 p-0.5" />
         </button>
 
         {props.content(d)}

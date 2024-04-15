@@ -1,8 +1,7 @@
-import { TooltippedButton } from "@/components/TooltippedButton";
-import { Button } from "@/ui/Button";
-import { Fullscreen, Maximize, PinOff, Settings } from "lucide-react";
+import { Fullscreen, PinOff, Settings } from 'lucide-react';
+import { TooltippedButton } from '@/components/TooltippedButton';
 
-interface ControlsProps {
+interface GraphControlsProps {
 
   hasPinnedNodes: boolean;
 
@@ -18,7 +17,7 @@ interface ControlsProps {
 
 }
 
-export const Controls = (props: ControlsProps) => {
+export const GraphControls = (props: GraphControlsProps) => {
 
   return (
     <div className="absolute bottom-6 right-6 flex gap-2.5">

@@ -14,7 +14,7 @@ interface MetadataDrawerProps {
 export const MetadataDrawer = (props: MetadataDrawerProps) => {
 
   return (
-    <Drawer 
+    <Drawer
       data={props.item}
       onClose={props.onClose}
       content={item => item.type === 'folder' ? (

@@ -5,9 +5,9 @@ import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings } from './Types';
 import { useGraph } from './useGraph';
-import { Controls } from './Controls';
+import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
-import { DetailsDrawer } from './DetailsDrawer';
+import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 
 export const KnowledgeGraph = () => {
 
@@ -67,7 +67,7 @@ export const KnowledgeGraph = () => {
                 onChangeSettings={setSettings} />
             </div>
               
-            <Controls 
+            <GraphControls 
               isFullScreen={isFullscreen} 
               hasPinnedNodes={pinnedNodes.length > 0} 
               settingsOpen={showSettingsPanel}
@@ -76,7 +76,7 @@ export const KnowledgeGraph = () => {
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
 
-          <DetailsDrawer 
+          <SelectionDetailsDrawer 
             graph={graph}
             selected={selectedNodes[0]} 
             onClose={() => setSelectedNodes([])} />
