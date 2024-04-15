@@ -21,7 +21,7 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
 
   return (
     <Drawer
-      className="bg-white/80 backdrop-blur-sm"
+      className="bg-white/80 backdrop-blur-sm shadow"
       data={props.selected}
       onClose={props.onClose}
       content={selected => selected.type === 'ENTITY_TYPE' ? (

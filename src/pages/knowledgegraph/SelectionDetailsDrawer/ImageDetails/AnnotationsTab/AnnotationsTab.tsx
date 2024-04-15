@@ -13,9 +13,9 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
   const { authorities } = useRuntimeConfig();
 
   return (
-    <ul>
+    <ul className="p-2">
       {props.annotations.map(annotation => (
-        <li className="border rounded mb-2 p-2">
+        <li>
           <AnnotationsTabItem 
             key={annotation.id}
             annotation={annotation}

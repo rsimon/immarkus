@@ -26,7 +26,7 @@ export const AnnotationsTabItem = (props: AnnotationsTabItemProps) => {
   const valuePreviews = useValuePreviews(bodies);
 
   return (
-    <div>
+    <div className="border rounded mb-2 p-2 shadow-ms">
       {entityTags.length > 0 && (
         <ul 
           className="line-clamp-1 mr-8">

@@ -45,7 +45,7 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     previous.current = props.data;
   }, [props.data]);
 
-  const className = cn(props.className, 'flex-grow-0 flex-shrink-0 relative border-l shadow-sm');
+  const className = cn('flex-grow-0 flex-shrink-0 relative border-l', props.className);
 
   return transition((style, d) => d && (
     <animated.div 
