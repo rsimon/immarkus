@@ -18,7 +18,7 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
   const { type } = props;
 
-  const linkedNodes = props.graph.getLinkedNodes(type.id);
+  const linkedNodes = props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE');
 
   const navigate = useNavigate();
 
