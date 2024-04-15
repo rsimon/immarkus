@@ -18,6 +18,8 @@ interface MetadataDrawerProps <T extends unknown>{
 
 export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
 
+  const width = props.width || 340;
+
   const previous = useRef<T | undefined>();
 
   const shouldAnimate = 
@@ -27,9 +29,9 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     previous.current && !props.data;
 
   const transition = useTransition([props.data], {
-    from: { flexBasis: 0 },
-    enter: { flexBasis: props.width || 340 },
-    leave: { flexBasis: 0 },
+    from: { flexBasis: 0, width: 0 },
+    enter: { flexBasis: width, width },
+    leave: { flexBasis: 0, width: 0 },
     config:{
       duration: shouldAnimate ? props.duration || 150 : 0,
       easing: easings.easeInCubic

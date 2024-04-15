@@ -23,8 +23,7 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
       ) : item.type === 'image' && (
         <ImageMetadataPanel 
           image={item as ImageGridItem} />
-      )}>
-    </Drawer>
+      )} />
   )
 
 }
