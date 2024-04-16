@@ -10,8 +10,6 @@ export const App = () => {
   const store = useStore();
 
   const { pathname } = useLocation();
-
-  console.log(pathname);
   
   return store ? (
     <Routes>
@@ -45,7 +43,7 @@ export const App = () => {
       </Route>
     </Routes>
   ) : (
-    <Start redirectTo={pathname} />
+    <Start redirectTo={pathname === '/' ? undefined : pathname} />
   )
 
 }
