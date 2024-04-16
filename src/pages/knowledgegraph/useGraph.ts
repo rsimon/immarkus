@@ -40,8 +40,11 @@ export const useGraph = () => {
         return entityIds.size;
       }
 
-      const getEntityTypeDegree = (type: EntityType) =>
-        entityBodies.filter(b => b.source === type.id).length;
+      const getEntityTypeDegree = (type: EntityType) => {
+        const images = entityBodies.filter(b => b.source === type.id).length;
+        const childTypes = datamodel.getChildTypes(type.id).length;
+        return type.parentId ? images + childTypes + 1 : images + childTypes;
+      }
 
       const nodes: GraphNode[] = [
         ...images.map(image => ({ 
