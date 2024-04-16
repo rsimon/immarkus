@@ -27,6 +27,12 @@ export interface GraphNode {
   type: 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
 
   degree: number;
+
+  properties?: {
+
+    [key: string]: string;
+    
+  }
   
 }
 

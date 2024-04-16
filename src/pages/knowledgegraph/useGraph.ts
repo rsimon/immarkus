@@ -15,15 +15,20 @@ export const useGraph = (includeFolders?: boolean) => {
   const { images, folders } = store;
 
   const promises = images.map(image => 
-    store.getAnnotations(image.id, { type: 'image' }).then(annotations => ({ annotations, image })));
+    store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
 
   useEffect(() => {
     Promise.all(promises).then(result => {
-      const annotations = result.reduce<W3CAnnotation[]>((all, { annotations }) => (
-        [...all, ...annotations]
+      const imageAnnotations = result.reduce<W3CAnnotation[]>((all, { annotations }) => (
+        [...all, ...annotations.filter(a => 'selector' in a.target)]
       ), []);
 
-      const entityBodies = annotations.reduce<W3CAnnotationBody[]>((all, annotation) => (
+      const metadata: Map<string, W3CAnnotation> = new Map(result
+        .map(({ image, annotations }) => 
+            ([image.id, annotations.find(a => !('selector' in a.target))] as [string, W3CAnnotation]))
+        .filter(t => t[1]));
+
+      const entityBodies = imageAnnotations.reduce<W3CAnnotationBody[]>((all, annotation) => (
         [...all, ...(Array.isArray(annotation.body) ? annotation.body : [annotation.body])]
       ), []).filter(b => b.source);
 
@@ -68,7 +73,8 @@ export const useGraph = (includeFolders?: boolean) => {
             id: image.id, 
             label: image.name,
             type: 'IMAGE', 
-            degree: getImageDegree(image) 
+            degree: getImageDegree(image),
+            properties: (metadata.get(image.id)?.body as any)?.properties 
           } as GraphNode)),
 
         ...datamodel.entityTypes.map(type => ({ 
@@ -78,6 +84,8 @@ export const useGraph = (includeFolders?: boolean) => {
             degree: getEntityTypeDegree(type)
           } as GraphNode)),
       ];
+
+      console.log(nodes);
 
       // Record minimum & maximum number of links per node
       let minDegree = result.length === 0 ? 0 : Infinity;
