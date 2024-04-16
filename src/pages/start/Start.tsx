@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';
@@ -16,8 +16,6 @@ interface StartProps {
 }
 
 export const Start = (props: StartProps) => {
-
-  console.log('start', props.redirectTo);
 
   const [state, setState] = useState<State>('idle');
 

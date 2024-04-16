@@ -1,10 +1,8 @@
 import { useRef, useState } from 'react';
 import { Grip, Plus } from 'lucide-react';
 import { useDraggable } from '@neodrag/react';
-import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { BuildStep } from './BuildStep';
-import { buildState } from './createConditionBuildState';
+import { useQueryBuilderState } from './useQueryBuilderState';
 import { 
   Select, 
   SelectContent, 
@@ -23,11 +21,7 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const store = useStore();
-
-  const datamodel = store.getDataModel();
-
-  const [state, setState] = useState<BuildStep[]>(buildState());
+  const { steps, select } = useQueryBuilderState();
 
 	useDraggable(el, {
     position,
@@ -46,8 +40,11 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
         </div>
 
         <div className="text-xs flex items-center gap-2 pt-2">
-          {state.map(step => (
-            <Select defaultValue={step.options[0]}>
+          {steps.map(step => (
+            <Select 
+              key={step.step}
+              value={step.selected} 
+              onValueChange={value => select(step.step, value)}>
               <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
                 <span className="overflow-hidden text-ellipsis text-xs">
                   <SelectValue />
@@ -56,7 +53,10 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
               <SelectContent>
                 {step.options.map(option => (
-                  <SelectItem key={option} className="text-xs" value={option}>{option}</SelectItem>
+                  <SelectItem 
+                    className="text-xs"
+                    key={option.value} 
+                    value={option.value}>{option.label}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
