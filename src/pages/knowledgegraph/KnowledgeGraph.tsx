@@ -18,6 +18,8 @@ export const KnowledgeGraph = () => {
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
+  const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
+
   const graph = useGraph(settings.includeFolders);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
@@ -55,6 +57,7 @@ export const KnowledgeGraph = () => {
           settings={settings}
           selected={selectedNodes}
           pinned={pinnedNodes}
+          query={query}
           onBackgroundClick={() => setShowSettingsPanel(false)}
           onPin={node => setPinnedNodes(n => ([...n, node]))}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
@@ -88,7 +91,8 @@ export const KnowledgeGraph = () => {
         </div>
 
         {showQueryBuilder && (
-          <QueryBuilder />
+          <QueryBuilder 
+            onChangeQuery={query => setQuery(() => query)} />
         )}
       </main> 
     </div>

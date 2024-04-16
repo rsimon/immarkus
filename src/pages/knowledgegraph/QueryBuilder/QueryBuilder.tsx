@@ -1,8 +1,11 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Grip, Plus } from 'lucide-react';
 import { useDraggable } from '@neodrag/react';
+import { NodeObject } from 'react-force-graph-2d';
 import { Button } from '@/ui/Button';
+import { BuildStep } from './BuildStep';
 import { useQueryBuilderState } from './useQueryBuilderState';
+import { GraphNode } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -13,6 +16,8 @@ import {
 
 interface QueryBuilderProps {
 
+  onChangeQuery(query?: ((n: NodeObject<GraphNode>) => boolean)): void;
+
 }
 
 export const QueryBuilder = (props: QueryBuilderProps) => {
@@ -21,12 +26,41 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { steps, select } = useQueryBuilderState();
+  const { query, steps, select } = useQueryBuilderState();
+
+  const [ step1, ...stepsN ] = steps;
+
+  useEffect(() => {
+    props.onChangeQuery(query);
+  }, [query]);
 
 	useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
   });
+
+
+  const renderStep = (step: BuildStep) => (
+    <Select 
+      key={step.step}
+      value={step.selected} 
+      onValueChange={value => select(step.step, value)}>
+      <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
+        <span className="overflow-hidden text-ellipsis text-xs">
+          <SelectValue />
+        </span>
+      </SelectTrigger>
+
+      <SelectContent>
+        {step.options.map(option => (
+          <SelectItem 
+            className="text-xs"
+            key={option.value} 
+            value={option.value}>{option.label}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
 
   return (
     <div 
@@ -40,27 +74,7 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
         </div>
 
         <div className="text-xs flex items-center gap-2 pt-2">
-          {steps.map(step => (
-            <Select 
-              key={step.step}
-              value={step.selected} 
-              onValueChange={value => select(step.step, value)}>
-              <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-                <span className="overflow-hidden text-ellipsis text-xs">
-                  <SelectValue />
-                </span>
-              </SelectTrigger>
-
-              <SelectContent>
-                {step.options.map(option => (
-                  <SelectItem 
-                    className="text-xs"
-                    key={option.value} 
-                    value={option.value}>{option.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          ))}
+          Show {renderStep(step1)} where {stepsN.map(renderStep)}
         </div>
 
         <div className="pt-2">

@@ -12,6 +12,8 @@ interface GraphViewProps {
 
   isFullscreen: boolean;
 
+  query?: ((n: NodeObject<GraphNode>) => boolean);
+
   settings: GraphSettings;
 
   selected: GraphNode[];
@@ -62,10 +64,14 @@ export const GraphView = (props: GraphViewProps) => {
   const hasSelection = props.selected.length > 0;
   const selectedIds = new Set(props.selected.map(n => n.id));
 
-  const nodeFilter = useMemo(() => (props.settings.hideIsolatedNodes 
+  const nodeFilter = useMemo(() => {
+    return props.query
+    /*
+    props.settings.hideIsolatedNodes 
     ? (node: NodeObject<GraphNode>) => node.degree > 0
     : undefined
-  ), [props.settings]);
+    */
+  }, [props.settings, props.query]);
 
   useEffect(() => {
     if (fg.current && !props.settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
