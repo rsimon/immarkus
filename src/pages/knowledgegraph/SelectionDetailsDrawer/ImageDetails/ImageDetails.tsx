@@ -81,7 +81,7 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
         <div className="flex-grow flex flex-col">
           <Tabs defaultValue="annotations" className="flex-grow flex flex-col relative">
-            <TabsList className="gap-2 -mx-0.5 px-3 py-0 bg-transparent rounded-none border-b flex justify-start shadow-sm relative">
+            <TabsList className="gap-2 px-3 py-0 bg-transparent rounded-none border-b flex justify-start shadow-sm relative">
               <TabsTrigger
                 value="annotations" 
                 className="text-xs h-full font-normal rounded-none border-b-2 border-transparent data-[state=active]:border-black pl-1 pr-1.5 py-1.5 shadow-none">
