@@ -1,14 +1,23 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';
 import { UnsupportedBrowser } from './UnsupportedBrowser';
 import { storeHandle } from './storedHandles';
+import { Jump } from './Jump';
 
 type State = 'idle' | 'loading' | 'error';
 
-export const Start = () => {
+interface StartProps {
+
+  redirectTo?: string;
+  
+}
+
+export const Start = (props: StartProps) => {
+
+  console.log('start', props.redirectTo);
 
   const [state, setState] = useState<State>('idle');
 
@@ -35,7 +44,7 @@ export const Start = () => {
       await initStore(handle);
       
       // Done - navigate to root
-      navigate('/'); 
+      navigate(props.redirectTo || '/'); 
     } catch (error) {
       console.error(error);
       setState('error');
@@ -56,6 +65,8 @@ export const Start = () => {
         <UnsupportedBrowser />
       ) : state === 'loading' ? (
         <Loading />
+      ) : props.redirectTo ? (
+        <Jump to={props.redirectTo} onOpenFolder={onOpenFolder} />
       ) : (
         <Open onOpenFolder={onOpenFolder} />
       )}

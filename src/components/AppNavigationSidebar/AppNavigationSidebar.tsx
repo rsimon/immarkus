@@ -16,7 +16,7 @@ export const AppNavigationSidebar = () => {
   return (
     <aside className="main-nav">
       <h1 className="text-imarkus font-semibold text-lg mb-6 mt-1 ml-3">
-        <button onClick={() => location.reload()}>IMMARKUS</button>
+        <button onClick={() => location.href = '/'}>IMMARKUS</button>
       </h1>
 
       <nav>

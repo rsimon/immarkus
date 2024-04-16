@@ -8,7 +8,7 @@ import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { AnnotationsTab } from './AnnotationsTab/AnnotationsTab';
 import { MetadataTab } from './MetadataTab';
-import { Info, MessagesSquare } from 'lucide-react';
+import { AppWindow, Info, MessagesSquare } from 'lucide-react';
 
 interface ImageDetailsProps {
 
@@ -34,7 +34,9 @@ export const ImageDetails = (props: ImageDetailsProps) => {
     store.getAnnotations(image.id, { type: 'image' }).then(setAnnotations);
   }, [store, image]);
 
-  const onOpen = () => navigate(`/annotate/${props.image.id}`);
+  const onOpen = () => navigate(`/annotate/${props.image.id}`, );
+  
+  const onOpenNewTab = () => window.open(`#/annotate/${props.image.id}`, '_blank');
 
   return (
     <div className="h-full flex flex-col overflow-y-auto">
@@ -45,11 +47,20 @@ export const ImageDetails = (props: ImageDetailsProps) => {
             className="object-cover object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
         )}
 
-        <Button 
-          className="absolute bottom-3 right-2 rounded-full px-4 py-1.5 h-auto"
-          onClick={onOpen}>
-          Open Image
-        </Button>
+        <div className="absolute bottom-3 right-2 flex items-center">
+          <Button 
+            className="pl-3 pr-2 py-1.5 h-8 rounded-full rounded-r-none"
+            onClick={onOpen}>
+            Open Image
+          </Button>
+
+          <Button 
+            size="icon"
+            className="pl-1 pr-2 py-1.5 h-8 rounded-full  rounded-l-none border-l border-white/20"
+            onClick={onOpenNewTab}>
+            <AppWindow className="h-4 w-4" />
+          </Button>
+        </div>
       </header>
 
       <div className="text-sm flex flex-col flex-grow">
