@@ -32,9 +32,9 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     previous.current && !props.data;
 
   const transition = useTransition([props.data], {
-    from: { flexBasis: 0, width: 0 },
-    enter: { flexBasis: width, width },
-    leave: { flexBasis: 0, width: 0 },
+    from: { width: 0 },
+    enter: { width },
+    leave: { width: 0 },
     config:{
       duration: shouldAnimate ? props.duration || 150 : 0,
       easing: easings.easeInCubic
