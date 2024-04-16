@@ -1,14 +1,17 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppNavigationSidebar } from './components/AppNavigationSidebar';
-import { Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
+import { About, Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
 import { useStore } from './store';
 
 import './App.css';
-import { About } from './pages/about';
 
 export const App = () => {
 
   const store = useStore();
+
+  const { pathname } = useLocation();
+
+  console.log(pathname);
   
   return store ? (
     <Routes>
@@ -42,7 +45,7 @@ export const App = () => {
       </Route>
     </Routes>
   ) : (
-    <Start />
+    <Start redirectTo={pathname} />
   )
 
 }

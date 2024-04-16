@@ -1,3 +1,4 @@
+export * from './about';
 export * from './annotate';
 export * from './datamodel';
 export * from './export';

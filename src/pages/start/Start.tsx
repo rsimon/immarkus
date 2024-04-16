@@ -8,7 +8,13 @@ import { storeHandle } from './storedHandles';
 
 type State = 'idle' | 'loading' | 'error';
 
-export const Start = () => {
+interface StartProps {
+
+  redirectTo?: string;
+  
+}
+
+export const Start = (props: StartProps) => {
 
   const [state, setState] = useState<State>('idle');
 
@@ -35,7 +41,7 @@ export const Start = () => {
       await initStore(handle);
       
       // Done - navigate to root
-      navigate('/'); 
+      navigate(props.redirectTo || '/'); 
     } catch (error) {
       console.error(error);
       setState('error');
