@@ -51,7 +51,7 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     <animated.div 
       style={style}
       className={className}>
-      <aside className="w-[340px] absolute top-0 left-0 h-full overflow-y-auto box-border">
+      <aside className="w-[340px] overflow-hidden absolute top-0 left-0 h-full overflow-y-auto box-border">
         <button 
           onClick={props.onClose}
           className="absolute right-2 bg-white/80 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
