@@ -70,6 +70,7 @@ export const KnowledgeGraph = () => {
             <div className="absolute right-2 bottom-16 w-[360px] p-4 overflow-hidden pointer-events-none z-10">
               <SettingsPanel 
                 open={showSettingsPanel} 
+                isQueryBuildOpen={showQueryBuilder}
                 settings={settings}
                 onChangeSettings={setSettings} 
                 onToggleQueryBuilder={() => setShowQueryBuilder(show => !show)} />
@@ -92,7 +93,8 @@ export const KnowledgeGraph = () => {
 
         {showQueryBuilder && (
           <QueryBuilder 
-            onChangeQuery={query => setQuery(() => query)} />
+            onChangeQuery={query => setQuery(() => query)} 
+            onClose={() => setShowQueryBuilder(false)} />
         )}
       </main> 
     </div>

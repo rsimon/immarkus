@@ -7,6 +7,8 @@ import { Microscope } from 'lucide-react';
 
 interface SettingsPanelProps {
 
+  isQueryBuildOpen: boolean;
+
   open: boolean;
 
   settings: GraphSettings;
@@ -89,15 +91,14 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </p>
       </div>
 
-      <div className="px-3 py-4">
+      <div className="px-3 pt-6 pb-4">
         <Button 
           className="w-full"
+          variant={props.isQueryBuildOpen ? 'outline' : undefined}
           onClick={props.onToggleQueryBuilder}>
-          <Microscope className="h-5 w-5 mr-2" /> Query Builder
+          <Microscope className="h-5 w-5 mr-2" />
+          {props.isQueryBuildOpen ? 'Close Query Builder' : 'Open Query Builder'}
         </Button>
-        <p className="text-center text-muted-foreground text-xs pt-1 px-4">
-          Explore your graph with query conditions.
-        </p>
       </div>
     </animated.div>
   ))
