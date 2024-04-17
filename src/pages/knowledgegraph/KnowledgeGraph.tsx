@@ -34,7 +34,7 @@ export const KnowledgeGraph = () => {
         <AppNavigationSidebar />
       )}
 
-      <main className="page graph relative">
+      <main className="page graph relative overflow-x-hidden">
         {!isFullscreen && (
           <div className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">

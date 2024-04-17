@@ -1,3 +1,7 @@
+.graph-view .force-graph-container {
+  overflow: hidden;
+}
+
 .graph-view .force-graph-container .clickable {
   cursor: inherit;
 }

@@ -175,7 +175,7 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   return (
-    <div ref={el} className="graph-view w-full h-full">
+    <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
         <ForceGraph2D 
           ref={fg}
