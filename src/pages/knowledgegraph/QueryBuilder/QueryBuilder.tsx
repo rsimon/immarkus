@@ -35,13 +35,15 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
     <div 
       ref={el}
       className="bg-white backdrop-blur-sm border absolute bottom-16 left-7 rounded shadow-lg z-30">
-      <div className="px-3 pt-2.5 pb-3">
-        <div className="cursor-move mb-4 text-xs font-medium text-muted-foreground flex items-center gap-1">
+    
+      <div className="p-2 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
+        <div className="flex items-center gap-1">
           <Grip className="w-4 h-4" />
-
           <span>Query Builder</span>
         </div>
+      </div>
 
+      <div className="p-2 pr-6">
         <div className="text-xs flex items-center gap-2">
           <span className="w-12 text-right">
             Show

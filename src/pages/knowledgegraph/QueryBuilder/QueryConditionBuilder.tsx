@@ -46,7 +46,7 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
   }, [objectOptions]);
 
   const selectStyle = 
-    'rounded-none min-w-36 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
+    'rounded-none min-w-32 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
 
   return (
     <div className="text-xs flex items-center gap-2 pt-2">
