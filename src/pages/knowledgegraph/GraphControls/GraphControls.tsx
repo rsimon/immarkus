@@ -35,7 +35,7 @@ export const GraphControls = (props: GraphControlsProps) => {
         size="icon"
         variant={props.isFullScreen ? undefined : 'outline'}
         className={props.isFullScreen 
-          ? 'rounded-full bg-black '
+          ? 'rounded-full bg-black'
           : 'rounded-full bg-white/70 backdrop-blur-sm'}
         tooltip="Toggle fullscreen"
         onClick={props.onToggleFullscreen}>

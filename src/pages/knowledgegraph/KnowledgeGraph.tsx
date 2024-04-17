@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
+import { Button } from '@/ui/Button';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings } from './Types';
@@ -9,6 +10,7 @@ import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { QueryBuilder } from './QueryBuilder';
+import { ChevronLeft } from 'lucide-react';
 
 export const KnowledgeGraph = () => {
 
@@ -26,7 +28,7 @@ export const KnowledgeGraph = () => {
 
   const [showQueryBuilder, setShowQueryBuilder] = useState(false);
 
-  const [isFullscreen, seIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
     <div className="page-root">
@@ -35,7 +37,15 @@ export const KnowledgeGraph = () => {
       )}
 
       <main className="page graph relative overflow-x-hidden">
-        {!isFullscreen && (
+        {isFullscreen ? (
+          <Button
+            className="absolute top-3 left-3 rounded-full bg-white/70 backdrop-blur-sm z-30"
+            variant="outline"
+            size="icon"
+            onClick={() => setIsFullscreen(false)}>
+            <ChevronLeft className="h-5 w-5 mr-0.5" />
+          </Button>
+        ) : (
           <div className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
               <span className="bg-white/80 backdrop-blur-sm rounded px-1 py-0.5">
@@ -80,7 +90,7 @@ export const KnowledgeGraph = () => {
               isFullScreen={isFullscreen} 
               hasPinnedNodes={pinnedNodes.length > 0} 
               settingsOpen={showSettingsPanel}
-              onToggleFullscreen={() => seIsFullscreen(fullscreen => !fullscreen)}
+              onToggleFullscreen={() => setIsFullscreen(fullscreen => !fullscreen)}
               onToggleSettings={() => setShowSettingsPanel(open => !open)}
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
