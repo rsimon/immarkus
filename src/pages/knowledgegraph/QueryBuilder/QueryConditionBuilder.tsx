@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useConditionBuilderState } from './useConditionBuilderState';
-import { Predicate } from './Predicate';
+import { Predicate } from './Types';
 import { GraphNode } from '../Types';
 import { 
   Select, 
@@ -18,6 +18,8 @@ interface QueryConditionBuilderProps {
   typeFilter?: GraphNode['type'];
 
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
+
+  onDelete(): void;
 
 }
 
@@ -44,6 +46,17 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
     if (objectOptions.length > 0)
       setSelectedObject(objectOptions[0].value);
   }, [objectOptions]);
+
+  useEffect(() => {
+    const query = 
+      selectedPredicate === 'IS_NOT_EMPTY' ?
+        (n: GraphNode) => (n.properties || {})[selectedSubject] !== undefined :
+      selectedPredicate === 'IS' ?
+        (n: GraphNode) => (n.properties || {})[selectedSubject] === selectedObject :
+      (_: GraphNode) => true;
+
+    props.onChangeQuery(query);
+  }, [selectedSubject, selectedPredicate, selectedObject]);
 
   const selectStyle = 
     'rounded-none min-w-32 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
@@ -115,7 +128,7 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
         )}
 
         <button className="border border-l-0 w-7 flex items-center justify-center text-muted-foreground">
-          <Trash2 className="w-3.5 h-3.5" />
+          <Trash2 className="w-3.5 h-3.5" onClick={props.onDelete} />
         </button>
       </div>
     </div>

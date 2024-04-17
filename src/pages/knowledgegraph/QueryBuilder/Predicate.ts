@@ -1,1 +1,0 @@
-export type Predicate = 'IS' | 'IS_NOT_EMPTY';

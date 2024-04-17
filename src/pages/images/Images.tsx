@@ -33,7 +33,7 @@ export const Images = () => {
     <div className="page-root">
       <AppNavigationSidebar />
 
-      <main className="page images flex flex-row p-0">
+      <main className="page images flex flex-row p-0 overflow-x-hidden">
         <div className="flex-grow px-12 py-6 overflow-y-auto">
           <div className="space-y-1 flex-grow">
             <h1 className="text-sm text-muted-foreground tracking-tight">

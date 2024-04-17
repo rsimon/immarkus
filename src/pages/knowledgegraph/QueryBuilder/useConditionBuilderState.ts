@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
 import { GraphNode } from '../Types';
-import { QueryConditionOption } from './QueryConditionOption';
+import { QueryConditionOption } from './Types';
 import { W3CAnnotationBody } from '@annotorious/react';
 
 const ALLOWED_PROPERTY_TYPES = new Set([
