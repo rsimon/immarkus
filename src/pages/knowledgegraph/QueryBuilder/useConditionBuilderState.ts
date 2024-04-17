@@ -79,7 +79,18 @@ export const useConditionBuilderState = (props: UseConditionBuilderStateProps) =
         setObjectOptions(getMetadataObjectOptions(subject, bodies.filter(Boolean)))
       );
     } else if (type === 'FOLDER') {
+      Promise.all(
+        store.folders.map(folder => store.getFolderMetadata(folder.id))
+      ).then(annotations => {
+        const options = getMetadataObjectOptions(
+          subject,  
+          annotations
+            .filter(Boolean)
+            .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
+          ).filter(Boolean);
 
+        setObjectOptions(options);
+      })
     } else {
       // TODO
       return [];
