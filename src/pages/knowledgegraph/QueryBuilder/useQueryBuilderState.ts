@@ -105,16 +105,27 @@ export const useQueryBuilderState = () => {
         Promise.resolve([] as BuildStepOption[]);
 
       promise.then(options => {
-        setSteps([step1, step2, { step: '3', options } as BuildStep]);
+        setSteps([step1, { ...step2, selected: selectedOption.value }, { step: '3', options } as BuildStep]);
       });
     }
   }
 
   const setStep3 = (value: string) => {
+    const [step1, step2, step3] = steps;
+
+    const next = [
+      step1, 
+      step2,
+      {...step3, selected: value }
+    ];
+
+    console.log(next);
+
     setQuery(() => {
-      return ((n: NodeObject<GraphNode>) => n.type === 'IMAGE')
-    })
-    console.log(steps);
+      return ((n: NodeObject<GraphNode>) =>
+        n.type === 'IMAGE' && (n.properties || {})[step2.selected] === value
+      );
+    });
   }
     
   const select = (step: string, value: string) => {

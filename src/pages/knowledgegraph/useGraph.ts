@@ -85,8 +85,6 @@ export const useGraph = (includeFolders?: boolean) => {
           } as GraphNode)),
       ];
 
-      console.log(nodes);
-
       // Record minimum & maximum number of links per node
       let minDegree = result.length === 0 ? 0 : Infinity;
 
