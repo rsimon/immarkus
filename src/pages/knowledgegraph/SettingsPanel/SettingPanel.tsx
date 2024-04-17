@@ -31,7 +31,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
   return transition((style, open) => open && (
     <animated.div 
-      className="bg-white/80 backdrop-blur-sm text-sm overflow-y-scroll rounded 
+      className="bg-white/80 backdrop-blur-sm text-sm overflow-y-auto rounded 
         border pointer-events-auto shadow grow-0 shrink-0 basis-auto"
       style={style}>
       <div className="p-3">

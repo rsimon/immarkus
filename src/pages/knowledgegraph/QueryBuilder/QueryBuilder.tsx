@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Grip, Plus } from 'lucide-react';
 import { useDraggable } from '@neodrag/react';
-import { NodeObject } from 'react-force-graph-2d';
 import { Button } from '@/ui/Button';
-import { BuildStep } from './BuildStep';
-import { useQueryBuilderState } from './useQueryBuilderState';
 import { GraphNode } from '../Types';
+import { QueryConditionBuilder } from './QueryConditionBuilder';
 import { 
   Select, 
   SelectContent, 
@@ -16,7 +14,7 @@ import {
 
 interface QueryBuilderProps {
 
-  onChangeQuery(query?: ((n: NodeObject<GraphNode>) => boolean)): void;
+  onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
 
 }
 
@@ -26,56 +24,51 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { query, steps, select } = useQueryBuilderState();
+  const [typeFilter, setTypeFilter] = useState<GraphNode['type'] | undefined>()
 
-  const [ step1, ...stepsN ] = steps;
-
-  useEffect(() => {
-    props.onChangeQuery(query);
-  }, [query]);
-
-	useDraggable(el, {
+  useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
   });
 
-
-  const renderStep = (step: BuildStep) => (
-    <Select 
-      key={step.step}
-      value={step.selected} 
-      onValueChange={value => select(step.step, value)}>
-      <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
-        <span className="overflow-hidden text-ellipsis text-xs">
-          <SelectValue />
-        </span>
-      </SelectTrigger>
-
-      <SelectContent>
-        {step.options.map(option => (
-          <SelectItem 
-            className="text-xs"
-            key={option.value} 
-            value={option.value}>{option.label}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  )
-
   return (
     <div 
       ref={el}
-      className="bg-white/90 backdrop-blur-sm border absolute bottom-16 left-7 rounded shadow-lg z-30">
-      <div className="px-3 pt-2.5 pb-3 cursor-move">
-        <div className="mb-4 text-xs font-medium text-muted-foreground flex items-center gap-1">
+      className="bg-white backdrop-blur-sm border absolute bottom-16 left-7 rounded shadow-lg z-30">
+      <div className="px-3 pt-2.5 pb-3">
+        <div className="cursor-move mb-4 text-xs font-medium text-muted-foreground flex items-center gap-1">
           <Grip className="w-4 h-4" />
 
           <span>Query Builder</span>
         </div>
 
-        <div className="text-xs flex items-center gap-2 pt-2">
-          Show {renderStep(step1)} where {stepsN.map(renderStep)}
+        <div className="text-xs flex items-center gap-2">
+          <span className="w-12 text-right">
+            Show
+          </span> 
+          
+          <Select 
+            value={typeFilter || 'ALL'}
+            onValueChange={value => value === 'ALL' ? 
+              setTypeFilter(undefined) : setTypeFilter(value as GraphNode['type'])}>
+            
+            <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
+              <span className="text-xs"><SelectValue /></span>
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem className="text-xs" value="ALL">all nodes</SelectItem>
+              <SelectItem className="text-xs" value="IMAGE">images</SelectItem>
+              <SelectItem className="text-xs" value="ENTITY_TYPE">entity Classes</SelectItem>
+              <SelectItem className="text-xs" value="FOLDER">folders</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+
+        <QueryConditionBuilder 
+          isFirstCondition={true}
+          typeFilter={typeFilter}
+          onChangeQuery={props.onChangeQuery} />
 
         <div className="pt-2">
           <Button 

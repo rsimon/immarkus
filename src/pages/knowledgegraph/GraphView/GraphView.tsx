@@ -60,18 +60,20 @@ export const GraphView = (props: GraphViewProps) => {
       ), [])) : new Set([])
   }, [graph, props.selected]);
 
-  // Shorthands
   const hasSelection = props.selected.length > 0;
+
   const selectedIds = new Set(props.selected.map(n => n.id));
 
-  const nodeFilter = useMemo(() => {
-    return props.query
-    /*
+  const nodesInQuery = useMemo(() => props.query
+    ? new Set(graph.nodes.filter(n => props.query(n)).map(n => n.id))
+    : new Set([])
+  , [props.query]);
+
+  const nodeFilter = useMemo(() => (
     props.settings.hideIsolatedNodes 
     ? (node: NodeObject<GraphNode>) => node.degree > 0
     : undefined
-    */
-  }, [props.settings, props.query]);
+  ), [props.settings, props.query]);
 
   useEffect(() => {
     if (fg.current && !props.settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
@@ -115,7 +117,9 @@ export const GraphView = (props: GraphViewProps) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
     // Node should fade out if there is a selection, and this node is not in the neighbourhood
-    const isFaded = hasSelection && !neighbourhood.has(node.id);
+    const isFaded = hasSelection 
+      ? !neighbourhood.has(node.id)
+      : props.query && !props.query(node);
 
     const color = node.type === 'IMAGE' 
       ? PALETTE['blue'] : node.type === 'ENTITY_TYPE' ? PALETTE['green'] : PALETTE['purple'];
@@ -161,14 +165,20 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   const getLinkWidth = (link: LinkObject) => {
-    if (hasSelection) {
+    if (hasSelection || props.query) {
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
 
-      if (selectedIds.has(targetId) || selectedIds.has(sourceId))
-        return linkScale * link.value + MIN_LINK_WIDTH;
-      else 
-        return 0.00001; // Don't set to 0 because force-graph will use default width!
+      // Shorthand
+      const isInQuery = (n: NodeObject<GraphNode>) => 
+        props.query(n)
+
+      const isHidden = hasSelection 
+        ? !(selectedIds.has(targetId) || selectedIds.has(sourceId))
+        : props.query && (!nodesInQuery.has(targetId) || nodesInQuery.has(sourceId));
+
+      // Don't set to 0 because force-graph will use default width (0 is falsy!)
+      return isHidden ? 0.00001 : linkScale * link.value + MIN_LINK_WIDTH;
     } else {
       return linkScale * link.value + MIN_LINK_WIDTH;
     }
