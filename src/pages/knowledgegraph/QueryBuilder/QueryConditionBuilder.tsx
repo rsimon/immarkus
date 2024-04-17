@@ -79,7 +79,7 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
             </span>
           </SelectTrigger>
 
-          <SelectContent>
+          <SelectContent className="max-h-96">
             {subjectOptions.map(option => (
               <SelectItem 
                 key={option.value} 
@@ -98,7 +98,7 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
             </span>
           </SelectTrigger>
 
-          <SelectContent>
+          <SelectContent className="max-h-96">
             <SelectItem className="text-xs" value="IS">is</SelectItem>
             <SelectItem className="text-xs" value="IS_NOT_EMPTY">is not empty</SelectItem>
           </SelectContent>
@@ -116,14 +116,14 @@ export const QueryConditionBuilder = (props: QueryConditionBuilderProps) => {
               </span>
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent className="max-h-96">
               {objectOptions.map(option => (
                 <SelectItem 
                   key={option.value} 
                   className="text-xs"
                   value={option.value}>{option.label}</SelectItem>
               ))}
-          </SelectContent>
+            </SelectContent>
           </Select>
         )}
 

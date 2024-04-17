@@ -4,7 +4,7 @@ import { useDraggable } from '@neodrag/react';
 import { Button } from '@/ui/Button';
 import { QueryConditionBuilder } from './QueryConditionBuilder';
 import { ConditionQuery } from './Types';
-import { GraphNode } from '../Types';
+import { GraphNode, GraphSettings } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -14,6 +14,8 @@ import {
 } from '@/ui/Select';
 
 interface QueryBuilderProps {
+
+  settings: GraphSettings;
 
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
 
@@ -40,6 +42,11 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
     setConditions([]);
   }, [typeFilter]);
 
+  const disableConditions = 
+    conditions.length > 0 || // We only support one condition (for now)
+    typeFilter === 'ENTITY_TYPE' || // No conditions on entity types (for now)
+    !typeFilter; // No conditions on all nodes (for now);
+
   useEffect(() => {
     const filtered = conditions.filter(Boolean);
 
@@ -52,7 +59,7 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
       : (n: GraphNode) => filtered.every(condition => condition(n));
 
     props.onChangeQuery(query);
-  }, [typeFilter, conditions]);
+  }, [typeFilter, conditions, disableConditions]);
 
   return (
     <div 
@@ -90,10 +97,22 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem className="text-xs" value="ALL">all nodes</SelectItem>
-              <SelectItem className="text-xs" value="IMAGE">images</SelectItem>
-              <SelectItem className="text-xs" value="ENTITY_TYPE">entity classes</SelectItem>
-              <SelectItem className="text-xs" value="FOLDER">folders</SelectItem>
+              <SelectItem
+                className="text-xs" 
+                value="ALL">all nodes</SelectItem>
+
+              <SelectItem 
+                className="text-xs" 
+                value="ENTITY_TYPE">entity classes</SelectItem>
+
+              <SelectItem 
+                disabled={!props.settings.includeFolders}
+                className="text-xs" 
+                value="FOLDER">folders</SelectItem>
+
+              <SelectItem
+                className="text-xs" 
+                value="IMAGE">images</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -114,7 +133,7 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
 
         <div className="flex justify-end pt-1 px-2">
           <Button 
-            disabled={conditions.length > 0}
+            disabled={disableConditions}
             variant="link"
             size="sm"
             className="flex items-center text-xs py-0 px-0"

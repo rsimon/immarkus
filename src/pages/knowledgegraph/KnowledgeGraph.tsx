@@ -93,6 +93,7 @@ export const KnowledgeGraph = () => {
 
         {showQueryBuilder && (
           <QueryBuilder 
+            settings={settings}
             onChangeQuery={query => setQuery(() => query)} 
             onClose={() => setShowQueryBuilder(false)} />
         )}
