@@ -37,15 +37,7 @@ export const KnowledgeGraph = () => {
       )}
 
       <main className="page graph relative overflow-x-hidden">
-        {isFullscreen ? (
-          <Button
-            className="absolute top-3 left-3 rounded-full bg-white/70 backdrop-blur-sm z-30"
-            variant="outline"
-            size="icon"
-            onClick={() => setIsFullscreen(false)}>
-            <ChevronLeft className="h-5 w-5 mr-0.5" />
-          </Button>
-        ) : (
+        {!isFullscreen && (
           <div className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
               <span className="bg-white/80 backdrop-blur-sm rounded px-1 py-0.5">
