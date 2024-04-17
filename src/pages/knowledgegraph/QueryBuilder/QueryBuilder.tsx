@@ -35,6 +35,10 @@ export const QueryBuilder = (props: QueryBuilderProps) => {
   });
 
   useEffect(() => {
+    setConditions([]);
+  }, [typeFilter]);
+
+  useEffect(() => {
     const filtered = conditions.filter(Boolean);
 
     const query = typeFilter

@@ -169,13 +169,9 @@ export const GraphView = (props: GraphViewProps) => {
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
 
-      // Shorthand
-      const isInQuery = (n: NodeObject<GraphNode>) => 
-        props.query(n)
-
       const isHidden = hasSelection 
         ? !(selectedIds.has(targetId) || selectedIds.has(sourceId))
-        : props.query && (!nodesInQuery.has(targetId) || nodesInQuery.has(sourceId));
+        : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
       return isHidden ? 0.00001 : linkScale * link.value + MIN_LINK_WIDTH;
