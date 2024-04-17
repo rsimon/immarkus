@@ -24,9 +24,15 @@ export interface GraphNode {
 
   label: string;
 
-  type: 'IMAGE' | 'ENTITY_TYPE';
+  type: 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
 
   degree: number;
+
+  properties?: {
+
+    [key: string]: string;
+    
+  }
   
 }
 
@@ -45,5 +51,7 @@ export interface GraphSettings {
   hideIsolatedNodes?: boolean;
 
   hideLabels?: boolean;
+
+  includeFolders?: boolean;
 
 }

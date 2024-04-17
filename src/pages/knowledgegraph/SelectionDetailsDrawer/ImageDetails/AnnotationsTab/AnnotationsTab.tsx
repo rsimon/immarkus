@@ -15,7 +15,7 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
   return (
     <ul className="p-2">
       {props.annotations.map(annotation => (
-        <li>
+        <li key={annotation.id}>
           <AnnotationsTabItem 
             key={annotation.id}
             annotation={annotation}

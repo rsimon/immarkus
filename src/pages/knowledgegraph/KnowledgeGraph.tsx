@@ -8,10 +8,9 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
+import { QueryBuilder } from './QueryBuilder';
 
 export const KnowledgeGraph = () => {
-
-  const graph = useGraph();
 
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
@@ -19,7 +18,13 @@ export const KnowledgeGraph = () => {
 
   const [settings, setSettings] = useState<GraphSettings>({});
 
+  const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
+
+  const graph = useGraph(settings.includeFolders);
+
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
+
+  const [showQueryBuilder, setShowQueryBuilder] = useState(false);
 
   const [isFullscreen, seIsFullscreen] = useState(false);
 
@@ -29,7 +34,7 @@ export const KnowledgeGraph = () => {
         <AppNavigationSidebar />
       )}
 
-      <main className="page graph relative overflow-hidden">
+      <main className="page graph relative overflow-x-hidden">
         {!isFullscreen && (
           <div className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
@@ -52,19 +57,23 @@ export const KnowledgeGraph = () => {
           settings={settings}
           selected={selectedNodes}
           pinned={pinnedNodes}
+          query={query}
           onBackgroundClick={() => setShowSettingsPanel(false)}
           onPin={node => setPinnedNodes(n => ([...n, node]))}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 
-        <Legend />
+        <Legend 
+          includeFolders={settings.includeFolders} />
 
         <div className="absolute top-0 right-0 h-full flex">
           <div className="relative">
             <div className="absolute right-2 bottom-16 w-[360px] p-4 overflow-hidden pointer-events-none z-10">
               <SettingsPanel 
                 open={showSettingsPanel} 
+                isQueryBuildOpen={showQueryBuilder}
                 settings={settings}
-                onChangeSettings={setSettings} />
+                onChangeSettings={setSettings} 
+                onToggleQueryBuilder={() => setShowQueryBuilder(show => !show)} />
             </div>
               
             <GraphControls 
@@ -81,6 +90,13 @@ export const KnowledgeGraph = () => {
             selected={selectedNodes[0]} 
             onClose={() => setSelectedNodes([])} />
         </div>
+
+        {showQueryBuilder && (
+          <QueryBuilder 
+            settings={settings}
+            onChangeQuery={query => setQuery(() => query)} 
+            onClose={() => setShowQueryBuilder(false)} />
+        )}
       </main> 
     </div>
   )

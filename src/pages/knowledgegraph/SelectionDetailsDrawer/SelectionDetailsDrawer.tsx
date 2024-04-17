@@ -28,9 +28,11 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
         <EntityTypeDetails 
           graph={props.graph}
           type={store.getDataModel().getEntityType(selected.id)} />
-      ) : (
+      ) : selected.type === 'IMAGE' ? (
         <ImageDetails
           image={store.getImage(selected.id)} />
+      ) : (
+        <div></div>
       )} />
   )
 
