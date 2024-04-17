@@ -127,10 +127,9 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
   const headerClass = "pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left";
 
   return (
-    <div className="relative rounded-md border mt-6 w-full">
+    <div className="relative rounded-md border mt-6 w-full overflow-x-auto">
       <TreeTable 
         value={nodes} 
-        className="w-full caption-bottom text-sm"
         togglerTemplate={togglerTemplate}
         emptyMessage={(
           <div className="h-24 flex items-center justify-center text-center text-muted-foreground">

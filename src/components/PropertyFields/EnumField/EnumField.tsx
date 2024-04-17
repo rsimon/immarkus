@@ -40,7 +40,7 @@ export const EnumField = (props: EnumFieldProps) => {
           <SelectValue />
         </SelectTrigger>
 
-        <SelectContent>
+        <SelectContent className="max-h-96">
           <SelectItem value={null}>&nbsp;</SelectItem>
 
           {(definition.values || []).map(option => (

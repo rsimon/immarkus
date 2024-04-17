@@ -90,7 +90,7 @@ export const RelationOptions = (props: RelationOptionsProps) => {
             <SelectValue />
           </SelectTrigger>
 
-          <SelectContent>
+          <SelectContent className="max-h-96">
             {(target?.properties || []).length === 0 ? (
               <span className="text-muted-foreground text-sm p-2 flex justify-center">
                 No properties
