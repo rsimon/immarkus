@@ -23,7 +23,7 @@ export const Legend = (props: LegendProps) => {
             <span 
               style={{ backgroundColor: PALETTE['purple']}} 
               className="block w-[12px] h-[12px] rounded-full" />
-            <span>Folder</span>
+            <span>Sub-Folder</span>
           </li>
         )}
 

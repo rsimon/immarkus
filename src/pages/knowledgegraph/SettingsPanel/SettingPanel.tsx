@@ -3,7 +3,7 @@ import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { Switch } from '@/ui/Switch';
 import { GraphSettings } from '../Types';
-import { Microscope } from 'lucide-react';
+import { ListFilter } from 'lucide-react';
 
 interface SettingsPanelProps {
 
@@ -96,8 +96,8 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           className="w-full"
           variant={props.isQueryBuildOpen ? 'outline' : undefined}
           onClick={props.onToggleQueryBuilder}>
-          <Microscope className="h-5 w-5 mr-2" />
-          {props.isQueryBuildOpen ? 'Close Query Builder' : 'Open Query Builder'}
+          <ListFilter className="h-5 w-5 mr-2" />
+          {props.isQueryBuildOpen ? 'Close Filter Settings' : 'Open Filter Settings'}
         </Button>
       </div>
     </animated.div>
