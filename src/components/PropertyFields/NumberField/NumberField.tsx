@@ -15,7 +15,7 @@ interface NumberFieldProps {
 
   value?: number;
 
-  onChange?(value: number): void;
+  onChange?(value?: number): void;
 
 }
 
@@ -30,10 +30,14 @@ export const NumberField = (props: NumberFieldProps) => {
   }, [value]);
 
   useEffect(() => {
+    if (!props.onChange) return;
+
     const num = parseFloat(value);
 
     if (!isNaN(num))
-      props.onChange && props.onChange(num);
+      props.onChange(num);
+    else if (!value)
+      props.onChange();
   }, [value]);
 
   useEffect(() => {
