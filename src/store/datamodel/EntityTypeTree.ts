@@ -8,7 +8,7 @@ export interface EntityTypeTree {
   getChildTypes(id: string): EntityType[];
 
   getDescendants(typeOrId: EntityType | string): EntityType[];
-
+  
   getRootTypes(): EntityType[];
 
   hasChildTypes(id: string): boolean;

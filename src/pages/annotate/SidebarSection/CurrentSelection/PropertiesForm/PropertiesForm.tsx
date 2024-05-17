@@ -17,6 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { InboundRelations } from './InboundRelations';
 
 interface PropertiesFormProps {
 
@@ -201,6 +202,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               value={formState[noteKey]}
               onChange={value => onChange(noteKey, value)} />
           )}
+
+          <InboundRelations />
 
           <PropertiesFormActions 
             hasNote={hasNote}
