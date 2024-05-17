@@ -48,7 +48,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       url: URL.createObjectURL(props.image.data)
     },
     gestureSettingsMouse: {
-      clickToZoom: false
+      clickToZoom: false,
+      dblClickToZoom: false
     },
     showNavigationControl: false,
     crossOriginPolicy: 'Anonymous',
