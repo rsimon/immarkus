@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { Spline } from 'lucide-react';
+import { ArrowDownToDot, Dot, Minus, MoveLeft, Spline } from 'lucide-react';
 import { EntityType } from '@/model';
-import { RelatedAnnotation, useRelationGraph } from '@/store';
+import { RelatedAnnotation, useDataModel, useRelationGraph } from '@/store';
 import { Separator } from '@/ui/Separator';
-import { useEffect, useMemo } from 'react';
+import { EntityBadge } from '@/components/EntityBadge';
 
 interface InboundRelationsProps {
 
@@ -12,6 +13,8 @@ interface InboundRelationsProps {
 }
 
 export const InboundRelations = (props: InboundRelationsProps) => {
+
+  const model = useDataModel();
 
   const graph = useRelationGraph();
 
@@ -24,19 +27,33 @@ export const InboundRelations = (props: InboundRelationsProps) => {
     }, []);
   }, [graph, props.schemaBodies]);
 
-  return graph && (
+  return related.length > 0 && (
     <div>
       <h3 className="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm 
         ml-0.5 flex gap-1.5 py-4 items-center">
-        <Spline className="h-4 w-4" /> 
-        <span>Inbound Relations</span>
+        <span>Related</span>
       </h3>
 
-      <div>
+      <div className="mb-4">
         <ul>
           {related.map(r => (
-            <li key={r.annotationId}>
-              {r.sourceEntityType}
+            <li 
+              key={r.annotationId}
+              className="flex gap-1.5 items-center mb-2">
+
+              <Dot className="h-4 w-4" />
+
+              <MoveLeft className="h-4 w-4" />
+
+              <div className="text-xs italic">
+                {r.relationName}
+              </div>
+
+              <Minus className="h-4 w-4" />
+
+              <div>
+                <EntityBadge entityType={model.getEntityType(r.sourceEntityType)} />
+              </div>
             </li>
           ))}
         </ul>
