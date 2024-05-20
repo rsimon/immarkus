@@ -1,7 +1,6 @@
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 import { Store } from './Store';
 import { DataModelStore } from './datamodel';
-import { createRelationGraph } from './datamodel/RelationGraph';
 
 interface StoreContextState {
 
@@ -28,12 +27,6 @@ export const StoreProvider = (props: StoreProviderProps) => {
   const [store, setStore] = useState<Store | undefined>(undefined);
 
   const [model, setModel] = useState<DataModelStore>(undefined);
-
-  // TODO hack
-  useEffect(() => {
-    if (store)
-      createRelationGraph(store);
-  }, [store]);
 
   return (
     <StoreContext.Provider value={{ store, setStore, model, setModel }}>

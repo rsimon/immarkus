@@ -1,22 +1,6 @@
 import { W3CAnnotation } from '@annotorious/react';
-import { Store } from '../Store';
 import { Image, RelationPropertyDefinition } from '@/model';
-
-interface InstantiableEntityType {
-
-  typeId: string;
-
-  labelProperty: string;
-
-}
-
-interface InstantiableTypeHierarchy {
-
-  typeIds: string[];
-
-  labelProperty: string;
-
-}
+import { useStore } from './useStore';
 
 interface RelatedAnnotation {
 
@@ -34,51 +18,14 @@ interface RelatedAnnotation {
 
 }
 
-export const createRelationGraph = (store: Store) => {
+export const useRelationGraph = () => {
+
+  const store = useStore();
 
   const { images } = store;
 
   const model = store.getDataModel();
 
-  /* STEP 1. Go through all entity types, look for relations.
-  // These define which combinations of (entity type + labelProperty)
-  // determine possible instances.
-  const instantiableTypes: InstantiableEntityType[] = 
-    model.entityTypes.reduce<InstantiableEntityType[]>((all, type) =>  {
-      const it = (type.properties || [])
-        .filter(p => p.type === 'relation')
-        .map(p => {
-          const rp = p as RelationPropertyDefinition;
-          return { typeId: rp.targetType, labelProperty: rp.labelProperty };
-        });
-
-      return [...all, ...it];
-    }, []);
-
-  // STEP 2. De-duplicate the list of instantiable types, and expand,
-  // so that in addition to (entity type + labelProperty), we have
-  // ALL possible entity types (root type + all descendant types)
-  // in the list.
-  const instantiableTypeHierarchies: InstantiableTypeHierarchy[] =
-    instantiableTypes.reduce<InstantiableTypeHierarchy[]>((all, type) => {
-      const exists = all.find(ith => ith.typeIds.some(id => id === type.typeId) && ith.labelProperty === type.labelProperty);
-      if (exists) {
-        return all;
-      } else {
-        const descendants = model.getDescendants(type.typeId);
-        return [
-          ...all,
-          { typeIds: [...descendants.map(t => t.id)], labelProperty: type.labelProperty }
-        ];
-      }
-    }, []);
-    */
-
-  // STEP 3. Now, the big step... go through ALL ANNOTATIONS, and 
-  // collect instances. Note that this is an async operation.
-
-  // STEP 3a. Get all images from the store, and load all annotations
-  // for each image.
   const imagesQuery = images.map(image => 
     store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
 
@@ -117,8 +64,6 @@ export const createRelationGraph = (store: Store) => {
       return [...all, ...related];
     }, []);
 
-    console.log(relatedAnnotations);
-
     const getInboundLinks = (typeId: string, properties: any) => {
       const inbound = relatedAnnotations.filter(r =>
         r.targetEntityType === typeId && properties[r.targetInstanceLabelProperty] === r.targetInstance);
@@ -126,7 +71,9 @@ export const createRelationGraph = (store: Store) => {
       return inbound;
     }
 
-    console.log(getInboundLinks('road', { Name: 'Central Fountain' }));
+    return {
+      getInboundLinks
+    }
 
   });
 
