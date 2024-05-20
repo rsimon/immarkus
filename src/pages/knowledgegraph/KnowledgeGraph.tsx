@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { Button } from '@/ui/Button';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode, GraphSettings } from './Types';
@@ -10,7 +9,6 @@ import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { QueryBuilder } from './QueryBuilder';
-import { ChevronLeft } from 'lucide-react';
 
 export const KnowledgeGraph = () => {
 

@@ -149,7 +149,7 @@ export const useGraph = (includeFolders?: boolean) => {
         }, []);
 
         // Links between annotations and entity types
-        const annotationLinks =
+        const annotationEntityLinks =
           imagesResult.reduce<GraphLink[]>((all, { annotations, image }) => {
             // N annotations on this image, each carrying 0 to M entity links
             const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
@@ -173,7 +173,7 @@ export const useGraph = (includeFolders?: boolean) => {
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
-          ...annotationLinks
+          ...annotationEntityLinks
         ];
 
         // Flatten links

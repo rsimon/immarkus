@@ -67,7 +67,7 @@ export const useEntityInstanceSearch = (props: EntityInstanceSearchProps) => {
 
       setFuse(fuse);
     });
-  }, [type, field , searchInherited]);
+  }, [type, field, searchInherited]);
 
   const getEntityInstance = (instance: string): EntityInstance | undefined => {
     const matches = fuse.search(instance).map(result => result.item);

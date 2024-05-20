@@ -7,6 +7,7 @@ import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
+import { InboundRelations } from './InboundRelations';
 import { createSafeKeys } from './PropertyKeys';
 import { Note } from '../Note';
 import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
@@ -135,7 +136,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
       <form className="grow pt-1 flex flex-col" onSubmit={onSubmit}>
         <div className="flex-grow">
-          {schemaBodies.length > 0 && schemaBodies.length === 1 ? (
+          {schemaBodies.length === 1 ? (
             <div>
               <div className="flex justify-between items-center pt-3 pb-4">
                 <EntityBadge entityType={schemaBodies[0].entityType} />
@@ -201,6 +202,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               value={formState[noteKey]}
               onChange={value => onChange(noteKey, value)} />
           )}
+
+          <InboundRelations 
+            schemaBodies={schemaBodies} />
 
           <PropertiesFormActions 
             hasNote={hasNote}
