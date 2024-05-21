@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType, Folder, Image } from '@/model';
-import { useStore } from '@/store';
+import { useRelationGraph, useStore } from '@/store';
 import { Graph, GraphLink, GraphNode } from './Types';
 
 export const useGraph = (includeFolders?: boolean) => {
 
   const store = useStore();
+
+  const relations = useRelationGraph();
 
   const datamodel = store.getDataModel();
 
@@ -169,11 +171,15 @@ export const useGraph = (includeFolders?: boolean) => {
             return [...all, ...entityLinks];
         }, []);
 
+        // Links between entities by relations
+        const relationLinks = relations.getEntityLinks();
+
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
-          ...annotationEntityLinks
+          ...annotationEntityLinks,
+          ...relationLinks
         ];
 
         // Flatten links
@@ -236,7 +242,7 @@ export const useGraph = (includeFolders?: boolean) => {
         });
       });
     });
-  }, [includeFolders]);
+  }, [includeFolders, relations]);
 
   return graph;
 
