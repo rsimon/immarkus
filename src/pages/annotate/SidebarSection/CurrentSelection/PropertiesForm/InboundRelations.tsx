@@ -2,9 +2,10 @@ import { useMemo } from 'react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { ArrowDownToDot, Dot, Minus, MoveLeft, Spline } from 'lucide-react';
 import { EntityType } from '@/model';
-import { RelatedAnnotation, useDataModel, useRelationGraph } from '@/store';
+import { RelatedAnnotation, useDataModel, useRelationGraph, useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { EntityBadge } from '@/components/EntityBadge';
+import { Link } from 'react-router-dom';
 
 interface InboundRelationsProps {
 
@@ -14,7 +15,9 @@ interface InboundRelationsProps {
 
 export const InboundRelations = (props: InboundRelationsProps) => {
 
-  const model = useDataModel();
+  const store = useStore();
+
+  const model = store.getDataModel();
 
   const graph = useRelationGraph();
 
@@ -39,20 +42,27 @@ export const InboundRelations = (props: InboundRelationsProps) => {
           {related.map(r => (
             <li 
               key={r.annotationId}
-              className="flex gap-1.5 items-center mb-2">
+              className="mb-5 relative">
+              <div className="flex gap-1.5 items-center mb-1">
+                <Dot className="h-4 w-4" />
 
-              <Dot className="h-4 w-4" />
+                <MoveLeft className="h-4 w-4" />
 
-              <MoveLeft className="h-4 w-4" />
+                <div className="text-xs italic">
+                  {r.relationName}
+                </div>
 
-              <div className="text-xs italic">
-                {r.relationName}
+                <Minus className="h-4 w-4" />
+
+                <div>
+                  <EntityBadge entityType={model.getEntityType(r.sourceEntityType)} />
+                </div>
               </div>
 
-              <Minus className="h-4 w-4" />
-
-              <div>
-                <EntityBadge entityType={model.getEntityType(r.sourceEntityType)} />
+              <div className="max-w-full overflow-hidden">
+                <Link 
+                  to={r.imageId}
+                  className="ml-6 whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">{store.getImage(r.imageId).name}</Link>
               </div>
             </li>
           ))}
