@@ -31,7 +31,7 @@ export const UploadButton = () => {
         className="hidden" 
         type="file" 
         id="upload" 
-        accept=".txt" 
+        accept=".json" 
         onChange={onChange} />
 
       <Button 
