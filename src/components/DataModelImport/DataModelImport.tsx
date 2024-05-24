@@ -1,6 +1,11 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { Import } from 'lucide-react';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { Label } from '@/ui/Label';
+import { Button } from '@/ui/Button';
+import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
+import { Switch } from '@/ui/Switch';
+import { Separator } from '@/ui/Separator';
 import {
   Select,
   SelectContent,
@@ -8,8 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { Button } from '@/ui/Button';
-import { Switch } from '@/ui/Switch';
 
 interface DataModelImportProps {
 
@@ -48,16 +51,18 @@ export const DataModelImport = (props: DataModelImportProps) => {
       )}
 
       <DialogContent className="p-0 my-8 rounded-lg">
-        <div className="px-6 py-3">
-          <p className="text-left text-xs leading-relaxed mt-1">
-            Import stuff here
+        <div className="px-7 py-6">
+          <p className="text-left text-xs leading-relaxed mt-1 mr-8">
+            Select a Preset or import Entity Classes from a data model file. You can 
+            choose to either add the imported model to your existing classes
+            or replace your current model.
           </p>
 
           <div className="mt-4">
             <Label 
               htmlFor="presets"
               className="inline-block text-xs mb-1.5 ml-0.5">
-              Property Name
+              Choose Preset
             </Label>
 
             <Select>
@@ -77,32 +82,73 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </Select>
           </div>
 
-          <p>-- or --</p>
+          <p className="w-full text-xs text-center py-5 text-muted-foreground">— or —</p>
 
           <div>
             <Button 
               className="w-full"
-              variant="secondary">Upload File</Button>
+              variant="outline">Upload File</Button>
           </div>
 
-          <div className="p-3">
+          <Separator className="mt-8" />
+
+          <div className="py-6">
             <div className="flex items-center gap-2 justify-between">
               <Label htmlFor="replace-existing">
-                Replace existing
+                Overwrite Current Model
               </Label>
 
-              <Switch 
-                id="replace-existing" />
+              <Switch id="replace-existing" />
             </div>
 
             <p className="text-muted-foreground text-xs mt-1 pr-12">
-              Include sub-folders inside your workfolder as nodes in the graph.
+              Warning: this will delete all your existing Entity Classes. 
             </p>
           </div>
 
-          <div>
+          <div className="mb-8">
+            <Label htmlFor="replace-existing">
+              Handle Duplicates
+            </Label>
+
+            <div className="py-1">
+              <RadioGroup defaultValue="keep">
+                <div className="flex items-start gap-3 mb-0.5">
+                  <RadioGroupItem 
+                    className="mt-1"
+                    value="keep" 
+                    id="keep" />
+
+                  <div>
+                    <Label htmlFor="keep">Keep</Label>
+                    <p className="text-xs text-muted-foreground">
+                      If the import contains classes that already exist in 
+                      your model, keep the existing ones and ignore the imported classes.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <RadioGroupItem 
+                    className="mt-1"
+                    value="replace" 
+                    id="replace" />
+
+                  <div>
+                    <Label htmlFor="replace">Replace</Label>
+                    <p className="text-xs text-muted-foreground">
+                      If the import contains classes that already exist in 
+                      your model, discard the existing ones and keep the imported classes.
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
             <Button>
-              Import
+              <Import className="h-4 w-4 mr-2" /> Import
             </Button>
 
             <Button variant="outline">

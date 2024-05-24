@@ -1,4 +1,5 @@
 import { useState } from 'react'; 
+import { Import } from 'lucide-react';
 import { DataModelImport } from '@/components/DataModelImport';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
@@ -6,7 +7,6 @@ import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { useToast, ToastTitle } from '@/ui/Toaster';
 import { EntityTypesTable } from './EntityTypesTable';
-import { Import } from 'lucide-react';
 
 export const EntityTypes = () => {
 
