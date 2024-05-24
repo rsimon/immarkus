@@ -14,6 +14,7 @@ import {
 } from '@/ui/Select';
 
 import './DataModelImport.css';
+import { UploadButton } from './UploadButton';
 
 interface DataModelImportProps {
 
@@ -147,15 +148,11 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </Select>
           </div>
 
-          <p className="w-full text-xs py-4 text-center marker:text-muted-foreground">
+          <p className="w-full text-xs py-4 text-center text-muted-foreground">
             — or —
           </p>
 
-          <div>
-            <Button 
-              className="w-full"
-              variant="outline">Upload Datamodel File</Button>
-          </div>
+          <UploadButton />
         </div>
       </DialogContent>
     </Dialog>
