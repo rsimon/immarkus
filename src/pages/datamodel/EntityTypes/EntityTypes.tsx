@@ -1,10 +1,12 @@
 import { useState } from 'react'; 
+import { DataModelImport } from '@/components/DataModelImport';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { useToast, ToastTitle } from '@/ui/Toaster';
 import { EntityTypesTable } from './EntityTypesTable';
+import { Import } from 'lucide-react';
 
 export const EntityTypes = () => {
 
@@ -37,18 +39,24 @@ export const EntityTypes = () => {
         onEditEntityType={setEdited}
         onDeleteEntityType={onDeleteEntityType} />
 
-      <EntityTypeEditor 
-        open={Boolean(edited)} 
-        entityType={edited}
-        onOpenChange={open => !open && setEdited(undefined)} />
-
-      <div className="flex mt-4">
+      <div className="flex mt-4 gap-2">
         <EntityTypeEditor>
           <Button>
             Create New Entity Class
           </Button>
         </EntityTypeEditor>
+
+        <DataModelImport>
+          <Button variant="outline">
+            <Import className="h-4 w-4 mr-2" /> Import
+          </Button>
+        </DataModelImport>
       </div>
+
+      <EntityTypeEditor 
+        open={Boolean(edited)} 
+        entityType={edited}
+        onOpenChange={open => !open && setEdited(undefined)} />
     </>
   )
 
