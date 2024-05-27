@@ -23,6 +23,8 @@ interface DataModelImportProps {
 
   children?: ReactNode;
 
+  type: 'ENTITY_TYPES' | 'SCHEMAS';
+
   open?: boolean;
 
   onOpenChange?(open: boolean): void;
@@ -63,12 +65,14 @@ export const DataModelImport = (props: DataModelImportProps) => {
   const onUpload = (types: EntityType[]) => {
     setOpen(false);
 
-    importTypes(types, true)
+    importTypes(types, replace, keepExisting === 'keep')
       .then(() => {
         toast({
           // @ts-ignore
           title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> Success</ToastTitle>,
-          description: `${types.length} entity classes imported successfully.`
+          description: props.type === 'ENTITY_TYPES' 
+            ? `${types.length} entity classes imported successfully.`
+            : `${types.length} schemas imported successfully.`
         });
       })
       .catch(error => {
@@ -83,6 +87,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
       });
   }
 
+  const items = props.type === 'ENTITY_TYPES' ? 'classes' : 'schemas';
+
   return (
     <Dialog 
       open={open} 
@@ -95,8 +101,10 @@ export const DataModelImport = (props: DataModelImportProps) => {
       )}
 
       <DialogContent className="p-0 my-8 rounded-lg">
-        <div className="px-7 pt-6 pb-8">
-          <h2 className="mb-2 font-semibold">Import Entity Classes</h2>
+        <div className="px-7 pt-6 pb-8 leading-relaxed">
+          <h2 className="mb-2 font-semibold">
+            Import {props.type === 'ENTITY_TYPES' ? 'Entity Classes' : 'Schemas'}
+          </h2>
 
           <div className="py-4">
             <div className="flex items-center gap-2 justify-between">
@@ -111,20 +119,19 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </div>
 
             <p className="text-muted-foreground text-xs mt-1 pr-20">
-              When you import entity classes, you can either 
-              delete and replace your existing model, or add the imported
-              classes to your current model.
+              You can either delete and replace your existing model, or add the 
+              imported {items} to your current model.
             </p>
           </div>
 
           <div className={replace ? 'import-duplicates disabled mb-2' : 'import-duplicates mb-2'}>
             <Label htmlFor="replace-existing">
-              Duplicate Classes
+              Duplicate {props.type === 'ENTITY_TYPES' ? 'Classes' : 'Schemas'}
             </Label>
 
             <p className="text-muted-foreground text-xs mt-1 mb-2">
-              Select how the import should merge classes that already 
-              exist in your model.
+              Select how the import should merge {items} that 
+              already exist in your model.
             </p>
 
             <div className="py-1">
@@ -140,8 +147,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
                   <div>
                     <Label htmlFor="keep">Keep Existing</Label>
                     <p className="text-xs text-muted-foreground">
-                      If the import contains classes that already exist in 
-                      your model, keep the existing ones and discard the imported classes.
+                      If the import contains {items} that 
+                      already exist in your model, keep the existing ones and discard the imported {items}.
                     </p>
                   </div>
                 </div>
@@ -155,8 +162,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
                   <div>
                     <Label htmlFor="replace">Keep Imported</Label>
                     <p className="text-xs text-muted-foreground">
-                      If the import contains classes that already exist in 
-                      your model, discard the existing ones and keep the imported classes.
+                      If the import contains {items} that already exist in 
+                      your model, discard the existing ones and keep the imported {items}.
                     </p>
                   </div>
                 </div>

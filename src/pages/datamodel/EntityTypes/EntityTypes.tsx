@@ -46,9 +46,10 @@ export const EntityTypes = () => {
           </Button>
         </EntityTypeEditor>
 
-        <DataModelImport>
+        <DataModelImport
+          type="ENTITY_TYPES">
           <Button variant="outline">
-            <Import className="h-4 w-4 mr-2" /> Import
+            <Import className="h-4 w-4 mr-2" /> Import Model
           </Button>
         </DataModelImport>
       </div>
