@@ -1,6 +1,6 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Check, XCircle } from 'lucide-react';
-import { EntityType } from '@/model';
+import { EntityType, MetadataSchema } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { Label } from '@/ui/Label';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
@@ -8,7 +8,7 @@ import { Switch } from '@/ui/Switch';
 import { Separator } from '@/ui/Separator';
 import { ToastTitle, useToast } from '@/ui/Toaster';
 import { UploadButton } from './UploadButton';
-import { useImportEntityTypes } from './useImportModel';
+import { useDataModelImport, validateEntityTypes, validateMetadata } from './useDataModelImport';
 import {
   Select,
   SelectContent,
@@ -23,7 +23,7 @@ interface DataModelImportProps {
 
   children?: ReactNode;
 
-  type: 'ENTITY_TYPES' | 'SCHEMAS';
+  type: 'ENTITY_TYPES' | 'FOLDER_SCHEMAS' | 'IMAGE_SCHEMAS';
 
   open?: boolean;
 
@@ -41,7 +41,15 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
   const { toast } = useToast();
 
-  const importTypes = useImportEntityTypes();
+  const validation = useMemo(() => (
+    props.type === 'ENTITY_TYPES' ? validateEntityTypes : validateMetadata
+  ), [props.type]);
+
+  const { 
+    importEntityTypes, 
+    importFolderSchemas, 
+    importImageSchemas 
+  } = useDataModelImport();
 
   useEffect(() => {
     setOpen(props.open);
@@ -62,10 +70,21 @@ export const DataModelImport = (props: DataModelImportProps) => {
       description: error
     });
 
-  const onUpload = (types: EntityType[]) => {
+  const onUpload = (types: EntityType[] | MetadataSchema[]) => {
     setOpen(false);
 
-    importTypes(types, replace, keepExisting === 'keep')
+    const importItems = 
+      props.type === 'ENTITY_TYPES' ? importEntityTypes :
+      props.type === 'FOLDER_SCHEMAS' ? importFolderSchemas :
+      props.type === 'IMAGE_SCHEMAS' ? importImageSchemas :
+      undefined;
+
+    if (!importItems)
+      // Should never happen;
+      return;
+
+    // @ts-ignore
+    importItems(types, replace, keepExisting === 'keep')
       .then(() => {
         toast({
           // @ts-ignore
@@ -103,7 +122,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
       <DialogContent className="p-0 my-8 rounded-lg">
         <div className="px-7 pt-6 pb-8 leading-relaxed">
           <h2 className="mb-2 font-semibold">
-            Import {props.type === 'ENTITY_TYPES' ? 'Entity Classes' : 'Schemas'}
+            Import {props.type === 'ENTITY_TYPES' 
+              ? 'Entity Classes' : props.type === 'FOLDER_SCHEMAS' 
+              ? 'Folder Schemas' : 'Image Schemas'}
           </h2>
 
           <div className="py-4">
@@ -202,6 +223,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
           </p>
 
           <UploadButton 
+            validation={validation}
             onError={onUploadError} 
             onUpload={onUpload} />
         </div>

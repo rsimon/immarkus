@@ -1,9 +1,10 @@
 import { ChangeEvent, useRef } from 'react';
 import { Button } from '@/ui/Button';
 import { EntityType } from '@/model';
-import { validateEntityTypes } from './useImportModel';
 
 interface UploadButtonProps {
+
+  validation: ((data: any) => boolean);
 
   onError(error: string): void;
 
@@ -25,7 +26,7 @@ export const UploadButton = (props: UploadButtonProps) => {
         try {
           const content = JSON.parse(e.target.result as string);
 
-          if (validateEntityTypes(content))
+          if (props.validation(content))
             props.onUpload(content);
           else
             props.onError('Invalid data model format');
