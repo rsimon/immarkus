@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, MousePointer2, Redo2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import { ChevronLeft, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { ToolSelector } from './ToolSelector';
@@ -44,6 +44,11 @@ export const HeaderSection = (props: HeaderSectionProps) => {
       props.onChangeTool(tool);
 
     props.onChangeMode('draw');
+  }
+
+  const onRotate = (clockwise: boolean) => {
+    const viewer = Array.from(viewers.values())[0];
+    viewer.viewport.rotateBy(clockwise ? 90 : -90);
   }
 
   const onZoom = (factor: number) => () => {
@@ -91,6 +96,18 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onAddImage={props.onAddImage} />
 
         <Separator orientation="vertical" className="h-4" />
+
+        <ToolbarButton
+          onClick={() => onRotate(false)}>
+          <RotateCcwSquare
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          onClick={() => onRotate(true)}>
+          <RotateCwSquare 
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
 
         <ToolbarButton 
           disabled={toolsDisabled}
