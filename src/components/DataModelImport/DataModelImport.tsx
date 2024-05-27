@@ -1,6 +1,9 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
-import { Check, XCircle } from 'lucide-react';
+import { AlertCircle, Check, XCircle } from 'lucide-react';
+import { ModelPreset, useRuntimeConfig } from '@/RuntimeConfig';
 import { EntityType, MetadataSchema } from '@/model';
+import { useDataModel } from '@/store';
+import { Alert, AlertDescription, AlertTitle } from '@/ui/Alert';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { Label } from '@/ui/Label';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
@@ -18,7 +21,6 @@ import {
 } from '@/ui/Select';
 
 import './DataModelImport.css';
-import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface DataModelImportProps {
 
@@ -41,6 +43,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
   const [keepExisting, setKeepExisting] = useState<string>('keep');
 
   const config = useRuntimeConfig();
+
+  const model = useDataModel();
 
   const presets = useMemo(() =>
     (config.model_presets || []).filter(p => p.type === props.type)
@@ -68,16 +72,17 @@ export const DataModelImport = (props: DataModelImportProps) => {
     if (props.onOpenChange)
       props.onOpenChange(open);
   }
+  
+  const onLoadPreset = (preset: ModelPreset) => {
+    setOpen(false);
 
-  const onUploadError = (error: string) =>
-    toast({
-      variant: 'destructive',
-      // @ts-ignore
-      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-      description: error
-    });
+    fetch(preset.url)
+      .then(res => res.json())
+      .then(importToModel)
+      .catch(() => onError(`Error loading preset ${preset.name}`));
+  }
 
-  const onUpload = (types: EntityType[] | MetadataSchema[]) => {
+  const importToModel = (items: EntityType[] | MetadataSchema[]) => {
     setOpen(false);
 
     const importItems = 
@@ -91,29 +96,36 @@ export const DataModelImport = (props: DataModelImportProps) => {
       return;
 
     // @ts-ignore
-    importItems(types, replace, keepExisting === 'keep')
+    importItems(items, replace, keepExisting === 'keep')
       .then(() => {
         toast({
           // @ts-ignore
           title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> Success</ToastTitle>,
           description: props.type === 'ENTITY_TYPES' 
-            ? `${types.length} entity classes imported successfully.`
-            : `${types.length} schemas imported successfully.`
+            ? `${items.length} entity classes imported successfully.`
+            : `${items.length} schemas imported successfully.`
         });
       })
       .catch(error => {
         console.error(error);
-        
-        toast({
-          variant: 'destructive',
-          // @ts-ignore
-          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-          description: 'Error importing to data model'
-        });
+        onError('Error importing to data model');
       });
   }
 
+  const onError = (error: string) =>
+    toast({
+      variant: 'destructive',
+      // @ts-ignore
+      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+      description: error
+    });
+
   const items = props.type === 'ENTITY_TYPES' ? 'classes' : 'schemas';
+
+  const isEmpty = 
+    props.type === 'ENTITY_TYPES' ? model.entityTypes.length === 0 :
+    props.type === 'FOLDER_SCHEMAS' ? model.folderSchemas.length === 0 :
+    props.type === 'IMAGE_SCHEMAS' ? model.imageSchemas.length === 0 : true;
 
   return (
     <Dialog 
@@ -150,6 +162,17 @@ export const DataModelImport = (props: DataModelImportProps) => {
               You can either delete and replace your existing model, or add the 
               imported {items} to your current model.
             </p>
+
+            {replace && !isEmpty && (
+              <Alert variant="destructive" className="my-4">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-sm">Warning</AlertTitle>
+                <AlertDescription className="text-sm leading-relaxed">
+                  All current {props.type === 'ENTITY_TYPES' ? 'Entity Classes' : 'schemas'} will
+                  be deleted from your model.
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           <div className={replace ? 'import-duplicates disabled mb-2' : 'import-duplicates mb-2'}>
@@ -210,14 +233,16 @@ export const DataModelImport = (props: DataModelImportProps) => {
                   Import from Preset
                 </Label>
 
-                <Select>
+                <Select onValueChange={value => onLoadPreset(presets.find(p => p.name === value))}>
                   <SelectTrigger className="w-full bg-white">
                     <SelectValue />
                   </SelectTrigger>
 
                   <SelectContent>
                     {presets.map(preset => (
-                      <SelectItem key={preset.name} value="text">
+                      <SelectItem 
+                        key={preset.name} 
+                        value={preset.name}>
                         {preset.name}
                       </SelectItem>
                     ))}
@@ -235,8 +260,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
           <UploadButton 
             validation={validation}
-            onError={onUploadError} 
-            onUpload={onUpload} />
+            onError={onError} 
+            onUpload={importToModel} />
         </div>
       </DialogContent>
     </Dialog>
