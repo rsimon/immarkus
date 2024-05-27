@@ -46,8 +46,5 @@
     "description": "A Dictionary of Official Titles in Imperial China",
     "type": "IFRAME",
     "search_pattern": "https://dhumanities.github.io/markus/hucker/index.html?term={{query}}"
-  }],
-  "model_presets": [{
-    "type": "ENTITY_TYPES", "name": "Dummy Classes", "url": "presets/entity-classes.json"
   }]
 }

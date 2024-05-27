@@ -102,8 +102,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
           // @ts-ignore
           title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> Success</ToastTitle>,
           description: props.type === 'ENTITY_TYPES' 
-            ? `${items.length} entity classes imported successfully.`
-            : `${items.length} schemas imported successfully.`
+            ? `${items.length} entity classe${items.length > 1 ? 's' : ''} imported successfully.`
+            : `${items.length} schema${items.length > 1 ? 's' : ''} imported successfully.`
         });
       })
       .catch(error => {
@@ -175,9 +175,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
             )}
           </div>
 
-          <div className={replace ? 'import-duplicates disabled mb-2' : 'import-duplicates mb-2'}>
+          <div className={replace ? 'import-duplicates disabled my-2' : 'import-duplicates my-2'}>
             <Label htmlFor="replace-existing">
-              Duplicate {props.type === 'ENTITY_TYPES' ? 'Classes' : 'Schemas'}
+              How to Handle Duplicate {props.type === 'ENTITY_TYPES' ? 'Classes' : 'Schemas'}
             </Label>
 
             <p className="text-muted-foreground text-xs mt-1 mb-2">
