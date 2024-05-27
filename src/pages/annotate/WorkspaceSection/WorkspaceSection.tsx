@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { LegacyRef, MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
 import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../Tool';
-import { WorkspaceWindow } from './WorkspaceWindow';
+import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component/react-mosaic-component.css';
 
@@ -28,6 +28,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
+
+  const windowRefs = useRef<Map<string, WorkspaceWindowRef>>();
 
   // Mosaic state
   const [value, setValue] = useState<MosaicNode<string>>();
@@ -69,6 +71,18 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
     props.onChangeImages(nextImages);
   }
+
+  const onChange = (value: MosaicNode<string>) => {
+    setValue(value);
+    windowRefs.current.forEach(ref => ref.onResize());
+  }
+
+  const trackRef = (windowId: string) => (ref: WorkspaceWindowRef) => {
+    if (!windowRefs.current)
+      windowRefs.current = new Map<string, WorkspaceWindowRef>();
+
+    windowRefs.current.set(windowId, ref);
+  }
   
   return (
     <section className="workspace flex-grow bg-muted">
@@ -81,6 +95,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
         <Mosaic<string>
           renderTile={(windowId, path) => (
             <WorkspaceWindow 
+              ref={trackRef(windowId)}
               windowId={windowId} 
               windowPath={path} 
               image={windowMap.current.find(t => t.windowId === windowId)?.image}
@@ -91,7 +106,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               onClose={() => onClose(windowId)} />
           )}
           value={value}
-          onChange={setValue}
+          onChange={onChange}
         />
       )}
     </section>

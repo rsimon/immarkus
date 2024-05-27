@@ -1,0 +1,19 @@
+.mosaic-window-toolbar {
+  overflow-x: auto;
+}
+
+.mosaic-window .mosaic-window-toolbar > div {
+  flex: 0 0 auto;
+}
+
+.mosaic-window .mosaic-window-toolbar .mosaic-window-controls {
+  flex-grow: 1;
+}
+
+.mosaic-window .mosaic-window-toolbar .mosaic-window-title {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

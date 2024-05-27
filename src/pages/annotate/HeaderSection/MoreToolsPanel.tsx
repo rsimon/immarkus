@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import { EllipsisVertical, RotateCcwSquare, RotateCwSquare } from 'lucide-react';
+import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Undo2 } from 'lucide-react';
 import { Image, LoadedImage } from '@/model';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
@@ -13,13 +13,17 @@ interface MoreToolsPanelProps {
 
   images: LoadedImage[];
 
-  toolsDisabled: boolean;
+  osdToolsDisabled: boolean;
 
   onAddImage(image: Image): void;
 
   onChangeImage(previous: Image, next: Image): void;
 
+  onRedo(): void;
+
   onRotate(clockwise: boolean): void;
+
+  onUndo(): void;
 
 }
 
@@ -47,7 +51,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           <Separator orientation="vertical" className="h-4" />
 
           <PaginationWidget 
-            disabled={props.toolsDisabled}
+            disabled={props.osdToolsDisabled}
             image={props.images[0]} 
             onChangeImage={props.onChangeImage} 
             onAddImage={props.onAddImage} />
@@ -63,6 +67,22 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           <ToolbarButton
             onClick={() => props.onRotate(true)}>
             <RotateCwSquare 
+              className="h-8 w-8 p-2" />
+          </ToolbarButton>
+
+          <Separator orientation="vertical" className="h-4" />
+
+          <ToolbarButton
+            disabled={props.osdToolsDisabled}
+            onClick={props.onUndo}>
+            <Undo2 
+              className="h-8 w-8 p-2" />
+          </ToolbarButton>
+
+          <ToolbarButton
+            disabled={props.osdToolsDisabled}
+            onClick={props.onRedo}>
+            <Redo2
               className="h-8 w-8 p-2" />
           </ToolbarButton>
         </section>

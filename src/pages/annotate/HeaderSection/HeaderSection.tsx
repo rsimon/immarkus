@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, EllipsisVertical, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import { ChevronLeft, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
@@ -11,10 +11,7 @@ import { Tool, ToolMode } from '../Tool';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
-import { useDetectHorizontalOverflow } from '@/utils/useDetectOverflow';
 import { MoreToolsPanel } from './MoreToolsPanel';
-import { DefaultToolbarButton } from 'react-mosaic-component';
-import { useWindowSize } from '@/utils/useWindowSize';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 
 interface HeaderSectionProps {
@@ -50,8 +47,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
    * which we'll enable as soon as it overflows.
    */
   const { ref, collapsed } = useCollapsibleToolbar();
-
-  const [moreToolsOpen, setMoreToolsOpen] = useState(false);
 
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
@@ -112,10 +107,12 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <MoreToolsPanel 
               open={true}
               images={props.images}
-              toolsDisabled={osdToolsDisabled}
+              osdToolsDisabled={osdToolsDisabled}
               onAddImage={props.onAddImage}
               onChangeImage={props.onChangeImage} 
-              onRotate={onRotate} />
+              onRedo={onRedo}
+              onRotate={onRotate}
+              onUndo={onUndo} />
 
             <Separator orientation="vertical" className="h-4" />
           </>
