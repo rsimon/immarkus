@@ -1,6 +1,6 @@
 import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
-import { Redo2, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image, LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -42,6 +42,11 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
     props.onClose();
   }
 
+  const onRotate = (clockwise: boolean) => () => {
+    const viewer = viewers.get(props.windowId);
+    viewer.viewport.rotateBy(clockwise ? 90 : -90);
+  }
+
   const onZoom = (factor: number) => () => {
     const viewer = viewers.get(props.windowId);
     viewer.viewport.zoomBy(factor);
@@ -55,6 +60,14 @@ export const WorkspaceWindow = (props: WorkspaceWindowProps) => {
       title={props.image.name}
       toolbarControls={(
         <>
+          <button onClick={onRotate(false)}>
+            <RotateCcwSquare className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+          </button>
+
+          <button onClick={onRotate(true)}>
+            <RotateCwSquare className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+          </button>
+
           <button onClick={onZoom(2)}>
             <ZoomIn className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
           </button>

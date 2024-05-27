@@ -46,7 +46,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     props.onChangeMode('draw');
   }
 
-  const onRotate = (clockwise: boolean) => {
+  const onRotate = (clockwise: boolean) => () => {
     const viewer = Array.from(viewers.values())[0];
     viewer.viewport.rotateBy(clockwise ? 90 : -90);
   }
@@ -98,13 +98,13 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <Separator orientation="vertical" className="h-4" />
 
         <ToolbarButton
-          onClick={() => onRotate(false)}>
+          onClick={onRotate(false)}>
           <RotateCcwSquare
             className="h-8 w-8 p-2" />
         </ToolbarButton>
 
         <ToolbarButton
-          onClick={() => onRotate(true)}>
+          onClick={onRotate(true)}>
           <RotateCwSquare 
             className="h-8 w-8 p-2" />
         </ToolbarButton>
