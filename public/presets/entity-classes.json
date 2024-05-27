@@ -1,0 +1,1 @@
+[{"color":"#c424c6","id":"main_object","label":"Main Object"},{"color":"#e5b0b3","id":"object_part_1","label":"Object Part 1","parentId":"main_object"},{"color":"#f50906","id":"object_part_2","label":"Object Part 2","parentId":"main_object"},{"color":"#1732ae","id":"other_class","label":"Some Other Class"}]

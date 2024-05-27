@@ -18,6 +18,7 @@ import {
 } from '@/ui/Select';
 
 import './DataModelImport.css';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface DataModelImportProps {
 
@@ -38,6 +39,12 @@ export const DataModelImport = (props: DataModelImportProps) => {
   const [replace, setReplace] = useState(false);
 
   const [keepExisting, setKeepExisting] = useState<string>('keep');
+
+  const config = useRuntimeConfig();
+
+  const presets = useMemo(() =>
+    (config.model_presets || []).filter(p => p.type === props.type)
+  , [config, props.type]);
 
   const { toast } = useToast();
 
@@ -192,35 +199,39 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </div>
           </div>
 
-          <Separator className="my-6" />
+          {presets.length > 0 ? (
+            <>
+              <Separator className="my-6" />
 
-          <div className="mt-4">
-            <Label 
-              htmlFor="presets"
-              className="inline-block text-xs mb-1.5 ml-0.5">
-              Import from Preset
-            </Label>
+              <div className="mt-4">
+                <Label 
+                  htmlFor="presets"
+                  className="inline-block text-xs mb-1.5 ml-0.5">
+                  Import from Preset
+                </Label>
 
-            <Select>
-              <SelectTrigger className="w-full bg-white">
-                <SelectValue />
-              </SelectTrigger>
+                <Select>
+                  <SelectTrigger className="w-full bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
 
-              <SelectContent>
-                <SelectItem value="text">
-                  Preset A
-                </SelectItem>
+                  <SelectContent>
+                    {presets.map(preset => (
+                      <SelectItem key={preset.name} value="text">
+                        {preset.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-                <SelectItem value="number">
-                  Preset B
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <p className="w-full text-xs py-4 text-center text-muted-foreground">
-            — or —
-          </p>
+              <p className="w-full text-xs py-4 text-center text-muted-foreground">
+                — or —
+              </p>
+            </>
+          ) : (
+            <div className="pb-6" />
+          )}
 
           <UploadButton 
             validation={validation}
