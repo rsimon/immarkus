@@ -8,7 +8,7 @@ interface EntityTypeDialogProps {
 
   children?: ReactNode;
 
-  entityType?: EntityType
+  entityType?: EntityType;
 
   open?: boolean;
 

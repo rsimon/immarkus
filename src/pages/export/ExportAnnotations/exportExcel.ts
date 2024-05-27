@@ -98,7 +98,7 @@ const createWorksheet = (
     { header: 'Entity Class', key: 'entity', width: 20 },
     ...schema.map(field => ({
       header: field.name,
-      key: field.name,
+      key: `@property_${field.name}`,
       width: 20
     }))
   ];
@@ -145,7 +145,7 @@ const createWorksheet = (
 
       // Schema columns
       const entries = Object.entries('properties' in body ? body.properties || {} : {});
-      entries.forEach(([key, value]) => row[key] = value);
+      entries.forEach(([key, value]) => row[`@property_${key}`] = value);
 
       worksheet.addRow(row);
 

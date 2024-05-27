@@ -4,8 +4,9 @@ import { MetadataSchema } from '@/model';
 import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
-import { Rows3 } from 'lucide-react';
+import { Import, Rows3 } from 'lucide-react';
 import { renameImageSchema } from '@/store/integrity';
+import { DataModelImport } from '@/components/DataModelImport';
 
 export const ImageMetadata = () => {
 
@@ -52,7 +53,7 @@ export const ImageMetadata = () => {
         onEditSchema={setEdited}
         onDeleteSchema={onDelete} />
 
-      <div className="mt-4">
+      <div className="flex gap-2 mt-4">
         <MetadataSchemaEditorDialog
           editorHint={editorHint}
           previewHint={previewHint}
@@ -62,6 +63,12 @@ export const ImageMetadata = () => {
             <Rows3 className="w-4 h-4 mr-2" /> New Image Schema
           </Button>
         </MetadataSchemaEditorDialog>
+
+        <DataModelImport type="IMAGE_SCHEMAS">
+          <Button variant="outline">
+            <Import className="h-4 w-4 mr-2" /> Import Model
+          </Button>
+        </DataModelImport>
       </div>
 
       <MetadataSchemaEditorDialog

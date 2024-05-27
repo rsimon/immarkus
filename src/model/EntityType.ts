@@ -8,7 +8,7 @@ export interface EntityType {
 
   label?: string;
 
-  parentId: string;
+  parentId?: string;
 
   description?: string;
 

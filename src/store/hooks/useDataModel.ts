@@ -22,6 +22,15 @@ export const useDataModel = () => {
   const addImageSchema = (schema: MetadataSchema) =>
     setAsync(model.addImageSchema(schema));
 
+  const clearEntityTypes = () =>
+    setAsync(model.clearEntityTypes());
+
+  const clearFolderSchemas = () =>
+    setAsync(model.clearFolderSchemas());
+
+  const clearImageSchemas = () =>
+    setAsync(model.clearImageSchemas());
+
   const removeEntityType = (typeOrId: EntityType | string) =>
     setAsync(model.removeEntityType(typeOrId));
 
@@ -30,6 +39,15 @@ export const useDataModel = () => {
 
   const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
     setAsync(model.removeImageSchema(schemaOrName));
+
+  const setEntityTypes = (types: EntityType[]) =>
+    setAsync(model.setEntityTypes(types));
+
+  const setFolderSchemas = (schemas: MetadataSchema[]) =>
+    setAsync(model.setFolderSchemas(schemas));
+
+  const setImageSchemas = (schemas: MetadataSchema[]) =>
+    setAsync(model.setImageSchemas(schemas));
 
   const updateEntityType = (type: EntityType) => 
     setAsync(model.updateEntityType(type));
@@ -45,9 +63,15 @@ export const useDataModel = () => {
     addEntityType,
     addFolderSchema,
     addImageSchema,
+    clearEntityTypes,
+    clearFolderSchemas,
+    clearImageSchemas,
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
+    setEntityTypes,
+    setFolderSchemas,
+    setImageSchemas,
     updateEntityType,
     updateFolderSchema,
     updateImageSchema
