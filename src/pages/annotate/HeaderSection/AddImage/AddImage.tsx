@@ -74,7 +74,7 @@ export const AddImage = (props: AddImageProps) => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none 
-          focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap">
         <ImagePlus className="h-4 w-4 mr-1" /> Add image
       </PopoverTrigger>
 
