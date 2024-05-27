@@ -7,29 +7,41 @@ import { removeMissingParentIds, repairDataModel } from '../integrity';
 export interface DataModelStore extends DataModel, EntityTypeTree {
 
   // Entity types
-  getEntityType(id: string, inheritProps?: boolean): EntityType | undefined;
-
   addEntityType(type: EntityType): Promise<void>;
 
+  clearEntityTypes(): Promise<void>;
+
+  getEntityType(id: string, inheritProps?: boolean): EntityType | undefined;
+
   removeEntityType(typeOrId: EntityType | string): Promise<void>;
+
+  setEntityTypes(types: EntityType[]): Promise<void>;
   
   updateEntityType(type: EntityType): Promise<void>;
 
   // Folder metadata schemas
-  getFolderSchema(name: string): MetadataSchema | undefined;
-
   addFolderSchema(schema: MetadataSchema): Promise<void>;
 
+  clearFolderSchemas(): Promise<void>;
+
+  getFolderSchema(name: string): MetadataSchema | undefined;
+
   removeFolderSchema(schemaOrName: MetadataSchema | string): Promise<void>;
+
+  setFolderSchemas(schemas: MetadataSchema[]): Promise<void>;
 
   updateFolderSchema(schema: MetadataSchema): Promise<void>;
 
   // Image metadata schemas
-  getImageSchema(name: string): MetadataSchema | undefined;
-
   addImageSchema(schema: MetadataSchema): Promise<void>;
 
+  clearImageSchemas(): Promise<void>;
+
+  getImageSchema(name: string): MetadataSchema | undefined;
+
   removeImageSchema(schemaOrName: MetadataSchema | string): Promise<void>;
+
+  setImageSchemas(schemas: MetadataSchema[]): Promise<void>;
 
   updateImageSchema(schema: MetadataSchema): Promise<void>;
 
@@ -104,6 +116,21 @@ export const loadDataModel = (
     }
   }
 
+  const clearEntityTypes = () => {
+    entityTypes = [];
+    return rebuildEntityTypeTreeAndSave();
+  }
+
+  const clearFolderSchemas = () => {
+    folderSchemas = [];
+    return save();
+  }
+
+  const clearImageSchemas = () => {
+    imageSchemas = [];
+    return save();
+  }
+
   const getEntityType = (id: string, inheritProps = false) => {
     const type = entityTypes.find(e => e.id === id);
 
@@ -159,6 +186,21 @@ export const loadDataModel = (
     return save();
   }
 
+  const setEntityTypes = (types: EntityType[]) => {
+    entityTypes = [...types];
+    return rebuildEntityTypeTreeAndSave();
+  }
+
+  const setFolderSchemas = (schemas: MetadataSchema[]) => {
+    folderSchemas = [...schemas];
+    return save();
+  }
+
+  const setImageSchemas = (schemas: MetadataSchema[]) => {
+    imageSchemas = [...schemas];
+    return save();
+  }
+
   const updateEntityType = (type: EntityType) => {
     if (entityTypes.find(e => e.id === type.id)) {
       entityTypes = entityTypes.map(e => e.id === type.id ? type : e);
@@ -194,12 +236,18 @@ export const loadDataModel = (
     addEntityType,
     addFolderSchema,
     addImageSchema,
+    clearEntityTypes,
+    clearFolderSchemas,
+    clearImageSchemas,
     getEntityType,
     getFolderSchema,
     getImageSchema,
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
+    setEntityTypes,
+    setFolderSchemas,
+    setImageSchemas,
     updateEntityType,
     updateFolderSchema,
     updateImageSchema

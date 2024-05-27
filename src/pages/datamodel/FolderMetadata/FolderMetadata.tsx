@@ -5,7 +5,8 @@ import { useDataModel, useStore } from '@/store';
 import { renameFolderSchema } from '@/store/integrity';
 import { Button } from '@/ui/Button';
 import { MetadataSchemaEditorDialog } from '@/components/MetadataSchemaEditor';
-import { Rows3 } from 'lucide-react';
+import { Import, Rows3 } from 'lucide-react';
+import { DataModelImport } from '@/components/DataModelImport';
 
 export const FolderMetadata = () => {
 
@@ -52,7 +53,7 @@ export const FolderMetadata = () => {
         onEditSchema={setEdited}
         onDeleteSchema={onDelete} />
 
-      <div className="mt-4">
+      <div className="flex gap-2 mt-4">
         <MetadataSchemaEditorDialog
           editorHint={editorHint}
           previewHint={previewHint}
@@ -62,6 +63,12 @@ export const FolderMetadata = () => {
             <Rows3 className="w-4 h-4 mr-2" /> New Folder Schema
           </Button>
         </MetadataSchemaEditorDialog>
+
+        <DataModelImport type="FOLDER_SCHEMAS">
+          <Button variant="outline">
+            <Import className="h-4 w-4 mr-2" /> Import Model
+          </Button>
+        </DataModelImport>
       </div>
 
       <MetadataSchemaEditorDialog

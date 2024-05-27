@@ -1,0 +1,8 @@
+.import-duplicates button {
+  flex: 0 0 auto;
+}
+
+.import-duplicates.disabled * {
+  color: #cfd8e5;
+  --primary: #cfd8e5;
+}

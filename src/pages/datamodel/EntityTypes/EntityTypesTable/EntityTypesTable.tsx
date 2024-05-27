@@ -47,7 +47,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
       const aHasChildren = model.hasChildTypes(a.id);
       const bHasChildren = model.hasChildTypes(b.id);
 
-      if (aHasChildren && !bHasChildren) return 1;
+      if (aHasChildren && !bHasChildren) return -1;
 
       if (bHasChildren && !aHasChildren) return 1;
 
