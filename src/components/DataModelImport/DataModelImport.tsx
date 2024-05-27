@@ -1,10 +1,14 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { Check, XCircle } from 'lucide-react';
+import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { Label } from '@/ui/Label';
-import { Button } from '@/ui/Button';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
 import { Switch } from '@/ui/Switch';
 import { Separator } from '@/ui/Separator';
+import { ToastTitle, useToast } from '@/ui/Toaster';
+import { UploadButton } from './UploadButton';
+import { useImportEntityTypes } from './useImportModel';
 import {
   Select,
   SelectContent,
@@ -14,7 +18,6 @@ import {
 } from '@/ui/Select';
 
 import './DataModelImport.css';
-import { UploadButton } from './UploadButton';
 
 interface DataModelImportProps {
 
@@ -32,6 +35,12 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
   const [replace, setReplace] = useState(false);
 
+  const [keepExisting, setKeepExisting] = useState<string>('keep');
+
+  const { toast } = useToast();
+
+  const importTypes = useImportEntityTypes();
+
   useEffect(() => {
     setOpen(props.open);
   }, [props.open]);
@@ -41,6 +50,37 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
     if (props.onOpenChange)
       props.onOpenChange(open);
+  }
+
+  const onUploadError = (error: string) =>
+    toast({
+      variant: 'destructive',
+      // @ts-ignore
+      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+      description: error
+    });
+
+  const onUpload = (types: EntityType[]) => {
+    setOpen(false);
+
+    importTypes(types, true)
+      .then(() => {
+        toast({
+          // @ts-ignore
+          title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> Success</ToastTitle>,
+          description: `${types.length} entity classes imported successfully.`
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        
+        toast({
+          variant: 'destructive',
+          // @ts-ignore
+          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+          description: 'Error importing to data model'
+        });
+      });
   }
 
   return (
@@ -77,7 +117,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </p>
           </div>
 
-          <div className={replace ? 'import-duplicates disabled mb-2' : 'mb-2'}>
+          <div className={replace ? 'import-duplicates disabled mb-2' : 'import-duplicates mb-2'}>
             <Label htmlFor="replace-existing">
               Duplicate Classes
             </Label>
@@ -88,7 +128,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </p>
 
             <div className="py-1">
-              <RadioGroup defaultValue="keep">
+              <RadioGroup 
+                value={keepExisting} 
+                onValueChange={setKeepExisting}>
                 <div className="flex items-start gap-4 mb-0.5 pl-1">
                   <RadioGroupItem 
                     className="mt-[4px]"
@@ -152,7 +194,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
             — or —
           </p>
 
-          <UploadButton />
+          <UploadButton 
+            onError={onUploadError} 
+            onUpload={onUpload} />
         </div>
       </DialogContent>
     </Dialog>

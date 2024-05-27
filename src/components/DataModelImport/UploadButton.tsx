@@ -1,7 +1,17 @@
 import { ChangeEvent, useRef } from 'react';
 import { Button } from '@/ui/Button';
+import { EntityType } from '@/model';
+import { validateEntityTypes } from './useImportModel';
 
-export const UploadButton = () => {
+interface UploadButtonProps {
+
+  onError(error: string): void;
+
+  onUpload(types: EntityType[]): void;
+
+}
+
+export const UploadButton = (props: UploadButtonProps) => {
 
   const inputEl = useRef<HTMLInputElement>(null);
 
@@ -14,9 +24,13 @@ export const UploadButton = () => {
       reader.onload = function(e) {
         try {
           const content = JSON.parse(e.target.result as string);
-          console.log('JSON content:', content);
+
+          if (validateEntityTypes(content))
+            props.onUpload(content);
+          else
+            props.onError('Invalid data model format');
         } catch (error) {
-          console.error(error);
+          props.onError('Could not open the data file');
         }
       };
 
