@@ -152,7 +152,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
         </div>
       )}>
 
-      <AnnotatableImage 
+      <AnnotatableImage
         windowId={props.windowId}
         image={props.image} 
         mode={props.mode}

@@ -1,4 +1,4 @@
-import { LegacyRef, MutableRefObject, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
 import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
@@ -54,6 +54,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       windowMap.current = next;
 
       setValue(createBalancedTreeFromLeaves(next.map(t => t.windowId)));
+    } else {
+      windowRefs.current === undefined;
     }
   }, [props.images]);
 
@@ -74,21 +76,24 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   const onChange = (value: MosaicNode<string>) => {
     setValue(value);
-    windowRefs.current.forEach(ref => ref.onResize());
+    windowRefs.current?.forEach(ref => ref?.onResize());
   }
 
   const trackRef = (windowId: string) => (ref: WorkspaceWindowRef) => {
     if (!windowRefs.current)
       windowRefs.current = new Map<string, WorkspaceWindowRef>();
 
-    windowRefs.current.set(windowId, ref);
+    if (ref)
+      windowRefs.current.set(windowId, ref);
+    else
+      windowRefs.current.delete(windowId);
   }
   
   return (
     <section className="workspace flex-grow bg-muted">
       {props.images.length === 1 ? (
-        <AnnotatableImage 
-          image={props.images[0]} 
+        <AnnotatableImage
+          image={props.images[0]}
           mode={props.mode}
           tool={props.tool} />
       ) : props.images.length > 1 && (

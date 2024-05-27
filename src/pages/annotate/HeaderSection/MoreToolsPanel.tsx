@@ -9,8 +9,6 @@ import { useState } from 'react';
 
 interface MoreToolsPanelProps {
 
-  open: boolean;
-
   images: LoadedImage[];
 
   osdToolsDisabled: boolean;
@@ -31,6 +29,11 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
 
   const [open, setOpen] = useState(false);
 
+  const onAddImage = (image: Image) => {
+    setOpen(false);
+    props.onAddImage(image);
+  }
+
   return (
     <Popover open={open}>
       <PopoverTrigger 
@@ -46,7 +49,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
         <section className="flex gap-1 items-center">
           <AddImage 
             current={props.images} 
-            onAddImage={props.onAddImage} />
+            onAddImage={onAddImage} />
 
           <Separator orientation="vertical" className="h-4" />
 
@@ -54,17 +57,19 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             disabled={props.osdToolsDisabled}
             image={props.images[0]} 
             onChangeImage={props.onChangeImage} 
-            onAddImage={props.onAddImage} />
+            onAddImage={onAddImage} />
 
           <Separator orientation="vertical" className="h-4" />
 
           <ToolbarButton
+            disabled={props.osdToolsDisabled}
             onClick={() => props.onRotate(false)}>
             <RotateCcwSquare
               className="h-8 w-8 p-2" />
           </ToolbarButton>
 
           <ToolbarButton
+            disabled={props.osdToolsDisabled}
             onClick={() => props.onRotate(true)}>
             <RotateCwSquare 
               className="h-8 w-8 p-2" />

@@ -105,7 +105,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         {collapsed && (
           <>
             <MoreToolsPanel 
-              open={true}
               images={props.images}
               osdToolsDisabled={osdToolsDisabled}
               onAddImage={props.onAddImage}
@@ -135,12 +134,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <Separator orientation="vertical" className="h-4" />
 
             <ToolbarButton
+              disabled={osdToolsDisabled}
               onClick={() => onRotate(false)}>
               <RotateCcwSquare
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
 
             <ToolbarButton
+              disabled={osdToolsDisabled}
               onClick={() => onRotate(true)}>
               <RotateCwSquare 
                 className="h-8 w-8 p-2" />
