@@ -4,7 +4,7 @@ import { useDraggable } from '@neodrag/react';
 import { Button } from '@/ui/Button';
 import { QueryConditionBuilder } from './QueryConditionBuilder';
 import { ConditionQuery } from './Types';
-import { GraphNode, GraphSettings } from '../Types';
+import { GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -15,7 +15,7 @@ import {
 
 interface QueryBuilderProps {
 
-  settings: GraphSettings;
+  settings: KnowledgeGraphSettings;
 
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
 

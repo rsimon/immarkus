@@ -46,7 +46,7 @@ export interface GraphLink {
 
 }
 
-export interface GraphSettings {
+export interface KnowledgeGraphSettings {
 
   hideIsolatedNodes?: boolean;
 

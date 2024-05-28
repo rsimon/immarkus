@@ -3,12 +3,13 @@ import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
-import { GraphNode, GraphSettings } from './Types';
+import { GraphNode } from './Types';
 import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { QueryBuilder } from './QueryBuilder';
+import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
 
 export const KnowledgeGraph = () => {
 
@@ -16,7 +17,7 @@ export const KnowledgeGraph = () => {
 
   const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
-  const [settings, setSettings] = useState<GraphSettings>({});
+  const { settings, setSettings } = useKnowledgeGraphSettings();
 
   const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
 
