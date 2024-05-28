@@ -71,8 +71,8 @@ export const GraphView = (props: GraphViewProps) => {
 
   const nodeFilter = useMemo(() => (
     props.settings.hideIsolatedNodes 
-    ? (node: NodeObject<GraphNode>) => node.degree > 0
-    : undefined
+      ? (node: NodeObject<GraphNode>) => node.degree > 0
+      : undefined
   ), [props.settings, props.query]);
 
   useEffect(() => {
