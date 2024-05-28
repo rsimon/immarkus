@@ -7,6 +7,7 @@ import { Tool, ToolMode } from '../Tool';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component/react-mosaic-component.css';
+import { useWindowSize } from '@/utils/useWindowSize';
 
 interface WorkspaceSectionProps {
 
@@ -33,6 +34,9 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   // Mosaic state
   const [value, setValue] = useState<MosaicNode<string>>();
+
+  // Track window size, so we can update window toolbars responsively
+  const { width } = useWindowSize();
   
   useEffect(() => {
     if (props.images.length > 1) {
@@ -88,6 +92,10 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     else
       windowRefs.current.delete(windowId);
   }
+
+  useEffect(() => {
+    windowRefs.current?.forEach(ref => ref?.onResize());
+  }, [width]);
   
   return (
     <section className="workspace flex-grow bg-muted">
