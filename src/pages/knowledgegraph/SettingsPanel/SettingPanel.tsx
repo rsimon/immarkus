@@ -2,7 +2,7 @@ import { useTransition, animated, easings } from '@react-spring/web';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { Switch } from '@/ui/Switch';
-import { GraphSettings } from '../Types';
+import { KnowledgeGraphSettings } from '../Types';
 import { ListFilter } from 'lucide-react';
 
 interface SettingsPanelProps {
@@ -11,9 +11,9 @@ interface SettingsPanelProps {
 
   open: boolean;
 
-  settings: GraphSettings;
+  settings: KnowledgeGraphSettings;
 
-  onChangeSettings(changed: GraphSettings): void;
+  onChangeSettings(changed: KnowledgeGraphSettings): void;
 
   onToggleQueryBuilder(): void;
 
