@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../Tool';
-import { WorkspaceWindow } from './WorkspaceWindow';
+import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component/react-mosaic-component.css';
+import { useWindowSize } from '@/utils/useWindowSize';
 
 interface WorkspaceSectionProps {
 
@@ -29,8 +30,13 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
 
+  const windowRefs = useRef<Map<string, WorkspaceWindowRef>>();
+
   // Mosaic state
   const [value, setValue] = useState<MosaicNode<string>>();
+
+  // Track window size, so we can update window toolbars responsively
+  const { width } = useWindowSize();
   
   useEffect(() => {
     if (props.images.length > 1) {
@@ -52,6 +58,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       windowMap.current = next;
 
       setValue(createBalancedTreeFromLeaves(next.map(t => t.windowId)));
+    } else {
+      windowRefs.current === undefined;
     }
   }, [props.images]);
 
@@ -69,18 +77,38 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
     props.onChangeImages(nextImages);
   }
+
+  const onChange = (value: MosaicNode<string>) => {
+    setValue(value);
+    windowRefs.current?.forEach(ref => ref?.onResize());
+  }
+
+  const trackRef = (windowId: string) => (ref: WorkspaceWindowRef) => {
+    if (!windowRefs.current)
+      windowRefs.current = new Map<string, WorkspaceWindowRef>();
+
+    if (ref)
+      windowRefs.current.set(windowId, ref);
+    else
+      windowRefs.current.delete(windowId);
+  }
+
+  useEffect(() => {
+    windowRefs.current?.forEach(ref => ref?.onResize());
+  }, [width]);
   
   return (
     <section className="workspace flex-grow bg-muted">
       {props.images.length === 1 ? (
-        <AnnotatableImage 
-          image={props.images[0]} 
+        <AnnotatableImage
+          image={props.images[0]}
           mode={props.mode}
           tool={props.tool} />
       ) : props.images.length > 1 && (
         <Mosaic<string>
           renderTile={(windowId, path) => (
             <WorkspaceWindow 
+              ref={trackRef(windowId)}
               windowId={windowId} 
               windowPath={path} 
               image={windowMap.current.find(t => t.windowId === windowId)?.image}
@@ -91,7 +119,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               onClose={() => onClose(windowId)} />
           )}
           value={value}
-          onChange={setValue}
+          onChange={onChange}
         />
       )}
     </section>
