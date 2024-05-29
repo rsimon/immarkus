@@ -204,6 +204,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           )}
 
           <InboundRelations 
+            annotation={annotation}
             schemaBodies={schemaBodies} />
 
           <PropertiesFormActions 

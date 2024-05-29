@@ -1,5 +1,5 @@
-import { Dot, Minus, MoveLeft } from 'lucide-react';
-import { W3CImageAnnotation } from '@annotorious/react';
+import { Dot, Image, Minus, MoveLeft } from 'lucide-react';
+import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { RelatedAnnotation, useImageSnippet, useStore } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
@@ -8,11 +8,15 @@ import { Link } from 'react-router-dom';
 
 interface InboundRelationCardProps {
 
+  annotation: ImageAnnotation;
+  
   related: RelatedAnnotation;
 
 }
 
 export const InboundRelationCard = (props: InboundRelationCardProps) => {
+
+  const source = (props.annotation.target as any).source;
 
   const { related } = props;
 
@@ -42,7 +46,7 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
         </div>
       </div>
 
-      <div className="max-w-full overflow-hidden ml-1 mt-3 flex gap-2 items-start">
+      <div className="max-w-full overflow-hidden ml-1 mt-3 flex gap-2.5 items-end">
         {snippet ? (
           <img
             loading="lazy"
@@ -50,17 +54,23 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
             alt={related.image.name}
             className="w-14 h-14 object-cover aspect-square rounded-sm border" />
         ) : (
-          <Skeleton className="w-14 h-14" /> 
+          <Skeleton className="w-14 h-14 flex-shrink-0" /> 
         )}
 
-        <div className="py-1">
+        <div className="py-0.5 overflow-hidden">
           <AnnotationValuePreview bodies={bodies} />
 
-          <Link 
-            to={related.image.id}
-            className="whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">
-            {related.image.name}
-          </Link>
+          {source !== related.image.name && (
+            <div className="flex items-center gap-1 text-muted-foreground pt-0.5">
+              <Image className="w-3.5 h-3.5" />
+
+              <Link 
+                to={related.image.id}
+                className="whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">
+                {related.image.name}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

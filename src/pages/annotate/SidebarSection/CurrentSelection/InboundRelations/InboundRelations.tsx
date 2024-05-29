@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
-import { W3CAnnotationBody } from '@annotorious/react';
+import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { RelatedAnnotation, useRelationGraph } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { InboundRelationCard } from './InboundRelationCard';
 
 interface InboundRelationsProps {
+
+  annotation: ImageAnnotation;
 
   schemaBodies: { body: W3CAnnotationBody, entityType: EntityType }[];
 
@@ -35,7 +37,9 @@ export const InboundRelations = (props: InboundRelationsProps) => {
         <ul>
           {related.map(r => (
             <li key={r.annotation.id} className="mb-5 relative">
-              <InboundRelationCard related={r} />
+              <InboundRelationCard 
+                annotation={props.annotation}
+                related={r} />
             </li>
           ))}
         </ul>
