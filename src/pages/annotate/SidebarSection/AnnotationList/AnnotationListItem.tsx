@@ -5,8 +5,6 @@ import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { ReactNode } from 'react';
-import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { useValuePreviews } from '@/utils/useValuePreviews';
 

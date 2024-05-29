@@ -34,7 +34,7 @@ export const InboundRelations = (props: InboundRelationsProps) => {
       <div className="mb-4">
         <ul>
           {related.map(r => (
-            <li key={r.annotationId} className="mb-5 relative">
+            <li key={r.annotation.id} className="mb-5 relative">
               <InboundRelationCard related={r} />
             </li>
           ))}

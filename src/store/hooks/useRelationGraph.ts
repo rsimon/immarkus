@@ -11,9 +11,9 @@ export interface RelationGraph {
 
 export interface RelatedAnnotation {
 
-  imageId: string;
+  image: Image;
 
-  annotationId: string;
+  annotation: W3CAnnotation;
 
   relationName: string;
 
@@ -59,8 +59,8 @@ export const useRelationGraph = () => {
               (entityType.properties || [])
                 .filter(p => p.type === 'relation')
                 .map(p => ({ 
-                  imageId: image.id,
-                  annotationId: annotation.id,
+                  image: image,
+                  annotation: annotation,
                   relationName: p.name,
                   sourceEntityType: entityType.id,
                   targetEntityType: (b as any).properties[p.name].type,
@@ -76,8 +76,6 @@ export const useRelationGraph = () => {
 
         return [...all, ...related];
       }, []);
-
-      console.log(relatedAnnotations);
 
       const getInboundLinks = (typeId: string, properties: any) => {
         const inbound = relatedAnnotations.filter(r =>
