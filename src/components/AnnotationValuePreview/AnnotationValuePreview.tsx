@@ -1,10 +1,16 @@
-import { ReactNode } from 'react';
-import { W3CAnnotationBody } from '@annotorious/react';
+import { ReactNode, useMemo } from 'react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { useDataModel } from '@/store';
-import { serializePropertyValue } from './serialize';
 import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
+import { serializePropertyValue } from '@/utils/serialize';
+
+interface AnnotationValuePreviewProps {
+
+  bodies: W3CAnnotationBody[];
+
+}
 
 const getValuePreviews = (
   schema: PropertyDefinition[], 
@@ -34,22 +40,28 @@ const getValuePreviews = (
   }
 }
 
-export const useValuePreviews = (bodies: W3CAnnotationBody[]) => {
+export const AnnotationValuePreview = (props: AnnotationValuePreviewProps) => {
 
   const { getEntityType } = useDataModel();
 
   const { authorities } = useRuntimeConfig();
 
-  const entityTags = bodies.filter(b => b.purpose === 'classifying');
+  const previews = useMemo(() => {
+    const entityTags = props.bodies.filter(b => b.purpose === 'classifying');
 
-  return entityTags.reduce<ReactNode[]>((values, body) => {
-    const schema = getEntityType(body.source, true);
-    if (schema) {
-      return [...values, ...getValuePreviews(schema.properties || [], body, authorities)];
-    } else {
-      console.error('Reference to missing entity class:', body.source);
-      return values;
-    }
-  }, []);
+    return entityTags.reduce<ReactNode[]>((values, body) => {
+      const schema = getEntityType(body.source, true);
+      if (schema) {
+        return [...values, ...getValuePreviews(schema.properties || [], body, authorities)];
+      } else {
+        console.error('Reference to missing entity class:', body.source);
+        return values;
+      }
+    }, []);
+  }, [props.bodies]);
+
+  return previews.map((node, idx) =>
+    <span key={`n-${idx}`}>{node} {(idx < previews.length - 1) && ' · '}</span>
+  )
 
 }

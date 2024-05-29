@@ -1,7 +1,7 @@
+import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { EntityBadge } from '@/components/EntityBadge';
 import { ExternalAuthority } from '@/model';
 import { useDataModel } from '@/store';
-import { useValuePreviews } from '@/utils/useValuePreviews';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 interface AnnotationsTabItemProps {
@@ -23,8 +23,6 @@ export const AnnotationsTabItem = (props: AnnotationsTabItemProps) => {
   const entityTags = bodies.filter((b: W3CAnnotationBody) => 
     b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
-  const valuePreviews = useValuePreviews(bodies);
-
   return (
     <div className="border rounded mb-2 p-2 shadow-ms">
       {entityTags.length > 0 && (
@@ -40,9 +38,7 @@ export const AnnotationsTabItem = (props: AnnotationsTabItemProps) => {
       )}
 
       <div className="px-0.5 text-xs">
-        {valuePreviews.map((node, idx) =>
-          <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
-        )}
+        <AnnotationValuePreview bodies={entityTags} />
       </div>
     </div>
   )

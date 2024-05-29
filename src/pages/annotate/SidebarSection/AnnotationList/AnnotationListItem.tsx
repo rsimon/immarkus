@@ -6,7 +6,7 @@ import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { useValuePreviews } from '@/utils/useValuePreviews';
+import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 
 interface AnnotationListItemProps {
 
@@ -26,8 +26,6 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const entityTags: W3CAnnotationBody[] = 
     props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
-
-  const valuePreviews = useValuePreviews(entityTags);
 
   const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
 
@@ -56,9 +54,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         )}
 
         <div className="line-clamp-2 px-0.5 pt-1">
-          {valuePreviews.map((node, idx) =>
-            <span key={`n-${idx}`}>{node} {(idx < valuePreviews.length - 1) && ' · '}</span>
-          )}
+          <AnnotationValuePreview bodies={entityTags} />
         </div>
       
         {note && (

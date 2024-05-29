@@ -1,12 +1,10 @@
-import { Link } from 'react-router-dom';
 import { Dot, Minus, MoveLeft } from 'lucide-react';
-import { RelatedAnnotation, useStore } from '@/store';
-import { EntityBadge } from '@/components/EntityBadge';
-import { ImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
-import { useEffect, useMemo, useState } from 'react';
-import { LoadedImage } from '@/model';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { useImageSnippet } from '@/store/hooks/useImageSnippets';
+import { EntityBadge } from '@/components/EntityBadge';
+import { RelatedAnnotation, useImageSnippet, useStore } from '@/store';
+import { Skeleton } from '@/ui/Skeleton';
+import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
+import { Link } from 'react-router-dom';
 
 interface InboundRelationCardProps {
 
@@ -23,6 +21,9 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
   const model = store.getDataModel();
 
   const snippet = useImageSnippet(related.annotation as W3CImageAnnotation);
+
+  const bodies = Array.isArray(props.related.annotation.body)
+    ? props.related.annotation.body : [props.related.annotation.body];
 
   return (
     <div className="relative border rounded text-xs shadow-sm px-2 py-2.5">
@@ -41,22 +42,26 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
         </div>
       </div>
 
-      <div className="max-w-full overflow-hidden">
-        {snippet && (
+      <div className="max-w-full overflow-hidden ml-1 mt-3 flex gap-2 items-start">
+        {snippet ? (
           <img
             loading="lazy"
             src={URL.createObjectURL(new Blob([snippet.data]))}
             alt={related.image.name}
-            className="w-20 h-20 object-cover aspect-square rounded-sm border" />
+            className="w-14 h-14 object-cover aspect-square rounded-sm border" />
+        ) : (
+          <Skeleton className="w-14 h-14" /> 
         )}
 
-        {/*
-        <Link 
-          to={related.imageId}
-          className="ml-6 whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">
-          {store.getImage(related.imageId).name}
-        </Link>
-        */}
+        <div className="py-1">
+          <AnnotationValuePreview bodies={bodies} />
+
+          <Link 
+            to={related.image.id}
+            className="whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">
+            {related.image.name}
+          </Link>
+        </div>
       </div>
     </div>
   )
