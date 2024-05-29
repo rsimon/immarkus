@@ -7,7 +7,7 @@ import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
-import { InboundRelations } from './InboundRelations';
+import { InboundRelations } from '../InboundRelations';
 import { createSafeKeys } from './PropertyKeys';
 import { Note } from '../Note';
 import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
