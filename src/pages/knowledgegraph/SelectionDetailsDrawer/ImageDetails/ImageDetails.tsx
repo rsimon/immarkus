@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { AnnotationsTab } from './AnnotationsTab/AnnotationsTab';
 import { MetadataTab } from './MetadataTab';
 import { AppWindow, Info, MessagesSquare } from 'lucide-react';
-import { useImageSearch } from '../../useImageSearch';
 
 interface ImageDetailsProps {
 
@@ -31,14 +30,8 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
   const navigate = useNavigate();
 
-  const { getAggregatedMetadata } = useImageSearch();
-
   useEffect(() => {
     store.getAnnotations(image.id, { type: 'image' }).then(setAnnotations);
-
-    getAggregatedMetadata(image.id).then(result => {
-      console.log(result);
-    });    
   }, [store, image]);
 
   const onOpen = () => navigate(`/annotate/${props.image.id}`, );

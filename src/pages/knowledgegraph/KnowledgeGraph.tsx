@@ -10,6 +10,7 @@ import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { QueryBuilder } from './QueryBuilder';
 import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
+import { GraphSearchEditor } from './GraphSearch/GraphSearchEditor';
 
 export const KnowledgeGraph = () => {
 
@@ -65,6 +66,8 @@ export const KnowledgeGraph = () => {
 
         <Legend 
           includeFolders={settings.includeFolders} />
+
+        <GraphSearchEditor />
 
         <div className="absolute top-0 right-0 h-full flex">
           <div className="relative">
