@@ -1,4 +1,4 @@
-import { useGraphSearch } from "./useGraphSearch";
+import { useGraphSearch } from './useGraphSearch';
 
 interface GraphSearchEditorProps {
 
@@ -26,6 +26,17 @@ export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
         <option value="FOLDER">Folder</option>
         <option value="IMAGE">Image</option>
       </select>
+
+      {sentence.ObjectType && (
+        <select onChange={(e) => updateSentence({ ConditionType: e.target.value as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH' })}>
+          <option value="">Select Condition Type</option>
+          <option value="WHERE">Where</option>
+          <option value="IN_FOLDERS_WHERE">In Folders Where</option>
+          <option value="ANNOTATED_WITH">Annotated With</option>
+        </select>
+      )}
+
+      {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && renderAttributeDropdown()}
     </div>
   )
 
