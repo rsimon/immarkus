@@ -12,67 +12,67 @@
 
 export interface BaseSentence {
 
-  ObjectType: 'FOLDER' | 'IMAGE';
+  ObjectType: ObjectType;
 
-  ConditionType: 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH';
+  ConditionType: ConditionType;
 
 }
 
-export interface SimpleConditionSentence<T> extends BaseSentence {
+export type ObjectType = 'FOLDER' | 'IMAGE';
+
+export type ConditionType = 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH';
+
+export interface SimpleConditionSentence extends BaseSentence {
 
   Attribute: string;
 
   Comparator: Comparator;
-
-  Value: T;
-
-}
-
-export interface NestedConditionSentence<T> extends BaseSentence {
 
   Value: string;
 
-  SubConditions: SubCondition<T>[];
+}
+
+export interface NestedConditionSentence extends BaseSentence {
+
+  Value: string;
+
+  SubConditions: SubCondition[];
 
 }
 
-export type Sentence<T> = SimpleConditionSentence<T> | NestedConditionSentence<T>;
+export type Sentence = SimpleConditionSentence | NestedConditionSentence;
 
 export type Comparator = 'IS' | 'IS_NOT_EMPTY';
 
-export interface SubCondition <T> {
+export interface SubCondition {
 
   Attribute: string;
 
   Comparator: Comparator;
 
-  Value: T;
+  Value: string;
 
 }
 
-export interface DropdownOption<T> {
+export interface DropdownOption {
 
   label: string;
 
-  value: T;
+  value: string;
 
 }
 
-export interface SchemaPropertyDefinition { 
+export interface SchemaProperty { 
 
-  type: 'IMAGE' | 'FOLDER';
-
-  property: PropertyDefinition;
-
-}
-
-export interface SchemaProperty {
-
-  type: 'IMAGE' | 'FOLDER';
+  type: ObjectType;
 
   propertyName: string;
 
-  value: any;
+}
+
+export interface SchemaPropertyValue extends SchemaProperty {
+
+  value: string;
 
 }
 

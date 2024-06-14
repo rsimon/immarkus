@@ -1,7 +1,7 @@
 import { Folder, Image, PropertyDefinition } from '@/model';
 import { Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { SchemaProperty, SchemaPropertyDefinition } from './Types';
+import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
 
 /** Lists the parent sub-folder hierarchy for the given image **/
 export const getParentFolders = (store: Store, imageId: string) => {
@@ -37,29 +37,38 @@ export const getParentFolders = (store: Store, imageId: string) => {
 }
 
 /** List metadata properties from all folder/image schemas **/
-export const listAllMetadataProperties = (store: Store): SchemaPropertyDefinition[] => {
+export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
 
   const schemas = [
-    ...model.folderSchemas.map(schema => ({ type: 'FOLDER', schema })), 
-    ...model.imageSchemas.map(schema => ({ type: 'IMAGE', schema }))
+    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema })), 
+    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
   ];
 
-  return schemas.reduce((all, { type, schema }) => (
-    [...all, ...(schema.properties || []).map(property => ({ type, property }))]
-  ), []);
+  // Different schemas may include properties with the same name. De-duplicate!
+  return schemas.reduce<SchemaProperty[]>((all, { type, schema }) => {
+    const properties: SchemaProperty[] = (schema.properties || []).map(p => ({ type, propertyName: p.name }));
+    return [
+      ...all,
+      ...properties.reduce<SchemaProperty[]>((toAdd, p) => {
+        const existing = all.find(a => a.type === p.type && a.propertyName === p.propertyName);
+        return existing ? toAdd : [...toAdd, p];
+      }, [])
+    ];
+  }, []);
 }
 
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string): Promise<any[]> => {
   // Helper to get the relevant values from a list of metadata annotation bodies
   const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
-    bodies.reduce<string[]>((all, body) => {
+    bodies.reduce<any[]>((all, body) => {
       if ('properties' in body) {
         const value = body.properties[propertyName];
         if (value) {
-          const exists = all.find(o => o === value);
-          return exists ? all : [...all, JSON.stringify(value)];
+          // Compare by value
+          const exists = all.find(o => JSON.stringify(o) === JSON.stringify(value));
+          return exists ? all : [...all, value];
         } else {
           return all;
         }
@@ -88,9 +97,9 @@ export const listMetadataValues = (store: Store, type: 'FOLDER' | 'IMAGE', prope
 }
 
 /** Get the aggregated metadata (image and parent folders) for the given image ID **/
-const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaProperty[]> => {
+const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPropertyValue[]> => {
   // Converts a metadata annotation body to a list of SchemaProperties
-  const bodyToProperties = (type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaProperty[] => {
+  const bodyToProperties = (type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
     if ('properties' in body) {
       return Object.entries(body.properties).map(([key, value]) => ({
         type,
@@ -103,14 +112,14 @@ const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPro
   }
 
   // Converts a metadata annotation to a list of SchemaProperties
-  const annotationToProperties = (type: 'IMAGE' | 'FOLDER', annotation: W3CAnnotation): SchemaProperty[] => {
+  const annotationToProperties = (type: 'IMAGE' | 'FOLDER', annotation: W3CAnnotation): SchemaPropertyValue[] => {
     const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
     return bodyToProperties(type, body);
   }
 
   // Merges to lists of SchemaProperties, so that properties that appear in the 'next'
   // list overwrite those in the 'current' list.
-  const mergeProperties = (current: SchemaProperty[], next: SchemaProperty[]): SchemaProperty[] => {
+  const mergeProperties = (current: SchemaPropertyValue[], next: SchemaPropertyValue[]): SchemaPropertyValue[] => {
     const currentNames = new Set(current.map(p => p.propertyName));
     const nextNames = new Set(next.map(p => p.propertyName));
 
@@ -126,7 +135,7 @@ const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPro
   const folders = getParentFolders(store, imageId);
   
   // Go through folders from the top and aggregate metadata values
-  const folderMetadata = folders.reduce<Promise<SchemaProperty[]>>((promise, folder) => 
+  const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 
     promise.then(properties => {
       return store.getFolderMetadata(folder.id).then(annotation => {
         return mergeProperties(properties, annotationToProperties('FOLDER', annotation));
@@ -143,7 +152,7 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
   const { images } = store;
 
   // Warning: heavy operation! Resolve aggregated metadata for all images.
-  const promise = images.reduce<Promise<{ image: Image, metadata: SchemaProperty[] }[]>>((promise, image) => promise.then(all => {
+  const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
     return getAggregatedMetadata(store, image.id).then(metadata => {
       return [...all, { image, metadata }]
     })
