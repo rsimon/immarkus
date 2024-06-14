@@ -1,24 +1,7 @@
 import { Folder, Image, PropertyDefinition } from '@/model';
 import { Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-
-interface SchemaPropertyDefinition { 
-
-  type: 'IMAGE' | 'FOLDER';
-
-  property: PropertyDefinition;
-
-}
-
-interface SchemaProperty {
-
-  type: 'IMAGE' | 'FOLDER';
-
-  propertyName: string;
-
-  value: any;
-
-}
+import { SchemaProperty, SchemaPropertyDefinition } from './Types';
 
 /** Lists the parent sub-folder hierarchy for the given image **/
 export const getParentFolders = (store: Store, imageId: string) => {
@@ -54,7 +37,7 @@ export const getParentFolders = (store: Store, imageId: string) => {
 }
 
 /** List metadata properties from all folder/image schemas **/
-export const listMetadataProperties = (store: Store): SchemaPropertyDefinition[] => {
+export const listAllMetadataProperties = (store: Store): SchemaPropertyDefinition[] => {
   const model = store.getDataModel();
 
   const schemas = [
@@ -172,4 +155,5 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
         metadata.find(m => m.type === propertyType && m.propertyName === propertyName && m.value === value))
       .map(({ image }) => image);
   });
+
 }

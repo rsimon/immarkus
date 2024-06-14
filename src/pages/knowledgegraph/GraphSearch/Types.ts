@@ -49,3 +49,30 @@ export interface SubCondition <T> {
   Value: T;
 
 }
+
+export interface DropdownOption<T> {
+
+  label: string;
+
+  value: T;
+
+}
+
+export interface SchemaPropertyDefinition { 
+
+  type: 'IMAGE' | 'FOLDER';
+
+  property: PropertyDefinition;
+
+}
+
+export interface SchemaProperty {
+
+  type: 'IMAGE' | 'FOLDER';
+
+  propertyName: string;
+
+  value: any;
+
+}
+
