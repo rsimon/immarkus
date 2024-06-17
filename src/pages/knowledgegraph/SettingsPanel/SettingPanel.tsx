@@ -1,9 +1,9 @@
 import { useTransition, animated, easings } from '@react-spring/web';
+import { Search } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { Switch } from '@/ui/Switch';
 import { KnowledgeGraphSettings } from '../Types';
-import { ListFilter } from 'lucide-react';
 
 interface SettingsPanelProps {
 
@@ -96,8 +96,8 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           className="w-full"
           variant={props.isQueryBuildOpen ? 'outline' : undefined}
           onClick={props.onToggleQueryBuilder}>
-          <ListFilter className="h-5 w-5 mr-2" />
-          {props.isQueryBuildOpen ? 'Close Filter Settings' : 'Open Filter Settings'}
+          <Search className="h-5 w-5 mr-2" />
+          {props.isQueryBuildOpen ? 'Close Graph Search' : 'Graph Search'}
         </Button>
       </div>
     </animated.div>

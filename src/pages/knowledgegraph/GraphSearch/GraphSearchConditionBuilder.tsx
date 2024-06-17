@@ -8,7 +8,7 @@ import {
   SelectValue 
 } from '@/ui/Select';
 
-interface GraphSearchEditorProps {
+interface GraphSearchConditionBuilderProps {
 
 }
 
@@ -23,11 +23,12 @@ const ConditionTypes = [
   { label: 'annotated with', value: 'ANNOTATED_WITH' }
 ];
 
-export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
+export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderProps) => {
 
   const {
     attributeOptions,
     comparatorOptions,
+    setSentence,
     sentence,
     updateSentence,
     valueOptions
@@ -35,7 +36,7 @@ export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
 
   const renderDropdown = (value: string | undefined, options: DropdownOption[], onChange: ((value: string) => void)) => (
     <Select 
-      value={value}
+      value={value || ''}
       onValueChange={onChange}>
       <SelectTrigger className={`${selectStyle} border-l`}>
         <span className="overflow-hidden text-ellipsis text-xs">
@@ -61,7 +62,7 @@ export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
     <div className="absolute top-4 left-4 bg-red-300 z-50 p-5">
       <Select 
         value={sentence.ObjectType}
-        onValueChange={t => updateSentence({ ObjectType: t as 'FOLDER' | 'IMAGE' })}>
+        onValueChange={t => setSentence({ ObjectType: t as 'FOLDER' | 'IMAGE' })}>
         <SelectTrigger className={`${selectStyle} border-l`}>
           <span className="overflow-hidden text-ellipsis text-xs">
             <SelectValue />
@@ -80,8 +81,14 @@ export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
 
       {sentence.ObjectType && (
         <Select 
-          value={sentence.ConditionType}
-          onValueChange={t => updateSentence({ ConditionType: t as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH' })}>
+          value={sentence.ConditionType || ''}
+          onValueChange={t => updateSentence({ 
+            ConditionType: t as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH',
+            Attribute: undefined,
+            Comparator: undefined,
+            Value: undefined          
+          })}>
+
           <SelectTrigger className={`${selectStyle} border-l`}>
             <span className="overflow-hidden text-ellipsis text-xs">
               <SelectValue />
@@ -100,13 +107,28 @@ export const GraphSearchEditor = (props: GraphSearchEditorProps) => {
       )}
 
       {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && 
-        renderDropdown((sentence as SimpleConditionSentence).Attribute, attributeOptions, value => updateSentence({ Attribute: value }))}
+        renderDropdown(
+          (sentence as SimpleConditionSentence).Attribute, 
+          attributeOptions, 
+          value => updateSentence({ 
+            Attribute: value,
+            Value: undefined 
+        }))}
 
       {'Attribute' in sentence && sentence.Attribute && 
-        renderDropdown(sentence.Comparator, comparatorOptions, value => updateSentence({ Comparator: value as Comparator }))}
+        renderDropdown(
+          sentence.Comparator, 
+          comparatorOptions, 
+          value => updateSentence({ 
+            Comparator: value as Comparator,
+            Value: undefined 
+          }))}
 
       {'Comparator' in sentence && sentence.Comparator && 
-        renderDropdown(sentence.Value, valueOptions, value => updateSentence({ Value: value }))}
+        renderDropdown(
+          sentence.Value, 
+          valueOptions, 
+          value => updateSentence({ Value: value }))}
     </div>
   )
 

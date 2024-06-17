@@ -21,9 +21,8 @@ export const useGraphSearch = () => {
 
   const [valueOptions, setValueOptions] = useState<DropdownOption[]>([]);
 
-  const updateSentence = (part: Partial<Sentence>) => {
+  const updateSentence = (part: Partial<Sentence>) =>
     setSentence(prev => ({ ...prev, ...part }));
-  };
 
   const resolveAttribute = (attribute: string): ['FOLDER' | 'IMAGE', string] => {
     return attribute.startsWith('folder:') 
@@ -70,6 +69,7 @@ export const useGraphSearch = () => {
     attributeOptions,
     comparatorOptions,
     sentence, 
+    setSentence,
     updateSentence,
     valueOptions
   }
