@@ -3,8 +3,8 @@ import { useDraggable } from '@neodrag/react';
 import { Grip, Plus, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
-import { ObjectType, Sentence } from './Types';
-import { KnowledgeGraphSettings } from '../Types';
+import { Condition, ObjectType, Sentence } from './Types';
+import { GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -16,6 +16,8 @@ import {
 interface GraphSearchBuilderProps {
 
   settings: KnowledgeGraphSettings;
+
+  onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
 
   onClose(): void;
 
@@ -29,7 +31,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
 
   const [objectType, setObjectType] = useState<ObjectType | undefined>();
 
-  const [conditions, setConditions] = useState<Partial<Sentence>[]>([]);
+  const [conditions, setConditions] = useState<Condition[]>([]);
 
   useDraggable(el, {
     position,
@@ -38,13 +40,29 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
 
   useEffect(() => {
     if (objectType)
-      setConditions([{}]);
+      setConditions([{ sentence: {} }]);
     else 
       setConditions([]);
   }, [objectType]);
 
   useEffect(() => {
-    console.log('conditions', conditions);
+    const hasMatches = conditions.length > 0 && conditions.every(c => Boolean(c.matches));
+    if (!hasMatches || !objectType) {
+      props.onChangeQuery(undefined)
+    } else {
+      // For now, we keep all conditions AND-connected, which means
+      // the total matches are the intersection of all individual matches
+      const intersection = new Set(conditions.reduce((intersected, { matches }) => {
+        return intersected.filter(str => matches.includes(str));
+      }, conditions[0].matches!));
+
+      const query = (n: GraphNode) =>
+        n.type === objectType && intersection.has(n.id);
+
+      console.log(`Query: type=${objectType}, ids`, intersection);
+
+      props.onChangeQuery(query);
+  }
   }, [conditions]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
@@ -58,9 +76,14 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
       return false; // TODO
     }
   }
+  
+  const onChange = (current: Partial<Sentence>, next: Partial<Sentence>, matches?: string[]) => {
+    setConditions(c => c.map(condition => 
+      condition.sentence === current ? ({ sentence : next, matches }) : condition));
+  }
 
   const onDelete = (sentence: Partial<Sentence>) => {
-    const next = conditions.filter(c => c !== sentence);
+    const next = conditions.filter(c => c.sentence !== sentence);
 
     setConditions(next);
 
@@ -117,7 +140,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
           </Select>
         </div>
 
-        {conditions.map((sentence, idx) => (
+        {conditions.map(({ sentence }, idx) => (
           <div 
             className="flex flex-nowrap gap-2 pt-2 text-xs items-center"
             key={idx}>
@@ -130,19 +153,19 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
 
             <GraphSearchConditionBuilder 
               sentence={sentence}
-              onChange={s => setConditions(c => c.map(current => current === sentence ? s : current))}
+              onChange={(next, matches) => onChange(sentence, next, matches)}
               onDelete={() => onDelete(sentence)} />
           </div>
         ))}
 
-        {(conditions.length > 0 && isComplete(conditions[conditions.length - 1])) && (
+        {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) && (
           <div className="flex justify-start pt-2 pl-14 pr-2">
             <Button 
-              disabled={!conditions.every(isComplete)}
+              disabled={!conditions.map(c => c.sentence).every(isComplete)}
               variant="link"
               size="sm"
               className="flex items-center text-xs py-0 px-0"
-              onClick={() => setConditions(conditions => ([...conditions, {}]))}>
+              onClick={() => setConditions(conditions => ([...conditions, { sentence: {} }]))}>
               <Plus className="h-3.5 w-3.5 mr-1" /> Add Condition
             </Button>
           </div>

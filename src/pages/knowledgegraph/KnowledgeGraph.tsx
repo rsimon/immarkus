@@ -8,7 +8,6 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { QueryBuilder } from './QueryBuilder';
 import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
 import { GraphSearchBuilder } from './GraphSearch';
 
@@ -29,6 +28,11 @@ export const KnowledgeGraph = () => {
   const [showQueryBuilder, setShowQueryBuilder] = useState(false);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const onCloseSearch = () => {
+    setQuery(undefined);
+    setShowQueryBuilder(false);
+  }
 
   return (
     <div className="page-root">
@@ -96,9 +100,11 @@ export const KnowledgeGraph = () => {
         {showQueryBuilder && (
           <GraphSearchBuilder 
             settings={settings}
-            onClose={() => setShowQueryBuilder(false)} />
+            onChangeQuery={query => setQuery(() => query)}
+            onClose={onCloseSearch} />
         )}
       </main> 
     </div>
   )
+  
 }

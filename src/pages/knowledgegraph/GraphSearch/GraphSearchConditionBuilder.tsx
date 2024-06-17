@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
+import { Trash2 } from 'lucide-react';
 import { useGraphSearch } from './useGraphSearch';
-import { Comparator, DropdownOption, ObjectType, Sentence, SimpleConditionSentence } from './Types';
+import { Comparator, DropdownOption, Sentence, SimpleConditionSentence } from './Types';
 import { 
   Select, 
   SelectContent, 
@@ -7,14 +9,12 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
-import { Trash2 } from 'lucide-react';
-import { useEffect } from 'react';
 
 interface GraphSearchConditionBuilderProps {
 
   sentence: Partial<Sentence>;
 
-  onChange(sentence: Partial<Sentence>): void;
+  onChange(sentence: Partial<Sentence>, matches?: string[]): void;
 
   onDelete(): void;
 
@@ -31,15 +31,15 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
   const {
     attributeOptions,
     comparatorOptions,
+    matches,
     sentence,
     updateSentence,
     valueOptions
   } = useGraphSearch(props.sentence);
 
   useEffect(() => {
-    if (sentence !== props.sentence)
-      props.onChange(sentence);
-  }, [sentence]);
+    props.onChange(sentence, matches);
+  }, [sentence, matches]);
 
   const selectStyle = 
     'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';

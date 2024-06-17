@@ -14,6 +14,8 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
 
   const [sentence, setSentence] = useState<Partial<Sentence>>(initialValue || {});
 
+  const [matches, setMatches] = useState<string[] | undefined>();
+
   const [attributeOptions, setAttributeOptions] = useState<DropdownOption[]>([]);
 
   const [comparatorOptions, setComparatorOptions] = useState<DropdownOption[]>([]);
@@ -54,10 +56,9 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
           setValueOptions(options);
         });
       } else {
-        // For debugging purposes
         const [type, propertyName] = resolveAttribute(s.Attribute);
         findImages(store, type, propertyName, s.Value).then(results => {
-          console.log('results', results);
+          setMatches(results.map(image => image.id));
         })
       }
     }
@@ -66,6 +67,7 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
   return {
     attributeOptions,
     comparatorOptions,
+    matches,
     sentence, 
     updateSentence,
     valueOptions

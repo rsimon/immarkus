@@ -74,3 +74,13 @@ export interface SchemaPropertyValue extends SchemaProperty {
 
 }
 
+export interface Condition {
+
+  sentence: Partial<Sentence>;
+
+  matches?: string[];
+
+  // operator: 'AND' | 'OR';
+
+}
+
