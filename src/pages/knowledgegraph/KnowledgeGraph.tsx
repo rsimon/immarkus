@@ -95,6 +95,7 @@ export const KnowledgeGraph = () => {
 
         {showQueryBuilder && (
           <GraphSearchBuilder 
+            settings={settings}
             onClose={() => setShowQueryBuilder(false)} />
         )}
       </main> 

@@ -12,8 +12,6 @@
 
 export interface BaseSentence {
 
-  ObjectType: ObjectType;
-
   ConditionType: ConditionType;
 
 }

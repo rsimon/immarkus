@@ -1,5 +1,5 @@
 import { useGraphSearch } from './useGraphSearch';
-import { Comparator, DropdownOption, SimpleConditionSentence } from './Types';
+import { Comparator, DropdownOption, ObjectType, Sentence, SimpleConditionSentence } from './Types';
 import { 
   Select, 
   SelectContent, 
@@ -7,15 +7,18 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 interface GraphSearchConditionBuilderProps {
 
-}
+  sentence: Partial<Sentence>;
 
-const ObjectTypes = [
-  { label: 'Folders', value: 'FOLDER' }, 
-  { label: 'Images', value: 'IMAGE'}
-];
+  onChange(sentence: Partial<Sentence>): void;
+
+  onDelete(): void;
+
+}
 
 const ConditionTypes = [
   { label: 'where', value: 'WHERE' },
@@ -28,17 +31,24 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
   const {
     attributeOptions,
     comparatorOptions,
-    setSentence,
     sentence,
     updateSentence,
     valueOptions
-  } = useGraphSearch();
+  } = useGraphSearch(props.sentence);
+
+  useEffect(() => {
+    if (sentence !== props.sentence)
+      props.onChange(sentence);
+  }, [sentence]);
+
+  const selectStyle = 
+    'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
 
   const renderDropdown = (value: string | undefined, options: DropdownOption[], onChange: ((value: string) => void)) => (
     <Select 
       value={value || ''}
       onValueChange={onChange}>
-      <SelectTrigger className={`${selectStyle} border-l`}>
+      <SelectTrigger className={selectStyle}>
         <span className="overflow-hidden text-ellipsis text-xs">
           <SelectValue />
         </span>
@@ -55,14 +65,17 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     </Select>
   );
 
-  const selectStyle = 
-    'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
-
   return (
-    <div className="absolute top-4 left-4 bg-red-300 z-50 p-5">
+    <div className="flex flex-nowrap">
       <Select 
-        value={sentence.ObjectType}
-        onValueChange={t => setSentence({ ObjectType: t as 'FOLDER' | 'IMAGE' })}>
+        value={sentence.ConditionType || ''}
+        onValueChange={t => updateSentence({ 
+          ConditionType: t as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH',
+          Attribute: undefined,
+          Comparator: undefined,
+          Value: undefined          
+        })}>
+
         <SelectTrigger className={`${selectStyle} border-l`}>
           <span className="overflow-hidden text-ellipsis text-xs">
             <SelectValue />
@@ -70,7 +83,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </SelectTrigger>
 
         <SelectContent className="max-h-96">
-          {ObjectTypes.map(option => (
+          {ConditionTypes.map(option => (
             <SelectItem 
               key={option.value} 
               className="text-xs"
@@ -78,33 +91,6 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           ))}
         </SelectContent>
       </Select>
-
-      {sentence.ObjectType && (
-        <Select 
-          value={sentence.ConditionType || ''}
-          onValueChange={t => updateSentence({ 
-            ConditionType: t as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH',
-            Attribute: undefined,
-            Comparator: undefined,
-            Value: undefined          
-          })}>
-
-          <SelectTrigger className={`${selectStyle} border-l`}>
-            <span className="overflow-hidden text-ellipsis text-xs">
-              <SelectValue />
-            </span>
-          </SelectTrigger>
-
-          <SelectContent className="max-h-96">
-            {ConditionTypes.map(option => (
-              <SelectItem 
-                key={option.value} 
-                className="text-xs"
-                value={option.value}>{option.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
 
       {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && 
         renderDropdown(
@@ -129,6 +115,10 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           sentence.Value, 
           valueOptions, 
           value => updateSentence({ Value: value }))}
+
+      <button className="border border-l-0 w-7 flex items-center justify-center text-muted-foreground">
+        <Trash2 className="w-3.5 h-3.5" onClick={props.onDelete} />
+      </button>
     </div>
   )
 
