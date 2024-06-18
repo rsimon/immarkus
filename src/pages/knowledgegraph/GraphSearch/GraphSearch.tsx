@@ -4,7 +4,7 @@ import { Grip, Plus, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
-import { GraphNode, KnowledgeGraphSettings } from '../Types';
+import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -13,7 +13,9 @@ import {
   SelectValue 
 } from '@/ui/Select';
 
-interface GraphSearchBuilderProps {
+interface GraphSearchProps {
+
+  graph: Graph;
 
   settings: KnowledgeGraphSettings;
 
@@ -25,7 +27,7 @@ interface GraphSearchBuilderProps {
 
 const EMPTY_CONDITION: Condition = { sentence: { ConditionType: 'WHERE' } };
 
-export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
+export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
@@ -156,6 +158,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             )}
 
             <GraphSearchConditionBuilder 
+              graph={props.graph}
               objectType={objectType}
               sentence={sentence}
               onChange={(next, matches) => onChange(sentence, next, matches)}

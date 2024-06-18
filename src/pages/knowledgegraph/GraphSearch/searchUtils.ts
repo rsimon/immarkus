@@ -1,8 +1,9 @@
 import { Folder, Image, MetadataSchema } from '@/model';
-import { DataModel, DataModelStore, Store } from '@/store';
+import { DataModelStore, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
 import { serializePropertyValue } from '@/utils/serialize';
+import { Graph, GraphNode } from '../Types';
 
 /** Converts a metadata annotation body to a list of SchemaProperties **/
 const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
@@ -191,7 +192,7 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
-export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value?: string): Promise<Image[]> => {
+export const findImagesByMetadata = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value?: string): Promise<Image[]> => {
   const { images } = store;
 
   // Warning: heavy operation! Resolve aggregated metadata for all images.
@@ -211,7 +212,7 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
 
 }
 
-export const findFolders = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
+export const findFoldersByMetadata = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
   const { folders } = store;
 
   const model = store.getDataModel();
@@ -229,5 +230,19 @@ export const findFolders = (store: Store, propertyName: string, value?: string):
         metadata.find(m => 
           m.propertyName === propertyName && hasMatchingValue(m, value)))
       .map(({ folder }) => folder);
+  });
+}
+
+export const findImagesByEntityClass = (store: Store, graph: Graph, entityClass: string): GraphNode[] => {
+  const imageNodes = graph.nodes.filter(n => n.type === 'IMAGE');
+
+  const model = store.getDataModel();
+
+  const descendants = model.getDescendants(entityClass);
+  const ids = new Set(descendants.map(t => t.id));
+
+  return imageNodes.filter(n => {
+    const linked = graph.getLinkedNodes(n.id);
+    return linked.some(l => l.type === 'ENTITY_TYPE' && ids.has(l.id));
   });
 }

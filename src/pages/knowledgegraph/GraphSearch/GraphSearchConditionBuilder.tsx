@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useGraphSearch } from './useGraphSearch';
+import { Graph } from '../Types';
 import { 
   Comparator, 
   ConditionType, 
@@ -19,6 +20,8 @@ import {
 
 interface GraphSearchConditionBuilderProps {
 
+  graph: Graph;
+
   objectType: ObjectType;
 
   sentence: Partial<Sentence>;
@@ -29,11 +32,6 @@ interface GraphSearchConditionBuilderProps {
 
 }
 
-const ConditionTypes = [
-  { label: 'where', value: 'WHERE' },
-  // { label: 'annotated with', value: 'ANNOTATED_WITH' }
-];
-
 export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderProps) => {
 
   const {
@@ -43,11 +41,18 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     sentence,
     updateSentence,
     valueOptions
-  } = useGraphSearch(props.objectType, props.sentence);
+  } = useGraphSearch(props.graph, props.objectType, props.sentence);
 
   useEffect(() => {
     props.onChange(sentence, matches);
   }, [sentence, matches]);
+
+  const conditionTypes = useMemo(() => props.objectType === 'IMAGE' ? [
+    { label: 'where', value: 'WHERE' },
+    { label: 'annotated with', value: 'ANNOTATED_WITH' }
+  ] : [
+    { label: 'where', value: 'WHERE' }
+  ], [props.objectType]);
 
   const selectStyle = 
     'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap overflow-hidden text-ellipsis';
@@ -62,7 +67,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </span>
       </SelectTrigger>
 
-      <SelectContent className="overflow-hidden">
+      <SelectContent className="overflow-hidden max-h-60 overflow-y-auto">
         {options.map(option => (
           <SelectItem 
             key={option.value} 
@@ -93,7 +98,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </SelectTrigger>
 
         <SelectContent className="max-h-96">
-          {ConditionTypes.map(option => (
+          {conditionTypes.map(option => (
             <SelectItem 
               key={option.value} 
               className="text-xs"
@@ -120,7 +125,10 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             Value: undefined 
           }))}
 
-      {('Comparator' in sentence && sentence.Comparator === 'IS') && 
+      {(
+        ('Comparator' in sentence && sentence.Comparator === 'IS') ||
+        (sentence.ConditionType === 'ANNOTATED_WITH')) && 
+
         renderDropdown(
           sentence.Value, 
           valueOptions, 

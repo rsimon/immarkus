@@ -9,7 +9,7 @@ import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
-import { GraphSearchBuilder } from './GraphSearch';
+import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
 
@@ -98,7 +98,8 @@ export const KnowledgeGraph = () => {
         </div>
 
         {showGraphSearch && (
-          <GraphSearchBuilder 
+          <GraphSearch 
+            graph={graph} 
             settings={settings}
             onChangeQuery={query => setQuery(() => query)}
             onClose={onCloseSearch} />
