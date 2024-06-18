@@ -18,7 +18,7 @@ export interface BaseSentence {
 
 export type ObjectType = 'FOLDER' | 'IMAGE';
 
-export type ConditionType = 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH';
+export type ConditionType = 'WHERE' | 'ANNOTATED_WITH';
 
 export interface SimpleConditionSentence extends BaseSentence {
 

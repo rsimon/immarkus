@@ -1,7 +1,13 @@
 import { useEffect } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useGraphSearch } from './useGraphSearch';
-import { Comparator, DropdownOption, Sentence, SimpleConditionSentence } from './Types';
+import { 
+  Comparator, 
+  ConditionType, 
+  DropdownOption,
+  Sentence, 
+  SimpleConditionSentence 
+} from './Types';
 import { 
   Select, 
   SelectContent, 
@@ -22,8 +28,7 @@ interface GraphSearchConditionBuilderProps {
 
 const ConditionTypes = [
   { label: 'where', value: 'WHERE' },
-  { label: 'in folders where', value: 'IN_FOLDERS_WHERE' },
-  { label: 'annotated with', value: 'ANNOTATED_WITH' }
+  // { label: 'annotated with', value: 'ANNOTATED_WITH' }
 ];
 
 export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderProps) => {
@@ -54,12 +59,14 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </span>
       </SelectTrigger>
 
-      <SelectContent className="max-h-96">
+      <SelectContent className="overflow-hidden">
         {options.map(option => (
           <SelectItem 
             key={option.value} 
-            className="text-xs"
-            value={option.value}>{option.label}</SelectItem>
+            className="text-xs max-w-80 overflow-hidden whitespace-nowrap text-ellipsis"
+            value={option.value}>
+            {option.label}
+          </SelectItem>
         ))}
       </SelectContent>
     </Select>
@@ -70,7 +77,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
       <Select 
         value={sentence.ConditionType || ''}
         onValueChange={t => updateSentence({ 
-          ConditionType: t as 'WHERE' | 'IN_FOLDERS_WHERE' | 'ANNOTATED_WITH',
+          ConditionType: t as ConditionType,
           Attribute: undefined,
           Comparator: undefined,
           Value: undefined          
@@ -110,7 +117,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             Value: undefined 
           }))}
 
-      {'Comparator' in sentence && sentence.Comparator && 
+      {('Comparator' in sentence && sentence.Comparator === 'IS') && 
         renderDropdown(
           sentence.Value, 
           valueOptions, 

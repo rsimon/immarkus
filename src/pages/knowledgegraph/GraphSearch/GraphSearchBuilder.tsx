@@ -33,16 +33,20 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
 
   const [conditions, setConditions] = useState<Condition[]>([]);
 
+  const EMPTY_CONDITION: Condition = objectType === 'IMAGE'
+    ? { sentence: { ConditionType: 'WHERE' } } : { sentence: {} };
+
   useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
   });
 
   useEffect(() => {
-    if (objectType)
-      setConditions([{ sentence: {} }]);
-    else 
+    if (objectType) {
+      setConditions([{...EMPTY_CONDITION}]);
+    } else {
       setConditions([]);
+    }
   }, [objectType]);
 
   useEffect(() => {
@@ -128,11 +132,6 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem 
-                disabled={!props.settings.includeFolders}
-                className="text-xs" 
-                value="FOLDER">sub-folders</SelectItem>
-
               <SelectItem
                 className="text-xs" 
                 value="IMAGE">images</SelectItem>
@@ -165,7 +164,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
               variant="link"
               size="sm"
               className="flex items-center text-xs py-0 px-0"
-              onClick={() => setConditions(conditions => ([...conditions, { sentence: {} }]))}>
+              onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
               <Plus className="h-3.5 w-3.5 mr-1" /> Add Condition
             </Button>
           </div>

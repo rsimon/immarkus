@@ -148,7 +148,7 @@ const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPro
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
-export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value: string): Promise<Image[]> => {
+export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value?: string): Promise<Image[]> => {
   const { images } = store;
 
   // Warning: heavy operation! Resolve aggregated metadata for all images.
@@ -161,7 +161,8 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
   return promise.then(metadata => {
     return metadata
       .filter(({ metadata }) =>
-        metadata.find(m => m.type === propertyType && m.propertyName === propertyName && m.value === value))
+        metadata.find(m => 
+          m.type === propertyType && m.propertyName === propertyName && (!value || m.value === value)))
       .map(({ image }) => image);
   });
 

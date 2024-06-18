@@ -37,8 +37,10 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
   }
 
   useEffect(() => {
-    // Decision tree logic
-    if (sentence.ConditionType === 'IN_FOLDERS_WHERE') {
+    /** 
+     * Decision tree logic
+     */
+    if (sentence.ConditionType === 'WHERE') {
       const s = sentence as SimpleConditionSentence;
       if (!s.Attribute) {
         const properties = listAllMetadataProperties(store);
@@ -48,7 +50,7 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
         }));
       } else if (!s.Comparator) {
         setComparatorOptions(ComparatorOptions);
-      } else if (!s.Value) {
+      } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
         const [type, propertyName] = resolveAttribute(s.Attribute);
         listMetadataValues(store, type, propertyName).then(propertyValues => {
@@ -57,7 +59,10 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
         });
       } else {
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        findImages(store, type, propertyName, s.Value).then(results => {
+        
+        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value;
+
+        findImages(store, type, propertyName, value).then(results => {
           setMatches(results.map(image => image.id));
         })
       }

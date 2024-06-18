@@ -7,15 +7,11 @@ import { KnowledgeGraphSettings } from '../Types';
 
 interface SettingsPanelProps {
 
-  isQueryBuildOpen: boolean;
-
   open: boolean;
 
   settings: KnowledgeGraphSettings;
 
   onChangeSettings(changed: KnowledgeGraphSettings): void;
-
-  onToggleQueryBuilder(): void;
 
 }
 
@@ -89,16 +85,6 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         <p className="text-muted-foreground text-xs mt-1 pr-12">
           Remove unused entity classes and images without entity annotations from the graph.
         </p>
-      </div>
-
-      <div className="px-3 pt-6 pb-4">
-        <Button 
-          className="w-full"
-          variant={props.isQueryBuildOpen ? 'outline' : undefined}
-          onClick={props.onToggleQueryBuilder}>
-          <Search className="h-5 w-5 mr-2" />
-          {props.isQueryBuildOpen ? 'Close Graph Search' : 'Graph Search'}
-        </Button>
       </div>
     </animated.div>
   ))
