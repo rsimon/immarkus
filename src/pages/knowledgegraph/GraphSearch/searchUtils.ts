@@ -1,8 +1,33 @@
 import { Folder, Image, MetadataSchema } from '@/model';
-import { Store } from '@/store';
+import { DataModel, DataModelStore, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
 import { serializePropertyValue } from '@/utils/serialize';
+
+/** Converts a metadata annotation body to a list of SchemaProperties **/
+const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
+  if (!('properties' in body)) return [];
+
+  if (!body.source) return [];
+
+  const schema = type === 'FOLDER' 
+    ? model.getFolderSchema(body.source) : model.getImageSchema(body.source);
+
+  if (!schema?.properties) return [];
+
+  return Object.entries(body.properties).map(([key, value]) => ({
+    type,
+    propertyType: schema.properties.find(d => d.name === key).type,
+    propertyName: key,
+    value
+  }));
+}
+
+// Converts a metadata annotation to a list of SchemaProperties
+const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation: W3CAnnotation): SchemaPropertyValue[] => {
+  const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
+  return bodyToProperties(model, type, body);
+}
 
 /** Lists the parent sub-folder hierarchy for the given image **/
 export const getParentFolders = (store: Store, imageId: string) => {
@@ -127,32 +152,6 @@ export const listMetadataValues = (
 const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPropertyValue[]> => {
   const model = store.getDataModel();
 
-  // Converts a metadata annotation body to a list of SchemaProperties
-  const bodyToProperties = (type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
-    if (!('properties' in body)) return [];
-
-    if (!body.source) return [];
-
-    const schema = type === 'FOLDER' 
-      ? model.getFolderSchema(body.source) : model.getImageSchema(body.source);
-
-    if (!schema?.properties) return [];
-
-    return Object.entries(body.properties).map(([key, value]) => ({
-      type,
-      propertyType: schema.properties.find(d => d.name === key).type,
-      propertyName: key,
-      value
-    }));
-
-  }
-
-  // Converts a metadata annotation to a list of SchemaProperties
-  const annotationToProperties = (type: 'IMAGE' | 'FOLDER', annotation: W3CAnnotation): SchemaPropertyValue[] => {
-    const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
-    return bodyToProperties(type, body);
-  }
-
   // Merges to lists of SchemaProperties, so that properties that appear in the 'next'
   // list overwrite those in the 'current' list.
   const mergeProperties = (current: SchemaPropertyValue[], next: SchemaPropertyValue[]): SchemaPropertyValue[] => {
@@ -174,13 +173,21 @@ const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPro
   const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 
     promise.then(properties => {
       return store.getFolderMetadata(folder.id).then(annotation => {
-        return mergeProperties(properties, annotationToProperties('FOLDER', annotation));
+        return mergeProperties(properties, annotationToProperties(model, 'FOLDER', annotation));
       });
     }), Promise.resolve([]));
 
-  const imageMetadata = store.getImageMetadata(imageId).then(body => bodyToProperties('IMAGE', body));
+  const imageMetadata = store.getImageMetadata(imageId).then(body => bodyToProperties(model, 'IMAGE', body));
 
   return Promise.all([folderMetadata, imageMetadata]).then(res => res.flat());
+}
+
+const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) => {
+  // Match all non-empty
+  if (!value) return true;
+
+  const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
+  return serialized === value;
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
@@ -191,28 +198,36 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
   const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
     return getAggregatedMetadata(store, image.id).then(metadata => {
       return [...all, { image, metadata }]
-    })
+    });
   }), Promise.resolve([]));
-
-  const hasMatchingValue = (propertyValue: SchemaPropertyValue) => {
-    // Match all non-empty
-    if (!value) return true;
-
-    const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
-    return serialized === value;
-  }
 
   return promise.then(metadata => {
     return metadata
       .filter(({ metadata }) =>
         metadata.find(m => 
-          m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m)))
+          m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
       .map(({ image }) => image);
   });
 
 }
 
 export const findFolders = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
-  // TODO
-  return Promise.resolve([]);
+  const { folders } = store;
+
+  const model = store.getDataModel();
+
+  const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
+    return store.getFolderMetadata(folder.id).then(annotation => {
+      const metadata = annotationToProperties(model, 'FOLDER', annotation);
+      return [...all, {  folder, metadata }]
+    });
+  }), Promise.resolve([]));
+
+  return promise.then(metadata => {
+    return metadata
+      .filter(({ metadata }) =>
+        metadata.find(m => 
+          m.propertyName === propertyName && hasMatchingValue(m, value)))
+      .map(({ folder }) => folder);
+  });
 }

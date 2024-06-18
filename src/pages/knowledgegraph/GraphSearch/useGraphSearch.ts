@@ -1,7 +1,7 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { DropdownOption, ObjectType, Sentence, SimpleConditionSentence } from './Types';
-import { findImages, listAllMetadataProperties, listFolderMetadataProperties, listMetadataValues } from './searchUtils';
+import { findFolders, findImages, listAllMetadataProperties, listFolderMetadataProperties, listMetadataValues } from './searchUtils';
 
 const ComparatorOptions = [
   { label: 'is', value: 'IS' }, 
@@ -61,12 +61,15 @@ export const useGraphSearch = (objectType: ObjectType, initialValue?: Partial<Se
         });
       } else {
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        
         const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value;
 
-        findImages(store, type, propertyName, value).then(results => {
-          setMatches(results.map(image => image.id));
-        })
+        if (objectType === 'IMAGE') {
+          findImages(store, type, propertyName, value).then(results =>
+            setMatches(results.map(image => image.id)));  
+        } else {
+          findFolders(store, propertyName, value).then(results =>
+            setMatches(results.map(folder => folder.id)));
+        }
       }
     }
   }, [objectType, sentence]);
