@@ -5,6 +5,7 @@ import {
   Comparator, 
   ConditionType, 
   DropdownOption,
+  ObjectType,
   Sentence, 
   SimpleConditionSentence 
 } from './Types';
@@ -17,6 +18,8 @@ import {
 } from '@/ui/Select';
 
 interface GraphSearchConditionBuilderProps {
+
+  objectType: ObjectType;
 
   sentence: Partial<Sentence>;
 
@@ -40,7 +43,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     sentence,
     updateSentence,
     valueOptions
-  } = useGraphSearch(props.sentence);
+  } = useGraphSearch(props.objectType, props.sentence);
 
   useEffect(() => {
     props.onChange(sentence, matches);

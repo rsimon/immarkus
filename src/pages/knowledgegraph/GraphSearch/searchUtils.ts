@@ -1,4 +1,4 @@
-import { Folder, Image } from '@/model';
+import { Folder, Image, MetadataSchema } from '@/model';
 import { Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
@@ -37,15 +37,7 @@ export const getParentFolders = (store: Store, imageId: string) => {
   }
 }
 
-/** List metadata properties from all folder/image schemas **/
-export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
-  const model = store.getDataModel();
-
-  const schemas = [
-    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema })), 
-    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
-  ];
-
+const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSchema }[]): SchemaProperty[] => {
   // Different schemas may include properties with the same name. De-duplicate!
   return schemas.reduce<SchemaProperty[]>((all, { type, schema }) => {
     const properties: SchemaProperty[] = (schema.properties || []).map(p => ({ type, propertyName: p.name }));
@@ -57,6 +49,25 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
       }, [])
     ];
   }, []);
+}
+
+/** List metadata properties from all folder/image schemas **/
+export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
+  const model = store.getDataModel();
+
+  const schemas = [
+    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema })), 
+    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
+  ];
+
+  return listMetadataProperties(schemas);
+}
+
+/** List metadata properties from all folder schemas **/
+export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => {
+  const model = store.getDataModel();
+  const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
+  return listMetadataProperties(schemas);
 }
 
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
@@ -199,4 +210,9 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
       .map(({ image }) => image);
   });
 
+}
+
+export const findFolders = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
+  // TODO
+  return Promise.resolve([]);
 }

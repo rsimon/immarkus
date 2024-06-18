@@ -23,6 +23,8 @@ interface GraphSearchBuilderProps {
 
 }
 
+const EMPTY_CONDITION: Condition = { sentence: { ConditionType: 'WHERE' } };
+
 export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
 
   const el = useRef(null);
@@ -32,9 +34,6 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
   const [objectType, setObjectType] = useState<ObjectType | undefined>();
 
   const [conditions, setConditions] = useState<Condition[]>([]);
-
-  const EMPTY_CONDITION: Condition = objectType === 'IMAGE'
-    ? { sentence: { ConditionType: 'WHERE' } } : { sentence: {} };
 
   useDraggable(el, {
     position,
@@ -63,7 +62,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
       const query = (n: GraphNode) =>
         n.type === objectType && intersection.has(n.id);
 
-      console.log(`Query: type=${objectType}, ids`, intersection);
+      // console.log(`Query: type=${objectType}, ids`, intersection);
 
       props.onChangeQuery(query);
   }
@@ -132,6 +131,12 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             </SelectTrigger>
 
             <SelectContent>
+              {props.settings.includeFolders && (
+                <SelectItem
+                  className="text-xs" 
+                  value="FOLDER">sub-folders</SelectItem>
+              )}
+
               <SelectItem
                 className="text-xs" 
                 value="IMAGE">images</SelectItem>
@@ -151,6 +156,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             )}
 
             <GraphSearchConditionBuilder 
+              objectType={objectType}
               sentence={sentence}
               onChange={(next, matches) => onChange(sentence, next, matches)}
               onDelete={() => onDelete(sentence)} />

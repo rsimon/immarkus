@@ -1,14 +1,14 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
-import { DropdownOption, Sentence, SimpleConditionSentence } from './Types';
-import { findImages, listAllMetadataProperties, listMetadataValues } from './searchUtils';
+import { DropdownOption, ObjectType, Sentence, SimpleConditionSentence } from './Types';
+import { findImages, listAllMetadataProperties, listFolderMetadataProperties, listMetadataValues } from './searchUtils';
 
 const ComparatorOptions = [
   { label: 'is', value: 'IS' }, 
   { label: 'is not empty', value: 'IS_NOT_EMPTY'}
 ];
 
-export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
+export const useGraphSearch = (objectType: ObjectType, initialValue?: Partial<Sentence>) => {
 
   const store = useStore();
 
@@ -25,7 +25,7 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
   useEffect(() => {
     if (initialValue !== sentence)
       setSentence(initialValue);
-  }, [initialValue]);
+  }, [objectType, initialValue]);
 
   const updateSentence = (part: Partial<Sentence>) =>
     setSentence(prev => ({ ...prev, ...part }));
@@ -43,7 +43,9 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
     if (sentence.ConditionType === 'WHERE') {
       const s = sentence as SimpleConditionSentence;
       if (!s.Attribute) {
-        const properties = listAllMetadataProperties(store);
+        const properties = objectType === 'FOLDER'
+          ? listFolderMetadataProperties(store) : listAllMetadataProperties(store);
+
         setAttributeOptions(properties.map(p => {
           const value = `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
           return { label: value, value }
@@ -67,7 +69,7 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
         })
       }
     }
-  }, [sentence]);
+  }, [objectType, sentence]);
 
   return {
     attributeOptions,
