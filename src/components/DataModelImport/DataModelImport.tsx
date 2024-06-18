@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AlertCircle, Check, XCircle } from 'lucide-react';
 import { ModelPreset, useRuntimeConfig } from '@/RuntimeConfig';
 import { EntityType, MetadataSchema } from '@/model';
@@ -262,6 +263,11 @@ export const DataModelImport = (props: DataModelImportProps) => {
             validation={validation}
             onError={onError} 
             onUpload={importToModel} />
+
+          <div className="text-center text-muted-foreground text-xs pt-2">
+            Use files downloaded 
+            from <Link className="text-black hover:underline" to="/export/model">Export / Data Model</Link>. 
+          </div>
         </div>
       </DialogContent>
     </Dialog>

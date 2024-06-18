@@ -17,7 +17,7 @@ interface MeasurementFieldProps {
 
   value?: { value: number, unit: string };
 
-  onChange?(arg: { value: number, unit: string }): void;
+  onChange?(arg?: { value: number, unit: string }): void;
 
 }
 
@@ -41,6 +41,8 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
     if (valueStr && unit && isValid && props.onChange) {
       const value = parseFloat(valueStr);
       props.onChange && props.onChange({ value, unit });
+    } else if (!valueStr && !unit && props.onChange) {
+      props.onChange(undefined);
     }
   }, [valueStr, unit, isValid]);
 

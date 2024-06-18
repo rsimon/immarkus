@@ -1,4 +1,4 @@
-import { Fullscreen, PinOff, Settings } from 'lucide-react';
+import { Fullscreen, PinOff, Search, Settings } from 'lucide-react';
 import { TooltippedButton } from '@/components/TooltippedButton';
 
 interface GraphControlsProps {
@@ -7,14 +7,18 @@ interface GraphControlsProps {
 
   isFullScreen: boolean;
 
+  isSearchOpen: boolean;
+
+  isSettingsOpen: boolean;
+
   onToggleFullscreen(): void;
+
+  onToggleSearch(): void;
 
   onToggleSettings(): void;
 
   onUnpinAllNodes(): void;
-
-  settingsOpen: boolean;
-
+ 
 }
 
 export const GraphControls = (props: GraphControlsProps) => {
@@ -31,6 +35,17 @@ export const GraphControls = (props: GraphControlsProps) => {
         </TooltippedButton>
       )}
 
+      <TooltippedButton
+        size="icon"
+        variant={props.isSearchOpen ? undefined : 'outline'}
+        className={props.isSearchOpen 
+          ? 'rounded-full bg-black'
+          : 'rounded-full bg-white/70 backdrop-blur-sm'}
+        tooltip="Toggle graph search"
+        onClick={props.onToggleSearch}>
+        <Search className="h-5 w-5" />
+      </TooltippedButton>
+
       <TooltippedButton 
         size="icon"
         variant={props.isFullScreen ? undefined : 'outline'}
@@ -43,8 +58,8 @@ export const GraphControls = (props: GraphControlsProps) => {
       </TooltippedButton>
 
       <TooltippedButton 
-        variant={props.settingsOpen ? undefined : 'outline'}
-        className={props.settingsOpen 
+        variant={props.isSettingsOpen ? undefined : 'outline'}
+        className={props.isSettingsOpen 
           ? 'gap-2 pl-3.5 pr-4 rounded-full border'
           : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm'}
         tooltip="View and filter settings"

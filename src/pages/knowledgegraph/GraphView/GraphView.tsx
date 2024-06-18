@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { usePrevious } from '@/utils/usePrevious';
-import { Graph, GraphNode, GraphSettings } from '../Types';
+import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { PALETTE } from '../Palette';
 
 import './GraphView.css';
@@ -14,7 +14,7 @@ interface GraphViewProps {
 
   query?: ((n: NodeObject<GraphNode>) => boolean);
 
-  settings: GraphSettings;
+  settings: KnowledgeGraphSettings;
 
   selected: GraphNode[];
 
@@ -71,8 +71,8 @@ export const GraphView = (props: GraphViewProps) => {
 
   const nodeFilter = useMemo(() => (
     props.settings.hideIsolatedNodes 
-    ? (node: NodeObject<GraphNode>) => node.degree > 0
-    : undefined
+      ? (node: NodeObject<GraphNode>) => node.degree > 0
+      : undefined
   ), [props.settings, props.query]);
 
   useEffect(() => {

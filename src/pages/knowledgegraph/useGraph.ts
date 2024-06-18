@@ -49,7 +49,8 @@ export const useGraph = (includeFolders?: boolean) => {
         }
 
         const getImageDegree = (image: Image) => {
-          const annotations = imagesResult.find(t => t.image.id === image.id).annotations;
+          const annotations = imagesResult
+            .find(t => t.image.id === image.id).annotations.filter(a => 'selector' in a.target);
 
           const entityIds = new Set(annotations
             .reduce<W3CAnnotationBody[]>((all, annotation) => (
@@ -233,8 +234,8 @@ export const useGraph = (includeFolders?: boolean) => {
           getLinkedNodes,
           getNeighbourhood,
           // force-graph seems to mutate in place sometimes - clone data!
-          nodes: nodes.map(n => ({...n})), 
-          links: flattened.map(l => ({...l})),
+          nodes: nodes.map(n => ({ ...n })), 
+          links: flattened.map(l => ({ ...l })),
           minDegree, 
           maxDegree,
           minLinkWeight,
