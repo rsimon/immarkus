@@ -1,7 +1,8 @@
-import { Folder, Image, PropertyDefinition } from '@/model';
+import { Folder, Image } from '@/model';
 import { Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
+import { serializePropertyValue } from '@/utils/serialize';
 
 /** Lists the parent sub-folder hierarchy for the given image **/
 export const getParentFolders = (store: Store, imageId: string) => {
@@ -59,19 +60,34 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
 }
 
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
-export const listMetadataValues = (store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string): Promise<any[]> => {
+export const listMetadataValues = (
+  store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string
+): Promise<string[]> => {
+
+  const model = store.getDataModel();
+
   // Helper to get the relevant values from a list of metadata annotation bodies
   const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
     bodies.reduce<any[]>((all, body) => {
       if ('properties' in body) {
         const value = body.properties[propertyName];
-        if (value) {
-          // Compare by value
-          const exists = all.find(o => JSON.stringify(o) === JSON.stringify(value));
-          return exists ? all : [...all, value];
-        } else {
-          return all;
-        }
+
+        if (!value) return all;
+
+        if (!body.source) return all;
+
+        const schema = type === 'IMAGE' 
+          ? model.getImageSchema(body.source) : model.getFolderSchema(body.source);
+
+        if (!schema?.properties) return all;
+
+        const definition = schema.properties.find(p => p.name === propertyName);
+        if (!definition) return all;
+
+        const serialized = serializePropertyValue(definition, value);
+
+        const exists = all.find(o => o === serialized);
+        return exists ? all : [...all, serialized];
       } else {
         return all;
       }
@@ -98,17 +114,26 @@ export const listMetadataValues = (store: Store, type: 'FOLDER' | 'IMAGE', prope
 
 /** Get the aggregated metadata (image and parent folders) for the given image ID **/
 const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPropertyValue[]> => {
+  const model = store.getDataModel();
+
   // Converts a metadata annotation body to a list of SchemaProperties
   const bodyToProperties = (type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
-    if ('properties' in body) {
-      return Object.entries(body.properties).map(([key, value]) => ({
-        type,
-        propertyName: key,
-        value
-      }));
-    } else {
-      return [];
-    }
+    if (!('properties' in body)) return [];
+
+    if (!body.source) return [];
+
+    const schema = type === 'FOLDER' 
+      ? model.getFolderSchema(body.source) : model.getImageSchema(body.source);
+
+    if (!schema?.properties) return [];
+
+    return Object.entries(body.properties).map(([key, value]) => ({
+      type,
+      propertyType: schema.properties.find(d => d.name === key).type,
+      propertyName: key,
+      value
+    }));
+
   }
 
   // Converts a metadata annotation to a list of SchemaProperties
@@ -158,11 +183,19 @@ export const findImages = (store: Store, propertyType: 'FOLDER' | 'IMAGE', prope
     })
   }), Promise.resolve([]));
 
+  const hasMatchingValue = (propertyValue: SchemaPropertyValue) => {
+    // Match all non-empty
+    if (!value) return true;
+
+    const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
+    return serialized === value;
+  }
+
   return promise.then(metadata => {
     return metadata
       .filter(({ metadata }) =>
         metadata.find(m => 
-          m.type === propertyType && m.propertyName === propertyName && (!value || m.value === value)))
+          m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m)))
       .map(({ image }) => image);
   });
 

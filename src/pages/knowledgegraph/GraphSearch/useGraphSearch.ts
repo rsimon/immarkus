@@ -54,7 +54,7 @@ export const useGraphSearch = (initialValue?: Partial<Sentence>) => {
         // Resolve attribute
         const [type, propertyName] = resolveAttribute(s.Attribute);
         listMetadataValues(store, type, propertyName).then(propertyValues => {
-          const options = propertyValues.map(v => ({ label: v.toString(), value: v }));
+          const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });
       } else {

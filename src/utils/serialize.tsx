@@ -1,17 +1,17 @@
-import { ReactNode } from 'react';
-import { ExternalAuthority, PropertyDefinition } from '@/model';
-import { W3CAnnotationBody } from '@annotorious/react';
-import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
+import { PropertyDefinition } from '@/model';
 
-export const serializePropertyValue = (definition: PropertyDefinition, value?: any): string => {
+
+export const serializePropertyValue = (definitionOrType: PropertyDefinition | string, value?: any): string => {
   if (!value)
     return '';
 
-  if (definition.type === 'measurement')
+  const type = typeof definitionOrType === 'string' ? definitionOrType : definitionOrType.type;
+
+  if (type === 'measurement')
     return `${value.value} ${value.unit}`;
-  else if (definition.type === 'geocoordinate')
+  else if (type === 'geocoordinate')
     return `${value[0]}/${value[1]}`;
-  else if (definition.type === 'relation')
+  else if (type === 'relation')
     return value.instance
   else
     return value.toString();

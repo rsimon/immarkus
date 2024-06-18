@@ -52,11 +52,13 @@ export interface SubCondition {
 
 }
 
-export interface DropdownOption {
+export interface DropdownOption<T extends any = any> {
 
   label: string;
 
   value: string;
+
+  data?: T;
 
 }
 
@@ -69,6 +71,8 @@ export interface SchemaProperty {
 }
 
 export interface SchemaPropertyValue extends SchemaProperty {
+
+  propertyType: string;
 
   value: string;
 
