@@ -8,8 +8,8 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { QueryBuilder } from './QueryBuilder';
 import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
+import { GraphSearchBuilder } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
 
@@ -25,9 +25,14 @@ export const KnowledgeGraph = () => {
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
-  const [showQueryBuilder, setShowQueryBuilder] = useState(false);
+  const [showGraphSearch, setShowGraphSearch] = useState(false);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const onCloseSearch = () => {
+    setQuery(undefined);
+    setShowGraphSearch(false);
+  }
 
   return (
     <div className="page-root">
@@ -71,17 +76,17 @@ export const KnowledgeGraph = () => {
             <div className="absolute right-2 bottom-16 w-[360px] p-4 overflow-hidden pointer-events-none z-10">
               <SettingsPanel 
                 open={showSettingsPanel} 
-                isQueryBuildOpen={showQueryBuilder}
                 settings={settings}
-                onChangeSettings={setSettings} 
-                onToggleQueryBuilder={() => setShowQueryBuilder(show => !show)} />
+                onChangeSettings={setSettings} />
             </div>
               
             <GraphControls 
-              isFullScreen={isFullscreen} 
               hasPinnedNodes={pinnedNodes.length > 0} 
-              settingsOpen={showSettingsPanel}
+              isFullScreen={isFullscreen} 
+              isSearchOpen={showGraphSearch}
+              isSettingsOpen={showSettingsPanel}
               onToggleFullscreen={() => setIsFullscreen(fullscreen => !fullscreen)}
+              onToggleSearch={() => setShowGraphSearch(open => !open)}
               onToggleSettings={() => setShowSettingsPanel(open => !open)}
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
@@ -92,13 +97,14 @@ export const KnowledgeGraph = () => {
             onClose={() => setSelectedNodes([])} />
         </div>
 
-        {showQueryBuilder && (
-          <QueryBuilder 
+        {showGraphSearch && (
+          <GraphSearchBuilder 
             settings={settings}
-            onChangeQuery={query => setQuery(() => query)} 
-            onClose={() => setShowQueryBuilder(false)} />
+            onChangeQuery={query => setQuery(() => query)}
+            onClose={onCloseSearch} />
         )}
       </main> 
     </div>
   )
+  
 }
