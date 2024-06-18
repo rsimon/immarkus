@@ -52,13 +52,11 @@ export interface SubCondition {
 
 }
 
-export interface DropdownOption<T extends any = any> {
+export interface DropdownOption {
 
   label: string;
 
   value: string;
-
-  data?: T;
 
 }
 
