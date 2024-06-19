@@ -1,7 +1,7 @@
 import { Folder, Image, MetadataSchema } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { SchemaPropertyValue, SchemaProperty, ObjectType } from './Types';
+import { SchemaPropertyValue, SchemaProperty, ObjectType, SubCondition } from './Types';
 import { serializePropertyValue } from '@/utils/serialize';
 import { Graph, GraphNode } from '../Types';
 
@@ -233,7 +233,11 @@ export const findFoldersByMetadata = (store: Store, propertyName: string, value?
   });
 }
 
-export const findImagesByEntityClass = (store: Store, graph: Graph, entityClass: string): GraphNode[] => {
+export const findImagesByEntityClass = (
+  store: Store, 
+  graph: Graph, 
+  entityClass: string
+): GraphNode[] => {
   const imageNodes = graph.nodes.filter(n => n.type === 'IMAGE');
 
   const model = store.getDataModel();
@@ -246,3 +250,26 @@ export const findImagesByEntityClass = (store: Store, graph: Graph, entityClass:
     return linked.some(l => l.type === 'ENTITY_TYPE' && ids.has(l.id));
   });
 }
+
+export const findImagesByEntityConditions = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  entityId: string, 
+  conditions: SubCondition[]
+): Image[] => annotations.reduce<Image[]>((images, { image, annotations}) => {
+  // Check if this image has *any annotations* that have *any bodies*
+  // that match the given query conditions
+  const hasMatchingAnnotations = annotations.some(annotation => {
+    const bodies = 
+      (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
+        .filter(b => b.purpose === 'classifying' && b.source === entityId);
+
+    // Check if any body matches the given query conditions.
+    return bodies.some(body => {
+      if (!('properties' in body)) return false;
+      // TODO handle complex types!
+      return conditions.every(c => body.properties[c.Attribute] === c.Value);
+    });
+  });
+
+  return hasMatchingAnnotations ? [...images, image] : images;
+}, []);  

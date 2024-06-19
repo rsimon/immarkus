@@ -1,5 +1,7 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
+import { W3CAnnotation } from '@annotorious/react';
+import { Image } from '@/model';
 import { Graph } from '../Types';
 import { 
   DropdownOption, 
@@ -11,6 +13,7 @@ import {
 import { 
   findFoldersByMetadata, 
   findImagesByEntityClass, 
+  findImagesByEntityConditions, 
   findImagesByMetadata, 
   listAllMetadataProperties, 
   listFolderMetadataProperties, 
@@ -22,8 +25,12 @@ const ComparatorOptions = [
   { label: 'is not empty', value: 'IS_NOT_EMPTY'}
 ];
 
-export const useGraphSearch = (graph: Graph, objectType: ObjectType, initialValue?: Partial<Sentence>) => {
-
+export const useGraphSearch = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  graph: Graph, 
+  objectType: ObjectType, 
+  initialValue?: Partial<Sentence>
+) => {
   const store = useStore();
 
   const [sentence, setSentence] = useState<Partial<Sentence>>(initialValue || {});
@@ -89,18 +96,19 @@ export const useGraphSearch = (graph: Graph, objectType: ObjectType, initialValu
     } else if (sentence.ConditionType === 'ANNOTATED_WITH') {
       const s = sentence as NestedConditionSentence;
 
-      console.log('annotated with', s);
-
       if (!s.Value) {
         const { entityTypes } = store.getDataModel();
         const options = entityTypes.map(t => ({ value: t.id, label: t.label || t.id }));
         setValueOptions(options);
-      } else {
+      } else if ((s.SubConditions || []).length === 0) {
         const imageNodes = findImagesByEntityClass(store, graph, s.Value);
         setMatches(imageNodes.map(n => n.id));
+      } else {
+        const images = findImagesByEntityConditions(annotations, s.Value, s.SubConditions);
+        setMatches(images.map(i => i.id));
       }
     }
-  }, [graph, objectType, sentence]);
+  }, [annotations, graph, objectType, sentence]);
 
   return {
     attributeOptions,

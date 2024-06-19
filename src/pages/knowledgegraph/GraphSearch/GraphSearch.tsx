@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { Grip, Plus, X } from 'lucide-react';
+import { CirclePlus, Grip, X } from 'lucide-react';
+import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
@@ -16,7 +17,7 @@ import {
 
 interface GraphSearchProps {
 
-  annotations: W3CAnnotation[];
+  annotations: { image: Image, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
@@ -171,14 +172,14 @@ export const GraphSearch = (props: GraphSearchProps) => {
         ))}
 
         {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) && (
-          <div className="flex justify-start pt-2 pl-14 pr-2">
+          <div className="flex justify-start pl-14 pr-2">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
               variant="link"
               size="sm"
-              className="flex items-center text-xs py-0 px-0"
+              className="flex items-center text-xs py-0 px-0 font-normal"
               onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Condition
+              <CirclePlus className="h-3.5 w-3.5 mr-1.5 mb-[2px]" /> Add Condition
             </Button>
           </div>
         )}

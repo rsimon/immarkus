@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
+import { Image } from '@/model';
 import { useSubConditions } from './useSubConditions';
 import { SubCondition } from './Types';
 import { 
@@ -12,7 +14,7 @@ import {
 
 interface GraphSearchSubConditionBuilderProps {
 
-  annotations: W3CAnnotation[];
+  annotations: { image: Image, annotations: W3CAnnotation[] }[];
 
   subjectId: string;
 
@@ -26,8 +28,12 @@ interface GraphSearchSubConditionBuilderProps {
 
 export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBuilderProps) => {
 
+  const annotations = useMemo(() => (
+    props.annotations.reduce<W3CAnnotation[]>((all, { image, annotations}) => ([...all, ...annotations]), [])
+  ), props.annotations);
+
   const { properties, values } = 
-    useSubConditions(props.annotations, props.subjectId, props.subcondition.Attribute);
+    useSubConditions(annotations, props.subjectId, props.subcondition.Attribute);
 
   const selectStyle = 
     'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none whitespace-nowrap overflow-hidden text-ellipsis';

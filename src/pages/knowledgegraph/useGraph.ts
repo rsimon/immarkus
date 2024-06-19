@@ -10,7 +10,7 @@ export const useGraph = (includeFolders?: boolean) => {
 
   const datamodel = store.getDataModel();
 
-  const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
+  const [annotations, setAnnotations] = useState<{ image: Image, annotations: W3CAnnotation[] }[]>([]);
 
   const [graph, setGraph] = useState<Graph>();
 
@@ -238,7 +238,7 @@ export const useGraph = (includeFolders?: boolean) => {
           maxLinkWeight
         });
 
-        setAnnotations(imageAnnotations);
+        setAnnotations(imagesResult);
       });
     });
   }, [includeFolders]);

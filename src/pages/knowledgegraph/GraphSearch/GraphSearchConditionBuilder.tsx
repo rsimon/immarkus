@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { CirclePlus, Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
+import { Image } from '@/model';
 import { GraphSearchSubConditionBuilder } from './GraphSearchSubConditionBuilder';
 import { useGraphSearch } from './useGraphSearch';
 import { Graph } from '../Types';
@@ -24,7 +25,7 @@ import {
 
 interface GraphSearchConditionBuilderProps {
 
-  annotations: W3CAnnotation[];
+  annotations: { image: Image, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
@@ -47,7 +48,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     sentence,
     updateSentence,
     valueOptions
-  } = useGraphSearch(props.graph, props.objectType, props.sentence);
+  } = useGraphSearch(props.annotations, props.graph, props.objectType, props.sentence);
 
   useEffect(() => {
     props.onChange(sentence, matches);
@@ -167,9 +168,9 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
 
         {showAddSubCondition && (
           <button 
-            className="flex items-center text-[11px] text-muted-foreground hover:text-black gap-0.5 pl-1.5"
+            className="flex items-center text-[11.5px] text-muted-foreground hover:text-black gap-1 pl-2"
             onClick={onAddSubcondition}>
-            <Plus className="h-3 w-3" /> Sub-Condition
+            <CirclePlus className="h-3 w-3" /> Sub-Condition
           </button>
         )}
       </div>
