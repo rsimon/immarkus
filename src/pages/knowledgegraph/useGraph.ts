@@ -10,18 +10,20 @@ export const useGraph = (includeFolders?: boolean) => {
 
   const datamodel = store.getDataModel();
 
+  const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
+
   const [graph, setGraph] = useState<Graph>();
 
   const { images, folders } = store;
-
-  // Resolve folder metadata and image annotations asynchronously
-  const foldersQuery = folders.map(folder =>
-    store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
-
-  const imagesQuery = images.map(image => 
-    store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
   
   useEffect(() => {
+    // Resolve folder metadata and image annotations asynchronously
+    const foldersQuery = folders.map(folder =>
+      store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
+
+    const imagesQuery = images.map(image => 
+      store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
+      
     Promise.all(foldersQuery).then(foldersResult => {
       const folderMetadata: Map<string, W3CAnnotation> = new Map(foldersResult
         .map(({ folder, metadata}) => ([folder.id, metadata ] as [string, W3CAnnotation]))
@@ -235,10 +237,12 @@ export const useGraph = (includeFolders?: boolean) => {
           minLinkWeight,
           maxLinkWeight
         });
+
+        setAnnotations(imageAnnotations);
       });
     });
   }, [includeFolders]);
 
-  return graph;
+  return { annotations, graph };
 
 }

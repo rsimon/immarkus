@@ -21,7 +21,7 @@ export const KnowledgeGraph = () => {
 
   const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
 
-  const graph = useGraph(settings.includeFolders);
+  const { annotations, graph } = useGraph(settings.includeFolders);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
@@ -99,6 +99,7 @@ export const KnowledgeGraph = () => {
 
         {showGraphSearch && (
           <GraphSearch 
+            annotations={annotations}
             graph={graph} 
             settings={settings}
             onChangeQuery={query => setQuery(() => query)}

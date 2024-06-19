@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { Grip, Plus, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
@@ -14,6 +15,8 @@ import {
 } from '@/ui/Select';
 
 interface GraphSearchProps {
+
+  annotations: W3CAnnotation[];
 
   graph: Graph;
 
@@ -71,14 +74,14 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }, [conditions]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
-    if (!sentence.ConditionType || !sentence.Value) return false;
+    if (!sentence.ConditionType) return false;
 
-    if ('Attribute' in sentence) {
+    if ('Attribute' in sentence && sentence.Attribute) {
       // SimpleConditionSentence
-      return sentence.Attribute && sentence.Comparator;
+      return Boolean(sentence.Comparator);
     } else {
       // NestedConditionSentence
-      return false; // TODO
+      return Boolean(sentence.Value);
     }
   }
   
@@ -158,6 +161,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
             )}
 
             <GraphSearchConditionBuilder 
+              annotations={props.annotations}
               graph={props.graph}
               objectType={objectType}
               sentence={sentence}
