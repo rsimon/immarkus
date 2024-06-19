@@ -104,7 +104,7 @@ export const useGraphSearch = (
         const imageNodes = findImagesByEntityClass(store, graph, s.Value);
         setMatches(imageNodes.map(n => n.id));
       } else {
-        const images = findImagesByEntityConditions(annotations, s.Value, s.SubConditions);
+        const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
         setMatches(images.map(i => i.id));
       }
     }

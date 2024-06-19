@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useDataModel } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { serializePropertyValue } from '@/utils/serialize';
 
 export const useSubConditions = (
   annotations: W3CAnnotation[],
@@ -22,11 +23,18 @@ export const useSubConditions = (
     }, []);
 
     const values = entityBodies.reduce<string[]>((all, body) => {
-      if ('properties' in body && body.properties) {
-        return body.properties[attribute] ? [...all, body.properties[attribute]] : all; 
-      } else {
-        return all;
-      }
+      if (!('properties' in body && body.properties)) return all;
+
+      if (!body.properties[attribute]) return all;
+      
+      const type = model.getEntityType(body.source, true);
+      if (!type) return all;
+
+      const property = (type.properties || []).find(p => p.name === attribute);
+      if (!property) return all;
+
+      const serialized = serializePropertyValue(property, body.properties[attribute]);
+      return [...all, serialized]; 
     }, []);
 
     // Distinct values only, sorted alphabetically

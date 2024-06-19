@@ -37,7 +37,7 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
         
         <input 
           autoFocus
-          {...inputProps} 
+          {...inputProps}
           placeholder={selected ? `Search in ${selected.label || selected.id}...` : 'Search...'}
           className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
       </div>

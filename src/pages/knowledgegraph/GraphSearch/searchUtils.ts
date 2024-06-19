@@ -252,24 +252,44 @@ export const findImagesByEntityClass = (
 }
 
 export const findImagesByEntityConditions = (
+  store: Store,
   annotations: { image: Image, annotations: W3CAnnotation[] }[],
   entityId: string, 
   conditions: SubCondition[]
-): Image[] => annotations.reduce<Image[]>((images, { image, annotations}) => {
-  // Check if this image has *any annotations* that have *any bodies*
-  // that match the given query conditions
-  const hasMatchingAnnotations = annotations.some(annotation => {
-    const bodies = 
-      (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
-        .filter(b => b.purpose === 'classifying' && b.source === entityId);
+): Image[] => {
+  // ID of this entity and all descendant types
+  const model = store.getDataModel();
 
-    // Check if any body matches the given query conditions.
-    return bodies.some(body => {
-      if (!('properties' in body)) return false;
-      // TODO handle complex types!
-      return conditions.every(c => body.properties[c.Attribute] === c.Value);
+  const type = model.getEntityType(entityId, true);
+
+  // Should never happen
+  if ((type.properties || []).length === 0) return;
+
+  const descendants = 
+    new Set(model.getDescendants(entityId).map(t => t.id));
+  
+  return annotations.reduce<Image[]>((images, { image, annotations}) => {
+    // Check if this image has *any annotations* that have *any bodies*
+    // that match the given query conditions
+    const hasMatchingAnnotations = annotations.some(annotation => {
+      const bodies = 
+        (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
+          .filter(b => b.purpose === 'classifying' && descendants.has(b.source));
+
+      // Check if any body matches the given query conditions.
+      return bodies.some(body => {
+        if (!('properties' in body)) return false;
+
+        return conditions.every(c => { 
+          const definition = type.properties.find(p => p.name === c.Attribute);
+          if (definition) {
+            const serialized = serializePropertyValue(definition, body.properties[c.Attribute]);
+            return serialized === c.Value;
+          }
+        });
+      });
     });
-  });
 
-  return hasMatchingAnnotations ? [...images, image] : images;
-}, []);  
+    return hasMatchingAnnotations ? [...images, image] : images;
+  }, []);  
+}
