@@ -34,6 +34,9 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
 
   const onChangeAttribute = (attribute: string) =>
     props.onChange({...props.subcondition, Attribute: attribute });
+
+  const onChangeValue = (value: string) =>
+    props.onChange(({...props.subcondition, Value: value }));
   
   return (
     <div className="flex pt-2">
@@ -60,7 +63,10 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
 
       <div className="px-2 py-1">is</div>
 
-      <Select>
+      <Select 
+        disabled={values.length === 0}
+        value={props.subcondition.Value || ''}
+        onValueChange={onChangeValue}>
         <SelectTrigger className={selectStyle}>
           <span className="overflow-hidden text-ellipsis text-xs">
             <SelectValue />

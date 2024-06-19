@@ -89,6 +89,8 @@ export const useGraphSearch = (graph: Graph, objectType: ObjectType, initialValu
     } else if (sentence.ConditionType === 'ANNOTATED_WITH') {
       const s = sentence as NestedConditionSentence;
 
+      console.log('annotated with', s);
+
       if (!s.Value) {
         const { entityTypes } = store.getDataModel();
         const options = entityTypes.map(t => ({ value: t.id, label: t.label || t.id }));
