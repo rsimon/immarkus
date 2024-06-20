@@ -7,6 +7,8 @@ import { Graph, GraphNode } from '../Types';
 
 /** Converts a metadata annotation body to a list of SchemaProperties **/
 const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
+  if (!body) return [];
+
   if (!('properties' in body)) return [];
 
   if (!body.source) return [];
@@ -25,7 +27,9 @@ const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body:
 }
 
 // Converts a metadata annotation to a list of SchemaProperties
-const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation: W3CAnnotation): SchemaPropertyValue[] => {
+const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation?: W3CAnnotation): SchemaPropertyValue[] => {
+  if (!annotation) return [];
+
   const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
   return bodyToProperties(model, type, body);
 }
