@@ -1,15 +1,36 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
-import { DropdownOption, ObjectType, Sentence, SimpleConditionSentence } from './Types';
-import { findImages, listAllMetadataProperties, listFolderMetadataProperties, listMetadataValues } from './searchUtils';
+import { W3CAnnotation } from '@annotorious/react';
+import { Image } from '@/model';
+import { Graph } from '../Types';
+import { 
+  DropdownOption, 
+  NestedConditionSentence, 
+  ObjectType, 
+  Sentence, 
+  SimpleConditionSentence 
+} from './Types';
+import { 
+  findFoldersByMetadata, 
+  findImagesByEntityClass, 
+  findImagesByEntityConditions, 
+  findImagesByMetadata, 
+  listAllMetadataProperties, 
+  listFolderMetadataProperties, 
+  listMetadataValues 
+} from './searchUtils';
 
 const ComparatorOptions = [
   { label: 'is', value: 'IS' }, 
   { label: 'is not empty', value: 'IS_NOT_EMPTY'}
 ];
 
-export const useGraphSearch = (objectType: ObjectType, initialValue?: Partial<Sentence>) => {
-
+export const useGraphSearch = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  graph: Graph, 
+  objectType: ObjectType, 
+  initialValue?: Partial<Sentence>
+) => {
   const store = useStore();
 
   const [sentence, setSentence] = useState<Partial<Sentence>>(initialValue || {});
@@ -42,6 +63,7 @@ export const useGraphSearch = (objectType: ObjectType, initialValue?: Partial<Se
      */
     if (sentence.ConditionType === 'WHERE') {
       const s = sentence as SimpleConditionSentence;
+
       if (!s.Attribute) {
         const properties = objectType === 'FOLDER'
           ? listFolderMetadataProperties(store) : listAllMetadataProperties(store);
@@ -61,15 +83,32 @@ export const useGraphSearch = (objectType: ObjectType, initialValue?: Partial<Se
         });
       } else {
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        
         const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value;
 
-        findImages(store, type, propertyName, value).then(results => {
-          setMatches(results.map(image => image.id));
-        })
+        if (objectType === 'IMAGE') {
+          findImagesByMetadata(store, type, propertyName, value).then(results =>
+            setMatches(results.map(image => image.id)));  
+        } else {
+          findFoldersByMetadata(store, propertyName, value).then(results =>
+            setMatches(results.map(folder => folder.id)));
+        }
+      }
+    } else if (sentence.ConditionType === 'ANNOTATED_WITH') {
+      const s = sentence as NestedConditionSentence;
+
+      if (!s.Value) {
+        const { entityTypes } = store.getDataModel();
+        const options = entityTypes.map(t => ({ value: t.id, label: t.label || t.id }));
+        setValueOptions(options);
+      } else if ((s.SubConditions || []).length === 0) {
+        const imageNodes = findImagesByEntityClass(store, graph, s.Value);
+        setMatches(imageNodes.map(n => n.id));
+      } else {
+        const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
+        setMatches(images.map(i => i.id));
       }
     }
-  }, [objectType, sentence]);
+  }, [annotations, graph, objectType, sentence]);
 
   return {
     attributeOptions,
