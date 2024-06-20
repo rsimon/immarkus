@@ -36,7 +36,7 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
     useSubConditions(annotations, props.subjectId, props.subcondition.Attribute);
 
   const selectStyle = 
-    'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto bg-white shadow-none whitespace-nowrap overflow-hidden text-ellipsis';
+    'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto min-h-[30px] bg-white shadow-none whitespace-nowrap overflow-hidden text-ellipsis';
 
   const onChangeAttribute = (attribute: string) =>
     props.onChange({...props.subcondition, Attribute: attribute });

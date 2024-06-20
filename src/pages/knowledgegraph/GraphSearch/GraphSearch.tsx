@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, X } from 'lucide-react';
@@ -21,6 +22,8 @@ interface GraphSearchProps {
 
   graph: Graph;
 
+  isFullscreen: boolean;
+
   settings: KnowledgeGraphSettings;
 
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
@@ -35,7 +38,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
   const [objectType, setObjectType] = useState<ObjectType | undefined>();
 
@@ -100,7 +103,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
       setObjectType(undefined);
   }
 
-  return (
+  return createPortal(
     <div 
       ref={el}
       className="bg-white min-w-[510px] min-h-[180px] backdrop-blur-sm border absolute top-6 left-6 rounded shadow-lg z-30">
@@ -172,19 +175,19 @@ export const GraphSearch = (props: GraphSearchProps) => {
         ))}
 
         {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) && (
-          <div className="flex justify-start pl-14 pr-2">
+          <div className="flex justify-start pt-1 pl-14">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
               variant="link"
               size="sm"
               className="flex items-center text-xs py-0 px-0 font-normal"
               onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-              <CirclePlus className="h-3.5 w-3.5 mr-1.5 mb-[2px]" /> Add Condition
+              <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
             </Button>
           </div>
         )}
       </div>
-    </div>
+    </div>, document.body
   )
 
 }
