@@ -1,1 +1,1 @@
-export * from './GraphSearchBuilder';
+export * from './GraphSearch';

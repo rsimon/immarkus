@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { Grip, Plus, X } from 'lucide-react';
+import { CirclePlus, Grip, X } from 'lucide-react';
+import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
-import { GraphNode, KnowledgeGraphSettings } from '../Types';
+import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -13,7 +16,13 @@ import {
   SelectValue 
 } from '@/ui/Select';
 
-interface GraphSearchBuilderProps {
+interface GraphSearchProps {
+
+  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+
+  graph: Graph;
+
+  isFullscreen: boolean;
 
   settings: KnowledgeGraphSettings;
 
@@ -23,18 +32,17 @@ interface GraphSearchBuilderProps {
 
 }
 
-export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
+const EMPTY_CONDITION: Condition = { sentence: { ConditionType: 'WHERE' } };
+
+export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
   const [objectType, setObjectType] = useState<ObjectType | undefined>();
 
   const [conditions, setConditions] = useState<Condition[]>([]);
-
-  const EMPTY_CONDITION: Condition = objectType === 'IMAGE'
-    ? { sentence: { ConditionType: 'WHERE' } } : { sentence: {} };
 
   useDraggable(el, {
     position,
@@ -63,21 +71,21 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
       const query = (n: GraphNode) =>
         n.type === objectType && intersection.has(n.id);
 
-      console.log(`Query: type=${objectType}, ids`, intersection);
+      // console.log(`Query: type=${objectType}, ids`, intersection);
 
       props.onChangeQuery(query);
   }
   }, [conditions]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
-    if (!sentence.ConditionType || !sentence.Value) return false;
+    if (!sentence.ConditionType) return false;
 
-    if ('Attribute' in sentence) {
+    if ('Attribute' in sentence && sentence.Attribute) {
       // SimpleConditionSentence
-      return sentence.Attribute && sentence.Comparator;
+      return Boolean(sentence.Comparator);
     } else {
       // NestedConditionSentence
-      return false; // TODO
+      return Boolean(sentence.Value);
     }
   }
   
@@ -95,7 +103,7 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
       setObjectType(undefined);
   }
 
-  return (
+  return createPortal(
     <div 
       ref={el}
       className="bg-white min-w-[510px] min-h-[180px] backdrop-blur-sm border absolute top-6 left-6 rounded shadow-lg z-30">
@@ -132,6 +140,12 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             </SelectTrigger>
 
             <SelectContent>
+              {props.settings.includeFolders && (
+                <SelectItem
+                  className="text-xs" 
+                  value="FOLDER">sub-folders</SelectItem>
+              )}
+
               <SelectItem
                 className="text-xs" 
                 value="IMAGE">images</SelectItem>
@@ -151,6 +165,9 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
             )}
 
             <GraphSearchConditionBuilder 
+              annotations={props.annotations}
+              graph={props.graph}
+              objectType={objectType}
               sentence={sentence}
               onChange={(next, matches) => onChange(sentence, next, matches)}
               onDelete={() => onDelete(sentence)} />
@@ -158,19 +175,19 @@ export const GraphSearchBuilder = (props: GraphSearchBuilderProps) => {
         ))}
 
         {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) && (
-          <div className="flex justify-start pt-2 pl-14 pr-2">
+          <div className="flex justify-start pt-1 pl-14">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
               variant="link"
               size="sm"
-              className="flex items-center text-xs py-0 px-0"
+              className="flex items-center text-xs py-0 px-0 font-normal"
               onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Condition
+              <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
             </Button>
           </div>
         )}
       </div>
-    </div>
+    </div>, document.body
   )
 
 }

@@ -70,6 +70,8 @@ export interface SchemaProperty {
 
 export interface SchemaPropertyValue extends SchemaProperty {
 
+  propertyType: string;
+
   value: string;
 
 }

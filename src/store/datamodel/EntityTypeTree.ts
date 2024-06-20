@@ -3,7 +3,7 @@ import { EntityType } from '@/model';
 
 export interface EntityTypeTree {
 
-  getAncestors(type: EntityType): EntityType[];
+  getAncestors(typeOrId: EntityType | string): EntityType[];
 
   getChildTypes(id: string): EntityType[];
 
@@ -53,7 +53,14 @@ export const createEntityTypeTree = (entityTypes: EntityType[]): EntityTypeTree 
     return parent ? walkAncestors(parent, [parent, ...ancestors]) : ancestors;
   }
 
-  const getAncestors = (type: EntityType) => walkAncestors(type);
+  const getAncestors = (typeOrId: EntityType | string) => {
+    if (typeof typeOrId === 'string') {
+      const type = findEntityType(typeOrId);
+      return walkAncestors(type);
+    } else {
+      return walkAncestors(typeOrId);
+    }
+  }
 
   const walkDescendants = (typeId: string, descendants: EntityType[] = []): EntityType[] => {
     const children = types.filter(type => type.parentId === typeId);

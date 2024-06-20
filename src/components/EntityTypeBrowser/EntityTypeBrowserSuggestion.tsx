@@ -24,7 +24,7 @@ export const EntityTypeBrowserSuggestion = (props: EntityTypeBrowserSuggestionPr
   const color = type.color || DEFAULT_COLOR;
 
   return (
-    <div 
+    <div
       className="etb-suggestion pr-2 py-1 rounded-sm data-[highlighted]:bg-accent cursor-pointer" 
       data-highlighted={highlighted ? 'true' : undefined}>
       

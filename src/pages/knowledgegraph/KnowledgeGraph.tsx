@@ -9,7 +9,7 @@ import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
 import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
-import { GraphSearchBuilder } from './GraphSearch';
+import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
 
@@ -21,7 +21,7 @@ export const KnowledgeGraph = () => {
 
   const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
 
-  const graph = useGraph(settings.includeFolders);
+  const { annotations, graph } = useGraph(settings.includeFolders);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
@@ -98,7 +98,10 @@ export const KnowledgeGraph = () => {
         </div>
 
         {showGraphSearch && (
-          <GraphSearchBuilder 
+          <GraphSearch 
+            annotations={annotations}
+            graph={graph} 
+            isFullscreen={isFullscreen}
             settings={settings}
             onChangeQuery={query => setQuery(() => query)}
             onClose={onCloseSearch} />

@@ -51,7 +51,7 @@ export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
   }
 
   const renderSuggestion = (type: EntityType, { isHighlighted }) => (
-    <EntityTypeBrowserSuggestion 
+    <EntityTypeBrowserSuggestion
       type={type} 
       highlighted={isHighlighted} />
   )
@@ -92,7 +92,7 @@ export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
     <form 
       onSubmit={onSubmitForm}>
       <div className="text-sm">
-        <ReactAutosuggest 
+        <ReactAutosuggest
           alwaysRenderSuggestions
           suggestions={suggestions} 
           getSuggestionValue={suggestion => suggestion.id}
@@ -101,7 +101,7 @@ export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
           shouldRenderSuggestions={() => true}
           renderSuggestion={renderSuggestion}
           renderSuggestionsContainer={({ containerProps, children }) => suggestions.length > 0 ? (
-            <div {...containerProps} className="w-full px-1.5 py-2.5">
+            <div {...containerProps} key={containerProps.key} className="w-full px-1.5 py-2.5">
               {children}
             </div>
           ) : (
@@ -111,7 +111,8 @@ export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
           )}
           renderInputComponent={inputProps => (
             <EntityTypeBrowserInput 
-              {...inputProps} 
+              {...inputProps}
+              key={'key' in inputProps ? inputProps.key as string : undefined}
               selected={selected} 
               onClearSearch={onClearSearch} />
           )}
