@@ -58,20 +58,22 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }, [objectType]);
 
   useEffect(() => {
-    const hasMatches = conditions.length > 0 && conditions.every(c => Boolean(c.matches));
-    if (!hasMatches || !objectType) {
+    if (conditions.length === 0) {
+      // No conditions - remove query
       props.onChangeQuery(undefined)
     } else {
+      // Remove the last condition if it is unfinished
+      const toApply = conditions[conditions.length - 1].matches ?
+        conditions : conditions.slice(0, -1);
+
       // For now, we keep all conditions AND-connected, which means
       // the total matches are the intersection of all individual matches
-      const intersection = new Set(conditions.reduce((intersected, { matches }) => {
-        return intersected.filter(str => matches.includes(str));
+      const intersection = new Set(toApply.reduce((intersected, { matches }) => {
+        return intersected.filter(str => (matches || []).includes(str));
       }, conditions[0].matches!));
 
       const query = (n: GraphNode) =>
         n.type === objectType && intersection.has(n.id);
-
-      // console.log(`Query: type=${objectType}, ids`, intersection);
 
       props.onChangeQuery(query);
   }
