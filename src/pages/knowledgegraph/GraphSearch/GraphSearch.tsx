@@ -161,7 +161,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
             {(idx === 0) ? (
               <div className="w-12" />
             ) : (
-              <div className="w-12 text-right">and</div>
+              <div className="w-12 text-right self-start pt-1">and</div>
             )}
 
             <GraphSearchConditionBuilder 
