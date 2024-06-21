@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
+import { CirclePlus, Grip, Search, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
+import { Input } from '@/ui/Input';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
@@ -134,23 +135,29 @@ export const GraphSearch = (props: GraphSearchProps) => {
           <Select 
             value={objectType || ''}
             onValueChange={value => setObjectType(value as ObjectType)}>
-            
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
                 <SelectValue placeholder="select node type..." />
               </span>
             </SelectTrigger>
 
-            <SelectContent>
-              {props.settings.includeFolders && (
+            <SelectContent tight>
+              <div className="flex items-center border-b">
+                <Search className="h-4 w-4" />
+                <Input className="mb-1 shadow-none" />
+              </div>
+
+              <div className="p-1">
+                {props.settings.includeFolders && (
+                  <SelectItem
+                    className="text-xs" 
+                    value="FOLDER">sub-folders</SelectItem>
+                )}
+
                 <SelectItem
                   className="text-xs" 
-                  value="FOLDER">sub-folders</SelectItem>
-              )}
-
-              <SelectItem
-                className="text-xs" 
-                value="IMAGE">images</SelectItem>
+                  value="IMAGE">images</SelectItem>
+              </div>
             </SelectContent>
           </Select>
         </div>
