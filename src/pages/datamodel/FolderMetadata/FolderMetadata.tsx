@@ -45,7 +45,7 @@ export const FolderMetadata = () => {
     <div>
       <p className="p-1 mt-4 text-sm max-w-2xl leading-6">
         Use schemas to record structured information about your folders.
-        Create multiple schemas to describe different folder types, e.g. 'Artwork', 'Journal article' or '(historical) printed work'.
+        Create multiple schemas to describe different folder types, e.g. 'Artwork', 'Journal article', '(historical) printed work', etc.
       </p>
 
       <MetadataTable
