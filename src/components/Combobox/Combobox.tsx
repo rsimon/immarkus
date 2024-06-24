@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from '@/ui/Popover';
 
-export interface ComboboxValue {
+export interface ComboboxOption {
 
   value: string; 
 
@@ -28,16 +28,18 @@ interface ComboboxProps {
 
   placeholder?: string;
 
-  values: ComboboxValue[];
+  value?: string;
+  
+  options: ComboboxOption[];
 
 }
 
  
 export const Combobox = (props: ComboboxProps) => {
 
-  const [open, setOpen] = useState(false);
+  const { value, options, placeholder } = props;
 
-  const [value, setValue] = useState('');
+  const [open, setOpen] = useState(false);
  
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,8 +50,8 @@ export const Combobox = (props: ComboboxProps) => {
           aria-expanded={open}
           className={props.className}>
           {value
-            ? props.values.find(v => v.value === value)?.label
-            : props.placeholder }
+            ? options.find(o => o.value === value)?.label
+            : placeholder }
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

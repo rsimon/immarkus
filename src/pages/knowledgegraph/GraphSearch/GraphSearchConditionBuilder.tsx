@@ -22,6 +22,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { Combobox } from '@/components/Combobox';
 
 interface GraphSearchConditionBuilderProps {
 
@@ -107,6 +108,13 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     </Select>
   );
 
+  const renderCombobox = (value: string | undefined, options: DropdownOption[], onChange: ((value: string) => void)) => (
+    <Combobox 
+      className={selectStyle}
+      value={value}
+      options={options} />
+  );
+
   return (
     <div>
       <div className="flex flex-nowrap">
@@ -136,13 +144,14 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </Select>
 
         {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && 
-          renderDropdown(
-            (sentence as SimpleConditionSentence).Attribute, 
+          renderCombobox(
+            (sentence as SimpleConditionSentence).Attribute,  
             attributeOptions, 
             value => updateSentence({ 
               Attribute: value,
               Value: undefined 
-          }))}
+            }))
+        }
 
         {'Attribute' in sentence && sentence.Attribute && 
           renderDropdown(
@@ -153,15 +162,17 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
               Value: undefined 
             }))}
 
-        {(
-          ('Comparator' in sentence && sentence.Comparator === 'IS') ||
+        {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
           (sentence.ConditionType === 'ANNOTATED_WITH')) && 
 
           renderDropdown(
             sentence.Value, 
             valueOptions, 
-            value => updateSentence({ Value: value }))}
+            value => updateSentence({ Value: value }))
 
+          // renderCombobox(sentence.Value, valueOptions, value => updateSentence({ Value: value }))
+        }
+        
         <button className="border border-l-0 w-7 flex items-center justify-center text-muted-foreground">
           <Trash2 className="w-3.5 h-3.5" onClick={props.onDelete} />
         </button>
