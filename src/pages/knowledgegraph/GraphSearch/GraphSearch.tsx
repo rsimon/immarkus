@@ -3,9 +3,9 @@ import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Search, Trash2, X } from 'lucide-react';
+import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
-import { Input } from '@/ui/Input';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
@@ -130,7 +130,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
         <div className="text-xs flex items-center gap-2">
           <span className="w-12 text-right">
             Find
-          </span> 
+          </span>
           
           <Select 
             value={objectType || ''}
@@ -141,23 +141,16 @@ export const GraphSearch = (props: GraphSearchProps) => {
               </span>
             </SelectTrigger>
 
-            <SelectContent tight>
-              <div className="flex items-center border-b">
-                <Search className="h-4 w-4" />
-                <Input className="mb-1 shadow-none" />
-              </div>
-
-              <div className="p-1">
-                {props.settings.includeFolders && (
-                  <SelectItem
-                    className="text-xs" 
-                    value="FOLDER">sub-folders</SelectItem>
-                )}
-
+            <SelectContent>
+              {props.settings.includeFolders && (
                 <SelectItem
                   className="text-xs" 
-                  value="IMAGE">images</SelectItem>
-              </div>
+                  value="FOLDER">sub-folders</SelectItem>
+              )}
+
+              <SelectItem
+                className="text-xs" 
+                value="IMAGE">images</SelectItem>
             </SelectContent>
           </Select>
         </div>
