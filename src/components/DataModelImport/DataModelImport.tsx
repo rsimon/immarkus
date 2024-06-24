@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, Check, XCircle } from 'lucide-react';
-import { ModelPreset, useRuntimeConfig } from '@/RuntimeConfig';
 import { EntityType, MetadataSchema } from '@/model';
 import { useDataModel } from '@/store';
 import { Alert, AlertDescription, AlertTitle } from '@/ui/Alert';
@@ -13,6 +12,7 @@ import { Separator } from '@/ui/Separator';
 import { ToastTitle, useToast } from '@/ui/Toaster';
 import { UploadButton } from './UploadButton';
 import { useDataModelImport, validateEntityTypes, validateMetadata } from './useDataModelImport';
+import { useSchemaPresets } from './useSchemaPresets';
 import {
   Select,
   SelectContent,
@@ -43,13 +43,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
   const [keepExisting, setKeepExisting] = useState<string>('keep');
 
-  const config = useRuntimeConfig();
-
   const model = useDataModel();
 
-  const presets = useMemo(() =>
-    (config.model_presets || []).filter(p => p.type === props.type)
-  , [config, props.type]);
+  const presets = useSchemaPresets(props.type);
 
   const { toast } = useToast();
 
@@ -72,15 +68,6 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
     if (props.onOpenChange)
       props.onOpenChange(open);
-  }
-  
-  const onLoadPreset = (preset: ModelPreset) => {
-    setOpen(false);
-
-    fetch(preset.url)
-      .then(res => res.json())
-      .then(importToModel)
-      .catch(() => onError(`Error loading preset ${preset.name}`));
   }
 
   const importToModel = (items: EntityType[] | MetadataSchema[]) => {
@@ -111,6 +98,12 @@ export const DataModelImport = (props: DataModelImportProps) => {
         console.error(error);
         onError('Error importing to data model');
       });
+  }
+
+  const onImportPreset = (name: string) => {
+    const preset = presets.find(p => p.name === name);
+    if (preset)
+      importToModel([preset]);
   }
 
   const onError = (error: string) =>
@@ -234,7 +227,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
                   Import from Preset
                 </Label>
 
-                <Select onValueChange={value => onLoadPreset(presets.find(p => p.name === value))}>
+                <Select 
+                  onValueChange={onImportPreset}>
                   <SelectTrigger className="w-full bg-white">
                     <SelectValue />
                   </SelectTrigger>
