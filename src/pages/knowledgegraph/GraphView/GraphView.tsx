@@ -50,6 +50,8 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [dimensions, setDimensions] = useState<[number, number] | undefined>();
 
+  const [zoom, setZoom] = useState(1);
+
   // The selected neighbourhood (if any): IDs of selected nodes + directly connected nodes
   const neighbourhood: Set<string> = useMemo(() => {
     if (!graph) return new Set([]);
@@ -189,15 +191,18 @@ export const GraphView = (props: GraphViewProps) => {
           height={dimensions[1]}
           graphData={graph} 
           linkWidth={getLinkWidth}
-          nodeLabel={props.settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
-          nodeVisibility={nodeFilter}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
+          nodeLabel={props.settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
+          nodeRelSize={window.devicePixelRatio / zoom}
+          nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
+          nodeVisibility={nodeFilter}
           onBackgroundClick={onBackgroundClick}
           onLinkClick={onBackgroundClick}
           onNodeClick={n => props.onSelect(n as GraphNode)}
           onNodeDragEnd={onNodeDragEnd}
-          onNodeHover={onNodeHover} />
+          onNodeHover={onNodeHover} 
+          onZoomEnd={z => setZoom(z.k)}/>
       )}
     </div>
   )

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { CirclePlus, Grip, X } from 'lucide-react';
+import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
@@ -58,20 +58,22 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }, [objectType]);
 
   useEffect(() => {
-    const hasMatches = conditions.length > 0 && conditions.every(c => Boolean(c.matches));
-    if (!hasMatches || !objectType) {
+    if (conditions.length === 0) {
+      // No conditions - remove query
       props.onChangeQuery(undefined)
     } else {
+      // Remove the last condition if it is unfinished
+      const toApply = conditions[conditions.length - 1].matches ?
+        conditions : conditions.slice(0, -1);
+
       // For now, we keep all conditions AND-connected, which means
       // the total matches are the intersection of all individual matches
-      const intersection = new Set(conditions.reduce((intersected, { matches }) => {
-        return intersected.filter(str => matches.includes(str));
+      const intersection = new Set(toApply.reduce((intersected, { matches }) => {
+        return intersected.filter(str => (matches || []).includes(str));
       }, conditions[0].matches!));
 
       const query = (n: GraphNode) =>
         n.type === objectType && intersection.has(n.id);
-
-      // console.log(`Query: type=${objectType}, ids`, intersection);
 
       props.onChangeQuery(query);
   }
@@ -106,7 +108,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   return createPortal(
     <div 
       ref={el}
-      className="bg-white min-w-[510px] min-h-[180px] backdrop-blur-sm border absolute top-6 left-6 rounded shadow-lg z-30">
+      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-sm border absolute top-6 left-6 rounded shadow-lg z-30">
     
       <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
@@ -123,16 +125,15 @@ export const GraphSearch = (props: GraphSearchProps) => {
         </Button>
       </div>
 
-      <div className="p-2 pr-6 pb-8">
+      <div className="p-2 pr-6 pb-2">
         <div className="text-xs flex items-center gap-2">
           <span className="w-12 text-right">
             Find
-          </span> 
+          </span>
           
           <Select 
             value={objectType || ''}
             onValueChange={value => setObjectType(value as ObjectType)}>
-            
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
                 <SelectValue placeholder="select node type..." />
@@ -161,7 +162,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
             {(idx === 0) ? (
               <div className="w-12" />
             ) : (
-              <div className="w-12 text-right">and</div>
+              <div className="w-12 text-right self-start pt-1">and</div>
             )}
 
             <GraphSearchConditionBuilder 
@@ -174,8 +175,8 @@ export const GraphSearch = (props: GraphSearchProps) => {
           </div>
         ))}
 
-        {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) && (
-          <div className="flex justify-start pt-1 pl-14">
+        {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) ? (
+          <div className="flex justify-start pt-4 pl-14 gap-4">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
               variant="link"
@@ -184,7 +185,17 @@ export const GraphSearch = (props: GraphSearchProps) => {
               onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
               <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
             </Button>
+
+            <Button 
+              variant="link"
+              size="sm"
+              className="flex items-center text-xs py-0 px-0 font-normal"
+              onClick={() => setConditions([])}>
+              <Trash2 className="h-3.5 w-3.5 mr-1 mb-[1px]" /> Clear All
+            </Button>
           </div>
+        ) : (
+          <div className="h-4"/>
         )}
       </div>
     </div>, document.body

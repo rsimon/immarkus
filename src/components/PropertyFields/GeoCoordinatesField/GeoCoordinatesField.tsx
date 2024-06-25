@@ -40,10 +40,14 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
   }, [latStr, lngStr]);
 
   useEffect(() => {
-    if (latStr && lngStr && isValid && props.onChange) {
+    if (!props.onChange) return;
+
+    if (latStr && lngStr && isValid) {
       const lat = parseFloat(latStr);
       const lng = parseFloat(lngStr);
-      props.onChange && props.onChange([lat, lng]);
+      props.onChange([lat, lng]);
+    } else if (!latStr && !lngStr) {
+      props.onChange(undefined);
     }
   }, [latStr, lngStr, isValid]);
 
