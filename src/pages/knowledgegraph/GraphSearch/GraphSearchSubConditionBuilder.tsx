@@ -1,16 +1,10 @@
 import { useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
+import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { useSubConditions } from './useSubConditions';
 import { SubCondition } from './Types';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem,
-  SelectTrigger, 
-  SelectValue 
-} from '@/ui/Select';
 
 interface GraphSearchSubConditionBuilderProps {
 
@@ -48,46 +42,19 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
     <div className="flex pt-2">
       <div className="w-32 text-right px-2 py-1">where</div>
 
-      <Select
+      <Combobox 
+        className={selectStyle}
         value={props.subcondition.Attribute}
-        onValueChange={onChangeAttribute}>
-        <SelectTrigger className={selectStyle}>
-          <span className="overflow-hidden text-ellipsis text-xs">
-            <SelectValue />
-          </span>
-        </SelectTrigger>
-
-        <SelectContent className="max-h-96">
-          {properties.map((definition, idx) => (
-            <SelectItem 
-              key={`${definition.name}-${idx}`}
-              className="text-xs"
-              value={definition.name}>{definition.name}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        options={properties.map(p => ({ label: p.name, value: p.name }))} 
+        onChange={onChangeAttribute} />
 
       <div className="px-2 py-1">is</div>
 
-      <Select 
-        disabled={values.length === 0}
+      <Combobox 
+        className={selectStyle}
         value={props.subcondition.Value || ''}
-        onValueChange={onChangeValue}>
-        <SelectTrigger className={selectStyle}>
-          <span className="overflow-hidden text-ellipsis text-xs">
-            <SelectValue />
-          </span>
-        </SelectTrigger>
-
-        <SelectContent className="max-h-96">
-          {values.map(value => (
-            <SelectItem 
-              key={value}
-              className="text-xs"
-              value={value}>{value}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+        options={values.map(value => ({ label: value, value }))} 
+        onChange={onChangeValue} />
 
       <button className="border border-l-0 w-7 flex items-center justify-center text-muted-foreground">
         <Trash2 className="w-3.5 h-3.5" onClick={props.onDelete} />
