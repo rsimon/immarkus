@@ -52,19 +52,15 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [zoom, setZoom] = useState(1);
 
-  // The selected neighbourhood (if any): IDs of selected nodes + directly connected nodes
-  const neighbourhood: Set<string> = useMemo(() => {
-    if (!graph) return new Set([]);
-
-    return props.selected.length > 0 ? 
-      new Set(props.selected.reduce<string[]>((all, selected) => (
-        [...all, selected.id, ...graph.getLinkedNodes(selected.id).map(n => n.id)]
-      ), [])) : new Set([])
-  }, [graph, props.selected]);
-
-  const hasSelection = props.selected.length > 0;
-
   const selectedIds = new Set(props.selected.map(n => n.id));
+
+  const [hovered, setHovered] = useState<GraphNode | undefined>();
+
+  // The selected neighbourhood (if any): IDs of selected nodes + directly connected nodes
+  const hoverNeighbourhood: Set<string> = useMemo(() => {
+    if (!graph || !hovered) return new Set([]);
+    return new Set([hovered.id, ...graph.getLinkedNodes(hovered.id).map(n => n.id)]);
+  }, [graph, hovered]);
 
   const nodesInQuery = useMemo(() => props.query
     ? new Set(graph.nodes.filter(n => props.query(n)).map(n => n.id))
@@ -118,15 +114,20 @@ export const GraphView = (props: GraphViewProps) => {
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
-    // Node should fade out if there is a selection, and this node is not in the neighbourhood
-    const isFaded = hasSelection 
-      ? !neighbourhood.has(node.id)
-      : props.query && !props.query(node);
-
+    const isOpaque =
+      // All nodes are opaque if there is no hover or no query
+      (!hovered && !props.query) ||
+      // The selected node is always opaque
+      (selectedIds.has(node.id)) ||
+      // or if there's hover and the node is in the neighbourhood
+      (hovered && hoverNeighbourhood.has(node.id)) ||
+      // or if there's a query and the node matches it
+      (props.query && props.query(node));
+     
     const color = node.type === 'IMAGE' 
       ? PALETTE['blue'] : node.type === 'ENTITY_TYPE' ? PALETTE['green'] : PALETTE['purple'];
 
-    ctx.globalAlpha = isFaded ? 0.12 : 1;
+    ctx.globalAlpha = isOpaque ? 1 : 0.12;
     ctx.fillStyle = color;
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 1 / scale;
@@ -137,13 +138,21 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.stroke();
 
     // Faded nodes never get labels
-    if (!props.settings.hideLabels && !isFaded) {
+    if (!props.settings.hideLabels && isOpaque) {
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
       ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
     }
 
     ctx.globalAlpha = 1;
+
+    if (selectedIds.has(node.id)) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, (r + 4) / scale, 0, 2 * Math.PI, false);
+      ctx.lineWidth = 3 / scale;
+      ctx.strokeStyle = '#000000';
+      ctx.stroke();
+    }
   }
 
   const onBackgroundClick = () => {
@@ -160,6 +169,8 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   const onNodeHover = (node?: NodeObject<GraphNode>) => {
+    setHovered(node);
+
     if (node)
       el.current.style.cursor = 'pointer';
     else 
@@ -167,12 +178,12 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   const getLinkWidth = (link: LinkObject) => {
-    if (hasSelection || props.query) {
+    if (hovered || props.query) {
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
 
-      const isHidden = hasSelection 
-        ? !(selectedIds.has(targetId) || selectedIds.has(sourceId))
+      const isHidden = hovered 
+        ? !(hovered.id === targetId || hovered.id === sourceId)
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
@@ -194,7 +205,7 @@ export const GraphView = (props: GraphViewProps) => {
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           nodeLabel={props.settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
-          nodeRelSize={window.devicePixelRatio / zoom}
+          nodeRelSize={1.2 * window.devicePixelRatio / zoom}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
           nodeVisibility={nodeFilter}
           onBackgroundClick={onBackgroundClick}
