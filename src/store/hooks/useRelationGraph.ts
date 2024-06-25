@@ -58,15 +58,18 @@ export const useRelationGraph = () => {
             const outboundRelations: RelatedAnnotation[]  = 
               (entityType.properties || [])
                 .filter(p => p.type === 'relation')
-                .map(p => ({ 
-                  image: image,
-                  annotation: annotation,
-                  relationName: p.name,
-                  sourceEntityType: entityType.id,
-                  targetEntityType: (b as any).properties[p.name].type,
-                  targetInstance: (b as any).properties[p.name].instance,
-                  targetInstanceLabelProperty: (p as RelationPropertyDefinition).labelProperty,
-                }));
+                .map(p => {
+                  const properties = (b as any).properties;
+                  return (properties && properties[p.name]) ? { 
+                    image: image,
+                    annotation: annotation,
+                    relationName: p.name,
+                    sourceEntityType: entityType.id,
+                    targetEntityType: properties[p.name].type,
+                    targetInstance: properties[p.name].instance,
+                    targetInstanceLabelProperty: (p as RelationPropertyDefinition).labelProperty
+                  } : undefined
+                }).filter(r => Boolean(r));
 
             return [...all, ...outboundRelations];
           } else {
