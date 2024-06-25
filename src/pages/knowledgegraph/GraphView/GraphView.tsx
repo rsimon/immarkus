@@ -56,11 +56,27 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [hovered, setHovered] = useState<GraphNode | undefined>();
 
-  // The selected neighbourhood (if any): IDs of selected nodes + directly connected nodes
-  const hoverNeighbourhood: Set<string> = useMemo(() => {
-    if (!graph || !hovered) return new Set([]);
-    return new Set([hovered.id, ...graph.getLinkedNodes(hovered.id).map(n => n.id)]);
-  }, [graph, hovered]);
+  // The highlighted neighbourhoods (if any)
+  const highlighted: Set<string> | undefined = useMemo(() => {
+    // No highlighted nodes if:
+    // - no graph
+    // - no current hover
+    // - no active query
+    // - no selection
+    if (!graph || (!hovered && !props.query && (props.selected || []).length === 0)) return;
+
+    // Highlighted due to hover
+    const hoverNeighbourhood = 
+      hovered ? [hovered.id, ...graph.getLinkedNodes(hovered.id).map(n => n.id)]: [];
+
+    const selectedNeighbourhood = selectedIds.size > 0 
+      ? props.selected.reduce<string[]>((all, selected) => (
+        [...all, selected.id, ...graph.getLinkedNodes(selected.id).map(n => n.id)]
+      ), []) 
+      : [];
+
+    return new Set([...hoverNeighbourhood, ...selectedNeighbourhood]);
+  }, [graph, hovered, props.query, props.selected]);
 
   const nodesInQuery = useMemo(() => props.query
     ? new Set(graph.nodes.filter(n => props.query(n)).map(n => n.id))
@@ -115,12 +131,10 @@ export const GraphView = (props: GraphViewProps) => {
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
     const isOpaque =
-      // All nodes are opaque if there is no hover or no query
-      (!hovered && !props.query) ||
-      // The selected node is always opaque
-      (selectedIds.has(node.id)) ||
-      // or if there's hover and the node is in the neighbourhood
-      (hovered && hoverNeighbourhood.has(node.id)) ||
+      // All nodes are opaque if there is no current highlight set or no query
+      (!highlighted && !props.query) ||
+      // Hover or selection neighbourhood?
+      (highlighted?.has(node.id)) ||
       // or if there's a query and the node matches it
       (props.query && props.query(node));
      
@@ -150,7 +164,7 @@ export const GraphView = (props: GraphViewProps) => {
       ctx.beginPath();
       ctx.arc(node.x, node.y, (r + 4) / scale, 0, 2 * Math.PI, false);
       ctx.lineWidth = 3 / scale;
-      ctx.strokeStyle = '#000000';
+      ctx.strokeStyle = '#ff8800';
       ctx.stroke();
     }
   }
@@ -178,12 +192,12 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   const getLinkWidth = (link: LinkObject) => {
-    if (hovered || props.query) {
+    if (highlighted || props.query) {
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
 
-      const isHidden = hovered 
-        ? !(hovered.id === targetId || hovered.id === sourceId)
+      const isHidden = highlighted 
+        ? !(highlighted.has(targetId) && highlighted.has(sourceId))
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
