@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
+import { cn } from '@/ui/utils';
 
 export interface ComboboxOption {
 
@@ -48,23 +49,33 @@ export const Combobox = (props: ComboboxProps) => {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={props.className}>
+          className={cn(props.className, 'text-xs font-normal justify-between')}>
           {value
             ? options.find(o => o.value === value)?.label
-            : placeholder }
+            : placeholder || <span /> }
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent 
+        align="start"
+        className="min-w-[180px] max-w-[280px] p-0 overflow-hidden">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput 
+            className="h-auto py-2 text-xs"
+            placeholder="Search framework..." />
           
-          <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
-            <CommandItem>Foo</CommandItem>
-            <CommandItem>Bar</CommandItem>
-            <CommandItem>Baz</CommandItem>
+          <CommandList className="p-1">
+            <CommandEmpty 
+              className="text-xs font-normal flex justify-center py-2 text-muted-foreground">
+              No matches
+            </CommandEmpty>
+
+            {props.options.map(option => (
+              <CommandItem 
+                className="block text-xs overflow-hidden whitespace-nowrap text-ellipsis"
+                value={option.value}>{option.label}</CommandItem>
+            ))}
           </CommandList>
         </Command>
       </PopoverContent>
