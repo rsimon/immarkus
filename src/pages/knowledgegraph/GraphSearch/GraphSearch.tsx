@@ -129,12 +129,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
         <div className="text-xs flex items-center gap-2">
           <span className="w-12 text-right">
             Find
-          </span> 
+          </span>
           
           <Select 
             value={objectType || ''}
             onValueChange={value => setObjectType(value as ObjectType)}>
-            
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
                 <SelectValue placeholder="select node type..." />

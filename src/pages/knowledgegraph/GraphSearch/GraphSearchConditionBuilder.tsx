@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { CirclePlus, Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
+import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { GraphSearchSubConditionBuilder } from './GraphSearchSubConditionBuilder';
 import { useGraphSearch } from './useGraphSearch';
@@ -103,6 +104,10 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             {option.label}
           </SelectItem>
         ))}
+
+        {(options.length === 0) && (
+          <div className="text-xs text-muted-foreground flex justify-center py-1">No matches</div>
+        )}
       </SelectContent>
     </Select>
   );
@@ -135,14 +140,16 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           </SelectContent>
         </Select>
 
-        {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && 
-          renderDropdown(
-            (sentence as SimpleConditionSentence).Attribute, 
-            attributeOptions, 
-            value => updateSentence({ 
+        {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && (
+          <Combobox 
+            className={selectStyle}
+            value={(sentence as SimpleConditionSentence).Attribute}
+            options={attributeOptions} 
+            onChange={value => updateSentence({
               Attribute: value,
               Value: undefined 
-          }))}
+            })} />
+        )}
 
         {'Attribute' in sentence && sentence.Attribute && 
           renderDropdown(
@@ -153,15 +160,16 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
               Value: undefined 
             }))}
 
-        {(
-          ('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'ANNOTATED_WITH')) && 
-
-          renderDropdown(
-            sentence.Value, 
-            valueOptions, 
-            value => updateSentence({ Value: value }))}
-
+        {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
+          (sentence.ConditionType === 'ANNOTATED_WITH')) && (
+            <Combobox 
+              className={selectStyle}
+              value={sentence.Value}
+              options={valueOptions} 
+              onChange={value => updateSentence({ Value: value })} />
+          )
+        }
+        
         <button className="border border-l-0 w-7 flex items-center justify-center text-muted-foreground">
           <Trash2 className="w-3.5 h-3.5" onClick={props.onDelete} />
         </button>
