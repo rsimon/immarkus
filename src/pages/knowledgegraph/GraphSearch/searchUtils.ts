@@ -110,7 +110,7 @@ export const listMetadataValues = (
   // Helper to get the relevant values from a list of metadata annotation bodies
   const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
     bodies.reduce<any[]>((all, body) => {
-      if ('properties' in body) {
+      if (body && 'properties' in body) {
         const value = body.properties[propertyName];
 
         if (!value) return all;
