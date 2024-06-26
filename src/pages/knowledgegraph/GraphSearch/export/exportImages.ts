@@ -2,9 +2,10 @@ import { Store } from '@/store';
 import { downloadCSV } from '@/utils/download';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 
-export const exportImageMetadataCSV = async (store: Store) => {
-  const { images } = store;
+export const exportImages = (store: Store, imageIds: string[]) => {
   const { imageSchemas } = store.getDataModel();
+
+  const images = imageIds.map(id => store.getImage(id));
 
   const columns = aggregateSchemaFields(imageSchemas);
 
@@ -13,5 +14,5 @@ export const exportImageMetadataCSV = async (store: Store) => {
       const entries = zipMetadata(columns, metadata);
       return Object.fromEntries([['image', image.name], ...entries]);
     }))
-    .then(rows => downloadCSV(rows, 'image_metadata.csv'));
+    .then(rows => downloadCSV(rows, 'image_results.csv'));
 }
