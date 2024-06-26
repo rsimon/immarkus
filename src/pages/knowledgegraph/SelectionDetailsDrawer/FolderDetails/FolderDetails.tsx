@@ -1,20 +1,20 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { Folder } from '@/model';
+import { useFolderMetadata } from '@/store';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
-import { Image } from '@/model';
-import { useImageMetadata } from '@/store';
+import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { Button } from '@/ui/Button';
-import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 
-interface MetadataTabProps {
+interface FolderDetailsProps {
 
-  image: Image;
+  folder: Folder;
 
 }
 
-export const MetadataTab = (props: MetadataTabProps) => {
+export const FolderDetails = (props: FolderDetailsProps) => {
 
-  const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
+  const { metadata, updateMetadata } = useFolderMetadata(props.folder.id);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
@@ -30,10 +30,10 @@ export const MetadataTab = (props: MetadataTabProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="flex-grow flex flex-col justify-betwee p-3 pt-5 pb-2"
+        className="flex-grow flex flex-col justify-betwee p-3 pt-14 pb-2"
         onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">          
-          <ImageMetadataForm
+          <FolderMetadataForm
             metadata={formState}
             onChange={setFormState} />
         </div>
