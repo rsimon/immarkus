@@ -47,7 +47,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
         (edited.targetType && edited.labelProperty);
 
       if (isValidIfRelation)
-        props.onSave(edited as PropertyDefinition);
+        props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
     } else {
       // TODO error handling
     }
