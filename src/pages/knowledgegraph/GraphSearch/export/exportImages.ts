@@ -1,18 +1,43 @@
 import { Store } from '@/store';
+import { Image } from '@/model';
+import { getAggregatedMetadata, listAllMetadataProperties } from '../searchUtils';
+import { SchemaPropertyValue } from '../Types';
+import { serializePropertyValue } from '@/utils/serialize';
 import { downloadCSV } from '@/utils/download';
-import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
+
+interface ImageMetadata {
+
+  image: Image;
+
+  metadata: SchemaPropertyValue[];
+
+}
 
 export const exportImages = (store: Store, imageIds: string[]) => {
-  const { imageSchemas } = store.getDataModel();
+  const columns = listAllMetadataProperties(store).map(p => `${p.type.toLowerCase()}:${p.propertyName}`);
 
-  const images = imageIds.map(id => store.getImage(id));
+  const promise = imageIds.reduce<Promise<ImageMetadata[]>>((promise, id) => promise.then(rows => {
+    const image = store.getImage(id);
+    return getAggregatedMetadata(store, id).then(metadata => {
+      return [...rows, { image, metadata }]
+    });
+  }), Promise.resolve([]));
 
-  const columns = aggregateSchemaFields(imageSchemas);
+  promise.then(metadata => {
+    const rows = metadata.map(({ image, metadata }) => {
+      const serialized = Object.fromEntries(metadata.map(m => {
+        const key = `${m.type.toLowerCase()}:${m.propertyName}`;
+        const value = serializePropertyValue(m.propertyType, m.value);
+        return [key, value];
+      }));
 
-  Promise.all(images.map(image => store.getImageMetadata(image.id).then(metadata => ({ image, metadata }))))
-    .then(results => results.map(({ image, metadata }) => {
-      const entries = zipMetadata(columns, metadata);
-      return Object.fromEntries([['image', image.name], ...entries]);
-    }))
-    .then(rows => downloadCSV(rows, 'image_results.csv'));
+      const rows = Object.fromEntries(columns.map(key => (
+        [key, serialized[key]]
+      )));
+
+      return { image: image.name, ...rows };
+    });
+
+    downloadCSV(rows, 'image_results.csv');
+  });
 }

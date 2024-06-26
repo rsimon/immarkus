@@ -20,10 +20,10 @@ const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body:
 
   return Object.entries(body.properties).map(([key, value]) => ({
     type,
-    propertyType: schema.properties.find(d => d.name === key).type,
+    propertyType: schema.properties.find(d => d.name === key)?.type,
     propertyName: key,
     value
-  }));
+  })).filter(p => p.propertyType);
 }
 
 // Converts a metadata annotation to a list of SchemaProperties
@@ -104,7 +104,6 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
 export const listMetadataValues = (
   store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string
 ): Promise<string[]> => {
-
   const model = store.getDataModel();
 
   // Helper to get the relevant values from a list of metadata annotation bodies
@@ -154,7 +153,7 @@ export const listMetadataValues = (
 }
 
 /** Get the aggregated metadata (image and parent folders) for the given image ID **/
-const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPropertyValue[]> => {
+export const getAggregatedMetadata = (store: Store, imageId: string): Promise<SchemaPropertyValue[]> => {
   const model = store.getDataModel();
 
   // Merges to lists of SchemaProperties, so that properties that appear in the 'next'
