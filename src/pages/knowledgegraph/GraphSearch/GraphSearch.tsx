@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
+import { CirclePlus, Download, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
@@ -15,6 +15,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { exportImages } from './export';
+import { useStore } from '@/store';
 
 interface GraphSearchProps {
 
@@ -23,6 +25,8 @@ interface GraphSearchProps {
   graph: Graph;
 
   isFullscreen: boolean;
+
+  query?:((n: GraphNode) => boolean);
 
   settings: KnowledgeGraphSettings;
 
@@ -37,6 +41,8 @@ const EMPTY_CONDITION: Condition = { sentence: { ConditionType: 'WHERE' } };
 export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
+
+  const store = useStore();
 
   const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
@@ -103,6 +109,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
     if (next.length === 0)
       setObjectType(undefined);
+  }
+
+  const onExport = () => {
+    const matches = props.graph.nodes.filter(n => props.query!(n));
+    exportImages(store, matches.map(m => m.id));
   }
 
   return createPortal(
@@ -176,22 +187,32 @@ export const GraphSearch = (props: GraphSearchProps) => {
         ))}
 
         {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) ? (
-          <div className="flex justify-start pt-4 pl-14 gap-4">
-            <Button 
-              disabled={!conditions.map(c => c.sentence).every(isComplete)}
-              variant="link"
-              size="sm"
-              className="flex items-center text-xs py-0 px-0 font-normal"
-              onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-              <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
-            </Button>
+          <div className="flex justify-between pt-4 pl-14">
+            <div className="flex items-center gap-4">
+              <Button 
+                disabled={!conditions.map(c => c.sentence).every(isComplete)}
+                variant="link"
+                size="sm"
+                className="flex items-center text-xs py-0 px-0 font-normal"
+                onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
+                <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
+              </Button>
 
-            <Button 
+              <Button 
+                variant="link"
+                size="sm"
+                className="flex items-center text-xs py-0 px-0 font-normal"
+                onClick={() => setConditions([])}>
+                <Trash2 className="h-3.5 w-3.5 mr-1 mb-[1px]" /> Clear All
+              </Button>
+            </div>
+
+            <Button
               variant="link"
               size="sm"
               className="flex items-center text-xs py-0 px-0 font-normal"
-              onClick={() => setConditions([])}>
-              <Trash2 className="h-3.5 w-3.5 mr-1 mb-[1px]" /> Clear All
+              onClick={onExport}>
+              <Download className="h-3.5 w-3.5 mr-1.5 mb-[1px]" /> Export Search Result
             </Button>
           </div>
         ) : (

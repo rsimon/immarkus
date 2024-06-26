@@ -102,6 +102,7 @@ export const KnowledgeGraph = () => {
             annotations={annotations}
             graph={graph} 
             isFullscreen={isFullscreen}
+            query={query}
             settings={settings}
             onChangeQuery={query => setQuery(() => query)}
             onClose={onCloseSearch} />

@@ -1,7 +1,6 @@
-import Papa from 'papaparse';
-import { MetadataSchema, PropertyDefinition } from '@/model';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { serializePropertyValue } from '@/utils/serialize';
+import { MetadataSchema, PropertyDefinition } from '@/model';
+import { serializePropertyValue } from './serialize';
 
 export interface SchemaField { schema: string, definition: PropertyDefinition };
 
@@ -22,18 +21,4 @@ export const zipMetadata = (columns: SchemaField[], metadata?: W3CAnnotationBody
   });
 
   return entries;
-}
-
-export const downloadCSV = (rows: any[], filename: string) => {
-  const csv = Papa.unparse(rows);
-
-  const data = new TextEncoder().encode(csv);
-  const blob = new Blob([data], {
-    type: 'text/csv;charset=utf-8'
-  });
-
-  const anchor = document.createElement('a');
-  anchor.href = URL.createObjectURL(blob);
-  anchor.download = filename;
-  anchor.click();
 }
