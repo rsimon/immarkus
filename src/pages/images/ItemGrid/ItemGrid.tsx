@@ -3,7 +3,7 @@ import { useImages } from '@/store';
 import { Folder, Image, LoadedImage } from '@/model';
 import { FolderItem } from './FolderItem';
 import { ImageItem } from './ImageItem';
-import { GridItem } from './Item';
+import { GridItem } from '../Types';
 
 import './ItemGrid.css';
 
@@ -53,7 +53,7 @@ export const ItemGrid = (props: ItemGridProps) => {
           <li key={image.id}>
             <ImageItem 
               image={image} 
-              selected={props.selected?.id === image.id}
+              selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
               onOpen={() => onOpenImage(image)} 
               onSelect={() => onSelectImage(image)}/>
           </li>
