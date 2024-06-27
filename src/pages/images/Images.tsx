@@ -1,11 +1,12 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Info, NotebookPen } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useStore } from '@/store';
 import { ItemGrid } from './ItemGrid';
 import { MetadataDrawer } from './MetadataDrawer';
 import { GridItem } from './ItemGrid/Item';
+import { Button } from '@/ui/Button';
 
 export const Images = () => {
 
@@ -66,8 +67,14 @@ export const Images = () => {
               {currentFolder.name}
             </h2>
 
-            <p className="text-sm text-muted-foreground">
-              {images.length} images
+            <p className="text-sm text-muted-foreground flex gap-2">
+              <span>{images.length} images</span>
+              <span>·</span> 
+              <Button 
+                variant="link"
+                className="text-muted-foreground flex items-center gap-1 p-0 h-auto font-normal">
+                <NotebookPen className="h-4 w-4" /> Metadata
+              </Button>
             </p>
           </div>
 
