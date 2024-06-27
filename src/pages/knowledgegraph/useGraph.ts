@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType, Folder, Image } from '@/model';
-import { useRelationGraph, useStore } from '@/store';
-import { Graph, GraphLink, GraphNode } from './Types';
+import { ResolvedRelation, useRelationGraph, useStore } from '@/store';
+import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from './Types';
 
-export const useGraph = (includeFolders?: boolean) => {
+export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const store = useStore();
 
@@ -17,6 +17,8 @@ export const useGraph = (includeFolders?: boolean) => {
   const [graph, setGraph] = useState<Graph>();
 
   const { images, folders } = store;
+
+  const { includeFolders, relationsOnly } = settings;
   
   useEffect(() => {
     if (!relations) return;
@@ -116,7 +118,7 @@ export const useGraph = (includeFolders?: boolean) => {
         });
 
         // Links between folders & subfolderss
-        const subfolderLinks = includeFolders ? folders.reduce<GraphLink[]>((all, folder) => {
+        const subfolderLinks = (includeFolders && !relationsOnly) ? folders.reduce<GraphLink[]>((all, folder) => {
           if (folder.parent) {
             const parent = store.getFolder(folder.parent);
             if (parent && 'id' in parent) {
@@ -130,7 +132,7 @@ export const useGraph = (includeFolders?: boolean) => {
         }, []) : [];
 
         // Links between images and subfolders
-        const imageFolderLinks = includeFolders ? images.reduce<GraphLink[]>((all, image) => {
+        const imageFolderLinks = (includeFolders && !relationsOnly) ? images.reduce<GraphLink[]>((all, image) => {
           const parentFolder = store.getFolder(image.folder);
           if ('id' in parentFolder) {
             return [...all, { source: parentFolder.id, target: image.id, value: 1 }]
@@ -140,7 +142,7 @@ export const useGraph = (includeFolders?: boolean) => {
         }, []) : [];
 
         // Parent-relationship links between entity classes
-        const modelHierarchyLinks = datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
+        const modelHierarchyLinks = !relationsOnly ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
           if (type.parentId) {
             // Being defensive... make sure the parent ID actually exists
             const parent = datamodel.getEntityType(type.parentId);
@@ -153,10 +155,10 @@ export const useGraph = (includeFolders?: boolean) => {
           } else {
             return all;
           }
-        }, []);
+        }, []) : [];
 
         // Links between annotations and entity types
-        const annotationEntityLinks =
+        const annotationEntityLinks = !relationsOnly ?
           imagesResult.reduce<GraphLink[]>((all, { annotations, image }) => {
             // N annotations on this image, each carrying 0 to M entity links
             const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
@@ -174,27 +176,38 @@ export const useGraph = (includeFolders?: boolean) => {
             }, []);
 
             return [...all, ...entityLinks];
+        }, []) : [];
+
+        // Relation links between *annotations* 
+        const resolvedRelations = relations.listRelations().reduce<ResolvedRelation[]>((all, r) => (
+          [...all, ...relations.resolveTargets(r)]
+        ), []);
+
+        // Relation links flattened to *images* (with value = no. of annotations)
+        const relationLinks = resolvedRelations.reduce<GraphLink[]>((all, r) => {
+          const existing = all.find(l => { 
+            return (
+              l.source === r.image.id && l.target === r.targetImage.id 
+            ) || (
+              l.source === r.targetImage.id && l.target === r.image.id
+            )
+          });
+
+          if (existing) {
+            return all.map(l => l === existing ? ({
+              source: l.source, target: l.target, value: l.value + 1
+            } as GraphLink) : l)
+          } else {
+            return [...all, { source: r.image.id, target: r.targetImage.id, value: 1 } as GraphLink]
+          }
         }, []);
-
-        /* Links between entities by relations
-        const relationLinks: GraphLink[] = relations.listRelations().map(r => ({
-          source: r.image.id, 
-          target: b.source, 
-          value: 1
-        }));
-        */
-
-        console.log('building relation links', relations.listRelations());
-
-        const relationLinks = relations.listRelations().map(r => relations.resolveTargets(r));
-        console.log(relationLinks);
 
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
           ...annotationEntityLinks,
-          //...relationLinks
+          ...relationLinks
         ];
 
         // Flatten links
@@ -259,7 +272,7 @@ export const useGraph = (includeFolders?: boolean) => {
         setAnnotations(imagesResult);
       });
     });
-  }, [includeFolders, relations]);
+  }, [relations, includeFolders, relationsOnly]);
 
   return { annotations, graph };
 

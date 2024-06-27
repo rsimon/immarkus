@@ -2,7 +2,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Image, RelationPropertyDefinition } from '@/model';
 import { useStore } from './useStore';
 import { useEffect, useState } from 'react';
-import { getEntityBodies, hasEntity, hasPropertyValue } from '@/utils/annotation';
+import { getEntityBodies, hasPropertyValue } from '@/utils/annotation';
 
 export interface RelationGraph {
 
@@ -10,7 +10,7 @@ export interface RelationGraph {
   
   getInboundLinks(typeId: string, properties: any): RelatedAnnotation[];
 
-  resolveTargets(sourceAnnotation: RelatedAnnotation): { image: Image, annotation: W3CAnnotation }[];
+  resolveTargets(sourceAnnotation: RelatedAnnotation): ResolvedRelation[];
 
 }
 
@@ -29,6 +29,14 @@ export interface RelatedAnnotation {
   targetInstance: string;
 
   targetInstanceLabelProperty: string;
+
+}
+
+export interface ResolvedRelation extends RelatedAnnotation {
+
+  targetImage: Image;
+
+  targetAnnotation: W3CAnnotation;
 
 }
 
@@ -103,13 +111,15 @@ export const useRelationGraph = () => {
       const resolveTargets = (related: RelatedAnnotation) => {
         const { targetEntityType, targetInstance, targetInstanceLabelProperty } = related;
 
-        const targets = imageAnnotations.filter(({ image, annotation }) => {
+        return imageAnnotations.filter(({ annotation }) => {
           const targetEntities = getEntityBodies(annotation, targetEntityType);
           return targetEntities.some(body => 
             hasPropertyValue(body, targetInstanceLabelProperty, targetInstance));
-        });
-
-        return targets;
+        }).map(({ image, annotation }) => ({
+          ...related,
+          targetImage: image,
+          targetAnnotation: annotation
+        }));
       }
 
       setGraph({ getInboundLinks, listRelations, resolveTargets });

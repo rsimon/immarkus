@@ -71,6 +71,25 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
       <div className="p-3">
         <div className="flex items-center gap-2 justify-between">
+          <Label htmlFor="show-relations">
+            Relations Only
+          </Label>
+
+          <Switch 
+            checked={props.settings.includeFolders}
+            id="show-relations"
+            onCheckedChange={checked => 
+              props.onChangeSettings({...props.settings, relationsOnly: checked})} />
+        </div>
+
+        <p className="text-muted-foreground text-xs mt-1 pr-12">
+          Show only links established through Relation annotations, removing all
+          other links.
+        </p>
+      </div>
+
+      <div className="p-3">
+        <div className="flex items-center gap-2 justify-between">
           <Label htmlFor="hide-isolated">
             Hide unconnected nodes
           </Label>
