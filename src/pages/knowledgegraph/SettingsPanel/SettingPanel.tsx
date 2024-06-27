@@ -76,7 +76,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           </Label>
 
           <Switch 
-            checked={props.settings.includeFolders}
+            checked={props.settings.relationsOnly}
             id="show-relations"
             onCheckedChange={checked => 
               props.onChangeSettings({...props.settings, relationsOnly: checked})} />
