@@ -45,7 +45,8 @@ export const ImageMetadata = () => {
     <div>
       <p className="p-1 mt-4 text-sm max-w-2xl leading-6">
         Use schemas to record structured information about your images, such as title, author or source.
-        Create multiple schemas to describe different types of images, e.g. 'Artwork' vs. 'Archaeological Report'.
+        Create multiple schemas to describe different types of images, e.g. 'artwork', 'historical printed 
+        illustration', or 'archaeological image'.
       </p>
 
       <MetadataTable
