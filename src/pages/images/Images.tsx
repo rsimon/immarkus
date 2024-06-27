@@ -71,7 +71,7 @@ export const Images = () => {
               {currentFolder.name}
             </h2>
 
-            <p className="text-sm text-muted-foreground flex gap-2">
+            <p className="text-sm text-muted-foreground flex gap-2 pt-0.5">
               <span>{images.length} images</span>
               <span>·</span> 
               <Button 
