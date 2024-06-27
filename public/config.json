@@ -50,10 +50,10 @@
   "model_presets": [{
     "type": "FOLDER_SCHEMAS",
     "name": "Basics",
-    "url": "/models/folder-presets-22062024.json"
+    "url": "/models/folder-presets-26062024.json"
   }, {
     "type": "IMAGE_SCHEMAS",
     "name": "Basics",
-    "url": "/models/image-presets-22062024.json"
+    "url": "/models/image-presets-26062024.json"
   }]
 }

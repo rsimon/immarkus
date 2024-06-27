@@ -34,6 +34,13 @@ export const KnowledgeGraph = () => {
     setShowGraphSearch(false);
   }
 
+  const onToggleSearch = () => {
+    if (showGraphSearch)
+      onCloseSearch();
+    else
+      setShowGraphSearch(true);
+  }
+
   return (
     <div className="page-root">
       {!isFullscreen && (
@@ -86,7 +93,7 @@ export const KnowledgeGraph = () => {
               isSearchOpen={showGraphSearch}
               isSettingsOpen={showSettingsPanel}
               onToggleFullscreen={() => setIsFullscreen(fullscreen => !fullscreen)}
-              onToggleSearch={() => setShowGraphSearch(open => !open)}
+              onToggleSearch={onToggleSearch}
               onToggleSettings={() => setShowSettingsPanel(open => !open)}
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
@@ -102,6 +109,7 @@ export const KnowledgeGraph = () => {
             annotations={annotations}
             graph={graph} 
             isFullscreen={isFullscreen}
+            query={query}
             settings={settings}
             onChangeQuery={query => setQuery(() => query)}
             onClose={onCloseSearch} />

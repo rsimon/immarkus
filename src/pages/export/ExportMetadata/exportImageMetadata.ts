@@ -1,5 +1,6 @@
 import { Store } from '@/store';
-import { aggregateSchemaFields, downloadCSV, zipMetadata } from './utils';
+import { downloadCSV } from '@/utils/download';
+import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 
 export const exportImageMetadataCSV = async (store: Store) => {
   const { images } = store;

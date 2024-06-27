@@ -1,6 +1,7 @@
-import { Store } from '@/store';
-import { aggregateSchemaFields, downloadCSV, zipMetadata } from './utils';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { Store } from '@/store';
+import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
+import { downloadCSV } from '@/utils/download';
 
 export const exportFolderMetadataCSV = async (store: Store) => {
   const { folders } = store;

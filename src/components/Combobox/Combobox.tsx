@@ -81,9 +81,11 @@ export const Combobox = (props: ComboboxProps) => {
 
             {props.options.map(option => (
               <CommandItem 
+                key={option.value}
                 className="block text-xs overflow-hidden whitespace-nowrap text-ellipsis"
                 value={option.value}
-                onSelect={onSelect}>
+                // Warning: cmdk trims the values, possibly breaking them!
+                onSelect={() => onSelect(option.value)}>
                 {option.label}
               </CommandItem>
             ))}
