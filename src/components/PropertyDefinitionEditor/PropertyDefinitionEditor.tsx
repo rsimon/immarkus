@@ -4,6 +4,7 @@ import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { Switch } from '@/ui/Switch';
 import { Textarea } from '@/ui/Textarea';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
@@ -135,6 +136,10 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               definition={edited}
               onUpdate={setEdited} />
           )}
+
+          <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
+            <Switch /> Allow multiple values
+          </div>
 
           <div className="mt-3">
             <Label 
