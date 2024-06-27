@@ -54,4 +54,6 @@ export interface KnowledgeGraphSettings {
 
   includeFolders?: boolean;
 
+  relationsOnly?: boolean;
+
 }

@@ -21,7 +21,7 @@ export const KnowledgeGraph = () => {
 
   const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
 
-  const { annotations, graph } = useGraph(settings.includeFolders);
+  const { annotations, graph } = useGraph(settings);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
