@@ -19,6 +19,8 @@ export const useGraph = (includeFolders?: boolean) => {
   const { images, folders } = store;
   
   useEffect(() => {
+    if (!relations) return;
+
     // Resolve folder metadata and image annotations asynchronously
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
@@ -174,15 +176,25 @@ export const useGraph = (includeFolders?: boolean) => {
             return [...all, ...entityLinks];
         }, []);
 
-        // Links between entities by relations
-        const relationLinks = relations.getEntityLinks();
+        /* Links between entities by relations
+        const relationLinks: GraphLink[] = relations.listRelations().map(r => ({
+          source: r.image.id, 
+          target: b.source, 
+          value: 1
+        }));
+        */
+
+        console.log('building relation links', relations.listRelations());
+
+        const relationLinks = relations.listRelations().map(r => relations.resolveTargets(r));
+        console.log(relationLinks);
 
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
           ...annotationEntityLinks,
-          ...relationLinks
+          //...relationLinks
         ];
 
         // Flatten links

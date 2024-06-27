@@ -2,10 +2,15 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Image, RelationPropertyDefinition } from '@/model';
 import { useStore } from './useStore';
 import { useEffect, useState } from 'react';
+import { getEntityBodies, hasEntity, hasPropertyValue } from '@/utils/annotation';
 
 export interface RelationGraph {
+
+  listRelations(): RelatedAnnotation[]
   
   getInboundLinks(typeId: string, properties: any): RelatedAnnotation[];
+
+  resolveTargets(sourceAnnotation: RelatedAnnotation): { image: Image, annotation: W3CAnnotation }[];
 
 }
 
@@ -87,7 +92,27 @@ export const useRelationGraph = () => {
         return inbound;
       }
 
-      setGraph({ getInboundLinks });
+      const listRelations = () => ([...relatedAnnotations]);
+
+      /**
+       * This is util is likely going to change. Infers a list of links (between
+       * specific annotations!) dynamically from a RelatedAnnotation (which
+       * links a specific annotation to all annotations that match the target
+       * entity instance.)
+       */
+      const resolveTargets = (related: RelatedAnnotation) => {
+        const { targetEntityType, targetInstance, targetInstanceLabelProperty } = related;
+
+        const targets = imageAnnotations.filter(({ image, annotation }) => {
+          const targetEntities = getEntityBodies(annotation, targetEntityType);
+          return targetEntities.some(body => 
+            hasPropertyValue(body, targetInstanceLabelProperty, targetInstance));
+        });
+
+        return targets;
+      }
+
+      setGraph({ getInboundLinks, listRelations, resolveTargets });
     });
   }, []);
 
