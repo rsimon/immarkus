@@ -186,11 +186,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         // Relation links flattened to *images* (with value = no. of annotations)
         const relationLinks = resolvedRelations.reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
-            return (
-              l.source === r.image.id && l.target === r.targetImage.id 
-            ) || (
-              l.source === r.targetImage.id && l.target === r.image.id
-            )
+            return l.source === r.image.id && l.target === r.targetImage.id;
           });
 
           if (existing) {

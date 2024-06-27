@@ -72,7 +72,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <div className="p-3">
         <div className="flex items-center gap-2 justify-between">
           <Label htmlFor="show-relations">
-            Relations Only
+            Relation links only
           </Label>
 
           <Switch 
@@ -83,8 +83,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Show only links established through Relation annotations, removing all
-          other links.
+          Show only links established through Relation annotations.
         </p>
       </div>
 
