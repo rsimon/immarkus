@@ -14,7 +14,7 @@ interface FolderDetailsProps {
 
 export const FolderDetails = (props: FolderDetailsProps) => {
 
-  const { metadata, updateMetadata } = useFolderMetadata(props.folder.id);
+  const { metadata, updateMetadata } = useFolderMetadata(props.folder);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 

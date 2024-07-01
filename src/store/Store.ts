@@ -19,11 +19,11 @@ export interface Store {
 
   getDataModel(): DataModelStore;
 
-  getFolder(folderId: string | FileSystemDirectoryHandle): Folder | RootFolder;
+  getFolder(idOrHandle: string | FileSystemDirectoryHandle): Folder | RootFolder;
 
   getFolderContents(dir: FileSystemDirectoryHandle): FolderItems;
 
-  getFolderMetadata(folderId: string): Promise<W3CAnnotation>;
+  getFolderMetadata(idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation>;
 
   getImage(imageId: string): Image;
 
@@ -35,7 +35,7 @@ export interface Store {
 
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  upsertFolderMetadata(folderId: string, annotation: W3CAnnotation): Promise<void>;
+  upsertFolderMetadata(idOrHandle: string | FileSystemDirectoryHandle, annotation: W3CAnnotation): Promise<void>;
   
   upsertImageMetadata(imageId: string, metadata: W3CAnnotationBody): Promise<void>;
 
@@ -178,8 +178,8 @@ export const loadStore = (
     return { images: imageItems, folders: folderItems };
   }
 
-  const getFolderMetadata = (folderId: string): Promise<W3CAnnotation> => {
-    const folder = getFolder(folderId);
+  const getFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation> => {
+    const folder = getFolder(idOrHandle);
     if (folder) {
       return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
         .then(handle => handle.getFile())
@@ -261,13 +261,13 @@ export const loadStore = (
     }
   });
 
-  const upsertFolderMetadata = (folderId: string, annotation: W3CAnnotation): Promise<void> => {
-    const folder = getFolder(folderId);
+  const upsertFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle, annotation: W3CAnnotation): Promise<void> => {
+    const folder = getFolder(idOrHandle);
     if (folder) {
       return folder.handle.getFileHandle('_immarkus.folder.meta.json', { create: true })
         .then(handle => writeJSONFile(handle, annotation))
     } else {
-      return Promise.reject(`Missing folder: ${folderId}`);
+      return Promise.reject(`Missing folder: ${idOrHandle}`);
     }
   }
 

@@ -1,11 +1,13 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, NotebookPen } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
+import { Button } from '@/ui/Button';
 import { ItemGrid } from './ItemGrid';
 import { MetadataDrawer } from './MetadataDrawer';
-import { GridItem } from './ItemGrid/Item';
+import { GridItem } from './Types';
 
 export const Images = () => {
 
@@ -17,7 +19,7 @@ export const Images = () => {
 
   const navigate = useNavigate();
 
-  const currentFolder = useMemo(() => folder ? store.getFolder(folder) : store.getRootFolder(), [folder]);
+  const currentFolder: Folder | RootFolder = useMemo(() => folder ? store.getFolder(folder) : store.getRootFolder(), [folder]);
  
   if (!currentFolder)
     navigate('/404');
@@ -28,6 +30,9 @@ export const Images = () => {
     // Reset selection when folder changes
     setSelected(undefined);
   }, [folder]);
+
+  const onShowFolderMetadata = () =>
+    setSelected({ type: 'folder', ...currentFolder });
 
   return store && (
     <div className="page-root">
@@ -66,8 +71,15 @@ export const Images = () => {
               {currentFolder.name}
             </h2>
 
-            <p className="text-sm text-muted-foreground">
-              {images.length} images
+            <p className="text-sm text-muted-foreground flex gap-2 pt-0.5">
+              <span>{images.length} images</span>
+              <span>·</span> 
+              <Button 
+                variant="link"
+                className="text-muted-foreground flex items-center gap-1 p-0 h-auto font-normal"
+                onClick={onShowFolderMetadata}>
+                <NotebookPen className="h-4 w-4" /> Metadata
+              </Button>
             </p>
           </div>
 
