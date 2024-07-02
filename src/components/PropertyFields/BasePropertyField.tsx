@@ -1,9 +1,10 @@
 import { useState, ReactNode, useEffect } from 'react';
+import { CirclePlus, Trash2 } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from './InfoTooltip';
 import { InheritedFrom } from './InheritedFrom';
-import { CirclePlus } from 'lucide-react';
+import { Button } from '@/ui/Button';
 
 interface BasePropertyFieldProps <T extends unknown> {
 
@@ -33,6 +34,9 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
 
   const onAppendField = () =>
     setValues(current => [...current, undefined]);
+
+  const onDeleteField = (idx: number) =>
+    setValues(current => current.filter((v, i) => i !== idx));
 
   useEffect(() => {
     if (props.onChange) {
@@ -65,14 +69,24 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
 
       <div className="flex flex-col gap-2 justify-end">
         {values.map((value, idx) => (
-          <div key={idx}>
+          <div key={idx} className="flex items-center gap-1">
             {props.render(value, onChange(idx))}
+
+            {idx > 0 && (
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="rounded-full flex-shrink-0 h-8 w-8 text-muted-foreground"
+                onClick={() => onDeleteField(idx)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         ))} 
 
         {props.definition.multiple && (
           <button 
-            className="flex gap-1 items-center text-xs text-muted-foreground mt-2"
+            className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             onClick={onAppendField}>
             <CirclePlus className="h-3.5 w-3.5 mb-0.5" /> Add value
           </button>

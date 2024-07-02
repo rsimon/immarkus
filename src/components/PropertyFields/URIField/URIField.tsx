@@ -43,10 +43,6 @@ export const URIField = (props: URIFieldProps) => {
     return url.protocol === 'http:' || url.protocol === 'https:';
   }, [value]);
 
-  const onChange = props.onChange 
-    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
-    : undefined;
-
   const error = showErrors && value && !isValid && 'must be a URI';
 
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
@@ -55,15 +51,15 @@ export const URIField = (props: URIFieldProps) => {
     <BasePropertyField
       id={id}
       definition={definition}
-      error={error}>
-
-      {editable ? (
+      error={error}
+      value={value}
+      onChange={props.onChange}
+      render={(value, onChange) => editable ? (
         <Input
           autoFocus
-          id={id} 
           className={className} 
           value={value} 
-          onChange={onChange} 
+          onChange={evt => onChange(evt.target.value)} 
           onBlur={() => setEditable(false)} />
       ) : (
         <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
@@ -79,8 +75,7 @@ export const URIField = (props: URIFieldProps) => {
               className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
           </button>
         </div>
-      )}
-    </BasePropertyField>
+      )} />
   )
 
 }

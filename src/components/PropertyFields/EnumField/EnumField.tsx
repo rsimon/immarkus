@@ -30,26 +30,27 @@ export const EnumField = (props: EnumFieldProps) => {
   return (
     <BasePropertyField
       id={id}
-      definition={definition}>
+      definition={definition}
+      value={value}
+      onChange={onChange}
+      render={(value, onChange) => (
+        <Select 
+          value={value}
+          onValueChange={onChange}>
+          
+          <SelectTrigger className={cn(props.className, 'w-full mt-0.5')}>
+            <SelectValue />
+          </SelectTrigger>
 
-      <Select 
-        value={value}
-        onValueChange={props.onChange}>
-        
-        <SelectTrigger className={cn(props.className, 'w-full mt-0.5')}>
-          <SelectValue />
-        </SelectTrigger>
+          <SelectContent className="max-h-96">
+            <SelectItem value={null}>&nbsp;</SelectItem>
 
-        <SelectContent className="max-h-96">
-          <SelectItem value={null}>&nbsp;</SelectItem>
-
-          {(definition.values || []).map(option => (
-            <SelectItem key={option} value={option}>{option}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-    </BasePropertyField>
+            {(definition.values || []).map(option => (
+              <SelectItem key={option} value={option}>{option}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )} />
   )
 
 }
