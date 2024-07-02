@@ -184,7 +184,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         ), []);
 
         // Relation links flattened to *images* (with value = no. of annotations)
-        const relationLinks = resolvedRelations.reduce<GraphLink[]>((all, r) => {
+        const relationImageLinks = resolvedRelations.reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.image.id && l.target === r.targetImage.id;
           });
@@ -198,12 +198,27 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           }
         }, []);
 
+        const relationEntityLinks = relations.listRelations().reduce<GraphLink[]>((all, r) => {
+          const existing = all.find(l => { 
+            return l.source === r.sourceEntityType && l.target === r.targetEntityType;
+          });
+
+          if (existing) {
+            return all.map(l => l === existing ? ({
+              source: l.source, target: l.target, value: l.value + 1
+            } as GraphLink) : l)
+          } else {
+            return [...all, { source: r.sourceEntityType, target: r.targetEntityType, value: 1 } as GraphLink]
+          }
+        }, []);
+
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
           ...annotationEntityLinks,
-          ...relationLinks
+          ...relationImageLinks,
+          ...relationEntityLinks
         ];
 
         // Flatten links

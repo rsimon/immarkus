@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Folder } from '@/model';
-import { FolderIcon, Info, MoreVertical } from 'lucide-react';
+import { FolderOpen, MoreVertical, NotebookPen } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,12 +31,12 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
 
       <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <Info className="h-4 w-4 text-muted-foreground mr-2" /> Information
+          <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link to={`/images/${props.folder.id}`}>
-            <FolderIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
+            <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

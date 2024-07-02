@@ -1,4 +1,4 @@
-import { FolderGridItem, GridItem, ImageGridItem } from '../ItemGrid';
+import { FolderGridItem, GridItem, ImageGridItem } from '../Types';
 import { FolderMetadataPanel } from './FolderMetadataPanel';
 import { ImageMetadataPanel } from './ImageMetadataPanel';
 import { Drawer } from '@/components/Drawer';

@@ -1,6 +1,6 @@
-import { Folder, Image } from '@/model';
+import { Folder, Image, RootFolder } from '@/model';
 
-export type FolderGridItem = Folder & {
+export type FolderGridItem = (Folder | RootFolder) & {
 
   type: 'folder';
 

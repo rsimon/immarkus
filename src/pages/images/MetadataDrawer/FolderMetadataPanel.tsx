@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { W3CAnnotationBody } from '@annotorious/react';
 import { useFolderMetadata } from '@/store';
-import { FolderGridItem } from '../ItemGrid';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
-import { W3CAnnotationBody } from '@annotorious/react';
 import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
+import { FolderGridItem } from '../Types';
 
 interface FolderMetadataPanelProps {
 
@@ -14,7 +14,7 @@ interface FolderMetadataPanelProps {
 
 export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
 
-  const { metadata, updateMetadata } = useFolderMetadata(props.folder?.id);
+  const { metadata, updateMetadata } = useFolderMetadata(props.folder);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
