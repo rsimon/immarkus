@@ -72,10 +72,11 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
           <div key={idx} className="flex items-center gap-1">
             {props.render(value, onChange(idx))}
 
-            {idx > 0 && (
+            {/*idx > 0*/ false && (
               <Button
                 variant="ghost" 
                 size="icon"
+                type="button"
                 className="rounded-full flex-shrink-0 h-8 w-8 text-muted-foreground"
                 onClick={() => onDeleteField(idx)}>
                 <Trash2 className="h-4 w-4" />
@@ -87,7 +88,8 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
         {props.definition.multiple && (
           <button 
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
-            onClick={onAppendField}>
+            onClick={onAppendField}
+            type="button">
             <CirclePlus className="h-3.5 w-3.5 mb-0.5" /> Add value
           </button>
         )}
