@@ -13,9 +13,9 @@ interface NumberFieldProps {
 
   definition: PropertyDefinition;
 
-  value?: number;
+  value?: number | number[];
 
-  onChange?(value?: number): void;
+  onChange?(value?: number | number[]): void;
 
 }
 
@@ -23,7 +23,7 @@ export const NumberField = (props: NumberFieldProps) => {
 
   const { id, definition } = props;
 
-  const [value, setValue] = useState(props.value ? props.value.toString() : '');
+  const [value, setValue] = useState<string | string[]>(props.value ? props.value.toString() : '');
 
   const { showErrors, isValid } = useValidation((str: string) => {
     return !str || !isNaN(parseFloat(str));
@@ -32,12 +32,14 @@ export const NumberField = (props: NumberFieldProps) => {
   useEffect(() => {
     if (!props.onChange) return;
 
+    /*
     const num = parseFloat(value);
 
     if (!isNaN(num))
       props.onChange(num);
     else if (!value)
       props.onChange();
+    */
   }, [value]);
 
   useEffect(() => {
@@ -50,17 +52,19 @@ export const NumberField = (props: NumberFieldProps) => {
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 
   return (
-    <BasePropertyField
+    <BasePropertyField<string>
       id={id}
       definition={definition}
-      error={error}>
-
-      <Input 
-        id={id} 
-        className={className} 
-        value={value} 
-        onChange={evt => setValue(evt.target.value)} />
-    </BasePropertyField>
+      error={error}
+      value={value}
+      onChange={setValue}
+      render={(value, onChange) => (
+        <Input 
+          id={id} 
+          className={className} 
+          value={value} 
+          onChange={evt => onChange(evt.target.value)} />
+      )} />
   )
 
 }

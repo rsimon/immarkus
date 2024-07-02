@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
 import { Editor } from './Editor';
@@ -56,6 +57,14 @@ export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
       )}
 
       <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
+        <DialogTitle className="hidden">
+          Entity Class Editor
+        </DialogTitle>
+        
+        <DialogDescription className="hidden">
+          Edit your entity class definition.
+        </DialogDescription>
+
         <Editor 
           entityType={props.entityType}
           onSaved={() => onOpenChange(false)} 
