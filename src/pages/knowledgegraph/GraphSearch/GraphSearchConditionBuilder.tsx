@@ -57,12 +57,13 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
 
   const conditionTypes = useMemo(() => props.objectType === 'IMAGE' ? [
     { label: 'where', value: 'WHERE' },
-    { label: 'annotated with', value: 'ANNOTATED_WITH' }
+    { label: 'with entity', value: 'WITH_ENTITY' },
+    { label: 'with note', value: 'WITH_NOTE' }
   ] : [
     { label: 'where', value: 'WHERE' }
   ], [props.objectType]);
 
-  const showAddSubCondition = sentence.Value && sentence.ConditionType === 'ANNOTATED_WITH';
+  const showAddSubCondition = sentence.Value && sentence.ConditionType === 'WITH_ENTITY';
 
   const onAddSubcondition = () => {
     const s = sentence as NestedConditionSentence;
@@ -140,7 +141,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           </SelectContent>
         </Select>
 
-        {sentence.ConditionType && sentence.ConditionType !== 'ANNOTATED_WITH' && (
+        {sentence.ConditionType === 'WHERE' && (
           <Combobox 
             className={selectStyle}
             value={(sentence as SimpleConditionSentence).Attribute}
@@ -148,6 +149,17 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             onChange={value => updateSentence({
               Attribute: value,
               Value: undefined 
+            })} />
+        )}
+
+        {sentence.ConditionType === 'WITH_NOTE' && (
+          <Combobox
+            className={selectStyle}
+            value={sentence.Value}
+            options={valueOptions} 
+            onChange={value => updateSentence({
+              Attribute: undefined,
+              Value: value
             })} />
         )}
 
@@ -161,7 +173,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             }))}
 
         {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'ANNOTATED_WITH')) && (
+          (sentence.ConditionType === 'WITH_ENTITY')) && (
             <Combobox 
               className={selectStyle}
               value={sentence.Value}

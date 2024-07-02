@@ -18,7 +18,7 @@ export const TextOptions = (props: TextOptionsProps) => {
     : onUpdate({ ...definition, size: undefined });
 
   return (
-    <div className="text-xs flex items-center pt-3 pb-4 px-0.5 gap-2">
+    <div className="text-xs flex items-center pt-4 px-0.5 gap-3">
       <Switch 
         checked={props.definition.size === 'L'}
         onCheckedChange={onToggleSize} /> 

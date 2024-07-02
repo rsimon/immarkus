@@ -46,7 +46,7 @@ export const RelationOptions = (props: RelationOptionsProps) => {
   const invalidTargetClass = value && !target;
 
   return (
-    <div className="bg-muted px-3 pt-3 pb-4 mt-4 mb-6 rounded-md text-sm">
+    <div className="bg-muted px-3 pt-3 pb-4 mt-4 rounded-md text-sm">
       <p className="text-xs leading-relaxed px-0.5 mt-0.5 mb-7">
         Relations connect one annotated entity to another. First, select
         the <strong>target entity class</strong> you wish to link to.

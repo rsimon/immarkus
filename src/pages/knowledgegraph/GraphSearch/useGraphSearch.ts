@@ -15,7 +15,9 @@ import {
   findImagesByEntityClass, 
   findImagesByEntityConditions, 
   findImagesByMetadata, 
+  findImagesByNote, 
   listAllMetadataProperties, 
+  listAllNotes, 
   listFolderMetadataProperties, 
   listMetadataValues 
 } from './searchUtils';
@@ -93,7 +95,7 @@ export const useGraphSearch = (
             setMatches(results.map(folder => folder.id)));
         }
       }
-    } else if (sentence.ConditionType === 'ANNOTATED_WITH') {
+    } else if (sentence.ConditionType === 'WITH_ENTITY') {
       const s = sentence as NestedConditionSentence;
 
       if (!s.Value) {
@@ -106,6 +108,14 @@ export const useGraphSearch = (
       } else {
         const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
         setMatches(images.map(i => i.id));
+      }
+    } else if (sentence.ConditionType === 'WITH_NOTE') {
+      if (!sentence.Value) {
+        const notes = listAllNotes(annotations);
+        setValueOptions(notes.map(n => ({ label: n, value: n })));
+      } else {
+        const imageIds = findImagesByNote(annotations, sentence.Value);
+        setMatches(imageIds);
       }
     }
   }, [annotations, graph, objectType, sentence]);
