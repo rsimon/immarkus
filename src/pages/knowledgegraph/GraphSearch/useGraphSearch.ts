@@ -93,7 +93,7 @@ export const useGraphSearch = (
             setMatches(results.map(folder => folder.id)));
         }
       }
-    } else if (sentence.ConditionType === 'ANNOTATED_WITH') {
+    } else if (sentence.ConditionType === 'WITH_ENTITY') {
       const s = sentence as NestedConditionSentence;
 
       if (!s.Value) {
@@ -106,6 +106,11 @@ export const useGraphSearch = (
       } else {
         const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
         setMatches(images.map(i => i.id));
+      }
+    } else if (sentence.ConditionType === 'WITH_NOTE') {
+      console.log('note!');
+      if (!sentence.Value) {
+        setValueOptions([]);
       }
     }
   }, [annotations, graph, objectType, sentence]);
