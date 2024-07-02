@@ -100,6 +100,39 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
   return listMetadataProperties(schemas);
 }
 
+const enumerateNotes = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+) => {
+  return annotations.reduce<{ image: Image, note: string }[]>((all, { image, annotations }) => {
+    const notesOnThisImage = annotations.reduce<{ image: Image, note: string }[]>((all, annotation) => {
+      const notes = 
+        (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
+          .filter(b => b.purpose === 'commenting' && b.value)
+          .map(b => ({ image, note: b.value! }));
+
+      return [...all, ...notes];
+    }, []);
+
+    return [...all, ...notesOnThisImage];
+  }, []);
+}
+
+export const listAllNotes = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+): string[] => {
+  const notes = enumerateNotes(annotations);
+  return Array.from(new Set(notes.map(n => n.note))).sort();
+}
+
+export const findImagesByNote = (
+  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  note: string
+): string[] => {
+  const notes = enumerateNotes(annotations);
+  const matches = notes.filter(n => n.note === note);
+  return Array.from(new Set(matches.map(n => n.image.id)));
+}
+
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
   store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string

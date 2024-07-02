@@ -15,7 +15,9 @@ import {
   findImagesByEntityClass, 
   findImagesByEntityConditions, 
   findImagesByMetadata, 
+  findImagesByNote, 
   listAllMetadataProperties, 
+  listAllNotes, 
   listFolderMetadataProperties, 
   listMetadataValues 
 } from './searchUtils';
@@ -108,9 +110,12 @@ export const useGraphSearch = (
         setMatches(images.map(i => i.id));
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
-      console.log('note!');
       if (!sentence.Value) {
-        setValueOptions([]);
+        const notes = listAllNotes(annotations);
+        setValueOptions(notes.map(n => ({ label: n, value: n })));
+      } else {
+        const imageIds = findImagesByNote(annotations, sentence.Value);
+        setMatches(imageIds);
       }
     }
   }, [annotations, graph, objectType, sentence]);
