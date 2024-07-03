@@ -22,8 +22,7 @@ interface MeasurementFieldProps {
 
 }
 
-// Helper
-const toStrings = (m?: Measurement | Measurement[]): [string, string][] => {
+const stringify = (m?: Measurement | Measurement[]): [string, string][] => {
   if (!m) return [['', '']];
 
   if (Array.isArray(m))
@@ -36,7 +35,7 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
 
   const { definition } = props;
 
-  const [values, setValues] = useState<([string, string] | undefined)[]>(toStrings(props.value));
+  const [values, setValues] = useState<([string, string] | undefined)[]>(stringify(props.value));
 
   const { showErrors, isValid } = useValidation(val => {
     const nonEmpty = val.filter(v => v && (v[0] || v[1]));

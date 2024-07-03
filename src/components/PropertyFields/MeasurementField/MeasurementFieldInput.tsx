@@ -1,7 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
-import { Measurement } from './Measurement';
 
 interface MeasurementFieldInputProps {
 
@@ -11,7 +9,7 @@ interface MeasurementFieldInputProps {
 
   value?: [string, string];
 
-  onChange?(arg?: [string, string]): void;
+  onChange(arg?: [string, string]): void;
 
 }
 
