@@ -1,10 +1,9 @@
 import { useState, ReactNode, useEffect } from 'react';
-import { CopyPlus, Trash2 } from 'lucide-react';
+import { CopyPlus } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from './InfoTooltip';
 import { InheritedFrom } from './InheritedFrom';
-import { Button } from '@/ui/Button';
 
 interface BasePropertyFieldProps <T extends unknown> {
 
@@ -14,11 +13,13 @@ interface BasePropertyFieldProps <T extends unknown> {
 
   error?: string;
 
-  render(value: T | undefined, onChange: (value?: T) => void): ReactNode;
+  render(value: T | undefined, onChange: (value?: T) => void, index: number): ReactNode;
 
   value: T | T[];
 
   onChange?(value?: T | (T | undefined)[]): void;
+
+  onAppendField?(index: number): void;
 
 }
 
@@ -32,11 +33,15 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
     setValues(current => current.map((v, i) => i === idx ? updated : v));
   }
 
-  const onAppendField = () =>
+  const onAppendField = () => {
     setValues(current => [...current, undefined]);
 
-  const onDeleteField = (idx: number) =>
-    setValues(current => current.filter((v, i) => i !== idx));
+    if (props.onAppendField)
+      props.onAppendField(values.length);
+  }
+
+  // const onDeleteField = (idx: number) =>
+  //   setValues(current => current.filter((v, i) => i !== idx));
 
   useEffect(() => {
     if (props.onChange) {
@@ -70,9 +75,9 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
       <div className="flex flex-col gap-2 justify-end">
         {values.map((value, idx) => (
           <div key={idx} className="flex items-center gap-1">
-            {props.render(value, onChange(idx))}
+            {props.render(value, onChange(idx), idx)}
 
-            {/*idx > 0*/ false && (
+            {/*idx > 0 && (
               <Button
                 variant="ghost" 
                 size="icon"
@@ -81,7 +86,7 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
                 onClick={() => onDeleteField(idx)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
-            )}
+            ) */}
           </div>
         ))} 
 
