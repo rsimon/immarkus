@@ -35,7 +35,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const model = useDataModel();
 
-  // We're using a random key, so we can reset the component on save
+  // We're using a random key, so the component resets on save
   const [formKey, setFormKey] = useState(Math.random());
 
   // Annotation bodies with purpose 'classifying' that have schemas
