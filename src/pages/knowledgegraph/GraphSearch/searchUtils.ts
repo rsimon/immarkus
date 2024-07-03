@@ -223,7 +223,12 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
   // Match all non-empty
   if (!value) return true;
 
-  const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
+  const definitionLike = {
+    type: propertyValue.propertyType,
+    name: propertyValue.propertyName
+  };
+
+  const serialized = serializePropertyValue(definitionLike, propertyValue.value);
   return serialized.includes(value);
 }
 
@@ -328,4 +333,5 @@ export const findImagesByEntityConditions = (
 
     return hasMatchingAnnotations ? [...images, image] : images;
   }, []);  
+
 }

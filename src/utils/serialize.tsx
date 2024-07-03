@@ -1,10 +1,16 @@
-import { PropertyDefinition } from '@/model';
+interface PropertyDefinitionLike {
 
-export const serializePropertyValue = (definitionOrType: PropertyDefinition | string, value?: any): string[] => {
+  type: string;
+
+  name: string;
+
+}
+
+export const serializePropertyValue = (definition: PropertyDefinitionLike, value?: any): string[] => {
   if (!value)
     return [];
 
-  const type = typeof definitionOrType === 'string' ? definitionOrType : definitionOrType.type;
+  const { type } = definition;
 
   if (type === 'measurement') {
     const measurements = Array.isArray(value) ? value : [value];
@@ -13,7 +19,7 @@ export const serializePropertyValue = (definitionOrType: PropertyDefinition | st
     const coords = Array.isArray(value[0]) ? value : [value];
     return coords.map((c: number[]) => `${c[0]}/${c[1]}`);
   } else if (type === 'relation') {
-    return [value.instance];
+    return [`${definition.name}:${value.instance}`];
   } else {
     const values = Array.isArray(value) ? value : [value];
     return values.map(v => v.toString());
