@@ -43,7 +43,9 @@ export const SelectFilter = (props: SelectFilterOpts) => {
           <SelectItem value="all">all</SelectItem>
 
           {props.entityTypes.map(type => (
-            <SelectItem value={`entity-${type.id}`}>{type.label || type.id}</SelectItem>
+            <SelectItem 
+              key={type.id}
+              value={`entity-${type.id}`}>{type.label || type.id}</SelectItem>
           ))}
         </SelectContent>
       </Select>
