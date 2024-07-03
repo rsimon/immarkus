@@ -40,9 +40,6 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
       props.onAppendField(values.length);
   }
 
-  // const onDeleteField = (idx: number) =>
-  //   setValues(current => current.filter((v, i) => i !== idx));
-
   useEffect(() => {
     if (props.onChange) {
       if (values.length > 1)
@@ -99,7 +96,6 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
           </button>
         )}
       </div>
-
     </div>
   )
 

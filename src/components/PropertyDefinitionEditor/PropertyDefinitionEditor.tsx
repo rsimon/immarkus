@@ -147,7 +147,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
           <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
             <Switch 
-              checked={edited.multiple}
+              checked={Boolean(edited.multiple)}
               onCheckedChange={onCheckMultiple}/> Allow multiple values
           </div>
 

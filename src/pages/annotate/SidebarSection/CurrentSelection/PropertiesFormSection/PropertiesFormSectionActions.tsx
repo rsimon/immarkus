@@ -37,6 +37,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
           <DropdownMenuTrigger asChild>
             <TooltippedButton 
               variant="ghost" 
+              type="button"
               size="icon" 
               className="rounded-full h-8 w-8"
               tooltip="Edit entity schema">
@@ -67,6 +68,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
           variant="ghost" 
           size="icon" 
           className="rounded-full h-8 w-8"
+          type="button"
           tooltip="Edit entity schema"
           onClick={() => setEdited(withoutInherited)}>
           <Settings className="h-4 w-4" />

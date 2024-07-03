@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { PropertyDefinition } from '@/model';
-import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from '../InfoTooltip';
 import { InheritedFrom } from '../InheritedFrom';
+import { CopyPlus } from 'lucide-react';
+import { Measurement } from './Measurement';
+import { MeasurementFieldInput } from './MeasurementFieldInput';
 import { useValidation } from '../PropertyValidation';
-import { cn } from '@/ui/utils';
 
 interface MeasurementFieldProps {
 
@@ -15,56 +16,73 @@ interface MeasurementFieldProps {
 
   definition: PropertyDefinition;
 
-  value?: { value: number, unit: string };
+  value?: Measurement | Measurement[] ;
 
-  onChange?(arg?: { value: number, unit: string }): void;
+  onChange?(arg?: Measurement | Measurement[]): void;
 
+}
+
+// Helper
+const toStrings = (m?: Measurement | Measurement[]): [string, string][] => {
+  if (!m) return [['', '']];
+
+  if (Array.isArray(m))
+    return m.map(m => ([m?.value?.toString() || '', m?.unit || '']));
+  else
+    return [[m?.value?.toString() || '', m?.unit || '']];
 }
 
 export const MeasurementField = (props: MeasurementFieldProps) => {
 
-  const { definition, id } = props;
+  const { definition } = props;
 
-  const [valueStr, setValueStr] = useState(props.value?.value.toString() || '');
+  const [values, setValues] = useState<([string, string] | undefined)[]>(toStrings(props.value));
 
-  const [unit, setUnit] = useState(props.value?.unit || '');
+  const { showErrors, isValid } = useValidation(val => {
+    const nonEmpty = val.filter(v => v && (v[0] || v[1]));
 
-  const { showErrors, isValid } = useValidation((valueStr, unit) => {
-    if (!valueStr && !unit)
-      return true;
+    const isValidMeasurement = (val: [string, string]) => {
+      if (!val) return true;
 
-    const value = parseFloat(valueStr);
-    return !isNaN(value) && Boolean(unit);
-  }, [valueStr, unit]);
+      if (!val[0] && !val[1]) return true;
 
-  useEffect(() => {
-    if (valueStr && unit && isValid && props.onChange) {
-      const value = parseFloat(valueStr);
-      props.onChange && props.onChange({ value, unit });
-    } else if (!valueStr && !unit && props.onChange) {
-      props.onChange(undefined);
+      const value = parseFloat(val[0]);
+      return !(isNaN(value) || value.toString().length < val[0].length) && val[1];
     }
-  }, [valueStr, unit, isValid]);
+
+    return nonEmpty.length === 0 || nonEmpty.every(isValidMeasurement);
+  }, [values]);
 
   useEffect(() => {
-    setValueStr(props.value?.value.toString() || '');
-    setUnit(props.value?.unit || '');
-  }, [props.value]);
+    if (!props.onChange) return;
 
-  const error = showErrors && !isValid && (
-    (valueStr && unit) 
-      ? 'value must be a number'
-      : 'unit required'
-  )
+    if (isValid) {
+      const validMeasurements: Measurement[] = values
+        .filter(m => m && m[0] && m[1])
+        .map(([value, unit]) => ({ value: parseFloat(value), unit }));
 
-  const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
+      if (validMeasurements.length > 1)
+        props.onChange(validMeasurements);
+      else 
+        props.onChange(validMeasurements[0]);
+    } else {
+      props.onChange();
+    }
+  }, [values, isValid]);
+
+  const error = showErrors && !isValid && 'number value and unit required';
+
+  const onChange = (idx: number, updated: [string, string]) =>
+    setValues(current => current.map((v, i) => i === idx ? updated : v));
+
+  const onAppendField = () =>
+    setValues(current => [...current, undefined]);
 
   return (
     <div className="mb-8">
       <div className="flex items-end justify-between pr-1 mb-1.5">
         <div className="flex">
           <Label
-            htmlFor={props.id}
             className="text-sm inline-block ml-0.5 ">
             {definition.name}
           </Label>
@@ -79,24 +97,24 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
         <InheritedFrom definition={definition} />
       </div>
 
-      <div className="grid grid-cols-4 gap-2">
-        <div className="col-span-3">
-          <Input 
-            id={id} 
-            className={className} 
-            placeholder="Value..."
-            value={valueStr} 
-            onChange={evt => setValueStr(evt.target.value)} />
-        </div>
+      <div className="flex flex-col gap-2 justify-end">
+        {values.map((value, idx) => (
+          <MeasurementFieldInput 
+            key={`${idx}`}
+            className={props.className}
+            error={Boolean(error)}
+            value={value}
+            onChange={value => onChange(idx, value)} />
+        ))}
 
-        <div>
-          <Input 
-            id={id} 
-            className={className} 
-            placeholder="Unit..."
-            value={unit} 
-            onChange={evt => setUnit(evt.target.value)} />
-        </div>
+        {props.definition.multiple && (
+          <button 
+            className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
+            type="button"
+            onClick={onAppendField}>
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+          </button>
+        )}
       </div>
     </div>
   )

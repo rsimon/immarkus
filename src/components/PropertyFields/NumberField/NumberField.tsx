@@ -20,7 +20,7 @@ interface NumberFieldProps {
 }
 
 // Helper
-const toString = (value: number | number[]) => {
+const toString = (value?: number | number[]) => {
   if (!value) return '';
 
   if (Array.isArray(value))
