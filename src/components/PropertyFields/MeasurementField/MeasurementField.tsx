@@ -80,7 +80,7 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
   return (
     <div className="mb-8">
       <div className="flex items-end justify-between pr-1 mb-1.5">
-        <div className="flex">
+        <div className="flex items-center gap-1">
           <Label
             className="text-sm inline-block ml-0.5 ">
             {definition.name}

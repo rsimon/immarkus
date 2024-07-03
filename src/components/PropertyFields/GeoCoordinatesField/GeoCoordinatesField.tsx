@@ -5,6 +5,7 @@ import { Label } from '@/ui/Label';
 import { InfoTooltip } from '../InfoTooltip';
 import { useValidation } from '../PropertyValidation';
 import { GeoCoordinatesFieldInput } from './GeoCoordinatesFieldInput';
+import { InheritedFrom } from '../InheritedFrom';
 
 interface GeoCoordinatesFieldProps {
 
@@ -83,10 +84,12 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
   const onAppendField = () =>
     setValues(current => [...current, undefined]);
 
+  console.log(error);
+
   return (
-    <div className="flex flex-col justify-end">
-      <div className="flex justify-between gap-6 items-center mb-8 text-sm mt-10">
-        <div className="flex mr-3">
+    <div className="mb-8">
+      <div className="flex items-end justify-between pr-1 mb-1.5">
+        <div className="flex items-center gap-1">
           <Label
             className="ml-0.5">
             {definition.name}
@@ -95,34 +98,34 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
           {definition.description && (
             <InfoTooltip description={definition.description} />
           )}
+
+          {error && (<span className="text-xs text-red-600 ml-1">{error}</span>)}
         </div>
 
-        <div className="relative">
-          {error && (
-            <span className="absolute text-xs mt-0.5 text-red-600 -top-[1.9em] right-0">{error}</span>
-          )}
-
-          {values.map((value, idx) => (
-            <GeoCoordinatesFieldInput
-              key={`${idx}`}
-              className={props.className}
-              definition={definition} 
-              error={Boolean(error)}
-              index={idx}
-              value={value}
-              onChange={value => onChange(idx, value)}/>
-          ))}
-        </div>
+        <InheritedFrom definition={definition} />
       </div>
 
-      {props.definition.multiple && (
-        <button 
-          className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
-          type="button"
-          onClick={onAppendField}>
-          <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
-        </button>
-      )}
+      <div className="flex flex-col gap-2 justify-end">
+        {values.map((value, idx) => (
+          <GeoCoordinatesFieldInput
+            key={`${idx}`}
+            className={props.className}
+            definition={definition} 
+            error={Boolean(error)}
+            index={idx}
+            value={value}
+            onChange={value => onChange(idx, value)}/>
+        ))}
+
+        {props.definition.multiple && (
+          <button 
+            className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
+            type="button"
+            onClick={onAppendField}>
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+          </button>
+        )}
+      </div>
     </div>
   )
 
