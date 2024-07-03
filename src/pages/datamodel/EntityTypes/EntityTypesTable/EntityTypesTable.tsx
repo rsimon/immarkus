@@ -111,7 +111,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           {property.name}
 
           {property.multiple && (
-            <CopyPlus className="w-3 h-3 ml-1 mr-0.5" />
+            <CopyPlus className="w-3 h-3 ml-1.5 mr-0.5" />
           )}
         </span>    
       ))}

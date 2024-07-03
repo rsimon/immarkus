@@ -1,6 +1,7 @@
 import { EnumPropertyDefinition } from '@/model';
-import { BasePropertyField } from '../BasePropertyField';
 import { cn } from '@/ui/utils';
+import { BasePropertyField } from '../BasePropertyField';
+import { removeEmpty } from '../removeEmpty';
 import { 
   Select, 
   SelectContent, 
@@ -19,13 +20,20 @@ interface EnumFieldProps {
 
   value?: string;
 
-  onChange?(value: string): void;
+  onChange?(value: string | string[]): void;
 
 }
 
 export const EnumField = (props: EnumFieldProps) => {
 
-  const { id, definition, value, onChange } = props;
+  const { id, definition, value } = props;
+
+  const onChange = (value: string | string[]) => {
+    if (props.onChange) {
+      const normalized = removeEmpty(value);
+      props.onChange(normalized);
+    }
+  }
 
   return (
     <BasePropertyField
