@@ -4,6 +4,7 @@ import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InheritedFrom } from '../InheritedFrom';
+import { removeEmpty } from '../removeEmpty';
 import { ExternalAuthorityFieldInput } from './ExternalAuthorityFieldInput';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 import {
@@ -50,10 +51,8 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   useEffect(() => {
     if (props.onChange) {
-      if (values.length > 1)
-        props.onChange(values);
-      else
-        props.onChange(values[0]);
+      const normalized = removeEmpty(values);
+      props.onChange(normalized);
     }
   }, [values]);
 
