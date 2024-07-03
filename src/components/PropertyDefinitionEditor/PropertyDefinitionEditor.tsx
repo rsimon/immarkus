@@ -145,11 +145,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               onUpdate={setEdited} />
           )}
 
-          <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
-            <Switch 
-              checked={Boolean(edited.multiple)}
-              onCheckedChange={onCheckMultiple}/> Allow multiple values
-          </div>
+          {edited.type !== 'relation' && (
+            <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
+              <Switch 
+                checked={Boolean(edited.multiple)}
+                onCheckedChange={onCheckMultiple}/> Allow multiple values
+            </div>
+          )}
 
           <div className="mt-3">
             <Label 
