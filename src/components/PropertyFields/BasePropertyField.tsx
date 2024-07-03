@@ -1,5 +1,5 @@
 import { useState, ReactNode, useEffect } from 'react';
-import { CirclePlus, Trash2 } from 'lucide-react';
+import { CopyPlus, Trash2 } from 'lucide-react';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from './InfoTooltip';
@@ -90,7 +90,7 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             onClick={onAppendField}
             type="button">
-            <CirclePlus className="h-3.5 w-3.5 mb-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
           </button>
         )}
       </div>

@@ -9,6 +9,8 @@ import { EntityTypeActions } from './EntityTypeActions';
 import { 
   CaseSensitive, 
   ChevronRight, 
+  Copy, 
+  CopyPlus, 
   Database, 
   Hash, 
   Link2, 
@@ -105,7 +107,12 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           ) : property.type === 'uri' ? (
             <Link2 className="w-3 h-3 mr-0.5" />
           ) : null}
+
           {property.name}
+
+          {property.multiple && (
+            <CopyPlus className="w-3 h-3 ml-1 mr-0.5" />
+          )}
         </span>    
       ))}
 
