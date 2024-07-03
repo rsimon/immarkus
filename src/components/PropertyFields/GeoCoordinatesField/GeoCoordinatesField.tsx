@@ -84,8 +84,6 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
   const onAppendField = () =>
     setValues(current => [...current, undefined]);
 
-  console.log(error);
-
   return (
     <div className="mb-8">
       <div className="flex items-end justify-between pr-1 mb-1.5">
