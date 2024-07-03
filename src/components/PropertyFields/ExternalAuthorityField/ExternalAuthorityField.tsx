@@ -69,8 +69,6 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
     if (props.onChange) {
       const normalized = removeEmpty(values);
       props.onChange(normalized);
-    } else {
-      props.onChange();
     }
   }, [values]);
 
