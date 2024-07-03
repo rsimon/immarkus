@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react';
+import { DialogTitle } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
 import { PropertyDefinitionEditor } from './PropertyDefinitionEditor';
 import {
@@ -48,7 +49,12 @@ export const PropertyDefinitionEditorDialog = (props: PropertyEditorDialogProps)
         {props.children}
       </DialogTrigger>
 
+
       <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
+        <DialogTitle className="hidden">
+          Property Definition Editor
+        </DialogTitle>
+
         <PropertyDefinitionEditor 
           editorHint={props.editorHint}
           previewHint={props.previewHint}

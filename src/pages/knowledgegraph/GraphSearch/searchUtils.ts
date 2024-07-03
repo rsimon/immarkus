@@ -223,8 +223,13 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
   // Match all non-empty
   if (!value) return true;
 
-  const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
-  return serialized === value;
+  const definitionLike = {
+    type: propertyValue.propertyType,
+    name: propertyValue.propertyName
+  };
+
+  const serialized = serializePropertyValue(definitionLike, propertyValue.value);
+  return serialized.includes(value);
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
@@ -320,7 +325,7 @@ export const findImagesByEntityConditions = (
           const definition = type.properties.find(p => p.name === c.Attribute);
           if (definition) {
             const serialized = serializePropertyValue(definition, body.properties[c.Attribute]);
-            return serialized === c.Value;
+            return serialized.includes(c.Value);
           }
         });
       });
@@ -328,4 +333,5 @@ export const findImagesByEntityConditions = (
 
     return hasMatchingAnnotations ? [...images, image] : images;
   }, []);  
+
 }

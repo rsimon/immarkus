@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react';
-import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { W3CAnnotationBody } from '@annotorious/react';
 import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { useDataModel } from '@/store';
@@ -23,14 +23,15 @@ const getValuePreviews = (
       if (value) {
         const serialized = serializePropertyValue(definition, value);
 
-        const node = 
+        const nodes = serialized.map(str =>
           definition.type === 'uri' ? 
-            (<a href={serialized} target="_blank" className="text-sky-700 hover:underline">{serialized}</a>) :
+            (<a href={str} target="_blank" className="text-sky-700 hover:underline">{str}</a>) :
           definition.type === 'external_authority' 
-            ? (<a href={value} target="_blank" className="text-sky-700 hover:underline">{formatIdentifier(value, authorities)}</a>)
-            : (<span>{serialized}</span>);
+            ? (<a href={str} target="_blank" className="text-sky-700 hover:underline">{formatIdentifier(str, authorities)}</a>)
+            : (<span>{str}</span>)
+        );
 
-        return [...previews, node ];
+        return [...previews, ...nodes];
       } else {
         return previews;
       }

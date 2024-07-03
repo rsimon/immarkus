@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
+import { DialogDescription } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -54,12 +55,19 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     }
   }
 
+  const onCheckMultiple = (checked: boolean) => {
+    if (checked)
+      setEdited(definition => ({ ...definition, multiple: true }));
+    else 
+      setEdited(({ multiple, ...definition }) => definition);
+  }
+
   return (
     <article className="grid grid-cols-5 rounded-lg overflow-hidden">
       <div className="px-6 py-3 col-span-3">
-        <p className="text-left text-xs leading-relaxed mt-1">
+        <DialogDescription className="text-left text-xs leading-relaxed mt-1">
           {props.editorHint}
-        </p>
+        </DialogDescription>
 
         <form onSubmit={onSubmit}>
           <div className="mt-4">
@@ -137,11 +145,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               onUpdate={setEdited} />
           )}
 
-          {/*
-          <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
-            <Switch /> Allow multiple values
-          </div>
-          */}
+          {edited.type !== 'relation' && (
+            <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
+              <Switch 
+                checked={Boolean(edited.multiple)}
+                onCheckedChange={onCheckMultiple}/> Allow multiple values
+            </div>
+          )}
 
           <div className="mt-3">
             <Label 

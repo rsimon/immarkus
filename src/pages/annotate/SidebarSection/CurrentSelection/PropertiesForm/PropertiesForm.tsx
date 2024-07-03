@@ -35,6 +35,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const model = useDataModel();
 
+  // We're using a random key, so the component resets on save
+  const [formKey, setFormKey] = useState(Math.random());
+
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = useMemo(() => (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
@@ -115,6 +118,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       };
 
       anno.updateAnnotation(updatedAnnotation);
+
+      setFormKey(Math.random());
     } else {
       setShowValidationErrors(true);
     }
@@ -134,7 +139,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       showErrors={showValidationErrors}
       onChange={setIsValid}>
 
-      <form className="grow pt-1 flex flex-col" onSubmit={onSubmit}>
+      <form 
+        key={`${formKey}`}
+        className="grow pt-1 flex flex-col" 
+        onSubmit={onSubmit}>
         <div className="flex-grow">
           {schemaBodies.length === 1 ? (
             <div>

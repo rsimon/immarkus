@@ -13,36 +13,53 @@ interface NumberFieldProps {
 
   definition: PropertyDefinition;
 
-  value?: number;
+  value?: number | number[];
 
-  onChange?(value?: number): void;
+  onChange?(value?: number | number[]): void;
 
+}
+
+// Helper
+const toString = (value?: number | number[]) => {
+  if (!value) return '';
+
+  if (Array.isArray(value))
+    return value.map(num => num.toString());
+  else
+    return value.toString();
 }
 
 export const NumberField = (props: NumberFieldProps) => {
 
   const { id, definition } = props;
 
-  const [value, setValue] = useState(props.value ? props.value.toString() : '');
+  const [value, setValue] = useState<string | string[]>(toString(props.value));
 
-  const { showErrors, isValid } = useValidation((str: string) => {
-    return !str || !isNaN(parseFloat(str));
+  const { showErrors, isValid } = useValidation((str: string | string[]) => {
+    if (Array.isArray(str)) {
+      const nonEmpty = str.filter(Boolean);
+      return nonEmpty.length === 0 || !nonEmpty.some(s => isNaN(parseFloat(s)));
+    } else {
+      return !str || !isNaN(parseFloat(str));
+    }
   }, [value]);
 
   useEffect(() => {
     if (!props.onChange) return;
 
-    const num = parseFloat(value);
+    const values = Array.isArray(value) ? value : [value];
 
-    if (!isNaN(num))
-      props.onChange(num);
-    else if (!value)
+    const numbers = values.filter(Boolean).map(parseFloat);
+
+    if (!numbers.some(isNaN)) {
+      if (numbers.length > 1)
+        props.onChange(numbers);
+      else
+        props.onChange(numbers[0]);
+    } else {
       props.onChange();
+    }
   }, [value]);
-
-  useEffect(() => {
-    setValue(props.value?.toString() || '');
-  }, [props.value]);
 
   const error = (showErrors && !isValid) 
     ? value ? 'must be a number' : 'required' : '';
@@ -50,17 +67,19 @@ export const NumberField = (props: NumberFieldProps) => {
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 
   return (
-    <BasePropertyField
+    <BasePropertyField<string>
       id={id}
       definition={definition}
-      error={error}>
-
-      <Input 
-        id={id} 
-        className={className} 
-        value={value} 
-        onChange={evt => setValue(evt.target.value)} />
-    </BasePropertyField>
+      error={error}
+      value={value}
+      onChange={setValue}
+      render={(value, onChange) => (
+        <Input 
+          id={id} 
+          className={className} 
+          value={value || ''} 
+          onChange={evt => onChange(evt.target.value)} />
+      )} />
   )
 
 }

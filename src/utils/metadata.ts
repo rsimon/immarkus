@@ -14,7 +14,7 @@ export const zipMetadata = (columns: SchemaField[], metadata?: W3CAnnotationBody
 
   const entries = columns.map(column => {
     const columnValue = column.schema === metadata?.source 
-      ? serializePropertyValue(column.definition, properties[column.definition.name])
+      ? serializePropertyValue(column.definition, properties[column.definition.name]).join(' ')
       : '';
 
     return [`${column.schema}: ${column.definition.name}`, columnValue]
