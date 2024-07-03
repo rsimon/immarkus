@@ -27,8 +27,8 @@ export const exportImages = (store: Store, imageIds: string[]) => {
     const rows = metadata.map(({ image, metadata }) => {
       const serialized = Object.fromEntries(metadata.map(m => {
         const key = `${m.type.toLowerCase()}:${m.propertyName}`;
-        const value = serializePropertyValue(m.propertyType, m.value);
-        return [key, value];
+        const values = serializePropertyValue(m.propertyType, m.value);
+        return [key, values.join(' ')];
       }));
 
       const rows = Object.fromEntries(columns.map(key => (

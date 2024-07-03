@@ -34,7 +34,7 @@ export const useSubConditions = (
       if (!property) return all;
 
       const serialized = serializePropertyValue(property, body.properties[attribute]);
-      return [...all, serialized]; 
+      return [...all, ...serialized]; 
     }, []);
 
     // Distinct values only, sorted alphabetically

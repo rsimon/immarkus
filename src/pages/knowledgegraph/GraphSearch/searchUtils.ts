@@ -224,7 +224,7 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
   if (!value) return true;
 
   const serialized = serializePropertyValue(propertyValue.propertyType, propertyValue.value);
-  return serialized === value;
+  return serialized.includes(value);
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
@@ -320,7 +320,7 @@ export const findImagesByEntityConditions = (
           const definition = type.properties.find(p => p.name === c.Attribute);
           if (definition) {
             const serialized = serializePropertyValue(definition, body.properties[c.Attribute]);
-            return serialized === c.Value;
+            return serialized.includes(c.Value);
           }
         });
       });
