@@ -24,7 +24,7 @@ interface ExternalAuthorityFieldProps {
 
   value?: string | string[];
 
-  onChange?(value: string | string[]): void;
+  onChange?(value?: string | string[]): void;
 
 }
 
@@ -39,20 +39,38 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const [editable, _setEditable] = useState<Set<number>>(new Set([]));
 
   const onCloseDialog = (identifier?: string) => { 
-    /*
-    if (identifier && props.onChange)
-      props.onChange(identifier);
+    if (!props.onChange) return;
 
-    setEditable(true);
+    if (definition.multiple) {
+      if (identifier) {
+        // Multi-value. Fill first 'undefined' field or append new
+        const firstEmpty = values.findIndex(str => !str);
 
-    setTimeout(() => input.current.focus(), 1);
-    */
+        if (firstEmpty > -1) {
+          setValues([
+            ...values.slice(0, firstEmpty),
+            identifier,
+            ...values.slice(firstEmpty + 1)
+          ]);
+        } else {
+          setValues([...values, identifier]);
+        }
+      }
+    } else {
+      // Single-value field - replace
+      if (identifier)
+        setValues([identifier]);
+
+      _setEditable(new Set([0]))
+    }
   }
 
   useEffect(() => {
     if (props.onChange) {
       const normalized = removeEmpty(values);
       props.onChange(normalized);
+    } else {
+      props.onChange();
     }
   }, [values]);
 
@@ -63,8 +81,10 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
       _setEditable(current => new Set([...current].filter(n => n !== index)))
   }
 
-  const onAppendField = () =>
+  const onAppendField = () => {
+    _setEditable(current => new Set([...current, values.length]));
     setValues(current => [...current, undefined]);
+  }
 
   const onChange = (idx: number) => (updated: string) =>
     setValues(current => current.map((v, i) => i === idx ? updated : v));

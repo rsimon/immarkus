@@ -23,13 +23,11 @@ interface ExternalAuthorityFieldInputProps {
 
 export const ExternalAuthorityFieldInput = (props: ExternalAuthorityFieldInputProps) => {
 
-  const input = useRef<HTMLInputElement>();
-
   const isURI = props.value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(props.value) : false;
 
   return props.editable ? (
     <Input
-      ref={input}
+      autoFocus
       className={cn(props.className, 'mt-0.5')}
       value={props.value || ''} 
       onChange={evt => props.onChange(evt.target.value)} 
