@@ -1,11 +1,10 @@
-import { ChangeEvent, useRef, useState } from 'react';
-import { Info, Pen } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CopyPlus, Info } from 'lucide-react';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
-import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
-import { cn } from '@/ui/utils';
 import { InheritedFrom } from '../InheritedFrom';
+import { ExternalAuthorityFieldInput } from './ExternalAuthorityFieldInput';
 import { ExternalAuthoritySelector } from './ExternalAuthoritySelector';
 import {
   Tooltip,
@@ -13,7 +12,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
-import { formatIdentifier } from './util';
 
 interface ExternalAuthorityFieldProps {
 
@@ -23,9 +21,9 @@ interface ExternalAuthorityFieldProps {
 
   definition: ExternalAuthorityPropertyDefinition;
 
-  value?: string;
+  value?: string | string[];
 
-  onChange?(value: string): void;
+  onChange?(value: string | string[]): void;
 
 }
 
@@ -34,27 +32,43 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   const { id, definition } = props;
 
   const { authorities } = useRuntimeConfig();
+  
+  const [values, setValues] = useState<(string | undefined)[]>(Array.isArray(props.value) ? props.value : [props.value]);
 
-  const input = useRef<HTMLInputElement>();
-
-  const value = props.onChange ? props.value || '' : props.value;
-
-  const isURI = value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value) : false;
-
-  const [editable, setEditable] = useState(!isURI);
-
-  const onChange = props.onChange 
-    ? (evt: ChangeEvent<HTMLInputElement>) => props.onChange(evt.target.value) 
-    : undefined;
+  const [editable, _setEditable] = useState<Set<number>>(new Set([]));
 
   const onCloseDialog = (identifier?: string) => { 
+    /*
     if (identifier && props.onChange)
       props.onChange(identifier);
 
     setEditable(true);
 
     setTimeout(() => input.current.focus(), 1);
+    */
   }
+
+  useEffect(() => {
+    if (props.onChange) {
+      if (values.length > 1)
+        props.onChange(values);
+      else
+        props.onChange(values[0]);
+    }
+  }, [values]);
+
+  const setEditable = (index: number, editable: boolean) => {
+    if (editable)
+      _setEditable(current => new Set([...current, index]));
+    else
+      _setEditable(current => new Set([...current].filter(n => n !== index)))
+  }
+
+  const onAppendField = () =>
+    setValues(current => [...current, undefined]);
+
+  const onChange = (idx: number) => (updated: string) =>
+    setValues(current => current.map((v, i) => i === idx ? updated : v));
 
   return (
     <div className="mb-8">
@@ -91,29 +105,27 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
         </div> 
       </div> 
 
-      {editable ? (
-        <Input
-          ref={input}
-          id={id} 
-          className={cn(props.className, 'mt-0.5')}
-          value={value} 
-          onChange={onChange} 
-          onBlur={() => setEditable(!isURI)} />
-      ) : (
-        <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
-          <a 
-            href={value} 
-            className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
-            target="_blank">{formatIdentifier(value, authorities)}</a>
+      <div className="flex flex-col gap-2 justify-end">
+        {values.map((value, idx) => (
+          <ExternalAuthorityFieldInput 
+            key={`${idx}`}
+            authorities={authorities} 
+            className={props.className}
+            editable={editable.has(idx)} 
+            value={value}
+            onChange={onChange(idx)}
+            onSetEditable={editable => setEditable(idx, editable)} />
+        ))}
 
+        {props.definition.multiple && (
           <button 
-            onClick={() => setEditable(true)}
-            className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
-            <Pen
-              className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
+            className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
+            type="button"
+            onClick={onAppendField}>
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 

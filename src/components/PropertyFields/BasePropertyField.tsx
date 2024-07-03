@@ -29,9 +29,8 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
 
   const [values, setValues] = useState<(T | undefined)[]>(Array.isArray(props.value) ? props.value : [props.value]);
 
-  const onChange = (idx: number) => (updated: T) => {
+  const onChange = (idx: number) => (updated: T) =>
     setValues(current => current.map((v, i) => i === idx ? updated : v));
-  }
 
   const onAppendField = () => {
     setValues(current => [...current, undefined]);

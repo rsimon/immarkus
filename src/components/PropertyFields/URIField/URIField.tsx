@@ -15,7 +15,7 @@ interface URIFieldProps {
 
   definition: PropertyDefinition;
 
-  value?: string;
+  value?: string | string[];
 
   onChange?(value: string | string[]): void;
 
