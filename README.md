@@ -32,13 +32,6 @@ Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024.
 https://github.com/rsimon/immarkus.
 ```
 
-__Instructions__
-
-```
-Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions
-for Image Annotation in IMMARKUS. 2024. https://immarkus.xmarkus.org.
-```
-
 __Wiki__
 
 ```
