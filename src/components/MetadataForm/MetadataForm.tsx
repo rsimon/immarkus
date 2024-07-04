@@ -70,7 +70,8 @@ export const MetadataForm = (props: MetadataFormProps) => {
     })
   }
 
-  const getValue = (definition: PropertyDefinition) => formState[definition.name];
+  const getValue = (definition: PropertyDefinition) =>
+    formState[definition.name];
 
   const onChangeValue = (definition: PropertyDefinition, value: any) => {
     const next = {
@@ -88,7 +89,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
     props.onChange(next);
   }
 
-  return schemas.length === 0 ? (
+  return (schemas.length === 0) ? (
     <div className="flex flex-col text-sm items-center px-2 justify-center text-center flex-grow leading-loose text-muted-foreground">
       <span>
         No schema defined.<br/>
@@ -96,7 +97,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
         define one.
       </span>
     </div>
-  ) : (
+  ) : metadata && (
     <div>
       {schemas.length > 1 && (
         <>
