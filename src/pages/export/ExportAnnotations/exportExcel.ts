@@ -75,7 +75,17 @@ const aggregateSchemaFields = (types: EntityType[]): PropertyDefinition[] =>
     [...agg, ...(type.properties || [])]
   ), []);
 
-const createWorksheet = (
+const fitColumnWidths = (worksheet: any) => {
+  worksheet.columns.forEach(column => {
+    const lengths = column.values.map(v => v.toString().length);
+    const maxLength = Math.max(...lengths.filter(v => typeof v === 'number'));
+    column.width = maxLength;
+  });
+
+  worksheet.columns[0].width = 30;
+}
+
+const createEntityWorksheet = (
   workbook: any, 
   annotations: ImageAnnotationSnippetTuple[], 
   entityType: EntityType,
@@ -156,14 +166,46 @@ const createWorksheet = (
     });
   });
 
-  // Auto-fit column widths
-  worksheet.columns.forEach(column => {
-    const lengths = column.values.map(v => v.toString().length);
-    const maxLength = Math.max(...lengths.filter(v => typeof v === 'number'));
-    column.width = maxLength;
+  fitColumnWidths(worksheet);
+}
+
+const createNotesWorksheet = (
+  workbook: any, 
+  annotations: ImageAnnotationSnippetTuple[]
+) => {
+  const worksheet = workbook.addWorksheet('Notes');
+
+  worksheet.columns = [
+    { header: 'Snippet', key: 'snippet', width: 30 },
+    { header: 'Image Filename', key: 'image', width: 30 },
+    { header: 'Folder Name', key: 'folder', width: 30 },
+    { header: 'Annotation ID', key: 'id', width: 20 },
+    { header: 'Created', key: 'created', width: 20 },
+    { header: 'Note', key: 'note', width: 50 }
+  ];
+
+  let rowIndex = 1;
+
+  annotations.forEach(({ annotation, image, path, snippet }) => {
+    const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
+    const note = bodies.find(b => b.purpose === 'commenting')?.value;
+    if (note) {
+      worksheet.addRow({
+        image: image.name,
+        folder: path.join('/'),
+        id: annotation.id,
+        created: annotation.created,
+        note
+      });
+
+      if (snippet)
+        addImageToCell(workbook, worksheet, snippet, rowIndex);
+
+      rowIndex += 1;
+    }
   });
 
-  worksheet.columns[0].width = 30;
+  fitColumnWidths(worksheet);
 }
 
 export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: number) => void)) => {
@@ -204,7 +246,10 @@ export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: n
     workbook.modified = new Date();
 
     // Create one worksheet per root entity type
-    model.getRootTypes().forEach(entityType => createWorksheet(workbook, annotations, entityType, store));
+    model.getRootTypes().forEach(entityType => createEntityWorksheet(workbook, annotations, entityType, store));
+
+    // Create one worksheet for the notes
+    createNotesWorksheet(workbook, annotations);
   
     workbook.xlsx.writeBuffer().then(buffer => {
       onProgress(100);
