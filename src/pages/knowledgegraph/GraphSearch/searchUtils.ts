@@ -1,4 +1,4 @@
-import { Folder, Image, MetadataSchema } from '@/model';
+import { Folder, Image, MetadataSchema, RootFolder } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { SchemaPropertyValue, SchemaProperty, ObjectType, SubCondition } from './Types';
@@ -38,13 +38,13 @@ const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER',
 export const getParentFolders = (store: Store, imageId: string) => {
   const image = store.getImage(imageId);
 
-  const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): Folder[] => {
+  const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
     if (next.parent) {
       const folder = store.getFolder(next.parent);
 
       const isRootFolder = !('id' in folder);
       if (isRootFolder) {
-        return [next, ...hierarchy];
+        return [folder, next, ...hierarchy];
       } else {
         return getParentFoldersRecursive(folder, [next, ...hierarchy]);
       }
@@ -209,7 +209,7 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
   // Go through folders from the top and aggregate metadata values
   const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 
     promise.then(properties => {
-      return store.getFolderMetadata(folder.id).then(annotation => {
+      return store.getFolderMetadata(folder.handle).then(annotation => {
         return mergeProperties(properties, annotationToProperties(model, 'FOLDER', annotation));
       });
     }), Promise.resolve([]));
