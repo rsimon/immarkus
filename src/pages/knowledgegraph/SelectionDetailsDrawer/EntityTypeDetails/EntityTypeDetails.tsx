@@ -1,14 +1,19 @@
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
-import { Graph } from '../../Types';
-import { AnnotatedEntities } from './AnnotatedEntities';
-import { Separator } from '@/ui/Separator';
+import { RelationGraph } from '@/store';
 import { Button } from '@/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import { Graph } from '../../Types';
+import { EntityAnnotations } from './EntityAnnotations';
+import { Spline } from 'lucide-react';
+import { RelatedAnnotationList } from './RelatedAnnotationList';
 
 interface EntityTypeDetailsProps {
 
   graph: Graph;
+
+  relations: RelationGraph;
 
   type: EntityType
 
@@ -18,7 +23,13 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
   const { type } = props;
 
-  const linkedNodes = props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE');
+  const linkedNodes = useMemo(() => (
+    props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
+  ), [type]);
+
+  const relatedAnnotations = useMemo(() => (
+    props.relations.listRelations().filter(r => r.targetEntityType === type.id)
+  ), [type]);
 
   const navigate = useNavigate();
 
@@ -44,7 +55,7 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
               {node.label}
             </h3>
 
-            <AnnotatedEntities 
+            <EntityAnnotations 
               key={node.id}
               imageId={node.id} 
               entityType={type} />
@@ -60,6 +71,15 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
             </p>
           </section>
         ))}
+      </div>
+
+      <div className="border-t">
+        <h2 className="p-4 flex items-center text-sm font-semibold">
+          <Spline className="w-4 h-4 mr-1.5" /> Related
+        </h2>
+
+        <RelatedAnnotationList 
+          related={relatedAnnotations} />
       </div>
     </aside>
   )

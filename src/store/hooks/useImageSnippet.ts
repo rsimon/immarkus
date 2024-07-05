@@ -2,35 +2,43 @@ import { useEffect, useMemo, useState } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { ImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
+import { useImages } from './useImages';
 import { useStore } from './useStore';
 
-export const useImageSnippet = (annotation: W3CImageAnnotation) => {
+export const useImageSnippets = (annotations: W3CImageAnnotation[]) => {
 
   const store = useStore();
 
-  const [loadedImage, setLoadedImage] = useState<LoadedImage | undefined>();
+  const imageIds = useMemo(() => Array.from(annotations.reduce<Set<string>>((ids, annotation) => {
+    const image = store.images.find(i => i.name === (annotation.target as any).source);
+    return new Set([...ids, image.id]);
+  }, new Set([]))), [annotations]);
 
-  const [snippet, setSnippet] = useState<ImageSnippet | undefined>();
+  const images = useImages(imageIds) as LoadedImage[];
 
-  const image = useMemo(() => (
-    store.images.find(i => i.name === (annotation.target as any).source)
-  ), [annotation]);
-
-  useEffect(() => {
-    if (!image) return;
-
-    store.loadImage(image.id).then(setLoadedImage);
-  }, [annotation, image]);
+  const [snippets, setSnippets] = useState<ImageSnippet[] | undefined>();
 
   useEffect(() => {
-    if (!loadedImage) return;
+    if (!images || images.length === 0) return;
 
-    if ('selector' in annotation.target) {
-      getImageSnippet(loadedImage, annotation as W3CImageAnnotation)
-        .then(setSnippet);
-    }
-  }, [annotation, loadedImage]);
+    const promise = Promise.all(annotations
+      .filter(a => 'selector' in a.target)
+      .map(a => {
+        const image = images.find(i => i.name === (a.target as any).source);
+        return getImageSnippet(image, a);
+      }));
 
-  return snippet;
+    promise.then(setSnippets);
+  }, [annotations, images]);
+
+  return snippets;
+
+}
+
+export const useImageSnippet = (annotation: W3CImageAnnotation) => {
+
+  const snippets = useImageSnippets([annotation]);
+
+  return snippets && snippets.length > 0 ? snippets[0] : undefined;
 
 }

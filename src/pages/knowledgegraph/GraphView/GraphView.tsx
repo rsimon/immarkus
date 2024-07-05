@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
+import { RelationGraph } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { PALETTE } from '../Palette';
@@ -13,6 +14,8 @@ interface GraphViewProps {
   isFullscreen: boolean;
 
   query?: ((n: NodeObject<GraphNode>) => boolean);
+
+  relations: RelationGraph;
 
   settings: KnowledgeGraphSettings;
 
@@ -207,6 +210,20 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
+  const getLinkLabel = (link: LinkObject) => {
+    const source: string = (link.source as any)?.id || link.source;
+    const target: string = (link.target as any)?.id || link.target;
+
+    const relations = props.relations.listRelations().filter(r =>
+      source === r.image.id && target === r.targetEntityType);
+
+    const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
+
+    if (distinctLabels.length > 0) {
+      return distinctLabels.join(', ');
+    }
+  }
+
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
@@ -215,7 +232,9 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkDirectionalParticles={props.settings.relationsOnly ? 1 : 0}
+          linkDirectionalArrowLength={props.settings.relationsOnly ? 16 / zoom : 0}
+          linkDirectionalArrowRelPos={1}
+          linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}

@@ -178,6 +178,13 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             return [...all, ...entityLinks];
         }, []) : [];
 
+        // Connect images to entity classes they have relations to
+        const relationImageEntityLinks = relations.listRelations().reduce<GraphLink[]>((all, r) => {
+          const source = r.image.id;
+          const target = r.targetEntityType;
+          return [...all, { source, target, value: 1 }];
+        }, []);
+
         // Relation links between *annotations* 
         const resolvedRelations = relations.listRelations().reduce<ResolvedRelation[]>((all, r) => (
           [...all, ...relations.resolveTargets(r)]
@@ -198,6 +205,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           }
         }, []);
 
+        // Connect entity classes that were connected through annotations
         const relationEntityLinks = relations.listRelations().reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.sourceEntityType && l.target === r.targetEntityType;
@@ -217,6 +225,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ...imageFolderLinks, 
           ...modelHierarchyLinks, 
           ...annotationEntityLinks,
+          ...relationImageEntityLinks,
           ...relationImageLinks,
           ...relationEntityLinks
         ];
@@ -285,6 +294,6 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
     });
   }, [relations, includeFolders, relationsOnly]);
 
-  return { annotations, graph };
+  return { annotations, graph, relations };
 
 }
