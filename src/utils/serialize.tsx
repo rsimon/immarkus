@@ -19,10 +19,9 @@ export const serializePropertyValue = (definition: PropertyDefinitionLike, value
     const coords = Array.isArray(value[0]) ? value : [value];
     return coords.map((c: number[]) => `${c[0]}/${c[1]}`);
   } else if (type === 'relation') {
-    return [`${definition.name}:${value.instance}`];
+    return [value.instance];
   } else {
     const values = Array.isArray(value) ? value : [value];
     return values.map(v => v.toString());
   }
 }
-
