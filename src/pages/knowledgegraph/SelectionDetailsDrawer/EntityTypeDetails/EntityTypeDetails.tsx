@@ -1,10 +1,10 @@
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
+import { Button } from '@/ui/Button';
 import { Graph } from '../../Types';
 import { AnnotatedEntities } from './AnnotatedEntities';
-import { Separator } from '@/ui/Separator';
-import { Button } from '@/ui/Button';
-import { useNavigate } from 'react-router-dom';
 
 interface EntityTypeDetailsProps {
 
@@ -18,7 +18,9 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
   const { type } = props;
 
-  const linkedNodes = props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE');
+  const linkedNodes = useMemo(() => (
+    props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
+  ), [type]);
 
   const navigate = useNavigate();
 
