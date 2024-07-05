@@ -73,13 +73,13 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
         ))}
       </div>
 
-      <div className="p-4 border-t">
-        <h2 className="flex items-center text-sm font-semibold">
+      <div className="border-t">
+        <h2 className="p-4 flex items-center text-sm font-semibold">
           <Spline className="w-4 h-4 mr-1.5" /> Related
-
-          <RelatedAnnotationList 
-            annotations={relatedAnnotations} />
         </h2>
+
+        <RelatedAnnotationList 
+          related={relatedAnnotations} />
       </div>
     </aside>
   )
