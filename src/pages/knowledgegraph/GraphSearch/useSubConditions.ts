@@ -17,9 +17,12 @@ export const useSubConditions = (
   const values = useMemo(() => {
     if (!attribute) return [];
 
+    const descendants = 
+      new Set(model.getDescendants(subjectId).map(t => t.id));
+
     const entityBodies = annotations.reduce<W3CAnnotationBody[]>((all, annotation) => {
       const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-      return [...all, ...bodies.filter(b => b.purpose === 'classifying' && b.source === subjectId)];      
+      return [...all, ...bodies.filter(b => b.purpose === 'classifying' && descendants.has(b.source))];      
     }, []);
 
     const values = entityBodies.reduce<string[]>((all, body) => {
