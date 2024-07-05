@@ -1,7 +1,7 @@
 import { NodeObject } from 'react-force-graph-2d';
 import { Drawer } from '@/components/Drawer';
 import { Folder } from '@/model';
-import { useStore } from '@/store';
+import { RelationGraph, useStore } from '@/store';
 import { EntityTypeDetails } from './EntityTypeDetails';
 import { FolderDetails } from './FolderDetails';
 import { ImageDetails } from './ImageDetails';
@@ -10,6 +10,8 @@ import { Graph, GraphNode } from '../Types';
 interface SelectionDetailsDrawerProps {
 
   graph: Graph;
+
+  relations: RelationGraph;
 
   selected: NodeObject<GraphNode>;
 
@@ -29,6 +31,7 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
       content={selected => selected.type === 'ENTITY_TYPE' ? (
         <EntityTypeDetails 
           graph={props.graph}
+          relations={props.relations}
           type={store.getDataModel().getEntityType(selected.id)} />
       ) : selected.type === 'IMAGE' ? (
         <ImageDetails

@@ -2,13 +2,18 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
+import { RelationGraph } from '@/store';
 import { Button } from '@/ui/Button';
 import { Graph } from '../../Types';
-import { AnnotatedEntities } from './AnnotatedEntities';
+import { EntityAnnotations } from './EntityAnnotations';
+import { Spline } from 'lucide-react';
+import { RelatedAnnotationList } from './RelatedAnnotationList';
 
 interface EntityTypeDetailsProps {
 
   graph: Graph;
+
+  relations: RelationGraph;
 
   type: EntityType
 
@@ -20,6 +25,10 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
 
   const linkedNodes = useMemo(() => (
     props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
+  ), [type]);
+
+  const relatedAnnotations = useMemo(() => (
+    props.relations.listRelations().filter(r => r.targetEntityType === type.id)
   ), [type]);
 
   const navigate = useNavigate();
@@ -46,7 +55,7 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
               {node.label}
             </h3>
 
-            <AnnotatedEntities 
+            <EntityAnnotations 
               key={node.id}
               imageId={node.id} 
               entityType={type} />
@@ -62,6 +71,15 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
             </p>
           </section>
         ))}
+      </div>
+
+      <div className="p-4 border-t">
+        <h2 className="flex items-center text-sm font-semibold">
+          <Spline className="w-4 h-4 mr-1.5" /> Related
+
+          <RelatedAnnotationList 
+            annotations={relatedAnnotations} />
+        </h2>
       </div>
     </aside>
   )

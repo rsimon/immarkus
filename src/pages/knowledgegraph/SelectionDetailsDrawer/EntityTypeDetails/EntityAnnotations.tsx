@@ -5,7 +5,7 @@ import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { Skeleton } from '@/ui/Skeleton';
 
-interface AnnotatedEntitiesProps {
+interface EntityAnnotationsProps {
 
   imageId: string;
 
@@ -13,7 +13,7 @@ interface AnnotatedEntitiesProps {
 
 }
 
-export const AnnotatedEntities = (props: AnnotatedEntitiesProps) => {
+export const EntityAnnotations = (props: EntityAnnotationsProps) => {
 
   const { imageId, entityType } = props;
 
