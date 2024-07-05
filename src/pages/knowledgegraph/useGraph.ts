@@ -294,6 +294,6 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
     });
   }, [relations, includeFolders, relationsOnly]);
 
-  return { annotations, graph };
+  return { annotations, graph, relations };
 
 }
