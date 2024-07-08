@@ -42,7 +42,9 @@ export interface GraphLink {
   
   target: string;
   
-  value: number
+  value: number;
+
+  type?: 'RELATION'
 
 }
 

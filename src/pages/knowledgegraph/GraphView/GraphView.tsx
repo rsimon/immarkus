@@ -224,6 +224,9 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
+  const getLinkLineDash = (link: LinkObject) => 
+    link.type === 'RELATION' ? [4 / zoom, 2 / zoom] : undefined
+
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
@@ -235,6 +238,7 @@ export const GraphView = (props: GraphViewProps) => {
           linkDirectionalArrowLength={props.settings.relationsOnly ? 16 / zoom : 0}
           linkDirectionalArrowRelPos={1}
           linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
+          linkLineDash={getLinkLineDash}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
