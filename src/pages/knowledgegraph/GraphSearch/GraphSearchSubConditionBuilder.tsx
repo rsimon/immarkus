@@ -4,7 +4,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { useSubConditions } from './useSubConditions';
-import { SubCondition } from './Types';
+import { DropdownOption, SubCondition } from './Types';
 
 interface GraphSearchSubConditionBuilderProps {
 
@@ -32,10 +32,10 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
   const selectStyle = 
     'rounded-none min-w-32 max-w-40 px-2 py-1 h-auto min-h-[30px] bg-white shadow-none whitespace-nowrap overflow-hidden text-ellipsis';
 
-  const onChangeAttribute = (attribute: string) =>
+  const onChangeAttribute = (attribute: DropdownOption) =>
     props.onChange({...props.subcondition, Attribute: attribute });
 
-  const onChangeValue = (value: string) =>
+  const onChangeValue = (value: DropdownOption) =>
     props.onChange(({...props.subcondition, Value: value }));
   
   return (
@@ -52,7 +52,7 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
 
       <Combobox 
         className={selectStyle}
-        value={props.subcondition.Value || ''}
+        value={props.subcondition.Value}
         options={values.map(value => ({ label: value, value }))} 
         onChange={onChangeValue} />
 

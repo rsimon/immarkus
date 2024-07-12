@@ -1,3 +1,5 @@
+import { ComboboxOption } from '@/components/Combobox';
+
 /**
  * Example queries:
  * 
@@ -22,17 +24,17 @@ export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE';
 
 export interface SimpleConditionSentence extends BaseSentence {
 
-  Attribute: string;
+  Attribute: DropdownOption;
 
   Comparator: Comparator;
 
-  Value: string;
+  Value: DropdownOption;
 
 }
 
 export interface NestedConditionSentence extends BaseSentence {
 
-  Value: string;
+  Value: DropdownOption;
 
   SubConditions: SubCondition[];
 
@@ -44,15 +46,17 @@ export type Comparator = 'IS' | 'IS_NOT_EMPTY';
 
 export interface SubCondition {
 
-  Attribute: string;
+  Attribute: DropdownOption;
 
   Comparator: Comparator;
 
-  Value: string;
+  Value: DropdownOption;
 
 }
 
-export interface DropdownOption {
+export interface DropdownOption extends ComboboxOption {
+
+  builtIn?: boolean;
 
   label: string;
 

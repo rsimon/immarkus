@@ -142,7 +142,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         </Select>
 
         {sentence.ConditionType === 'WHERE' && (
-          <Combobox 
+          <Combobox
             className={selectStyle}
             value={(sentence as SimpleConditionSentence).Attribute}
             options={attributeOptions} 
@@ -200,7 +200,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           <GraphSearchSubConditionBuilder
             key={idx}
             annotations={props.annotations}
-            subjectId={sentence.Value}
+            subjectId={sentence.Value.value}
             subcondition={subcondition} 
             onChange={next => onUpdateSubcondition(subcondition, next)} 
             onDelete={() => onDeleteSubcondition(subcondition)} />

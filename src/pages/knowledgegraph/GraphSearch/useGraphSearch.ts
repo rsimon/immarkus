@@ -78,20 +78,20 @@ export const useGraphSearch = (
         setComparatorOptions(ComparatorOptions);
       } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
-        const [type, propertyName] = resolveAttribute(s.Attribute);
+        const [type, propertyName] = resolveAttribute(s.Attribute.value);
         listMetadataValues(store, type, propertyName).then(propertyValues => {
           const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });
       } else {
-        const [type, propertyName] = resolveAttribute(s.Attribute);
-        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value;
+        const [type, propertyName] = resolveAttribute(s.Attribute.value);
+        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value.value;
 
         if (objectType === 'IMAGE') {
-          findImagesByMetadata(store, type, propertyName, value).then(results =>
+          findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
             setMatches(results.map(image => image.id)));  
         } else {
-          findFoldersByMetadata(store, propertyName, value).then(results =>
+          findFoldersByMetadata(store, propertyName, value, s.Attribute.builtIn).then(results =>
             setMatches(results.map(folder => folder.id)));
         }
       }
@@ -103,10 +103,10 @@ export const useGraphSearch = (
         const options = entityTypes.map(t => ({ value: t.id, label: t.label || t.id }));
         setValueOptions(options);
       } else if ((s.SubConditions || []).length === 0) {
-        const imageNodes = findImagesByEntityClass(store, graph, s.Value);
+        const imageNodes = findImagesByEntityClass(store, graph, s.Value.value);
         setMatches(imageNodes.map(n => n.id));
       } else {
-        const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
+        const images = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
         setMatches(images.map(i => i.id));
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
@@ -114,7 +114,7 @@ export const useGraphSearch = (
         const notes = listAllNotes(annotations);
         setValueOptions(notes.map(n => ({ label: n, value: n })));
       } else {
-        const imageIds = findImagesByNote(annotations, sentence.Value);
+        const imageIds = findImagesByNote(annotations, sentence.Value.value);
         setMatches(imageIds);
       }
     }

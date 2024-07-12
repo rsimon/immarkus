@@ -23,27 +23,27 @@ export interface ComboboxOption {
 
 }
  
-interface ComboboxProps {
+interface ComboboxProps <T extends ComboboxOption>{
 
   className?: string;
 
   placeholder?: string;
 
-  value?: string;
+  value?: T;
   
-  options: ComboboxOption[];
+  options: T[];
 
-  onChange(value: string): void;
+  onChange(value: T): void;
 
 }
 
-export const Combobox = (props: ComboboxProps) => {
+export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: ComboboxProps<T>) => {
 
-  const { value, options, placeholder } = props;
+  const { value, placeholder } = props;
 
   const [open, setOpen] = useState(false);
 
-  const onSelect = (value: string) => {
+  const onSelect = (value: T) => {
     setOpen(false);
     props.onChange(value);
   }
@@ -58,7 +58,7 @@ export const Combobox = (props: ComboboxProps) => {
           className={cn(props.className, 'text-xs font-normal justify-between overflow-hidden')}>
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {value
-              ? options.find(o => o.value === value)?.label
+              ? value.label
               : placeholder}
           </span>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -67,7 +67,7 @@ export const Combobox = (props: ComboboxProps) => {
 
       <PopoverContent 
         align="start"
-        className="min-w-[80px] w-auto p-0 overflow-hidden">
+        className="min-w-[80px] max-w-[60vw] w-auto p-0 overflow-hidden">
         <Command>
           <CommandInput 
             className="h-auto py-2 text-xs"
@@ -83,9 +83,9 @@ export const Combobox = (props: ComboboxProps) => {
               <CommandItem 
                 key={option.value}
                 className="block text-xs overflow-hidden whitespace-nowrap text-ellipsis"
-                value={option.value}
+                value={JSON.stringify(option)}
                 // Warning: cmdk trims the values, possibly breaking them!
-                onSelect={() => onSelect(option.value)}>
+                onSelect={() => onSelect(option)}>
                 {option.label}
               </CommandItem>
             ))}

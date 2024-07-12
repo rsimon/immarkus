@@ -180,7 +180,7 @@ export const listMetadataValues = (
         const serialized = serializePropertyValue(definition, value);
 
         const exists = all.find(o => o === serialized);
-        return exists ? all : [...all, serialized];
+        return exists ? all : [...all, ...serialized];
       } else {
         return all;
       }
@@ -193,7 +193,6 @@ export const listMetadataValues = (
         const bodies = annotations
           .filter(Boolean)
           .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
-
         return getMetadataObjectOptions(bodies);
       })
   } else {
@@ -253,7 +252,12 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
-export const findImagesByMetadata = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value?: string): Promise<Image[]> => {
+export const findImagesByMetadata = (
+  store: Store, propertyType: 'FOLDER' | 'IMAGE', 
+  propertyName: string, 
+  value?: string,
+  builtIn?: boolean
+): Promise<Image[]> => {
   const { images } = store;
 
   // Warning: heavy operation! Resolve aggregated metadata for all images.
@@ -273,7 +277,12 @@ export const findImagesByMetadata = (store: Store, propertyType: 'FOLDER' | 'IMA
 
 }
 
-export const findFoldersByMetadata = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
+export const findFoldersByMetadata = (
+  store: Store, 
+  propertyName: string, 
+  value?: string,
+  builtin?: boolean
+): Promise<Folder[]> => {
   const { folders } = store;
 
   const model = store.getDataModel();
@@ -342,10 +351,12 @@ export const findImagesByEntityConditions = (
         if (!('properties' in body)) return false;
 
         return conditions.every(c => { 
-          const definition = type.properties.find(p => p.name === c.Attribute);
+          if (!c.Attribute || !c.Value) return; 
+
+          const definition = type.properties.find(p => p.name === c.Attribute.value);
           if (definition) {
-            const serialized = serializePropertyValue(definition, body.properties[c.Attribute]);
-            return serialized.includes(c.Value);
+            const serialized = serializePropertyValue(definition, body.properties[c.Attribute.value]);
+            return serialized.includes(c.Value.value);
           }
         });
       });
