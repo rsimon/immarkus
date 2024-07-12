@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { RelationGraph } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
-import { DARK_GRAY, LIGHT_GRAY, ORANGE } from './GraphViewColors';
+import { GRAY, ORANGE } from './GraphViewColors';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { PALETTE } from '../Palette';
 
@@ -233,7 +233,7 @@ export const GraphView = (props: GraphViewProps) => {
 
   const getLinkColor = (link: LinkObject) => {
     // Relation links get default color
-    if (link.type === 'RELATION') return LIGHT_GRAY;
+    if (link.type === 'RELATION') return ORANGE;
 
     const toHighlight = hovered ? new Set([...selectedIds, hovered.id]) : selectedIds;
     if (toHighlight.size > 0) {
@@ -241,7 +241,7 @@ export const GraphView = (props: GraphViewProps) => {
       const target = link.target as NodeObject<GraphNode>;
 
       return toHighlight.has(source.id) || toHighlight.has(target.id)
-        ? ORANGE : '#ffffff00';
+        ? GRAY : '#ffffff00';
     } else {
       return '#ffffff00';
     }
@@ -260,7 +260,7 @@ export const GraphView = (props: GraphViewProps) => {
           height={dimensions[1]}
           graphData={graph} 
           linkColor={props.settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
-          linkDirectionalArrowColor={() => DARK_GRAY}
+          linkDirectionalArrowColor={() => ORANGE}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
           linkLabel={props.settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
