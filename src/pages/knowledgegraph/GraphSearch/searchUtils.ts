@@ -267,28 +267,45 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
 export const findImagesByMetadata = (
-  store: Store, propertyType: 'FOLDER' | 'IMAGE', 
+  store: Store, 
+  propertyType: 'FOLDER' | 'IMAGE', 
   propertyName: string, 
   value?: string,
   builtIn?: boolean
 ): Promise<Image[]> => {
-  const { images } = store;
+  const { folders, images } = store;
 
-  // Warning: heavy operation! Resolve aggregated metadata for all images.
-  const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
-    return getAggregatedMetadata(store, image.id).then(metadata => {
-      return [...all, { image, metadata }]
+  if (builtIn) {
+    if (propertyType === 'FOLDER' && propertyName === 'foldername') {
+      const folder = folders.find(f => f.name === value);
+      if (folder) {
+        return Promise.resolve(store.listImagesInFolder(folder.id));
+      } else {
+        return Promise.resolve([]);
+      }
+    } else if (propertyType === 'IMAGE' && propertyName === 'filename') {
+      return Promise.resolve(images.filter(i => i.name === value)); 
+    } else {
+      console.error('Unsupported built-in property', propertyType, propertyName);
+      return Promise.resolve([]);
+    }
+  } else {
+    // Warning: heavy operation! Resolve aggregated metadata for all images.
+    const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
+      return getAggregatedMetadata(store, image.id).then(metadata => {
+        return [...all, { image, metadata }]
+      });
+    }), Promise.resolve([]));
+
+    return promise.then(metadata => {
+      return metadata
+        .filter(({ metadata }) =>
+          metadata.find(m => 
+            m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .map(({ image }) => image);
     });
-  }), Promise.resolve([]));
-
-  return promise.then(metadata => {
-    return metadata
-      .filter(({ metadata }) =>
-        metadata.find(m => 
-          m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
-      .map(({ image }) => image);
-  });
-
+  }
+  
 }
 
 export const findFoldersByMetadata = (
@@ -299,22 +316,32 @@ export const findFoldersByMetadata = (
 ): Promise<Folder[]> => {
   const { folders } = store;
 
-  const model = store.getDataModel();
+  if (builtin) {
+    if (propertyName === 'foldername') {
+      return Promise.resolve(folders.filter(f => f.name === value));
+    } else {
+      console.error('Unsupported built-in folder property', propertyName);
+      return Promise.resolve([]);
+    }
+  } else {
+    const model = store.getDataModel();
 
-  const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
-    return store.getFolderMetadata(folder.id).then(annotation => {
-      const metadata = annotationToProperties(model, 'FOLDER', annotation);
-      return [...all, {  folder, metadata }]
+    const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
+      return store.getFolderMetadata(folder.id).then(annotation => {
+        const metadata = annotationToProperties(model, 'FOLDER', annotation);
+        return [...all, {  folder, metadata }]
+      });
+    }), Promise.resolve([]));
+
+    return promise.then(metadata => {
+      return metadata
+        .filter(({ metadata }) =>
+          metadata.find(m => 
+            m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .map(({ folder }) => folder);
     });
-  }), Promise.resolve([]));
+  }
 
-  return promise.then(metadata => {
-    return metadata
-      .filter(({ metadata }) =>
-        metadata.find(m => 
-          m.propertyName === propertyName && hasMatchingValue(m, value)))
-      .map(({ folder }) => folder);
-  });
 }
 
 export const findImagesByEntityClass = (
@@ -333,6 +360,7 @@ export const findImagesByEntityClass = (
     const linked = graph.getLinkedNodes(n.id);
     return linked.some(l => l.type === 'ENTITY_TYPE' && ids.has(l.id));
   });
+
 }
 
 export const findImagesByEntityConditions = (

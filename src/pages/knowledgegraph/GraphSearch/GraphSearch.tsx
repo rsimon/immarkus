@@ -82,7 +82,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
         n.type === objectType && intersection.has(n.id);
 
       props.onChangeQuery(query);
-  }
+    }
   }, [conditions]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
@@ -98,8 +98,10 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }
   
   const onChange = (current: Partial<Sentence>, next: Partial<Sentence>, matches?: string[]) => {
-    setConditions(c => c.map(condition => 
-      condition.sentence === current ? ({ sentence : next, matches }) : condition));
+    const updated = conditions.map(condition => 
+        condition.sentence === current ? ({ sentence : next, matches }) : condition);
+
+    setConditions(updated);
   }
 
   const onDelete = (sentence: Partial<Sentence>) => {
