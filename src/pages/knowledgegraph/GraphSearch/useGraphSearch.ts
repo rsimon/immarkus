@@ -72,14 +72,14 @@ export const useGraphSearch = (
 
         setAttributeOptions(properties.map(p => {
           const value = `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
-          return { label: value, value }
+          return { label: value, value, builtIn: p.builtIn }
         }));
       } else if (!s.Comparator) {
         setComparatorOptions(ComparatorOptions);
       } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
         const [type, propertyName] = resolveAttribute(s.Attribute.value);
-        listMetadataValues(store, type, propertyName).then(propertyValues => {
+        listMetadataValues(store, type, propertyName, s.Attribute.builtIn).then(propertyValues => {
           const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });

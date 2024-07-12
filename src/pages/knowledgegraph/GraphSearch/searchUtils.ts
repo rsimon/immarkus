@@ -155,52 +155,66 @@ export const findImagesByNote = (
 
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
-  store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string
+  store: Store, 
+  type: 'FOLDER' | 'IMAGE', 
+  propertyName: string, 
+  builtIn?: boolean
 ): Promise<string[]> => {
   const model = store.getDataModel();
 
-  // Helper to get the relevant values from a list of metadata annotation bodies
-  const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
-    bodies.reduce<any[]>((all, body) => {
-      if (body && 'properties' in body) {
-        const value = body.properties[propertyName];
-
-        if (!value) return all;
-
-        if (!body.source) return all;
-
-        const schema = type === 'IMAGE' 
-          ? model.getImageSchema(body.source) : model.getFolderSchema(body.source);
-
-        if (!schema?.properties) return all;
-
-        const definition = schema.properties.find(p => p.name === propertyName);
-        if (!definition) return all;
-
-        const serialized = serializePropertyValue(definition, value);
-
-        const exists = all.find(o => o === serialized);
-        return exists ? all : [...all, ...serialized];
-      } else {
-        return all;
-      }
-    }, []);
-
-  if (type === 'FOLDER') {
-    return Promise.all(store.folders.map(f => store.getFolderMetadata(f.id)))
-      // Note that folders have a single metadata annotation
-      .then(annotations => {
-        const bodies = annotations
-          .filter(Boolean)
-          .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
-        return getMetadataObjectOptions(bodies);
-      })
+  if (builtIn) {
+    if (type === 'FOLDER' && propertyName === 'foldername') {
+      return Promise.resolve(store.folders.map(f => f.name));
+    } else if (type === 'IMAGE' && propertyName === 'filename') {
+      return Promise.resolve(store.images.map(i => i.name));
+    } else {
+      console.error('Unsupported built-in property', type, propertyName);
+      return Promise.resolve([]);
+    }
   } else {
-    return Promise.all(store.images.map(i => store.getImageMetadata(i.id)))
-      // Note that images have a list of metadata bodies
-      .then(bodies => {
-        return getMetadataObjectOptions(bodies);
-      });
+    // Helper to get the relevant values from a list of metadata annotation bodies
+    const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
+      bodies.reduce<any[]>((all, body) => {
+        if (body && 'properties' in body) {
+          const value = body.properties[propertyName];
+
+          if (!value) return all;
+
+          if (!body.source) return all;
+
+          const schema = type === 'IMAGE' 
+            ? model.getImageSchema(body.source) : model.getFolderSchema(body.source);
+
+          if (!schema?.properties) return all;
+
+          const definition = schema.properties.find(p => p.name === propertyName);
+          if (!definition) return all;
+
+          const serialized = serializePropertyValue(definition, value);
+
+          const exists = all.find(o => o === serialized);
+          return exists ? all : [...all, ...serialized];
+        } else {
+          return all;
+        }
+      }, []);
+
+    if (type === 'FOLDER') {
+      return Promise.all(store.folders.map(f => store.getFolderMetadata(f.id)))
+        // Note that folders have a single metadata annotation
+        .then(annotations => {
+          const bodies = annotations
+            .filter(Boolean)
+            .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
+          return getMetadataObjectOptions(bodies);
+        })
+    } else {
+      return Promise.all(store.images.map(i => store.getImageMetadata(i.id)))
+        // Note that images have a list of metadata bodies
+        .then(bodies => {
+          return getMetadataObjectOptions(bodies);
+        });
+    }
   }
 }
 
