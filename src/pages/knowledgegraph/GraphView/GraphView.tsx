@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { RelationGraph } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
+import { DARK_GRAY, LIGHT_GRAY, ORANGE } from './GraphViewColors';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { PALETTE } from '../Palette';
 
@@ -163,11 +164,18 @@ export const GraphView = (props: GraphViewProps) => {
 
     ctx.globalAlpha = 1;
 
+    // Selection circle
     if (selectedIds.has(node.id)) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, (r + 1.5) / scale, 0, 2 * Math.PI, false);
+      ctx.lineWidth = 3 / scale;
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+
       ctx.beginPath();
       ctx.arc(node.x, node.y, (r + 4) / scale, 0, 2 * Math.PI, false);
       ctx.lineWidth = 3 / scale;
-      ctx.strokeStyle = '#ff8800';
+      ctx.strokeStyle = ORANGE
       ctx.stroke();
     }
   }
@@ -226,7 +234,7 @@ export const GraphView = (props: GraphViewProps) => {
 
   const getLinkColor = (link: LinkObject) => {
     // Relation links get default color
-    if (link.type === 'RELATION') return '#d9d9d9';
+    if (link.type === 'RELATION') return LIGHT_GRAY;
 
     const toHighlight = hovered ? new Set([...selectedIds, hovered.id]) : selectedIds;
     if (toHighlight.size > 0) {
@@ -234,14 +242,15 @@ export const GraphView = (props: GraphViewProps) => {
       const target = link.target as NodeObject<GraphNode>;
 
       return toHighlight.has(source.id) || toHighlight.has(target.id)
-        ? '#ffa500' : '#ffff0000';
+        ? ORANGE : '#ffffff00';
     } else {
-      return '#ffff0000';
+      return '#ffffff00';
     }
   }
   
-  const getLinkDirectionalArrowLength = (link: LinkObject) => 
-    (link.type === 'RELATION' && (link.source as NodeObject).type === 'ENTITY_TYPE') ? 6 : undefined;
+  const getLinkDirectionalArrowLength = (link: LinkObject) =>
+    (link.type === 'RELATION' && (link.source as NodeObject).type === 'ENTITY_TYPE') 
+      ? (20 + link.value) / zoom : undefined;
 
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
@@ -252,6 +261,7 @@ export const GraphView = (props: GraphViewProps) => {
           height={dimensions[1]}
           graphData={graph} 
           linkColor={props.settings.relationsOnly ? getLinkColor : undefined}
+          linkDirectionalArrowColor={() => DARK_GRAY}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
           linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
