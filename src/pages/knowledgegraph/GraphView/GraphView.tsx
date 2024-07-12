@@ -224,8 +224,24 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
-  const getLinkLineDash = (link: LinkObject) => 
-    link.type === 'RELATION' ? [4 / zoom, 2 / zoom] : undefined
+  const getLinkColor = (link: LinkObject) => {
+    // Relation links get default color
+    if (link.type === 'RELATION') return '#d9d9d9';
+
+    const toHighlight = hovered ? new Set([...selectedIds, hovered.id]) : selectedIds;
+    if (toHighlight.size > 0) {
+      const source = link.source as NodeObject<GraphNode>;
+      const target = link.target as NodeObject<GraphNode>;
+
+      return toHighlight.has(source.id) || toHighlight.has(target.id)
+        ? '#ffa500' : '#ffff0000';
+    } else {
+      return '#ffff0000';
+    }
+  }
+  
+  const getLinkDirectionalArrowLength = (link: LinkObject) => 
+    (link.type === 'RELATION' && (link.source as NodeObject).type === 'ENTITY_TYPE') ? 6 : undefined;
 
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
@@ -235,10 +251,10 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkDirectionalArrowLength={props.settings.relationsOnly ? 16 / zoom : 0}
+          linkColor={props.settings.relationsOnly ? getLinkColor : undefined}
+          linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
           linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
-          linkLineDash={getLinkLineDash}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
