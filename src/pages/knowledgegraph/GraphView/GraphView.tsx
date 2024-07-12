@@ -223,13 +223,12 @@ export const GraphView = (props: GraphViewProps) => {
     const target: string = (link.target as any)?.id || link.target;
 
     const relations = props.relations.listRelations().filter(r =>
-      source === r.image.id && target === r.targetEntityType);
+      source === r.sourceEntityType && target === r.targetEntityType);
 
     const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
 
-    if (distinctLabels.length > 0) {
+    if (distinctLabels.length > 0)
       return distinctLabels.join(', ');
-    }
   }
 
   const getLinkColor = (link: LinkObject) => {
