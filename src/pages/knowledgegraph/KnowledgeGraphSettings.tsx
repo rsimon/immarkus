@@ -13,7 +13,7 @@ const KnowledgeGraphSettingsContext = createContext<KnowledgeGraphSettingsContex
 
 export const KnowledgeGraphSettingsProvider = (props: { children: ReactNode }) => {
 
-  const [settings, setSettings] = useState<KnowledgeGraphSettings>({});
+  const [settings, setSettings] = useState<KnowledgeGraphSettings>({ graphMode: 'HIERARCHY' });
 
   return (
     <KnowledgeGraphSettingsContext.Provider value={{ settings, setSettings }}>

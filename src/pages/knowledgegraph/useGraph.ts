@@ -18,7 +18,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const { images, folders } = store;
 
-  const { includeFolders, relationsOnly } = settings;
+  const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
     if (!relations) return;
@@ -118,7 +118,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         });
 
         // Links between folders & subfolderss
-        const subfolderLinks = (includeFolders && !relationsOnly) ? folders.reduce<GraphLink[]>((all, folder) => {
+        const subfolderLinks = includeFolders ? folders.reduce<GraphLink[]>((all, folder) => {
           if (folder.parent) {
             const parent = store.getFolder(folder.parent);
             if (parent && 'id' in parent) {
@@ -132,7 +132,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }, []) : [];
 
         // Links between images and subfolders
-        const imageFolderLinks = (includeFolders && !relationsOnly) ? images.reduce<GraphLink[]>((all, image) => {
+        const imageFolderLinks = includeFolders ? images.reduce<GraphLink[]>((all, image) => {
           const parentFolder = store.getFolder(image.folder);
           if ('id' in parentFolder) {
             return [...all, { source: parentFolder.id, target: image.id, value: 1 }]
@@ -141,8 +141,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           }
         }, []) : [];
 
-        // Parent-relationship links between entity classes
-        const modelHierarchyLinks = !relationsOnly ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
+        // Parent-child model hierarchy links between entity classes
+        const entityHierarchyLinks = graphMode === 'HIERARCHY' ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
           if (type.parentId) {
             // Being defensive... make sure the parent ID actually exists
             const parent = datamodel.getEntityType(type.parentId);
@@ -157,8 +157,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           }
         }, []) : [];
 
-        // Links between annotations and entity types
-        const annotationEntityLinks = !relationsOnly ?
+        // Links between images and entity types
+        const imageEntityLinks =
           imagesResult.reduce<GraphLink[]>((all, { annotations, image }) => {
             // N annotations on this image, each carrying 0 to M entity links
             const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
@@ -176,56 +176,49 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             }, []);
 
             return [...all, ...entityLinks];
-        }, []) : [];
-
-        // Connect images to entity classes they have relations to
-        const relationImageEntityLinks = relations.listRelations().reduce<GraphLink[]>((all, r) => {
-          const source = r.image.id;
-          const target = r.targetEntityType;
-          return [...all, { source, target, value: 1 }];
         }, []);
 
-        // Relation links between *annotations* 
         const resolvedRelations = relations.listRelations().reduce<ResolvedRelation[]>((all, r) => (
           [...all, ...relations.resolveTargets(r)]
         ), []);
 
-        // Relation links flattened to *images* (with value = no. of annotations)
-        const relationImageLinks = resolvedRelations.reduce<GraphLink[]>((all, r) => {
+        // Links between images based on relations (with value = no. of annotations)
+        const relationImageLinks = graphMode === 'RELATIONS'? resolvedRelations.reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.image.id && l.target === r.targetImage.id;
           });
 
           if (existing) {
             return all.map(l => l === existing ? ({
-              source: l.source, target: l.target, value: l.value + 1
+              ...l,
+              value: l.value + 1
             } as GraphLink) : l)
           } else {
-            return [...all, { source: r.image.id, target: r.targetImage.id, value: 1 } as GraphLink]
+            return [...all, { source: r.image.id, target: r.targetImage.id, value: 1, type: 'RELATION' } as GraphLink]
           }
-        }, []);
+        }, []) : [];
 
         // Connect entity classes that were connected through annotations
-        const relationEntityLinks = relations.listRelations().reduce<GraphLink[]>((all, r) => {
+        const relationEntityLinks = graphMode === 'RELATIONS' ? relations.listRelations().reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.sourceEntityType && l.target === r.targetEntityType;
           });
 
           if (existing) {
             return all.map(l => l === existing ? ({
-              source: l.source, target: l.target, value: l.value + 1
+              ...l,
+              value: l.value + 1
             } as GraphLink) : l)
           } else {
-            return [...all, { source: r.sourceEntityType, target: r.targetEntityType, value: 1 } as GraphLink]
+            return [...all, { source: r.sourceEntityType, target: r.targetEntityType, value: 1, type: 'RELATION' } as GraphLink]
           }
-        }, []);
+        }, []) : [];
 
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
-          ...modelHierarchyLinks, 
-          ...annotationEntityLinks,
-          ...relationImageEntityLinks,
+          ...entityHierarchyLinks, 
+          ...imageEntityLinks,
           ...relationImageLinks,
           ...relationEntityLinks
         ];
@@ -292,7 +285,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         setAnnotations(imagesResult);
       });
     });
-  }, [relations, includeFolders, relationsOnly]);
+  }, [graphMode, includeFolders, relations]);
 
   return { annotations, graph, relations };
 

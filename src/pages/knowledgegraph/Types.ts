@@ -42,7 +42,9 @@ export interface GraphLink {
   
   target: string;
   
-  value: number
+  value: number;
+
+  type?: 'RELATION'
 
 }
 
@@ -54,6 +56,6 @@ export interface KnowledgeGraphSettings {
 
   includeFolders?: boolean;
 
-  relationsOnly?: boolean;
+  graphMode: 'HIERARCHY' | 'RELATIONS';
 
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { RelationGraph } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
+import { GRAY, ORANGE } from './GraphViewColors';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { PALETTE } from '../Palette';
 
@@ -163,11 +164,18 @@ export const GraphView = (props: GraphViewProps) => {
 
     ctx.globalAlpha = 1;
 
+    // Selection circle
     if (selectedIds.has(node.id)) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, (r + 1.5) / scale, 0, 2 * Math.PI, false);
+      ctx.lineWidth = 3 / scale;
+      ctx.strokeStyle = '#fff';
+      ctx.stroke();
+
       ctx.beginPath();
       ctx.arc(node.x, node.y, (r + 4) / scale, 0, 2 * Math.PI, false);
       ctx.lineWidth = 3 / scale;
-      ctx.strokeStyle = '#ff8800';
+      ctx.strokeStyle = ORANGE
       ctx.stroke();
     }
   }
@@ -215,14 +223,33 @@ export const GraphView = (props: GraphViewProps) => {
     const target: string = (link.target as any)?.id || link.target;
 
     const relations = props.relations.listRelations().filter(r =>
-      source === r.image.id && target === r.targetEntityType);
+      source === r.sourceEntityType && target === r.targetEntityType);
 
     const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
 
-    if (distinctLabels.length > 0) {
+    if (distinctLabels.length > 0)
       return distinctLabels.join(', ');
+  }
+
+  const getLinkColor = (link: LinkObject) => {
+    // Relation links get default color
+    if (link.type === 'RELATION') return ORANGE;
+
+    const toHighlight = hovered ? new Set([...selectedIds, hovered.id]) : selectedIds;
+    if (toHighlight.size > 0) {
+      const source = link.source as NodeObject<GraphNode>;
+      const target = link.target as NodeObject<GraphNode>;
+
+      return toHighlight.has(source.id) || toHighlight.has(target.id)
+        ? GRAY : '#ffffff00';
+    } else {
+      return '#ffffff00';
     }
   }
+  
+  const getLinkDirectionalArrowLength = (link: LinkObject) =>
+    (link.type === 'RELATION' && (link.source as NodeObject).type === 'ENTITY_TYPE') 
+      ? (20 + link.value) / zoom : undefined;
 
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
@@ -232,9 +259,11 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkDirectionalArrowLength={props.settings.relationsOnly ? 16 / zoom : 0}
+          linkColor={props.settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
+          linkDirectionalArrowColor={() => ORANGE}
+          linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
-          linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
+          linkLabel={props.settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
