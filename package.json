@@ -56,7 +56,7 @@
     "exceljs": "^4.4.0",
     "fuse.js": "^7.0.0",
     "localforage": "^1.10.0",
-    "lucide-react": "^0.400.0",
+    "lucide-react": "^0.408.0",
     "moment": "^2.30.1",
     "openseadragon": "^4.1.1",
     "papaparse": "^5.4.1",
@@ -69,7 +69,7 @@
     "react-mosaic-component": "^6.1.0",
     "react-router-dom": "^6.24.1",
     "react-spring": "^9.7.3",
-    "tailwind-merge": "^2.3.0",
+    "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0"
   }
