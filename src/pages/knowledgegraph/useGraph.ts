@@ -18,7 +18,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const { images, folders } = store;
 
-  const { includeFolders, relationsOnly } = settings;
+  const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
     if (!relations) return;
@@ -142,7 +142,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }, []) : [];
 
         // Parent-child model hierarchy links between entity classes
-        const entityHierarchyLinks = !relationsOnly ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
+        const entityHierarchyLinks = graphMode === 'HIERARCHY' ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
           if (type.parentId) {
             // Being defensive... make sure the parent ID actually exists
             const parent = datamodel.getEntityType(type.parentId);
@@ -183,7 +183,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         ), []);
 
         // Links between images based on relations (with value = no. of annotations)
-        const relationImageLinks = relationsOnly ? resolvedRelations.reduce<GraphLink[]>((all, r) => {
+        const relationImageLinks = graphMode === 'RELATIONS'? resolvedRelations.reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.image.id && l.target === r.targetImage.id;
           });
@@ -199,7 +199,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }, []) : [];
 
         // Connect entity classes that were connected through annotations
-        const relationEntityLinks = relationsOnly ? relations.listRelations().reduce<GraphLink[]>((all, r) => {
+        const relationEntityLinks = graphMode === 'RELATIONS' ? relations.listRelations().reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.sourceEntityType && l.target === r.targetEntityType;
           });
@@ -285,7 +285,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         setAnnotations(imagesResult);
       });
     });
-  }, [relations, includeFolders, relationsOnly]);
+  }, [graphMode, includeFolders, relations]);
 
   return { annotations, graph, relations };
 

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';

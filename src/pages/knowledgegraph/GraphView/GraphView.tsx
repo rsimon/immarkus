@@ -259,11 +259,11 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkColor={props.settings.relationsOnly ? getLinkColor : undefined}
+          linkColor={props.settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
           linkDirectionalArrowColor={() => DARK_GRAY}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
-          linkLabel={props.settings.relationsOnly ? getLinkLabel : undefined}
+          linkLabel={props.settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}

@@ -56,6 +56,6 @@ export interface KnowledgeGraphSettings {
 
   includeFolders?: boolean;
 
-  relationsOnly?: boolean;
+  graphMode: 'HIERARCHY' | 'RELATIONS';
 
 }
