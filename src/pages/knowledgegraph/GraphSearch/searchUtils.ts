@@ -81,6 +81,19 @@ const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSch
   }, []);
 }
 
+const sortProperties = (properties: SchemaProperty[]) =>
+  [...properties].sort((a, b) => {
+    if (a.type !== b.type) {
+      return a.type.localeCompare(b.type);
+    } else {
+      if (a.builtIn !== b.builtIn) {
+        return a.builtIn ? -1 : 1;
+      } else {
+        return a.propertyName.localeCompare(b.propertyName);
+      }
+    }      
+  });
+
 /** List metadata properties from all folder/image schemas **/
 export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
@@ -90,14 +103,21 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
     ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
   ];
 
-  return listMetadataProperties(schemas);
+  return sortProperties([
+    { type: 'FOLDER', propertyName: 'foldername', builtIn: true },
+    { type: 'IMAGE', propertyName: 'filename', builtIn: true },
+    ...listMetadataProperties(schemas)
+  ]);
 }
 
 /** List metadata properties from all folder schemas **/
 export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
   const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
-  return listMetadataProperties(schemas);
+  return sortProperties([
+    { type: 'FOLDER', propertyName: 'foldername', builtIn: true },
+    ...listMetadataProperties(schemas)
+  ]);
 }
 
 const enumerateNotes = (

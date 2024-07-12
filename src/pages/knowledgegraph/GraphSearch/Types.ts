@@ -62,6 +62,8 @@ export interface DropdownOption {
 
 export interface SchemaProperty { 
 
+  builtIn?: boolean;
+
   type: ObjectType;
 
   propertyName: string;
