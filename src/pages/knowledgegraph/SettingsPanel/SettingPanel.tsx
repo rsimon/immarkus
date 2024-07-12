@@ -56,8 +56,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div>
               <Label htmlFor="HIERARCHY">Hierarchy</Label>
               <p className="text-xs text-muted-foreground">
-                Based on data model and folder hierarchy. Images are linked 
-                to Entity Classes through annotations.
+                Based on data model, folder hierarchy and entity annotations.
               </p>
             </div>
           </div>
@@ -71,7 +70,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div>
               <Label htmlFor="RELATIONS">Relations</Label>
               <p className="text-xs text-muted-foreground">
-                Images and Entity Classes linked based on Relations.
+                Links are based on Relations. Hierarchy links are shown on hover.
               </p>
             </div>
           </div>
