@@ -28,7 +28,8 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
   ), [type]);
 
   const relatedAnnotations = useMemo(() => (
-    props.relations.listRelations().filter(r => r.targetEntityType === type.id)
+    props.relations.listRelations().filter(r => 
+      r.sourceEntityType === type.id || r.targetEntityType === type.id)
   ), [type]);
 
   const navigate = useNavigate();
