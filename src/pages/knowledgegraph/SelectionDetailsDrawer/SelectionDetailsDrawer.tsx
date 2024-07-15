@@ -38,7 +38,8 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
           type={store.getDataModel().getEntityType(selected.id)} />
       ) : selected.type === 'IMAGE' ? (
         <ImageDetails
-          image={store.getImage(selected.id)} />
+          image={store.getImage(selected.id)} 
+          relations={props.relations} />
       ) : (
         <FolderDetails
           folder={store.getFolder(selected.id) as Folder} />

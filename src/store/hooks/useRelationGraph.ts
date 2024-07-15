@@ -8,7 +8,7 @@ export interface RelationGraph {
 
   listRelations(): RelatedAnnotation[]
   
-  getInboundLinks(typeId: string, properties: any): RelatedAnnotation[];
+  getInboundLinks(typeIdOrAnnotation: string | W3CAnnotation, properties?: any): RelatedAnnotation[];
 
   resolveTargets(sourceAnnotation: RelatedAnnotation): ResolvedRelation[];
 
@@ -93,11 +93,26 @@ export const useRelationGraph = () => {
         return [...all, ...related];
       }, []);
 
-      const getInboundLinks = (typeId: string, properties: any) => {
+      const _getInboundLinks = (typeId: string, properties: any) => {
         const inbound = relatedAnnotations.filter(r =>
           r.targetEntityType === typeId && properties[r.targetInstanceLabelProperty] === r.targetInstance);
 
         return inbound;
+      }
+
+      const getInboundLinks = (typeOrAnnotation: string | W3CAnnotation, properties?: any) => {
+        if (typeof typeOrAnnotation === 'string') {
+          return _getInboundLinks(typeOrAnnotation, properties!);
+        } else {
+          const bodies = Array.isArray(typeOrAnnotation.body) ? typeOrAnnotation.body : [typeOrAnnotation.body];
+          
+          const entityBodies = bodies.filter(b => 
+            b.source && b.purpose === 'classifying' && (b as any).properties);
+
+          return entityBodies.reduce<RelatedAnnotation[]>((all, body) => {
+            return [...all, ..._getInboundLinks(body.source, (body as any).properties)]
+          }, []);
+        }
       }
 
       const listRelations = () => ([...relatedAnnotations]);
