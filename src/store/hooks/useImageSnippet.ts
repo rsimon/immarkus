@@ -37,7 +37,10 @@ export const useImageSnippets = (annotations: W3CImageAnnotation[]) => {
 
 export const useImageSnippet = (annotation: W3CImageAnnotation) => {
 
-  const snippets = useImageSnippets([annotation]);
+  // Prevents re-renders!
+  const annotations = useMemo(() => [annotation], [annotation]);
+
+  const snippets = useImageSnippets(annotations);
 
   return snippets && snippets.length > 0 ? snippets[0] : undefined;
 
