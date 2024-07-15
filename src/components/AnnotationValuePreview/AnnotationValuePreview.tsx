@@ -15,7 +15,6 @@ interface AnnotationValuePreviewProps {
 const serializeRelation = (definition: RelationPropertyDefinition, value: any) => {
   const firstValue = Array.isArray(value) ? value[0] : value;
   return [
-    // `${definition.name}:${definition.targetType ? `${definition.targetType} ` : ''}${firstValue.instance}`
     `${definition.name}:${firstValue.instance}`
   ];
 }

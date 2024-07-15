@@ -31,6 +31,8 @@ export interface Store {
 
   getRootFolder(): RootFolder;
 
+  listImagesInFolder(folderId: string): Image[];
+
   loadImage(id: string): Promise<LoadedImage>;
 
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
@@ -223,6 +225,30 @@ export const loadStore = (
     name: rootDir.name, path: [], handle: rootDir
   });
 
+  const listImagesInFolder = (folderId: string) => {
+    const folder = folders.find(f => f.id === folderId);
+
+    const listImagesRecursive = (folder: Folder, allImages: Image[] = []) => {
+      const { folders, images } = getFolderContents(folder.handle);
+      if (folders.length === 0) {
+        return [...allImages, ...images];
+      } else {
+        return [
+          ...allImages,
+          ...images, 
+          ...folders.reduce<Image[]>((all, folder) => (
+            [...all, ...listImagesRecursive(folder)]
+          ), [])]
+      }
+    }
+    
+    if (folder) {
+      return listImagesRecursive(folder);
+    } else {
+      return [];
+    }
+  }
+
   const loadImage = (
     id: string
   ): Promise<LoadedImage> => new Promise((resolve, reject) => {
@@ -306,6 +332,7 @@ export const loadStore = (
     getImage,
     getImageMetadata,
     getRootFolder,
+    listImagesInFolder,
     loadImage,
     upsertAnnotation,
     upsertFolderMetadata,

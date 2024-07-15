@@ -53,10 +53,17 @@ export const useGraphSearch = (
   const updateSentence = (part: Partial<Sentence>) =>
     setSentence(prev => ({ ...prev, ...part }));
 
-  const resolveAttribute = (attribute: string): ['FOLDER' | 'IMAGE', string] => {
-    return attribute.startsWith('folder:') 
-      ? ['FOLDER', attribute.substring('folder:'.length)]
-      : ['IMAGE',  attribute.substring('image:'.length)];
+  // This is a horrible hack... but well, the customer is always right
+  const resolveAttribute = (attribute: DropdownOption): ['FOLDER' | 'IMAGE', string] => {
+    if (attribute.builtIn) {
+      return attribute.value.startsWith('folder')
+        ? ['FOLDER', attribute.value]
+        : ['IMAGE',  attribute.value];
+    } else {
+      return attribute.value.startsWith('folder:') 
+        ? ['FOLDER', attribute.value.substring('folder:'.length)]
+        : ['IMAGE',  attribute.value.substring('image:'.length)];
+    }
   }
 
   useEffect(() => {
@@ -71,27 +78,30 @@ export const useGraphSearch = (
           ? listFolderMetadataProperties(store) : listAllMetadataProperties(store);
 
         setAttributeOptions(properties.map(p => {
-          const value = `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
-          return { label: value, value }
+          const value = p.builtIn 
+            ? p.propertyName
+            : `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
+            
+          return { label: value, value, builtIn: p.builtIn }
         }));
       } else if (!s.Comparator) {
         setComparatorOptions(ComparatorOptions);
       } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        listMetadataValues(store, type, propertyName).then(propertyValues => {
+        listMetadataValues(store, type, propertyName, s.Attribute.builtIn).then(propertyValues => {
           const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });
       } else {
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value;
+        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value.value;
 
         if (objectType === 'IMAGE') {
-          findImagesByMetadata(store, type, propertyName, value).then(results =>
+          findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
             setMatches(results.map(image => image.id)));  
         } else {
-          findFoldersByMetadata(store, propertyName, value).then(results =>
+          findFoldersByMetadata(store, propertyName, value, s.Attribute.builtIn).then(results =>
             setMatches(results.map(folder => folder.id)));
         }
       }
@@ -103,10 +113,10 @@ export const useGraphSearch = (
         const options = entityTypes.map(t => ({ value: t.id, label: t.label || t.id }));
         setValueOptions(options);
       } else if ((s.SubConditions || []).length === 0) {
-        const imageNodes = findImagesByEntityClass(store, graph, s.Value);
+        const imageNodes = findImagesByEntityClass(store, graph, s.Value.value);
         setMatches(imageNodes.map(n => n.id));
       } else {
-        const images = findImagesByEntityConditions(store, annotations, s.Value, s.SubConditions);
+        const images = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
         setMatches(images.map(i => i.id));
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
@@ -114,7 +124,7 @@ export const useGraphSearch = (
         const notes = listAllNotes(annotations);
         setValueOptions(notes.map(n => ({ label: n, value: n })));
       } else {
-        const imageIds = findImagesByNote(annotations, sentence.Value);
+        const imageIds = findImagesByNote(annotations, sentence.Value.value);
         setMatches(imageIds);
       }
     }

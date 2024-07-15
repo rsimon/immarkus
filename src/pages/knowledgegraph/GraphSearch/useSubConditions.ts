@@ -2,11 +2,12 @@ import { useMemo } from 'react';
 import { useDataModel } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
+import { DropdownOption } from './Types';
 
 export const useSubConditions = (
   annotations: W3CAnnotation[],
   subjectId: string, 
-  attribute?: string,
+  attribute?: DropdownOption,
 ) => {
   const model = useDataModel();
 
@@ -28,15 +29,15 @@ export const useSubConditions = (
     const values = entityBodies.reduce<string[]>((all, body) => {
       if (!('properties' in body && body.properties)) return all;
 
-      if (!body.properties[attribute]) return all;
+      if (!body.properties[attribute.value]) return all;
       
       const type = model.getEntityType(body.source, true);
       if (!type) return all;
 
-      const property = (type.properties || []).find(p => p.name === attribute);
+      const property = (type.properties || []).find(p => p.name === attribute.value);
       if (!property) return all;
 
-      const serialized = serializePropertyValue(property, body.properties[attribute]);
+      const serialized = serializePropertyValue(property, body.properties[attribute.value]);
       return [...all, ...serialized]; 
     }, []);
 

@@ -81,6 +81,19 @@ const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSch
   }, []);
 }
 
+const sortProperties = (properties: SchemaProperty[]) =>
+  [...properties].sort((a, b) => {
+    if (a.builtIn !== b.builtIn) {
+      return a.builtIn ? -1 : 1;
+    } else {
+      if (a.type !== b.type) {
+        return a.type.localeCompare(b.type);
+      } else {
+        return a.propertyName.localeCompare(b.propertyName);
+      }    
+    }  
+  });
+
 /** List metadata properties from all folder/image schemas **/
 export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
@@ -90,14 +103,21 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
     ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
   ];
 
-  return listMetadataProperties(schemas);
+  return sortProperties([
+    { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
+    { type: 'IMAGE', propertyName: 'image filename', builtIn: true },
+    ...listMetadataProperties(schemas)
+  ]);
 }
 
 /** List metadata properties from all folder schemas **/
 export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
   const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
-  return listMetadataProperties(schemas);
+  return sortProperties([
+    { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
+    ...listMetadataProperties(schemas)
+  ]);
 }
 
 const enumerateNotes = (
@@ -135,53 +155,66 @@ export const findImagesByNote = (
 
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
-  store: Store, type: 'FOLDER' | 'IMAGE', propertyName: string
+  store: Store, 
+  type: 'FOLDER' | 'IMAGE', 
+  propertyName: string, 
+  builtIn?: boolean
 ): Promise<string[]> => {
   const model = store.getDataModel();
 
-  // Helper to get the relevant values from a list of metadata annotation bodies
-  const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
-    bodies.reduce<any[]>((all, body) => {
-      if (body && 'properties' in body) {
-        const value = body.properties[propertyName];
-
-        if (!value) return all;
-
-        if (!body.source) return all;
-
-        const schema = type === 'IMAGE' 
-          ? model.getImageSchema(body.source) : model.getFolderSchema(body.source);
-
-        if (!schema?.properties) return all;
-
-        const definition = schema.properties.find(p => p.name === propertyName);
-        if (!definition) return all;
-
-        const serialized = serializePropertyValue(definition, value);
-
-        const exists = all.find(o => o === serialized);
-        return exists ? all : [...all, serialized];
-      } else {
-        return all;
-      }
-    }, []);
-
-  if (type === 'FOLDER') {
-    return Promise.all(store.folders.map(f => store.getFolderMetadata(f.id)))
-      // Note that folders have a single metadata annotation
-      .then(annotations => {
-        const bodies = annotations
-          .filter(Boolean)
-          .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
-
-        return getMetadataObjectOptions(bodies);
-      })
+  if (builtIn) {
+    if (type === 'FOLDER' && propertyName === 'folder name') {
+      return Promise.resolve(store.folders.map(f => f.name));
+    } else if (type === 'IMAGE' && propertyName === 'image filename') {
+      return Promise.resolve(store.images.map(i => i.name));
+    } else {
+      console.error('Unsupported built-in property', type, propertyName);
+      return Promise.resolve([]);
+    }
   } else {
-    return Promise.all(store.images.map(i => store.getImageMetadata(i.id)))
-      // Note that images have a list of metadata bodies
-      .then(bodies => {
-        return getMetadataObjectOptions(bodies);
-      });
+    // Helper to get the relevant values from a list of metadata annotation bodies
+    const getMetadataObjectOptions = (bodies: W3CAnnotationBody[]) =>
+      bodies.reduce<any[]>((all, body) => {
+        if (body && 'properties' in body) {
+          const value = body.properties[propertyName];
+
+          if (!value) return all;
+
+          if (!body.source) return all;
+
+          const schema = type === 'IMAGE' 
+            ? model.getImageSchema(body.source) : model.getFolderSchema(body.source);
+
+          if (!schema?.properties) return all;
+
+          const definition = schema.properties.find(p => p.name === propertyName);
+          if (!definition) return all;
+
+          const serialized = serializePropertyValue(definition, value);
+
+          const exists = all.find(o => o === serialized);
+          return exists ? all : [...all, ...serialized];
+        } else {
+          return all;
+        }
+      }, []);
+
+    if (type === 'FOLDER') {
+      return Promise.all(store.folders.map(f => store.getFolderMetadata(f.id)))
+        // Note that folders have a single metadata annotation
+        .then(annotations => {
+          const bodies = annotations
+            .filter(Boolean)
+            .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
+          return getMetadataObjectOptions(bodies);
+        })
+    } else {
+      return Promise.all(store.images.map(i => store.getImageMetadata(i.id)))
+        // Note that images have a list of metadata bodies
+        .then(bodies => {
+          return getMetadataObjectOptions(bodies);
+        });
+    }
   }
 }
 
@@ -233,45 +266,90 @@ const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) =>
 }
 
 /** Find images where property name and value match on the given FOLDER or IMAGE property **/
-export const findImagesByMetadata = (store: Store, propertyType: 'FOLDER' | 'IMAGE', propertyName: string, value?: string): Promise<Image[]> => {
-  const { images } = store;
+export const findImagesByMetadata = (
+  store: Store, 
+  propertyType: 'FOLDER' | 'IMAGE', 
+  propertyName: string, 
+  value?: string,
+  builtIn?: boolean
+): Promise<Image[]> => {
+  const { folders, images } = store;
 
-  // Warning: heavy operation! Resolve aggregated metadata for all images.
-  const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
-    return getAggregatedMetadata(store, image.id).then(metadata => {
-      return [...all, { image, metadata }]
+  if (builtIn) {
+    if (propertyType === 'FOLDER' && propertyName === 'folder name') {
+      if (!value) {
+        // List all images in sub-folders
+        const root = store.getFolderContents(store.getRootFolder().handle);
+        const imagesInRoot = new Set(root.images.map(i => i.id));
+        return Promise.resolve(images.filter(i => !imagesInRoot.has(i.id)));
+      } else {
+        const folder = folders.find(f => f.name === value);
+        if (folder) {
+          return Promise.resolve(store.listImagesInFolder(folder.id));
+        } else {
+          return Promise.resolve([]);
+        }
+      }
+    } else if (propertyType === 'IMAGE' && propertyName === 'image filename') {
+      // Trivial case: image filename is never empty;
+      if (!value) return Promise.resolve(images);
+      return Promise.resolve(images.filter(i => i.name === value)); 
+    } else {
+      console.error('Unsupported built-in property', propertyType, propertyName);
+      return Promise.resolve([]);
+    }
+  } else {
+    // Warning: heavy operation! Resolve aggregated metadata for all images.
+    const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
+      return getAggregatedMetadata(store, image.id).then(metadata => {
+        return [...all, { image, metadata }]
+      });
+    }), Promise.resolve([]));
+
+    return promise.then(metadata => {
+      return metadata
+        .filter(({ metadata }) =>
+          metadata.find(m => 
+            m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .map(({ image }) => image);
     });
-  }), Promise.resolve([]));
-
-  return promise.then(metadata => {
-    return metadata
-      .filter(({ metadata }) =>
-        metadata.find(m => 
-          m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
-      .map(({ image }) => image);
-  });
-
+  }
+  
 }
 
-export const findFoldersByMetadata = (store: Store, propertyName: string, value?: string): Promise<Folder[]> => {
+export const findFoldersByMetadata = (
+  store: Store, 
+  propertyName: string, 
+  value?: string,
+  builtin?: boolean
+): Promise<Folder[]> => {
   const { folders } = store;
 
-  const model = store.getDataModel();
+  if (builtin) {
+    if (propertyName === 'folder name') {
+      return Promise.resolve(folders.filter(f => f.name === value));
+    } else {
+      console.error('Unsupported built-in folder property', propertyName);
+      return Promise.resolve([]);
+    }
+  } else {
+    const model = store.getDataModel();
 
-  const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
-    return store.getFolderMetadata(folder.id).then(annotation => {
-      const metadata = annotationToProperties(model, 'FOLDER', annotation);
-      return [...all, {  folder, metadata }]
+    const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
+      return store.getFolderMetadata(folder.id).then(annotation => {
+        const metadata = annotationToProperties(model, 'FOLDER', annotation);
+        return [...all, {  folder, metadata }]
+      });
+    }), Promise.resolve([]));
+
+    return promise.then(metadata => {
+      return metadata
+        .filter(({ metadata }) =>
+          metadata.find(m => 
+            m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .map(({ folder }) => folder);
     });
-  }), Promise.resolve([]));
-
-  return promise.then(metadata => {
-    return metadata
-      .filter(({ metadata }) =>
-        metadata.find(m => 
-          m.propertyName === propertyName && hasMatchingValue(m, value)))
-      .map(({ folder }) => folder);
-  });
+  }
 }
 
 export const findImagesByEntityClass = (
@@ -290,6 +368,7 @@ export const findImagesByEntityClass = (
     const linked = graph.getLinkedNodes(n.id);
     return linked.some(l => l.type === 'ENTITY_TYPE' && ids.has(l.id));
   });
+
 }
 
 export const findImagesByEntityConditions = (
@@ -322,10 +401,12 @@ export const findImagesByEntityConditions = (
         if (!('properties' in body)) return false;
 
         return conditions.every(c => { 
-          const definition = type.properties.find(p => p.name === c.Attribute);
+          if (!c.Attribute || !c.Value) return; 
+
+          const definition = type.properties.find(p => p.name === c.Attribute.value);
           if (definition) {
-            const serialized = serializePropertyValue(definition, body.properties[c.Attribute]);
-            return serialized.includes(c.Value);
+            const serialized = serializePropertyValue(definition, body.properties[c.Attribute.value]);
+            return serialized.includes(c.Value.value);
           }
         });
       });
