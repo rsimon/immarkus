@@ -102,7 +102,8 @@ export const KnowledgeGraph = () => {
           <SelectionDetailsDrawer 
             graph={graph}
             relations={relations}
-            selected={selectedNodes[0]} 
+            selected={selectedNodes[0]}
+            settings={settings} 
             onClose={() => setSelectedNodes([])} />
         </div>
 

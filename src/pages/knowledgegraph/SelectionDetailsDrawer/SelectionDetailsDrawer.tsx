@@ -5,7 +5,7 @@ import { RelationGraph, useStore } from '@/store';
 import { EntityTypeDetails } from './EntityTypeDetails';
 import { FolderDetails } from './FolderDetails';
 import { ImageDetails } from './ImageDetails';
-import { Graph, GraphNode } from '../Types';
+import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 
 interface SelectionDetailsDrawerProps {
 
@@ -14,6 +14,8 @@ interface SelectionDetailsDrawerProps {
   relations: RelationGraph;
 
   selected: NodeObject<GraphNode>;
+
+  settings: KnowledgeGraphSettings;
 
   onClose(): void;
 
@@ -32,10 +34,12 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
         <EntityTypeDetails 
           graph={props.graph}
           relations={props.relations}
+          settings={props.settings}
           type={store.getDataModel().getEntityType(selected.id)} />
       ) : selected.type === 'IMAGE' ? (
         <ImageDetails
-          image={store.getImage(selected.id)} />
+          image={store.getImage(selected.id)} 
+          relations={props.relations} />
       ) : (
         <FolderDetails
           folder={store.getFolder(selected.id) as Folder} />

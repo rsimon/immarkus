@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { Image, LoadedImage } from '@/model';
-import { useImages, useStore } from '@/store';
+import { RelationGraph, useImages, useStore } from '@/store';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
@@ -14,6 +14,8 @@ interface ImageDetailsProps {
 
   image: Image;
 
+  relations: RelationGraph
+
 }
 
 export const ImageDetails = (props: ImageDetailsProps) => {
@@ -22,13 +24,13 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
   const store = useStore();
 
+  const navigate = useNavigate();
+
   const loaded = useImages(props.image.id, 100) as LoadedImage;
 
   const { onLoad, dimensions } = useImageDimensions();
 
   const [annotations, setAnnotations] = useState<W3CAnnotation[] | undefined>();
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     store.getAnnotations(image.id, { type: 'image' }).then(setAnnotations);
@@ -97,7 +99,9 @@ export const ImageDetails = (props: ImageDetailsProps) => {
 
             <TabsContent value="annotations" className="mt-0">
               {annotations && (
-                <AnnotationsTab annotations={annotations} />
+                <AnnotationsTab 
+                  annotations={annotations} 
+                  relations={props.relations} />
               )}
             </TabsContent>
 

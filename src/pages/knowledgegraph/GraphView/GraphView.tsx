@@ -247,9 +247,23 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
   
-  const getLinkDirectionalArrowLength = (link: LinkObject) =>
-    (link.type === 'RELATION' && (link.source as NodeObject).type === 'ENTITY_TYPE') 
-      ? (20 + link.value) / zoom : undefined;
+  const getLinkDirectionalArrowLength = (link: LinkObject) => {
+    if (!(link.type === 'RELATION') || !((link.source as NodeObject).type === 'ENTITY_TYPE')) return;
+  
+    if (highlighted || props.query) {
+      const targetId: string = (link.target as any).id || link.target;
+      const sourceId: string = (link.source as any).id || link.source;
+
+      const isHidden = highlighted 
+        ? !(highlighted.has(targetId) && highlighted.has(sourceId))
+        : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
+
+      // Don't set to 0 because force-graph will use default width (0 is falsy!)
+      return isHidden ? 0.00001 : linkScale * link.value + MIN_LINK_WIDTH;
+    } else {
+      return (20 + link.value) / zoom;
+    }
+  }
 
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
