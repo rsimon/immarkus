@@ -53,10 +53,17 @@ export const useGraphSearch = (
   const updateSentence = (part: Partial<Sentence>) =>
     setSentence(prev => ({ ...prev, ...part }));
 
-  const resolveAttribute = (attribute: string): ['FOLDER' | 'IMAGE', string] => {
-    return attribute.startsWith('folder:') 
-      ? ['FOLDER', attribute.substring('folder:'.length)]
-      : ['IMAGE',  attribute.substring('image:'.length)];
+  // This is a horrible hack... but well, the customer is always right
+  const resolveAttribute = (attribute: DropdownOption): ['FOLDER' | 'IMAGE', string] => {
+    if (attribute.builtIn) {
+      return attribute.value.startsWith('folder')
+        ? ['FOLDER', attribute.value]
+        : ['IMAGE',  attribute.value];
+    } else {
+      return attribute.value.startsWith('folder:') 
+        ? ['FOLDER', attribute.value.substring('folder:'.length)]
+        : ['IMAGE',  attribute.value.substring('image:'.length)];
+    }
   }
 
   useEffect(() => {
@@ -81,13 +88,13 @@ export const useGraphSearch = (
         setComparatorOptions(ComparatorOptions);
       } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
-        const [type, propertyName] = resolveAttribute(s.Attribute.value);
+        const [type, propertyName] = resolveAttribute(s.Attribute);
         listMetadataValues(store, type, propertyName, s.Attribute.builtIn).then(propertyValues => {
           const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });
       } else {
-        const [type, propertyName] = resolveAttribute(s.Attribute.value);
+        const [type, propertyName] = resolveAttribute(s.Attribute);
         const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value.value;
 
         if (objectType === 'IMAGE') {

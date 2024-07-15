@@ -115,7 +115,7 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
   const model = store.getDataModel();
   const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
   return sortProperties([
-    { type: 'FOLDER', propertyName: 'foldername', builtIn: true },
+    { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
     ...listMetadataProperties(schemas)
   ]);
 }
@@ -163,9 +163,9 @@ export const listMetadataValues = (
   const model = store.getDataModel();
 
   if (builtIn) {
-    if (type === 'FOLDER' && propertyName === 'foldername') {
+    if (type === 'FOLDER' && propertyName === 'folder name') {
       return Promise.resolve(store.folders.map(f => f.name));
-    } else if (type === 'IMAGE' && propertyName === 'filename') {
+    } else if (type === 'IMAGE' && propertyName === 'image filename') {
       return Promise.resolve(store.images.map(i => i.name));
     } else {
       console.error('Unsupported built-in property', type, propertyName);
@@ -276,14 +276,23 @@ export const findImagesByMetadata = (
   const { folders, images } = store;
 
   if (builtIn) {
-    if (propertyType === 'FOLDER' && propertyName === 'foldername') {
-      const folder = folders.find(f => f.name === value);
-      if (folder) {
-        return Promise.resolve(store.listImagesInFolder(folder.id));
+    if (propertyType === 'FOLDER' && propertyName === 'folder name') {
+      if (!value) {
+        // List all images in sub-folders
+        const root = store.getFolderContents(store.getRootFolder().handle);
+        const imagesInRoot = new Set(root.images.map(i => i.id));
+        return Promise.resolve(images.filter(i => !imagesInRoot.has(i.id)));
       } else {
-        return Promise.resolve([]);
+        const folder = folders.find(f => f.name === value);
+        if (folder) {
+          return Promise.resolve(store.listImagesInFolder(folder.id));
+        } else {
+          return Promise.resolve([]);
+        }
       }
-    } else if (propertyType === 'IMAGE' && propertyName === 'filename') {
+    } else if (propertyType === 'IMAGE' && propertyName === 'image filename') {
+      // Trivial case: image filename is never empty;
+      if (!value) return Promise.resolve(images);
       return Promise.resolve(images.filter(i => i.name === value)); 
     } else {
       console.error('Unsupported built-in property', propertyType, propertyName);
@@ -317,7 +326,7 @@ export const findFoldersByMetadata = (
   const { folders } = store;
 
   if (builtin) {
-    if (propertyName === 'foldername') {
+    if (propertyName === 'folder name') {
       return Promise.resolve(folders.filter(f => f.name === value));
     } else {
       console.error('Unsupported built-in folder property', propertyName);
@@ -341,7 +350,6 @@ export const findFoldersByMetadata = (
         .map(({ folder }) => folder);
     });
   }
-
 }
 
 export const findImagesByEntityClass = (
