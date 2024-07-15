@@ -83,15 +83,15 @@ const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSch
 
 const sortProperties = (properties: SchemaProperty[]) =>
   [...properties].sort((a, b) => {
-    if (a.type !== b.type) {
-      return a.type.localeCompare(b.type);
+    if (a.builtIn !== b.builtIn) {
+      return a.builtIn ? -1 : 1;
     } else {
-      if (a.builtIn !== b.builtIn) {
-        return a.builtIn ? -1 : 1;
+      if (a.type !== b.type) {
+        return a.type.localeCompare(b.type);
       } else {
         return a.propertyName.localeCompare(b.propertyName);
-      }
-    }      
+      }    
+    }  
   });
 
 /** List metadata properties from all folder/image schemas **/
@@ -104,8 +104,8 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   ];
 
   return sortProperties([
-    { type: 'FOLDER', propertyName: 'foldername', builtIn: true },
-    { type: 'IMAGE', propertyName: 'filename', builtIn: true },
+    { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
+    { type: 'IMAGE', propertyName: 'image filename', builtIn: true },
     ...listMetadataProperties(schemas)
   ]);
 }

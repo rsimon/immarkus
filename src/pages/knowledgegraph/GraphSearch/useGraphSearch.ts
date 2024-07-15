@@ -71,7 +71,10 @@ export const useGraphSearch = (
           ? listFolderMetadataProperties(store) : listAllMetadataProperties(store);
 
         setAttributeOptions(properties.map(p => {
-          const value = `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
+          const value = p.builtIn 
+            ? p.propertyName
+            : `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
+            
           return { label: value, value, builtIn: p.builtIn }
         }));
       } else if (!s.Comparator) {
