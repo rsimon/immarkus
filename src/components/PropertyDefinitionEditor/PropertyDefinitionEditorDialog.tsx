@@ -14,7 +14,9 @@ interface PropertyEditorDialogProps {
 
   previewHint: string;
 
-  property?: PropertyDefinition
+  property?: PropertyDefinition;
+
+  schema: PropertyDefinition[];
 
   onSave(definition: PropertyDefinition): void;
 
@@ -59,6 +61,7 @@ export const PropertyDefinitionEditorDialog = (props: PropertyEditorDialogProps)
           editorHint={props.editorHint}
           previewHint={props.previewHint}
           property={props.property} 
+          schema={props.schema}
           onSave={onUpdate} />
       </DialogContent>
     </Dialog>

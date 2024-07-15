@@ -1,5 +1,7 @@
+import { useMemo } from 'react';
 import { Button } from '@/ui/Button';
-import { PropertyDefinition } from '@/model';
+import { EntityType, PropertyDefinition } from '@/model';
+import { useDataModel } from '@/store';
 import { PropertyTypeIcon } from '@/components/PropertyTypeIcon';
 import { 
   moveArrayItem, 
@@ -12,9 +14,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { useDataModel } from '@/store';
 
 interface PropertyDefinitionsProps {
+
+  entityType: Partial<EntityType>;
 
   properties: PropertyDefinition[];
 
@@ -24,7 +27,7 @@ interface PropertyDefinitionsProps {
 
 export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
-  const { properties } = props; 
+  const { entityType, properties } = props; 
 
   const datamodel = useDataModel();
 
@@ -37,6 +40,13 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
       </span>
     ) : null;
   }
+
+  const schema: PropertyDefinition[] = useMemo(() => {
+    const properties = entityType.properties || [];
+    if (!entityType.parentId) return properties;
+
+    return [...properties, ...(datamodel.getEntityType(entityType.parentId, true)?.properties || [])];
+  }, [entityType]);
 
   const addProperty = (added: PropertyDefinition) =>
     props.onChange([...properties, added]);
@@ -106,6 +116,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                       editorHint={editorHint}
                       previewHint={previewHint}
                       definition={p} 
+                      schema={schema}
                       onMoveUp={moveProperty(p, true)}
                       onMoveDown={moveProperty(p, false)}
                       onUpdateProperty={updated => updateProperty(updated, p)}
@@ -119,6 +130,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
               <PropertyDefinitionEditorDialog
                 editorHint={editorHint}
                 previewHint={previewHint}
+                schema={schema}
                 onSave={addProperty}>
                 <Button 
                   variant="outline" 

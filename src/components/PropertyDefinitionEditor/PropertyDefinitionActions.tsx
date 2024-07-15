@@ -18,6 +18,8 @@ interface PropertyDefinitionActionsProps {
 
   definition: PropertyDefinition;
 
+  schema: PropertyDefinition[];
+
   onMoveUp(): void;
 
   onMoveDown(): void;
@@ -62,6 +64,7 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
           editorHint={props.editorHint}
           previewHint={props.previewHint}
           property={props.definition}
+          schema={props.schema}
           onSave={props.onUpdateProperty}
           onClose={() => setOpen(false)}>
 

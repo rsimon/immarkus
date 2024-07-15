@@ -10,6 +10,8 @@ interface MetadataListItemProps {
 
   definition: PropertyDefinition;
 
+  schema: PropertyDefinition[];
+
   onMoveUp(): void;
 
   onMoveDown(): void;
@@ -32,6 +34,7 @@ export const MetadataListItem = (props: MetadataListItemProps) => {
         editorHint={props.editorHint}
         previewHint={props.previewHint}
         definition={props.definition}
+        schema={props.schema}
         onMoveUp={props.onMoveUp}
         onMoveDown={props.onMoveDown}
         onUpdateProperty={props.onUpdateProperty}

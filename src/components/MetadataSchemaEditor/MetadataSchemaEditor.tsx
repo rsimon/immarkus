@@ -122,6 +122,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
             <PropertyDefinitionEditorDialog
               editorHint={props.editorHint}
               previewHint={props.previewHint}
+              schema={schema.properties || []}
               onSave={addProperty}>
               <Button className="flex items-center" variant="ghost">
                 <PlusCircle className="h-4 w-4 mr-1.5" /> Add Property
@@ -137,6 +138,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
                     editorHint={props.editorHint}
                     previewHint={props.previewHint}
                     definition={definition} 
+                    schema={schema.properties || []}
                     onMoveUp={() => moveProperty(definition, true)}
                     onMoveDown={() => moveProperty(definition, false)}
                     onUpdateProperty={updated => updateProperty(updated, definition)}
@@ -149,6 +151,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
               <PropertyDefinitionEditorDialog
                 editorHint={props.editorHint}
                 previewHint={props.previewHint}
+                schema={schema.properties || []}
                 onSave={addProperty}>
                 <Button 
                   variant="outline" 

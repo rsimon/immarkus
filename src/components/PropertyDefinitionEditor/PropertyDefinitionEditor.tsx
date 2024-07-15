@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
@@ -28,6 +28,8 @@ interface PropertyDefinitionEditorProps {
 
   property?: PropertyDefinition;
 
+  schema: PropertyDefinition[];
+
   onSave(definition: PropertyDefinition): void;
 
 }
@@ -35,6 +37,16 @@ interface PropertyDefinitionEditorProps {
 export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) => {
 
   const [edited, setEdited] = useState<Partial<PropertyDefinition>>(props.property || {});
+
+  const [nameError, setNameError] = useState(false);
+
+  useEffect(() => {
+    const { name } = edited;
+    if (!name) return;
+
+    const existingNames = new Set(props.schema.map(d => d.name.toLowerCase()));
+    setNameError(existingNames.has(name.toLowerCase()));
+  }, [edited.name, props.schema]);
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
@@ -48,7 +60,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
       const isValidIfRelation = type !== 'relation' ||
         (edited.targetType && edited.labelProperty);
 
-      if (isValidIfRelation)
+      if (isValidIfRelation && !nameError)
         props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
     } else {
       // TODO error handling
@@ -76,6 +88,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
               className="inline-block text-xs mb-1.5 ml-0.5">
               Property Name
             </Label>
+
+            {nameError && (<span className="text-xs text-red-600 ml-2">Property name already exists</span>)}
 
             <Input 
               id="name" 
