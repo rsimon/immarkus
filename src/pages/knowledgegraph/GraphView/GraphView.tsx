@@ -250,10 +250,13 @@ export const GraphView = (props: GraphViewProps) => {
   const getLinkDirectionalArrowLength = (link: LinkObject) => {
     if (!(link.type === 'RELATION') || !((link.source as NodeObject).type === 'ENTITY_TYPE')) return;
   
-    if (highlighted || props.query) {
-      const targetId: string = (link.target as any).id || link.target;
-      const sourceId: string = (link.source as any).id || link.source;
+    const targetId: string = (link.target as any).id || link.target;
+    const sourceId: string = (link.source as any).id || link.source;
 
+    if (targetId === sourceId)
+      return 0.00001;
+
+    if (highlighted || props.query) {
       const isHidden = highlighted 
         ? !(highlighted.has(targetId) && highlighted.has(sourceId))
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
@@ -265,6 +268,9 @@ export const GraphView = (props: GraphViewProps) => {
     }
   }
 
+  const getLinkCurvature = (link: LinkObject) =>
+    (link.source as NodeObject).id === (link.target as NodeObject).id ? 0.5 : 0;
+
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
@@ -274,6 +280,7 @@ export const GraphView = (props: GraphViewProps) => {
           height={dimensions[1]}
           graphData={graph} 
           linkColor={props.settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
+          linkCurvature={getLinkCurvature}
           linkDirectionalArrowColor={() => ORANGE}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
