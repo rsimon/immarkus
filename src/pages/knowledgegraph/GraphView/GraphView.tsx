@@ -40,6 +40,10 @@ const MIN_LINK_WIDTH = 1;
 
 export const GraphView = (props: GraphViewProps) => {
 
+  useEffect(() => {
+    console.log(props.graph?.nodes);
+  }, [props.graph]);
+
   const { graph } = props;
 
   const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);

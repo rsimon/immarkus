@@ -36,55 +36,17 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         .filter(t => t[1]));
 
       Promise.all(imagesQuery).then(imagesResult => {
-        const imageAnnotations = imagesResult.reduce<W3CAnnotation[]>((all, { annotations }) => (
-          [...all, ...annotations.filter(a => 'selector' in a.target)]
-        ), []);
-
         const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
           .map(({ image, annotations }) => 
               ([image.id, annotations.find(a => !('selector' in a.target))] as [string, W3CAnnotation]))
           .filter(t => t[1]));
-
-        const entityBodies = imageAnnotations.reduce<W3CAnnotationBody[]>((all, annotation) => (
-          [...all, ...(Array.isArray(annotation.body) ? annotation.body : [annotation.body])]
-        ), []).filter(b => b.source);
-
-        const getFolderDegree = (folder: Folder) => {
-          const { folders, images } = store.getFolderContents(folder.handle);
-          return folders.length +  images.length + (folder.parent ? 1 : 0);
-        }
-
-        const getImageDegree = (image: Image) => {
-          const annotations = imagesResult
-            .find(t => t.image.id === image.id).annotations.filter(a => 'selector' in a.target);
-
-          const entityIds = new Set(annotations
-            .reduce<W3CAnnotationBody[]>((all, annotation) => (
-              [...all, ...(Array.isArray(annotation.body) ? annotation.body : [annotation.body])]
-            ), [])
-            .filter(b => b.source)
-            .map(b => b.source));
-
-          const isSubFolder = 'id' in store.getFolder(image.folder);
-
-          return includeFolders 
-            // Add degree of one, if we are displaying folder links
-            ? entityIds.size + (isSubFolder ? 1 : 0)
-            : entityIds.size;
-        }
-
-        const getEntityTypeDegree = (type: EntityType) => {
-          const images = entityBodies.filter(b => b.source === type.id).length;
-          const childTypes = datamodel.getChildTypes(type.id).length;
-          return type.parentId ? images + childTypes + 1 : images + childTypes;
-        }
 
         const nodes: GraphNode[] = [
           ...(includeFolders ? folders.map(folder => ({
             id: folder.id,
             label: folder.name,
             type: 'FOLDER',
-            degree: getFolderDegree(folder),
+            // degree: getFolderDegree(folder),
             properties: (folderMetadata.get(folder.id)?.body as any)?.properties
           } as GraphNode)) : []),
 
@@ -92,7 +54,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
               id: image.id, 
               label: image.name,
               type: 'IMAGE', 
-              degree: getImageDegree(image),
+              // degree: getImageDegree(image),
               properties: (imageMetadata.get(image.id)?.body as any)?.properties 
             } as GraphNode)),
 
@@ -100,22 +62,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
               id: type.id, 
               label: type.label || type.id,
               type: 'ENTITY_TYPE',
-              degree: getEntityTypeDegree(type)
+              // degree: getEntityTypeDegree(type)
             } as GraphNode)),
         ];
-
-        // Record minimum & maximum number of links per node
-        let minDegree = imagesResult.length === 0 ? 0 : Infinity;
-
-        let maxDegree = 0;
-
-        nodes.forEach(n => {
-          if (n.degree > maxDegree)
-            maxDegree = n.degree; 
-
-          if (n.degree < minDegree)
-            minDegree = n.degree;
-        });
 
         // Links between folders & subfolderss
         const subfolderLinks = includeFolders ? folders.reduce<GraphLink[]>((all, folder) => {
@@ -270,11 +219,31 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           return [];
         }
 
+        const computeDegree = (node: GraphNode) => {
+          const links = flattened.filter(l => l.target === node.id || l.source === node.id);
+          const degree = links.reduce((total, link) => total + link.value, 0);
+          return {...node, degree };
+        }
+
+        const nodesWithDegree = nodes.map(computeDegree);
+
+        // Record minimum & maximum number of links per node
+        let minDegree = imagesResult.length === 0 ? 0 : Infinity;
+
+        let maxDegree = 0;
+
+        nodesWithDegree.forEach(n => {
+          if (n.degree > maxDegree)
+            maxDegree = n.degree; 
+
+          if (n.degree < minDegree)
+            minDegree = n.degree;
+        });
+
         setGraph({ 
           getLinkedNodes,
           getNeighbourhood,
-          // force-graph seems to mutate in place sometimes - clone data!
-          nodes: nodes.map(n => ({ ...n })), 
+          nodes: nodesWithDegree,
           links: flattened.map(l => ({ ...l })),
           minDegree, 
           maxDegree,
