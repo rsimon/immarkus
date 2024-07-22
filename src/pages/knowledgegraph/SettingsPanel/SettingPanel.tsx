@@ -130,7 +130,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Remove unused entity classes and images without entity annotations from the graph.
+          Remove nodes without any connections from the graph.
         </p>
       </fieldset>
     </animated.div>
