@@ -50,8 +50,12 @@ export const RelationField = (props: RelationFieldProps) => {
     field: props.definition.labelProperty
   });
 
-  const onChange = (instance: string) =>
-    setValue({ type: props.definition.targetType, ...value, instance });
+  const onChange = (instance?: string) => {
+    if (instance)
+      setValue({ type: props.definition.targetType, ...value, instance });
+    else
+      setValue(undefined);
+  }
 
   const onSelect = (item: EntityInstance & { id: string }) => {
     const { id, ...instance } = item;
