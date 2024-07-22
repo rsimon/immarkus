@@ -230,16 +230,33 @@ export const GraphView = (props: GraphViewProps) => {
   }
 
   const getLinkLabel = (link: LinkObject) => {
-    const source: string = (link.source as any)?.id || link.source;
-    const target: string = (link.target as any)?.id || link.target;
+    const { id: sourceId, type: sourceType }: { id: string, type: string } = link.source as any;
+    const { id: targetId, type: targetType }: { id: string, type: string } = link.target as any;
 
-    const relations = props.relations.listRelations().filter(r =>
-      source === r.sourceEntityType && target === r.targetEntityType);
+    // Labels are for IMAGE-IMAGE or ENTITY-ENTITY links
+    if (sourceType !== targetType)
+      return;
 
-    const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
+    if (sourceType === 'ENTITY_TYPE') {
+      const relations = props.relations.listRelations().filter(r =>
+        sourceId === r.sourceEntityType && targetId === r.targetEntityType);
 
-    if (distinctLabels.length > 0)
-      return distinctLabels.join(', ');
+      const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
+
+      if (distinctLabels.length > 0)
+        return distinctLabels.join(', ');
+    } else if (sourceType === 'IMAGE') {
+      const outbound = props.relations.getLinksBetween(sourceId, targetId); 
+      const inbound = props.relations.getLinksBetween(targetId, sourceId);
+
+      const distinctLabels = Array.from(new Set([
+        ...outbound.map(r => r.relationName),
+        ...inbound.map(r => r.relationName)
+      ]));
+
+      if (distinctLabels.length > 0)
+        return distinctLabels.join(', ');     
+    }
   }
 
   const getLinkColor = (link: LinkObject) => {

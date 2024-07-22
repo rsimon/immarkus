@@ -10,6 +10,8 @@ export interface RelationGraph {
   
   getInboundLinks(typeIdOrAnnotation: string | W3CAnnotation, properties?: any): RelatedAnnotation[];
 
+  getLinksBetween(sourceId: string, targetId: string): ResolvedRelation[];
+
   resolveTargets(sourceAnnotation: RelatedAnnotation): ResolvedRelation[];
 
 }
@@ -123,7 +125,7 @@ export const useRelationGraph = () => {
        * links a specific annotation to all annotations that match the target
        * entity instance.)
        */
-      const resolveTargets = (related: RelatedAnnotation) => {
+      const resolveTargets = (related: RelatedAnnotation): ResolvedRelation[] => {
         const { targetEntityType, targetInstance, targetInstanceLabelProperty } = related;
 
         return imageAnnotations.filter(({ annotation }) => {
@@ -137,7 +139,24 @@ export const useRelationGraph = () => {
         }));
       }
 
-      setGraph({ getInboundLinks, listRelations, resolveTargets });
+      const getLinksBetween = (sourceId: string, targetId: string) => {
+        // All outbound relations from the source image
+        const outboundRelations = relatedAnnotations.filter(r => r.image.id === sourceId);
+
+        // All resolved targets, for all outbound relations
+        const resolvedTargets = outboundRelations.reduce<ResolvedRelation[]>((all, related) =>
+          [...all,...resolveTargets(related)], []);
+
+        // Resolved relations between source and target image
+        return resolvedTargets.filter(r => r.image.id === sourceId && r.targetImage.id === targetId);
+      }
+
+      setGraph({ 
+        getInboundLinks, 
+        getLinksBetween,
+        listRelations, 
+        resolveTargets 
+      });
     });
   }, []);
 
