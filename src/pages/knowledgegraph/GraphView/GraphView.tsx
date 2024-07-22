@@ -40,11 +40,7 @@ const MIN_LINK_WIDTH = 1;
 
 export const GraphView = (props: GraphViewProps) => {
 
-  useEffect(() => {
-    console.log(props.graph?.nodes);
-  }, [props.graph]);
-
-  const { graph } = props;
+  const { graph, settings } = props;
 
   const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);
 
@@ -91,15 +87,26 @@ export const GraphView = (props: GraphViewProps) => {
     : new Set([])
   , [props.query]);
 
-  const nodeFilter = useMemo(() => (
-    props.settings.hideIsolatedNodes 
-      ? (node: NodeObject<GraphNode>) => node.degree > 0
+  const nodeFilter = useMemo(() => {
+    if (!graph) return;
+
+    const relations = [...graph.links].filter(l => l.type === 'RELATION');
+    
+    const withRelation = new Set(relations.reduce<string[]>((all, link) => (
+      // Force graph mutates links in place... source could be string or node object
+      [...all, (link.source as any).id || link.source, (link.target as any).id || link.target]
+    ), []));
+
+    return settings.hideIsolatedNodes 
+      ? settings.graphMode === 'HIERARCHY' 
+        ? (node: NodeObject<GraphNode>) => node.degree > 0
+        : (node: NodeObject<GraphNode>) => withRelation.has(node.id)
       : undefined
-  ), [props.settings, props.query]);
+    }, [settings, graph]);
 
   useEffect(() => {
-    if (fg.current && !props.settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
-  }, [props.settings.hideIsolatedNodes]);
+    if (fg.current && !settings.hideIsolatedNodes) fg.current.zoomToFit(400, 100)
+  }, [settings.hideIsolatedNodes]);
 
   useEffect(() => {
     // Trivial solution for now
@@ -160,7 +167,7 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.stroke();
 
     // Faded nodes never get labels
-    if (!props.settings.hideLabels && isOpaque) {
+    if (!settings.hideLabels && isOpaque) {
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
       ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
@@ -283,16 +290,16 @@ export const GraphView = (props: GraphViewProps) => {
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkColor={props.settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
+          linkColor={settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
           linkCurvature={getLinkCurvature}
           linkDirectionalArrowColor={() => ORANGE}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
-          linkLabel={props.settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
+          linkLabel={settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
-          nodeLabel={props.settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
+          nodeLabel={settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
           nodeRelSize={1.2 * window.devicePixelRatio / zoom}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
           nodeVisibility={nodeFilter}
