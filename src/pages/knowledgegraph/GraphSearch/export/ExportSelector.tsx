@@ -1,5 +1,5 @@
 import { Button } from '@/ui/Button';
-import { ChevronDown, Download } from 'lucide-react';
+import { ChevronDown, Download, FileBarChart2 } from 'lucide-react';
 import { useStore, useExcelAnnotationExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
@@ -53,12 +53,12 @@ export const ExportSelector = (props: ExportSelectorProps) => {
         <DropdownMenuContent 
           align="end"
           sideOffset={-5}>
-          <DropdownMenuItem className="text-xs" onSelect={onExportMetadata}>
-            Export metadata
+          <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportMetadata}>
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" />  Export metadata
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="text-xs" onSelect={onExportAnnotations}>
-            Export annotations
+          <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportAnnotations}>
+          <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export annotations
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
