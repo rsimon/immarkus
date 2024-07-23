@@ -167,6 +167,10 @@ const createEntityWorksheet = (
   });
 
   fitColumnWidths(worksheet);
+
+  // Remove sheet if empty
+  if (rowIndex === 1)
+    workbook.removeWorksheet(worksheet.id);
 }
 
 const createNotesWorksheet = (
