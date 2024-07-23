@@ -1,4 +1,7 @@
 import { Button } from '@/ui/Button';
+import { ChevronDown, Download } from 'lucide-react';
+import { useStore, useExcelAnnotationExport } from '@/store';
+import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
 import { 
   DropdownMenu,
@@ -6,11 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { ChevronDown, Download } from 'lucide-react';
-import { useState } from 'react';
-import { Image } from '@/model';
-import { ExcelAnnotationExport } from '@/components/ExcelAnnotationExport';
-import { useStore } from '@/store';
 
 interface ExportSelectorProps {
 
@@ -24,7 +22,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const store = useStore();
 
-  const [imagesToExport, setImagesToExport] = useState<Image[] | undefined>();
+  const { exportAnnotations, busy, progress } = useExcelAnnotationExport();
 
   const onExportMetadata = () => {
     /*
@@ -36,7 +34,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
   const onExportAnnotations = () => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
     const images = matches.filter(n => n.type === 'IMAGE').map(n => store.getImage(n.id));
-    setImagesToExport(images);
+    exportAnnotations(images);
   }
 
   return (
@@ -64,11 +62,10 @@ export const ExportSelector = (props: ExportSelectorProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {imagesToExport && (
-        <ExcelAnnotationExport
-          images={imagesToExport} 
-          onComplete={() => setImagesToExport(undefined)} />
-      )}
+      <ExportProgressDialog 
+        open={busy}
+        message="Exporting XLSX. This may take a while."
+        progress={progress} />
     </>
   )
 
