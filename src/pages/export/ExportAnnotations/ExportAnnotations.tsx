@@ -1,34 +1,19 @@
-import { useState } from 'react';
-import { FileBarChart2, FileJson, Table2 } from 'lucide-react';
+import { FileBarChart2, FileJson } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
-import { useStore } from '@/store';
+import { exportAnnotationsAsJSONLD, useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { Dialog, DialogTitle, DialogContent } from '@/ui/Dialog';
-import { Progress } from '@/ui/Progress';
-import { exportAnnotationsAsExcel } from './exportExcel';
-import { exportAnnotationsAsJSONLD } from './exportJSONLD';
+import { useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
+import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 
 export const ExportAnnotations = () => {
 
   const store = useStore();
 
-  const [busy, setBusy] = useState(false);
-
-  const [progress, setProgress] = useState(0);
-
-  const onProgress = (progress: number) => {
-    setProgress(progress);
-
-    if (progress === 100)
-      setBusy(false);
-  }
-
-  const onExportXLSX = () => {
-    setProgress(0);
-    setBusy(true);
-
-    exportAnnotationsAsExcel(store, onProgress);
-  }
+  const { 
+    exportAnnotations: exportAnnotationsAsExcel, 
+    busy, 
+    progress
+  } = useExcelAnnotationExport();
 
   return (
     <> 
@@ -69,7 +54,7 @@ export const ExportAnnotations = () => {
             <Button 
               disabled={busy}
               className="whitespace-nowrap flex gap-3 w-36"
-              onClick={onExportXLSX}>
+              onClick={() => exportAnnotationsAsExcel()}>
               {busy ? (
                 <Spinner className="w-4 h-4 text-white" />
               ) : (
@@ -80,26 +65,12 @@ export const ExportAnnotations = () => {
         </li>
       </ul>
 
-      <Dialog open={busy}>
-        <DialogContent>
-          <DialogTitle className="flex items-center gap-2">
-            <Table2 className="h-5 w-5" /> Processing
-          </DialogTitle>
-
-          <div className="pb-4">
-            <p className="text-sm leading-relaxed pt-6 pb-3 px-0.5">
-              Exporting XLSX. This may take a while.
-            </p>
-
-            <Progress value={progress} />
-
-            <div className="text-center text-muted-foreground text-sm pt-3">
-              {Math.round(progress)} %
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ExportProgressDialog
+        message="Exporting XLSX. This may take a while."
+        open={busy}
+        progress={progress} />
     </>
+
   )
 
 }

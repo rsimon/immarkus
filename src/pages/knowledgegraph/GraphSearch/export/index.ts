@@ -1,1 +1,1 @@
-export * from './exportImages';
+export * from './ExportSelector';

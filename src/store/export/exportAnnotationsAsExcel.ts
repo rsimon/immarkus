@@ -167,6 +167,10 @@ const createEntityWorksheet = (
   });
 
   fitColumnWidths(worksheet);
+
+  // Remove sheet if empty
+  if (rowIndex === 1)
+    workbook.removeWorksheet(worksheet.id);
 }
 
 const createNotesWorksheet = (
@@ -208,10 +212,8 @@ const createNotesWorksheet = (
   fitColumnWidths(worksheet);
 }
 
-export const exportAnnotationsAsExcel = (store: Store, onProgress: ((progress: number) => void)) => {
+export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgress: ((progress: number) => void)) => {
   const model = store.getDataModel();
-
-  const { images } = store;
 
   const root = store.getRootFolder().handle;
 

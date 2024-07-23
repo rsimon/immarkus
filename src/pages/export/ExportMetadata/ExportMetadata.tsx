@@ -1,8 +1,6 @@
 import { FileBarChart2 } from 'lucide-react';
-import { useStore } from '@/store';
+import { exportFolderMetadataCSV, exportImageMetadataCSV, useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { exportImageMetadataCSV } from './exportImageMetadata';
-import { exportFolderMetadataCSV } from './exportFolderMetadata';
 
 export const ExportMetadata = () => {
 

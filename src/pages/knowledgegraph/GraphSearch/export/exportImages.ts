@@ -14,7 +14,9 @@ interface ImageMetadata {
 }
 
 export const exportImages = (store: Store, imageIds: string[]) => {
-  const columns = listAllMetadataProperties(store).map(p => `${p.type.toLowerCase()}:${p.propertyName}`);
+  const columns = listAllMetadataProperties(store)
+    .filter(p => !p.builtIn)
+    .map(p => `${p.type.toLowerCase()}:${p.propertyName}`);
 
   const promise = imageIds.reduce<Promise<ImageMetadata[]>>((promise, id) => promise.then(rows => {
     const image = store.getImage(id);
