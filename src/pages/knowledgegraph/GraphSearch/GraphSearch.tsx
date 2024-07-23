@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { CirclePlus, Download, Grip, Trash2, X } from 'lucide-react';
+import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { exportImages } from './export';
+import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { Condition, ObjectType, Sentence } from './Types';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
@@ -113,11 +113,6 @@ export const GraphSearch = (props: GraphSearchProps) => {
       setObjectType(undefined);
   }
 
-  const onExport = () => {
-    const matches = props.graph.nodes.filter(n => props.query!(n));
-    exportImages(store, matches.map(m => m.id));
-  }
-
   return createPortal(
     <div 
       ref={el}
@@ -209,13 +204,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
               </Button>
             </div>
 
-            <Button
-              variant="link"
-              size="sm"
-              className="flex items-center text-xs py-0 px-0 font-normal"
-              onClick={onExport}>
-              <Download className="h-3.5 w-3.5 mr-1.5 mb-[1px]" /> Export Search Result
-            </Button>
+            {props.query && (
+              <ExportSelector 
+                graph={props.graph} 
+                query={props.query} />
+            )}
           </div>
         ) : (
           <div className="h-4"/>
