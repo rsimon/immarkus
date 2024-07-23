@@ -3,6 +3,7 @@ import { ChevronDown, Download } from 'lucide-react';
 import { useStore, useExcelAnnotationExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
+import { exportImages } from './exportImages';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -25,10 +26,8 @@ export const ExportSelector = (props: ExportSelectorProps) => {
   const { exportAnnotations, busy, progress } = useExcelAnnotationExport();
 
   const onExportMetadata = () => {
-    /*
     const matches = props.graph.nodes.filter(n => props.query!(n));
     exportImages(store, matches.map(m => m.id));
-    */
   }
 
   const onExportAnnotations = () => {
@@ -51,9 +50,11 @@ export const ExportSelector = (props: ExportSelectorProps) => {
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent sideOffset={-5}>
+        <DropdownMenuContent 
+          align="end"
+          sideOffset={-5}>
           <DropdownMenuItem className="text-xs" onSelect={onExportMetadata}>
-            Export image metadata
+            Export metadata
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs" onSelect={onExportAnnotations}>
