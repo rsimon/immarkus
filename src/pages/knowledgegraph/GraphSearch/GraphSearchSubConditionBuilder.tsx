@@ -4,7 +4,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { useSubConditions } from './useSubConditions';
-import { DropdownOption, SubCondition } from './Types';
+import { DropdownOption, SubCondition } from '../Types';
 
 interface GraphSearchSubConditionBuilderProps {
 

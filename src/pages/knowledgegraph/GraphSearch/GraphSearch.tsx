@@ -4,12 +4,18 @@ import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
-import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
-import { Condition, ObjectType, Sentence } from './Types';
-import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { useSearchConditions } from '../KnowledgeGraphState';
+import { 
+  Condition, 
+  Graph, 
+  GraphNode, 
+  KnowledgeGraphSettings,
+  ObjectType, 
+  Sentence
+} from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -42,13 +48,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
-  const store = useStore();
-
   const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
   const [objectType, setObjectType] = useState<ObjectType | undefined>();
 
-  const [conditions, setConditions] = useState<Condition[]>([]);
+  const { conditions, setConditions } = useSearchConditions();
 
   useDraggable(el, {
     position,
