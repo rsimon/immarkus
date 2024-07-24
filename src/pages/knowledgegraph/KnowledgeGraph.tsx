@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
@@ -8,12 +8,16 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
+import { useKnowledgeGraphSettings, useSelectedNodes, useShowGraphSearch } from './KnowledgeGraphState';
 import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
 
-  const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
+  const { selectedNodes, setSelectedNodes } = useSelectedNodes();
+
+  // Skip the sidebar slide animation if there already is a persisted selection
+  // when this page mounts
+  const skipSidebarAnimation = useMemo(() => selectedNodes.length > 0, []);
 
   const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
@@ -25,7 +29,7 @@ export const KnowledgeGraph = () => {
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
-  const [showGraphSearch, setShowGraphSearch] = useState(false);
+  const { showGraphSearch, setShowGraphSearch } = useShowGraphSearch();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -99,15 +103,18 @@ export const KnowledgeGraph = () => {
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
 
-          <SelectionDetailsDrawer 
-            graph={graph}
-            relations={relations}
-            selected={selectedNodes[0]}
-            settings={settings} 
-            onClose={() => setSelectedNodes([])} />
+          {graph && (
+            <SelectionDetailsDrawer 
+              graph={graph}
+              relations={relations}
+              selected={selectedNodes[0]}
+              settings={settings} 
+              skipInitialAnimation={skipSidebarAnimation}
+              onClose={() => setSelectedNodes([])} />
+          )}
         </div>
 
-        {showGraphSearch && (
+        {(graph && showGraphSearch) && (
           <GraphSearch 
             annotations={annotations}
             graph={graph} 

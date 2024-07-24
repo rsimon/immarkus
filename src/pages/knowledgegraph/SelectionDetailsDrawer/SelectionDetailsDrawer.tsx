@@ -17,6 +17,8 @@ interface SelectionDetailsDrawerProps {
 
   settings: KnowledgeGraphSettings;
 
+  skipInitialAnimation?: boolean;
+
   onClose(): void;
 
 }
@@ -29,6 +31,7 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
     <Drawer
       className="bg-white/80 backdrop-blur-sm shadow"
       data={props.selected}
+      skipInitialAnimation={props.skipInitialAnimation}
       onClose={props.onClose}
       content={selected => selected.type === 'ENTITY_TYPE' ? (
         <EntityTypeDetails 

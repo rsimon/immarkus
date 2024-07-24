@@ -2,14 +2,14 @@ import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
-import { Graph } from '../Types';
 import { 
   DropdownOption, 
+  Graph,
   NestedConditionSentence, 
   ObjectType, 
   Sentence, 
   SimpleConditionSentence 
-} from './Types';
+} from '../Types';
 import { 
   findFoldersByMetadata, 
   findImagesByEntityClass, 

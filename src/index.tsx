@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { KnowledgeGraphSettingsProvider } from './pages/knowledgegraph';
+import { KnowledgeGraphStateProvider } from './pages/knowledgegraph';
 import { StoreProvider } from './store/StoreProvider';
 import { Toaster } from '@/ui/Toaster';
 import { App } from '@/App';
@@ -11,7 +11,7 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <RuntimeConfig>
     <StoreProvider>
-      <KnowledgeGraphSettingsProvider>
+      <KnowledgeGraphStateProvider>
         <HashRouter>       
           <Toaster />
           <App />
@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
             </defs>
         </svg>
         </HashRouter>
-      </KnowledgeGraphSettingsProvider>
+      </KnowledgeGraphStateProvider>
     </StoreProvider>
   </RuntimeConfig>
 );

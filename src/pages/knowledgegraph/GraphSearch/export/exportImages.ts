@@ -1,9 +1,9 @@
 import { Store } from '@/store';
 import { Image } from '@/model';
 import { getAggregatedMetadata, listAllMetadataProperties } from '../searchUtils';
-import { SchemaPropertyValue } from '../Types';
 import { serializePropertyValue } from '@/utils/serialize';
 import { downloadCSV } from '@/utils/download';
+import { SchemaPropertyValue } from '../../Types';
 
 interface ImageMetadata {
 

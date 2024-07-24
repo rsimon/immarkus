@@ -1,9 +1,15 @@
 import { Folder, Image, MetadataSchema, RootFolder } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { SchemaPropertyValue, SchemaProperty, ObjectType, SubCondition } from './Types';
 import { serializePropertyValue } from '@/utils/serialize';
-import { Graph, GraphNode } from '../Types';
+import { 
+  Graph, 
+  GraphNode, 
+  SchemaPropertyValue, 
+  SchemaProperty, 
+  ObjectType, 
+  SubCondition 
+} from '../Types';
 
 /** Converts a metadata annotation body to a list of SchemaProperties **/
 const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {

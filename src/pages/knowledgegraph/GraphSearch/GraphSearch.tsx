@@ -4,12 +4,18 @@ import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
-import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
-import { Condition, ObjectType, Sentence } from './Types';
-import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { useSearchDialogPos, useSearchState } from '../KnowledgeGraphState';
+import { 
+  Condition, 
+  Graph, 
+  GraphNode, 
+  KnowledgeGraphSettings,
+  ObjectType, 
+  Sentence
+} from '../Types';
 import { 
   Select, 
   SelectContent, 
@@ -42,26 +48,14 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
-  const store = useStore();
+  const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
-  const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
-
-  const [objectType, setObjectType] = useState<ObjectType | undefined>();
-
-  const [conditions, setConditions] = useState<Condition[]>([]);
+  const { objectType, setObjectType, conditions, setConditions } = useSearchState();
 
   useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
   });
-
-  useEffect(() => {
-    if (objectType) {
-      setConditions([{...EMPTY_CONDITION}]);
-    } else {
-      setConditions([]);
-    }
-  }, [objectType]);
 
   useEffect(() => {
     if (conditions.length === 0) {
@@ -113,6 +107,16 @@ export const GraphSearch = (props: GraphSearchProps) => {
       setObjectType(undefined);
   }
 
+  const onSelectObjectType = (value: string) => {
+    setObjectType(value as ObjectType);
+
+    if (value) {
+      setConditions([{...EMPTY_CONDITION}]);
+    } else {
+      setConditions([]);
+    }
+  }
+
   return createPortal(
     <div 
       ref={el}
@@ -141,7 +145,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
           
           <Select 
             value={objectType || ''}
-            onValueChange={value => setObjectType(value as ObjectType)}>
+            onValueChange={onSelectObjectType}>
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
                 <SelectValue placeholder="select node type..." />

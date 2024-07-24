@@ -5,17 +5,17 @@ import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { GraphSearchSubConditionBuilder } from './GraphSearchSubConditionBuilder';
 import { useGraphSearch } from './useGraphSearch';
-import { Graph } from '../Types';
 import { 
   Comparator, 
   ConditionType, 
   DropdownOption,
+  Graph,
   NestedConditionSentence,
   ObjectType,
   Sentence, 
   SimpleConditionSentence, 
   SubCondition
-} from './Types';
+} from '../Types';
 import { 
   Select, 
   SelectContent, 
