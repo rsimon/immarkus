@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
@@ -14,6 +14,10 @@ import { GraphSearch } from './GraphSearch';
 export const KnowledgeGraph = () => {
 
   const { selectedNodes, setSelectedNodes } = useSelectedNodes();
+
+  // Skip the sidebar slide animation if there already is a persisted selection
+  // when this page mounts
+  const skipSidebarAnimation = useMemo(() => selectedNodes.length > 0, []);
 
   const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
@@ -105,6 +109,7 @@ export const KnowledgeGraph = () => {
               relations={relations}
               selected={selectedNodes[0]}
               settings={settings} 
+              skipInitialAnimation={skipSidebarAnimation}
               onClose={() => setSelectedNodes([])} />
           )}
         </div>

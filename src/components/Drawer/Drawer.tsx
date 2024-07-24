@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { cn } from '@/ui/utils';
 
-interface MetadataDrawerProps <T extends unknown>{
+interface MetadataDrawerProps <T extends unknown> {
 
   className?: string;
 
@@ -12,6 +12,8 @@ interface MetadataDrawerProps <T extends unknown>{
   data?: T;
 
   duration?: number;
+
+  skipInitialAnimation?: boolean;
 
   width?: number;
 
@@ -25,20 +27,24 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
 
   const previous = useRef<T | undefined>();
 
-  const shouldAnimate = 
-    // Drawer currently closed, and should open
-    !previous.current && props.data ||
-    // Drawer currently open, and should close
-    previous.current && !props.data;
+  const isInitial = useRef(true);
 
+  const shouldSkipAnimation =
+   // This is the initial render and skipInitial is true
+   (isInitial.current && props.skipInitialAnimation) ||
+   // Drawer is currently open and data changes
+   (previous.current && props.data);
+
+  // @ts-ignore
   const transition = useTransition([props.data], {
     from: { width: 0 },
     enter: { width },
     leave: { width: 0 },
     config:{
-      duration: shouldAnimate ? props.duration || 150 : 0,
+      duration: shouldSkipAnimation ? 0 : props.duration || 150, // : 0,
       easing: easings.easeInCubic
-    }
+    },
+    onRest: () => isInitial.current = false
   });
 
   useEffect(() => {
@@ -47,6 +53,7 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
 
   const className = cn('flex-grow-0 flex-shrink-0 relative border-l', props.className);
 
+  // @ts-ignore
   return transition((style, d) => d && (
     <animated.div 
       style={style}
