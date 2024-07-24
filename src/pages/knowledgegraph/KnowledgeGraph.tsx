@@ -8,7 +8,7 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { useKnowledgeGraphSettings } from './KnowledgeGraphState';
+import { useKnowledgeGraphSettings, useShowGraphSearch } from './KnowledgeGraphState';
 import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
@@ -25,7 +25,7 @@ export const KnowledgeGraph = () => {
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
-  const [showGraphSearch, setShowGraphSearch] = useState(false);
+  const { showGraphSearch, setShowGraphSearch } = useShowGraphSearch();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -107,7 +107,7 @@ export const KnowledgeGraph = () => {
             onClose={() => setSelectedNodes([])} />
         </div>
 
-        {showGraphSearch && (
+        {(graph && showGraphSearch) && (
           <GraphSearch 
             annotations={annotations}
             graph={graph} 

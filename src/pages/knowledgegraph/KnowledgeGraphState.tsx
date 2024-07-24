@@ -1,45 +1,83 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
-import { Condition, KnowledgeGraphSettings } from './Types';
+import { Condition, KnowledgeGraphSettings, ObjectType } from './Types';
 
-interface KnowledgeGraphSettingsContextValue {
+interface KnowledgeGraphStateContextValue {
 
-  conditions: Condition[];
+  searchObjectType?: ObjectType;
 
-  setConditions: Dispatch<SetStateAction<Condition[]>>;
+  searchConditions: Condition[];
+
+  setSearchObjectType(type?: ObjectType): void;
+
+  setSearchConditions: Dispatch<SetStateAction<Condition[]>>;
 
   settings: KnowledgeGraphSettings;
 
   setSettings: Dispatch<SetStateAction<KnowledgeGraphSettings>>;
 
+  showGraphSearch: boolean;
+
+  setShowGraphSearch: Dispatch<SetStateAction<boolean>>;
+
 }
 
-const KnowledgeGraphSettingsContext = createContext<KnowledgeGraphSettingsContextValue>(undefined);
+const KnowledgeGraphStateContext = createContext<KnowledgeGraphStateContextValue>(undefined);
 
-export const KnowledgeGraphSettingsProvider = (props: { children: ReactNode }) => {
+export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
 
   const [settings, setSettings] = useState<KnowledgeGraphSettings>({ graphMode: 'HIERARCHY' });
 
-  const [conditions, setConditions] = useState<Condition[]>([]);
+  const [searchObjectType, setSearchObjectType] = useState<ObjectType | undefined>();
+
+  const [searchConditions, setSearchConditions] = useState<Condition[]>([]);
+
+  const [showGraphSearch, setShowGraphSearch] = useState(false);
 
   return (
-    <KnowledgeGraphSettingsContext.Provider value={{ conditions, settings, setConditions, setSettings }}>
+    <KnowledgeGraphStateContext.Provider 
+      value={{ 
+        settings, 
+        searchConditions,
+        searchObjectType,
+        showGraphSearch,
+        setSettings,
+        setSearchConditions, 
+        setSearchObjectType,
+        setShowGraphSearch 
+      }}>
       {props.children}
-    </KnowledgeGraphSettingsContext.Provider>
+    </KnowledgeGraphStateContext.Provider>
   )
 
 }
 
 export const useKnowledgeGraphSettings = () => {
-  const { settings, setSettings } = useContext(KnowledgeGraphSettingsContext);
+  const { settings, setSettings } = useContext(KnowledgeGraphStateContext);
   return { settings, setSettings };
 }
 
 export const useKnowledgeGraphSettingsValue = () => {
-  const { settings } = useContext(KnowledgeGraphSettingsContext);
+  const { settings } = useContext(KnowledgeGraphStateContext);
   return settings;
 }
 
-export const useSearchConditions = () => {
-  const { conditions, setConditions } = useContext(KnowledgeGraphSettingsContext);
-  return { conditions, setConditions };
+export const useSearchState = () => {
+  const { 
+    searchConditions, 
+    searchObjectType, 
+    setSearchConditions,
+    setSearchObjectType 
+  } = useContext(KnowledgeGraphStateContext);
+  
+  return { 
+    conditions: searchConditions, 
+    setConditions: setSearchConditions,
+    objectType: searchObjectType,
+    setObjectType: setSearchObjectType 
+  };
+}
+
+export const useShowGraphSearch = () => {
+  const { showGraphSearch, setShowGraphSearch } = useContext(KnowledgeGraphStateContext);
+  return { showGraphSearch, setShowGraphSearch };
 }

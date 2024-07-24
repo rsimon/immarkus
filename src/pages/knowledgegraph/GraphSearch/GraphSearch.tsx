@@ -5,9 +5,10 @@ import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
+import { usePrevious } from '@/utils/usePrevious';
 import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
-import { useSearchConditions } from '../KnowledgeGraphState';
+import { useSearchState } from '../KnowledgeGraphState';
 import { 
   Condition, 
   Graph, 
@@ -50,22 +51,12 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
-  const [objectType, setObjectType] = useState<ObjectType | undefined>();
-
-  const { conditions, setConditions } = useSearchConditions();
+  const { objectType, setObjectType, conditions, setConditions } = useSearchState();
 
   useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
   });
-
-  useEffect(() => {
-    if (objectType) {
-      setConditions([{...EMPTY_CONDITION}]);
-    } else {
-      setConditions([]);
-    }
-  }, [objectType]);
 
   useEffect(() => {
     if (conditions.length === 0) {
@@ -87,7 +78,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
       props.onChangeQuery(query);
     }
-  }, [conditions]);
+  }, [JSON.stringify(conditions?.map(c => c.sentence))]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
     if (!sentence.ConditionType) return false;
@@ -115,6 +106,16 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
     if (next.length === 0)
       setObjectType(undefined);
+  }
+
+  const onSelectObjectType = (value: string) => {
+    setObjectType(value as ObjectType);
+
+    if (value) {
+      setConditions([{...EMPTY_CONDITION}]);
+    } else {
+      setConditions([]);
+    }
   }
 
   return createPortal(
@@ -145,7 +146,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
           
           <Select 
             value={objectType || ''}
-            onValueChange={value => setObjectType(value as ObjectType)}>
+            onValueChange={onSelectObjectType}>
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
                 <SelectValue placeholder="select node type..." />
