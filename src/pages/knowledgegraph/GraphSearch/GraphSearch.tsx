@@ -77,7 +77,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
       props.onChangeQuery(query);
     }
-  }, [JSON.stringify(conditions?.map(c => c.sentence))]);
+  }, [conditions]);
 
   const isComplete = (sentence: Partial<Sentence>) => {
     if (!sentence.ConditionType) return false;
