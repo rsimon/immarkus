@@ -8,7 +8,7 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { useKnowledgeGraphSettings } from './KnowledgeGraphSettings';
+import { useKnowledgeGraphSettings } from './KnowledgeGraphState';
 import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {

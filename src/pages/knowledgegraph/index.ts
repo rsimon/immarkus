@@ -1,2 +1,2 @@
 export * from './KnowledgeGraph';
-export * from './KnowledgeGraphSettings';
+export * from './KnowledgeGraphState';
