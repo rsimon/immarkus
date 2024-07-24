@@ -1,9 +1,13 @@
 import { useTransition, animated, easings } from '@react-spring/web';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { Label } from '@/ui/Label';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
 import { Switch } from '@/ui/Switch';
 import { KnowledgeGraphSettings } from '../Types';
 import { Separator } from '@/ui/Separator';
+
+import { useState } from 'react';
 
 interface SettingsPanelProps {
 
@@ -28,6 +32,74 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       easing: easings.easeOutCubic
     }
   });
+
+  const [typeLabelsOpen, setTypeLabelsOpen] = useState(false);
+
+  const onToggleAllLabels = (hidden: boolean) =>
+    props.onChangeSettings({
+      ...settings, 
+      hideAllLabels: hidden, 
+      hideNodeTypeLabels: undefined 
+    });
+
+  const onToggleTypeLabel = (type: string, hidden: boolean) => {
+    const currentHidden = (settings.hideNodeTypeLabels || []);
+    const max = settings.includeFolders ? 3 : 2;
+
+    if (hidden) {
+      const nextHidden = Array.from(new Set([...currentHidden, type]));
+      if (nextHidden.length === max) {
+        // Hide all
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: true,
+          hideNodeTypeLabels: undefined
+        });
+      } else if (nextHidden.length === 0) {
+        // Hide none
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: false,
+          hideNodeTypeLabels: undefined
+        });
+      } else {
+        // Hide current selection
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: false,
+          hideNodeTypeLabels: nextHidden as ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE')[]
+        });
+      }
+    } else {
+      const nextHidden = currentHidden.filter(t => t !== type);
+      if (nextHidden.length === 0) {
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: false,
+          hideNodeTypeLabels: undefined
+        });
+      } else if (nextHidden.length === max) {
+        // Shouldn't really happen, but for completeness
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: true,
+          hideNodeTypeLabels: undefined
+        });
+      } else {
+        props.onChangeSettings({
+          ...settings,
+          hideAllLabels: false,
+          hideNodeTypeLabels: nextHidden
+        });
+      }
+    } 
+  }
+
+  const isTypeLabelHidden = (type: string) => {
+    if (settings.hideAllLabels) return true;
+
+    return (settings.hideNodeTypeLabels || []).includes(type as ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE'));
+  }
 
   return transition((style, open) => open && (
     <animated.div 
@@ -86,16 +158,68 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           </Label>
 
           <Switch 
-            checked={settings.hideLabels}
+            checked={settings.hideAllLabels}
             id="hide-labels"
-            onCheckedChange={checked => 
-              props.onChangeSettings({...settings, hideLabels: checked})} />
+            onCheckedChange={onToggleAllLabels} />
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
           Don't show text labels for graph nodes. A hover tooltip
           will be used instead.
         </p>
+
+        <Collapsible onOpenChange={open => setTypeLabelsOpen(open)}>
+          <CollapsibleTrigger className="flex items-center gap-0.5 font-medium text-xs mt-1.5">
+            {typeLabelsOpen ? (
+              <ChevronDown className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronRight className="w-3.5 h-3.5" />
+            )} Hide for specific node types
+          </CollapsibleTrigger>
+
+          <CollapsibleContent className="pl-4">
+            <div className="flex items-center gap-2 justify-between mt-1">
+              <Label 
+                className="text-xs font-normal"
+                htmlFor="hide-image-labels">
+                Image labels
+              </Label>
+
+              <Switch 
+                checked={isTypeLabelHidden('IMAGE')}
+                id="hide-image-labels"
+                onCheckedChange={checked => onToggleTypeLabel('IMAGE', checked)} />
+            </div>
+
+            {settings.includeFolders && (
+              <div className="flex items-center gap-2 justify-between mt-1.5">
+                <Label 
+                  className="text-xs font-normal"
+                  htmlFor="hide-folder-labels">
+                  Sub-folder labels
+                </Label>
+
+                <Switch 
+                  checked={isTypeLabelHidden('FOLDER')}
+                  id="hide-folder-labels"
+                  onCheckedChange={checked => onToggleTypeLabel('FOLDER', checked)} />
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 justify-between mt-1.5">
+              <Label 
+                className="text-xs font-normal"
+                htmlFor="hide-entity-labels">
+                Entity class labels
+              </Label>
+
+              <Switch 
+                checked={isTypeLabelHidden('ENTITY_TYPE')}
+                id="hide-entity-labels"
+                onCheckedChange={checked => onToggleTypeLabel('ENTITY_TYPE', checked)} />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </fieldset>
 
       <fieldset className="p-3">

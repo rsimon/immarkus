@@ -54,7 +54,9 @@ export interface KnowledgeGraphSettings {
 
   hideIsolatedNodes?: boolean;
 
-  hideLabels?: boolean;
+  hideAllLabels?: boolean;
+
+  hideNodeTypeLabels?: ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE')[];
 
   includeFolders?: boolean;
 

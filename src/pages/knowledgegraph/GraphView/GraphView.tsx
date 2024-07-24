@@ -166,8 +166,16 @@ export const GraphView = (props: GraphViewProps) => {
     ctx.fill();
     ctx.stroke();
 
+    const hideLabel = 
+      // Faded nodes never get labels
+      !isOpaque ||
+      // Hide all labels
+      settings.hideAllLabels ||
+      // Hide this node type label
+      (settings.hideNodeTypeLabels && settings.hideNodeTypeLabels.includes(node.type));
+
     // Faded nodes never get labels
-    if (!settings.hideLabels && isOpaque) {
+    if (!hideLabel) {
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
       ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
@@ -316,7 +324,7 @@ export const GraphView = (props: GraphViewProps) => {
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
-          nodeLabel={settings.hideLabels ? (node: GraphNode) => node.label || node.id : undefined}
+          nodeLabel={settings.hideAllLabels ? (node: GraphNode) => node.label || node.id : undefined}
           nodeRelSize={1.2 * window.devicePixelRatio / zoom}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
           nodeVisibility={nodeFilter}
