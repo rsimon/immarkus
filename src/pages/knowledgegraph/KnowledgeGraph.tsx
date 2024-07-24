@@ -8,12 +8,12 @@ import { useGraph } from './useGraph';
 import { GraphControls } from './GraphControls';
 import { SettingsPanel } from './SettingsPanel';
 import { SelectionDetailsDrawer } from './SelectionDetailsDrawer';
-import { useKnowledgeGraphSettings, useShowGraphSearch } from './KnowledgeGraphState';
+import { useKnowledgeGraphSettings, useSelectedNodes, useShowGraphSearch } from './KnowledgeGraphState';
 import { GraphSearch } from './GraphSearch';
 
 export const KnowledgeGraph = () => {
 
-  const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
+  const { selectedNodes, setSelectedNodes } = useSelectedNodes();
 
   const [pinnedNodes, setPinnedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
@@ -99,12 +99,14 @@ export const KnowledgeGraph = () => {
               onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
 
-          <SelectionDetailsDrawer 
-            graph={graph}
-            relations={relations}
-            selected={selectedNodes[0]}
-            settings={settings} 
-            onClose={() => setSelectedNodes([])} />
+          {graph && (
+            <SelectionDetailsDrawer 
+              graph={graph}
+              relations={relations}
+              selected={selectedNodes[0]}
+              settings={settings} 
+              onClose={() => setSelectedNodes([])} />
+          )}
         </div>
 
         {(graph && showGraphSearch) && (

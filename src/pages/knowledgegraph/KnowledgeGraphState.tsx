@@ -1,5 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
-import { Condition, KnowledgeGraphSettings, ObjectType } from './Types';
+import { Condition, GraphNode, KnowledgeGraphSettings, ObjectType } from './Types';
+import { NodeObject } from 'react-force-graph-2d';
 
 interface KnowledgeGraphStateContextValue {
 
@@ -7,15 +8,19 @@ interface KnowledgeGraphStateContextValue {
 
   searchConditions: Condition[];
 
+  selectedNodes: NodeObject<GraphNode>[];
+
+  settings: KnowledgeGraphSettings;
+
+  showGraphSearch: boolean;
+
   setSearchObjectType(type?: ObjectType): void;
 
   setSearchConditions: Dispatch<SetStateAction<Condition[]>>;
 
-  settings: KnowledgeGraphSettings;
+  setSelectedNodes: Dispatch<SetStateAction<NodeObject<GraphNode>[]>>;
 
   setSettings: Dispatch<SetStateAction<KnowledgeGraphSettings>>;
-
-  showGraphSearch: boolean;
 
   setShowGraphSearch: Dispatch<SetStateAction<boolean>>;
 
@@ -24,6 +29,8 @@ interface KnowledgeGraphStateContextValue {
 const KnowledgeGraphStateContext = createContext<KnowledgeGraphStateContextValue>(undefined);
 
 export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
+
+  const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<KnowledgeGraphSettings>({ graphMode: 'HIERARCHY' });
 
@@ -36,13 +43,15 @@ export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
   return (
     <KnowledgeGraphStateContext.Provider 
       value={{ 
-        settings, 
         searchConditions,
         searchObjectType,
+        selectedNodes,
+        settings, 
         showGraphSearch,
-        setSettings,
         setSearchConditions, 
         setSearchObjectType,
+        setSelectedNodes,
+        setSettings,
         setShowGraphSearch 
       }}>
       {props.children}
@@ -80,4 +89,9 @@ export const useSearchState = () => {
 export const useShowGraphSearch = () => {
   const { showGraphSearch, setShowGraphSearch } = useContext(KnowledgeGraphStateContext);
   return { showGraphSearch, setShowGraphSearch };
+}
+
+export const useSelectedNodes = () => {
+  const { selectedNodes, setSelectedNodes } = useContext(KnowledgeGraphStateContext);
+  return { selectedNodes, setSelectedNodes };
 }
