@@ -1,12 +1,16 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
+import type { NodeObject } from 'react-force-graph-2d';
 import { Condition, GraphNode, KnowledgeGraphSettings, ObjectType } from './Types';
-import { NodeObject } from 'react-force-graph-2d';
+
+type Point = { x: number, y: number };
 
 interface KnowledgeGraphStateContextValue {
 
-  searchObjectType?: ObjectType;
-
   searchConditions: Condition[];
+
+  searchDialogPos?: Point;
+
+  searchObjectType?: ObjectType;
 
   selectedNodes: NodeObject<GraphNode>[];
 
@@ -14,9 +18,11 @@ interface KnowledgeGraphStateContextValue {
 
   showGraphSearch: boolean;
 
-  setSearchObjectType(type?: ObjectType): void;
-
   setSearchConditions: Dispatch<SetStateAction<Condition[]>>;
+
+  setSearchDialogPos: Dispatch<SetStateAction<Point>>;
+
+  setSearchObjectType: Dispatch<SetStateAction<ObjectType | undefined>>;
 
   setSelectedNodes: Dispatch<SetStateAction<NodeObject<GraphNode>[]>>;
 
@@ -30,13 +36,15 @@ const KnowledgeGraphStateContext = createContext<KnowledgeGraphStateContextValue
 
 export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
 
+  const [searchConditions, setSearchConditions] = useState<Condition[]>([]);
+
+  const [searchDialogPos, setSearchDialogPos] = useState<Point | undefined>();
+ 
+  const [searchObjectType, setSearchObjectType] = useState<ObjectType | undefined>();
+
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
   const [settings, setSettings] = useState<KnowledgeGraphSettings>({ graphMode: 'HIERARCHY' });
-
-  const [searchObjectType, setSearchObjectType] = useState<ObjectType | undefined>();
-
-  const [searchConditions, setSearchConditions] = useState<Condition[]>([]);
 
   const [showGraphSearch, setShowGraphSearch] = useState(false);
 
@@ -44,11 +52,13 @@ export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
     <KnowledgeGraphStateContext.Provider 
       value={{ 
         searchConditions,
+        searchDialogPos,
         searchObjectType,
         selectedNodes,
         settings, 
         showGraphSearch,
         setSearchConditions, 
+        setSearchDialogPos,
         setSearchObjectType,
         setSelectedNodes,
         setSettings,
@@ -94,4 +104,13 @@ export const useShowGraphSearch = () => {
 export const useSelectedNodes = () => {
   const { selectedNodes, setSelectedNodes } = useContext(KnowledgeGraphStateContext);
   return { selectedNodes, setSelectedNodes };
+}
+
+export const useSearchDialogPos = (initial?: Point) => {
+  const { searchDialogPos, setSearchDialogPos } = useContext(KnowledgeGraphStateContext);
+
+  if (!searchDialogPos && initial)
+    setSearchDialogPos(initial);
+
+  return { position: searchDialogPos, setPosition: setSearchDialogPos };
 }

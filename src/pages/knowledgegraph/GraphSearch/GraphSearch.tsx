@@ -5,10 +5,9 @@ import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
 import { Image } from '@/model';
 import { Button } from '@/ui/Button';
-import { usePrevious } from '@/utils/usePrevious';
 import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
-import { useSearchState } from '../KnowledgeGraphState';
+import { useSearchDialogPos, useSearchState } from '../KnowledgeGraphState';
 import { 
   Condition, 
   Graph, 
@@ -49,7 +48,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const el = useRef(null);
 
-  const [position, setPosition] = useState({ x: props.isFullscreen ? 0 : 250, y: 0 });
+  const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 0 : 250, y: 0 });
 
   const { objectType, setObjectType, conditions, setConditions } = useSearchState();
 
