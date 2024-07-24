@@ -41,7 +41,7 @@ export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
     enter: { width },
     leave: { width: 0 },
     config:{
-      duration: shouldSkipAnimation ? 0 : props.duration || 150, // : 0,
+      duration: shouldSkipAnimation ? 0 : props.duration || 150,
       easing: easings.easeInCubic
     },
     onRest: () => isInitial.current = false
