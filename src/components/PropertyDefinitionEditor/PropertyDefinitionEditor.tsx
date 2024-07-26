@@ -44,7 +44,12 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     const { name } = edited;
     if (!name) return;
 
-    const existingNames = new Set(props.schema.map(d => d.name.toLowerCase()));
+    const existingNames = new Set(
+      props.schema
+        .filter(p => p !== edited)
+        .map(d => d.name.toLowerCase())
+    );
+
     setNameError(existingNames.has(name.toLowerCase()));
   }, [edited.name, props.schema]);
 
