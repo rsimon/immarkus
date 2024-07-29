@@ -49,10 +49,13 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
           </h2>
           <ul className="px-2">
             {inboundRelations.map(({ annotation, related }, idx) => related.map(r => (
-              <InboundRelationCard
-                key={`${annotation.id}-${idx}`} 
-                annotation={annotation as unknown as ImageAnnotation}
-                related={r} />
+              <li 
+                key={`${annotation.id}-${idx}`}
+                className="mb-2">
+                <InboundRelationCard
+                  annotation={annotation as unknown as ImageAnnotation}
+                  related={r} />
+              </li>
             )))}
           </ul>
         </>

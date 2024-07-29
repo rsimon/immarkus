@@ -26,6 +26,14 @@ export const Annotate = () => {
   const [mode, setMode] = useState<ToolMode>('move');
 
   useEffect(() => {
+    // Update the imagesIds in case the params change
+    const next = params.images.split('&');
+
+    if (imageIds.join() !== next.join())
+      setImageIds(next);
+  }, [params]);
+
+  useEffect(() => {
     // Update the URL in response to image change
     navigate(`/annotate/${imageIds.join('&')}`);
   }, [imageIds]);

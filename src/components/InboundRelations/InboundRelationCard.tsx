@@ -64,11 +64,11 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
             <div className="flex items-center gap-1 text-muted-foreground pt-0.5">
               <Image className="w-3.5 h-3.5" />
 
-              <Link 
-                to={related.image.id}
+              <a 
+                href={`/#/annotate/${related.image.id}`}
                 className="whitespace-nowrap block max-w-full overflow-hidden text-ellipsis italic text-sky-700 hover:underline">
                 {related.image.name}
-              </Link>
+              </a>
             </div>
           )}
         </div>
