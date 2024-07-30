@@ -117,6 +117,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
     }
   }
 
+  const onClearAll = () => {
+    setObjectType(undefined);
+    setConditions([]);
+  }
+
   return createPortal(
     <div 
       ref={el}
@@ -203,7 +208,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
                 variant="link"
                 size="sm"
                 className="flex items-center text-xs py-0 px-0 font-normal"
-                onClick={() => setConditions([])}>
+                onClick={onClearAll}>
                 <Trash2 className="h-3.5 w-3.5 mr-1 mb-[1px]" /> Clear All
               </Button>
             </div>
