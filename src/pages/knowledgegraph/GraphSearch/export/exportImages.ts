@@ -2,7 +2,7 @@ import { Store } from '@/store';
 import { Image } from '@/model';
 import { getAggregatedMetadata, listAllMetadataProperties } from '../searchUtils';
 import { serializePropertyValue } from '@/utils/serialize';
-import { downloadCSV } from '@/utils/download';
+import { downloadExcel } from '@/utils/download';
 import { SchemaPropertyValue } from '../../Types';
 
 interface ImageMetadata {
@@ -46,6 +46,7 @@ export const exportImages = (store: Store, imageIds: string[]) => {
       return { image: image.name, ...rows };
     });
 
-    downloadCSV(rows, 'image_results.csv');
+    // downloadCSV(rows, 'image_results.csv');
+    downloadExcel(rows, 'image_results.xlsx');
   });
 }
