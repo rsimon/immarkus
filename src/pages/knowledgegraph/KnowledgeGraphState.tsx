@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
 import type { NodeObject } from 'react-force-graph-2d';
 import { Condition, GraphNode, KnowledgeGraphSettings, ObjectType } from './Types';
 
@@ -109,8 +109,10 @@ export const useSelectedNodes = () => {
 export const useSearchDialogPos = (initial?: Point) => {
   const { searchDialogPos, setSearchDialogPos } = useContext(KnowledgeGraphStateContext);
 
-  if (!searchDialogPos && initial)
-    setSearchDialogPos(initial);
+  useEffect(() => {
+    if (!searchDialogPos && initial)
+      setSearchDialogPos(initial);
+  }, [searchDialogPos, setSearchDialogPos]);
 
-  return { position: searchDialogPos, setPosition: setSearchDialogPos };
+  return { position: searchDialogPos || initial, setPosition: setSearchDialogPos };
 }
