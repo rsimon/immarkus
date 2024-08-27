@@ -55,18 +55,20 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
 const loadFromFile = (file: File) =>
   readJSONFile<DataModel>(file)
     .then(data => {
-      const { entityTypes, folderSchemas, imageSchemas } = data;
+      const { entityTypes, folderSchemas, imageSchemas, relationshipTypes } = data;
       return {
         entityTypes: entityTypes || [],
         folderSchemas: folderSchemas || [],
-        imageSchemas: imageSchemas || []
+        imageSchemas: imageSchemas || [],
+        relationshipTypes: relationshipTypes || []
       }
     })
     .catch(() => {
       return { 
         entityTypes: [],
         folderSchemas: [],
-        imageSchemas: []
+        imageSchemas: [],
+        relationshipTypes: []
       }
     });
 
@@ -78,22 +80,19 @@ export const loadDataModel = (
 
   const file = await fileHandle.getFile();
 
-  let { entityTypes, imageSchemas, folderSchemas } = await loadFromFile(file);
+  let { entityTypes, imageSchemas, folderSchemas, relationshipTypes } = await loadFromFile(file);
 
   entityTypes = repairDataModel(entityTypes);
-
-  // TODO
-  let relationshipTypes = [];
 
   const tree = createEntityTypeTree(entityTypes);
 
   const rebuildEntityTypeTreeAndSave = () => {
     tree.rebuild(entityTypes);
-    return writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas });
+    return writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas, relationshipTypes });
   }
 
   const save = () =>
-    writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas });
+    writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas, relationshipTypes });
 
   /** API **/
 
@@ -125,11 +124,13 @@ export const loadDataModel = (
   }
 
   const addRelationshipType = (type: string) => {
-    // TODO
-    if (!relationshipTypes.includes(type))
+    if (!relationshipTypes.includes(type)) {
       relationshipTypes = [...relationshipTypes, type];
-
-    return Promise.resolve();
+      return save();
+    } else {
+      // Do nothing
+      return Promise.resolve();
+    }
   }
 
   const clearEntityTypes = () => {
@@ -204,7 +205,7 @@ export const loadDataModel = (
 
   const removeRelationShipType = (type: string) => {
     relationshipTypes = relationshipTypes.filter(t => t !== type);
-    return Promise.resolve();
+    return save();
   }
 
   const setEntityTypes = (types: EntityType[]) => {
