@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
-import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, useSelection, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
@@ -12,6 +11,17 @@ import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
+import { 
+  ChevronLeft, 
+  MousePointer2, 
+  Redo2, 
+  RotateCcwSquare, 
+  RotateCwSquare, 
+  Spline, 
+  Undo2, 
+  ZoomIn, 
+  ZoomOut 
+} from 'lucide-react';
 
 interface HeaderSectionProps {
 
@@ -38,6 +48,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   const manifold = useAnnotoriousManifold();
 
   const store = useStore();
+
+  const selection = useSelection();
 
   const osdToolsDisabled = props.images.length > 1;
 
@@ -179,6 +191,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               <Redo2
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
+
+            <Separator orientation="vertical" className="h-4" />
           </>
         )}
 
@@ -195,6 +209,12 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           active={props.mode === 'draw'}
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
+
+        <ToolbarButton
+          disabled={selection.selected.length === 0}>
+          <Spline
+            className="h-8 w-8 p-2" />
+        </ToolbarButton>
       </section>
     </section>
   )
