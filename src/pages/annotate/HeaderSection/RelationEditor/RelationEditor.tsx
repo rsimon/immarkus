@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Spline } from 'lucide-react';
 import { useSelection } from '@annotorious/react-manifold';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import { Skeleton } from '@/ui/Skeleton';
 import { ToolbarButton } from '../../ToolbarButton';
 import { RelationEditorHint } from './RelationEditorHint';
 import { ImageAnnotation } from '@annotorious/react';
@@ -33,7 +32,7 @@ export const RelationEditor = () => {
 
       <PopoverContent 
         className="w-72"
-        align="end" 
+        align="start" 
         side="bottom" 
         sideOffset={14}>
         <RelationEditorHint source={source} />

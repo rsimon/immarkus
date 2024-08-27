@@ -1,5 +1,5 @@
 import { useState } from 'react'; 
-import { Import } from 'lucide-react';
+import { Cuboid, Import } from 'lucide-react';
 import { DataModelImport } from '@/components/DataModelImport';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
@@ -42,7 +42,7 @@ export const EntityTypes = () => {
       <div className="flex mt-4 gap-2">
         <EntityTypeEditor>
           <Button>
-            Create New Entity Class
+            <Cuboid size={16} className="mr-2" /> Create New Entity Class
           </Button>
         </EntityTypeEditor>
 

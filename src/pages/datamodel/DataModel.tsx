@@ -1,9 +1,10 @@
-import { Cuboid, Folder, Image } from 'lucide-react';
+import { Cuboid, Folder, Image, Spline } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { EntityTypes} from './EntityTypes';
 import { ImageMetadata } from './ImageMetadata';
 import { FolderMetadata } from './FolderMetadata';
+import { Relationships } from './Relationships';
 
 import './DataModel.css';
 
@@ -22,6 +23,10 @@ export const Vocabulary = () => {
               <Cuboid size={16} className="mr-2" /> Entity Classes
             </TabsTrigger>
 
+            <TabsTrigger value="relationships">
+              <Spline size={16} className="mr-2" /> Relationship Types
+            </TabsTrigger>
+
             <TabsTrigger value="imageMetadata">
               <Image size={16} className="mr-2" /> Image Metadata
             </TabsTrigger>
@@ -33,6 +38,10 @@ export const Vocabulary = () => {
 
           <TabsContent value="entityTypes">
             <EntityTypes />
+          </TabsContent>
+
+          <TabsContent value="relationships">
+            <Relationships />
           </TabsContent>
 
           <TabsContent value="imageMetadata">
