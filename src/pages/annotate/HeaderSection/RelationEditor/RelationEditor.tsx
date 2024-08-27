@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
@@ -14,14 +14,27 @@ export const RelationEditor = () => {
   const [open, setOpen] = useState(false);
 
   const selection = useSelection();
-  
-  const source: ImageAnnotation = useMemo(() => {
-    const first = selection.selected[0];
-    return first ? first.annotation as ImageAnnotation : undefined;
+
+  const lastSelected = useRef<ImageAnnotation>();
+
+  const [source, setSource] = useState<ImageAnnotation | undefined>(); 
+
+  useEffect(() => {
+    const last = selection.selected[0];
+    if (last)
+      lastSelected.current = last.annotation as ImageAnnotation;
   }, [selection]);
 
   // Don't enable if there is no selection, or no relationship types
   const disabled = selection.selected.length === 0 || relationshipTypes.length === 0;
+
+  useEffect(() => {
+    // When the editor opens, keep the current selection as source
+    if (open)
+      setSource(lastSelected.current);
+    else
+      setSource(undefined);
+  }, [open]);
 
   return (
     <Popover open={open}>
@@ -41,8 +54,11 @@ export const RelationEditor = () => {
         align="start" 
         side="bottom" 
         sideOffset={14}>
-        <RelationEditorContent 
-          source={source} />
+        {source && (
+          <RelationEditorContent 
+            relationshipTypes={relationshipTypes}
+            source={source} />
+        )}
       </PopoverContent>
     </Popover>
   )

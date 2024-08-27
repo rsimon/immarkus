@@ -1,14 +1,16 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
+import { useSelection } from '@annotorious/react-manifold';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Skeleton } from '@/ui/Skeleton';
 import { Combobox, ComboboxOption } from '@/components/Combobox';
 import { useState } from 'react';
 import { Button } from '@/ui/Button';
-import { useDataModel } from '@/store';
 
 interface RelationEditorContentProps {
+
+  relationshipTypes: string[];
   
   source: ImageAnnotation;
 
@@ -16,11 +18,26 @@ interface RelationEditorContentProps {
 
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
-  const { relationshipTypes } = useDataModel();
+  const { relationshipTypes, source } = props;
 
   const options = useMemo(() => relationshipTypes.map(t => ({ label: t, value: t })), [relationshipTypes]);
+  
+  const selection = useSelection();
 
-  const [value, setValue] = useState<ComboboxOption | undefined>();
+  const [target, setTarget] = useState<ImageAnnotation | undefined>();
+
+  const [relation, setRelation] = useState<ComboboxOption | undefined>();
+
+  useEffect(() => {
+    // When the selection changes, keep it as relation target
+    if (selection.selected.length > 0) {
+      const { annotation } = selection.selected[0];
+      if (annotation.id !== source.id)
+        setTarget(annotation as ImageAnnotation);
+    } else {
+      setTarget(undefined);
+    }
+  }, [selection, source])
 
   return (
     <div>
@@ -38,12 +55,19 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
               className="w-12 h-12 border border-gray-300 shadow flex-shrink-0" />
 
             <div className="overflow-hidden relative py-[5px] flex-grow">
-              <div className="w-full border-gray-300 border-t-2 border-dashed animate-grow-width">
+              <div 
+                className={`w-full h-0 relative border-gray-300 border-t-2 border-dashed ${target ? '' : 'animate-grow-width'}`}>
                 <div className="absolute right-0 -top-[4px] w-[6px] h-[6px] bg-gray-300 rounded-full" />
               </div>
             </div>
 
-            <Skeleton className="border border-gray-300 w-12 h-12 bg-white" />
+            {target ? (
+              <AnnotationThumbnail 
+                annotation={target} 
+                className="w-12 h-12 border border-gray-300 shadow flex-shrink-0" />
+            ) : (
+              <Skeleton className="border border-gray-300 w-12 h-12 bg-white" />
+            )}
           </div>
         </li>
 
@@ -53,16 +77,16 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
           <div className="ml-4 mt-2">
             <Combobox
               className="w-56"
-              value={value}
+              value={relation}
               options={options}
-              onChange={setValue} />
+              onChange={setRelation} />
           </div>
         </li>
       </ol>
 
       <Button 
         className="mt-6 w-full"
-        disabled={!value}>Save</Button>
+        disabled={!relation || !target}>Save</Button>
     </div>
   )
 
