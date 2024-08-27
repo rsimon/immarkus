@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import { Spline } from 'lucide-react';
+import { ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
+import { useDataModel } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { ToolbarButton } from '../../ToolbarButton';
-import { RelationEditorHint } from './RelationEditorHint';
-import { ImageAnnotation } from '@annotorious/react';
+import { RelationEditorContent } from './RelationEditorContent';
 
 export const RelationEditor = () => {
+
+  const { relationshipTypes } = useDataModel();
 
   const [open, setOpen] = useState(false);
 
@@ -17,12 +20,15 @@ export const RelationEditor = () => {
     return first ? first.annotation as ImageAnnotation : undefined;
   }, [selection]);
 
+  // Don't enable if there is no selection, or no relationship types
+  const disabled = selection.selected.length === 0 || relationshipTypes.length === 0;
+
   return (
     <Popover open={open}>
       <PopoverTrigger asChild>
         <div>
           <ToolbarButton
-            disabled={selection.selected.length === 0}
+            disabled={disabled}
             onClick={() => setOpen(open => !open)}>
             <Spline
               className="h-8 w-8 p-2" />
@@ -35,7 +41,8 @@ export const RelationEditor = () => {
         align="start" 
         side="bottom" 
         sideOffset={14}>
-        <RelationEditorHint source={source} />
+        <RelationEditorContent 
+          source={source} />
       </PopoverContent>
     </Popover>
   )

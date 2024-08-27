@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
@@ -5,23 +6,19 @@ import { Skeleton } from '@/ui/Skeleton';
 import { Combobox, ComboboxOption } from '@/components/Combobox';
 import { useState } from 'react';
 import { Button } from '@/ui/Button';
-import { Separator } from '@/ui/Separator';
+import { useDataModel } from '@/store';
 
-interface RelationEditorHintProps {
+interface RelationEditorContentProps {
   
   source: ImageAnnotation;
 
 }
 
-const DUMMY_OPTIONS = [{ 
-  label: 'Foo',
-  value: 'foo'
-}, {
-  label: 'Bar',
-  value: 'bar'
-}];
+export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
-export const RelationEditorHint = (props: RelationEditorHintProps) => {
+  const { relationshipTypes } = useDataModel();
+
+  const options = useMemo(() => relationshipTypes.map(t => ({ label: t, value: t })), [relationshipTypes]);
 
   const [value, setValue] = useState<ComboboxOption | undefined>();
 
@@ -57,7 +54,7 @@ export const RelationEditorHint = (props: RelationEditorHintProps) => {
             <Combobox
               className="w-56"
               value={value}
-              options={DUMMY_OPTIONS}
+              options={options}
               onChange={setValue} />
           </div>
         </li>
