@@ -32,7 +32,7 @@ export const RelationEditor = () => {
       </PopoverTrigger>
 
       <PopoverContent 
-        className="w-fit"
+        className="w-72"
         align="end" 
         side="bottom" 
         sideOffset={14}>

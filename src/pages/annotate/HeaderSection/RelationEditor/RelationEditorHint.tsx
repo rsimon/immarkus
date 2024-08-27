@@ -17,23 +17,29 @@ export const RelationEditorHint = (props: RelationEditorHintProps) => {
         <Spline className="h-4 w-4" /> Create Connection
       </h3>
 
-      <p className="text-xs pt-1.5 flex-shrink-0">
-        Select an annotation to pick a target.
-      </p>
+      <ol className="list-decimal list-inside">
+        <li className="text-xs pt-4 flex-shrink-0">
+          Select a target annotation.
 
-      <div className="mt-4 mb-1 mx-auto w-44 flex gap-1 justify-between items-center relative">
-        <AnnotationThumbnail 
-          annotation={props.source} 
-          className="w-12 h-12 border border-gray-300 shadow flex-shrink-0" />
+          <div className="mt-3 mb-1 ml-4 w-44 flex gap-1 justify-between items-center relative">
+            <AnnotationThumbnail 
+              annotation={props.source} 
+              className="w-12 h-12 border border-gray-300 shadow flex-shrink-0" />
 
-        <div className="overflow-hidden relative py-[5px] flex-grow">
-          <div className="w-full border-gray-300 border-t-2 border-dashed animate-grow-width">
-            <div className="absolute right-0 -top-[4px] w-[6px] h-[6px] bg-gray-300 rounded-full" />
+            <div className="overflow-hidden relative py-[5px] flex-grow">
+              <div className="w-full border-gray-300 border-t-2 border-dashed animate-grow-width">
+                <div className="absolute right-0 -top-[4px] w-[6px] h-[6px] bg-gray-300 rounded-full" />
+              </div>
+            </div>
+
+            <Skeleton className="border border-gray-300 w-12 h-12" />
           </div>
-        </div>
+        </li>
 
-        <Skeleton className="border border-gray-300 w-12 h-12" />
-      </div>
+        <li className="text-xs pt-2 flex-shrink-0">
+          Choose a connection type.
+        </li>
+      </ol>
     </div>
   )
 
