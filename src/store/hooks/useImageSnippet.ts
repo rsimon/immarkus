@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
-import { W3CImageAnnotation } from '@annotorious/react';
+import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { ImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
 import { useImages } from './useImages';
 import { useStore } from './useStore';
 
-export const useImageSnippets = (annotations: W3CImageAnnotation[]) => {
+export const useImageSnippets = (annotations: (ImageAnnotation | W3CImageAnnotation)[]) => {
 
   const store = useStore();
 
@@ -35,7 +35,7 @@ export const useImageSnippets = (annotations: W3CImageAnnotation[]) => {
 
 }
 
-export const useImageSnippet = (annotation: W3CImageAnnotation) => {
+export const useImageSnippet = (annotation: ImageAnnotation | W3CImageAnnotation) => {
 
   // Prevents re-renders!
   const annotations = useMemo(() => [annotation], [annotation]);

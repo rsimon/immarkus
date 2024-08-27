@@ -62,17 +62,28 @@ const cropImage = async (
   img.src = URL.createObjectURL(image.data);
 }, 100));
 
+// Bit of an ad-hoc test...
+const isW3C = (annotation: ImageAnnotation | W3CImageAnnotation): annotation is W3CImageAnnotation =>
+  (annotation as W3CImageAnnotation).body !== undefined;
+
 export const getImageSnippet = (
   image: LoadedImage, 
-  annotation: W3CImageAnnotation
+  annotation: ImageAnnotation | W3CImageAnnotation
 ): Promise<ImageSnippet> => {
-  const adapter = W3CImageFormat(image.name);
-  const { parsed } = adapter.parse(annotation);
+  let a: ImageAnnotation;
 
-  if (!parsed)
-    return Promise.reject('Failed to parse annotation');
+  if (isW3C(annotation)) {
+    const adapter = W3CImageFormat(image.name);
+    const { parsed } = adapter.parse(annotation);
+    if (!parsed)
+      return Promise.reject('Failed to parse annotation');
+    
+    a = parsed;
+  } else {
+    a = annotation;
+  }
 
-  return cropImage(image, parsed);
+  return cropImage(image, a);
 }
 
 export const getAnntotationsWithSnippets = (

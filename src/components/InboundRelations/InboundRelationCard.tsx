@@ -1,10 +1,9 @@
 import { Dot, Image, Minus, MoveLeft } from 'lucide-react';
 import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
-import { EntityBadge } from '@/components/EntityBadge';
-import { RelatedAnnotation, useImageSnippet, useStore } from '@/store';
-import { Skeleton } from '@/ui/Skeleton';
+import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
-import { Link } from 'react-router-dom';
+import { EntityBadge } from '@/components/EntityBadge';
+import { RelatedAnnotation, useStore } from '@/store';
 
 interface InboundRelationCardProps {
 
@@ -23,8 +22,6 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
   const store = useStore();
 
   const model = store.getDataModel();
-
-  const snippet = useImageSnippet(related.annotation as W3CImageAnnotation);
 
   const bodies = Array.isArray(props.related.annotation.body)
     ? props.related.annotation.body : [props.related.annotation.body];
@@ -47,15 +44,7 @@ export const InboundRelationCard = (props: InboundRelationCardProps) => {
       </div>
 
       <div className="max-w-full overflow-hidden ml-1 mt-3 flex gap-2.5 items-end">
-        {snippet ? (
-          <img
-            loading="lazy"
-            src={URL.createObjectURL(new Blob([snippet.data]))}
-            alt={related.image.name}
-            className="w-14 h-14 object-cover aspect-square rounded-sm border" />
-        ) : (
-          <Skeleton className="w-14 h-14 flex-shrink-0" /> 
-        )}
+        <AnnotationThumbnail annotation={related.annotation as W3CImageAnnotation} />
 
         <div className="py-0.5 overflow-hidden">
           <AnnotationValuePreview bodies={bodies} />

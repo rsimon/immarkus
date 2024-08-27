@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAnnotoriousManifold, useSelection, useViewers } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
@@ -10,6 +10,7 @@ import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
+import { RelationEditor } from './RelationEditor';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
   ChevronLeft, 
@@ -17,7 +18,6 @@ import {
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
-  Spline, 
   Undo2, 
   ZoomIn, 
   ZoomOut 
@@ -48,8 +48,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   const manifold = useAnnotoriousManifold();
 
   const store = useStore();
-
-  const selection = useSelection();
 
   const osdToolsDisabled = props.images.length > 1;
 
@@ -210,11 +208,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
 
-        <ToolbarButton
-          disabled={selection.selected.length === 0}>
-          <Spline
-            className="h-8 w-8 p-2" />
-        </ToolbarButton>
+        <RelationEditor />
       </section>
     </section>
   )
