@@ -19,6 +19,11 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   
   updateEntityType(type: EntityType): Promise<void>;
 
+  // Relationship Types
+  addRelationshipType(type: string): Promise<void>;
+
+  removeRelationShipType(type: string): Promise<void>;
+
   // Folder metadata schemas
   addFolderSchema(schema: MetadataSchema): Promise<void>;
 
@@ -77,6 +82,9 @@ export const loadDataModel = (
 
   entityTypes = repairDataModel(entityTypes);
 
+  // TODO
+  let relationshipTypes = [];
+
   const tree = createEntityTypeTree(entityTypes);
 
   const rebuildEntityTypeTreeAndSave = () => {
@@ -114,6 +122,14 @@ export const loadDataModel = (
     } else {
       return Promise.reject(`Image schema "${schema.name}" already exists`);
     }
+  }
+
+  const addRelationshipType = (type: string) => {
+    // TODO
+    if (!relationshipTypes.includes(type))
+      relationshipTypes = [...relationshipTypes, type];
+
+    return Promise.resolve();
   }
 
   const clearEntityTypes = () => {
@@ -186,6 +202,11 @@ export const loadDataModel = (
     return save();
   }
 
+  const removeRelationShipType = (type: string) => {
+    relationshipTypes = relationshipTypes.filter(t => t !== type);
+    return Promise.resolve();
+  }
+
   const setEntityTypes = (types: EntityType[]) => {
     entityTypes = [...types];
     return rebuildEntityTypeTreeAndSave();
@@ -231,11 +252,13 @@ export const loadDataModel = (
   resolve({
     ...tree, 
     get entityTypes() { return entityTypes },
+    get relationshipTypes() { return relationshipTypes },
     get folderSchemas() { return folderSchemas },
     get imageSchemas() { return imageSchemas },
     addEntityType,
     addFolderSchema,
     addImageSchema,
+    addRelationshipType,
     clearEntityTypes,
     clearFolderSchemas,
     clearImageSchemas,
@@ -245,6 +268,7 @@ export const loadDataModel = (
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
+    removeRelationShipType,
     setEntityTypes,
     setFolderSchemas,
     setImageSchemas,

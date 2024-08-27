@@ -22,6 +22,9 @@ export const useDataModel = () => {
   const addImageSchema = (schema: MetadataSchema) =>
     setAsync(model.addImageSchema(schema));
 
+  const addRelationshipType = (type: string) =>
+    setAsync(model.addRelationshipType(type));
+
   const clearEntityTypes = () =>
     setAsync(model.clearEntityTypes());
 
@@ -39,6 +42,9 @@ export const useDataModel = () => {
 
   const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
     setAsync(model.removeImageSchema(schemaOrName));
+
+  const removeRelationShipType = (type: string) => 
+    setAsync(model.removeRelationShipType(type));
 
   const setEntityTypes = (types: EntityType[]) =>
     setAsync(model.setEntityTypes(types));
@@ -63,12 +69,14 @@ export const useDataModel = () => {
     addEntityType,
     addFolderSchema,
     addImageSchema,
+    addRelationshipType,
     clearEntityTypes,
     clearFolderSchemas,
     clearImageSchemas,
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
+    removeRelationShipType,
     setEntityTypes,
     setFolderSchemas,
     setImageSchemas,

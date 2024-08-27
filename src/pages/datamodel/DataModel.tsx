@@ -24,7 +24,7 @@ export const Vocabulary = () => {
             </TabsTrigger>
 
             <TabsTrigger value="relationships">
-              <Spline size={16} className="mr-2" /> Relationship Types
+              <Spline size={16} className="mr-2" /> Relationships
             </TabsTrigger>
 
             <TabsTrigger value="imageMetadata">
