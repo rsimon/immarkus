@@ -6,7 +6,7 @@ import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { useToast } from '@/ui/Toaster';
 
-interface RelationshipEditorProps {
+interface RelationshipTypeEditorProps {
 
   children?: ReactNode;
 
@@ -16,7 +16,7 @@ interface RelationshipEditorProps {
 
 }
 
-export const RelationshipEditor = (props: RelationshipEditorProps) => {
+export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
   const { toast } = useToast();
 

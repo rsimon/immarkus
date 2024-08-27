@@ -1,7 +1,7 @@
 import { Spline } from 'lucide-react';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
-import { RelationshipEditor } from '@/components/RelationShipEditor';
+import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 import { RelationshipListItem } from './RelationshipListItem';
 
 export const Relationships = () => {
@@ -40,11 +40,11 @@ export const Relationships = () => {
       </div>
 
       <div className="flex mt-4 gap-2">
-        <RelationshipEditor>
+        <RelationshipTypeEditor>
           <Button>
             <Spline size={16} className="mr-2" /> Add Relationship Type
           </Button>
-        </RelationshipEditor>
+        </RelationshipTypeEditor>
       </div>
     </div>
   )
