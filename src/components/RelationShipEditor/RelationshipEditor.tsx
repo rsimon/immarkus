@@ -53,6 +53,8 @@ export const RelationshipEditor = (props: RelationshipEditorProps) => {
           });  
         });
     }
+
+    setValue('');
   }
 
   return (
@@ -75,25 +77,27 @@ export const RelationshipEditor = (props: RelationshipEditorProps) => {
           Enter a new relationship type below.
         </DialogDescription>
 
-        <div className="mt-6">
-          <Label 
-            htmlFor="relationship-type"
-            className="inline-block text-xs mb-1.5 ml-0.5">Relationship Type
-          </Label>
+        <form onSubmit={evt => evt.preventDefault()}>
+          <div className="mt-6">
+            <Label 
+              htmlFor="relationship-type"
+              className="inline-block text-xs mb-1.5 ml-0.5">Relationship Type
+            </Label>
 
-          <Input
-            id="relationship-type"
-            className="bg-white"
-            value={value}
-            onChange={evt => setValue(evt.target.value)} />
-        </div>
+            <Input
+              id="relationship-type"
+              className="bg-white"
+              value={value}
+              onChange={evt => setValue(evt.target.value)} />
+          </div>
 
-        <Button 
-          className="w-full mt-4 mb-3"
-          disabled={!value}
-          onClick={onSave}>
-          Save
-        </Button>
+          <Button 
+            className="w-full mt-4 mb-3"
+            disabled={!value}
+            onClick={onSave}>
+            Save
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   )

@@ -2,10 +2,17 @@ import { Spline } from 'lucide-react';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { RelationshipEditor } from '@/components/RelationShipEditor';
+import { RelationshipListItem } from './RelationshipListItem';
 
 export const Relationships = () => {
 
-  const { relationshipTypes } =  useDataModel();
+  const { relationshipTypes, removeRelationShipType } =  useDataModel();
+
+  const onRemove = (type: string) => () => {
+    removeRelationShipType(type).catch(error => {
+      // TODO
+    });
+  }
  
   return (
     <div>
@@ -14,15 +21,19 @@ export const Relationships = () => {
         relationship type, such as 'is next to' or 'is part of'.
       </p>
 
-      <div className="text-sm p-1">
+      <div className="mt-4 text-xs border p-3 rounded bg-muted text-muted-foreground max-w-5xl">
         {relationshipTypes.length === 0 ? (
-          <p className="h-24 text-muted-foreground flex items-center">
+          <p className="h-8 box-content p-1 flex items-center justify-center text-muted-foreground/60">
             No relationship types defined
           </p>
         ) : (
-          <ul>
+          <ul className="flex flex-wrap gap-2">
             {relationshipTypes.map(t => (
-              <li>{t}</li>
+              <li>
+                <RelationshipListItem 
+                  relationshipType={t} 
+                  onRemove={onRemove(t)} />
+              </li>
             ))}
           </ul>  
         )}
