@@ -36,10 +36,9 @@ export type W3CRelationFormatAdapter = FormatAdapter<
   W3CAnnotationType>;
 
 export const W3CImageRelationFormat = (
-  source: string,
+  source?: string,
   opts: W3CImageFormatAdapterOpts = { strict: true, invertY: false }
 ): W3CRelationFormatAdapter => {
-
   const imageAdapter = W3CImageFormat(source, {...opts, strict: false });
 
   const parse = (serialized: W3CImageAnnotation | W3CRelationLinkAnnotation | [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]) =>

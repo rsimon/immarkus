@@ -1,15 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Spline } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation } from '@annotorious/react';
-import { useSelection } from '@annotorious/react-manifold';
-import { useDataModel } from '@/store';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
+import { useStore, W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { ToolbarButton } from '../../ToolbarButton';
 import { RelationEditorContent } from './RelationEditorContent';
 
 export const RelationEditor = () => {
 
-  const { relationshipTypes } = useDataModel();
+  const store = useStore();
+
+  const manifold = useAnnotoriousManifold();
+
+  const { relationshipTypes } = store.getDataModel();
 
   const [open, setOpen] = useState(false);
 
@@ -36,8 +41,36 @@ export const RelationEditor = () => {
       setSource(undefined);
   }, [open]);
 
-  const onSave = (source: ImageAnnotation, target: ImageAnnotation, relation: string) => {
-    // TODO
+  const onSave = (from: ImageAnnotation, to: ImageAnnotation, relation: string) => {
+    const fromImageId = manifold.findSource(from.id);
+    const toImageId = manifold.findSource(to.id);
+
+    const imageId = fromImageId === toImageId ? fromImageId : undefined;
+
+    const id = uuidv4();
+
+    const link: W3CRelationLinkAnnotation = {
+      id,
+      motivation: 'linking',
+      body: to.id,
+      target: from.id
+    };
+
+    const meta: W3CRelationMetaAnnotation = {
+      id: uuidv4(),
+      motivation: 'tagging',
+      body: {
+        value: relation
+      },
+      target: id
+    };
+
+    // TODO button busy state
+
+    store.upsertRelation(link, meta, imageId).then(() => {
+      setSource(undefined);
+      setOpen(false);  
+    });
   }
 
   return (

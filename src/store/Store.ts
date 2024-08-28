@@ -4,8 +4,9 @@ import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
+import { loadRelationStore, RelationStore } from './relations/RelationStore';
 
-export interface Store {
+export interface Store extends RelationStore {
   
   folders: Folder[];
 
@@ -94,6 +95,8 @@ export const loadStore = (
   const { images, folders } = await loadDirectory(rootDir);
 
   const datamodel = await loadDataModel(rootDir);
+
+  const relations = await loadRelationStore(rootDir);
 
   const cachedAnnotations = new Map<string, W3CAnnotation[]>();
 
@@ -336,7 +339,8 @@ export const loadStore = (
     loadImage,
     upsertAnnotation,
     upsertFolderMetadata,
-    upsertImageMetadata
+    upsertImageMetadata,
+    ...relations
   });
 
 });
