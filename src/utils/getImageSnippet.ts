@@ -1,4 +1,4 @@
-import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/annotorious';
+import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
 import { Image, LoadedImage } from '@/model';
 import { Store } from '@/store';
 
