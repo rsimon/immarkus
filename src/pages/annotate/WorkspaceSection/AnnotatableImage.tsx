@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import type { OpenSeadragon } from 'openseadragon';
-import { AnnotoriousPlugin, OpenSeadragonAnnotator, W3CImageFormat } from '@annotorious/react';
+import { AnnotoriousPlugin, OpenSeadragonAnnotator } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
+import { W3CImageRelationFormat } from '@/store';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
@@ -60,7 +61,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        adapter={W3CImageFormat(props.image.name)}
+        //@ts-ignore - TODO remove when @annotorious/react@3.0.1 is out!
+        adapter={W3CImageRelationFormat(props.image.name)}
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
