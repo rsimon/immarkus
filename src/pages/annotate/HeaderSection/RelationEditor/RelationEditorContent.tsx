@@ -14,6 +14,8 @@ interface RelationEditorContentProps {
   
   source: ImageAnnotation;
 
+  onSave(source: ImageAnnotation, target: ImageAnnotation, relation: string): void;
+
 }
 
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
@@ -37,7 +39,12 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
     } else {
       setTarget(undefined);
     }
-  }, [selection, source])
+  }, [selection, source]);
+
+  const onSave = () => {
+    if (target && relation)
+      props.onSave(source, target, relation.value);
+  }
 
   return (
     <div>
@@ -86,7 +93,8 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
       <Button 
         className="mt-6 w-full"
-        disabled={!relation || !target}>Save</Button>
+        disabled={!relation || !target}
+        onClick={onSave}>Save</Button>
     </div>
   )
 

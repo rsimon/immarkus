@@ -36,6 +36,10 @@ export const RelationEditor = () => {
       setSource(undefined);
   }, [open]);
 
+  const onSave = (source: ImageAnnotation, target: ImageAnnotation, relation: string) => {
+    // TODO
+  }
+
   return (
     <Popover open={open}>
       <PopoverTrigger asChild>
@@ -57,7 +61,8 @@ export const RelationEditor = () => {
         {source && (
           <RelationEditorContent 
             relationshipTypes={relationshipTypes}
-            source={source} />
+            source={source} 
+            onSave={onSave} />
         )}
       </PopoverContent>
     </Popover>
