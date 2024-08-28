@@ -6,7 +6,7 @@ import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
 
-export interface Store extends RelationStore {
+export interface AnnotationStore {
   
   folders: Folder[];
 
@@ -43,6 +43,8 @@ export interface Store extends RelationStore {
   upsertImageMetadata(imageId: string, metadata: W3CAnnotationBody): Promise<void>;
 
 }
+
+export type Store = AnnotationStore & RelationStore;
 
 const getAnnotationsFile = (image: Image) => {
   const filename = `${image.name.substring(0, image.name.lastIndexOf('.'))}.json`;
@@ -95,8 +97,6 @@ export const loadStore = (
   const { images, folders } = await loadDirectory(rootDir);
 
   const datamodel = await loadDataModel(rootDir);
-
-  const relations = await loadRelationStore(rootDir);
 
   const cachedAnnotations = new Map<string, W3CAnnotation[]>();
 
@@ -322,7 +322,7 @@ export const loadStore = (
       upsertAnnotation(imageId, next);
     });
 
-  resolve({
+  const store = {
     folders,
     images,
     countAnnotations,
@@ -339,9 +339,12 @@ export const loadStore = (
     loadImage,
     upsertAnnotation,
     upsertFolderMetadata,
-    upsertImageMetadata,
-    ...relations
-  });
+    upsertImageMetadata
+  }
+
+  const relations = await loadRelationStore(rootDir, store);
+  
+  resolve({...store, ...relations });
 
 });
  

@@ -1,3 +1,4 @@
+import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from './W3CRelationAnnotation';
 
@@ -12,7 +13,8 @@ export interface RelationStore {
 }
 
 export const loadRelationStore = (
-  handle: FileSystemDirectoryHandle
+  handle: FileSystemDirectoryHandle,
+  store: AnnotationStore
 ): Promise<RelationStore> => new Promise(async resolve => {
 
   const fileHandle = await handle.getFileHandle('_immarkus.relations.json', { create: true });
@@ -28,9 +30,26 @@ export const loadRelationStore = (
     return save();
   }
 
-  const getRelations = (imageId: string) => {
-    return Promise.resolve([]);
-  }
+  const getRelations = (imageId: string) =>
+    store.getAnnotations(imageId, { type: 'image' })
+      .then(imageAnnotations => {
+        // IDs of all image annotations on this image
+        const imageAnnotationIds = new Set(imageAnnotations.map(a => a.id));
+
+        // All link annotations to or from image annotations on this image
+        const links = annotations
+          .filter(a => 
+            a.motivation === 'linking' && (
+              imageAnnotationIds.has(a.body) || imageAnnotationIds.has(a.target)
+            )) as W3CRelationLinkAnnotation[];
+
+        return links
+          .map(link => ([
+            link, 
+            annotations
+              .find(a => a.motivation === 'tagging' && a.target === link.id) as W3CRelationMetaAnnotation
+            ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
+      });
 
   const upsertRelation = (
     link: W3CRelationLinkAnnotation, 
