@@ -26,7 +26,7 @@ export const RelationsList = (props: RelationsListProps) => {
     <div>
       <h3 className="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm 
         ml-0.5 flex gap-1.5 pt-4 pb-1 items-center">
-        <span>Relations</span>
+        <span>Related Annotations</span>
       </h3>
 
       <ul>
@@ -41,7 +41,7 @@ export const RelationsList = (props: RelationsListProps) => {
         ))}
       </ul>
 
-      <Separator className="mt-2" />
+      <Separator className="mt-3" />
     </div>
   )
 

@@ -17,29 +17,27 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
 
   const { fromId, toId, relationship } = props;
 
-  const refId = props.referenceAnnotation.id;
-
-  //         
+  const refId = props.referenceAnnotation.id;    
 
   return (
     <div className="flex items-center w-full justify-between px-1 py-1.5 text-xs gap-2">
       <div className={fromId === refId ? undefined : 'p-1.5'}>
         <AnnotationThumbnail 
           annotation={fromId} 
-          className={fromId === refId ? 'h-12 w-12' : 'h-9 w-9'} /> 
+          className={fromId === refId ? 'shadow h-12 w-12' : 'shadow h-9 w-9'} /> 
       </div>
 
-      <div className="flex-grow h-[1px] border-gray-300 border-t-2 border-dashed relative">
+      <div className="flex-grow h-[1px] border-gray-700 border-t border-dashed relative">
         <div className="absolute -top-[0.75rem] w-full text-center">
           <span className="bg-white px-1">{props.relationship || 'to'}</span>
         </div>
-        <div className="absolute -right-1 -top-[6px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[10px] border-l-gray-300"></div>
+        <div className="absolute -right-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[12px] border-l-gray-700"></div>
       </div>
 
       <div className={toId === refId ? undefined : 'p-1.5'}>
         <AnnotationThumbnail 
           annotation={props.toId} 
-          className={toId === refId ? 'h-12 w-12' : 'h-9 w-9'} />
+          className={toId === refId ? 'shadow h-12 w-12' : 'shadow h-9 w-9'} />
       </div>
     </div>
   )

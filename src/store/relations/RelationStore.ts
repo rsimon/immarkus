@@ -22,6 +22,7 @@ export const loadRelationStore = (
 ): Promise<RelationStore> => new Promise(async resolve => {
 
   const fileHandle = await handle.getFileHandle('_immarkus.relations.json', { create: true });
+  
   const file = await fileHandle.getFile();
 
   let annotations: (W3CRelationLinkAnnotation | W3CRelationMetaAnnotation)[] = 

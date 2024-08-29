@@ -5,7 +5,7 @@ import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '
 import { EntityBadge } from '@/components/EntityBadge';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { RelationsList } from '@/components/RelationsList';
-import { useDataModel } from '@/store';
+import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
@@ -33,7 +33,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const anno = useAnnotoriousManifold();
 
-  const model = useDataModel();
+  const store = useStore();
+
+  const model = store.getDataModel();
 
   // We're using a random key, so the component resets on save
   const [formKey, setFormKey] = useState(Math.random());
@@ -134,6 +136,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
+  const hasRelations = store.hasRelatedAnnotations(annotation.id);
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -204,15 +208,17 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             </Accordion>
           )}
 
+          {hasRelations && (
+            <RelationsList annotation={annotation} />
+          )}
+
           {hasNote && (
             <Note
               id={noteKey}
               value={formState[noteKey]}
               onChange={value => onChange(noteKey, value)} />
           )}
-
-          <RelationsList annotation={annotation} />
-
+          
           <PropertiesFormActions 
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
