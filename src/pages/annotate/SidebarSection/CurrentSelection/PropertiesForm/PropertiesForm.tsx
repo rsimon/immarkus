@@ -3,7 +3,7 @@ import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
-import { InboundRelations } from '@/components/InboundRelations';
+import { InboundRelations } from '@/components/InboundRelationsDeprecated';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';

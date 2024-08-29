@@ -3,7 +3,7 @@ import { ImageAnnotation, W3CAnnotation } from '@annotorious/react';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { AnnotationsTabItem } from './AnnotationsTabItem';
 import { RelatedAnnotation, RelationGraph } from '@/store';
-import { InboundRelationCard } from '@/components/InboundRelations/InboundRelationCard';
+import { InboundRelationCard } from '@/components/InboundRelationsDeprecated/InboundRelationCard';
 import { Spline } from 'lucide-react';
 
 interface AnnotationsTabProps {
