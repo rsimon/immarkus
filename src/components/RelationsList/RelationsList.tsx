@@ -3,13 +3,13 @@ import { ImageAnnotation } from '@annotorious/react';
 import { useStore } from '@/store';
 import { AnnotationThumbnail } from '../AnnotationThumbnail';
 
-interface RelationsProps {
+interface RelationsListProps {
 
   annotation: ImageAnnotation;
 
 }
 
-export const Relations = (props: RelationsProps) => {
+export const RelationsList = (props: RelationsListProps) => {
 
   const store = useStore();
 
@@ -22,17 +22,17 @@ export const Relations = (props: RelationsProps) => {
       <h3 className="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm 
         ml-0.5 flex gap-1.5 py-4 items-center">
         <span>Related</span>
-
-        <ul>
-          {relations.map(([link, meta]) => (
-            <li key={link.id}>
-              <AnnotationThumbnail annotation={link.target} /> 
-              to 
-              <AnnotationThumbnail annotation={link.body} />
-            </li>
-          ))}
-        </ul>
       </h3>
+
+      <ul>
+        {relations.map(([link, meta]) => (
+          <li key={link.id}>
+            <AnnotationThumbnail annotation={link.target} /> 
+            to 
+            <AnnotationThumbnail annotation={link.body} />
+          </li>
+        ))}
+      </ul>
     </div>
   )
 
