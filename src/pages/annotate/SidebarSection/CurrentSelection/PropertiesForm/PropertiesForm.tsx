@@ -18,6 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Relations } from '@/components/Relations';
 
 interface PropertiesFormProps {
 
@@ -211,9 +212,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               onChange={value => onChange(noteKey, value)} />
           )}
 
+          {/*
           <InboundRelations 
             annotation={annotation}
             schemaBodies={schemaBodies} />
+          */}
+
+          <Relations annotation={annotation} />
 
           <PropertiesFormActions 
             hasNote={hasNote}

@@ -6,7 +6,11 @@ export interface RelationStore {
 
   deleteRelation(relationId: string, imageId?: string): Promise<void>;
 
+  getRelatedAnnotations(annotationId: string): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
+
   getRelations(imageId: string): Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][]>;
+
+  hasRelatedAnnotations(annotationId: string): boolean;
 
   upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation, imageId?: string): Promise<void>;
 
@@ -30,6 +34,17 @@ export const loadRelationStore = (
     return save();
   }
 
+  const getMetaAnnotation = (linkId: string) =>
+    annotations.find(a => a.motivation === 'tagging' && a.target === linkId) as W3CRelationMetaAnnotation;
+    
+  const getRelatedAnnotations = (annotationId: string) => {
+    // All connected link annotations
+    const links = annotations.filter(a =>
+      a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
+
+    return links.map(link => ([ link, getMetaAnnotation(link.id) ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
+  }
+
   const getRelations = (imageId: string) =>
     store.getAnnotations(imageId, { type: 'image' })
       .then(imageAnnotations => {
@@ -44,12 +59,11 @@ export const loadRelationStore = (
             )) as W3CRelationLinkAnnotation[];
 
         return links
-          .map(link => ([
-            link, 
-            annotations
-              .find(a => a.motivation === 'tagging' && a.target === link.id) as W3CRelationMetaAnnotation
-            ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
+          .map(link => ([ link, getMetaAnnotation(link.id) ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
       });
+
+  const hasRelatedAnnotations = (annotationId: string) =>
+    annotations.some(a => a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
 
   const upsertRelation = (
     link: W3CRelationLinkAnnotation, 
@@ -62,7 +76,9 @@ export const loadRelationStore = (
 
   resolve({
     deleteRelation,
+    getRelatedAnnotations,
     getRelations,
+    hasRelatedAnnotations,
     upsertRelation
   });
 
