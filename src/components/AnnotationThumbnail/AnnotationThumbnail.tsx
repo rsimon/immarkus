@@ -5,7 +5,7 @@ import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 
 interface AnnotationThumbnailProps {
 
-  annotation: ImageAnnotation | W3CImageAnnotation;
+  annotation: ImageAnnotation | W3CImageAnnotation | string;
 
   className?: string;
 

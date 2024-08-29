@@ -1,4 +1,4 @@
-import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
@@ -15,6 +15,10 @@ export interface AnnotationStore {
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
+
+  findAnnotation(annotationId: string): Promise<[W3CAnnotation, Image] | undefined>;
+
+  findImageForAnnotation(annotationId: string): Promise<Image>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
 
@@ -128,6 +132,41 @@ export const loadStore = (
       reject(Error(`Image ${imageId} not found`));
     }
   });
+
+  const findAnnotation = (annotationId: string) => {
+    // Let's try cached anntoations first
+    for (const [imageId, annotations] of cachedAnnotations.entries()) {
+      const found = annotations.find(a => a.id === annotationId);
+      if (found)
+        return Promise.resolve([found, getImage(imageId)] as [W3CImageAnnotation, Image]);
+    }
+
+    // Not cached - not much we can do except go through all images we
+    // haven't loaded yet.
+    const cachedImageIds = new Set([...cachedAnnotations.keys()]);
+
+    const uncachedImages = images.filter(i => !cachedImageIds.has(i.id));
+
+    return uncachedImages.reduce<Promise<[W3CAnnotation, Image] | undefined>>((promise, image) => promise.then(result => {
+      if (result) return result; // Skip
+
+      // Load annotations for this image
+      return getAnnotations(image.id).then(annotations => {
+        const found = annotations.find(a => a.id === annotationId);
+        if (found) {
+          return [found, image] as [W3CImageAnnotation, Image];
+        } else {
+          return;
+        }
+      });
+    }), Promise.resolve(undefined));
+  }
+
+  const findImageForAnnotation = (annotationId: string) =>
+    findAnnotation(annotationId).then(match => {
+      return match ? match[1] : undefined;
+    });
+
 
   const getAnnotations = (
     imageId: string,
@@ -327,6 +366,8 @@ export const loadStore = (
     images,
     countAnnotations,
     deleteAnnotation,
+    findAnnotation,
+    findImageForAnnotation,
     getAnnotations,
     getDataModel,
     getFolder,
