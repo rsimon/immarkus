@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import type { OpenSeadragon } from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
+import { OSDConnectorPlugin } from '@annotorious/plugin-connectors-react';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { W3CImageRelationFormat } from '@/store';
@@ -11,6 +12,7 @@ import { useSavingState } from '../SavingState';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
+import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
 
 interface AnnotatableImageProps {
 
@@ -73,6 +75,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           id={props.windowId || props.image.id}
           className="osd-container"
           options={options} />
+
+        <OSDConnectorPlugin />
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
