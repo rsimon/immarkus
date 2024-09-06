@@ -63,7 +63,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        //@ts-ignore - TODO remove when @annotorious/react@3.0.1 is out!
         adapter={W3CImageRelationFormat(props.image.name)}
         autoSave
         drawingMode="click"
@@ -76,7 +75,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           className="osd-container"
           options={options} />
 
-        <OSDConnectorPlugin />
+        <OSDConnectorPlugin 
+          enabled={props.mode === 'connect'} />
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
