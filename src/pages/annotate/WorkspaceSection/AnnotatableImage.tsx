@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import type { OpenSeadragon } from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
-import { OSDConnectorPlugin } from '@annotorious/plugin-connectors-react';
+import { OSDConnectionPopup, OSDConnectorPlugin } from '@annotorious/plugin-connectors-react';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { W3CImageRelationFormat } from '@/store';
-import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
+import { ConnectorPopup } from '../ConnectorPopup';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
+import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
@@ -76,7 +77,11 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           options={options} />
 
         <OSDConnectorPlugin 
-          enabled={props.mode === 'connect'} />
+          enabled={props.mode === 'connect'}>
+          <OSDConnectionPopup popup={props => (
+            <ConnectorPopup {...props} />
+          )} />
+        </OSDConnectorPlugin>
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
