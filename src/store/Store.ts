@@ -123,7 +123,10 @@ export const loadStore = (
     const img = images.find(i => i.id === imageId);
     if (img) {
       const annotations = await getAnnotations(imageId);
+      console.log(annotations);
+
       const next = annotations.filter(a => a.id !== annotation.id);
+      console.log(next);
 
       cachedAnnotations.set(imageId, next);
 

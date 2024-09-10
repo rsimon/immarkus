@@ -2,6 +2,10 @@ import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorio
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 
+export const isW3CRelationMetaAnnotation = (arg: any): arg is W3CRelationMetaAnnotation =>
+  (arg.motivation === undefined || arg.motivation === 'tagging') &&
+   typeof arg.target === 'string';
+
 export interface RelationStore {
 
   deleteRelation(relationId: string, imageId?: string): Promise<void>;

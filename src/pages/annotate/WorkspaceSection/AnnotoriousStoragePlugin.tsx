@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
-import { useStore } from '@/store';
+import { isW3CRelationMetaAnnotation, useStore } from '@/store';
 
 interface AnnotoriousStoragePluginProps {
 
@@ -41,18 +41,36 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
 
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
-        // @ts-ignore
-        anno.setAnnotations(annotations.filter(a => a.target.selector || a.motivation));
+        anno.setAnnotations(annotations);
         
-        anno.on('createAnnotation', annotation =>
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+        anno.on('createAnnotation', annotation => {
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation));
+        });
   
-        anno.on('deleteAnnotation', annotation =>
-          withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
+        anno.on('deleteAnnotation', annotation => {
+          return withSaveStatus(() => store.deleteAnnotation(imageId, annotation))
+        });
   
-        anno.on('updateAnnotation', annotation => {
+        anno.on('updateAnnotation', (annotation, previous) => {
           if (Array.isArray(annotation)) {
-            return withSaveStatus(() => store.bulkUpsertAnnotation(imageId, annotation));
+            return withSaveStatus(() => {
+              // First, delete any previous tags
+              return store.getAnnotations(imageId)
+                .then(all => {
+                  const previous = all
+                    .filter(isW3CRelationMetaAnnotation)
+                    .filter(a => a.target === annotation[0].id);
+
+                  if (previous.length > 0) {
+                    return store.deleteAnnotation(imageId, previous[0]).then(() => {
+                      return store.bulkUpsertAnnotation(imageId, annotation);
+                    })
+                  } else {
+                    // No previous tags to delete
+                    return store.bulkUpsertAnnotation(imageId, annotation);
+                  }
+                });
+            });
           } else {
             return withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
           }
