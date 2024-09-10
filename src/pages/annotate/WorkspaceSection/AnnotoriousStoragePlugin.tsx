@@ -39,38 +39,43 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         .catch(error => props.onError(error));
     }
 
+    // Relations require a bit more work, because a) they are split into two
+    // annotations in the W3C serialization and b) the 'taggging' annotations
+    // don't (currently) maintain their ID.
+    const onUpdateRelation = (
+      relation: [W3CAnnotation, W3CAnnotation], 
+      _: W3CAnnotation | [W3CAnnotation | W3CAnnotation]
+    ): Promise<void> => store.getAnnotations(imageId)
+          .then(all => {
+            const previous = all
+              .filter(a => isW3CRelationMetaAnnotation(a))
+              .filter(a => a.target === relation[0].id);
+
+            if (previous.length > 0) {
+              // Delete previous, then insert relation annotations
+              return store.bulkDeleteAnnotations(imageId, previous).then(() => {
+                return store.bulkUpsertAnnotation(imageId, relation);
+              });
+            } else {
+              // No previous tags to delete - just insert
+              return store.bulkUpsertAnnotation(imageId, relation);
+            }
+          });
+
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
         anno.setAnnotations(annotations);
         
-        anno.on('createAnnotation', annotation => {
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation));
-        });
+        anno.on('createAnnotation', annotation =>
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
   
-        anno.on('deleteAnnotation', annotation => {
-          return withSaveStatus(() => store.deleteAnnotation(imageId, annotation))
-        });
+        anno.on('deleteAnnotation', annotation =>
+          withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
   
         anno.on('updateAnnotation', (annotation, previous) => {
           if (Array.isArray(annotation)) {
-            return withSaveStatus(() => {
-              // First, delete any previous tags
-              return store.getAnnotations(imageId)
-                .then(all => {
-                  const previous = all
-                    .filter(isW3CRelationMetaAnnotation)
-                    .filter(a => a.target === annotation[0].id);
-
-                  if (previous.length > 0) {
-                    return store.deleteAnnotation(imageId, previous[0]).then(() => {
-                      return store.bulkUpsertAnnotation(imageId, annotation);
-                    })
-                  } else {
-                    // No previous tags to delete
-                    return store.bulkUpsertAnnotation(imageId, annotation);
-                  }
-                });
-            });
+            return withSaveStatus(() => 
+              onUpdateRelation(annotation as unknown as [W3CAnnotation, W3CAnnotation], previous));
           } else {
             return withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
           }

@@ -12,6 +12,8 @@ export interface AnnotationStore {
 
   images: Image[];
 
+  bulkDeleteAnnotations(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
+
   bulkUpsertAnnotation(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
 
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
@@ -122,11 +124,29 @@ export const loadStore = (
   ): Promise<void> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
-      const annotations = await getAnnotations(imageId);
-      console.log(annotations);
+      const all = await getAnnotations(imageId);
+      const next = all.filter(a => a.id !== annotation.id);
 
-      const next = annotations.filter(a => a.id !== annotation.id);
-      console.log(next);
+      cachedAnnotations.set(imageId, next);
+
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+      resolve();
+    } else {
+      reject(Error(`Image ${imageId} not found`));
+    }
+  });
+
+  const bulkDeleteAnnotations = (
+    imageId: string,
+    annotations: W3CAnnotation[]
+  ): Promise<void> => new Promise(async (resolve, reject) => {
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const toDelete = new Set(annotations.map(a => a.id));
+
+      const all = await getAnnotations(imageId);
+      const next = all.filter(a => !toDelete.has(a.id));
 
       cachedAnnotations.set(imageId, next);
 
@@ -402,6 +422,7 @@ export const loadStore = (
   const store = {
     folders,
     images,
+    bulkDeleteAnnotations,
     bulkUpsertAnnotation,
     countAnnotations,
     deleteAnnotation,
