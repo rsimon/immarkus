@@ -7,6 +7,8 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
 
   const model = useDataModel();
 
+  console.log(props.annotation);
+
   const options = useMemo(() => {
     return model.relationshipTypes.map(t => ({ label: t, value: t }));
   }, [model]);
@@ -20,8 +22,10 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   const onChange = ({ value }) => {
     const existing = props.annotation.bodies.find(b => b.purpose === 'tagging');
     if (existing) {
+      console.log('updating existing');
       props.onUpdateBody(existing, { purpose: 'tagging', value });
     } else {
+      console.log('new body', { purpose: 'tagging', value });
       props.onCreateBody({ purpose: 'tagging', value });
     }
   }

@@ -12,6 +12,8 @@ export interface AnnotationStore {
 
   images: Image[];
 
+  bulkUpsertAnnotation(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
+
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
@@ -306,10 +308,10 @@ export const loadStore = (
     }
   });
 
-  const upsertAnnotation = (
+  const _upsertOneAnnotation = (
     imageId: string, 
     annotation: W3CAnnotation
-  ): Promise<void> => new Promise(async (resolve, reject) => {
+  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
       const annotations = await getAnnotations(imageId);
@@ -318,16 +320,49 @@ export const loadStore = (
       const next = exists ? 
         annotations.map(a => a.id === annotation.id ? annotation : a) :
         [...annotations, annotation];
-      
-      cachedAnnotations.set(imageId, next);
 
-      const fileHandle = await getAnnotationsFile(img);
-      await writeJSONFile(fileHandle, next);
-      resolve();
+      cachedAnnotations.set(imageId, next);
+      resolve(next);
     } else {
       reject(Error(`Image ${imageId} not found`));
     }
   });
+
+  const upsertAnnotation = (
+    imageId: string, 
+    annotation: W3CAnnotation
+  ): Promise<void> => _upsertOneAnnotation(
+    imageId,
+    annotation
+  ).then(next => new Promise(async (resolve, reject) => {
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+      resolve();
+    } else {
+      // Should never happen
+      reject(Error(`Image ${imageId} not found`));
+    }
+  }));
+
+  const bulkUpsertAnnotation = async (
+    imageId: string, 
+    annotations: W3CAnnotation[]
+  ): Promise<void> => {
+    // Upsert each annotation in sequence
+    const next = await annotations.reduce<Promise<W3CAnnotation[]>>((promise, annotation) => {
+      return promise.then(() => _upsertOneAnnotation(imageId, annotation)).then(next => {
+        return next;
+      })
+    }, Promise.resolve([]));
+
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+    }
+  }
 
   const upsertFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle, annotation: W3CAnnotation): Promise<void> => {
     const folder = getFolder(idOrHandle);
@@ -364,6 +399,7 @@ export const loadStore = (
   const store = {
     folders,
     images,
+    bulkUpsertAnnotation,
     countAnnotations,
     deleteAnnotation,
     findAnnotation,

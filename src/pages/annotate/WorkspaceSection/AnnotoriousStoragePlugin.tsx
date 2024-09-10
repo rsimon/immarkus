@@ -43,16 +43,19 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
       store.getAnnotations(imageId).then(annotations => {
         // @ts-ignore
         anno.setAnnotations(annotations.filter(a => a.target.selector || a.motivation));
-
+        
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
-
+  
         anno.on('deleteAnnotation', annotation =>
           withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
-
+  
         anno.on('updateAnnotation', annotation => {
-          // console.log('update - saving', annotation);
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
+          if (Array.isArray(annotation)) {
+            return withSaveStatus(() => store.bulkUpsertAnnotation(imageId, annotation));
+          } else {
+            return withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
+          }
         });
       });
     }

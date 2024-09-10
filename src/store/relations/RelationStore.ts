@@ -1,6 +1,6 @@
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from './W3CRelationAnnotation';
 
 export interface RelationStore {
 

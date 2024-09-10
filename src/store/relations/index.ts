@@ -1,2 +1,1 @@
-export * from './W3CRelationAnnotation';
-export * from './W3CRelationFormatAdapter';
+export * from './RelationStore';
