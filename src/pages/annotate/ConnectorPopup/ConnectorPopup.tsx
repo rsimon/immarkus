@@ -7,8 +7,6 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
 
   const model = useDataModel();
 
-  console.log(props.annotation);
-
   const options = useMemo(() => {
     return model.relationshipTypes.map(t => ({ label: t, value: t }));
   }, [model]);
@@ -31,7 +29,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   return (
     <div className="bg-white rounded-lg">
       <Combobox
-        autofocus
+        autofocus={(props.annotation.bodies || []).length === 0}
         className="w-[196px] p-2"
         value={selected}
         options={options}
