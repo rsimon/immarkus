@@ -18,10 +18,14 @@ import {
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
+  Spline, 
   Undo2, 
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
+import { ConnectorsToggle } from './ConnectorsToggle';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface HeaderSectionProps {
 
@@ -208,7 +212,18 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
 
-        <RelationEditor />
+        {ENABLE_CONNECTOR_PLUGIN ? (
+          <button 
+            className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            aria-selected={props.mode === 'connect'}
+            data-state={props.mode === 'connect'}
+            onClick={() => props.onChangeMode('connect')}>
+            <Spline
+              className="h-8 w-8 p-2" /> Connect
+          </button>
+        ) : (
+          <RelationEditor />
+        )}
       </section>
     </section>
   )

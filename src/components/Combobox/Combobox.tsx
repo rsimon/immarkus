@@ -25,6 +25,8 @@ export interface ComboboxOption {
  
 interface ComboboxProps <T extends ComboboxOption>{
 
+  autofocus?: boolean;
+
   className?: string;
 
   placeholder?: string;
@@ -41,7 +43,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
 
   const { value, placeholder } = props;
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(props.autofocus);
 
   const onSelect = (value: T) => {
     setOpen(false);

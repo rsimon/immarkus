@@ -1,3 +1,3 @@
 export type Tool = 'rectangle' | 'polygon' | 'ellipse';
 
-export type ToolMode = 'move' | 'draw';
+export type ToolMode = 'move' | 'draw' | 'connect';

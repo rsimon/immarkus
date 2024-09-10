@@ -1,6 +1,10 @@
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from './W3CRelationAnnotation';
+
+export const isW3CRelationMetaAnnotation = (arg: any): arg is W3CRelationMetaAnnotation =>
+  (arg.motivation === undefined || arg.motivation === 'tagging') &&
+   typeof arg.target === 'string';
 
 export interface RelationStore {
 

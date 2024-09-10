@@ -2,15 +2,17 @@ import { useMemo } from 'react';
 import type { OpenSeadragon } from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
+import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
-import { W3CImageRelationFormat } from '@/store';
-import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
+import { ConnectorPopup } from '../ConnectorPopup';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
+import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
+import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
 
 interface AnnotatableImageProps {
 
@@ -61,7 +63,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        //@ts-ignore - TODO remove when @annotorious/react@3.0.1 is out!
         adapter={W3CImageRelationFormat(props.image.name)}
         autoSave
         drawingMode="click"
@@ -73,6 +74,13 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           id={props.windowId || props.image.id}
           className="osd-container"
           options={options} />
+
+        <OSDConnectorPlugin 
+          enabled={props.mode === 'connect'}>
+          <OSDConnectionPopup popup={props => (
+            <ConnectorPopup {...props} />
+          )} />
+        </OSDConnectorPlugin>
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
