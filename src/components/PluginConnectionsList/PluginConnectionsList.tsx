@@ -27,12 +27,16 @@ export const PluginConnectionsList = (props: PluginConnectionsListProps) => {
   const [connections, setConnections] = useState<PluginConnection[]>([]);
 
   useEffect(() => {
-    store.findImageForAnnotation(props.annotation.id).then(image => {
+    const { id } = props.annotation;
+
+    store.findImageForAnnotation(id).then(image => {
       // Should never happen
       if (!image) return;
 
       store.getAnnotations(image.id).then(all => {
-        const links: W3CRelationLinkAnnotation[] = all.filter(a => isW3CRelationLinkAnnotation(a));
+        const links: W3CRelationLinkAnnotation[] = all
+          .filter(a => isW3CRelationLinkAnnotation(a))
+          .filter(link => link.body === id || link.target === id);
 
         const connections: PluginConnection[] = links.map(link => ({
           link,
