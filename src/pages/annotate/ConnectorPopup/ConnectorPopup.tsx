@@ -29,9 +29,10 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white rounded-lg">
       <Combobox
-        className="w-56"
+        autofocus
+        className="w-[196px] p-2"
         value={selected}
         options={options}
         onChange={onChange} />

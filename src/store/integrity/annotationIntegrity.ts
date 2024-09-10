@@ -9,7 +9,7 @@ export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModel
   const ids = new Set(model.entityTypes.map(e => e.id));
 
   return annotations.map(annotation => {
-    if ('selector' in annotation.target) {
+    if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {
       const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
       return ({
         ...annotation,

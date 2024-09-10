@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AnnotoriousImageAnnotator, W3CAnnotation, useAnnotator } from '@annotorious/react';
+import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
 import { useStore } from '@/store';
 
 interface AnnotoriousStoragePluginProps {
@@ -22,7 +22,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
 
   const store = useStore()!;
 
-  const anno = useAnnotator<AnnotoriousImageAnnotator<W3CAnnotation>>();
+  const anno = useAnnotator<AnnotoriousImageAnnotator<ImageAnnotation, W3CAnnotation>>();
 
   useEffect(() => {
     // Wrap the op so that onSaving, onSaved and onError are
@@ -42,7 +42,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
         // @ts-ignore
-        anno.setAnnotations(annotations.filter(a => a.target.selector));
+        anno.setAnnotations(annotations.filter(a => a.target.selector || a.motivation));
 
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
