@@ -97,3 +97,11 @@
 .page.annotate .mosaic-zero-state {
   display: none;
 }
+
+/** Temporary fix **/
+.a9s-annotation-emphasis :is(ellipse, polygon, rect) {
+  fill: transparent;
+  stroke: #cc23cc;
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}

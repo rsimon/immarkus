@@ -22,7 +22,7 @@ export const PluginConnectionsListItem = (props: PluginConnectionsListItemProps)
 
   const toId = link.body;
 
-  const relationship = Array.isArray(meta.body) ? meta.body[0].value : meta.body?.value || 'to';
+  const relationship = Array.isArray(meta?.body) ? meta.body[0].value : meta?.body?.value || 'to';
 
   return (
     <div className="flex items-center w-full justify-between px-1 py-1.5 text-xs gap-2">
