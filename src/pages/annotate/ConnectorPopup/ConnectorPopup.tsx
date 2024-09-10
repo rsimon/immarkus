@@ -3,6 +3,8 @@ import { ConnectionPopupProps } from '@annotorious/plugin-connectors-react';
 import { Combobox } from '@/components/Combobox';
 import { useDataModel } from '@/store';
 
+import './ConnectorPopup.css';
+
 export const ConnectorPopup = (props: ConnectionPopupProps) => {
 
   const model = useDataModel();
@@ -26,7 +28,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   }
 
   return (
-    <div className="bg-white rounded-lg">
+    <div className="bg-white rounded-lg shadow-lg">
       <Combobox
         autofocus={(props.annotation.bodies || []).length === 0}
         className="w-[196px] p-2"

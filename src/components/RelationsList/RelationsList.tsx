@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
-import { useStore, W3CRelationMetaAnnotation } from '@/store';
+import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { useStore } from '@/store';
 import { RelationsListItem } from './RelationsListItem';
 import { Separator } from '@/ui/Separator';
 
