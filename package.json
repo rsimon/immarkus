@@ -20,12 +20,12 @@
     "postcss": "^8.4.45",
     "svelte": "^4.2.19",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4",
+    "typescript": "^5.6.2",
     "vite": "^5.4.3",
     "vite-plugin-babel-macros": "^1.0.6"
   },
   "dependencies": {
-    "@annotorious/plugin-connectors-react": "^0.0.10",
+    "@annotorious/plugin-connectors-react": "^0.1.0",
     "@annotorious/react": "^3.0.5",
     "@annotorious/react-manifold": "^3.0.5",
     "@annotorious/selector-pack": "3.0.0-rc.21",
@@ -51,7 +51,7 @@
     "@radix-ui/react-tooltip": "^1.1.2",
     "@react-spring/web": "^9.7.4",
     "ajv": "^8.17.1",
-    "chroma-js": "^3.0.0",
+    "chroma-js": "^3.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
@@ -70,7 +70,7 @@
     "react-force-graph-2d": "^1.25.5",
     "react-moment": "^1.1.3",
     "react-mosaic-component": "^6.1.0",
-    "react-router-dom": "^6.26.1",
+    "react-router-dom": "^6.26.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0"
