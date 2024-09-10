@@ -7,7 +7,7 @@ import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityTypeBrowserDialog } from '@/components/EntityTypeBrowser';
 import { PropertiesForm } from './PropertiesForm';
-import { useStore } from '@/store';
+import { isW3CRelationLinkAnnotation, useStore } from '@/store';
 
 export const CurrentSelection = () => {
 
@@ -33,7 +33,13 @@ export const CurrentSelection = () => {
       const hasRelations = store.hasRelatedAnnotations(selected.id);
       const hasBodies = selected.bodies && selected.bodies.length > 0;
 
-      setShowAsEmpty(!(hasRelations || hasBodies));
+      store.findAnnotation(selected.id).then(([_, image]) => {
+        store.getAnnotations(image.id).then(all => {
+          const links = all.filter(a => isW3CRelationLinkAnnotation(a));
+          const hasLinks = links.find(link => link.body === selected.id || link.target === selected.id);
+          setShowAsEmpty(!(hasRelations || hasBodies || hasLinks));
+        });        
+      })
     }
   }, [selected]);
 

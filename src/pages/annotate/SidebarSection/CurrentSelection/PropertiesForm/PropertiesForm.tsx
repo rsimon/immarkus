@@ -3,9 +3,10 @@ import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
+import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { RelationsList } from '@/components/RelationsList';
-import { useDataModel, useStore } from '@/store';
+import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
@@ -18,6 +19,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface PropertiesFormProps {
 
@@ -208,9 +211,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             </Accordion>
           )}
 
-          {hasRelations && (
-            <RelationsList annotation={annotation} />
-          )}
+          {ENABLE_CONNECTOR_PLUGIN ? (
+            <PluginConnectionsList 
+              annotation={annotation} />
+          ) : hasRelations && (
+            <RelationsList 
+              annotation={annotation} />
+          )} 
 
           {hasNote && (
             <Note

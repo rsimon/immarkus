@@ -23,7 +23,6 @@ import {
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
-import { ConnectorsToggle } from './ConnectorsToggle';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 

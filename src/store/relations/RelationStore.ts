@@ -1,6 +1,17 @@
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { ConnectionAnnotation, W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
+
+export const isConnectionAnnotation = (arg: any): arg is ConnectionAnnotation => 
+  arg.motivation !== undefined && arg.motivation === 'linking';
+
+export const isW3CRelationLinkAnnotation = (arg: any): arg is W3CRelationLinkAnnotation =>
+  arg.motivation !== undefined && 
+  arg.motivation === 'linking' &&
+  arg.body !== undefined && 
+  arg.target !== undefined &&
+  typeof arg.body === 'string' && 
+  typeof arg.target === 'string';
 
 export const isW3CRelationMetaAnnotation = (arg: any): arg is W3CRelationMetaAnnotation =>
   (arg.motivation === undefined || arg.motivation === 'tagging') &&
