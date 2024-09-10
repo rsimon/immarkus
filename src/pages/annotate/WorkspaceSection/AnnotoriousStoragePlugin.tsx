@@ -50,8 +50,10 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         anno.on('deleteAnnotation', annotation =>
           withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
 
-        anno.on('updateAnnotation', annotation =>
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+        anno.on('updateAnnotation', annotation => {
+          // console.log('update - saving', annotation);
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
+        });
       });
     }
   }, [anno]);

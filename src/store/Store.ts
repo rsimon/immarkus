@@ -108,7 +108,7 @@ export const loadStore = (
     imageId: string, withSelectorOnly = true
   ): Promise<number> => getAnnotations(imageId).then(annotations => {
     if (withSelectorOnly) {
-      return annotations.filter(a => 'selector' in a.target).length;
+      return annotations.filter(a => typeof a.target === 'object' && 'selector' in a.target).length;
     } else {
       return annotations.length;
     }
