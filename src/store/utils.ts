@@ -37,12 +37,40 @@ export const readJSONFile = <T extends unknown>(file: File): Promise<T | undefin
     reader.readAsText(file);
   });
 
-export const writeJSONFile = (handle: FileSystemFileHandle, data: any) => {
-  const content = JSON.stringify(data, null, 2);
-  return handle.createWritable().then(writable => {
-    return writable.write(content).then(() => writable.close());
-  });
-}
+let pendingWrite = null;
+
+let isWriting = false;
+
+export const writeJSONFile = (handle: FileSystemFileHandle, data: any) => {  
+  const performWrite = () => {
+    if (!pendingWrite) return Promise.resolve();
+    
+    const { handle, data } = pendingWrite;
+
+    pendingWrite = null;
+
+    isWriting = true;
+    
+    const content = JSON.stringify(data, null, 2);
+
+    return handle.createWritable().then(writable => {
+      writable.write(content).then(() => writable.close())
+    }).catch(error => {
+      console.error('Error writing file: ', error);
+    }).finally(() => {
+      isWriting = false;
+
+      if (pendingWrite) performWrite();
+    });
+  };
+
+  pendingWrite = { handle, data };
+
+  if (!isWriting)
+    return performWrite();
+
+  return Promise.resolve();
+};
 
 export const generateShortId = (str: string) => {
   return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
