@@ -69,8 +69,12 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
   
-        anno.on('deleteAnnotation', annotation =>
-          withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
+        anno.on('deleteAnnotation', annotation => {
+          if (Array.isArray(annotation))
+            return withSaveStatus(() => store.bulkDeleteAnnotations(imageId, annotation));
+          else
+            return withSaveStatus(() => store.deleteAnnotation(imageId, annotation));
+        });
   
         anno.on('updateAnnotation', (annotation, previous) => {
           if (Array.isArray(annotation)) {
