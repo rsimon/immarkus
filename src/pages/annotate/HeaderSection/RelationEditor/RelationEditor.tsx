@@ -32,7 +32,8 @@ export const RelationEditor = () => {
   }, [selection]);
 
   // Don't enable if there is no selection, or no relationship types
-  const disabled = selection.selected.length === 0 || relationshipTypes.length === 0;
+  const disabled = !open &&
+    (selection.selected.length === 0 || relationshipTypes.length === 0);
 
   useEffect(() => {
     // When the editor opens, keep the current selection as source
@@ -79,10 +80,11 @@ export const RelationEditor = () => {
       <PopoverTrigger asChild>
         <div>
           <ToolbarButton
+            className="flex items-center pr-2"
             disabled={disabled}
             onClick={() => setOpen(open => !open)}>
             <Spline
-              className="h-8 w-8 p-2" />
+              className="h-8 w-8 p-2" /> Relation
           </ToolbarButton>
         </div>
       </PopoverTrigger>
@@ -96,7 +98,8 @@ export const RelationEditor = () => {
           <RelationEditorContent 
             relationshipTypes={relationshipTypes}
             source={source} 
-            onSave={onSave} />
+            onSave={onSave} 
+            onCancel={() => setOpen(false)} />
         )}
       </PopoverContent>
     </Popover>

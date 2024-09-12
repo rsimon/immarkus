@@ -16,6 +16,8 @@ interface RelationEditorContentProps {
 
   onSave(source: ImageAnnotation, target: ImageAnnotation, relation: string): void;
 
+  onCancel(): void;
+
 }
 
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
@@ -49,7 +51,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
   return (
     <div>
       <h3 className="flex text-xs text-muted-foreground items-center gap-1 font-medium">
-        <Spline className="h-4 w-4" /> Create Connection
+        <Spline className="h-4 w-4" /> Create Relation
       </h3>
 
       <ol className="list-decimal list-inside">
@@ -79,7 +81,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
         </li>
 
         <li className="text-xs mt-6 mb-1 flex-shrink-0">
-          Choose a connection type.
+          Choose a relation type.
 
           <div className="ml-4 mt-2">
             <Combobox
@@ -95,6 +97,13 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
         className="mt-6 w-full"
         disabled={!relation || !target}
         onClick={onSave}>Save</Button>
+
+      <Button
+        variant="outline"
+        className="mt-2 w-full"
+        onClick={props.onCancel}>
+        Cancel
+      </Button>
     </div>
   )
 
