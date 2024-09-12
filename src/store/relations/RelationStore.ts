@@ -19,7 +19,7 @@ export const isW3CRelationMetaAnnotation = (arg: any): arg is W3CRelationMetaAnn
 
 export interface RelationStore {
 
-  deleteRelation(relationId: string, imageId?: string): Promise<void>;
+  deleteRelation(linkId: string): Promise<void>;
 
   getRelatedAnnotations(annotationId: string): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
@@ -45,8 +45,8 @@ export const loadRelationStore = (
 
   const save = () => writeJSONFile(fileHandle, annotations);
 
-  const deleteRelation = (relationId: string, imageId?: string) => {
-    annotations = annotations.filter(a => !(a.id === relationId || a.target === relationId));
+  const deleteRelation = (linkId: string) => {
+    annotations = annotations.filter(a => !(a.id === linkId || a.target === linkId));
     return save();
   }
 

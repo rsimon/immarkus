@@ -73,7 +73,7 @@ export const RelationEditor = () => {
 
     // TODO button busy state
 
-    store.upsertRelation(link, meta, imageId).then(() => {
+    store.upsertRelation(link, meta).then(() => {
       setSource(undefined);
       setOpen(false);  
     });

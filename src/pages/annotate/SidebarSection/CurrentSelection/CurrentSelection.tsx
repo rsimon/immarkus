@@ -44,7 +44,7 @@ export const CurrentSelection = () => {
         }
       });
     }
-  }, [selected]);
+  }, [selected, store]);
 
   const onDelete = () => 
     anno.deleteAnnotation(selected.id);

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
-import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation } from '@annotorious/plugin-connectors-react';
 import { useStore } from '@/store';
 import { RelationsListItem } from './RelationsListItem';
 import { Separator } from '@/ui/Separator';
@@ -17,11 +17,11 @@ export const RelationsList = (props: RelationsListProps) => {
 
   const relations = useMemo(() => (
     store.getRelatedAnnotations(props.annotation.id)
-  ), [props.annotation.id]);
+  ), [props.annotation.id, store]);
 
-  const getRelationship = (meta: W3CRelationMetaAnnotation) =>
-    // May need more edge case handling later
-    meta.body?.value;
+  const onDeleteRelation = (link: W3CRelationLinkAnnotation) =>
+    // Note that this will automatically delete link AND meta
+    store.deleteRelation(link.id);
 
   return (
     <div>
@@ -37,7 +37,8 @@ export const RelationsList = (props: RelationsListProps) => {
               referenceAnnotation={props.annotation}
               fromId={link.target}
               toId={link.body}
-              relationship={getRelationship(meta)} />
+              relationship={meta.body?.value} 
+              onDelete={() => onDeleteRelation(link)} />
           </li>
         ))}
       </ul>
