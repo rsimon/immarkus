@@ -26,9 +26,13 @@ export const RelationEditor = () => {
   const [source, setSource] = useState<ImageAnnotation | undefined>(); 
 
   useEffect(() => {
-    const last = selection.selected[0];
-    if (last)
+    if ((selection?.selected || []).length === 0) {
+      // Deselect closes the editor
+      setOpen(false);
+    } else {
+      const last = selection.selected[0];
       lastSelected.current = last.annotation as ImageAnnotation;
+    }
   }, [selection]);
 
   // Don't enable if there is no selection, or no relationship types
