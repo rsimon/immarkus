@@ -9,6 +9,7 @@ import { ConnectorPopup } from '../ConnectorPopup';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
+import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
@@ -84,6 +85,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
+
+        <AnnotoriousKeyboardPlugin />
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}
