@@ -7,6 +7,7 @@ import { LoadedImage } from '@/model';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
+import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
@@ -74,6 +75,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
+
+        <AnnotoriousKeyboardPlugin />
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}
