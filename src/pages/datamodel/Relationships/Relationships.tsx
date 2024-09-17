@@ -29,7 +29,7 @@ export const Relationships = () => {
         ) : (
           <ul className="flex flex-wrap gap-2">
             {relationshipTypes.map(t => (
-              <li>
+              <li key={t}>
                 <RelationshipListItem 
                   relationshipType={t} 
                   onRemove={onRemove(t)} />
