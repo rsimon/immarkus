@@ -2,6 +2,7 @@ import OpenSeadragon from 'openseadragon';
 import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from '@annotorious/react';
 import { useEffect } from 'react';
 import { useRelationEditor } from './RelationEditorRoot';
+import { useStore } from '@/store';
 
 interface AnnotoriousRelationEditorPluginProps {
 
@@ -10,6 +11,8 @@ interface AnnotoriousRelationEditorPluginProps {
 }
 
 export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditorPluginProps) => {
+  
+  const store = useStore();
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
@@ -42,6 +45,21 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
       viewer.element.removeEventListener('pointerdown', onPointerDown);
     }
   }, [anno, props.enabled]);
+
+  useEffect(() => {
+    if (!anno || !store) return;
+
+    const onDelete = (annotation: ImageAnnotation) => {
+      const related = store.getRelatedAnnotations(annotation.id);
+      related.forEach(([link, _]) => store.deleteRelation(link.id));
+    }
+
+    anno.on('deleteAnnotation', onDelete);
+
+    return () => {
+      anno.off('deleteAnnotation', onDelete);
+    }
+  }, [anno, store]);
 
   return null;
 
