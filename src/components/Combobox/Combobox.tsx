@@ -89,6 +89,10 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
     props.onChange(value);
   }
 
+  useEffect(() => {
+    setOpen(false);
+  }, [props.options]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

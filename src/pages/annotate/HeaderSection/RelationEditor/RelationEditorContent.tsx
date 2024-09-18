@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
-import { Spline } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { CirclePlus, Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
-import { Skeleton } from '@/ui/Skeleton';
-import { Combobox, ComboboxOption } from '@/components/Combobox';
-import { useState } from 'react';
+import { Combobox, ComboboxOption, ComboboxState } from '@/components/Combobox';
+import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
+import { Skeleton } from '@/ui/Skeleton';
 
 interface RelationEditorContentProps {
 
@@ -25,9 +25,26 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const { relationshipTypes, source } = props;
 
+  const model = useDataModel();
+
   const options = useMemo(() => relationshipTypes.map(t => ({ label: t, value: t })), [relationshipTypes]);
   
   const [relation, setRelation] = useState<ComboboxOption | undefined>();
+
+  const [addTerm, setAddTerm] = useState<string | undefined>();
+
+  const onComboboxStateChange = (state: ComboboxState) => {
+    // If the current search DOES NOT match the selected value, show 'add to vocab' button
+    const { search, value } = state;
+    const isMatch = search === value?.label;
+    setAddTerm(isMatch ? undefined : search);
+  }
+
+  const onAddTerm = (term: string) => {
+    model.addRelationshipType(term);
+    setRelation(({ value: term, label: term }));
+    setAddTerm(undefined);
+  }
 
   const onSave = () => {
     if (props.target && relation)
@@ -74,7 +91,24 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
               className="w-56"
               value={relation}
               options={options}
-              onChange={setRelation} />
+              onChange={setRelation}
+              onStateChange={onComboboxStateChange}>
+
+              {addTerm && (
+                <div className="p-2 border-t bg-muted">
+                  <p className="p-1 pb-2 text-center text-xs text-muted-foreground">
+                    Add to vocabulary:
+                  </p>
+                  <Button 
+                    size="sm"
+                    className="w-full font-semibold text-xs"
+                    onClick={() => onAddTerm(addTerm)}>
+                    <CirclePlus className="h-4 w-4 mr-2" />{addTerm}
+                  </Button>
+                </div>
+              )}
+
+            </Combobox>
           </div>
         </li>
       </ol>
