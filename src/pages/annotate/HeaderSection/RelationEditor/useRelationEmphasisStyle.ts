@@ -58,16 +58,14 @@ export const useRelationEmphasisStyle = (
         .filter(id => id !== selected[0].annotation.id));
 
     return (a: Annotation, state?: AnnotationState) => {
-      const style = related.has(a.id) ? {
+      return related.has(a.id) ? {
         ...base,
         stroke: '#22c55e',
         strokeOpacity: 1,
         strokeWidth: 3
       } as DrawingStyle : computeStyle(a, base, state);
-
-      return style;
     };
-  }, [enabled, JSON.stringify(base), selected.map(s => s.annotation.id).join('-')]);
+  }, [enabled, base, selected.map(s => s.annotation.id).join('-')]);
   
   return enabled ? enabledStyle : defaultStyle;
 
