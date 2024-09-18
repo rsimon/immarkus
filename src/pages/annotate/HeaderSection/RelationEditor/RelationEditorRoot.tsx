@@ -4,7 +4,9 @@ import {
   Dispatch, 
   ReactNode, 
   SetStateAction, 
+  useCallback, 
   useContext, 
+  useEffect, 
   useState 
 } from 'react';
 
@@ -18,6 +20,10 @@ interface RelationEditorRootContextValue {
 
   setTarget: Dispatch<SetStateAction<ImageAnnotation>>;
 
+  cancel(): void;
+
+  registerOnCancel(callback: () => void): void;
+
 }
 
 // @ts-ignore
@@ -29,12 +35,27 @@ export const RelationEditorRoot = (props: { children: ReactNode }) => {
 
   const [target, setTarget] = useState<ImageAnnotation | undefined>();
 
+  const [onCancelCallbacks, setOnCancelCallbacks] = useState<(() => void)[]>([]);
+
+  const cancel = useCallback(() => {
+    setSource(undefined);
+    setTarget(undefined);
+
+    onCancelCallbacks.forEach(callback => callback());
+  }, [onCancelCallbacks]);
+
+  const registerOnCancel = useCallback((callback: () => void) => {
+    setOnCancelCallbacks(prev => [...prev, callback]);
+  }, []);
+
   return (
     <RelationEditorRootContext.Provider value={{  
       source,
       setSource,
       target,
-      setTarget
+      setTarget,
+      cancel,
+      registerOnCancel
     }}>
       {props.children}
     </RelationEditorRootContext.Provider> 
@@ -42,4 +63,13 @@ export const RelationEditorRoot = (props: { children: ReactNode }) => {
 
 }
 
-export const useRelationEditor = () => useContext(RelationEditorRootContext);
+export const useRelationEditor = (props: { onCancel?(): void } = {}) => {
+  const ctx = useContext(RelationEditorRootContext);
+
+  useEffect(() => {
+    if (props.onCancel)
+      ctx.registerOnCancel(props.onCancel);
+  }, [ctx, props.onCancel]);
+
+  return ctx;
+};

@@ -16,19 +16,19 @@ export const colorByEntityType = (
       fill: entityType.color as Color,
       stroke: chroma(entityType.color).darken(2).hex() as Color,
       strokeOpacity: 1,
-      strokeWidth: 1
+      strokeWidth: 1.2
     } : {
       fill: '#000000',
       stroke: '#000000',
       strokeOpacity: 1,
-      strokeWidth: 1
+      strokeWidth: 1.2
     };
   } else {
     return {
       fill: '#000000',
       stroke: '#000000',
       strokeOpacity: 1,
-      strokeWidth: 1
+      strokeWidth: 1.2
     }
   }
 

@@ -25,9 +25,14 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
   const { relationshipTypes } = store.getDataModel();
 
-  const { source, setSource, target } = useRelationEditor();
-
   const [open, setOpen] = useState(false);
+
+  const onCancel = () => {
+    setOpen(false);
+    props.onOpenChange(false);
+  }
+
+  const { source, setSource, target } = useRelationEditor({ onCancel });
 
   const selection = useSelection();
 
