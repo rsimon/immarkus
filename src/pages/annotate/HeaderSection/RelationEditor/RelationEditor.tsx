@@ -8,10 +8,13 @@ import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { ToolbarButton } from '../../ToolbarButton';
 import { RelationEditorContent } from './RelationEditorContent';
+import { useSavingState } from '../../SavingState';
 
 export const RelationEditor = () => {
 
   const store = useStore();
+
+  const { setSavingState } = useSavingState();
 
   const manifold = useAnnotoriousManifold();
 
@@ -48,11 +51,6 @@ export const RelationEditor = () => {
   }, [open]);
 
   const onSave = (from: ImageAnnotation, to: ImageAnnotation, relation: string) => {
-    const fromImageId = manifold.findSource(from.id);
-    const toImageId = manifold.findSource(to.id);
-
-    const imageId = fromImageId === toImageId ? fromImageId : undefined;
-
     const id = uuidv4();
 
     const link: W3CRelationLinkAnnotation = {
@@ -71,12 +69,15 @@ export const RelationEditor = () => {
       target: id
     };
 
-    // TODO button busy state
+    setSavingState({ value: 'saving' });
 
     store.upsertRelation(link, meta).then(() => {
       setSource(undefined);
       setOpen(false);  
-    });
+      setSavingState({ value: 'success' });
+    }).then(() => {
+      setSavingState({ value: 'failed' });
+    })
   }
 
   return (
