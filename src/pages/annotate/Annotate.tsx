@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
-import { HeaderSection } from './HeaderSection';
+import { HeaderSection, RelationEditorRoot } from './HeaderSection';
 import { ToolMode, Tool } from './Tool';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
@@ -48,30 +48,32 @@ export const Annotate = () => {
     <div className="page annotate h-full w-full">
       <AnnotoriousManifold>
         <OSDViewerManifold>
-          {images.length > 0 && ( 
-            <SavingState.Root>
-              <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-                <HeaderSection
-                  images={images} 
-                  mode={mode}
-                  tool={tool}
-                  onAddImage={onAddImage} 
-                  onChangeImage={onChangeImage}
-                  onChangeMode={setMode}
-                  onChangeTool={setTool} />
+          <RelationEditorRoot>
+            {images.length > 0 && ( 
+              <SavingState.Root>
+                <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                  <HeaderSection
+                    images={images} 
+                    mode={mode}
+                    tool={tool}
+                    onAddImage={onAddImage} 
+                    onChangeImage={onChangeImage}
+                    onChangeMode={setMode}
+                    onChangeTool={setTool} />
 
-                <WorkspaceSection 
-                  images={images} 
-                  mode={mode}
-                  tool={tool} 
-                  onAddImage={onAddImage} 
-                  onChangeImages={images => setImageIds(images.map(i => i.id))}
-                  onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-              </main>
+                  <WorkspaceSection 
+                    images={images} 
+                    mode={mode}
+                    tool={tool} 
+                    onAddImage={onAddImage} 
+                    onChangeImages={images => setImageIds(images.map(i => i.id))}
+                    onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                </main>
 
-              <SidebarSection />
-            </SavingState.Root>
-          )}
+                <SidebarSection />
+              </SavingState.Root>
+            )}
+          </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>
     </div>

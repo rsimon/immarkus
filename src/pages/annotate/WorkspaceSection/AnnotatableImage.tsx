@@ -1,19 +1,22 @@
 import { useMemo } from 'react';
 import type { OpenSeadragon } from 'openseadragon';
-import { AnnotoriousPlugin, OpenSeadragonAnnotator } from '@annotorious/react';
+import { AnnotoriousPlugin, OpenSeadragonAnnotator, UserSelectAction } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { ConnectorPopup } from '../ConnectorPopup';
+import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../HeaderSection';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
-import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
+import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface AnnotatableImageProps {
 
@@ -32,6 +35,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   const { setSavingState } = useSavingState();
 
   const { colorByEntity } = useDrawingStyles();
+
+  const style = useRelationEmphasisStyle(props.mode === 'connect', colorByEntity);
 
   const onSave = () => setSavingState({ value: 'saving' });
 
@@ -68,7 +73,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
-        style={colorByEntity}
+        userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
+        style={style}
         tool={props.tool}>
 
         <OpenSeadragonViewer
@@ -76,17 +82,22 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           className="osd-container"
           options={options} />
 
-        <OSDConnectorPlugin 
-          enabled={props.mode === 'connect'}>
-          <OSDConnectionPopup popup={props => (
-            <ConnectorPopup {...props} />
-          )} />
-        </OSDConnectorPlugin>
+        {ENABLE_CONNECTOR_PLUGIN && (
+          <OSDConnectorPlugin 
+            enabled={props.mode === 'connect'}>
+            <OSDConnectionPopup popup={props => (
+              <ConnectorPopup {...props} />
+            )} />
+          </OSDConnectorPlugin>
+        )}
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
 
         <AnnotoriousKeyboardPlugin />
+
+        <AnnotoriousRelationEditorPlugin
+          enabled={props.mode === 'connect'} />
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}

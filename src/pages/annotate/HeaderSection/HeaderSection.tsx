@@ -93,6 +93,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     ? `/images/${folder && ('id' in folder) ? folder.id : ''}`
     : '/images/';
 
+  const onOpenRelationEditor = (open: boolean) => {
+    if (open) {
+      props.onChangeMode('connect');
+    } else {
+      props.onChangeMode('move');
+    }
+  }
+
   return (
     <section 
       ref={ref}
@@ -221,7 +229,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               className="h-8 w-8 p-2" /> Connect
           </button>
         ) : (
-          <RelationEditor />
+          <RelationEditor 
+            onOpenChange={onOpenRelationEditor}/>
         )}
       </section>
     </section>

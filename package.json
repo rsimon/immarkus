@@ -25,8 +25,8 @@
     "vite-plugin-babel-macros": "^1.0.6"
   },
   "dependencies": {
-    "@annotorious/react": "^3.0.6",
-    "@annotorious/react-manifold": "^3.0.6",
+    "@annotorious/react": "file:../../annotorious/annotorious/packages/annotorious-react",
+    "@annotorious/react-manifold": "file:../../annotorious/annotorious/packages/annotorious-react-manifold",
     "@annotorious/plugin-connectors-react": "0.2.2",
     "@annotorious/selector-pack": "3.0.0-rc.21",
     "@neodrag/react": "^2.0.4",

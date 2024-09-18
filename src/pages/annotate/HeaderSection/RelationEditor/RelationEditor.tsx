@@ -9,8 +9,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { ToolbarButton } from '../../ToolbarButton';
 import { RelationEditorContent } from './RelationEditorContent';
 import { useSavingState } from '../../SavingState';
+import { useRelationEditor } from './RelationEditorRoot';
 
-export const RelationEditor = () => {
+interface RelationEditorProps {
+
+  onOpenChange(open: boolean): void;
+
+}
+
+export const RelationEditor = (props: RelationEditorProps) => {
 
   const store = useStore();
 
@@ -18,19 +25,16 @@ export const RelationEditor = () => {
 
   const { relationshipTypes } = store.getDataModel();
 
+  const { source, setSource, target } = useRelationEditor();
+
   const [open, setOpen] = useState(false);
 
   const selection = useSelection();
 
   const lastSelected = useRef<ImageAnnotation>();
 
-  const [source, setSource] = useState<ImageAnnotation | undefined>(); 
-
   useEffect(() => {
-    if ((selection?.selected || []).length === 0) {
-      // Deselect closes the editor
-      setOpen(false);
-    } else {
+    if ((selection?.selected || []).length > 0) {
       const last = selection.selected[0];
       lastSelected.current = last.annotation as ImageAnnotation;
     }
@@ -46,6 +50,8 @@ export const RelationEditor = () => {
       setSource(lastSelected.current);
     else
       setSource(undefined);
+    
+    props.onOpenChange(open);
   }, [open]);
 
   const onSave = (from: ImageAnnotation, to: ImageAnnotation, relation: string) => {
@@ -102,6 +108,7 @@ export const RelationEditor = () => {
           <RelationEditorContent 
             relationshipTypes={relationshipTypes}
             source={source} 
+            target={target}
             onSave={onSave} 
             onCancel={() => setOpen(false)} />
         )}
