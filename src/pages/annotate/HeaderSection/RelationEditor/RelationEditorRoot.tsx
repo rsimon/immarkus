@@ -7,6 +7,7 @@ import {
   useCallback, 
   useContext, 
   useEffect, 
+  useRef, 
   useState 
 } from 'react';
 
@@ -35,17 +36,17 @@ export const RelationEditorRoot = (props: { children: ReactNode }) => {
 
   const [target, setTarget] = useState<ImageAnnotation | undefined>();
 
-  const [onCancelCallbacks, setOnCancelCallbacks] = useState<(() => void)[]>([]);
+  const onCancelCallbacks = useRef<(() => void)[]>([]);
 
   const cancel = useCallback(() => {
     setSource(undefined);
     setTarget(undefined);
 
-    onCancelCallbacks.forEach(callback => callback());
-  }, [onCancelCallbacks]);
+    onCancelCallbacks.current.forEach(callback => callback());
+  }, []);
 
   const registerOnCancel = useCallback((callback: () => void) => {
-    setOnCancelCallbacks(prev => [...prev, callback]);
+    onCancelCallbacks.current = [...onCancelCallbacks.current, callback];
   }, []);
 
   return (
@@ -69,7 +70,7 @@ export const useRelationEditor = (props: { onCancel?(): void } = {}) => {
   useEffect(() => {
     if (props.onCancel)
       ctx.registerOnCancel(props.onCancel);
-  }, [ctx, props.onCancel]);
+  }, [props.onCancel, ctx.registerOnCancel]);
 
   return ctx;
 };

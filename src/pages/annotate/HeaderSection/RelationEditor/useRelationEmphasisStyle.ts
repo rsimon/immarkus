@@ -11,17 +11,23 @@ export const useRelationEmphasisStyle = (
   const chained = useMemo(() => {
     if (enabled) {
       const emphasis: DrawingStyleExpression = (a: ImageAnnotation, state?: AnnotationState) => {
-        if (a.id === source?.id || a.id === target?.id) {
+        if (a.id === source?.id) {
           return {
-            stroke: '#cc23cc',
+            stroke: '#c026d3',
+            strokeOpacity: 1,
+            strokeWidth: 3
+          }
+        } else if (a.id === target?.id) {
+          return {
+            stroke: '#22c55e',
             strokeOpacity: 1,
             strokeWidth: 3
           }
         } else if (state?.hovered) {
           return {
-            stroke: '#cc23cc',
+            stroke: '#22c55e',
             strokeOpacity: 1,
-            strokeWidth: 2
+            strokeWidth: 1.2
           }
         }
       };

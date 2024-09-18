@@ -13,7 +13,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
-  const { setTarget, cancel } = useRelationEditor();
+  const { source, setTarget, cancel } = useRelationEditor();
 
   useEffect(() => {
     if (!anno || !props.enabled) return;
@@ -28,10 +28,12 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
       const { x, y } = viewer.viewport.viewerElementToImageCoordinates(new OpenSeadragon.Point(offsetX, offsetY));
 
       const annotation: ImageAnnotation = (store as any).getAt(x, y);
-      if (annotation)
-        setTarget(annotation);
-      else
+      if (annotation) {
+        if (annotation.id !== source?.id)
+          setTarget(annotation);
+      } else {
         cancel();
+      }
     };
 
     viewer.element.addEventListener('pointerdown', onPointerDown);
