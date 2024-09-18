@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Spline } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation } from '@annotorious/react';
-import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
+import { useSelection } from '@annotorious/react-manifold';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
@@ -15,8 +15,6 @@ export const RelationEditor = () => {
   const store = useStore();
 
   const { setSavingState } = useSavingState();
-
-  const manifold = useAnnotoriousManifold();
 
   const { relationshipTypes } = store.getDataModel();
 
@@ -75,7 +73,8 @@ export const RelationEditor = () => {
       setSource(undefined);
       setOpen(false);  
       setSavingState({ value: 'success' });
-    }).then(() => {
+    }).catch(error => {
+      console.error(error);
       setSavingState({ value: 'failed' });
     })
   }
