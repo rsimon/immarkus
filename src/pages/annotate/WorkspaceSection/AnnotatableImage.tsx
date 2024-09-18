@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { OpenSeadragon } from 'openseadragon';
+import type OpenSeadragon from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, UserSelectAction } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
