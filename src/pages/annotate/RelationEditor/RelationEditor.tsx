@@ -23,8 +23,6 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
   const { setSavingState } = useSavingState();
 
-  const { relationshipTypes } = store.getDataModel();
-
   const [open, setOpen] = useState(false);
 
   const onCancel = () => {
@@ -112,7 +110,6 @@ export const RelationEditor = (props: RelationEditorProps) => {
         sideOffset={14}>
         {source && (
           <RelationEditorContent 
-            relationshipTypes={relationshipTypes}
             source={source} 
             target={target}
             onSave={onSave} 

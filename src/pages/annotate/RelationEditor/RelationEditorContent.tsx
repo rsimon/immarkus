@@ -9,8 +9,6 @@ import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 
 interface RelationEditorContentProps {
-
-  relationshipTypes: RelationshipType[];
   
   source: ImageAnnotation;
 
@@ -24,11 +22,38 @@ interface RelationEditorContentProps {
 
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
-  const { relationshipTypes, source } = props;
+  const { source, target } = props;
 
   const model = useDataModel();
 
-  const options = useMemo(() => relationshipTypes.map(t => ({ label: t.name, value: t.name })), [relationshipTypes]);
+  const options = useMemo(() => { 
+    const getEntityTypes = (annotation: ImageAnnotation) => {
+      // The entity type ID tags on this annotation
+      const entityIds = annotation.bodies
+        .filter(b => b.purpose === 'classifying')
+        .map(body => (body as any).source as string);
+
+      // Resolve full parent hierarchy
+      const withAncestors = entityIds.reduce<string[]>((all, entityId) => {
+        return [...all, ...model.getAncestors(entityId).map(t => t.id)];
+      }, [...entityIds]);
+
+      // All entity classes the annotation is tagged with, incl. hierachical ancestors
+      return new Set(withAncestors); 
+    }
+
+    const sourceTypes = getEntityTypes(source);
+    const targetTypes = target ? getEntityTypes(target) : undefined;
+
+    const filteredBySource = model.relationshipTypes
+      .filter(type => !type.sourceTypeId || sourceTypes.has(type.sourceTypeId));
+
+    const filteredByTarget = targetTypes 
+      ? filteredBySource.filter(type => !type.targetTypeId || targetTypes.has(type.targetTypeId))
+      : filteredBySource; // No target yet - show all 
+
+    return filteredByTarget.map(t => ({ label: t.name, value: t.name }))
+  }, [source, target, model]);
   
   const [relation, setRelation] = useState<ComboboxOption | undefined>();
 

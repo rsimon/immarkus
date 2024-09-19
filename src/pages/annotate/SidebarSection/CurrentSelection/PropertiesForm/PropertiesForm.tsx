@@ -202,7 +202,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                 <div
                   key={body.id}
                   className="flex py-4 justify-between items-center border-b">
+
                   <EntityBadge entityType={entityType} />
+                  
                   <PropertiesFormSectionActions 
                     entityType={entityType} 
                     onDeleteBody={() => onDeleteBody(body)} />
