@@ -104,7 +104,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn(props.className, 'text-xs font-normal justify-between overflow-hidden')}>
+          className={cn(props.className, 'text-xs font-normal justify-between overflow-hidden relative')}>
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {value
               ? value.label
