@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { EntityType, Folder, Image } from '@/model';
-import { ResolvedRelation, useRelationGraph, useStore } from '@/store';
+import { W3CAnnotation } from '@annotorious/react';
+import { Image } from '@/model';
+import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from './Types';
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const store = useStore();
 
-  const relations = useRelationGraph();
+  // const relations = useRelationGraph();
 
   const datamodel = store.getDataModel();
 
@@ -21,7 +21,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
   const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
-    if (!relations) return;
+    // if (!relations) return;
 
     // Resolve folder metadata and image annotations asynchronously
     const foldersQuery = folders.map(folder =>
@@ -127,11 +127,13 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             return [...all, ...entityLinks];
         }, []);
 
+        /*
         const resolvedRelations = relations.listRelations().reduce<ResolvedRelation[]>((all, r) => (
           [...all, ...relations.resolveTargets(r)]
         ), []);
+        */
 
-        // Links between images based on relations (with value = no. of annotations)
+        /* Links between images based on relations (with value = no. of annotations)
         const relationImageLinks = graphMode === 'RELATIONS'? resolvedRelations.reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.image.id && l.target === r.targetImage.id;
@@ -146,8 +148,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             return [...all, { source: r.image.id, target: r.targetImage.id, value: 1, type: 'RELATION' } as GraphLink]
           }
         }, []) : [];
+        */
 
-        // Connect entity classes that were connected through annotations
+        /* Connect entity classes that were connected through annotations
         const relationEntityLinks = graphMode === 'RELATIONS' ? relations.listRelations().reduce<GraphLink[]>((all, r) => {
           const existing = all.find(l => { 
             return l.source === r.sourceEntityType && l.target === r.targetEntityType;
@@ -162,14 +165,15 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             return [...all, { source: r.sourceEntityType, target: r.targetEntityType, value: 1, type: 'RELATION' } as GraphLink]
           }
         }, []) : [];
+        */
 
         const links = [
           ...subfolderLinks, 
           ...imageFolderLinks, 
           ...entityHierarchyLinks, 
           ...imageEntityLinks,
-          ...relationImageLinks,
-          ...relationEntityLinks
+          // ...relationImageLinks,
+          // ...relationEntityLinks
         ];
 
         // Flatten links
@@ -254,8 +258,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         setAnnotations(imagesResult);
       });
     });
-  }, [graphMode, includeFolders, relations]);
+  }, [graphMode, includeFolders /*, relations */]);
 
-  return { annotations, graph, relations };
+  return { annotations, graph /*, relations */};
 
 }

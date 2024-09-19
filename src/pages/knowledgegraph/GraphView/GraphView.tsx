@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
-import { RelationGraph } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
 import { GRAY, ORANGE } from './GraphViewColors';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
@@ -16,7 +15,7 @@ interface GraphViewProps {
 
   query?: ((n: NodeObject<GraphNode>) => boolean);
 
-  relations: RelationGraph;
+  // relations: RelationGraph;
 
   settings: KnowledgeGraphSettings;
 
@@ -245,6 +244,7 @@ export const GraphView = (props: GraphViewProps) => {
     if (sourceType !== targetType)
       return;
 
+    /*
     if (sourceType === 'ENTITY_TYPE') {
       const relations = props.relations.listRelations().filter(r =>
         sourceId === r.sourceEntityType && targetId === r.targetEntityType);
@@ -265,6 +265,7 @@ export const GraphView = (props: GraphViewProps) => {
       if (distinctLabels.length > 0)
         return distinctLabels.join(', ');     
     }
+    */
   }
 
   const getLinkColor = (link: LinkObject) => {
@@ -320,7 +321,7 @@ export const GraphView = (props: GraphViewProps) => {
           linkDirectionalArrowColor={() => ORANGE}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
-          linkLabel={settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
+          // linkLabel={settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}

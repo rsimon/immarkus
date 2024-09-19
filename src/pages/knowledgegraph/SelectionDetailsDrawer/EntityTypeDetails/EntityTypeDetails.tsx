@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
-import { RelationGraph } from '@/store';
 import { Button } from '@/ui/Button';
 import { Graph, KnowledgeGraphSettings } from '../../Types';
 import { EntityAnnotations } from './EntityAnnotations';
@@ -13,7 +12,7 @@ interface EntityTypeDetailsProps {
 
   graph: Graph;
 
-  relations: RelationGraph;
+  // relations: RelationGraph;
 
   settings: KnowledgeGraphSettings;
 
@@ -29,10 +28,12 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
     props.graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
   ), [type]);
 
+  /*
   const relatedAnnotations = useMemo(() => (
     props.relations.listRelations().filter(r => 
       r.sourceEntityType === type.id || r.targetEntityType === type.id)
   ), [type]);
+  */
 
   const navigate = useNavigate();
 
@@ -84,8 +85,8 @@ export const EntityTypeDetails = (props: EntityTypeDetailsProps) => {
             <Spline className="w-4 h-4 mr-1.5" /> Related
           </h2>
 
-          <RelatedAnnotationList 
-            related={relatedAnnotations} />
+          {/* <RelatedAnnotationList 
+            related={relatedAnnotations} /> */}
         </div>
       )}
     </aside>

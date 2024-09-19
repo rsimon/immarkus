@@ -7,7 +7,8 @@ import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityTypeBrowserDialog } from '@/components/EntityTypeBrowser';
 import { PropertiesForm } from './PropertiesForm';
-import { isW3CRelationLinkAnnotation, useStore } from '@/store';
+import { useStore } from '@/store';
+import { isW3CRelationLinkAnnotation } from '@annotorious/plugin-connectors-react';
 
 export const CurrentSelection = () => {
 
