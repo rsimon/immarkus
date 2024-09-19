@@ -40,7 +40,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
           className="tool-dropdown-trigger rounded-l-none bg-transparent border-t-0 border-r-0 border-b-0 
             border-l-1 border-white/30 pl-[1px] pr-1 hover:bg-slate-200 focus:outline-none focus:ring-0 
             focus:ring-ring focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
-            focus-visible:ring-offset-2" />
+            focus-visible:ring-offset-2 shadow-none" />
       </div>
 
       <SelectContent

@@ -7,8 +7,11 @@ import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityTypeBrowserDialog } from '@/components/EntityTypeBrowser';
 import { PropertiesForm } from './PropertiesForm';
+import { isW3CRelationLinkAnnotation, useStore } from '@/store';
 
 export const CurrentSelection = () => {
+
+  const store = useStore();
 
   const anno = useAnnotoriousManifold();
 
@@ -26,9 +29,22 @@ export const CurrentSelection = () => {
   useEffect(() => {
     if (selected) { 
       ref.current?.focus();
-      setShowAsEmpty(!selected.bodies || selected.bodies.length === 0);
+
+      const hasRelations = store.hasRelatedAnnotations(selected.id);
+      const hasBodies = selected.bodies && selected.bodies.length > 0;
+
+      store.findAnnotation(selected.id).then(result => {
+        if (result) {
+          const [_, image] = result;
+          store.getAnnotations(image.id).then(all => {
+            const links = all.filter(a => isW3CRelationLinkAnnotation(a));
+            const hasLinks = links.find(link => link.body === selected.id || link.target === selected.id);
+            setShowAsEmpty(!(hasRelations || hasBodies || hasLinks));
+          });
+        }
+      });
     }
-  }, [selected]);
+  }, [selected, store]);
 
   const onDelete = () => 
     anno.deleteAnnotation(selected.id);

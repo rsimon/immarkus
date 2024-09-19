@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
-import { useStore } from '@/store';
+import { isW3CRelationMetaAnnotation, useStore } from '@/store';
 
 interface AnnotoriousStoragePluginProps {
 
@@ -39,19 +39,51 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         .catch(error => props.onError(error));
     }
 
+    // Relations require a bit more work, because a) they are split into two
+    // annotations in the W3C serialization and b) the 'taggging' annotations
+    // don't (currently) maintain their ID.
+    const onUpdateRelation = (
+      relation: [W3CAnnotation, W3CAnnotation], 
+      _: W3CAnnotation | [W3CAnnotation | W3CAnnotation]
+    ): Promise<void> => store.getAnnotations(imageId)
+          .then(all => {
+            const previous = all
+              .filter(a => isW3CRelationMetaAnnotation(a))
+              .filter(a => a.target === relation[0].id);
+
+            if (previous.length > 0) {
+              // Delete previous, then insert relation annotations
+              return store.bulkDeleteAnnotations(imageId, previous).then(() => {
+                return store.bulkUpsertAnnotation(imageId, relation);
+              });
+            } else {
+              // No previous tags to delete - just insert
+              return store.bulkUpsertAnnotation(imageId, relation);
+            }
+          });
+
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
-        // @ts-ignore
-        anno.setAnnotations(annotations.filter(a => a.target.selector));
-
+        anno.setAnnotations(annotations);
+        
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
-
-        anno.on('deleteAnnotation', annotation =>
-          withSaveStatus(() => store.deleteAnnotation(imageId, annotation)));
-
-        anno.on('updateAnnotation', annotation =>
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+  
+        anno.on('deleteAnnotation', annotation => {
+          if (Array.isArray(annotation))
+            return withSaveStatus(() => store.bulkDeleteAnnotations(imageId, annotation));
+          else
+            return withSaveStatus(() => store.deleteAnnotation(imageId, annotation));
+        });
+  
+        anno.on('updateAnnotation', (annotation, previous) => {
+          if (Array.isArray(annotation)) {
+            return withSaveStatus(() => 
+              onUpdateRelation(annotation as unknown as [W3CAnnotation, W3CAnnotation], previous));
+          } else {
+            return withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
+          }
+        });
       });
     }
   }, [anno]);

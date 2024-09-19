@@ -57,6 +57,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
 
   const onRotate = (clockwise: boolean) => {
     const viewer = viewers.get(props.windowId);
+    // @ts-ignore
     viewer.viewport.rotateBy(clockwise ? 90 : -90);
   }
 

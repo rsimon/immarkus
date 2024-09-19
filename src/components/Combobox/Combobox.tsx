@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useCommandState } from 'cmdk';
 import { cn } from '@/ui/utils';
 import { Button } from '@/ui/Button';
 import {
@@ -25,7 +26,11 @@ export interface ComboboxOption {
  
 interface ComboboxProps <T extends ComboboxOption>{
 
+  autofocus?: boolean;
+
   className?: string;
+
+  children?: ReactNode;
 
   placeholder?: string;
 
@@ -34,6 +39,42 @@ interface ComboboxProps <T extends ComboboxOption>{
   options: T[];
 
   onChange(value: T): void;
+
+  onStateChange?(state: ComboboxState): void;
+
+}
+
+export interface ComboboxState {
+
+  results: number;
+
+  search: string;
+
+  value?: ComboboxOption;
+
+}
+
+interface ComboboxStateListenerProps {
+
+  onChange(state: ComboboxState): void;
+
+}
+
+const ComboBoxStateListener = (props: ComboboxStateListenerProps) => {
+
+  const results = useCommandState((state) => state.filtered.count);
+  const search = useCommandState((state) => state.search);
+  const value = useCommandState((state) => state.value);
+
+  useEffect(() => {
+    props.onChange({
+      results,
+      search,
+      value: value ? JSON.parse(value) : undefined
+    });
+  }, [results, search, value]);
+
+  return null;
 
 }
 
@@ -47,7 +88,15 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
     setOpen(false);
     props.onChange(value);
   }
- 
+
+  useEffect(() => {
+    setOpen(false);
+  }, [JSON.stringify(props.options)]);
+
+  useEffect(() => {
+    setOpen(props.autofocus && !value);
+  }, [props.autofocus])
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -90,7 +139,13 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
               </CommandItem>
             ))}
           </CommandList>
+
+          {props.onStateChange && (
+            <ComboBoxStateListener onChange={props.onStateChange} />
+          )}
         </Command>
+
+        {props.children}
       </PopoverContent>
     </Popover>
   )

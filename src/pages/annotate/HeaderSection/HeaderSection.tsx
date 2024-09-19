@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { ChevronLeft, MousePointer2, Redo2, RotateCcwSquare, RotateCwSquare, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useStore } from '@/store';
@@ -11,7 +10,21 @@ import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
+import { RelationEditor } from './RelationEditor';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
+import { 
+  ChevronLeft, 
+  MousePointer2, 
+  Redo2, 
+  RotateCcwSquare, 
+  RotateCwSquare, 
+  Spline, 
+  Undo2, 
+  ZoomIn, 
+  ZoomOut 
+} from 'lucide-react';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface HeaderSectionProps {
 
@@ -56,6 +69,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const onRotate = (clockwise: boolean) => {
     const viewer = Array.from(viewers.values())[0];
+    // @ts-ignore
     viewer.viewport.rotateBy(clockwise ? 90 : -90);
   }
 
@@ -79,6 +93,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   const back = props.images.length === 1 
     ? `/images/${folder && ('id' in folder) ? folder.id : ''}`
     : '/images/';
+
+  const onOpenRelationEditor = (open: boolean) => {
+    if (open) {
+      props.onChangeMode('connect');
+    } else {
+      props.onChangeMode('move');
+    }
+  }
 
   return (
     <section 
@@ -179,6 +201,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               <Redo2
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
+
+            <Separator orientation="vertical" className="h-4" />
           </>
         )}
 
@@ -195,6 +219,20 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           active={props.mode === 'draw'}
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
+
+        {ENABLE_CONNECTOR_PLUGIN ? (
+          <button 
+            className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            aria-selected={props.mode === 'connect'}
+            data-state={props.mode === 'connect'}
+            onClick={() => props.onChangeMode('connect')}>
+            <Spline
+              className="h-8 w-8 p-2" /> Connect
+          </button>
+        ) : (
+          <RelationEditor 
+            onOpenChange={onOpenRelationEditor}/>
+        )}
       </section>
     </section>
   )

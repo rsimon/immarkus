@@ -136,9 +136,11 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 <SelectItem value="measurement">
                   <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> Measurement
                 </SelectItem>
+                {/*
                 <SelectItem value="relation">
                   <Spline className="inline w-4 h-4 mr-1.5 mb-0.5" /> Relation
                 </SelectItem>
+                */}
                 <SelectItem value="external_authority">
                   <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
                 </SelectItem>

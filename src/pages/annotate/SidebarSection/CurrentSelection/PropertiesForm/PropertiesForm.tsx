@@ -3,9 +3,10 @@ import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { EntityBadge } from '@/components/EntityBadge';
-import { InboundRelations } from '@/components/InboundRelations';
+import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
-import { useDataModel } from '@/store';
+import { RelationsList } from '@/components/RelationsList';
+import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
@@ -18,6 +19,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface PropertiesFormProps {
 
@@ -33,7 +36,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const anno = useAnnotoriousManifold();
 
-  const model = useDataModel();
+  const store = useStore();
+
+  const model = store.getDataModel();
 
   // We're using a random key, so the component resets on save
   const [formKey, setFormKey] = useState(Math.random());
@@ -134,6 +139,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
+  const hasRelations = store.hasRelatedAnnotations(annotation.id);
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -204,17 +211,21 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             </Accordion>
           )}
 
+          {ENABLE_CONNECTOR_PLUGIN ? (
+            <PluginConnectionsList 
+              annotation={annotation} />
+          ) : hasRelations && (
+            <RelationsList 
+              annotation={annotation} />
+          )} 
+
           {hasNote && (
             <Note
               id={noteKey}
               value={formState[noteKey]}
               onChange={value => onChange(noteKey, value)} />
           )}
-
-          <InboundRelations 
-            annotation={annotation}
-            schemaBodies={schemaBodies} />
-
+          
           <PropertiesFormActions 
             hasNote={hasNote}
             onAddTag={props.onAddTag} 

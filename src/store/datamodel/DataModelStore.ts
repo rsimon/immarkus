@@ -19,6 +19,11 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   
   updateEntityType(type: EntityType): Promise<void>;
 
+  // Relationship Types
+  addRelationshipType(type: string): Promise<void>;
+
+  removeRelationShipType(type: string): Promise<void>;
+
   // Folder metadata schemas
   addFolderSchema(schema: MetadataSchema): Promise<void>;
 
@@ -50,18 +55,20 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
 const loadFromFile = (file: File) =>
   readJSONFile<DataModel>(file)
     .then(data => {
-      const { entityTypes, folderSchemas, imageSchemas } = data;
+      const { entityTypes, folderSchemas, imageSchemas, relationshipTypes } = data;
       return {
         entityTypes: entityTypes || [],
         folderSchemas: folderSchemas || [],
-        imageSchemas: imageSchemas || []
+        imageSchemas: imageSchemas || [],
+        relationshipTypes: relationshipTypes || []
       }
     })
     .catch(() => {
       return { 
         entityTypes: [],
         folderSchemas: [],
-        imageSchemas: []
+        imageSchemas: [],
+        relationshipTypes: []
       }
     });
 
@@ -73,7 +80,7 @@ export const loadDataModel = (
 
   const file = await fileHandle.getFile();
 
-  let { entityTypes, imageSchemas, folderSchemas } = await loadFromFile(file);
+  let { entityTypes, imageSchemas, folderSchemas, relationshipTypes } = await loadFromFile(file);
 
   entityTypes = repairDataModel(entityTypes);
 
@@ -81,11 +88,11 @@ export const loadDataModel = (
 
   const rebuildEntityTypeTreeAndSave = () => {
     tree.rebuild(entityTypes);
-    return writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas });
+    return writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas, relationshipTypes });
   }
 
   const save = () =>
-    writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas });
+    writeJSONFile(fileHandle, { entityTypes, folderSchemas, imageSchemas, relationshipTypes });
 
   /** API **/
 
@@ -113,6 +120,16 @@ export const loadDataModel = (
       return save();
     } else {
       return Promise.reject(`Image schema "${schema.name}" already exists`);
+    }
+  }
+
+  const addRelationshipType = (type: string) => {
+    if (!relationshipTypes.includes(type)) {
+      relationshipTypes = [...relationshipTypes, type];
+      return save();
+    } else {
+      // Do nothing
+      return Promise.resolve();
     }
   }
 
@@ -186,6 +203,11 @@ export const loadDataModel = (
     return save();
   }
 
+  const removeRelationShipType = (type: string) => {
+    relationshipTypes = relationshipTypes.filter(t => t !== type);
+    return save();
+  }
+
   const setEntityTypes = (types: EntityType[]) => {
     entityTypes = [...types];
     return rebuildEntityTypeTreeAndSave();
@@ -231,11 +253,13 @@ export const loadDataModel = (
   resolve({
     ...tree, 
     get entityTypes() { return entityTypes },
+    get relationshipTypes() { return relationshipTypes },
     get folderSchemas() { return folderSchemas },
     get imageSchemas() { return imageSchemas },
     addEntityType,
     addFolderSchema,
     addImageSchema,
+    addRelationshipType,
     clearEntityTypes,
     clearFolderSchemas,
     clearImageSchemas,
@@ -245,6 +269,7 @@ export const loadDataModel = (
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
+    removeRelationShipType,
     setEntityTypes,
     setFolderSchemas,
     setImageSchemas,

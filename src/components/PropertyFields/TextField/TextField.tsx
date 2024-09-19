@@ -25,7 +25,7 @@ export const TextField = (props: TextFieldProps) => {
 
   const value = props.onChange ? props.value || '' : props.value;
 
-  const className = cn(props.className,'mt-0.5');
+  const className = cn(props.className, 'mt-0.5');
 
   const onChange = (value: string | string[]) => {
     if (props.onChange) {

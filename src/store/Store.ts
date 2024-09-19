@@ -1,19 +1,28 @@
-import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
 import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
+import { loadRelationStore, RelationStore } from './relations/RelationStore';
 
-export interface Store {
+export interface AnnotationStore {
   
   folders: Folder[];
 
   images: Image[];
 
+  bulkDeleteAnnotations(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
+
+  bulkUpsertAnnotation(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
+
   countAnnotations(imageId: string, withSelectorOnly?: boolean): Promise<number>;
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
+
+  findAnnotation(annotationId: string): Promise<[W3CAnnotation, Image] | undefined>;
+
+  findImageForAnnotation(annotationId: string): Promise<Image>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
 
@@ -42,6 +51,8 @@ export interface Store {
   upsertImageMetadata(imageId: string, metadata: W3CAnnotationBody): Promise<void>;
 
 }
+
+export type Store = AnnotationStore & RelationStore;
 
 const getAnnotationsFile = (image: Image) => {
   const filename = `${image.name.substring(0, image.name.lastIndexOf('.'))}.json`;
@@ -101,7 +112,7 @@ export const loadStore = (
     imageId: string, withSelectorOnly = true
   ): Promise<number> => getAnnotations(imageId).then(annotations => {
     if (withSelectorOnly) {
-      return annotations.filter(a => 'selector' in a.target).length;
+      return annotations.filter(a => typeof a.target === 'object' && 'selector' in a.target).length;
     } else {
       return annotations.length;
     }
@@ -113,8 +124,8 @@ export const loadStore = (
   ): Promise<void> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
-      const annotations = await getAnnotations(imageId);
-      const next = annotations.filter(a => a.id !== annotation.id);
+      const all = await getAnnotations(imageId);
+      const next = all.filter(a => a.id !== annotation.id);
 
       cachedAnnotations.set(imageId, next);
 
@@ -125,6 +136,62 @@ export const loadStore = (
       reject(Error(`Image ${imageId} not found`));
     }
   });
+
+  const bulkDeleteAnnotations = (
+    imageId: string,
+    annotations: W3CAnnotation[]
+  ): Promise<void> => new Promise(async (resolve, reject) => {
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const toDelete = new Set(annotations.map(a => a.id));
+
+      const all = await getAnnotations(imageId);
+      const next = all.filter(a => !toDelete.has(a.id));
+
+      cachedAnnotations.set(imageId, next);
+
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+      resolve();
+    } else {
+      reject(Error(`Image ${imageId} not found`));
+    }
+  });
+
+  const findAnnotation = (annotationId: string) => {
+    // Let's try cached anntoations first
+    for (const [imageId, annotations] of cachedAnnotations.entries()) {
+      const found = annotations.find(a => a.id === annotationId);
+      if (found)
+        return Promise.resolve([found, getImage(imageId)] as [W3CImageAnnotation, Image]);
+    }
+
+    // Not cached - not much we can do except go through all images we
+    // haven't loaded yet.
+    const cachedImageIds = new Set([...cachedAnnotations.keys()]);
+
+    const uncachedImages = images.filter(i => !cachedImageIds.has(i.id));
+
+    return uncachedImages.reduce<Promise<[W3CAnnotation, Image] | undefined>>((promise, image) => promise.then(result => {
+      if (result) return result; // Skip
+
+      // Load annotations for this image
+      return getAnnotations(image.id).then(annotations => {
+        const found = annotations.find(a => a.id === annotationId);
+        if (found) {
+          return [found, image] as [W3CImageAnnotation, Image];
+        } else {
+          return;
+        }
+      });
+    }), Promise.resolve(undefined));
+  }
+
+  const findImageForAnnotation = (annotationId: string) =>
+    findAnnotation(annotationId).then(match => {
+      return match ? match[1] : undefined;
+    });
+
 
   const getAnnotations = (
     imageId: string,
@@ -264,10 +331,10 @@ export const loadStore = (
     }
   });
 
-  const upsertAnnotation = (
+  const _upsertOneAnnotation = (
     imageId: string, 
     annotation: W3CAnnotation
-  ): Promise<void> => new Promise(async (resolve, reject) => {
+  ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
       const annotations = await getAnnotations(imageId);
@@ -276,16 +343,49 @@ export const loadStore = (
       const next = exists ? 
         annotations.map(a => a.id === annotation.id ? annotation : a) :
         [...annotations, annotation];
-      
-      cachedAnnotations.set(imageId, next);
 
-      const fileHandle = await getAnnotationsFile(img);
-      await writeJSONFile(fileHandle, next);
-      resolve();
+      cachedAnnotations.set(imageId, next);
+      resolve(next);
     } else {
       reject(Error(`Image ${imageId} not found`));
     }
   });
+
+  const upsertAnnotation = (
+    imageId: string, 
+    annotation: W3CAnnotation
+  ): Promise<void> => _upsertOneAnnotation(
+    imageId,
+    annotation
+  ).then(next => new Promise(async (resolve, reject) => {
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+      resolve();
+    } else {
+      // Should never happen
+      reject(Error(`Image ${imageId} not found`));
+    }
+  }));
+
+  const bulkUpsertAnnotation = async (
+    imageId: string, 
+    annotations: W3CAnnotation[]
+  ): Promise<void> => {
+    // Upsert each annotation in sequence
+    const next = await annotations.reduce<Promise<W3CAnnotation[]>>((promise, annotation) => {
+      return promise.then(() => _upsertOneAnnotation(imageId, annotation)).then(next => {
+        return next;
+      })
+    }, Promise.resolve([]));
+
+    const img = images.find(i => i.id === imageId);
+    if (img) {
+      const fileHandle = await getAnnotationsFile(img);
+      await writeJSONFile(fileHandle, next);
+    }
+  }
 
   const upsertFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle, annotation: W3CAnnotation): Promise<void> => {
     const folder = getFolder(idOrHandle);
@@ -319,11 +419,15 @@ export const loadStore = (
       upsertAnnotation(imageId, next);
     });
 
-  resolve({
+  const store = {
     folders,
     images,
+    bulkDeleteAnnotations,
+    bulkUpsertAnnotation,
     countAnnotations,
     deleteAnnotation,
+    findAnnotation,
+    findImageForAnnotation,
     getAnnotations,
     getDataModel,
     getFolder,
@@ -337,7 +441,11 @@ export const loadStore = (
     upsertAnnotation,
     upsertFolderMetadata,
     upsertImageMetadata
-  });
+  }
+
+  const relations = await loadRelationStore(rootDir, store);
+  
+  resolve({...store, ...relations });
 
 });
  

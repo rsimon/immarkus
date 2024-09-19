@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { DialogDescription, DialogTitle } from '@radix-ui/react-dialog';
 import { EntityType } from '@/model';
-import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Editor } from './Editor';
 import { useToast } from '@/ui/Toaster';
 
