@@ -6,9 +6,9 @@ import { useSelection } from '@annotorious/react-manifold';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import { ToolbarButton } from '../../ToolbarButton';
+import { ToolbarButton } from '../ToolbarButton';
 import { RelationEditorContent } from './RelationEditorContent';
-import { useSavingState } from '../../SavingState';
+import { useSavingState } from '../SavingState';
 import { useRelationEditor } from './RelationEditorRoot';
 
 interface RelationEditorProps {

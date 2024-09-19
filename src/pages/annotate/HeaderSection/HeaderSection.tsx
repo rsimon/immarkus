@@ -10,7 +10,7 @@ import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
-import { RelationEditor } from './RelationEditor';
+import { RelationEditor } from '../RelationEditor';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
   ChevronLeft, 

@@ -3,10 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
-import { HeaderSection, RelationEditorRoot } from './HeaderSection';
-import { ToolMode, Tool } from './Tool';
+import { HeaderSection } from './HeaderSection';
+import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
+import { ToolMode, Tool } from './Tool';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';

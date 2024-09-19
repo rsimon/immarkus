@@ -6,7 +6,7 @@ import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '
 import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
 import { LoadedImage } from '@/model';
 import { ConnectorPopup } from '../ConnectorPopup';
-import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../HeaderSection';
+import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
 import { Tool, ToolMode } from '../Tool';
 import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
