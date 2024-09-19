@@ -82,7 +82,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
 
   const { value, placeholder } = props;
 
-  const [open, setOpen] = useState();
+  const [open, setOpen] = useState(false);
 
   const onSelect = (value: T) => {
     setOpen(false);

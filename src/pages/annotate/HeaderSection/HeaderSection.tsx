@@ -69,6 +69,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const onRotate = (clockwise: boolean) => {
     const viewer = Array.from(viewers.values())[0];
+    // @ts-ignore
     viewer.viewport.rotateBy(clockwise ? 90 : -90);
   }
 
