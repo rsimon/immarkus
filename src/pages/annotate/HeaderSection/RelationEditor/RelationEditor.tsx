@@ -46,8 +46,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
   }, [selection]);
 
   // Don't enable if there is no selection, or no relationship types
-  const disabled = !open &&
-    (selection.selected.length === 0 || relationshipTypes.length === 0);
+  const disabled = !open && selection.selected.length === 0;
 
   useEffect(() => {
     // When the editor opens, keep the current selection as source
