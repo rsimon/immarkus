@@ -4,10 +4,16 @@ import { useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
 import { useRelationEditor } from './RelationEditorRoot';
 
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
+
 export const useRelationEmphasisStyle = (
   enabled: boolean,
   base: DrawingStyleExpression
 ) => {
+
+  if (ENABLE_CONNECTOR_PLUGIN)
+    return base;
+
   const store = useStore();
 
   const { selected } = useSelection();

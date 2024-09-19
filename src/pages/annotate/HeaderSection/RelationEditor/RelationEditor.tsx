@@ -32,7 +32,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
     props.onOpenChange(false);
   }
 
-  const { source, setSource, target } = useRelationEditor({ onCancel });
+  const { source, setSource, target, setTarget } = useRelationEditor({ onCancel });
 
   const selection = useSelection();
 
@@ -51,10 +51,12 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
   useEffect(() => {
     // When the editor opens, keep the current selection as source
-    if (open)
+    if (open) {
       setSource(lastSelected.current);
-    else
+    } else {
       setSource(undefined);
+      setTarget(undefined)
+    }
     
     props.onOpenChange(open);
   }, [open]);

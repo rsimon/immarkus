@@ -82,7 +82,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
 
   const { value, placeholder } = props;
 
-  const [open, setOpen] = useState(props.autofocus);
+  const [open, setOpen] = useState();
 
   const onSelect = (value: T) => {
     setOpen(false);
@@ -91,7 +91,11 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
 
   useEffect(() => {
     setOpen(false);
-  }, [props.options]);
+  }, [JSON.stringify(props.options)]);
+
+  useEffect(() => {
+    setOpen(props.autofocus && !value);
+  }, [props.autofocus])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -18,6 +18,9 @@ import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
+if (ENABLE_CONNECTOR_PLUGIN)
+  console.log('[Experimental] Connector plugin enabled')
+
 interface AnnotatableImageProps {
 
   image: LoadedImage;
@@ -82,22 +85,22 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           className="osd-container"
           options={options} />
 
-        {ENABLE_CONNECTOR_PLUGIN && (
+        <AnnotoriousPlugin
+          plugin={SelectorPack} />
+
+        {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 
             enabled={props.mode === 'connect'}>
             <OSDConnectionPopup popup={props => (
               <ConnectorPopup {...props} />
             )} />
           </OSDConnectorPlugin>
+        ) : (
+          <AnnotoriousRelationEditorPlugin
+            enabled={props.mode === 'connect'} />
         )}
 
-        <AnnotoriousPlugin
-          plugin={SelectorPack} />
-
         <AnnotoriousKeyboardPlugin />
-
-        <AnnotoriousRelationEditorPlugin
-          enabled={props.mode === 'connect'} />
 
         <AnnotoriousStoragePlugin 
           imageId={props.image.id}
