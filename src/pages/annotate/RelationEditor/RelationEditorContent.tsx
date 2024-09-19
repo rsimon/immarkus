@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CirclePlus, Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
@@ -58,6 +58,11 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
   const [relation, setRelation] = useState<ComboboxOption | undefined>();
 
   const [addTerm, setAddTerm] = useState<string | undefined>();
+
+  useEffect(() => {
+    // Reset the relation when the target changes (may no longer fit restrictions!)
+    setRelation(undefined);
+  }, [target?.id]);
 
   const onComboboxStateChange = (state: ComboboxState) => {
     // If the current search DOES NOT match the selected value, show 'add to vocab' button
