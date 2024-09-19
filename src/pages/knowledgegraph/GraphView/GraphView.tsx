@@ -299,7 +299,7 @@ export const GraphView = (props: GraphViewProps) => {
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
-      return isHidden ? 0.00001 : linkScale * link.value + MIN_LINK_WIDTH;
+      return isHidden ? 0.00001 : linkScale * link.weight + MIN_LINK_WIDTH;
     } else {
       return (20 + link.value) / zoom;
     }

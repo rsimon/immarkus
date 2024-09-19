@@ -41,14 +41,38 @@ export interface GraphNode {
 export interface GraphLink {
 
   source: string;
-  
-  target: string;
-  
-  value: number;
 
-  type?: 'RELATION'
+  target: string;
+
+  weight: number;
+
+  primitives: GraphLinkPrimitive[];
 
 }
+
+export interface GraphLinkPrimitive {
+
+  source: string;
+  
+  target: string;
+
+  type: GraphLinkPrimitiveType;
+
+}
+
+export type GraphLinkPrimitiveType = 
+  // Folder to Folder 
+  'FOLDER_CONTAINS_SUBFOLDER' |
+  // Folder to Image
+  'FOLDER_CONTAINS_IMAGE' |
+  // Entity Type to Entity Type via model hierarchy
+  'IS_PARENT_TYPE_OF' |
+  // Image to Entity Type
+  'HAS_ENTITY_ANNOTATION' |
+  // Image to Image via Annotation Relationship
+  'HAS_RELATED_ANNOTATION_IN'
+  // Entity Type to Entity Type
+  'IS_RELATED_VIA_ANNOTATION';
 
 export interface KnowledgeGraphSettings {
 

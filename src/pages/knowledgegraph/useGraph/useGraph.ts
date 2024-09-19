@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
-import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from './Types';
+import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { getEntityHierarchyPrimitives, getFolderStructurePrimitives, getImageFolderPrimitives, toEntityTypeNode, toFolderNode, toImageNode } from './graphBuilderUtils';
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const store = useStore();
-
-  // const relations = useRelationGraph();
 
   const datamodel = store.getDataModel();
 
@@ -21,8 +20,6 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
   const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
-    // if (!relations) return;
-
     // Resolve folder metadata and image annotations asynchronously
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
@@ -32,82 +29,37 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
       
     Promise.all(foldersQuery).then(foldersResult => {
       const folderMetadata: Map<string, W3CAnnotation> = new Map(foldersResult
-        .map(({ folder, metadata}) => ([folder.id, metadata ] as [string, W3CAnnotation]))
+        .map(({ folder, metadata }) => ([folder.id, metadata] as [string, W3CAnnotation]))
         .filter(t => t[1]));
 
       Promise.all(imagesQuery).then(imagesResult => {
         const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
-          .map(({ image, annotations }) => 
-              ([image.id, annotations.find(a => !('selector' in a.target))] as [string, W3CAnnotation]))
+          .map(({ image, annotations }) => ([
+            image.id, 
+            annotations.find(a => (typeof a.target === 'object' && 'selector' in a.target))
+          ] as [string, W3CAnnotation]))
           .filter(t => t[1]));
 
+        /** Nodes (folders, images, entity types) **/
         const nodes: GraphNode[] = [
-          ...(includeFolders ? folders.map(folder => ({
-            id: folder.id,
-            label: folder.name,
-            type: 'FOLDER',
-            // degree: getFolderDegree(folder),
-            properties: (folderMetadata.get(folder.id)?.body as any)?.properties
-          } as GraphNode)) : []),
-
-          ...images.map(image => ({ 
-              id: image.id, 
-              label: image.name,
-              type: 'IMAGE', 
-              // degree: getImageDegree(image),
-              properties: (imageMetadata.get(image.id)?.body as any)?.properties 
-            } as GraphNode)),
-
-          ...datamodel.entityTypes.map(type => ({ 
-              id: type.id, 
-              label: type.label || type.id,
-              type: 'ENTITY_TYPE',
-              // degree: getEntityTypeDegree(type)
-            } as GraphNode)),
+          ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
+          ...images.map(i => toImageNode(i, imageMetadata)),
+          ...datamodel.entityTypes.map(toEntityTypeNode)
         ];
 
+        /** Links **/
+
         // Links between folders & subfolderss
-        const subfolderLinks = includeFolders ? folders.reduce<GraphLink[]>((all, folder) => {
-          if (folder.parent) {
-            const parent = store.getFolder(folder.parent);
-            if (parent && 'id' in parent) {
-              return [...all, { source: parent.id, target: folder.id, value: 1 }]
-            } else {
-              return all;
-            }
-          } else {
-            return all;
-          }
-        }, []) : [];
+        const folderStructurePrimitives = includeFolders ? getFolderStructurePrimitives(folders, store): [];
 
         // Links between images and subfolders
-        const imageFolderLinks = includeFolders ? images.reduce<GraphLink[]>((all, image) => {
-          const parentFolder = store.getFolder(image.folder);
-          if ('id' in parentFolder) {
-            return [...all, { source: parentFolder.id, target: image.id, value: 1 }]
-          } else {
-            return all;
-          }
-        }, []) : [];
+        const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(images, store) : [];
 
         // Parent-child model hierarchy links between entity classes
-        const entityHierarchyLinks = graphMode === 'HIERARCHY' ? datamodel.entityTypes.reduce<GraphLink[]>((all, type) => {
-          if (type.parentId) {
-            // Being defensive... make sure the parent ID actually exists
-            const parent = datamodel.getEntityType(type.parentId);
-            if (parent) {
-              // Create link from parent to this entity
-              return [...all, { source: parent.id, target: type.id, value: 1 }];
-            } else {
-              return all;
-            }
-          } else {
-            return all;
-          }
-        }, []) : [];
+        const entityHierarchyPrimitives = graphMode === 'HIERARCHY' ? getEntityHierarchyPrimitives(datamodel) : [];
 
         // Links between images and entity types
-        const imageEntityLinks =
+        const entityAnnotationPrimitives =
           imagesResult.reduce<GraphLink[]>((all, { annotations, image }) => {
             // N annotations on this image, each carrying 0 to M entity links
             const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
@@ -167,17 +119,17 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }, []) : [];
         */
 
-        const links = [
-          ...subfolderLinks, 
-          ...imageFolderLinks, 
-          ...entityHierarchyLinks, 
-          ...imageEntityLinks,
+        const primitives = [
+          ...folderStructurePrimitives, 
+          ...imageFolderPrimitives, 
+          ...entityHierarchyPrimitives, 
+          ...entityAnnotationPrimitives
           // ...relationImageLinks,
           // ...relationEntityLinks
         ];
 
         // Flatten links
-        const flattened = links.reduce<GraphLink[]>((agg, link) => {
+        const links = primitives.reduce<GraphLink[]>((agg, link) => {
           const existing = agg.find(l => l.source === link.source && l.target === link.target);
           if (existing) {
             return agg.map(l => l === existing ? { ...existing, value: existing.value + 1 } : l);
@@ -191,11 +143,11 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         let maxLinkWeight = 1;
 
         flattened.forEach(link => {
-          if (link.value > maxLinkWeight)
-            maxLinkWeight = link.value;
+          if (link.weight > maxLinkWeight)
+            maxLinkWeight = link.weight;
 
-          if (link.value < minLinkWeight)
-            minLinkWeight = link.value;
+          if (link.weight < minLinkWeight)
+            minLinkWeight = link.weight;
         });
 
         /**
@@ -225,7 +177,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
         const computeDegree = (node: GraphNode) => {
           const links = flattened.filter(l => l.target === node.id || l.source === node.id);
-          const degree = links.reduce((total, link) => total + link.value, 0);
+          const degree = links.reduce((total, link) => total + link.weight, 0);
           return {...node, degree };
         }
 
@@ -258,8 +210,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         setAnnotations(imagesResult);
       });
     });
-  }, [graphMode, includeFolders /*, relations */]);
+  }, [graphMode, includeFolders]);
 
-  return { annotations, graph /*, relations */};
+  return { annotations, graph };
 
 }
