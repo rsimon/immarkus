@@ -75,12 +75,14 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
     if (!restrict) {
       setSourceType(undefined);
     }
+    setIsSourceRestricted(restrict);
   }
 
   const onRestrictTarget = (restrict: boolean) => {
     if (!restrict) {
       setTargetType(undefined);
     }
+    setIsTargetRestricted(restrict);
   }
 
   useEffect(() => {
