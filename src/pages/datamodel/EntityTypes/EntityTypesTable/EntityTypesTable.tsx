@@ -156,9 +156,9 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           body={displayNameTemplate} />
 
         <Column 
-        header="Description"
-        headerClassName={headerClass}
-        field="description" />
+          header="Description"
+          headerClassName={headerClass}
+          field="description" />
 
         <Column
           header="Properties"
