@@ -115,6 +115,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
           <div className="ml-4 mt-2">
             <Combobox
               className="w-56"
+              disabled={!target}
               value={relation}
               options={options}
               onChange={setRelation}

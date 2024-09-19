@@ -32,6 +32,8 @@ interface ComboboxProps <T extends ComboboxOption>{
 
   children?: ReactNode;
 
+  disabled?: boolean;
+
   placeholder?: string;
 
   value?: T;
@@ -101,6 +103,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          disabled={props.disabled}
           variant="outline"
           role="combobox"
           aria-expanded={open}
