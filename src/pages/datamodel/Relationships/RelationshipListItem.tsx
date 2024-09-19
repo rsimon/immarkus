@@ -39,10 +39,12 @@ export const RelationshipListItem = (props: RelationshipListItemProps) => {
     <div className="whitespace-nowrap bg-white text-black border shadow-sm rounded pl-4 pr-2 py-1 inline-flex items-center gap-2">
       <span className="font-semibold">{name}</span>
 
-      <div className="flex gap-4 ml-4 bg-muted py-1 px-2 rounded-md">
-        {sourceTypeId && renderEntityType(sourceTypeId, true)}
-        {targetTypeId && renderEntityType(targetTypeId, false)}
-      </div>
+      {sourceTypeId || targetTypeId && (
+        <div className="flex gap-4 ml-4 bg-muted py-1 px-2 rounded-md">
+          {sourceTypeId && renderEntityType(sourceTypeId, true)}
+          {targetTypeId && renderEntityType(targetTypeId, false)}
+        </div>
+      )}
 
       <Button 
         className="bg-transparent text-muted-foreground p-2 rounded-full h-auto hover:bg-muted"
