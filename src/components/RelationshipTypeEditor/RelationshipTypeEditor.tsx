@@ -52,8 +52,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
     setOpen(false);
     
     if (name) {
-      addRelationshipType(name)
-        .catch(error => {
+      addRelationshipType({
+        name,
+        sourceTypeId: sourceType?.id,
+        targetTypeId: targetType?.id
+      }).catch(error => {
           console.error(error);
 
           toast({

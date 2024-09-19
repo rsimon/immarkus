@@ -8,9 +8,9 @@ export const Relationships = () => {
 
   const { relationshipTypes, removeRelationShipType } =  useDataModel();
 
-  const onRemove = (type: string) => () => {
-    removeRelationShipType(type).catch(error => {
-      // TODO
+  const onRemove = (name: string) => () => {
+    removeRelationShipType(name).catch(error => {
+      console.error(error);
     });
   }
  
@@ -29,10 +29,10 @@ export const Relationships = () => {
         ) : (
           <ul className="flex flex-wrap gap-2">
             {relationshipTypes.map(t => (
-              <li key={t}>
+              <li key={t.name}>
                 <RelationshipListItem 
                   relationshipType={t} 
-                  onRemove={onRemove(t)} />
+                  onRemove={onRemove(t.name)} />
               </li>
             ))}
           </ul>  

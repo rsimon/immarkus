@@ -3,13 +3,14 @@ import { CirclePlus, Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Combobox, ComboboxOption, ComboboxState } from '@/components/Combobox';
+import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 
 interface RelationEditorContentProps {
 
-  relationshipTypes: string[];
+  relationshipTypes: RelationshipType[];
   
   source: ImageAnnotation;
 
@@ -27,7 +28,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const model = useDataModel();
 
-  const options = useMemo(() => relationshipTypes.map(t => ({ label: t, value: t })), [relationshipTypes]);
+  const options = useMemo(() => relationshipTypes.map(t => ({ label: t.name, value: t.name })), [relationshipTypes]);
   
   const [relation, setRelation] = useState<ComboboxOption | undefined>();
 
@@ -41,7 +42,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
   }
 
   const onAddTerm = (term: string) => {
-    model.addRelationshipType(term);
+    model.addRelationshipType({ name: term });
     setRelation(({ value: term, label: term }));
     setAddTerm(undefined);
   }

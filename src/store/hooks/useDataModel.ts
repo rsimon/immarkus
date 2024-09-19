@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { StoreContext } from '../StoreProvider';
-import { EntityType, MetadataSchema } from '@/model';
+import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 
 export const useDataModel = () => {
 
@@ -22,7 +22,7 @@ export const useDataModel = () => {
   const addImageSchema = (schema: MetadataSchema) =>
     setAsync(model.addImageSchema(schema));
 
-  const addRelationshipType = (type: string) =>
+  const addRelationshipType = (type: RelationshipType) =>
     setAsync(model.addRelationshipType(type));
 
   const clearEntityTypes = () =>
@@ -43,8 +43,8 @@ export const useDataModel = () => {
   const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
     setAsync(model.removeImageSchema(schemaOrName));
 
-  const removeRelationShipType = (type: string) => 
-    setAsync(model.removeRelationShipType(type));
+  const removeRelationShipType = (name: string) => 
+    setAsync(model.removeRelationShipType(name));
 
   const setEntityTypes = (types: EntityType[]) =>
     setAsync(model.setEntityTypes(types));

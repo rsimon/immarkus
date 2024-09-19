@@ -1,10 +1,10 @@
-import { EntityType, MetadataSchema } from '@/model';
+import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 
 export interface DataModel {
 
   entityTypes: EntityType[];
 
-  relationshipTypes: string[];
+  relationshipTypes: RelationshipType[];
 
   folderSchemas: MetadataSchema[];
   

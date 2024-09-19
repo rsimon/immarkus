@@ -1,4 +1,4 @@
-import type { EntityType,MetadataSchema, PropertyDefinition } from '@/model';
+import type { EntityType,MetadataSchema, PropertyDefinition, RelationshipType } from '@/model';
 import { DataModel } from './DataModel';
 import { readJSONFile, writeJSONFile } from '../utils';
 import { EntityTypeTree, createEntityTypeTree } from './EntityTypeTree';
@@ -20,9 +20,9 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   updateEntityType(type: EntityType): Promise<void>;
 
   // Relationship Types
-  addRelationshipType(type: string): Promise<void>;
+  addRelationshipType(type: RelationshipType): Promise<void>;
 
-  removeRelationShipType(type: string): Promise<void>;
+  removeRelationShipType(name: string): Promise<void>;
 
   // Folder metadata schemas
   addFolderSchema(schema: MetadataSchema): Promise<void>;
@@ -123,8 +123,8 @@ export const loadDataModel = (
     }
   }
 
-  const addRelationshipType = (type: string) => {
-    if (!relationshipTypes.includes(type)) {
+  const addRelationshipType = (type: RelationshipType) => {
+    if (!relationshipTypes.find(t => t.name === type.name)) {
       relationshipTypes = [...relationshipTypes, type];
       return save();
     } else {
@@ -203,8 +203,8 @@ export const loadDataModel = (
     return save();
   }
 
-  const removeRelationShipType = (type: string) => {
-    relationshipTypes = relationshipTypes.filter(t => t !== type);
+  const removeRelationShipType = (name: string) => {
+    relationshipTypes = relationshipTypes.filter(t => t.name !== name);
     return save();
   }
 

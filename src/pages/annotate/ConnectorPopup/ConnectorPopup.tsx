@@ -14,7 +14,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   const [addTerm, setAddTerm] = useState<string | undefined>();
 
   const options = useMemo(() => {
-    return model.relationshipTypes.map(t => ({ label: t, value: t }));
+    return model.relationshipTypes.map(t => ({ label: t.name, value: t.name }));
   }, [model]);
 
   const selected = useMemo(() => {
@@ -39,7 +39,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   }
 
   const onAddTerm = (term: string) => {
-    model.addRelationshipType(term);
+    model.addRelationshipType({ name: term });
     onChange({ value: term });
   }
 
