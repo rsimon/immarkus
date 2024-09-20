@@ -4,8 +4,6 @@ export interface Graph {
 
   getLinkedNodes(nodeId: string): GraphNode[];
 
-  getNeighbourhood(nodeId: string, hops: number): GraphNode[];
-
   links: GraphLink[];
 
   maxDegree: number;
@@ -58,6 +56,8 @@ export interface GraphLinkPrimitive {
 
   type: GraphLinkPrimitiveType;
 
+  value?: string;
+
 }
 
 export type GraphLinkPrimitiveType = 
@@ -70,7 +70,7 @@ export type GraphLinkPrimitiveType =
   // Image to Entity Type
   'HAS_ENTITY_ANNOTATION' |
   // Image to Image via Annotation Relationship
-  'HAS_RELATED_ANNOTATION_IN'
+  'HAS_RELATED_ANNOTATION_IN' |
   // Entity Type to Entity Type
   'IS_RELATED_VIA_ANNOTATION';
 

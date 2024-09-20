@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { usePrevious } from '@/utils/usePrevious';
-import { GRAY, ORANGE } from './GraphViewColors';
-import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
-import { PALETTE } from '../Palette';
+import { NODE_COLORS, LINK_COLORS, LINK_STYLES, ORANGE } from '../Styles';
+import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 
 import './GraphView.css';
 
@@ -14,8 +13,6 @@ interface GraphViewProps {
   isFullscreen: boolean;
 
   query?: ((n: NodeObject<GraphNode>) => boolean);
-
-  // relations: RelationGraph;
 
   settings: KnowledgeGraphSettings;
 
@@ -36,6 +33,8 @@ const MIN_NODE_SIZE = 5;
 
 const MAX_LINK_WIDTH = 3;
 const MIN_LINK_WIDTH = 1;
+
+let globalScale = 1;
 
 export const GraphView = (props: GraphViewProps) => {
 
@@ -89,18 +88,9 @@ export const GraphView = (props: GraphViewProps) => {
   const nodeFilter = useMemo(() => {
     if (!graph) return;
 
-    const relations = [...graph.links].filter(l => l.type === 'RELATION');
-    
-    const withRelation = new Set(relations.reduce<string[]>((all, link) => (
-      // Force graph mutates links in place... source could be string or node object
-      [...all, (link.source as any).id || link.source, (link.target as any).id || link.target]
-    ), []));
-
     return settings.hideIsolatedNodes 
-      ? settings.graphMode === 'HIERARCHY' 
         ? (node: NodeObject<GraphNode>) => node.degree > 0
-        : (node: NodeObject<GraphNode>) => withRelation.has(node.id)
-      : undefined
+        : undefined;
     }, [settings, graph]);
 
   useEffect(() => {
@@ -142,6 +132,8 @@ export const GraphView = (props: GraphViewProps) => {
   }, [props.isFullscreen]);
 
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
+    globalScale = scale;
+
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
     const isOpaque =
@@ -152,8 +144,7 @@ export const GraphView = (props: GraphViewProps) => {
       // or if there's a query and the node matches it
       (props.query && props.query(node));
      
-    const color = node.type === 'IMAGE' 
-      ? PALETTE['blue'] : node.type === 'ENTITY_TYPE' ? PALETTE['green'] : PALETTE['purple'];
+    const color = NODE_COLORS[node.type];
 
     ctx.globalAlpha = isOpaque ? 1 : 0.12;
     ctx.fillStyle = color;
@@ -230,45 +221,78 @@ export const GraphView = (props: GraphViewProps) => {
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
-      return isHidden ? 0.00001 : linkScale * link.value + MIN_LINK_WIDTH;
+      return isHidden ? 0.00001 : linkScale * link.weight + MIN_LINK_WIDTH;
     } else {
-      return linkScale * link.value + MIN_LINK_WIDTH;
+      return linkScale * link.weight + MIN_LINK_WIDTH;
     }
   }
 
   const getLinkLabel = (link: LinkObject) => {
-    const { id: sourceId, type: sourceType }: { id: string, type: string } = link.source as any;
-    const { id: targetId, type: targetType }: { id: string, type: string } = link.target as any;
+    const primitives = (link as GraphLink).primitives;
 
-    // Labels are for IMAGE-IMAGE or ENTITY-ENTITY links
-    if (sourceType !== targetType)
+    const types = [...new Set(primitives.reduce<string[]>((t, p) => ([...t, p.type]), []))];
+
+    if (types.length > 1) {
+      console.log(types);
       return;
-
-    /*
-    if (sourceType === 'ENTITY_TYPE') {
-      const relations = props.relations.listRelations().filter(r =>
-        sourceId === r.sourceEntityType && targetId === r.targetEntityType);
-
-      const distinctLabels = Array.from(new Set(relations.map(r => r.relationName)));
-
-      if (distinctLabels.length > 0)
-        return distinctLabels.join(', ');
-    } else if (sourceType === 'IMAGE') {
-      const outbound = props.relations.getLinksBetween(sourceId, targetId); 
-      const inbound = props.relations.getLinksBetween(targetId, sourceId);
-
-      const distinctLabels = Array.from(new Set([
-        ...outbound.map(r => r.relationName),
-        ...inbound.map(r => r.relationName)
-      ]));
-
-      if (distinctLabels.length > 0)
-        return distinctLabels.join(', ');     
     }
-    */
+
+    const t = types[0];
+
+    if (t === 'FOLDER_CONTAINS_SUBFOLDER') {
+      return 'is subfolder';
+    } else if (t === 'FOLDER_CONTAINS_IMAGE') {
+      return 'image is in folder';
+    } else if (t === 'IS_PARENT_TYPE_OF') {
+      return 'entity class hierarchy';
+    } else if (t === 'HAS_ENTITY_ANNOTATION') {
+      return `image has ${link.weight} entity annotations`;
+    } else if (t === 'HAS_RELATED_ANNOTATION_IN') {
+      return link.source === link.target 
+        ? `${link.weight} relation${link.weight ===  1 ? '' : 's'} inside this image`
+        : `${link.weight} relation${link.weight === 1 ? '' : 's'} between images`;
+    } else if (t === 'IS_RELATED_VIA_ANNOTATION') {
+      return link.source === link.target
+        ? `${link.weight} relation${link.weight === 1 ? '' : 's'} between entities of this class`
+        : `connected via ${link.weight} relation${link.weight === 1 ? '' : 's'}`
+    }
   }
 
   const getLinkColor = (link: LinkObject) => {
+    const primitives = (link as GraphLink).primitives;
+    
+    const types = [...new Set(primitives.reduce<string[]>((t, p) => ([...t, p.type]), []))];
+
+    if (props.settings.graphMode === 'HIERARCHY') {
+      // Hierarchy & annotations mode
+      if (types.length === 1) {
+        return LINK_COLORS[primitives[0].type];
+      } else {
+        return LINK_COLORS.DEFAULT;
+      }
+    } else {
+      // Relations mode
+      if (types.length === 1) {
+        const t = types[0];
+
+        const show = new Set([
+          'HAS_RELATED_ANNOTATION_IN',
+          'IS_RELATED_VIA_ANNOTATION',
+          'FOLDER_CONTAINS_SUBFOLDER',
+          'FOLDER_CONTAINS_IMAGE'
+        ]);
+
+        if (show.has(t)) {
+          return LINK_COLORS[t];
+        } else {
+          return '#00000000'; // transparent
+        }
+      }
+    }
+
+    
+
+    /*
     // Relation links get default color
     if (link.type === 'RELATION') return ORANGE;
 
@@ -278,12 +302,13 @@ export const GraphView = (props: GraphViewProps) => {
       const target = link.target as NodeObject<GraphNode>;
 
       return toHighlight.has(source.id) || toHighlight.has(target.id)
-        ? GRAY : '#ffffff00';
+        ? ORANGE : '#ffffff00';
     } else {
       return '#ffffff00';
     }
+    */
   }
-  
+
   const getLinkDirectionalArrowLength = (link: LinkObject) => {
     if (!(link.type === 'RELATION') || !((link.source as NodeObject).type === 'ENTITY_TYPE')) return;
   
@@ -308,23 +333,30 @@ export const GraphView = (props: GraphViewProps) => {
   const getLinkCurvature = (link: LinkObject) =>
     (link.source as NodeObject).id === (link.target as NodeObject).id ? 0.5 : 0;
 
+  const getLinkStyle = (link: LinkObject) => {
+    const primitives = (link as GraphLink).primitives;
+    if (primitives.length === 1) {
+      return LINK_STYLES[primitives[0].type]?.map(n => n / globalScale);
+    }
+  }
+
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
-        <ForceGraph2D 
+        <ForceGraph2D
           ref={fg}
           width={dimensions[0]}
           height={dimensions[1]}
           graphData={graph} 
-          linkColor={settings.graphMode === 'RELATIONS' ? getLinkColor : undefined}
+          linkColor={getLinkColor}
           linkCurvature={getLinkCurvature}
           linkDirectionalArrowColor={() => ORANGE}
           linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
-          // linkLabel={settings.graphMode === 'RELATIONS' ? getLinkLabel : undefined}
+          linkLineDash={getLinkStyle}
+          linkLabel={getLinkLabel}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
-          nodeColor={n => n.type === 'IMAGE' ? PALETTE['orange'] : PALETTE['blue']}
           nodeLabel={settings.hideAllLabels ? (node: GraphNode) => node.label || node.id : undefined}
           nodeRelSize={1.2 * window.devicePixelRatio / zoom}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}

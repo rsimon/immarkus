@@ -1,12 +1,18 @@
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 /** Returns the 'classifying' bodies with the given Entity Type, if any **/
-export const getEntityBodies = (annotation: W3CAnnotation, type: string) => {
+export const getEntityBodies = (annotation: W3CAnnotation, type?: string) => {
   if (!annotation.body) return [];
 
   const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-  return bodies.filter(b => b.purpose === 'classifying' && b.source);
+  return type 
+    ? bodies.filter(b => b.purpose === 'classifying' && b.source === type)
+    : bodies.filter(b => b.purpose === 'classifying' && b.source);
 }
+
+/** Returns all entity type IDs on this anntoation, if any */
+export const getEntityTypes = (annotation: W3CAnnotation) =>
+  getEntityBodies(annotation).map(b => b.source);
 
 /** Tests if the given annotation includes the given Entity Type as a 'classifying' body **/
 export const hasEntity = (annotation: W3CAnnotation, type: string) =>

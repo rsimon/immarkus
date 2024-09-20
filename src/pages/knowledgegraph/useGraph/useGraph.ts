@@ -3,7 +3,17 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
-import { getEntityHierarchyPrimitives, getFolderStructurePrimitives, getImageFolderPrimitives, toEntityTypeNode, toFolderNode, toImageNode } from './graphBuilderUtils';
+import { 
+  getEntityAnnotationPrimitives, 
+  getEntityHierarchyPrimitives, 
+  getFolderStructurePrimitives, 
+  getImageFolderPrimitives, 
+  inferEntityToEntityRelationPrimitives, 
+  inferImageToImageRelationPrimitives, 
+  toEntityTypeNode, 
+  toFolderNode, 
+  toImageNode 
+} from './graphBuilderUtils';
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
 
@@ -26,7 +36,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
     const imagesQuery = images.map(image => 
       store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
-      
+
     Promise.all(foldersQuery).then(foldersResult => {
       const folderMetadata: Map<string, W3CAnnotation> = new Map(foldersResult
         .map(({ folder, metadata }) => ([folder.id, metadata] as [string, W3CAnnotation]))
@@ -40,109 +50,80 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ] as [string, W3CAnnotation]))
           .filter(t => t[1]));
 
-        /** Nodes (folders, images, entity types) **/
-        const nodes: GraphNode[] = [
+        /** 
+         * Nodes (folders, images, entity types) 
+         */
+        const nodesWithoutDegree: GraphNode[] = [
           ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
           ...images.map(i => toImageNode(i, imageMetadata)),
           ...datamodel.entityTypes.map(toEntityTypeNode)
         ];
 
-        /** Links **/
+        /** 
+         * Link primitives (which will be aggregated to links below)
+         */
 
         // Links between folders & subfolderss
-        const folderStructurePrimitives = includeFolders ? getFolderStructurePrimitives(folders, store): [];
+        const folderStructurePrimitives = includeFolders ? getFolderStructurePrimitives(store): [];
 
         // Links between images and subfolders
-        const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(images, store) : [];
+        const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(store) : [];
 
         // Parent-child model hierarchy links between entity classes
         const entityHierarchyPrimitives = graphMode === 'HIERARCHY' ? getEntityHierarchyPrimitives(datamodel) : [];
 
         // Links between images and entity types
-        const entityAnnotationPrimitives =
-          imagesResult.reduce<GraphLink[]>((all, { annotations, image }) => {
-            // N annotations on this image, each carrying 0 to M entity links
-            const entityLinks = annotations.reduce<GraphLink[]>((all, annotation) => {
-              if ('selector' in annotation.target) {
-                const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-    
-                const links: GraphLink[] = 
-                  bodies.filter(b => b.source).map(b => ({ source: image.id, target: b.source, value: 1 }));
-                
-                return [...all, ...links ];
-              } else {
-                // Not an image annotation
-                return all;
-              }
-            }, []);
+        const entityAnnotationPrimitives = getEntityAnnotationPrimitives(imagesResult);
 
-            return [...all, ...entityLinks];
-        }, []);
+        // Links between images, mediated by relations
+        const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
+          ? inferImageToImageRelationPrimitives(imagesResult, store)
+          : [];
 
-        /*
-        const resolvedRelations = relations.listRelations().reduce<ResolvedRelation[]>((all, r) => (
-          [...all, ...relations.resolveTargets(r)]
-        ), []);
-        */
-
-        /* Links between images based on relations (with value = no. of annotations)
-        const relationImageLinks = graphMode === 'RELATIONS'? resolvedRelations.reduce<GraphLink[]>((all, r) => {
-          const existing = all.find(l => { 
-            return l.source === r.image.id && l.target === r.targetImage.id;
-          });
-
-          if (existing) {
-            return all.map(l => l === existing ? ({
-              ...l,
-              value: l.value + 1
-            } as GraphLink) : l)
-          } else {
-            return [...all, { source: r.image.id, target: r.targetImage.id, value: 1, type: 'RELATION' } as GraphLink]
-          }
-        }, []) : [];
-        */
-
-        /* Connect entity classes that were connected through annotations
-        const relationEntityLinks = graphMode === 'RELATIONS' ? relations.listRelations().reduce<GraphLink[]>((all, r) => {
-          const existing = all.find(l => { 
-            return l.source === r.sourceEntityType && l.target === r.targetEntityType;
-          });
-
-          if (existing) {
-            return all.map(l => l === existing ? ({
-              ...l,
-              value: l.value + 1
-            } as GraphLink) : l)
-          } else {
-            return [...all, { source: r.sourceEntityType, target: r.targetEntityType, value: 1, type: 'RELATION' } as GraphLink]
-          }
-        }, []) : [];
-        */
+        const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
+          ? inferEntityToEntityRelationPrimitives(imagesResult, store)
+          : [];
 
         const primitives = [
           ...folderStructurePrimitives, 
           ...imageFolderPrimitives, 
           ...entityHierarchyPrimitives, 
-          ...entityAnnotationPrimitives
-          // ...relationImageLinks,
-          // ...relationEntityLinks
+          ...entityAnnotationPrimitives,
+          ...imageToImageRelationPrimitives,
+          ...entityToEntityRelationPrimitives
         ];
 
-        // Flatten links
-        const links = primitives.reduce<GraphLink[]>((agg, link) => {
-          const existing = agg.find(l => l.source === link.source && l.target === link.target);
-          if (existing) {
-            return agg.map(l => l === existing ? { ...existing, value: existing.value + 1 } : l);
+        /** 
+         * Links (aggregated from link primitives)
+         */
+
+        const links = primitives.reduce<GraphLink[]>((agg, primitive) => {
+          const existingLink = agg.find(l => l.source === primitive.source && l.target === primitive.target);
+          if (existingLink) {
+            return agg.map(l => l === existingLink ? { 
+              ...existingLink, 
+              weight: existingLink.weight + 1,
+              primitives: [...existingLink.primitives, primitive]
+            } : l);
           } else {
-            return [...agg, link];
+            return [...agg, {
+              source: primitive.source,
+              target: primitive.target,
+              weight: 1,
+              primitives: [primitive]
+            } as GraphLink];
           }
         }, []);
 
-        let minLinkWeight = flattened.length === 0 ? 0 : Infinity;
+        /** 
+         * Compute min and max link weights 
+         */
+
+        let minLinkWeight = links.length === 0 ? 0 : Infinity;
 
         let maxLinkWeight = 1;
 
-        flattened.forEach(link => {
+        links.forEach(link => {
           if (link.weight > maxLinkWeight)
             maxLinkWeight = link.weight;
 
@@ -150,59 +131,48 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
             minLinkWeight = link.weight;
         });
 
-        /**
-         * Returns nodes connected to this node through a direct link.
+        /** 
+         * Now that we have weighted links, compute node degree
          */
+
+        const nodes = nodesWithoutDegree.map((node: GraphNode) => {
+          const onThisNode = links.filter(l => l.target === node.id || l.source === node.id);
+          const degree = onThisNode.reduce((total, link) => total + link.weight, 0);
+          return { ...node, degree };
+        });
+
+        let minNodeDegree = imagesResult.length === 0 ? 0 : Infinity;
+
+        let maxNodeDegree = 0;
+
+        nodes.forEach(n => {
+          if (n.degree > maxNodeDegree)
+            maxNodeDegree = n.degree; 
+
+          if (n.degree < minNodeDegree)
+            minNodeDegree = n.degree;
+        });
+      
+        /** 
+         * Graph utility functions
+         */
+
+        /** Returns nodes connected to this node through a direct link. **/
         const getLinkedNodes = (nodeId: string) => {
           // Note that we don't expect links that connect a node to itself here!
-          const linkedIds = flattened
+          const linkedIds = links
             .filter(l => l.source === nodeId || l.target === nodeId)
             .map(l => l.source === nodeId ? l.target : l.source);
 
           return linkedIds.map(id => nodes.find(n => n.id === id));
         }
 
-        /**
-         * Returns nodes connected to this node through the given number
-         * of hops. If hops is 1, this will return the same as getLinkedNodes.
-         */
-        const getNeighbourhood = (nodeId: string, hops: number) => {
-          if (hops < 1) return [];
-
-          if (hops === 1) return getLinkedNodes(nodeId);
-
-          // TODO
-          return [];
-        }
-
-        const computeDegree = (node: GraphNode) => {
-          const links = flattened.filter(l => l.target === node.id || l.source === node.id);
-          const degree = links.reduce((total, link) => total + link.weight, 0);
-          return {...node, degree };
-        }
-
-        const nodesWithDegree = nodes.map(computeDegree);
-
-        // Record minimum & maximum number of links per node
-        let minDegree = imagesResult.length === 0 ? 0 : Infinity;
-
-        let maxDegree = 0;
-
-        nodesWithDegree.forEach(n => {
-          if (n.degree > maxDegree)
-            maxDegree = n.degree; 
-
-          if (n.degree < minDegree)
-            minDegree = n.degree;
-        });
-
         setGraph({ 
           getLinkedNodes,
-          getNeighbourhood,
-          nodes: nodesWithDegree,
-          links: flattened.map(l => ({ ...l })),
-          minDegree, 
-          maxDegree,
+          nodes,
+          links: links.map(l => ({ ...l })),
+          minDegree: minNodeDegree, 
+          maxDegree: maxNodeDegree,
           minLinkWeight,
           maxLinkWeight
         });

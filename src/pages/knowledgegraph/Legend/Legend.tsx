@@ -1,4 +1,4 @@
-import { PALETTE } from '../Palette';
+import { NODE_COLORS } from '../Styles';
 
 interface LegendProps {
 
@@ -13,7 +13,7 @@ export const Legend = (props: LegendProps) => {
       <ul className="flex gap-8">
         <li className="flex gap-2 items-center">
           <span 
-            style={{ backgroundColor: PALETTE['blue']}} 
+            style={{ backgroundColor: NODE_COLORS['IMAGE']}} 
             className="block w-[12px] h-[12px] rounded-full"/>
           <span>Image</span>
         </li>
@@ -21,7 +21,7 @@ export const Legend = (props: LegendProps) => {
         {props.includeFolders && (
           <li className="flex gap-2 items-center">
             <span 
-              style={{ backgroundColor: PALETTE['purple']}} 
+              style={{ backgroundColor: NODE_COLORS['FOLDER']}} 
               className="block w-[12px] h-[12px] rounded-full" />
             <span>Sub-Folder</span>
           </li>
@@ -29,7 +29,7 @@ export const Legend = (props: LegendProps) => {
 
         <li className="flex gap-2 items-center">
           <span 
-            style={{ backgroundColor: PALETTE['green']}} 
+            style={{ backgroundColor: NODE_COLORS['ENTITY_TYPE']}} 
             className="block w-[12px] h-[12px] rounded-full" />
           <span>Entity Class</span>
         </li>
