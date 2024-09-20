@@ -22,13 +22,13 @@ export const LINK_COLORS = {
 
   DEFAULT: '#d9d9d9',
 
-  FOLDER_CONTAINS_SUBFOLDER: chroma(PURPLE).desaturate(2).hex(),
+  FOLDER_CONTAINS_SUBFOLDER: chroma(PURPLE).desaturate(2).alpha(0.8).hex(),
 
-  FOLDER_CONTAINS_IMAGE: chroma(PURPLE).desaturate(2).hex(),
+  FOLDER_CONTAINS_IMAGE: chroma(PURPLE).desaturate(2).alpha(0.8).hex(),
 
-  IS_PARENT_TYPE_OF: chroma(GREEN).desaturate(2).hex(),
+  IS_PARENT_TYPE_OF: chroma(GREEN).desaturate(2).alpha(0.8).hex(),
 
-  HAS_ENTITY_ANNOTATION: chroma(BLUE).desaturate().hex(),
+  HAS_ENTITY_ANNOTATION: chroma(BLUE).desaturate().alpha(0.8).hex(),
 
   HAS_RELATED_ANNOTATION_IN: ORANGE,
 

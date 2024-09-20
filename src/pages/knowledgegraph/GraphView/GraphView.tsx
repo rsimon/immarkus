@@ -31,7 +31,7 @@ interface GraphViewProps {
 const MAX_NODE_SIZE = 10;
 const MIN_NODE_SIZE = 5;
 
-const MAX_LINK_WIDTH = 3;
+const MAX_LINK_WIDTH = 10;
 const MIN_LINK_WIDTH = 1;
 
 let globalScale = 1;
@@ -221,9 +221,9 @@ export const GraphView = (props: GraphViewProps) => {
         : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
 
       // Don't set to 0 because force-graph will use default width (0 is falsy!)
-      return isHidden ? 0.00001 : linkScale * link.weight + MIN_LINK_WIDTH;
+      return isHidden ? 0.00001 : linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
     } else {
-      return linkScale * link.weight + MIN_LINK_WIDTH;
+      return linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
     }
   }
 
