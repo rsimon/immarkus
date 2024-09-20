@@ -39,7 +39,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
   }
 
   const onAddTerm = (term: string) => {
-    model.addRelationshipType({ name: term });
+    model.upsertRelationshipType({ name: term });
     onChange({ value: term });
   }
 

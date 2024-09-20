@@ -72,7 +72,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
   }
 
   const onAddTerm = (term: string) => {
-    model.addRelationshipType({ name: term });
+    model.upsertRelationshipType({ name: term });
     setRelation(({ value: term, label: term }));
     setAddTerm(undefined);
   }
