@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
-import { ArrowDownToDot, ArrowUpFromDot, Trash2 } from 'lucide-react';
+import { ArrowDownToDot, ArrowUpFromDot } from 'lucide-react';
 import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
-import { Button } from '@/ui/Button';
 import { getBrightness } from '@/utils/color';
+import { RelationshipListItemActions } from './RelationshipListItemActions';
 
 interface RelationshipListItemProps {
 
   relationshipType: RelationshipType;
+
+  onEdit(): void;
 
   onRemove(): void;
 
@@ -54,11 +56,9 @@ export const RelationshipListItem = (props: RelationshipListItemProps) => {
         </div>
       )}
 
-      <Button 
-        className="bg-transparent text-muted-foreground p-2 rounded-full h-auto hover:bg-muted"
-        onClick={props.onRemove}>
-        <Trash2 size={14} />
-      </Button>
+      <RelationshipListItemActions 
+        onEdit={props.onEdit}
+        onDelete={props.onRemove} />
     </div>
   )
 

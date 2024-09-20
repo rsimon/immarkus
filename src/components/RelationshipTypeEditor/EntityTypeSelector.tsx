@@ -14,7 +14,14 @@ export const EntityTypeSelector = (props: EntityTypeSelectorProps) => {
 
   const { entityTypes } = useDataModel();
 
-  const [value, setValue] = useState<ComboboxOption>();
+  const getOption = (id?: string) => {
+    if (id) {
+      const t = entityTypes.find(t => t.id === id);
+      return { label: t.label || t.id, value: t.id };
+    }
+  }
+
+  const [value, setValue] = useState<ComboboxOption>(getOption(props.value));
 
   const options = useMemo(() => (
     entityTypes.map(t => ({ label: t.label || t.id, value: t.id }))

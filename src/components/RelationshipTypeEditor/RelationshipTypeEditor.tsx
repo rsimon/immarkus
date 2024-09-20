@@ -16,11 +16,15 @@ interface RelationshipTypeEditorProps {
 
   open?: boolean;
 
+  relationshipType?: RelationshipType;
+
   onOpenChange?(open: boolean): void;
 
 }
 
 export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
+
+  const { relationshipType } = props;
 
   const { toast } = useToast();
 
@@ -28,11 +32,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
   const [open, setOpen] = useState(props.open);
 
-  const [relationship, setRelationship] = useState<Partial<RelationshipType>>({});
+  const [relationship, setRelationship] = useState<Partial<RelationshipType>>(relationshipType || {});
 
-  const [isSourceRestricted, setIsSourceRestricted] = useState(false);
+  const [isSourceRestricted, setIsSourceRestricted] = useState(Boolean(relationship.sourceTypeId));
 
-  const [isTargetRestricted, setIsTargetRestricted] = useState(false);
+  const [isTargetRestricted, setIsTargetRestricted] = useState(Boolean(relationship.targetTypeId));
 
   useEffect(() => {
     setOpen(props.open);
