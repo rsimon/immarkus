@@ -285,48 +285,19 @@ export const GraphView = (props: GraphViewProps) => {
         ]);
 
         if (show.has(t)) {
+          // Always show relation & folder hierarchy
           return LINK_COLORS[t];
+        } else if (highlighted) {
+          // Show additional links on hover
+          const targetId: string = (link.target as any).id || link.target;
+          const sourceId: string = (link.source as any).id || link.source;
+    
+          return (highlighted.has(targetId) && highlighted.has(sourceId))
+            ? LINK_COLORS[t] : '#00000000'; // transparent
         } else {
           return '#00000000'; // transparent
         }
       }
-    }
-
-    /*
-    // Relation links get default color
-    if (link.type === 'RELATION') return ORANGE;
-
-    const toHighlight = hovered ? new Set([...selectedIds, hovered.id]) : selectedIds;
-    if (toHighlight.size > 0) {
-      const source = link.source as NodeObject<GraphNode>;
-      const target = link.target as NodeObject<GraphNode>;
-
-      return toHighlight.has(source.id) || toHighlight.has(target.id)
-        ? ORANGE : '#ffffff00';
-    } else {
-      return '#ffffff00';
-    }
-    */
-  }
-
-  const getLinkDirectionalArrowLength = (link: LinkObject) => {
-    if (!(link.type === 'RELATION') || !((link.source as NodeObject).type === 'ENTITY_TYPE')) return;
-  
-    const targetId: string = (link.target as any).id || link.target;
-    const sourceId: string = (link.source as any).id || link.source;
-
-    if (targetId === sourceId)
-      return 0.00001;
-
-    if (highlighted || props.query) {
-      const isHidden = highlighted 
-        ? !(highlighted.has(targetId) && highlighted.has(sourceId))
-        : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
-
-      // Don't set to 0 because force-graph will use default width (0 is falsy!)
-      return isHidden ? 0.00001 : linkScale * link.weight + MIN_LINK_WIDTH;
-    } else {
-      return (20 + link.value) / zoom;
     }
   }
 
@@ -339,6 +310,8 @@ export const GraphView = (props: GraphViewProps) => {
       return LINK_STYLES[primitives[0].type]?.map((n: number) => n / globalScale);
   }
 
+  const getNodeLabel = (node: GraphNode) => node.label || node.id;
+
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
       {dimensions && (
@@ -349,14 +322,12 @@ export const GraphView = (props: GraphViewProps) => {
           graphData={graph} 
           linkColor={getLinkColor}
           linkCurvature={getLinkCurvature}
-          linkDirectionalArrowColor={() => ORANGE}
-          linkDirectionalArrowLength={getLinkDirectionalArrowLength}
           linkDirectionalArrowRelPos={1}
           linkLineDash={getLinkStyle}
           linkLabel={getLinkLabel}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
-          nodeLabel={settings.hideAllLabels ? (node: GraphNode) => node.label || node.id : undefined}
+          nodeLabel={getNodeLabel}
           nodeRelSize={1.2 * window.devicePixelRatio / zoom}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
           nodeVisibility={nodeFilter}
