@@ -232,6 +232,8 @@ export const GraphView = (props: GraphViewProps) => {
 
     const types = [...new Set(primitives.reduce<string[]>((t, p) => ([...t, p.type]), []))];
 
+    const relations = new Set(primitives.reduce<string[]>((r, p) => p.value ? [...r, p.value] : r, []));
+
     if (types.length > 1) {
       console.log(types);
       return;
@@ -249,12 +251,12 @@ export const GraphView = (props: GraphViewProps) => {
       return `image has ${link.weight} entity annotations`;
     } else if (t === 'HAS_RELATED_ANNOTATION_IN') {
       return link.source === link.target 
-        ? `${link.weight} relation${link.weight ===  1 ? '' : 's'} inside this image`
-        : `${link.weight} relation${link.weight === 1 ? '' : 's'} between images`;
+        ? `${link.weight} relation${link.weight ===  1 ? '' : 's'} inside this image (${[...relations].join(', ')})`
+        : `${link.weight} relation${link.weight === 1 ? '' : 's'} between images (${[...relations].join(', ')})`;
     } else if (t === 'IS_RELATED_VIA_ANNOTATION') {
       return link.source === link.target
-        ? `${link.weight} relation${link.weight === 1 ? '' : 's'} between entities of this class`
-        : `connected via ${link.weight} relation${link.weight === 1 ? '' : 's'}`
+        ? `${link.weight} relation${link.weight === 1 ? '' : 's'} between entities of this class (${[...relations].join(', ')})`
+        : `connected via ${link.weight} relation${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
     }
   }
 

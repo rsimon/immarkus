@@ -3,7 +3,6 @@ import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react'
 import { EntityType, Folder, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { GraphLinkPrimitive, GraphNode } from '../Types';
-import { AnnotatableImage } from '@/pages/annotate/WorkspaceSection/AnnotatableImage';
 import { getEntityTypes } from '@/utils/annotation';
 
 export const toFolderNode = (folder: Folder, metadata: Map<string, W3CAnnotation>): GraphNode => ({
@@ -103,8 +102,8 @@ export const getEntityAnnotationPrimitives = (annotatedImages: { image: Image; a
   }, []);
 
 const getRelationName = (a: W3CRelationMetaAnnotation) => {
-  console.log('meta', a);
-  return 'foo';
+  const body = Array.isArray(a.body) ? a.body[0] : a.body;
+  return body?.value;
 }
 
 export const inferImageToImageRelationPrimitives = (
