@@ -1,13 +1,14 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Switch } from '@/ui/Switch';
+import { Textarea } from '@/ui/Textarea';
 import { useToast } from '@/ui/Toaster';
 import { EntityTypeSelector } from './EntityTypeSelector';
-import { EntityType } from '@/model';
 
 interface RelationshipTypeEditorProps {
 
@@ -27,15 +28,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
   const [open, setOpen] = useState(props.open);
 
-  const [name, setName] = useState('');
+  const [relationship, setRelationship] = useState<Partial<RelationshipType>>({});
 
   const [isSourceRestricted, setIsSourceRestricted] = useState(false);
 
-  const [sourceType, setSourceType] = useState<EntityType | undefined>();
-
   const [isTargetRestricted, setIsTargetRestricted] = useState(false);
-
-  const [targetType, setTargetType] = useState<EntityType | undefined>();
 
   useEffect(() => {
     setOpen(props.open);
@@ -51,47 +48,43 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
   const onSave = () => {
     setOpen(false);
     
-    if (name) {
-      addRelationshipType({
-        name,
-        sourceTypeId: sourceType?.id,
-        targetTypeId: targetType?.id
-      }).catch(error => {
-          console.error(error);
+    if (relationship.name) {
+      addRelationshipType(relationship as RelationshipType).catch(error => {
+        console.error(error);
 
-          toast({
-            variant: 'destructive',
-            // @ts-ignore
-            title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-            description: 'Something went wrong. Could not save entity type.'
-          });  
-        });
+        toast({
+          variant: 'destructive',
+          // @ts-ignore
+          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+          description: 'Something went wrong. Could not save entity type.'
+        });  
+      });
     }
 
-    setName('');
+    setRelationship({});
   }
 
   const onRestrictSource = (restrict: boolean) => {
     if (!restrict) {
-      setSourceType(undefined);
+      setRelationship(r => ({...r, sourceTypeId: undefined }));
     }
     setIsSourceRestricted(restrict);
   }
 
   const onRestrictTarget = (restrict: boolean) => {
     if (!restrict) {
-      setTargetType(undefined);
+      setRelationship(r => ({...r, targetTypeId: undefined }));
     }
     setIsTargetRestricted(restrict);
   }
 
   useEffect(() => {
-    if (sourceType) setIsSourceRestricted(true);
-  }, [sourceType]);
+    if (relationship.sourceTypeId) setIsSourceRestricted(true);
+  }, [relationship.sourceTypeId]);
 
   useEffect(() => {
-    if (targetType) setIsTargetRestricted(true);
-  }, [targetType]);
+    if (relationship.targetTypeId) setIsTargetRestricted(true);
+  }, [relationship.targetTypeId]);
 
   return (
     <Dialog 
@@ -116,15 +109,28 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
         <form onSubmit={evt => evt.preventDefault()}>
           <fieldset className="mt-6">
             <Label 
-              htmlFor="relationship-type"
+              htmlFor="relationship-name"
               className="inline-block mb-1.5 ml-0.5">Relationship Name
             </Label>
 
             <Input
-              id="relationship-type"
+              id="relationship-name"
               className="bg-white mt-1.5"
-              value={name}
-              onChange={evt => setName(evt.target.value)} />
+              value={relationship.name || ''}
+              onChange={evt => setRelationship(r => ({...r, name: evt.target.value }))} />
+          </fieldset>
+
+          <fieldset className="mt-6">
+            <Label 
+              htmlFor="relationship-description"
+              className="inline-block text-xs mb-1.5 ml-0.5">Entity Class Description</Label>
+
+            <Textarea 
+              id="relationship-description"
+              className="bg-white"
+              rows={3} 
+              value={relationship.description || ''}
+              onChange={evt => setRelationship(r => ({...r, description: evt.target.value }))} />
           </fieldset>
 
           <fieldset className="pt-8">
@@ -146,8 +152,8 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
                 </p>
 
                 <EntityTypeSelector 
-                  value={sourceType} 
-                  onChange={setSourceType} />
+                  value={relationship.sourceTypeId} 
+                  onChange={sourceTypeId => setRelationship(r => ({...r, sourceTypeId }))} />
               </div>
             </div>
           </fieldset>
@@ -171,15 +177,15 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
                 </p>
 
                 <EntityTypeSelector 
-                  value={targetType} 
-                  onChange={setTargetType} />
+                  value={relationship.targetTypeId} 
+                  onChange={targetTypeId => setRelationship(r => ({...r, targetTypeId }))} />
               </div>
             </div>
           </fieldset>
 
           <Button 
             className="w-full mt-4 mb-3"
-            disabled={!name}
+            disabled={!relationship.name}
             onClick={onSave}>
             Save
           </Button>

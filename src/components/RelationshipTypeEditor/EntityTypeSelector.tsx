@@ -1,13 +1,12 @@
+import { useEffect, useMemo, useState } from 'react';
 import { useDataModel } from '@/store';
 import { Combobox, ComboboxOption } from '../Combobox';
-import { useEffect, useMemo, useState } from 'react';
-import { EntityType } from '@/model';
 
 interface EntityTypeSelectorProps {
 
-  value?: EntityType;
+  value?: string;
 
-  onChange?(type: EntityType): void;
+  onChange?(type: string): void;
 
 }
 
@@ -23,7 +22,7 @@ export const EntityTypeSelector = (props: EntityTypeSelectorProps) => {
 
   useEffect(() => {
     if (value)
-      props.onChange(entityTypes.find(t => t.id === value.value));
+      props.onChange(entityTypes.find(t => t.id === value.value)?.id);
   }, [value]);
 
   return (
