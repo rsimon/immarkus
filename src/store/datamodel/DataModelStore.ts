@@ -20,7 +20,7 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   updateEntityType(type: EntityType): Promise<void>;
 
   // Relationship Types
-  addRelationshipType(type: RelationshipType): Promise<void>;
+  upsertRelationshipType(type: RelationshipType): Promise<void>;
 
   removeRelationShipType(name: string): Promise<void>;
 
@@ -120,16 +120,6 @@ export const loadDataModel = (
       return save();
     } else {
       return Promise.reject(`Image schema "${schema.name}" already exists`);
-    }
-  }
-
-  const addRelationshipType = (type: RelationshipType) => {
-    if (!relationshipTypes.find(t => t.name === type.name)) {
-      relationshipTypes = [...relationshipTypes, type];
-      return save();
-    } else {
-      // Do nothing
-      return Promise.resolve();
     }
   }
 
@@ -250,6 +240,16 @@ export const loadDataModel = (
     }
   }
 
+  const upsertRelationshipType = (type: RelationshipType) => {
+    if (relationshipTypes.find(t => t.name === type.name)) {
+      relationshipTypes = relationshipTypes.map(t => t.name === type.name ? type : t);
+    } else {
+      relationshipTypes = [...relationshipTypes, type];
+    }
+
+    return save();
+  }
+
   resolve({
     ...tree, 
     get entityTypes() { return entityTypes },
@@ -259,7 +259,6 @@ export const loadDataModel = (
     addEntityType,
     addFolderSchema,
     addImageSchema,
-    addRelationshipType,
     clearEntityTypes,
     clearFolderSchemas,
     clearImageSchemas,
@@ -275,7 +274,8 @@ export const loadDataModel = (
     setImageSchemas,
     updateEntityType,
     updateFolderSchema,
-    updateImageSchema
+    updateImageSchema,
+    upsertRelationshipType
   });
 
 });

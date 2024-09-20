@@ -58,7 +58,7 @@ export const Relationships = () => {
         <RelationshipTypeEditor 
           open={true} 
           relationshipType={edited}
-          onOpenChange={open => !open && setEdited(undefined)} />
+          onClose={() =>setEdited(undefined)} />
       )}
     </>
   )

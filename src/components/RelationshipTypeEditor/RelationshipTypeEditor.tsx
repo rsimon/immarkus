@@ -18,7 +18,7 @@ interface RelationshipTypeEditorProps {
 
   relationshipType?: RelationshipType;
 
-  onOpenChange?(open: boolean): void;
+  onClose?(): void;
 
 }
 
@@ -28,7 +28,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
   const { toast } = useToast();
 
-  const { addRelationshipType } =  useDataModel();
+  const { upsertRelationshipType } =  useDataModel();
 
   const [open, setOpen] = useState(props.open);
 
@@ -45,27 +45,27 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
-    if (props.onOpenChange)
-      props.onOpenChange(open);
+    if (props.onClose && !open)
+      props.onClose();
   }
 
   const onSave = () => {
-    setOpen(false);
-    
     if (relationship.name) {
-      addRelationshipType(relationship as RelationshipType).catch(error => {
-        console.error(error);
+      upsertRelationshipType(relationship as RelationshipType)
+        .catch(error => {
+          console.error(error);
 
-        toast({
-          variant: 'destructive',
-          // @ts-ignore
-          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-          description: 'Something went wrong. Could not save entity type.'
-        });  
-      });
+          toast({
+            variant: 'destructive',
+            // @ts-ignore
+            title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+            description: 'Something went wrong. Could not save entity type.'
+          });  
+        });
     }
 
-    setRelationship({});
+    setOpen(false);
+    if (props.onClose) props.onClose();
   }
 
   const onRestrictSource = (restrict: boolean) => {
@@ -110,90 +110,88 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
           Create a new relationship type below.
         </DialogDescription>
 
-        <form onSubmit={evt => evt.preventDefault()}>
-          <fieldset className="mt-6">
-            <Label 
-              htmlFor="relationship-name"
-              className="inline-block mb-1.5 ml-0.5">Relationship Name
-            </Label>
+        <fieldset className="mt-6">
+          <Label 
+            htmlFor="relationship-name"
+            className="inline-block mb-1.5 ml-0.5">Relationship Name
+          </Label>
 
-            <Input
-              id="relationship-name"
-              className="bg-white mt-1.5"
-              value={relationship.name || ''}
-              onChange={evt => setRelationship(r => ({...r, name: evt.target.value }))} />
-          </fieldset>
+          <Input
+            id="relationship-name"
+            className="bg-white mt-1.5"
+            value={relationship.name || ''}
+            onChange={evt => setRelationship(r => ({...r, name: evt.target.value }))} />
+        </fieldset>
 
-          <fieldset className="mt-6">
-            <Label 
-              htmlFor="relationship-description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Entity Class Description</Label>
+        <fieldset className="mt-6">
+          <Label 
+            htmlFor="relationship-description"
+            className="inline-block text-xs mb-1.5 ml-0.5">Relationship Type Description</Label>
 
-            <Textarea 
-              id="relationship-description"
-              className="bg-white"
-              rows={3} 
-              value={relationship.description || ''}
-              onChange={evt => setRelationship(r => ({...r, description: evt.target.value }))} />
-          </fieldset>
+          <Textarea 
+            id="relationship-description"
+            className="bg-white"
+            rows={3} 
+            value={relationship.description || ''}
+            onChange={evt => setRelationship(r => ({...r, description: evt.target.value }))} />
+        </fieldset>
 
-          <fieldset className="pt-8">
-            <div className="flex items-start gap-3">
-              <Switch 
-                id="restrict-source" 
-                className="mt-0.5" 
-                checked={isSourceRestricted} 
-                onCheckedChange={onRestrictSource} />
+        <fieldset className="pt-8">
+          <div className="flex items-start gap-3">
+            <Switch 
+              id="restrict-source" 
+              className="mt-0.5" 
+              checked={isSourceRestricted} 
+              onCheckedChange={onRestrictSource} />
 
-              <div>
-                <Label htmlFor="restrict-source">
-                  Restrict source entity class
-                </Label>
+            <div>
+              <Label htmlFor="restrict-source">
+                Restrict source entity class
+              </Label>
 
-                <p className="text-muted-foreground text-xs mt-1">
-                  The relationship can only start on annotations 
-                  with this entity class.
-                </p>
+              <p className="text-muted-foreground text-xs mt-1">
+                The relationship can only start on annotations 
+                with this entity class.
+              </p>
 
-                <EntityTypeSelector 
-                  value={relationship.sourceTypeId} 
-                  onChange={sourceTypeId => setRelationship(r => ({...r, sourceTypeId }))} />
-              </div>
+              <EntityTypeSelector 
+                value={relationship.sourceTypeId} 
+                onChange={sourceTypeId => setRelationship(r => ({...r, sourceTypeId }))} />
             </div>
-          </fieldset>
+          </div>
+        </fieldset>
 
-          <fieldset className="pt-6 pb-4">
-            <div className="flex items-start gap-3">
-              <Switch 
-                id="restrict-source" 
-                className="mt-0.5" 
-                checked={isTargetRestricted}
-                onCheckedChange={onRestrictTarget} />
+        <fieldset className="pt-6 pb-4">
+          <div className="flex items-start gap-3">
+            <Switch 
+              id="restrict-source" 
+              className="mt-0.5" 
+              checked={isTargetRestricted}
+              onCheckedChange={onRestrictTarget} />
 
-              <div>
-                <Label htmlFor="restrict-source">
-                  Restrict target entity class
-                </Label>
+            <div>
+              <Label htmlFor="restrict-source">
+                Restrict target entity class
+              </Label>
 
-                <p className="text-muted-foreground text-xs mt-1">
-                  The relationship can only end on annotations 
-                  with this entity class.
-                </p>
+              <p className="text-muted-foreground text-xs mt-1">
+                The relationship can only end on annotations 
+                with this entity class.
+              </p>
 
-                <EntityTypeSelector 
-                  value={relationship.targetTypeId} 
-                  onChange={targetTypeId => setRelationship(r => ({...r, targetTypeId }))} />
-              </div>
+              <EntityTypeSelector 
+                value={relationship.targetTypeId} 
+                onChange={targetTypeId => setRelationship(r => ({...r, targetTypeId }))} />
             </div>
-          </fieldset>
+          </div>
+        </fieldset>
 
-          <Button 
-            className="w-full mt-4 mb-3"
-            disabled={!relationship.name}
-            onClick={onSave}>
-            Save
-          </Button>
-        </form>
+        <Button 
+          className="w-full mt-4 mb-3"
+          disabled={!relationship.name}
+          onClick={onSave}>
+          Save
+        </Button>
       </DialogContent>
     </Dialog>
   )
