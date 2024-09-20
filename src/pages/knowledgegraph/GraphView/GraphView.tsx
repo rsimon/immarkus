@@ -292,8 +292,6 @@ export const GraphView = (props: GraphViewProps) => {
       }
     }
 
-    
-
     /*
     // Relation links get default color
     if (link.type === 'RELATION') return ORANGE;
@@ -337,9 +335,8 @@ export const GraphView = (props: GraphViewProps) => {
 
   const getLinkStyle = (link: LinkObject) => {
     const primitives = (link as GraphLink).primitives;
-    if (primitives.length === 1) {
-      return LINK_STYLES[primitives[0].type]?.map(n => n / globalScale);
-    }
+    if (primitives.length === 1)
+      return LINK_STYLES[primitives[0].type]?.map((n: number) => n / globalScale);
   }
 
   return (
