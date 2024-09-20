@@ -2,15 +2,13 @@ import { useMemo } from 'react';
 import { ImageAnnotation, W3CAnnotation } from '@annotorious/react';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { AnnotationsTabItem } from './AnnotationsTabItem';
-import { RelatedAnnotation, RelationGraph } from '@/store';
-import { InboundRelationCard } from '@/components/InboundRelationsDeprecated/InboundRelationCard';
 import { Spline } from 'lucide-react';
 
 interface AnnotationsTabProps {
 
   annotations: W3CAnnotation[];
 
-  relations: RelationGraph;
+  // relations: RelationGraph;
 
 }
 
@@ -25,12 +23,14 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
 
     return annotations.map(annotation => ({
       annotation,
-      related: props.relations.getInboundLinks(annotation)
+      // related: props.relations.getInboundLinks(annotation)
     }));
   }, [annotations]);
 
+  /*
   const hasRelations = inboundRelations.reduce<RelatedAnnotation[]>((all, relation) =>
     ([...all, ...relation.related]), []).length > 0;
+  */
 
   return (
     <div>
@@ -45,7 +45,7 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
         ))}
       </ul>
 
-      {hasRelations && (
+      {/* false && (
         <>
           <h2 className="p-4 flex items-center text-sm font-semibold">
             <Spline className="w-4 h-4 mr-1.5" /> Related
@@ -62,7 +62,7 @@ export const AnnotationsTab = (props: AnnotationsTabProps) => {
             )))}
           </ul>
         </>
-      )}
+      ) */}
     </div>
   )
 

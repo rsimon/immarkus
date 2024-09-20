@@ -109,9 +109,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <fieldset className="p-3">
         <div className="pb-3">
           <legend>
-            <div className="font-medium">Graph Display Mode</div> 
+            <div className="font-medium">Graph Type</div> 
             <p className="text-muted-foreground text-xs mt-0.5">
-              Select how graph nodes should be linked. 
+              Select how you want to visualize your data. 
             </p>
           </legend>
         </div>
@@ -126,9 +126,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               id="HIERARCHY" />
 
             <div>
-              <Label htmlFor="HIERARCHY">Hierarchy</Label>
+              <Label htmlFor="HIERARCHY">Hierarchy & Annotations</Label>
               <p className="text-xs text-muted-foreground">
-                Based on data model, folder hierarchy and entity annotations.
+                Visualize the data model hierarchy, folder structure and entity annotations.
               </p>
             </div>
           </div>
@@ -142,7 +142,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
             <div>
               <Label htmlFor="RELATIONS">Relations</Label>
               <p className="text-xs text-muted-foreground">
-                Links are based on Relations. Hierarchy links are shown on hover.
+                Visualized the Relations between annotations. Hierarchy data is and annotation data is shown on hover.
               </p>
             </div>
           </div>

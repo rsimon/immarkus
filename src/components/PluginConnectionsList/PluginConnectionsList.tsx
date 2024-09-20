@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { isW3CRelationLinkAnnotation, isW3CRelationMetaAnnotation, useStore } from '@/store';
+import { isW3CRelationLinkAnnotation, isW3CRelationMetaAnnotation, W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { PluginConnectionsListItem } from './PluginConnectionsListItem';
 

@@ -25,7 +25,7 @@ export const KnowledgeGraph = () => {
 
   const [query, setQuery] = useState<((n: NodeObject<GraphNode>) => boolean | undefined)>(undefined);
 
-  const { annotations, graph, relations } = useGraph(settings);
+  const { annotations, graph } = useGraph(settings);
 
   const [showSettingsPanel, setShowSettingsPanel] = useState(false);
 
@@ -71,7 +71,7 @@ export const KnowledgeGraph = () => {
         <GraphView 
           graph={graph}
           isFullscreen={isFullscreen}
-          relations={relations}
+          // relations={relations}
           settings={settings}
           selected={selectedNodes}
           pinned={pinnedNodes}
@@ -106,7 +106,7 @@ export const KnowledgeGraph = () => {
           {graph && (
             <SelectionDetailsDrawer 
               graph={graph}
-              relations={relations}
+              // relations={relations}
               selected={selectedNodes[0]}
               settings={settings} 
               skipInitialAnimation={skipSidebarAnimation}

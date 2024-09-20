@@ -1,31 +1,20 @@
-import { ConnectionAnnotation, W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 
-export const isConnectionAnnotation = (arg: any): arg is ConnectionAnnotation => 
-  arg.motivation !== undefined && arg.motivation === 'linking';
-
-export const isW3CRelationLinkAnnotation = (arg: any): arg is W3CRelationLinkAnnotation =>
-  arg.motivation !== undefined && 
-  arg.motivation === 'linking' &&
-  arg.body !== undefined && 
-  arg.target !== undefined &&
-  typeof arg.body === 'string' && 
-  typeof arg.target === 'string';
-
-export const isW3CRelationMetaAnnotation = (arg: any): arg is W3CRelationMetaAnnotation =>
-  (arg.motivation === undefined || arg.motivation === 'tagging') &&
-   typeof arg.target === 'string';
+export type Directionality = 'INBOUND' | 'OUTBOUND';
 
 export interface RelationStore {
 
   deleteRelation(linkId: string): Promise<void>;
 
-  getRelatedAnnotations(annotationId: string): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
+  getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
-  getRelations(imageId: string): Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][]>;
+  getRelations(imageId: string, direction?: Directionality): Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][]>;
 
   hasRelatedAnnotations(annotationId: string): boolean;
+
+  listAllRelations(): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
   upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation, imageId?: string): Promise<void>;
 
@@ -53,15 +42,19 @@ export const loadRelationStore = (
   const getMetaAnnotation = (linkId: string) =>
     annotations.find(a => a.motivation === 'tagging' && a.target === linkId) as W3CRelationMetaAnnotation;
     
-  const getRelatedAnnotations = (annotationId: string) => {
+  const getRelatedAnnotations = (annotationId: string, direction?: Directionality) => {
     // All connected link annotations
     const links = annotations.filter(a =>
-      a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
+      a.motivation === 'linking' && (
+        direction === 'OUTBOUND' ? a.target === annotationId :
+        direction === 'INBOUND' ? a.body === annotationId :
+          (a.body === annotationId || a.target === annotationId)
+      ));
 
     return links.map(link => ([ link, getMetaAnnotation(link.id) ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
   }
 
-  const getRelations = (imageId: string) =>
+  const getRelations = (imageId: string, direction?: 'INBOUND' | 'OUTBOUND') =>
     store.getAnnotations(imageId, { type: 'image' })
       .then(imageAnnotations => {
         // IDs of all image annotations on this image
@@ -71,7 +64,9 @@ export const loadRelationStore = (
         const links = annotations
           .filter(a => 
             a.motivation === 'linking' && (
-              imageAnnotationIds.has(a.body) || imageAnnotationIds.has(a.target)
+              direction === 'INBOUND' ? imageAnnotationIds.has(a.body) :
+              direction === 'OUTBOUND' ? imageAnnotationIds.has(a.target) :
+                (imageAnnotationIds.has(a.body) || imageAnnotationIds.has(a.target))
             )) as W3CRelationLinkAnnotation[];
 
         return links
@@ -80,6 +75,11 @@ export const loadRelationStore = (
 
   const hasRelatedAnnotations = (annotationId: string) =>
     annotations.some(a => a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
+
+  const listAllRelations = () => {
+    const links = annotations.filter(a => a.motivation === 'linking');
+    return links.map(link => ([link, getMetaAnnotation(link.id)]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
+  }
 
   const upsertRelation = (
     link: W3CRelationLinkAnnotation, 
@@ -95,6 +95,7 @@ export const loadRelationStore = (
     getRelatedAnnotations,
     getRelations,
     hasRelatedAnnotations,
+    listAllRelations,
     upsertRelation
   });
 

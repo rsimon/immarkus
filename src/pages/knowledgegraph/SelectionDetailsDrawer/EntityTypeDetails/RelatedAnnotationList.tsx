@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Image } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { RelatedAnnotation, useImageSnippets, useStore } from '@/store';
+import { useImageSnippets, useStore } from '@/store';
 import { ImageSnippet } from '@/utils/getImageSnippet';
 import { EntityBadge } from '@/components/EntityBadge';
 
 interface ThumbnailProps {
 
-  related: RelatedAnnotation;
+  // related: RelatedAnnotation;
 
   snippets?: ImageSnippet[];
 
@@ -16,8 +16,9 @@ interface ThumbnailProps {
 
 const Thumbnail = (props: ThumbnailProps) => {
 
-  const { annotation, image } = props.related;
+  // const { annotation, image } = props.related;
 
+  /*
   const snippet = useMemo(() => (
     props.snippets && props.snippets.find(s => s.annotation.id === annotation.id)
   ), [annotation, props.snippets]);
@@ -27,13 +28,15 @@ const Thumbnail = (props: ThumbnailProps) => {
       src={URL.createObjectURL(new Blob([snippet.data]))}
       alt={image.name}
       className="w-20 h-20 object-cover aspect-square rounded-sm border" />
-  )
+  )*/
+
+  return null;
 
 }
 
 interface RelatedAnnotationList {
 
-  related: RelatedAnnotation[];
+  // related: RelatedAnnotation[];
 
 }
 
@@ -43,13 +46,14 @@ export const RelatedAnnotationList = (props: RelatedAnnotationList) => {
 
   const model = store.getDataModel();
 
-  // Grouped by images
+  /* Grouped by images
   const grouped: [string, RelatedAnnotation[]][] = useMemo(() => {
     return Object.entries(props.related.reduce((grouped, annotation) => {
       (grouped[annotation.image.id] = grouped[annotation.image.id] || []).push(annotation);
       return grouped;
     }, {}));
   }, [props.related]);
+
   
   const annotations = useMemo(() => 
     props.related.map(r => r.annotation as W3CImageAnnotation), [props.related]);
@@ -96,5 +100,9 @@ export const RelatedAnnotationList = (props: RelatedAnnotationList) => {
       </ul>
     </section>
   ));
+
+    */
+
+  return null;
 
 }
