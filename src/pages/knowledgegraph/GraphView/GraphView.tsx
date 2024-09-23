@@ -3,6 +3,7 @@ import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-f
 import { usePrevious } from '@/utils/usePrevious';
 import { NODE_COLORS, LINK_COLORS, LINK_STYLES, ORANGE } from '../Styles';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { hasRelations } from './graphViewUtils';
 
 import './GraphView.css';
 
@@ -136,14 +137,21 @@ export const GraphView = (props: GraphViewProps) => {
 
     const r = nodeScale * node.degree + MIN_NODE_SIZE;
 
+    // In RELATIONS mode, only nodes with relations are visible 
+    const isVisible = 
+      props.settings.graphMode === 'HIERARCHY' || hasRelations(node, graph);
+
     const isOpaque =
-      // All nodes are opaque if there is no current highlight set or no query
-      (!highlighted && !props.query) ||
+      // All nodes are opaque if they are visible and there is no current highlight set or no query
+      (isVisible && !highlighted && !props.query) ||
       // Hover or selection neighbourhood?
       (highlighted?.has(node.id)) ||
       // or if there's a query and the node matches it
       (props.query && props.query(node));
-     
+
+    // If the node is not marked as visible, nor as fully opaque we can end here
+    if (!isVisible && !isOpaque) return;
+
     const color = NODE_COLORS[node.type];
 
     ctx.globalAlpha = isOpaque ? 1 : 0.12;

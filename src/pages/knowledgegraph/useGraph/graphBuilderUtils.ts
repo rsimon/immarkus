@@ -158,8 +158,6 @@ export const inferEntityToEntityRelationPrimitives = (
     } else {
       // There are one or more in-, and one or more out-types - enumerate
       const forThisLink = outTypes.reduce<GraphLinkPrimitive[]>((all, outType) => {
-        console.log('building links from', outType, 'to', inTypes);
-
         const inbound = inTypes.map(inType => ({
           source: outType,
           target: inType,

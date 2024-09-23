@@ -30,6 +30,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
   const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
+    // Store node ID -> graph links lookup table for performance
+    const linkMap = new Map<string, GraphLink[]>();
+
     // Resolve folder metadata and image annotations asynchronously
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
@@ -115,6 +118,17 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           }
         }, []);
 
+        // Cache nodeId -> links associations for fast lookups
+        links.forEach(link => {
+          const { source, target } = link;
+
+          const sourceLinks = linkMap.get(source);
+          linkMap.set(source, [...(sourceLinks || []), link]);
+          
+          const targetLinks = linkMap.get(target);
+          linkMap.set(target, [...(targetLinks || []), link]);
+        });
+
         /** 
          * Compute min and max link weights 
          */
@@ -157,6 +171,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          * Graph utility functions
          */
 
+        const getLinks = (nodeId: string) => [...(linkMap.get(nodeId) || [])];
+
         /** Returns nodes connected to this node through a direct link. **/
         const getLinkedNodes = (nodeId: string) => {
           // Note that we don't expect links that connect a node to itself here!
@@ -169,6 +185,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
         setGraph({ 
           getLinkedNodes,
+          getLinks,
           nodes,
           links: links.map(l => ({ ...l })),
           minDegree: minNodeDegree, 

@@ -4,6 +4,8 @@ export interface Graph {
 
   getLinkedNodes(nodeId: string): GraphNode[];
 
+  getLinks(nodeId: string): GraphLink[];
+
   links: GraphLink[];
 
   maxDegree: number;
