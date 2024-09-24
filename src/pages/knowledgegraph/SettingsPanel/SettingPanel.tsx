@@ -140,9 +140,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               id="RELATIONS" />
 
             <div>
-              <Label htmlFor="RELATIONS">Relations</Label>
+              <Label htmlFor="RELATIONS">Relationships</Label>
               <p className="text-xs text-muted-foreground">
-                Visualized the Relations between annotations. Hierarchy data is and annotation data is shown on hover.
+                Visualize the Relationships between annotations. Data model hierarchy and entity annotations are shown on hover.
               </p>
             </div>
           </div>
