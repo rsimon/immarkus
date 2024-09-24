@@ -41,7 +41,7 @@ export const GraphControls = (props: GraphControlsProps) => {
         className={props.isSearchOpen 
           ? 'rounded-full bg-black'
           : 'rounded-full bg-white/70 backdrop-blur-sm'}
-        tooltip="Toggle graph search"
+        tooltip="Graph search"
         onClick={props.onToggleSearch}>
         <Search className="h-5 w-5" />
       </TooltippedButton>
@@ -62,7 +62,7 @@ export const GraphControls = (props: GraphControlsProps) => {
         className={props.isSettingsOpen 
           ? 'gap-2 pl-3.5 pr-4 rounded-full border'
           : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm'}
-        tooltip="View and filter settings"
+        tooltip="Graph settings"
         onClick={props.onToggleSettings}>
         <Settings className="h-5 w-5" /> Settings
       </TooltippedButton>

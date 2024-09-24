@@ -44,7 +44,10 @@ export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
 
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 
-  const [settings, setSettings] = useState<KnowledgeGraphSettings>({ graphMode: 'HIERARCHY' });
+  const [settings, setSettings] = useState<KnowledgeGraphSettings>({ 
+    graphMode: 'HIERARCHY',
+    legendExpanded: true
+  });
 
   const [showGraphSearch, setShowGraphSearch] = useState(false);
 
