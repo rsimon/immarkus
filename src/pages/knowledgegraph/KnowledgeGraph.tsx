@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTransition, animated, easings } from '@react-spring/web';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { GraphView } from './GraphView';
@@ -33,6 +34,22 @@ export const KnowledgeGraph = () => {
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Don't animate the initial render
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  const transition = useTransition([isFullscreen], {
+    from: { maxWidth: 0, opacity: 0 },
+    enter: { maxWidth: 250, opacity: 1 },
+    leave: { maxWidth: 0, opacity: 0 },
+    immediate: isFirstRender,
+    config:{
+      duration: 250,
+      easing: easings.easeInOutCubic
+    }
+  });
+
+  useEffect(() => setIsFirstRender(false), []);
+
   const onCloseSearch = () => {
     setQuery(undefined);
     setShowGraphSearch(false);
@@ -47,13 +64,17 @@ export const KnowledgeGraph = () => {
 
   return (
     <div className="page-root">
-      {!isFullscreen && (
-        <AppNavigationSidebar />
-      )}
+      {transition((style, fullscreen) => !fullscreen && (
+        <animated.div style={style} className="flex">
+          <AppNavigationSidebar />
+        </animated.div>
+      ))}
 
       <main className="page graph relative overflow-x-hidden">
-        {!isFullscreen && (
-          <div className="absolute top-4 left-6 z-10">
+        {transition((style, fullscreen) => !fullscreen && (
+          <animated.div 
+            style={{ opacity: style.opacity }}
+            className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
               <span className="bg-white/80 backdrop-blur-sm rounded px-1 py-0.5">
                 Knowledge Graph
@@ -65,8 +86,8 @@ export const KnowledgeGraph = () => {
                 Grab and pull a node to re-arrange the graph. Click a node to see more information.
               </span>
             </p>
-          </div>
-        )}
+          </animated.div>
+        ))}
 
         <GraphView 
           graph={graph}

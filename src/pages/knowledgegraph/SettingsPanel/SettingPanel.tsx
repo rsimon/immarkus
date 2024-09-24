@@ -1,4 +1,4 @@
-import { useTransition, animated, easings } from '@react-spring/web';
+import { useTransition, animated } from '@react-spring/web';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { Label } from '@/ui/Label';
