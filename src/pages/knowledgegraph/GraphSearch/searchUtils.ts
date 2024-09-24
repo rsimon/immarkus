@@ -198,8 +198,8 @@ export const listMetadataValues = (
 
           const serialized = serializePropertyValue(definition, value);
 
-          const exists = all.find(o => o === serialized);
-          return exists ? all : [...all, ...serialized];
+          const toAdd = serialized.filter(s => !all.includes(s))
+          return [...all, ...toAdd];
         } else {
           return all;
         }
