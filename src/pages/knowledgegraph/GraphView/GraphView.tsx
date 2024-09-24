@@ -257,11 +257,11 @@ export const GraphView = (props: GraphViewProps) => {
     } else if (t === 'HAS_RELATED_ANNOTATION_IN') {
       return link.source === link.target 
         ? `${link.weight} Relationship${link.weight ===  1 ? '' : 's'} inside this image (${[...relations].join(', ')})`
-        : `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between images (${[...relations].join(', ')})`;
+        : `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between these images (${[...relations].join(', ')})`;
     } else if (t === 'IS_RELATED_VIA_ANNOTATION') {
       return link.source === link.target
         ? `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between entities of this class (${[...relations].join(', ')})`
-        : `Connected via ${link.weight} Relation${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
+        : `Connected via ${link.weight} Relationship${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
     }
   }
 
