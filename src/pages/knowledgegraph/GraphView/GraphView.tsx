@@ -53,7 +53,7 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [dimensions, setDimensions] = useState<[number, number] | undefined>();
 
-  const [zoom, setZoom] = useState(1);
+  const zoom = useRef(1);
 
   const selectedIds = new Set(props.selected.map(n => n.id));
 
@@ -336,7 +336,7 @@ export const GraphView = (props: GraphViewProps) => {
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeLabel={getNodeLabel}
-          nodeRelSize={1.2 * window.devicePixelRatio / zoom}
+          nodeRelSize={1.2 * window.devicePixelRatio / zoom.current}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
           nodeVisibility={nodeFilter}
           onBackgroundClick={onBackgroundClick}
@@ -344,7 +344,7 @@ export const GraphView = (props: GraphViewProps) => {
           onNodeClick={n => props.onSelect(n as GraphNode)}
           onNodeDragEnd={onNodeDragEnd}
           onNodeHover={onNodeHover} 
-          onZoomEnd={z => setZoom(z.k)}/>
+          onZoomEnd={z => zoom.current = z.k} />
       )}
     </div>
   )

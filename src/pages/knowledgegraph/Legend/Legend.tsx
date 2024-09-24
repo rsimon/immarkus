@@ -15,6 +15,9 @@ export const Legend = () => {
 
   const [edgeLegendHeight, setEdgeLegendHeight] = useState(0);
 
+  // Don't animate the initial render
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
   useEffect(() => {
     if (expanded && edgeLegendEl.current)
       setEdgeLegendHeight(edgeLegendEl.current.scrollHeight);      
@@ -24,6 +27,8 @@ export const Legend = () => {
     // If initial state is collapsed, set edgeLegend to display: none.
     if (!expanded)
       edgeLegendEl.current.style.display = 'none';
+
+    setTimeout(() => setIsFirstRender(false), 10);
   }, []);
 
   const containerBase =
@@ -41,6 +46,7 @@ export const Legend = () => {
   const edgeLegendSpring = useSpring({
     height: expanded ? edgeLegendHeight || 'auto' : 0,
     opacity: expanded ? 1 : 0,
+    immediate: isFirstRender,
     config: { tension: 500, friction: expanded ? 28 : 40 },
     onRest: () => {
       if (!expanded) edgeLegendEl.current.style.display = 'none';
@@ -72,7 +78,7 @@ export const Legend = () => {
       <div>
         {expanded && (<h3 className="font-medium pb-1.5">Nodes</h3>)}
 
-        <ul className="flex gap-8 text-muted-foreground text-xs">
+        <ul className="flex gap-6 text-muted-foreground text-xs">
           <li className="flex gap-2 items-center">
             <span 
               style={{ backgroundColor: NODE_COLORS['ENTITY_TYPE']}} 

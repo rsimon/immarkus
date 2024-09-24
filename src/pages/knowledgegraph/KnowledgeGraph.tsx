@@ -71,7 +71,6 @@ export const KnowledgeGraph = () => {
         <GraphView 
           graph={graph}
           isFullscreen={isFullscreen}
-          // relations={relations}
           settings={settings}
           selected={selectedNodes}
           pinned={pinnedNodes}
