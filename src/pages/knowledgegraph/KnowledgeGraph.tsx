@@ -80,8 +80,7 @@ export const KnowledgeGraph = () => {
           onPin={node => setPinnedNodes(n => ([...n, node]))}
           onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
 
-        <Legend 
-          includeFolders={settings.includeFolders} />
+        <Legend />
 
         <div className="absolute top-0 right-0 h-full flex">
           <div className="relative">

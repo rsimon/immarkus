@@ -5,13 +5,7 @@ import { Button } from '@/ui/Button';
 import { NODE_COLORS, LINK_COLORS } from '../Styles';
 import { useKnowledgeGraphSettings } from '../KnowledgeGraphState';
 
-interface LegendProps {
-
-  includeFolders?: boolean;
-
-}
-
-export const Legend = (props: LegendProps) => {
+export const Legend = () => {
 
   const { settings, setSettings } = useKnowledgeGraphSettings();
 
@@ -24,7 +18,7 @@ export const Legend = (props: LegendProps) => {
   useEffect(() => {
     if (expanded && edgeLegendEl.current)
       setEdgeLegendHeight(edgeLegendEl.current.scrollHeight);      
-  }, [expanded, settings.graphMode]);
+  }, [expanded, settings.graphMode, settings.includeFolders]);
 
   useEffect(() => {
     // If initial state is collapsed, set edgeLegend to display: none.
@@ -86,7 +80,7 @@ export const Legend = (props: LegendProps) => {
             <span>Entity Class</span>
           </li>
 
-          {props.includeFolders && (
+          {settings.includeFolders && (
             <li className="flex gap-2 items-center">
               <span 
                 style={{ backgroundColor: NODE_COLORS['FOLDER']}} 
@@ -143,19 +137,21 @@ export const Legend = (props: LegendProps) => {
                 </div>
               </li>
 
-              <li className="flex gap-3 items-start py-2">
-                <div 
-                  className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black border-dashed" 
-                  style={{ borderColor: LINK_COLORS.FOLDER_CONTAINS_SUBFOLDER }} />
+              {settings.includeFolders && (
+                <li className="flex gap-3 items-start py-2">
+                  <div 
+                    className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black border-dashed" 
+                    style={{ borderColor: LINK_COLORS.FOLDER_CONTAINS_SUBFOLDER }} />
 
-                <div>
-                  <h4 className="font-medium">Folder structure</h4>
-                  <p className="text-muted-foreground text-xs">
-                    File structure of sub-folders and image files in your 
-                    project directory.
-                  </p>
-                </div>
-              </li>
+                  <div>
+                    <h4 className="font-medium">Folder structure</h4>
+                    <p className="text-muted-foreground text-xs">
+                      File structure of sub-folders and image files in your 
+                      project directory.
+                    </p>
+                  </div>
+                </li>
+              )}
 
               <li className="flex gap-3 items-start py-2">
                 <div 
