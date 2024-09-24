@@ -78,6 +78,8 @@ export type GraphLinkPrimitiveType =
 
 export interface KnowledgeGraphSettings {
 
+  graphMode: 'HIERARCHY' | 'RELATIONS';
+
   hideIsolatedNodes?: boolean;
 
   hideAllLabels?: boolean;
@@ -86,7 +88,7 @@ export interface KnowledgeGraphSettings {
 
   includeFolders?: boolean;
 
-  graphMode: 'HIERARCHY' | 'RELATIONS';
+  legendExpanded?: boolean;
 
 }
 
