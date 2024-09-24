@@ -315,7 +315,10 @@ export const GraphView = (props: GraphViewProps) => {
       return LINK_STYLES[primitives[0].type]?.map((n: number) => n / globalScale);
   }
 
-  const getNodeLabel = (node: GraphNode) => node.label || node.id;
+  const getNodeLabel = (node: GraphNode) => {
+    if (settings.hideAllLabels || settings.hideNodeTypeLabels?.includes(node.type))
+      return node.label || node.id;
+  }
 
   return (
     <div ref={el} className="graph-view w-full h-full overflow-hidden">
