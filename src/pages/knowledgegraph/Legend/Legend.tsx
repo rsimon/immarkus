@@ -24,7 +24,7 @@ export const Legend = (props: LegendProps) => {
   useEffect(() => {
     if (expanded && edgeLegendEl.current)
       setEdgeLegendHeight(edgeLegendEl.current.scrollHeight);      
-  }, [expanded]);
+  }, [expanded, settings.graphMode]);
 
   useEffect(() => {
     // If initial state is collapsed, set edgeLegend to display: none.
@@ -109,6 +109,24 @@ export const Legend = (props: LegendProps) => {
           <div className="pt-8">
             <h3 className="font-medium py-0.5">Edges</h3>
             <ul>
+              {settings.graphMode === 'RELATIONS' && (
+                <li className="flex gap-3 items-start py-2">
+                  <div 
+                    className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black" 
+                    style={{ borderColor: LINK_COLORS.HAS_RELATED_ANNOTATION_IN }} />
+
+                  <div>
+                    <h4 className="font-medium">
+                      Relationship
+                    </h4>
+
+                    <p className="text-muted-foreground text-xs">
+                      Connections based on Relationships between your annotations.
+                    </p>
+                  </div>
+                </li>
+              )}
+
               <li className="flex gap-3 items-start py-2">
                 <div 
                   className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black border-dashed" 
