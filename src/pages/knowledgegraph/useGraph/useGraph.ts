@@ -4,12 +4,15 @@ import { Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
+  aggregatePrimitives,
+  filterRelationGraphNodes,
   getEntityAnnotationPrimitives, 
   getEntityHierarchyPrimitives, 
   getFolderStructurePrimitives, 
   getImageFolderPrimitives, 
   inferEntityToEntityRelationPrimitives, 
   inferImageToImageRelationPrimitives, 
+  removeUnconnectedLinks, 
   toEntityTypeNode, 
   toFolderNode, 
   toImageNode 
@@ -99,24 +102,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         /** 
          * Links (aggregated from link primitives)
          */
-
-        const links = primitives.reduce<GraphLink[]>((agg, primitive) => {
-          const existingLink = agg.find(l => l.source === primitive.source && l.target === primitive.target);
-          if (existingLink) {
-            return agg.map(l => l === existingLink ? { 
-              ...existingLink, 
-              weight: existingLink.weight + 1,
-              primitives: [...existingLink.primitives, primitive]
-            } : l);
-          } else {
-            return [...agg, {
-              source: primitive.source,
-              target: primitive.target,
-              weight: 1,
-              primitives: [primitive]
-            } as GraphLink];
-          }
-        }, []);
+        const links = aggregatePrimitives(primitives);
 
         // Cache nodeId -> links associations for fast lookups
         links.forEach(link => {
@@ -129,15 +115,31 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           linkMap.set(target, [...(targetLinks || []), link]);
         });
 
+        /**
+         * Here's the challenge: in RELATIONS mode, we ONLY want to keep nodes that:
+         * - either HAVE a relation link themselves,
+         * - or are CONNECTED TO a node with a relation link (savvy?)
+         */
+        const nodesWithoutDegreeFiltered = graphMode === 'HIERARCHY'
+          ? nodesWithoutDegree
+          : filterRelationGraphNodes(nodesWithoutDegree, linkMap);
+
+        /** 
+         * After filtering, we want to drop any links that are no longer
+         * connected to nodes.
+         */
+        const linksFiltered = graphMode === 'HIERARCHY'
+          ? links 
+          : removeUnconnectedLinks(links, nodesWithoutDegreeFiltered);
+
         /** 
          * Compute min and max link weights 
          */
-
-        let minLinkWeight = links.length === 0 ? 0 : Infinity;
+        let minLinkWeight = linksFiltered.length === 0 ? 0 : Infinity;
 
         let maxLinkWeight = 1;
 
-        links.forEach(link => {
+        linksFiltered.forEach(link => {
           if (link.weight > maxLinkWeight)
             maxLinkWeight = link.weight;
 
@@ -149,8 +151,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          * Now that we have weighted links, compute node degree
          */
 
-        const nodes = nodesWithoutDegree.map((node: GraphNode) => {
-          const onThisNode = links.filter(l => l.target === node.id || l.source === node.id);
+        const nodes = nodesWithoutDegreeFiltered.map((node: GraphNode) => {
+          const onThisNode = linksFiltered.filter(l => l.target === node.id || l.source === node.id);
           const degree = onThisNode.reduce((total, link) => total + link.weight, 0);
           return { ...node, degree };
         });
@@ -187,7 +189,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           getLinkedNodes,
           getLinks,
           nodes,
-          links: links.map(l => ({ ...l })),
+          links: linksFiltered.map(l => ({ ...l })),
           minDegree: minNodeDegree, 
           maxDegree: maxNodeDegree,
           minLinkWeight,

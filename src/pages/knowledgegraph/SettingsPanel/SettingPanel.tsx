@@ -29,7 +29,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
     leave: { transform: 'translateY(50%)', opacity: 0 },
     config:{
       tension: 500, 
-      friction: props.open ? 20 : 40 
+      friction: props.open ? 28 : 40 
     }
   });
 
@@ -240,8 +240,8 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </p>
       </fieldset>
 
-      <fieldset className="p-3">
-        <div className="flex items-center gap-2 justify-between">
+      <fieldset className={`p-3 ${settings.graphMode === 'RELATIONS' ? 'group is-disabled' : ''}`.trim()}>
+        <div className="flex items-center gap-2 justify-between group-[.is-disabled]:text-muted-foreground/50">
           <Label htmlFor="hide-isolated">
             Hide unconnected nodes
           </Label>
@@ -249,11 +249,13 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           <Switch 
             id="hide-isolated" 
             checked={settings.hideIsolatedNodes}
+            disabled={settings.graphMode === 'RELATIONS'}
             onCheckedChange={checked => 
               props.onChangeSettings({...settings, hideIsolatedNodes: checked})} />
         </div>
 
-        <p className="text-muted-foreground text-xs mt-1 pr-12">
+        <p 
+          className="text-xs mt-1 pr-12 text-muted-foreground group-[.is-disabled]:text-muted-foreground/50">
           Remove nodes without any connections from the graph.
         </p>
       </fieldset>

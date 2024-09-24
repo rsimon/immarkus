@@ -2,7 +2,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { EntityType, Folder, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
-import { GraphLinkPrimitive, GraphNode } from '../Types';
+import { GraphLink, GraphLinkPrimitive, GraphNode } from '../Types';
 import { getEntityTypes } from '@/utils/annotation';
 
 export const toFolderNode = (folder: Folder, metadata: Map<string, W3CAnnotation>): GraphNode => ({
@@ -174,4 +174,57 @@ export const inferEntityToEntityRelationPrimitives = (
 
 }
 
+export const aggregatePrimitives = (primitives: GraphLinkPrimitive[]): GraphLink[] => 
+  primitives.reduce<GraphLink[]>((agg, primitive) => {
+    const existingLink = agg.find(l => l.source === primitive.source && l.target === primitive.target);
+    if (existingLink) {
+      return agg.map(l => l === existingLink ? { 
+        ...existingLink, 
+        weight: existingLink.weight + 1,
+        primitives: [...existingLink.primitives, primitive]
+      } : l);
+    } else {
+      return [...agg, {
+        source: primitive.source,
+        target: primitive.target,
+        weight: 1,
+        primitives: [primitive]
+      } as GraphLink];
+    }
+  }, []);
+
+// Returns true if the node has any relation links.
+export const hasRelations = (node: GraphNode, linkMap: Map<string, GraphLink[]>) => {
+  const links = linkMap.get(node.id) || [];
+
+  return links.some(l => l.primitives.some(p => 
+    p.type === 'HAS_RELATED_ANNOTATION_IN' || 
+    p.type === 'IS_RELATED_VIA_ANNOTATION'));
+}
+
+/** Returns nodes connected to this node through a direct link. **/
+export const getNeighbours = (nodeId: string, allNodes: GraphNode[], linkMap: Map<string, GraphLink[]>) => {
+  // Note that we ignore links that connect a node to itself here!
+  const links = linkMap.get(nodeId) || [];
+
+  const neighbourIds = new Set(links.reduce<string[]>((all, link) => (
+    [...all, link.source, link.target]
+  ), []));
+
+  return allNodes.filter(n => neighbourIds.has(n.id));
+}
+
+// Returns true if this node is connected to a neighbour that has a relation link
+const hasNeighbourWithRelation = (node: GraphNode, allNodes: GraphNode[], linkMap: Map<string, GraphLink[]>) => {
+  const neighbours = getNeighbours(node.id, allNodes, linkMap);
+  return neighbours.some(n => hasRelations(n, linkMap));
+}
+
+export const filterRelationGraphNodes = (nodes: GraphNode[], linkMap: Map<string, GraphLink[]>) =>
+  nodes.filter(node => hasRelations(node, linkMap) || hasNeighbourWithRelation(node, nodes, linkMap));
+
+export const removeUnconnectedLinks = (links: GraphLink[], allNodes: GraphNode[]) => {
+  const nodeIds = new Set(allNodes.map(n => n.id));
+  return links.filter(l => nodeIds.has(l.source) && nodeIds.has(l.target));
+}
   

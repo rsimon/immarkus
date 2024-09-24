@@ -47,7 +47,7 @@ export const Legend = (props: LegendProps) => {
   const edgeLegendSpring = useSpring({
     height: expanded ? edgeLegendHeight || 'auto' : 0,
     opacity: expanded ? 1 : 0,
-    config: { tension: 500, friction: expanded ? 20 : 40 },
+    config: { tension: 500, friction: expanded ? 28 : 40 },
     onRest: () => {
       if (!expanded) edgeLegendEl.current.style.display = 'none';
     }
@@ -138,7 +138,7 @@ export const Legend = (props: LegendProps) => {
                   </h4>
 
                   <p className="text-muted-foreground text-xs">
-                    Links between parent- and child classes in your Entity data model.
+                    Links between parent- and child Entity Classes in your data model.
                   </p>
                 </div>
               </li>
@@ -152,7 +152,7 @@ export const Legend = (props: LegendProps) => {
                   <h4 className="font-medium">Folder structure</h4>
                   <p className="text-muted-foreground text-xs">
                     File structure of sub-folders and image files in your 
-                    project.
+                    project directory.
                   </p>
                 </div>
               </li>
@@ -163,7 +163,7 @@ export const Legend = (props: LegendProps) => {
                   style={{ borderColor: LINK_COLORS.HAS_ENTITY_ANNOTATION }} />
 
                 <div>
-                  <h4 className="font-medium">Entity Tags</h4>
+                  <h4 className="font-medium">Entity Annotations</h4>
                   <p className="text-muted-foreground text-xs">
                     Connections between images and Entity Classes, based on 
                     the tags in your annotations.

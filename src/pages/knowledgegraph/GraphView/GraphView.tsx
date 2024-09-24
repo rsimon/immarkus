@@ -242,29 +242,26 @@ export const GraphView = (props: GraphViewProps) => {
 
     const relations = new Set(primitives.reduce<string[]>((r, p) => p.value ? [...r, p.value] : r, []));
 
-    if (types.length > 1) {
-      console.log(types);
-      return;
-    }
+    if (types.length > 1) return;
 
     const t = types[0];
 
     if (t === 'FOLDER_CONTAINS_SUBFOLDER') {
-      return 'is subfolder';
+      return 'Sub-Folder';
     } else if (t === 'FOLDER_CONTAINS_IMAGE') {
-      return 'image is in folder';
+      return 'Image is in Sub-Folder';
     } else if (t === 'IS_PARENT_TYPE_OF') {
-      return 'entity class hierarchy';
+      return 'Entity Class Hierarchy';
     } else if (t === 'HAS_ENTITY_ANNOTATION') {
-      return `image has ${link.weight} entity annotations`;
+      return `Image has ${link.weight} entity annotation${link.weight ===  1 ? '' : 's'}`;
     } else if (t === 'HAS_RELATED_ANNOTATION_IN') {
       return link.source === link.target 
-        ? `${link.weight} relation${link.weight ===  1 ? '' : 's'} inside this image (${[...relations].join(', ')})`
-        : `${link.weight} relation${link.weight === 1 ? '' : 's'} between images (${[...relations].join(', ')})`;
+        ? `${link.weight} Relationship${link.weight ===  1 ? '' : 's'} inside this image (${[...relations].join(', ')})`
+        : `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between images (${[...relations].join(', ')})`;
     } else if (t === 'IS_RELATED_VIA_ANNOTATION') {
       return link.source === link.target
-        ? `${link.weight} relation${link.weight === 1 ? '' : 's'} between entities of this class (${[...relations].join(', ')})`
-        : `connected via ${link.weight} relation${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
+        ? `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between entities of this class (${[...relations].join(', ')})`
+        : `Connected via ${link.weight} Relation${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
     }
   }
 
