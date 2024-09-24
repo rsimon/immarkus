@@ -28,8 +28,8 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
     enter: { transform: 'translateY(0%)', opacity: 1 },
     leave: { transform: 'translateY(50%)', opacity: 0 },
     config:{
-      duration: 125,
-      easing: easings.easeOutCubic
+      tension: 500, 
+      friction: props.open ? 20 : 40 
     }
   });
 
