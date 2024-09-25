@@ -178,12 +178,15 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
         /** Returns nodes connected to this node through a direct link. **/
         const getLinkedNodes = (nodeId: string) => {
-          // Note that we don't expect links that connect a node to itself here!
-          const linkedIds = links
-            .filter(l => l.source === nodeId || l.target === nodeId)
-            .map(l => l.source === nodeId ? l.target : l.source);
-
-          return linkedIds.map(id => nodes.find(n => n.id === id));
+          // Note that we ignore links that connect a node to itself here!
+          const links = linkMap.get(nodeId) || [];
+        
+          // Note that the linkMap may include nodes that were filtered out later!
+          const neighbourIds = new Set(links.reduce<string[]>((all, link) => (
+            [...all, link.source, link.target]
+          ), []));
+        
+          return nodes.filter(n => neighbourIds.has(n.id));
         }
 
         setGraph({ 
