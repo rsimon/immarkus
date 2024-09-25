@@ -46,7 +46,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = useMemo(() => (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
-    .map(body => ({ body, entityType: model.getEntityType(body.source, true) })), [annotation]);
+    .map(body => ({ body, entityType: model.getEntityType(body.source, true) }))
+    // Robustness: users may have deleted referenced entity classes from the data model!
+    .filter(({ entityType }) => Boolean(entityType))
+  , [annotation]);
 
   // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -74,9 +77,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const [showValidationErrors, setShowValidationErrors] = useState(false); 
 
-  useEffect(() => {
-    setFormState(initialValues);
-  }, [initialValues]);
+  useEffect(() => setFormState(initialValues), [initialValues]);
 
   const onDeleteBody = (body: W3CAnnotationBody) =>
     anno.deleteBody(body as unknown as AnnotationBody);
