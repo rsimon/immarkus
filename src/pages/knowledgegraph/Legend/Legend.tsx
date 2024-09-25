@@ -32,7 +32,7 @@ export const Legend = () => {
   }, []);
 
   const containerBase =
-    'group border border-transparent absolute bottom-4 left-4 max-w-[400px] text-sm bg-white/70 backdrop-blur-sm hover:border-inherit';
+    'group border border-white absolute bottom-4 left-4 max-w-[400px] text-sm bg-white/70 backdrop-blur-sm hover:border-inherit';
 
   const containerClass = expanded 
     ? containerBase + ' rounded-lg p-3.5'
