@@ -256,9 +256,7 @@ export const GraphView = (props: GraphViewProps) => {
       // types...
       const show = new Set([
         'HAS_RELATED_ANNOTATION_IN',
-        'IS_RELATED_VIA_ANNOTATION',
-        'FOLDER_CONTAINS_SUBFOLDER',
-        'FOLDER_CONTAINS_IMAGE'
+        'IS_RELATED_VIA_ANNOTATION'
       ]);
 
       return types.some(t => show.has(t));
