@@ -10,7 +10,7 @@ export const useExcelAnnotationExport = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const exportAnnotations = (images?: Image[]) => {
+  const exportAnnotations = (images?: Image[], filename?: string) => {
     const imagesToExport = images || store.images;
     
     setBusy(true);
@@ -22,7 +22,7 @@ export const useExcelAnnotationExport = () => {
         setBusy(false);
     }
 
-    exportAnnotationsAsExcel(store, imagesToExport, onProgress);
+    exportAnnotationsAsExcel(store, imagesToExport, onProgress, filename);
   }
 
   return {

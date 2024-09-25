@@ -46,7 +46,6 @@ export const exportImages = (store: Store, imageIds: string[]) => {
       return { image: image.name, ...rows };
     });
 
-    // downloadCSV(rows, 'image_results.csv');
-    downloadExcel(rows, 'image_results.xlsx');
+    downloadExcel(rows, 'search_results_metadata.xlsx');
   });
 }

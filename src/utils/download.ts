@@ -44,7 +44,7 @@ export const downloadExcel = (rows: any[], filename: string) => {
 
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(blob);
-    anchor.download = 'annotations.xlsx';
+    anchor.download = filename;
     anchor.click();
   });
 

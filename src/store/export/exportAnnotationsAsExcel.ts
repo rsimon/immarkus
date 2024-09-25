@@ -212,7 +212,7 @@ const createNotesWorksheet = (
   fitColumnWidths(worksheet);
 }
 
-export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgress: ((progress: number) => void)) => {
+export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgress: ((progress: number) => void), filename?: string) => {
   const model = store.getDataModel();
 
   const root = store.getRootFolder().handle;
@@ -262,7 +262,7 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
   
       const anchor = document.createElement('a');
       anchor.href = URL.createObjectURL(blob);
-      anchor.download = 'annotations.xlsx';
+      anchor.download = filename || 'annotations.xlsx';
       anchor.click();
     });
   });

@@ -33,7 +33,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
   const onExportAnnotations = () => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
     const images = matches.filter(n => n.type === 'IMAGE').map(n => store.getImage(n.id));
-    exportAnnotations(images);
+    exportAnnotations(images, 'search_results_annotations.xlsx');
   }
 
   return (
@@ -58,7 +58,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportAnnotations}>
-          <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export annotations
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export annotations
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
