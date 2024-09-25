@@ -5,7 +5,6 @@ import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   aggregatePrimitives,
-  filterRelationGraphNodes,
   getEntityAnnotationPrimitives, 
   getEntityHierarchyPrimitives, 
   getFolderStructurePrimitives, 
@@ -115,15 +114,6 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           linkMap.set(target, [...(targetLinks || []), link]);
         });
 
-        /**
-         * Here's the challenge: in RELATIONS mode, we ONLY want to keep nodes that:
-         * - either HAVE a relation link themselves,
-         * - or are CONNECTED TO a node with a relation link (savvy?)
-         */
-        const nodesWithoutDegreeFiltered = graphMode === 'HIERARCHY'
-          ? nodesWithoutDegree
-          : filterRelationGraphNodes(nodesWithoutDegree, linkMap);
-
         /** 
          * After filtering, we want to drop any links that are no longer connected to nodes.
          * This is particularly relevant for RELATIONS mode (because the filtering will have 
@@ -131,7 +121,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          * sanitization measure, because users may have annotations in their data which point
          * to entity classes that were deleted from the data model.
          */
-        const linksFiltered = removeUnconnectedLinks(links, nodesWithoutDegreeFiltered);
+        const linksFiltered = removeUnconnectedLinks(links, nodesWithoutDegree);
 
         /** 
          * Compute min and max link weights 
@@ -152,7 +142,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          * Now that we have weighted links, compute node degree
          */
 
-        const nodes = nodesWithoutDegreeFiltered.map((node: GraphNode) => {
+        const nodes = nodesWithoutDegree.map((node: GraphNode) => {
           const onThisNode = linksFiltered.filter(l => l.target === node.id || l.source === node.id);
           const degree = onThisNode.reduce((total, link) => total + link.weight, 0);
           return { ...node, degree };

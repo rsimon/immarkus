@@ -220,8 +220,8 @@ const hasNeighbourWithRelation = (node: GraphNode, allNodes: GraphNode[], linkMa
   return neighbours.some(n => hasRelations(n, linkMap));
 }
 
-export const filterRelationGraphNodes = (nodes: GraphNode[], linkMap: Map<string, GraphLink[]>) =>
-  nodes.filter(node => hasRelations(node, linkMap) || hasNeighbourWithRelation(node, nodes, linkMap));
+// export const filterRelationGraphNodes = (nodes: GraphNode[], linkMap: Map<string, GraphLink[]>) =>
+//   nodes.filter(node => hasRelations(node, linkMap) || hasNeighbourWithRelation(node, nodes, linkMap));
 
 export const removeUnconnectedLinks = (links: GraphLink[], allNodes: GraphNode[]) => {
   const nodeIds = new Set(allNodes.map(n => n.id));
