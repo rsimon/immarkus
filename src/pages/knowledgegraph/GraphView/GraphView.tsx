@@ -11,6 +11,8 @@ interface GraphViewProps {
 
   graph: Graph;
 
+  transitionProgress: number;
+
   isFullscreen: boolean;
 
   query?: ((n: NodeObject<GraphNode>) => boolean);
@@ -130,7 +132,7 @@ export const GraphView = (props: GraphViewProps) => {
     // Resize the canvas when fullscreen mode changes
     const { clientWidth, clientHeight } = el.current;
     setDimensions([clientWidth, clientHeight]);
-  }, [props.isFullscreen]);
+  }, [props.transitionProgress]);
 
   const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
     globalScale = scale;

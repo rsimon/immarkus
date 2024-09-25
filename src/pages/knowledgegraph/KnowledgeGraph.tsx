@@ -32,6 +32,8 @@ export const KnowledgeGraph = () => {
 
   const { showGraphSearch, setShowGraphSearch } = useShowGraphSearch();
 
+  const [transitionProgress, setTransitionProgress] = useState(0);
+
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Don't animate the initial render
@@ -45,7 +47,8 @@ export const KnowledgeGraph = () => {
     config:{
       duration: 250,
       easing: easings.easeInOutCubic
-    }
+    },
+    onChange: ({ value }) => setTransitionProgress(value.maxWidth)
   });
 
   useEffect(() => setIsFirstRender(false), []);
@@ -91,6 +94,7 @@ export const KnowledgeGraph = () => {
 
         <GraphView 
           graph={graph}
+          transitionProgress={transitionProgress}
           isFullscreen={isFullscreen}
           settings={settings}
           selected={selectedNodes}
