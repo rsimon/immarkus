@@ -91,6 +91,11 @@ export const GraphView = (props: GraphViewProps) => {
       : selectedNeighbourhood.length > 0 ? new Set(selectedNeighbourhood) : undefined;
   }, [graph, hovered, props.query, props.selected, settings.graphMode]);
 
+  const nodesInQuery = useMemo(() => props.query
+    ? new Set(graph.nodes.filter(n => props.query(n)).map(n => n.id))
+    : new Set([])
+  , [props.query]);
+
   const nodeFilter = useMemo(() => {
     if (!graph) return;
 
@@ -240,10 +245,14 @@ export const GraphView = (props: GraphViewProps) => {
 
   const isLinkVisible = (link: LinkObject) => {
     if (highlighted) {
-      // If there is a highlighted neighbourhood, only those links are visible1
+      // If there is a highlighted neighbourhood, only those links are visible
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
       return (highlighted.has(targetId) && highlighted.has(sourceId));
+    } else if (props.query) {
+      const targetId: string = (link.target as any).id || link.target;
+      const sourceId: string = (link.source as any).id || link.source;
+      return (nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
     } else {
       // All links are visible in HIERARCHY mode
       if (props.settings.graphMode === 'HIERARCHY') return true;
