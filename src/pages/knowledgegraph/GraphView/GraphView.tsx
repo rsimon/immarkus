@@ -148,21 +148,19 @@ export const GraphView = (props: GraphViewProps) => {
       props.settings.graphMode === 'HIERARCHY' || hasRelations(node, graph);
 
     const isOpaque =
-      // All nodes are opaque if they are visible and there is no current highlight set or no query
+      // All nodes are opaque if they are visible and there is no current highlight set nor query
       (isVisible && !highlighted && !props.query) ||
-      // Hover or selection neighbourhood?
-      (highlighted?.has(node.id)) ||
       // or if there's a query and the node matches it
-      (props.query && props.query(node));
+      (isVisible && props.query && props.query(node)) ||
+      // Hover or selection neighbourhood?
+      (highlighted?.has(node.id));
 
     return { isVisible, isOpaque };
   }
 
   const isNodeVisible = (node: NodeObject<GraphNode>) => {
     const { isVisible, isOpaque } = getNodeDisplayMode(node);
-
     const satisfiesCurrentFilter =  nodeFilter ? nodeFilter(node) : true;
-
     return (isVisible || isOpaque) && satisfiesCurrentFilter;
   }
 
