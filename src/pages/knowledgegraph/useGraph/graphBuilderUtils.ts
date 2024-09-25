@@ -225,6 +225,11 @@ export const filterRelationGraphNodes = (nodes: GraphNode[], linkMap: Map<string
 
 export const removeUnconnectedLinks = (links: GraphLink[], allNodes: GraphNode[]) => {
   const nodeIds = new Set(allNodes.map(n => n.id));
-  return links.filter(l => nodeIds.has(l.source) && nodeIds.has(l.target));
+  return links.filter(l => {
+    const isConnected = nodeIds.has(l.source) && nodeIds.has(l.target);
+    // For diagnostic reasons
+    // if (!isConnected) console.log(l);
+    return isConnected;
+  });
 }
   
