@@ -125,12 +125,13 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           : filterRelationGraphNodes(nodesWithoutDegree, linkMap);
 
         /** 
-         * After filtering, we want to drop any links that are no longer
-         * connected to nodes.
+         * After filtering, we want to drop any links that are no longer connected to nodes.
+         * This is particularly relevant for RELATIONS mode (because the filtering will have 
+         * deliberately removed nodes). But it is also necessary in HIERARCHY mode, as a general 
+         * sanitization measure, because users may have annotations in their data which point
+         * to entity classes that were deleted from the data model.
          */
-        const linksFiltered = graphMode === 'HIERARCHY'
-          ? links 
-          : removeUnconnectedLinks(links, nodesWithoutDegreeFiltered);
+        const linksFiltered = removeUnconnectedLinks(links, nodesWithoutDegreeFiltered);
 
         /** 
          * Compute min and max link weights 
