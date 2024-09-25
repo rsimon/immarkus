@@ -1,9 +1,9 @@
 aside.main-nav {
-  background-color: var(--background-lightgray);
-  border-right: 1px solid var(--border-lightgray);
+  background-color: #f1f5f9;
+  border-right: 1px solid #e2e8f0;
   font-size: var(--font-small);
   min-width: 250px;
-  padding: 20px;
+  padding: 10px;
 }
 
 aside.main-nav li + li {
