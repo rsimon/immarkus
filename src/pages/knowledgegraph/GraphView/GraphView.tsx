@@ -61,14 +61,14 @@ export const GraphView = (props: GraphViewProps) => {
 
   const [hovered, setHovered] = useState<GraphNode | undefined>();
 
-  // The highlighted neighbourhoods (if any)
-  const highlighted: Set<string> | undefined = useMemo(() => {
+  const highlighted = useMemo(() => {
     // No highlighted nodes if:
     // - no graph
     // - no current hover
     // - no active query
     // - no selection
-    if (!graph || (!hovered && !props.query && (props.selected || []).length === 0)) return;
+    if (!graph || (!hovered && !props.query && (props.selected || []).length === 0))
+      return;
 
     // Highlighted due to hover
     const hoverNeighbourhood = 
@@ -80,13 +80,16 @@ export const GraphView = (props: GraphViewProps) => {
       ), []) 
       : [];
 
-    return new Set([...hoverNeighbourhood, ...selectedNeighbourhood]);
-  }, [graph, hovered, props.query, props.selected]);
+    // Is the hovered node actually visible? It's not if:
+    // - we're in RELATIONS mode, and 
+    // - the node has neither relations, nor is part of the selected neighbourhood
+    const isHoverVisible = settings.graphMode === 'HIERARCHY' || (
+      hovered && (hasRelations(hovered, graph) || selectedNeighbourhood.includes(hovered.id)));
 
-  const nodesInQuery = useMemo(() => props.query
-    ? new Set(graph.nodes.filter(n => props.query(n)).map(n => n.id))
-    : new Set([])
-  , [props.query]);
+    return isHoverVisible 
+      ? new Set([...hoverNeighbourhood, ...selectedNeighbourhood]) 
+      : selectedNeighbourhood.length > 0 ? new Set(selectedNeighbourhood) : undefined;
+  }, [graph, hovered, props.query, props.selected, settings.graphMode]);
 
   const nodeFilter = useMemo(() => {
     if (!graph) return;
@@ -134,11 +137,7 @@ export const GraphView = (props: GraphViewProps) => {
     setDimensions([clientWidth, clientHeight]);
   }, [props.transitionProgress]);
 
-  const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
-    globalScale = scale;
-
-    const r = nodeScale * node.degree + MIN_NODE_SIZE;
-
+  const getNodeDisplayMode = (node: NodeObject<GraphNode>) => {
     // In RELATIONS mode, only nodes with relations are visible 
     const isVisible = 
       props.settings.graphMode === 'HIERARCHY' || hasRelations(node, graph);
@@ -150,6 +149,24 @@ export const GraphView = (props: GraphViewProps) => {
       (highlighted?.has(node.id)) ||
       // or if there's a query and the node matches it
       (props.query && props.query(node));
+
+    return { isVisible, isOpaque };
+  }
+
+  const isNodeVisible = (node: NodeObject<GraphNode>) => {
+    const { isVisible, isOpaque } = getNodeDisplayMode(node);
+
+    const satisfiesCurrentFilter =  nodeFilter ? nodeFilter(node) : true;
+
+    return (isVisible || isOpaque) && satisfiesCurrentFilter;
+  }
+
+  const canvasObject = (node: NodeObject<GraphNode>, ctx: CanvasRenderingContext2D, scale: number) => {
+    globalScale = scale;
+
+    const r = nodeScale * node.degree + MIN_NODE_SIZE;
+
+    const { isVisible, isOpaque } = getNodeDisplayMode(node);
 
     // If the node is not marked as visible, nor as fully opaque we can end here
     if (!isVisible && !isOpaque) return;
@@ -221,21 +238,34 @@ export const GraphView = (props: GraphViewProps) => {
       el.current.style.cursor = 'default';
   }
 
-  const getLinkWidth = (link: LinkObject) => {
-    if (highlighted || props.query) {
+  const isLinkVisible = (link: LinkObject) => {
+    if (highlighted) {
+      // If there is a highlighted neighbourhood, only those links are visible1
       const targetId: string = (link.target as any).id || link.target;
       const sourceId: string = (link.source as any).id || link.source;
-
-      const isHidden = highlighted 
-        ? !(highlighted.has(targetId) && highlighted.has(sourceId))
-        : props.query && !(nodesInQuery.has(targetId) && nodesInQuery.has(sourceId));
-
-      // Don't set to 0 because force-graph will use default width (0 is falsy!)
-      return isHidden ? 0.00001 : linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
+      return (highlighted.has(targetId) && highlighted.has(sourceId));
     } else {
-      return linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
+      // All links are visible in HIERARCHY mode
+      if (props.settings.graphMode === 'HIERARCHY') return true;
+
+      const primitives = (link as GraphLink).primitives;
+
+      const types = [...new Set(primitives.reduce<string[]>((t, p) => ([...t, p.type]), []))];
+
+      // In RELATIONS mode links are only visible if they have one of the following
+      // types...
+      const show = new Set([
+        'HAS_RELATED_ANNOTATION_IN',
+        'IS_RELATED_VIA_ANNOTATION',
+        'FOLDER_CONTAINS_SUBFOLDER',
+        'FOLDER_CONTAINS_IMAGE'
+      ]);
+
+      return types.some(t => show.has(t));
     }
   }
+
+  const getLinkWidth = (link: LinkObject) => linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
 
   const getLinkLabel = (link: LinkObject) => {
     const primitives = (link as GraphLink).primitives;
@@ -335,12 +365,13 @@ export const GraphView = (props: GraphViewProps) => {
           linkDirectionalArrowRelPos={1}
           linkLineDash={getLinkStyle}
           linkLabel={getLinkLabel}
+          linkVisibility={isLinkVisible}
           linkWidth={getLinkWidth}
           nodeCanvasObject={canvasObject}
           nodeLabel={getNodeLabel}
           nodeRelSize={1.2 * window.devicePixelRatio / zoom.current}
           nodeVal={n => nodeScale * n.degree + MIN_NODE_SIZE}
-          nodeVisibility={nodeFilter}
+          nodeVisibility={isNodeVisible}
           onBackgroundClick={onBackgroundClick}
           onLinkClick={onBackgroundClick}
           onNodeClick={n => props.onSelect(n as GraphNode)}
