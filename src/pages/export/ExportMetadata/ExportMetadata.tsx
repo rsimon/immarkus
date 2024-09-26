@@ -1,5 +1,5 @@
 import { FileBarChart2 } from 'lucide-react';
-import { exportFolderMetadataCSV, exportImageMetadataCSV, useStore } from '@/store';
+import { exportFolderMetadataCSV, exportFolderMetadataExcel, exportImageMetadataCSV, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 
 export const ExportMetadata = () => {
@@ -38,11 +38,19 @@ export const ExportMetadata = () => {
             schema field.
           </p>
 
-          <Button 
-            className="whitespace-nowrap flex gap-3 w-36"
-            onClick={() => exportFolderMetadataCSV(store)}>
-            <FileBarChart2 className="h-4 w-4" /> CSV
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              className="whitespace-nowrap flex gap-3 w-36"
+              onClick={() => exportFolderMetadataCSV(store)}>
+              <FileBarChart2 className="h-4 w-4" /> CSV
+            </Button>
+
+            <Button
+              className="whitespace-nowrap flex gap-3 w-36"
+              onClick={() => exportFolderMetadataExcel(store)}>
+              <FileBarChart2 className="h-5 w-5" /> XLSX
+            </Button>
+          </div>
         </div>
       </li>
     </ul>
