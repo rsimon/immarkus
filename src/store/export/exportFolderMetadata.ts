@@ -33,11 +33,11 @@ const createSchemaWorksheet = (
   const schemaProps = schema.properties || [];
 
   worksheet.columns = [
-    { header: 'Folder Name', key: 'folder', width: 30 },
-    { header: 'Parent Folder', key: 'parent', width: 30 },
-    { header: 'File Path', key: 'path', width: 30 },
+    { header: 'Folder Name', key: 'folder', width: 60 },
+    { header: 'Parent Folder', key: 'parent', width: 60 },
+    { header: 'File Path', key: 'path', width: 60 },
     ...schemaProps.map(property => ({
-      header: property.name, key: `@property_${property.name}`, width: 30
+      header: property.name, key: `@property_${property.name}`, width: 60
     }))
   ];
 

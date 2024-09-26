@@ -1,4 +1,4 @@
-import { FileBarChart2, FileJson } from 'lucide-react';
+import { FileChartColumn, FileJson } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { exportAnnotationsAsJSONLD, useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -58,7 +58,7 @@ export const ExportAnnotations = () => {
               {busy ? (
                 <Spinner className="w-4 h-4 text-white" />
               ) : (
-                <><FileBarChart2 className="h-5 w-5" /> XLSX</>
+                <><FileChartColumn className="h-5 w-5" /> XLSX</>
               )}
             </Button>
           </div>
