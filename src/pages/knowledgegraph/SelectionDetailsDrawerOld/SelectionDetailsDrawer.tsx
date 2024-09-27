@@ -1,5 +1,4 @@
 import { NodeObject } from 'react-force-graph-2d';
-import { Drawer } from '@/components/MetadataDrawer';
 import { Folder } from '@/model';
 import { useStore } from '@/store';
 import { EntityTypeDetails } from './EntityTypeDetails';
@@ -27,7 +26,7 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
 
   const store = useStore();
 
-  return (
+  return null /* (
     <Drawer
       className="bg-white/80 backdrop-blur-sm shadow"
       data={props.selected}
@@ -48,6 +47,6 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
         <FolderDetails
           folder={store.getFolder(selected.id) as Folder} />
       )} />
-  )
+  ) */
 
 }

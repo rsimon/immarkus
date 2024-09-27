@@ -29,7 +29,7 @@
     "@annotorious/plugin-connectors-react": "0.2.3",
     "@annotorious/react": "^3.0.8",
     "@annotorious/react-manifold": "^3.0.8",
-    "@annotorious/selector-pack": "3.0.0-rc.21",
+    "@annotorious/plugin-tools": "1.0.1",
     "@neodrag/react": "^2.0.4",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",

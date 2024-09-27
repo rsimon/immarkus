@@ -3,7 +3,7 @@ import type OpenSeadragon from 'openseadragon';
 import { AnnotoriousPlugin, OpenSeadragonAnnotator, UserSelectAction } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
-import { mountExtension as SelectorPack } from '@annotorious/selector-pack';
+import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
 import { LoadedImage } from '@/model';
 import { ConnectorPopup } from '../ConnectorPopup';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
