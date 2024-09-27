@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { EntityType, LoadedImage } from '@/model';
 import { useStore } from '@/store';
-import { AnnotatedImageThumbnail } from './AnnotatedImageThumbnail';
+import { AnnotationThumbnail } from '../../AnnotationThumbnail';
 import { Button } from '@/ui/Button';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 
@@ -84,7 +84,7 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
             className="border-t p-2.5">
             <div className="flex items-start w-full">
               <div className="flex-shrink-0">
-                <AnnotatedImageThumbnail
+                <AnnotationThumbnail
                   annotation={annotation}
                   className="w-20 h-20 bg-muted" 
                   image={loadedImage} /> 

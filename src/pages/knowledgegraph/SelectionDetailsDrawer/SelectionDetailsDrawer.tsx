@@ -3,6 +3,7 @@ import { Drawer } from '@/components/Drawer';
 import { useStore } from '@/store';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { SelectedEntityType } from './SelectedEntityType';
+import { SelectedImage } from './SelectedImage';
 
 interface SelectionDetailsDrawerProps {
 
@@ -34,8 +35,10 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
           settings={props.settings}
           type={store.getDataModel().getEntityType(props.selected.id)} 
           onClose={props.onClose} />
-      ) : (
-        <div></div>
+      ) : props.selected?.type === 'IMAGE' && (
+        <SelectedImage 
+          image={store.getImage(props.selected.id)}
+          onClose={props.onClose} />
       )}
     </Drawer>
   )

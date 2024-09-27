@@ -46,7 +46,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
               </div>
 
               <h2 
-                className="rounded-full pt-1 pb-0.5">
+                className="rounded-full pt-1 pb-0.5 font-medium">
                 {type.label || type.id}
               </h2>
             </div>
@@ -65,7 +65,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
               {type.description}
             </p>
           ) : (
-            <p className="font-light mt-3 flex justify-center text-xs text-muted-foreground/50 p-6">
+            <p className="font-light mt-3 text-xs text-muted-foreground/50 py-6 px-1">
               No description
             </p>
           )}

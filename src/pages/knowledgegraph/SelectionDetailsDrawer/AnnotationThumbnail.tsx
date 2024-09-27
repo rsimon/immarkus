@@ -6,7 +6,7 @@ import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { cn } from '@/ui/utils';
 import { Skeleton } from '@/ui/Skeleton';
 
-interface AnnotatedImageThumbnailProps {
+interface AnnotationThumbnailProps {
 
   annotation: W3CImageAnnotation;
 
@@ -16,7 +16,7 @@ interface AnnotatedImageThumbnailProps {
 
 }
 
-export const AnnotatedImageThumbnail = (props: AnnotatedImageThumbnailProps) => {
+export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
 
   const { ref, inView } = useInView();
 
