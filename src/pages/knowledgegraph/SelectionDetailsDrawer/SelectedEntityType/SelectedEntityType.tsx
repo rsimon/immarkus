@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Cuboid, Image, MessagesSquare, X} from 'lucide-react';
 import { EntityType } from '@/model';
+import { Button } from '@/ui/Button';
 import { AnnotatedImages } from './AnnotatedImages';
 import { RelatedImages } from './RelatedImages';
 import { NODE_COLORS } from '../../Styles';
 import { Graph, KnowledgeGraphSettings } from '../../Types';
-import { Button } from '@/ui/Button';
 
 interface SelectedEntityTypeProps {
 

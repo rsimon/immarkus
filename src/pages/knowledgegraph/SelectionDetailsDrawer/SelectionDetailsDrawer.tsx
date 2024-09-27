@@ -3,7 +3,6 @@ import { Drawer } from '@/components/Drawer';
 import { useStore } from '@/store';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { SelectedEntityType } from './SelectedEntityType';
-import { useEffect, useState } from 'react';
 
 interface SelectionDetailsDrawerProps {
 
