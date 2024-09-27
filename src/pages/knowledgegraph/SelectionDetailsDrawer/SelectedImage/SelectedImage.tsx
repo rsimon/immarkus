@@ -44,7 +44,7 @@ export const SelectedImage = (props: SelectedImageProps) => {
               {loaded ? (
                 <img 
                   onLoad={onLoad}
-                  className="object-cover object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
+                  className="object-cover scale-105 object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
               ) : (
                 <Skeleton className="" />
               )}

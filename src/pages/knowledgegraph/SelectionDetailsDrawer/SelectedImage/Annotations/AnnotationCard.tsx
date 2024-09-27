@@ -36,7 +36,7 @@ export const AnnotationCard = (props: AnnotationCardProps) => {
             image={props.image} /> 
         </div>
 
-        <div className="py-0.5">
+        <div className="py-0.5 flex-shrink overflow-hidden">
           {entityTags.length > 0 && (
             <ul className="line-clamp-1">
               {entityTags.map(tag => (
@@ -50,7 +50,9 @@ export const AnnotationCard = (props: AnnotationCardProps) => {
           )}
 
           <div className="px-0.5 text-xs font-light text-muted-foreground">
-            <AnnotationValuePreview bodies={entityTags} />
+            <AnnotationValuePreview 
+              bodies={entityTags} 
+              className="line-clamp-2 overflow-hidden" />
           </div>
         </div>
       </div>
