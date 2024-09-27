@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Cuboid, Image, MessagesSquare, X} from 'lucide-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
@@ -29,6 +29,10 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
 
   const [annotations, setAnnotations] = useState(0);
 
+  useEffect(() => {
+    setAnnotations(0);
+  }, [type]);
+
   return (
     <div className="p-2">
       <div className="bg-white shadow-sm rounded border">
@@ -48,7 +52,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
             </div>
 
             <Button 
-              className="flex-shrink-0 rounded-full h-8 w-8 -mt-0.5"
+              className="flex-shrink-0 h-8 w-8 -mt-0.5"
               size="icon"
               variant="ghost"
               onClick={props.onClose}>
@@ -57,17 +61,17 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
           </div>
 
           {type.description ? (
-            <p className="bg-muted rounded p-3 mt-3 text-xs font-light text-muted-foreground">
+            <p className="p-1 mt-3 text-xs font-light">
               {type.description}
             </p>
           ) : (
-            <p className="bg-muted rounded mt-3 flex justify-center text-xs font-light text-muted-foreground/50 p-6">
+            <p className="font-light mt-3 flex justify-center text-xs text-muted-foreground/50 p-6">
               No description
             </p>
           )}
         </div>
 
-        <div className="pt-0.5 pb-2.5 px-4 text-xs text-muted-foreground/80 flex gap-4">
+        <div className="pb-3 pt-0.5 px-5 text-[12px] text-muted-foreground/80 flex gap-4">
           <div className="flex gap-1 items-center">
             <MessagesSquare className="w-3.5 h-3.5 -mt-[1px]" /> 
             <span>{annotations} Annotations</span>
