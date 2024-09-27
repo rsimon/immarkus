@@ -8,6 +8,8 @@ import { serializePropertyValue } from '@/utils/serialize';
 
 interface AnnotationValuePreviewProps {
 
+  className?: string;
+
   bodies: W3CAnnotationBody[];
 
 }
@@ -71,8 +73,15 @@ export const AnnotationValuePreview = (props: AnnotationValuePreviewProps) => {
     }, []);
   }, [props.bodies]);
 
-  return previews.map((node, idx) =>
-    <span key={`n-${idx}`}>{node} {(idx < previews.length - 1) && ' · '}</span>
+  return (
+    <div className={props.className}>
+      {previews.map((node, idx) => (
+        <span 
+          key={`n-${idx}`}>
+          {node} {(idx < previews.length - 1) && ' · '}
+        </span>
+      ))}
+    </div>
   )
 
 }

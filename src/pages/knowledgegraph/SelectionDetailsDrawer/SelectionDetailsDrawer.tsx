@@ -1,17 +1,13 @@
 import { NodeObject } from 'react-force-graph-2d';
 import { Drawer } from '@/components/Drawer';
-import { Folder } from '@/model';
 import { useStore } from '@/store';
-import { EntityTypeDetails } from './EntityTypeDetails';
-import { FolderDetails } from './FolderDetails';
-import { ImageDetails } from './ImageDetails';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { SelectedEntityType } from './SelectedEntityType';
+import { useEffect, useState } from 'react';
 
 interface SelectionDetailsDrawerProps {
 
   graph: Graph;
-
-  // relations: RelationGraph;
 
   selected: NodeObject<GraphNode>;
 
@@ -29,25 +25,20 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
 
   return (
     <Drawer
-      className="bg-white/80 backdrop-blur-sm shadow"
-      data={props.selected}
+      open={Boolean(props.selected)}
+      className="bg-muted"
       skipInitialAnimation={props.skipInitialAnimation}
-      onClose={props.onClose}
-      content={selected => selected.type === 'ENTITY_TYPE' ? (
-        <EntityTypeDetails 
+      onClose={props.onClose}>
+      {props.selected?.type === 'ENTITY_TYPE' ? (
+        <SelectedEntityType 
           graph={props.graph}
-          // relations={props.relations}
           settings={props.settings}
-          type={store.getDataModel().getEntityType(selected.id)} />
-      ) : selected.type === 'IMAGE' ? (
-        <ImageDetails
-          image={store.getImage(selected.id)} 
-          // relations={props.relations} 
-          />
+          type={store.getDataModel().getEntityType(props.selected.id)} 
+          onClose={props.onClose} />
       ) : (
-        <FolderDetails
-          folder={store.getFolder(selected.id) as Folder} />
-      )} />
+        <div></div>
+      )}
+    </Drawer>
   )
 
 }

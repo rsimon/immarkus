@@ -1,17 +1,20 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { cn } from '@/ui/utils';
+import { Button } from '@/ui/Button';
 
-interface MetadataDrawerProps <T extends unknown> {
+interface DrawerProps {
 
   className?: string;
 
-  content: (data: T) => ReactNode;
+  closeButton?: boolean;
 
-  data?: T;
+  children?: ReactNode;
 
   duration?: number;
+
+  open: boolean;
 
   skipInitialAnimation?: boolean;
 
@@ -21,51 +24,41 @@ interface MetadataDrawerProps <T extends unknown> {
 
 }
 
-export const Drawer = <T extends unknown>(props: MetadataDrawerProps<T>) => {
+export const Drawer = (props: DrawerProps) => {
 
   const width = props.width || 340;
 
-  const previous = useRef<T | undefined>();
+  const className = cn('flex-grow-0 flex-shrink-0 relative border-l', props.className);
 
-  const isInitial = useRef(true);
+  const [open, setOpen] = useState(props.open);
 
-  const shouldSkipAnimation =
-   // This is the initial render and skipInitial is true
-   (isInitial.current && props.skipInitialAnimation) ||
-   // Drawer is currently open and data changes
-   (previous.current && props.data);
-
-  // @ts-ignore
-  const transition = useTransition([props.data], {
+  const transition = useTransition([open], {
     from: { width: 0 },
     enter: { width },
     leave: { width: 0 },
     config:{
-      duration: shouldSkipAnimation ? 0 : props.duration || 150,
+      duration: 150,
       easing: easings.easeInCubic
-    },
-    onRest: () => isInitial.current = false
+    }
   });
 
-  useEffect(() => {
-    previous.current = props.data;
-  }, [props.data]);
+  useEffect(() => setOpen(props.open), [props.open]);
 
-  const className = cn('flex-grow-0 flex-shrink-0 relative border-l', props.className);
-
-  // @ts-ignore
-  return transition((style, d) => d && (
+  return transition((style, open) => open && (
     <animated.div 
       style={style}
       className={className}>
       <aside className="w-[340px] overflow-hidden absolute top-0 left-0 h-full overflow-y-auto box-border">
-        <button 
-          onClick={props.onClose}
-          className="absolute right-2 bg-white/80 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
-          <X className="w-6 h-6 p-0.5" />
-        </button>
-
-        {props.content(d)}
+        {props.closeButton && (
+          <Button 
+            size="icon"
+            variant="ghost"
+            onClick={props.onClose}
+            className="absolute text-muted-foreground right-2 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+            <X className="w-6 h-6 p-0.5" />
+          </Button>
+        )}
+        {props.children}
       </aside>
     </animated.div>
   ))
