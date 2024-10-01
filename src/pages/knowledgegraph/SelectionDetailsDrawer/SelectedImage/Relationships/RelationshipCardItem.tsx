@@ -37,7 +37,7 @@ export const RelationshipCardItem = (props: RelationshipCardItemProps) => {
     return from?.image.id === props.selectedImage.id;
   }, [from, to, props.selectedImage]);
 
-  return isOutbound ? (
+  return (from && to) && (isOutbound ? (
     <div className="flex justify-between p-2.5 border-t items-center gap-3 text-xs">
       <AnnotationThumbnail 
         annotation={from.annotation} 
@@ -71,6 +71,6 @@ export const RelationshipCardItem = (props: RelationshipCardItemProps) => {
         annotation={to.annotation} 
         image={props.selectedImage} />
     </div>
-  )
+  ))
 
 }
