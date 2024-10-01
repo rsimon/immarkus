@@ -8,7 +8,7 @@ import { Skeleton } from '@/ui/Skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
-import { Information } from './Information';
+import { Metadata } from './Metadata';
 
 interface SelectedImageProps {
 
@@ -113,7 +113,8 @@ export const SelectedImage = (props: SelectedImageProps) => {
         </TabsContent>
 
         <TabsContent value="metadata">
-          <Information />
+          <Metadata 
+            image={image} />
         </TabsContent>
       </Tabs>
     </div>
