@@ -30,7 +30,7 @@ export const Metadata = (props: MetadataProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="bg-white border rounded shadow-sm flex flex-col justify-between p-3 pt-5 pb-2"
+        className="bg-white border rounded shadow-sm min-h-48 flex flex-col justify-between p-3 pt-5 pb-2"
         onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">          
           <ImageMetadataForm
