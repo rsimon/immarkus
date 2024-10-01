@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Info, MessagesSquare, MoveDiagonal, SquareArrowOutUpRight, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Info, MessagesSquare, MoveDiagonal, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { Image, LoadedImage } from '@/model';
 import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -9,8 +10,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
+import { Relationships } from './Relationships';
+import { KnowledgeGraphSettings } from '../../Types';
 
 interface SelectedImageProps {
+
+  settings: KnowledgeGraphSettings;
 
   image: Image;
 
@@ -20,7 +25,7 @@ interface SelectedImageProps {
 
 export const SelectedImage = (props: SelectedImageProps) => {
 
-  const { image } = props;
+  const { image, settings } = props;
 
   const store = useStore();
 
@@ -30,6 +35,13 @@ export const SelectedImage = (props: SelectedImageProps) => {
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
+  const [relationships, setRelationships] = useState<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>([]);
+
+  useEffect(() => {
+    if (annotations.length === 0) return;
+    store.getRelations(image.id).then(setRelationships);
+  }, [annotations, image, store]);
+
   useEffect(() => {
     store.getAnnotations(image.id, { type: 'image' })
       .then(a => setAnnotations(a as W3CImageAnnotation[]));
@@ -37,7 +49,7 @@ export const SelectedImage = (props: SelectedImageProps) => {
 
   return (
     <div className="p-2">
-      <Tabs defaultValue="annotations">
+      <Tabs defaultValue={settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships'}>
         <article className="bg-white shadow-sm rounded border overflow-hidden">
           <header>
             <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
@@ -89,11 +101,19 @@ export const SelectedImage = (props: SelectedImageProps) => {
         
           <div className="px-1.5 pb-2.5">
             <TabsList className="gap-2 bg-transparent">
-              <TabsTrigger 
-                value="annotations" 
-                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
-                <MessagesSquare size={16} className="mr-2" /> {annotations.length} Annotations
-              </TabsTrigger>
+              {settings.graphMode === 'HIERARCHY' ? (
+                <TabsTrigger 
+                  value="annotations" 
+                  className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                  <MessagesSquare size={16} className="mr-2" /> {annotations.length} Annotations
+                </TabsTrigger>
+              ) : (
+                <TabsTrigger 
+                  value="relationships" 
+                  className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                  <Spline size={16} className="mr-2" /> {relationships.length} Relationships
+                </TabsTrigger>
+              )}
 
               <TabsTrigger 
                 value="metadata" 
@@ -109,6 +129,15 @@ export const SelectedImage = (props: SelectedImageProps) => {
             <Annotations 
               annotations={annotations} 
               image={loaded} />
+          )}
+        </TabsContent>
+
+        <TabsContent value="relationships">
+          {loaded && (
+            <Relationships 
+              annotations={annotations}
+              selectedImage={loaded} 
+              relationships={relationships}  />
           )}
         </TabsContent>
 

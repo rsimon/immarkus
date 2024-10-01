@@ -40,6 +40,7 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
       ) : props.selected?.type === 'IMAGE' ? (
         <SelectedImage 
           image={store.getImage(props.selected.id)}
+          settings={props.settings}
           onClose={props.onClose} />
       ) : props.selected?.type === 'FOLDER' && (
         <SelectedFolder 

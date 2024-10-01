@@ -69,13 +69,7 @@ export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
               definition={property} 
               value={props.values[key]}
               onChange={value => props.onChange(key, value)} />
-          /* ) : property.type === 'relation' ? (
-            <RelationField
-              id={key}
-              definition={property} 
-              value={props.values[key]}
-              onChange={value => props.onChange(key, value)} />
-          */) : property.type === 'text' ? (
+          ) : property.type === 'text' ? (
             <TextField 
               id={key}
               definition={property} 
