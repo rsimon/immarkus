@@ -53,7 +53,7 @@ export const RelationshipCard = (props: RelationshipCardProps) => {
               asChild
               size="icon"
               variant="ghost"
-              className="h-8 w-8 flex-shrink-0">
+              className="h-8 w-8 flex-shrink-0 rounded-full">
                 <Link to={`/annotate/${loadedImage.id}`}>
                   <SquareArrowOutUpRight className="h-3.5 w-3.5" />
                 </Link>

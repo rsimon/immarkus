@@ -37,6 +37,8 @@ export const SelectedImage = (props: SelectedImageProps) => {
 
   const [relationships, setRelationships] = useState<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>([]);
 
+  const [tab, setTab] = useState<string>(); 
+
   useEffect(() => {
     if (annotations.length === 0) return;
     store.getRelations(image.id).then(setRelationships);
@@ -47,9 +49,15 @@ export const SelectedImage = (props: SelectedImageProps) => {
       .then(a => setAnnotations(a as W3CImageAnnotation[]));
   }, [store, image]);
 
+  useEffect(() => {
+    setTab(settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships');
+  }, [settings.graphMode]);
+
   return (
     <div className="p-2">
-      <Tabs defaultValue={settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships'}>
+      <Tabs 
+        value={tab}
+        onValueChange={setTab}>
         <article className="bg-white shadow-sm rounded border overflow-hidden">
           <header>
             <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
@@ -61,11 +69,11 @@ export const SelectedImage = (props: SelectedImageProps) => {
                 <Skeleton className="" />
               )}
 
-              <div className="absolute top-2 right-2 bg-white/70 rounded">
+              <div className="absolute top-2 right-2 bg-white/70 rounded-full">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8"
+                  className="h-8 w-8 rounded-full"
                   onClick={props.onClose}>
                   <X className="h-4 w-4" />
                 </Button>

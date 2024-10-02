@@ -57,8 +57,8 @@ export const RelationshipCardItem = (props: RelationshipCardItemProps) => {
   ) : (
     <div className="flex justify-between p-2.5 border-t items-center gap-3 text-xs">
       <AnnotationThumbnail
-        annotation={from.annotation} 
-        image={props.otherImage} />
+        annotation={to.annotation} 
+        image={props.selectedImage} />
 
       <div className="flex-grow h-[1px] border-gray-400 border-t border-dashed relative">
         <div className="absolute -left-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-r-[12px] border-r-gray-400"></div>
@@ -68,8 +68,8 @@ export const RelationshipCardItem = (props: RelationshipCardItemProps) => {
       </div>
 
       <AnnotationThumbnail 
-        annotation={to.annotation} 
-        image={props.selectedImage} />
+        annotation={from.annotation} 
+        image={props.otherImage} />
     </div>
   ))
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
@@ -28,6 +28,8 @@ export const Relationships = (props: RelationshipsProps) => {
   }, [selectedImage]);
 
   const getRelationshipsTo = useCallback((imageId: string) => {
+    if (!related) return [];
+
     // All annotations on this image
     const onThisImage = new Set(annotations.map(a => a.id));
 
@@ -44,9 +46,19 @@ export const Relationships = (props: RelationshipsProps) => {
     });
   }, [annotations, relationships, related]);
 
+  const intraRelations = useMemo(() => 
+    getRelationshipsTo(props.selectedImage.id), [related, props.selectedImage]);
+
   return related && (
     <div className="space-y-2">
-      {Object.entries(related).map(([otherImageId, _]) => (
+      {intraRelations.length > 0 && (
+        <RelationshipCard
+          selectedImage={props.selectedImage}
+          otherImageId={props.selectedImage.id}
+          relationships={intraRelations} />
+      )}
+
+      {Object.entries(related).filter(([id, _]) => id !== props.selectedImage.id).map(([otherImageId, _]) => (
         <RelationshipCard 
           key={otherImageId} 
           selectedImage={props.selectedImage}

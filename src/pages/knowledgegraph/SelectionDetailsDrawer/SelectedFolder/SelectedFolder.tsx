@@ -38,7 +38,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
           onSubmit={onSubmit}>
 
           <Button 
-            className="absolute h-8 w-8 right-1.5 top-1.5"
+            className="absolute h-8 w-8 right-1.5 top-1.5 rounded-full"
             size="icon"
             variant="ghost"
             onClick={props.onClose}>

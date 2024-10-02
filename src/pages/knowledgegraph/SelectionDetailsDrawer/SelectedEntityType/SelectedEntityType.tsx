@@ -72,7 +72,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
             </div>
 
             <Button 
-              className="flex-shrink-0 h-8 w-8 -mt-0.5"
+              className="flex-shrink-0 h-8 w-8 -mt-0.5 rounded-full"
               size="icon"
               variant="ghost"
               onClick={props.onClose}>
