@@ -26,6 +26,12 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
 
   const { graph, settings, type } = props;
 
+  const [annotations, setAnnotations] = useState(0);
+
+  useEffect(() => {
+    setAnnotations(0);
+  }, [type]);
+
   const annotatedImages = useMemo(() => (
     graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
   ), [type]);
@@ -46,12 +52,6 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
       .filter(Boolean)
       .filter(e => e.id !== type.id); // Don't include self
   }, [type, entityTypes]);
-
-  const [annotations, setAnnotations] = useState(0);
-
-  useEffect(() => {
-    setAnnotations(0);
-  }, [type]);
 
   return (
     <div className="p-2">

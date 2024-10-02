@@ -23,8 +23,9 @@ export const AnnotatedImages = (props: AnnotatedImagesProps) => {
 
   const [annotations, setAnnotations] = useState(0);
 
-  const onLoadAnnotations = (count: number) => 
-    setAnnotations(c => c + count);
+  useEffect(() => setAnnotations(0), [type]);
+
+  const onLoadAnnotations = (count: number) => setAnnotations(c => c + count);
 
   useEffect(() => props.onLoadAnnotations(annotations), [annotations])
 
