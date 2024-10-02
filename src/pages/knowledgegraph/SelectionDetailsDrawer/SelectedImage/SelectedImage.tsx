@@ -50,7 +50,8 @@ export const SelectedImage = (props: SelectedImageProps) => {
   }, [store, image]);
 
   useEffect(() => {
-    setTab(settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships');
+    if (tab !== 'metadata')
+      setTab(settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships');
   }, [settings.graphMode]);
 
   return (
@@ -81,7 +82,7 @@ export const SelectedImage = (props: SelectedImageProps) => {
             </div>
           </header>
 
-          <div className="flex py-2 px-3 pr-2.5 text-sm items-start justify-between">
+          <div className="flex py-2 px-3 pr-2 text-sm items-start justify-between">
             <div className="overflow-hidden py-1 leading-relaxed">
               <h2 className="whitespace-nowrap overflow-hidden text-ellipsis font-medium">
                 {image.name}

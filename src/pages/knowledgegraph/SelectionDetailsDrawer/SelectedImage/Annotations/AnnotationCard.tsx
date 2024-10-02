@@ -27,7 +27,7 @@ export const AnnotationCard = (props: AnnotationCardProps) => {
     b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
   return (
-    <div className="bg-white border rounded shadow-sm p-3">
+    <div className="bg-white border rounded shadow-sm p-2.5">
       <div className="flex gap-2">
         <div className="flex-shrink-0">
           <AnnotationThumbnail
