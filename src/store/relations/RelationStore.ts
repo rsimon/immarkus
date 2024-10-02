@@ -1,4 +1,5 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { Image } from '@/model';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 
@@ -9,6 +10,8 @@ export interface RelationStore {
   deleteRelation(linkId: string): Promise<void>;
 
   getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
+
+  getRelatedImageAnnotations(imageId: string): Promise<{ [image: string]: string[] }>
 
   getRelations(imageId: string, direction?: Directionality): Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][]>;
 
@@ -73,6 +76,31 @@ export const loadRelationStore = (
           .map(link => ([ link, getMetaAnnotation(link.id) ]) as [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation]);
       });
 
+  const getRelatedImageAnnotations = (imageId: string) =>
+    getRelations(imageId).then(relations => {
+      // Get all distinct target & source annotation IDs
+      const annotationIds = 
+        new Set(relations.reduce<string[]>((ids, [link, _]) => [...ids, link.body, link.target], []));
+
+      return Promise.all([...annotationIds].map(annotation => store.findImageForAnnotation(annotation)
+        .then(image => ({ annotation, image }))))
+        .then(result => {
+          // From a list tuples annotation/image, aggregate to a map image -> annotations
+          const imageIds = new Set(result.map(t => t.image.id));
+
+          const entries = [...imageIds].map(imageId => ([
+            imageId, 
+            (result.filter(t => t.image.id === imageId) || []).map(t => t.annotation)
+          ])) as [string, string[]][];
+
+          return Object.fromEntries(entries);
+        });
+    });
+
+  const getRelatedEntityTypes = (typeId: string) => {
+    // TODO
+  }
+
   const hasRelatedAnnotations = (annotationId: string) =>
     annotations.some(a => a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
 
@@ -93,6 +121,7 @@ export const loadRelationStore = (
   resolve({
     deleteRelation,
     getRelatedAnnotations,
+    getRelatedImageAnnotations,
     getRelations,
     hasRelatedAnnotations,
     listAllRelations,

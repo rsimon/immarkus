@@ -1,13 +1,13 @@
 import { PropertyDefinition } from '@/model';
 import { Replace } from 'lucide-react';
 import { useDataModel } from '@/store';
+import { cn } from '@/ui/utils';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/ui/Tooltip';
-import { cn } from '@/ui/utils';
 
 interface InheritedFromProps {
 
