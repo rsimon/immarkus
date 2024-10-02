@@ -18,7 +18,8 @@ export const AnnotatedImages = (props: AnnotatedImagesProps) => {
   const { graph, type } = props;
 
   const annotatedImages = useMemo(() => (
-    graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
+    [...graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')]
+      .sort((a, b) => a.label.localeCompare(b.label))
   ), [type]);
 
   const [annotations, setAnnotations] = useState(0);
