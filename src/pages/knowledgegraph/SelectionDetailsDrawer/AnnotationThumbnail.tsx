@@ -28,12 +28,15 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
 
   useEffect(() => {
     if (!inView) return;
+    
+    setSnippet(undefined);
 
-    getImageSnippet(props.image, props.annotation).then(setSnippet);
-  }, [props.annotation, inView, props.image])
+    setTimeout(() => getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
+  }, [props.annotation, inView, props.image]);
+
 
   return (
-    <div ref={ref}>
+    <div ref={ref} key={props.annotation.id}>
       {snippet ? (
         <img
           src={URL.createObjectURL(new Blob([snippet.data]))}

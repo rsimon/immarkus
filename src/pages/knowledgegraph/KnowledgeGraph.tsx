@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
@@ -65,6 +65,9 @@ export const KnowledgeGraph = () => {
       setShowGraphSearch(true);
   }
 
+  // Important to memo-ize, since otherwise child components re-render unnecessarily
+  const onCloseSelectionDetails = useCallback(() => setSelectedNodes([]), [setSelectedNodes]);
+
   return (
     <div className="page-root">
       {transition((style, fullscreen) => !fullscreen && (
@@ -129,11 +132,10 @@ export const KnowledgeGraph = () => {
           {graph && (
             <SelectionDetailsDrawer 
               graph={graph}
-              // relations={relations}
               selected={selectedNodes[0]}
               settings={settings} 
               skipInitialAnimation={skipSidebarAnimation}
-              onClose={() => setSelectedNodes([])} />
+              onClose={onCloseSelectionDetails} />
           )}
         </div>
 

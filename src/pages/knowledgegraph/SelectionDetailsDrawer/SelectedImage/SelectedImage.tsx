@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Info, MessagesSquare, MoveDiagonal, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { Image, LoadedImage } from '@/model';
-import { useImages, useStore } from '@/store';
+import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
@@ -23,13 +23,13 @@ interface SelectedImageProps {
 
 }
 
-export const SelectedImage = (props: SelectedImageProps) => {
+const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const { image, settings } = props;
 
   const store = useStore();
 
-  const loaded = useImages(image.id, 180) as LoadedImage;
+  const [loaded, setLoaded] = useState<LoadedImage | undefined>();
 
   const { onLoad, dimensions } = useImageDimensions();
 
@@ -38,6 +38,14 @@ export const SelectedImage = (props: SelectedImageProps) => {
   const [relationships, setRelationships] = useState<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>([]);
 
   const [tab, setTab] = useState<string>(); 
+
+  useEffect(() => {
+    setLoaded(undefined);
+    
+    setTimeout(() => (
+      store.loadImage(image.id).then(setLoaded)
+    ), 180);
+  }, [image]);
 
   useEffect(() => {
     if (annotations.length === 0) return;
@@ -159,3 +167,10 @@ export const SelectedImage = (props: SelectedImageProps) => {
   )
 
 }
+
+// Memo-ize the component to avoid unncessary re-renders. (Large preview images slow things down!)
+export const SelectedImage = memo(SelectedImageComponent, (prevProps, nextProps) => (
+  prevProps.image.id === nextProps.image.id &&
+  prevProps.settings.graphMode === nextProps.settings.graphMode &&
+  prevProps.onClose === nextProps.onClose
+));

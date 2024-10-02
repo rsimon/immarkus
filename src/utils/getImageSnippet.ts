@@ -1,6 +1,7 @@
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
 import { Image, LoadedImage } from '@/model';
 import { Store } from '@/store';
+import Worker from './getImageSnippetWorker?worker';
 
 export interface ImageSnippet {
 
@@ -14,53 +15,79 @@ export interface ImageSnippet {
 
 }
 
-const cropImage = async (
-  image: LoadedImage, 
-  annotation: ImageAnnotation
-) => new Promise<ImageSnippet>((resolve, reject) => setTimeout(() => {
-  const { bounds } = annotation.target.selector.geometry;
+interface ScheduledSnippet {
 
-  const img = document.createElement('img');
+  snippet: ImageSnippet;
 
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+  time: Date;
 
-    if (!context) {
-      reject(new Error('Failed to get canvas context'));
-      return;
-    }
+}
 
-    const width = bounds.maxX - bounds.minX;
-    const height = bounds.maxY - bounds.minY;
+const SnippetScheduler = () => {
 
-    canvas.width = width;
-    canvas.height = height;
+  // Drop all cached images older than 10s
+  const MAX_AGE_MS = 10000;
 
-    context.drawImage(img, bounds.minX, bounds.minY, width, height, 0, 0, width, height);
+  const cache: Map<string, ScheduledSnippet> = new Map();
 
-    canvas.toBlob(blob => {
-      const reader = new FileReader();
+  const inProgress: Map<string, Promise<ImageSnippet>> = new Map();
 
-      reader.onload = () => {
-        const data = new Uint8Array(reader.result as ArrayBuffer);
-
-        resolve({
-          annotation,
-          height: bounds.maxY - bounds.minY,
-          width: bounds.maxX - bounds.minX,
-          data
-        });
+  const purgeCache = () => {
+    [...cache.entries()].forEach(([id, snippet]) => {
+      const age = new Date().getTime() - snippet.time.getTime();
+      if (age > MAX_AGE_MS) {
+        cache.delete(id);
       }
+    });
+  }
 
-      reader.readAsArrayBuffer(blob);
-    }, 'image/jpg'); 
-  };
+  const getSnippet = (image: LoadedImage, annotation: ImageAnnotation): Promise<ImageSnippet> => {
+    const cacheKey = `${image.id}-${annotation.id}`;
 
-  img.onerror = error => reject(error);
+    // Already cached?
+    if (cache.has(cacheKey))
+      return Promise.resolve(cache.get(cacheKey)!.snippet);
 
-  img.src = URL.createObjectURL(image.data);
-}, 100));
+    // Already in progress?
+    if (inProgress.has(cacheKey))
+      return inProgress.get(cacheKey)!;
+
+    // If not, start processing and store the promise
+    const snippetPromise = new Promise<ImageSnippet>((resolve, reject) => {
+      const worker = new Worker();
+
+      const messageHandler = (e: MessageEvent) => {
+        worker.removeEventListener('message', messageHandler);
+        if (e.data.error) {
+          reject(new Error(e.data.error));
+        } else {
+          const snippet: ImageSnippet = e.data.snippet;
+          cache.set(cacheKey, { snippet, time: new Date() });
+          resolve(snippet);
+        }
+
+        inProgress.delete(cacheKey);
+      };
+
+      worker.addEventListener('message', messageHandler);
+
+      worker.postMessage({ image, annotation });
+    });
+
+    inProgress.set(cacheKey, snippetPromise);
+
+    purgeCache();
+
+    return snippetPromise;
+  }
+
+  return {
+    getSnippet
+  }
+
+}
+
+const scheduler = SnippetScheduler();
 
 // Bit of an ad-hoc test...
 const isW3C = (annotation: ImageAnnotation | W3CImageAnnotation): annotation is W3CImageAnnotation =>
@@ -83,7 +110,7 @@ export const getImageSnippet = (
     a = annotation;
   }
 
-  return cropImage(image, a);
+  return scheduler.getSnippet(image, a);
 }
 
 export const getAnntotationsWithSnippets = (
