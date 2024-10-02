@@ -60,6 +60,8 @@ export interface GraphLinkPrimitive {
 
   value?: string;
 
+  data?: any;
+
 }
 
 export type GraphLinkPrimitiveType = 

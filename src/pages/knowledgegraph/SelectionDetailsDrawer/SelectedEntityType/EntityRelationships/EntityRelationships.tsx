@@ -1,25 +1,36 @@
+import { useCallback } from 'react';
 import { EntityType } from '@/model';
-import { Graph } from '../../../Types';
-import { RelatedEntityCard } from './RelatedEntityCard';
+import { GraphLinkPrimitive } from '../../../Types';
+import { EntityRelationshipCard } from './EntityRelationshipCard';
 
 interface EntityRelationshipsProps {
 
-  graph: Graph;
+  selectedType: EntityType;
 
-  type: EntityType;
+  relatedTypes: EntityType[];
 
-  related: EntityType[];
+  relationships: GraphLinkPrimitive[];
 
 }
 
 export const EntityRelationships = (props: EntityRelationshipsProps) => {
 
+  const { relatedTypes, relationships, selectedType } = props;
+
+  const getRelationshipsTo = useCallback((entityId: string) => (
+    relationships.filter(p => 
+      (p.source === selectedType.id && p.target === entityId) ||
+      (p.source === entityId && p.target === selectedType.id))
+  ), [selectedType, relationships])
+
   return (
-    <div>
-      {props.related.map(related => (
-        <RelatedEntityCard 
-          reference={props.type}
-          related={related} />
+    <div className="space-y-2">
+      {relatedTypes.map(type => (
+        <EntityRelationshipCard 
+          key={`${selectedType.id}-${type.id}`}
+          selectedType={selectedType} 
+          relatedType={type} 
+          relationships={getRelationshipsTo(type.id)} />
       ))}
     </div>
   );

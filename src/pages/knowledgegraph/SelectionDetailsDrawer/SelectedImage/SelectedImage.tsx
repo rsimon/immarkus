@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
-import { Relationships } from './Relationships';
+import { ImageRelationships } from './ImageRelationships';
 import { KnowledgeGraphSettings } from '../../Types';
 
 interface SelectedImageProps {
@@ -151,7 +151,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
         <TabsContent value="relationships">
           {loaded && (
-            <Relationships 
+            <ImageRelationships 
               annotations={annotations}
               selectedImage={loaded} 
               relationships={relationships}  />

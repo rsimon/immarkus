@@ -76,7 +76,7 @@ export const KnowledgeGraph = () => {
         </animated.div>
       ))}
 
-      <main className="page graph relative overflow-x-hidden">
+      <main className="page graph relative overflow-x-hidden !overflow-hidden">
         {transition((style, fullscreen) => !fullscreen && (
           <animated.div 
             style={{ opacity: style.opacity }}

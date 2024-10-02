@@ -162,7 +162,8 @@ export const inferEntityToEntityRelationPrimitives = (
           source: outType,
           target: inType,
           type: 'IS_RELATED_VIA_ANNOTATION',
-          value: getRelationName(meta)
+          value: getRelationName(meta),
+          data: [link, meta]
         } as GraphLinkPrimitive));
 
         return [...all, ...inbound];

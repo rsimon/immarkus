@@ -6,9 +6,9 @@ import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Link } from 'react-router-dom';
-import { RelationshipCardItem } from './RelationshipCardItem';
+import { ImageRelationshipCardItem } from './ImageRelationshipCardItem';
 
-interface RelationshipCardProps {
+interface ImageRelationshipCardProps {
 
   selectedImage: LoadedImage;
   
@@ -18,7 +18,7 @@ interface RelationshipCardProps {
 
 }
 
-export const RelationshipCard = (props: RelationshipCardProps) => {
+export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
 
   const { selectedImage, otherImageId, relationships } = props;
 
@@ -63,7 +63,7 @@ export const RelationshipCard = (props: RelationshipCardProps) => {
           <ul>
             {relationships.map(([link, meta]) => (
               <li key={link.id}>
-                <RelationshipCardItem 
+                <ImageRelationshipCardItem 
                   selectedImage={selectedImage}
                   otherImage={loadedImage}
                   link={link}

@@ -36,14 +36,16 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
     graph.getLinkedNodes(type.id).filter(n => n.type === 'IMAGE')
   ), [type]);
 
-  const relatedEntities = useMemo(() => {
-    const entityRelationLinks = graph
+  const entityRelationships = useMemo(() => (
+    graph
       .getLinks(type.id)
-      .reduce<GraphLinkPrimitive[]>((all, link) => { 
-        return [...all, ...link.primitives.filter(p => p.type === 'IS_RELATED_VIA_ANNOTATION')]
-      }, []);
+      .reduce<GraphLinkPrimitive[]>((all, link) => (
+        [...all, ...link.primitives.filter(p => p.type === 'IS_RELATED_VIA_ANNOTATION')]
+      ), [])
+  ), [type]);
 
-    const relatedEntityIDs = new Set(entityRelationLinks.reduce<string[]>((ids, primitive) => {
+  const relatedEntities = useMemo(() => {
+    const relatedEntityIDs = new Set(entityRelationships.reduce<string[]>((ids, primitive) => {
       return [...ids, primitive.source, primitive.target]
     }, []));
 
@@ -51,7 +53,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
       .map(id => entityTypes.find(e => e.id === id))
       .filter(Boolean)
       .filter(e => e.id !== type.id); // Don't include self
-  }, [type, entityTypes]);
+  }, [entityTypes, entityRelationships]);
 
   return (
     <div className="p-2">
@@ -108,29 +110,35 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
             <>
               <div className="flex gap-1 items-center">
                 <Spline className="w-3.5 h-3.5 -mt-[1px]" /> 
-                <span>{relatedEntities.length} Related Classes</span>
+                <span>
+                  {entityRelationships.length} Relationship{entityRelationships.length === 0 || entityRelationships.length > 1 ? 's' : ''}
+                </span>
               </div>
 
               <div className="flex gap-1 items-center">
-                <Image className="w-3.5 h-3.5 -mt-[1px]" /> 
-                <span>{annotatedImages.length} Images</span>
+                <Cuboid className="w-3.5 h-3.5 -mt-[1px]" /> 
+                <span>
+                  {relatedEntities.length} Entity Class{relatedEntities.length === 0 || relatedEntities.length > 1 ? 'es' : ''}
+                </span>
               </div>
             </>
           )}
         </div>
       </div>
 
-      {settings.graphMode === 'HIERARCHY' ? (
-        <AnnotatedImages
-          graph={graph}
-          type={type} 
-          onLoadAnnotations={setAnnotations} />
-      ) : (
-        <EntityRelationships
-          graph={graph}
-          related={relatedEntities}
-          type={type} />
-      )}
+      <div className="py-2">
+        {settings.graphMode === 'HIERARCHY' ? (
+          <AnnotatedImages
+            graph={graph}
+            type={type} 
+            onLoadAnnotations={setAnnotations} />
+        ) : (
+          <EntityRelationships
+            relatedTypes={relatedEntities}
+            selectedType={type} 
+            relationships={entityRelationships} />
+        )}
+      </div>
     </div>
   );
 

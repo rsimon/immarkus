@@ -3,9 +3,9 @@ import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorio
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { RelationshipCard } from './RelationshipCard';
+import { ImageRelationshipCard } from './ImageRelationshipCard';
 
-interface RelationshipsProps {
+interface ImageRelationshipsProps {
 
   annotations: W3CImageAnnotation[];
 
@@ -15,7 +15,7 @@ interface RelationshipsProps {
 
 }
 
-export const Relationships = (props: RelationshipsProps) => {
+export const ImageRelationships = (props: ImageRelationshipsProps) => {
 
   const { annotations, selectedImage, relationships } = props;
 
@@ -52,14 +52,14 @@ export const Relationships = (props: RelationshipsProps) => {
   return related && (
     <div className="space-y-2">
       {intraRelations.length > 0 && (
-        <RelationshipCard
+        <ImageRelationshipCard
           selectedImage={props.selectedImage}
           otherImageId={props.selectedImage.id}
           relationships={intraRelations} />
       )}
 
       {Object.entries(related).filter(([id, _]) => id !== props.selectedImage.id).map(([otherImageId, _]) => (
-        <RelationshipCard 
+        <ImageRelationshipCard 
           key={otherImageId} 
           selectedImage={props.selectedImage}
           otherImageId={otherImageId} 
