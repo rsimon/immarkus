@@ -26,7 +26,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const model = useDataModel();
 
-  const options = useMemo(() => { 
+  const options = useMemo(() => {
     const getEntityTypes = (annotation: ImageAnnotation) => {
       // The entity type ID tags on this annotation
       const entityIds = annotation.bodies

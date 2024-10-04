@@ -42,7 +42,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
     viewer.element.addEventListener('pointerdown', onPointerDown);
 
     return () => {
-      viewer.element.removeEventListener('pointerdown', onPointerDown);
+      viewer.element?.removeEventListener('pointerdown', onPointerDown);
     }
   }, [anno, props.enabled]);
 
