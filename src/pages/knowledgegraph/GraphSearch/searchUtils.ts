@@ -180,6 +180,23 @@ export const findImagesByRelationship = (
   }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicat
 }
 
+export const findEntityTypesByRelationship = (
+  graph: Graph,
+  relationship: string
+): string[] => {
+  const entityNodes = graph.nodes.filter(n => n.type === 'ENTITY_TYPE');
+
+  const filtered = entityNodes.filter(n => {
+    const relationshipLinks = graph.getLinks(n.id).filter(l => l.primitives.some(primitive => (
+      primitive.type === 'IS_RELATED_VIA_ANNOTATION' && 
+      primitive.value === relationship)));
+
+    return relationshipLinks.length > 0;
+  });
+
+  return filtered.map(n => n.id);
+}
+
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
   store: Store, 

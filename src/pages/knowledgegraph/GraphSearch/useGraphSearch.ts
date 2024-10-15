@@ -11,6 +11,7 @@ import {
   SimpleConditionSentence 
 } from '../Types';
 import { 
+  findEntityTypesByRelationship,
   findFoldersByMetadata, 
   findImagesByEntityClass, 
   findImagesByEntityConditions, 
@@ -139,7 +140,12 @@ export const useGraphSearch = (
 
         setValueOptions(distinctRelationships);
       } else {
-        findImagesByRelationship(store, sentence.Value.value).then(setMatches);
+        if (objectType === 'IMAGE') {
+          findImagesByRelationship(store, sentence.Value.value).then(setMatches);
+        } else if (objectType === 'ENTITY_TYPE') {
+          const entityIds = findEntityTypesByRelationship(graph, sentence.Value.value);
+          setMatches(entityIds);
+        }
       }
     }
   }, [annotations, graph, objectType, sentence]);

@@ -158,6 +158,12 @@ export const GraphSearch = (props: GraphSearchProps) => {
             </SelectTrigger>
 
             <SelectContent>
+              {props.settings.graphMode === 'RELATIONS' && (
+                <SelectItem
+                  className="text-xs" 
+                  value="ENTITY_TYPE">entity classes</SelectItem>
+              )}
+
               {props.settings.includeFolders && (
                 <SelectItem
                   className="text-xs" 
