@@ -67,14 +67,27 @@ export const GraphSearch = (props: GraphSearchProps) => {
       const toApply = conditions[conditions.length - 1].matches ?
         conditions : conditions.slice(0, -1);
 
-      // For now, we keep all conditions AND-connected, which means
-      // the total matches are the intersection of all individual matches
-      const intersection = new Set(toApply.reduce((intersected, { matches }) => {
-        return intersected.filter(str => (matches || []).includes(str));
+      // For now, we'll treat the condition list step by step, where
+      // all conditions BEFORE the current are treated as if they were one
+      // result. E.g: 
+      //
+      //  'A' and 'B' and 'C' or 'D'
+      //
+      //  would be logically treated as...
+      // 
+      //  ((('A' and 'B') and 'C') or 'D')
+      const matches = new Set(toApply.reduce<string[]>((previousMatches, condition) => {
+        if (condition.operator === 'AND') {
+          // Next result is the intersection of the previous with this result
+          return previousMatches.filter(str => (condition.matches || []).includes(str));
+        } else {
+          // Next result is the union of the previous with this result
+          return [...new Set([...previousMatches, ...(condition.matches || [])])];
+        }        
       }, conditions[0].matches!));
 
       const query = (n: GraphNode) =>
-        n.type === objectType && intersection.has(n.id);
+        n.type === objectType && matches.has(n.id);
 
       props.onChangeQuery(query);
     }
@@ -185,7 +198,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
         {conditions.map(({ operator, sentence }, idx) => (
           <div 
-            className="flex flex-nowrap gap-2 pt-2 text-xs items-center"
+            className="flex flex-nowrap gap-2 pt-2 text-xs items-start"
             key={idx}>
             
             {(idx === 0) ? (
