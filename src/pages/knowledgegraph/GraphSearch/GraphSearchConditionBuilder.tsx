@@ -136,7 +136,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
 
           <SelectTrigger className={`${selectStyle} border-l`}>
             <span className="overflow-hidden text-ellipsis text-xs">
-              <SelectValue />
+              <SelectValue placeholder={'\u00A0'} />
             </span>
           </SelectTrigger>
 

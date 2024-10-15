@@ -14,6 +14,7 @@ import {
   GraphNode, 
   KnowledgeGraphSettings,
   ObjectType, 
+  Operator, 
   Sentence
 } from '../Types';
 import { 
@@ -42,7 +43,7 @@ interface GraphSearchProps {
 
 }
 
-const EMPTY_CONDITION: Condition = { sentence: {} };
+const EMPTY_CONDITION: Condition = { operator: 'AND', sentence: {} };
 
 export const GraphSearch = (props: GraphSearchProps) => {
 
@@ -66,14 +67,27 @@ export const GraphSearch = (props: GraphSearchProps) => {
       const toApply = conditions[conditions.length - 1].matches ?
         conditions : conditions.slice(0, -1);
 
-      // For now, we keep all conditions AND-connected, which means
-      // the total matches are the intersection of all individual matches
-      const intersection = new Set(toApply.reduce((intersected, { matches }) => {
-        return intersected.filter(str => (matches || []).includes(str));
+      // For now, we'll treat the condition list step by step, where
+      // all conditions BEFORE the current are treated as if they were one
+      // result. E.g: 
+      //
+      //  'A' and 'B' and 'C' or 'D'
+      //
+      //  would be logically treated as...
+      // 
+      //  ((('A' and 'B') and 'C') or 'D')
+      const matches = new Set(toApply.reduce<string[]>((previousMatches, condition) => {
+        if (condition.operator === 'AND') {
+          // Next result is the intersection of the previous with this result
+          return previousMatches.filter(str => (condition.matches || []).includes(str));
+        } else {
+          // Next result is the union of the previous with this result
+          return [...new Set([...previousMatches, ...(condition.matches || [])])];
+        }        
       }, conditions[0].matches!));
 
       const query = (n: GraphNode) =>
-        n.type === objectType && intersection.has(n.id);
+        n.type === objectType && matches.has(n.id);
 
       props.onChangeQuery(query);
     }
@@ -93,7 +107,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   
   const onChange = (current: Partial<Sentence>, next: Partial<Sentence>, matches?: string[]) => {
     const updated = conditions.map(condition => 
-        condition.sentence === current ? ({ sentence : next, matches }) : condition);
+        condition.sentence === current ? ({ operator: condition.operator, sentence : next, matches }) : condition);
 
     setConditions(updated);
   }
@@ -115,6 +129,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
     } else {
       setConditions([]);
     }
+  }
+
+  const onSelectOperator = (sentence: Partial<Sentence>, operator: Operator) => {
+    const next = conditions.map(c => c.sentence === sentence ? ({...c, operator }) : c);
+    setConditions(next);
   }
 
   const onClearAll = () => {
@@ -142,9 +161,9 @@ export const GraphSearch = (props: GraphSearchProps) => {
         </Button>
       </div>
 
-      <div className="p-2 pr-6 pb-2">
+      <div className="px-3 pr-6 pb-2">
         <div className="text-xs flex items-center gap-2">
-          <span className="w-12 text-right">
+          <span className="w-14 text-right">
             Find
           </span>
           
@@ -177,15 +196,35 @@ export const GraphSearch = (props: GraphSearchProps) => {
           </Select>
         </div>
 
-        {conditions.map(({ sentence }, idx) => (
+        {conditions.map(({ operator, sentence }, idx) => (
           <div 
-            className="flex flex-nowrap gap-2 pt-2 text-xs items-center"
+            className="flex flex-nowrap gap-2 pt-2 text-xs items-start"
             key={idx}>
             
             {(idx === 0) ? (
-              <div className="w-12" />
+              <div className="w-14" />
             ) : (
-              <div className="w-12 text-right self-start pt-1">and</div>
+              <div className="w-14">
+                <Select 
+                  value={operator || 'AND'}
+                  onValueChange={op => onSelectOperator(sentence, op as Operator)}>
+                  <SelectTrigger className="w-16 rounded-none border-r-0 px-2 py-1 h-auto bg-white shadow-none">
+                    <span className="text-xs">
+                      <SelectValue />
+                    </span>
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem
+                      className="text-xs" 
+                      value="AND">and</SelectItem>
+
+                    <SelectItem
+                      className="text-xs" 
+                      value="OR">or</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             )}
 
             <GraphSearchConditionBuilder 

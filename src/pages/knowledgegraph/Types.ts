@@ -184,8 +184,10 @@ export interface Condition {
 
   matches?: string[];
 
-  // operator: 'AND' | 'OR';
+  operator: Operator;
 
 }
+
+export type Operator = 'AND' | 'OR';
 
 
