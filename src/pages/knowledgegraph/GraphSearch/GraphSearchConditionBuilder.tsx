@@ -177,7 +177,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             }))}
 
         {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'WITH_ENTITY')) && (
+          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATION')) && (
             <Combobox 
               className={selectStyle}
               value={sentence.Value}

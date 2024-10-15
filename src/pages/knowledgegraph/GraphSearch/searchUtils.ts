@@ -159,6 +159,27 @@ export const findImagesByNote = (
   return Array.from(new Set(matches.map(n => n.image.id)));
 }
 
+export const findImagesByRelationship = (
+  store: Store,
+  relationship: string
+): Promise<string[]> => {
+  // All relations tagged with the given relationship
+  const relevant = store.listAllRelations().filter(([link, meta]) => meta.body?.value === relationship);
+
+  // IDs of all image annotations linked through the relevant relationships
+  const annotationIds = new Set(relevant.reduce<string[]>((all, [link, meta]) => {
+    const { target, body } = link;
+    return [...all, target, body];
+  }, []));
+
+  // IDs of all images for the given annotations
+  return [...annotationIds].reduce<Promise<string[]>>((promise, annotationId) => promise.then(all => {
+    return store.findImageForAnnotation(annotationId).then(image => {
+      return [...all, image.id];
+    });
+  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicat
+}
+
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
   store: Store, 
