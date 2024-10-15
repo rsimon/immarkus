@@ -11,11 +11,13 @@ import {
   SimpleConditionSentence 
 } from '../Types';
 import { 
+  findEntityTypesByRelationship,
   findFoldersByMetadata, 
   findImagesByEntityClass, 
   findImagesByEntityConditions, 
   findImagesByMetadata, 
   findImagesByNote, 
+  findImagesByRelationship, 
   listAllMetadataProperties, 
   listAllNotes, 
   listFolderMetadataProperties, 
@@ -126,6 +128,24 @@ export const useGraphSearch = (
       } else {
         const imageIds = findImagesByNote(annotations, sentence.Value.value);
         setMatches(imageIds);
+      }
+    } else if (sentence.ConditionType === 'WITH_RELATIONSHIP') {
+      if (!sentence.Value) {
+        const relations = store.listAllRelations();
+
+        const distinctRelationships = relations.reduce<string[]>((all, [_, meta]) => {
+          const val = meta?.body?.value;
+          return (val && !all.includes(val)) ? [...all, val] : all;
+        }, []).map(v => ({ label: v, value: v }));
+
+        setValueOptions(distinctRelationships);
+      } else {
+        if (objectType === 'IMAGE') {
+          findImagesByRelationship(store, sentence.Value.value).then(setMatches);
+        } else if (objectType === 'ENTITY_TYPE') {
+          const entityIds = findEntityTypesByRelationship(graph, sentence.Value.value);
+          setMatches(entityIds);
+        }
       }
     }
   }, [annotations, graph, objectType, sentence]);

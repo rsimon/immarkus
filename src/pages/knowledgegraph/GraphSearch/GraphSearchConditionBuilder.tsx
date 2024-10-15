@@ -10,6 +10,7 @@ import {
   ConditionType, 
   DropdownOption,
   Graph,
+  KnowledgeGraphSettings,
   NestedConditionSentence,
   ObjectType,
   Sentence, 
@@ -34,6 +35,8 @@ interface GraphSearchConditionBuilderProps {
 
   sentence: Partial<Sentence>;
 
+  settings: KnowledgeGraphSettings;
+
   onChange(sentence: Partial<Sentence>, matches?: string[]): void;
 
   onDelete(): void;
@@ -55,13 +58,19 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     props.onChange(sentence, matches);
   }, [sentence, matches]);
 
-  const conditionTypes = useMemo(() => props.objectType === 'IMAGE' ? [
-    { label: 'where', value: 'WHERE' },
-    { label: 'with entity', value: 'WITH_ENTITY' },
-    { label: 'with note', value: 'WITH_NOTE' }
-  ] : [
-    { label: 'where', value: 'WHERE' }
-  ], [props.objectType]);
+  const conditionTypes = useMemo(() => 
+    props.objectType === 'IMAGE' ? [
+      { label: 'where', value: 'WHERE' },
+      (props.settings.graphMode === 'RELATIONS' ? { label: 'with relationship', value: 'WITH_RELATIONSHIP' } : undefined),
+      { label: 'with entity', value: 'WITH_ENTITY' },
+      { label: 'with note', value: 'WITH_NOTE' }
+    ].filter(Boolean) : 
+    props.objectType === 'ENTITY_TYPE' ? [
+      { label: 'with relationship', value: 'WITH_RELATIONSHIP' }
+    ] : [
+      // props.object type === 'FOLDER'
+      { label: 'where', value: 'WHERE' }
+    ], [props.objectType, props.settings]);
 
   const showAddSubCondition = sentence.Value && sentence.ConditionType === 'WITH_ENTITY';
 
@@ -173,7 +182,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             }))}
 
         {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'WITH_ENTITY')) && (
+          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
             <Combobox 
               className={selectStyle}
               value={sentence.Value}

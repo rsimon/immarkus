@@ -114,9 +114,9 @@ export interface BaseSentence {
 
 }
 
-export type ObjectType = 'FOLDER' | 'IMAGE';
+export type ObjectType = 'ENTITY_TYPE' | 'FOLDER' | 'IMAGE';
 
-export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE';
+export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP';
 
 export interface SimpleConditionSentence extends BaseSentence {
 

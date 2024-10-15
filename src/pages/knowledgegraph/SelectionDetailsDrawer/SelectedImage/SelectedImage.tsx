@@ -100,7 +100,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <div 
                   className="flex items-center text-muted-foreground gap-1 text-xs">
                   <MoveDiagonal className="h-3.5 w-3.5" />
-                  <span>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()}</span>
+                  <span>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()} px</span>
                 </div>
               )}
             </div>

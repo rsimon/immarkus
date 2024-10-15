@@ -158,6 +158,12 @@ export const GraphSearch = (props: GraphSearchProps) => {
             </SelectTrigger>
 
             <SelectContent>
+              {props.settings.graphMode === 'RELATIONS' && (
+                <SelectItem
+                  className="text-xs" 
+                  value="ENTITY_TYPE">entity classes</SelectItem>
+              )}
+
               {props.settings.includeFolders && (
                 <SelectItem
                   className="text-xs" 
@@ -187,6 +193,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
               graph={props.graph}
               objectType={objectType}
               sentence={sentence}
+              settings={props.settings}
               onChange={(next, matches) => onChange(sentence, next, matches)}
               onDelete={() => onDelete(sentence)} />
           </div>

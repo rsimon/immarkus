@@ -215,15 +215,6 @@ export const getNeighbours = (nodeId: string, allNodes: GraphNode[], linkMap: Ma
   return allNodes.filter(n => neighbourIds.has(n.id));
 }
 
-// Returns true if this node is connected to a neighbour that has a relation link
-const hasNeighbourWithRelation = (node: GraphNode, allNodes: GraphNode[], linkMap: Map<string, GraphLink[]>) => {
-  const neighbours = getNeighbours(node.id, allNodes, linkMap);
-  return neighbours.some(n => hasRelations(n, linkMap));
-}
-
-// export const filterRelationGraphNodes = (nodes: GraphNode[], linkMap: Map<string, GraphLink[]>) =>
-//   nodes.filter(node => hasRelations(node, linkMap) || hasNeighbourWithRelation(node, nodes, linkMap));
-
 export const removeUnconnectedLinks = (links: GraphLink[], allNodes: GraphNode[]) => {
   const nodeIds = new Set(allNodes.map(n => n.id));
   return links.filter(l => {
