@@ -200,7 +200,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           <GraphSearchSubConditionBuilder
             key={idx}
             annotations={props.annotations}
-            subjectId={sentence.Value.value}
+            subjectId={sentence.Value?.value}
             subcondition={subcondition} 
             onChange={next => onUpdateSubcondition(subcondition, next)} 
             onDelete={() => onDeleteSubcondition(subcondition)} />

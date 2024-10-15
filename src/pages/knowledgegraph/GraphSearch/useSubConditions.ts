@@ -4,6 +4,11 @@ import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
 import { DropdownOption } from '../Types';
 
+const comparatorOptions = [
+  { label: 'is', value: 'IS' }, 
+  { label: 'is not empty', value: 'IS_NOT_EMPTY'}
+];
+
 export const useSubConditions = (
   annotations: W3CAnnotation[],
   subjectId: string, 
@@ -45,6 +50,6 @@ export const useSubConditions = (
     return [...Array.from(new Set(values))].sort();
   }, [properties, annotations, subjectId, attribute]);
 
-  return { properties, values };
+  return { comparatorOptions, properties, values };
 
 }

@@ -393,7 +393,7 @@ export const findImagesByEntityConditions = (
   const descendants = 
     new Set(model.getDescendants(entityId).map(t => t.id));
   
-  return annotations.reduce<Image[]>((images, { image, annotations}) => {
+  return annotations.reduce<Image[]>((images, { image, annotations }) => {
     // Check if this image has *any annotations* that have *any bodies*
     // that match the given query conditions
     const hasMatchingAnnotations = annotations.some(annotation => {
@@ -406,12 +406,16 @@ export const findImagesByEntityConditions = (
         if (!('properties' in body)) return false;
 
         return conditions.every(c => { 
-          if (!c.Attribute || !c.Value) return; 
+          if (!c.Attribute || !c.Comparator) return; 
+
+          if (c.Comparator === 'IS' && !c.Value) return;
 
           const definition = type.properties.find(p => p.name === c.Attribute.value);
           if (definition) {
             const serialized = serializePropertyValue(definition, body.properties[c.Attribute.value]);
-            return serialized.includes(c.Value.value);
+            return c.Comparator === 'IS'
+              ? serialized.includes(c.Value.value)
+              : serialized.length > 0;
           }
         });
       });
