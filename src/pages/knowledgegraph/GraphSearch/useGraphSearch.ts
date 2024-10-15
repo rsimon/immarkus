@@ -47,11 +47,6 @@ export const useGraphSearch = (
 
   const [valueOptions, setValueOptions] = useState<DropdownOption[]>([]);
 
-  useEffect(() => {
-    if (initialValue !== sentence)
-      setSentence(initialValue);
-  }, [objectType, initialValue]);
-
   const updateSentence = (part: Partial<Sentence>) =>
     setSentence(prev => ({ ...prev, ...part }));
 

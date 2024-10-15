@@ -42,7 +42,7 @@ interface GraphSearchProps {
 
 }
 
-const EMPTY_CONDITION: Condition = { sentence: { ConditionType: 'WHERE' } };
+const EMPTY_CONDITION: Condition = { sentence: {} };
 
 export const GraphSearch = (props: GraphSearchProps) => {
 
