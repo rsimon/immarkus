@@ -10,6 +10,7 @@ import {
   ConditionType, 
   DropdownOption,
   Graph,
+  KnowledgeGraphSettings,
   NestedConditionSentence,
   ObjectType,
   Sentence, 
@@ -34,6 +35,8 @@ interface GraphSearchConditionBuilderProps {
 
   sentence: Partial<Sentence>;
 
+  settings: KnowledgeGraphSettings;
+
   onChange(sentence: Partial<Sentence>, matches?: string[]): void;
 
   onDelete(): void;
@@ -57,11 +60,12 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
 
   const conditionTypes = useMemo(() => props.objectType === 'IMAGE' ? [
     { label: 'where', value: 'WHERE' },
+    (props.settings.graphMode === 'RELATIONS' ? { label: 'with relation', value: 'WITH_RELATION' } : undefined),
     { label: 'with entity', value: 'WITH_ENTITY' },
     { label: 'with note', value: 'WITH_NOTE' }
-  ] : [
+  ].filter(Boolean) : [
     { label: 'where', value: 'WHERE' }
-  ], [props.objectType]);
+  ], [props.objectType, props.settings]);
 
   const showAddSubCondition = sentence.Value && sentence.ConditionType === 'WITH_ENTITY';
 

@@ -187,6 +187,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
               graph={props.graph}
               objectType={objectType}
               sentence={sentence}
+              settings={props.settings}
               onChange={(next, matches) => onChange(sentence, next, matches)}
               onDelete={() => onDelete(sentence)} />
           </div>
