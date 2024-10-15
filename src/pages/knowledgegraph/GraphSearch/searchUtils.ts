@@ -388,8 +388,7 @@ export const findImagesByEntityConditions = (
 
   const type = model.getEntityType(entityId, true);
 
-  // Should never happen
-  if ((type.properties || []).length === 0) return;
+  if ((type.properties || []).length === 0) return [];
 
   const descendants = 
     new Set(model.getDescendants(entityId).map(t => t.id));
