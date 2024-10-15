@@ -60,7 +60,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
 
   const conditionTypes = useMemo(() => props.objectType === 'IMAGE' ? [
     { label: 'where', value: 'WHERE' },
-    (props.settings.graphMode === 'RELATIONS' ? { label: 'with relation', value: 'WITH_RELATION' } : undefined),
+    (props.settings.graphMode === 'RELATIONS' ? { label: 'with relationship', value: 'WITH_RELATIONSHIP' } : undefined),
     { label: 'with entity', value: 'WITH_ENTITY' },
     { label: 'with note', value: 'WITH_NOTE' }
   ].filter(Boolean) : [
@@ -177,7 +177,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             }))}
 
         {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATION')) && (
+          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
             <Combobox 
               className={selectStyle}
               value={sentence.Value}

@@ -128,7 +128,7 @@ export const useGraphSearch = (
         const imageIds = findImagesByNote(annotations, sentence.Value.value);
         setMatches(imageIds);
       }
-    } else if (sentence.ConditionType === 'WITH_RELATION') {
+    } else if (sentence.ConditionType === 'WITH_RELATIONSHIP') {
       if (!sentence.Value) {
         const relations = store.listAllRelations();
 
