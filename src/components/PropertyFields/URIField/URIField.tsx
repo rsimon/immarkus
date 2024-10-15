@@ -87,7 +87,7 @@ export const URIField = (props: URIFieldProps) => {
         <div className={cn('flex h-9 w-full overflow-hidden shadow-sm bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
           <a 
             href={value} 
-            className="flex-grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
+            className="flex-grow text-sky-700 hover:underline whitespace-nowrap overflow-hidden text-ellipsis pr-1"
             target="_blank">{value}</a>
 
           <button 

@@ -26,6 +26,10 @@ html, body, #app {
   padding: 0;
 }
 
+body {
+  overflow: hidden;
+}
+
 .page-root {
   display: flex;
   flex-direction: row;
