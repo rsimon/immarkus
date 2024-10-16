@@ -16,9 +16,9 @@ interface RelationshipTypeEditorProps {
 
   open?: boolean;
 
-  relationshipType?: RelationshipType;
+  relationshipType?: Partial<RelationshipType>;
 
-  onClose?(): void;
+  onClose?(type?: RelationshipType): void;
 
 }
 
@@ -37,6 +37,10 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
   const [isSourceRestricted, setIsSourceRestricted] = useState(Boolean(relationship.sourceTypeId));
 
   const [isTargetRestricted, setIsTargetRestricted] = useState(Boolean(relationship.targetTypeId));
+
+  useEffect(() => {
+    setRelationship(props.relationshipType || {});
+  }, [props.relationshipType]);
 
   useEffect(() => {
     setOpen(props.open);
@@ -64,8 +68,12 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
         });
     }
 
+    if (props.onClose) {
+      const saved = relationship.name ? relationship : undefined;
+      props.onClose(saved as RelationshipType);
+    }
+
     setOpen(false);
-    if (props.onClose) props.onClose();
   }
 
   const onRestrictSource = (restrict: boolean) => {

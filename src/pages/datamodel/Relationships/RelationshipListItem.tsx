@@ -27,7 +27,7 @@ export const RelationshipListItem = (props: RelationshipListItemProps) => {
     const brightness = getBrightness(entity.color);
 
     return (
-      <div className="flex gap-1 items-center text-black text-xs">
+      <div className="flex gap-1.5 items-center text-black text-xs">
         <div 
           className="rounded-full text-white p-0.5" 
           style={{ 
@@ -47,10 +47,10 @@ export const RelationshipListItem = (props: RelationshipListItemProps) => {
 
   return (
     <div className="whitespace-nowrap bg-white text-black border shadow-sm rounded pl-4 pr-2 py-1 inline-flex items-center gap-2">
-      <span className="font-semibold">{name}</span>
+      <span>{name}</span>
 
       {(sourceTypeId || targetTypeId) && (
-        <div className="flex gap-4 ml-4 bg-muted py-1 px-2 rounded-md">
+        <div className="flex gap-5 ml-4 bg-muted py-1 px-2 rounded-md font-light">
           {sourceTypeId && renderEntityType(sourceTypeId, true)}
           {targetTypeId && renderEntityType(targetTypeId, false)}
         </div>
