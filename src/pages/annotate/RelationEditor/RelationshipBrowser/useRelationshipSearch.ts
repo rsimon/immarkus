@@ -49,21 +49,25 @@ export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnn
   const fuse = useMemo(() => new Fuse<RelationshipType>([...allTypes], { 
     keys: ['name'],
     shouldSort: true,
-    threshold: 0.6,
+    threshold: 0.2,
     includeScore: true 
   }), [allTypes.map(r => r.name).join(',')]);
 
   const search = useCallback((query: string, limit = 10): RelationshipSearchResult[] =>  {
+    console.log('search', query);
+
     const applicable = new Set(applicableTypes.map(t => t.name));
 
-    if (!query) return allTypes.map(t => ({ ...t, isApplicable: applicable.has(t.name)} ))
-
-    return fuse.search(query, { limit }).map(r => {
-      const { item } = r;
-      const isApplicable = applicable.has(item.name);
-
-      return { ...item, isApplicable };
-    });
+    if (query) { 
+      const results = fuse.search(query, { limit });
+      return results.map(r => {
+        const { item } = r;
+        const isApplicable = applicable.has(item.name);
+        return { ...item, isApplicable };
+      });
+    } else {
+      return allTypes.map(t => ({ ...t, isApplicable: applicable.has(t.name)} ));
+    }
   }, [fuse, allTypes, applicableTypes]);
 
   return { allTypes, applicableTypes, search };

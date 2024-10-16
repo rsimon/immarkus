@@ -38,7 +38,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
   }
 
   const onGetSuggestions = useCallback(({ value }: { value: string }) => {   
-    const suggestions = search(query);
+    const suggestions = search(value);
     setSuggestions(suggestions);
   }, [search]);
 
@@ -67,17 +67,17 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
             </div>
           ) : (
             suggestions.length === 0 ? (
-              <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
+              <div className="flex flex-col justify-center items-center p-6 text-xs text-muted-foreground font-light bg-muted">
                 <span>No types found.</span>
               </div>
             ) : !showNotApplicable && (
               <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
-                <span>No applicable types.</span>
+                <span>No applicable types found.</span>
 
                 <Button
                   size="sm"
-                  className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent hover:bg-white h-auto py-0.5 px-2 mt-4 rounded-full"
-                  variant="outline"
+                  className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent h-auto py-0.5 px-2 mt-2"
+                  variant="link"
                   onClick={() => setShowNotApplicable(true)}>
                   {suggestions.length} not applicable
                 </Button>
@@ -128,14 +128,14 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
         )}
       </div>
 
-      <div className="flex p-1 border-t">
+      <div className="flex p-1 border-t overflow-hidden">
         <Button
           size="sm"
-          className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto"
+          className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto overflow-hidden"
           variant="ghost">
           <Spline className="h-4 w-4" /> 
           Create {(query && !suggestions.some(t => t.name === query)) ? (
-            <>Type <span className="font-light border rounded px-1">{query}</span></>
+            <span className="font-light border rounded px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{query}</span>
           ) : 'New Type'}
         </Button>
       </div>
