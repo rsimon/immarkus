@@ -1,21 +1,31 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Undo2 } from 'lucide-react';
+import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
 import { Image, LoadedImage } from '@/model';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { useState } from 'react';
+import { ToolMode } from '../Tool';
+import { RelationEditor } from '../RelationEditor';
+
+const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface MoreToolsPanelProps {
 
   images: LoadedImage[];
+
+  mode: ToolMode;
 
   osdToolsDisabled: boolean;
 
   onAddImage(image: Image): void;
 
   onChangeImage(previous: Image, next: Image): void;
+
+  onChangeMode(props: ToolMode): void;
+
+  onOpenRelationEditor(open: boolean): void;
 
   onRedo(): void;
 
@@ -90,6 +100,22 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             <Redo2
               className="h-8 w-8 p-2" />
           </ToolbarButton>
+
+          <Separator orientation="vertical" className="h-4" />
+
+          {ENABLE_CONNECTOR_PLUGIN ? (
+            <button 
+              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-selected={props.mode === 'connect'}
+              data-state={props.mode === 'connect'}
+              onClick={() => props.onChangeMode('connect')}>
+              <Spline
+                className="h-8 w-8 p-2" /> Connect
+            </button>
+          ) : (
+            <RelationEditor 
+              onOpenChange={props.onOpenRelationEditor}/>
+          )}
         </section>
       </PopoverContent>
     </Popover>

@@ -127,9 +127,12 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <>
             <MoreToolsPanel 
               images={props.images}
+              mode={props.mode}
               osdToolsDisabled={osdToolsDisabled}
               onAddImage={props.onAddImage}
               onChangeImage={props.onChangeImage} 
+              onChangeMode={props.onChangeMode}
+              onOpenRelationEditor={onOpenRelationEditor}
               onRedo={onRedo}
               onRotate={onRotate}
               onUndo={onUndo} />
@@ -220,18 +223,20 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
 
-        {ENABLE_CONNECTOR_PLUGIN ? (
-          <button 
-            className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            aria-selected={props.mode === 'connect'}
-            data-state={props.mode === 'connect'}
-            onClick={() => props.onChangeMode('connect')}>
-            <Spline
-              className="h-8 w-8 p-2" /> Connect
-          </button>
-        ) : (
-          <RelationEditor 
-            onOpenChange={onOpenRelationEditor}/>
+        {!collapsed &&
+          (ENABLE_CONNECTOR_PLUGIN ? (
+            <button 
+              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-selected={props.mode === 'connect'}
+              data-state={props.mode === 'connect'}
+              onClick={() => props.onChangeMode('connect')}>
+              <Spline
+                className="h-8 w-8 p-2" /> Connect
+            </button>
+          ) : (
+            <RelationEditor 
+              onOpenChange={onOpenRelationEditor}/>
+          )
         )}
       </section>
     </section>
