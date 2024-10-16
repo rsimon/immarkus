@@ -1,1 +1,1 @@
-export * from './RelationshipBrowser';
+export * from './RelationshipBrowserPopover';

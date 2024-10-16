@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
-import { ComboboxOption, ComboboxState } from '@/components/Combobox';
-import { useDataModel } from '@/store';
+import { ComboboxOption } from '@/components/Combobox';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
-import { RelationshipBrowser } from './RelationshipBrowser';
+import { RelationshipBrowserPopover } from './RelationshipBrowser';
 
 interface RelationEditorContentProps {
   
@@ -23,59 +22,13 @@ interface RelationEditorContentProps {
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const { source, target } = props;
-
-  const model = useDataModel();
-
-  const options = useMemo(() => {
-    const getEntityTypes = (annotation: ImageAnnotation) => {
-      // The entity type ID tags on this annotation
-      const entityIds = annotation.bodies
-        .filter(b => b.purpose === 'classifying')
-        .map(body => (body as any).source as string);
-
-      // Resolve full parent hierarchy
-      const withAncestors = entityIds.reduce<string[]>((all, entityId) => {
-        return [...all, ...model.getAncestors(entityId).map(t => t.id)];
-      }, [...entityIds]);
-
-      // All entity classes the annotation is tagged with, incl. hierachical ancestors
-      return new Set(withAncestors); 
-    }
-
-    const sourceTypes = getEntityTypes(source);
-    const targetTypes = target ? getEntityTypes(target) : undefined;
-
-    const filteredBySource = model.relationshipTypes
-      .filter(type => !type.sourceTypeId || sourceTypes.has(type.sourceTypeId));
-
-    const filteredByTarget = targetTypes 
-      ? filteredBySource.filter(type => !type.targetTypeId || targetTypes.has(type.targetTypeId))
-      : filteredBySource; // No target yet - show all 
-
-    return filteredByTarget.map(t => ({ label: t.name, value: t.name }))
-  }, [source, target, model]);
   
   const [relation, setRelation] = useState<ComboboxOption | undefined>();
-
-  const [addTerm, setAddTerm] = useState<string | undefined>();
 
   useEffect(() => {
     // Reset the relation when the target changes (may no longer fit restrictions!)
     setRelation(undefined);
   }, [target?.id]);
-
-  const onComboboxStateChange = (state: ComboboxState) => {
-    // If the current search DOES NOT match the selected value, show 'add to vocab' button
-    const { search, value } = state;
-    const isMatch = search === value?.label;
-    setAddTerm(isMatch ? undefined : search);
-  }
-
-  const onAddTerm = (term: string) => {
-    model.upsertRelationshipType({ name: term });
-    setRelation(({ value: term, label: term }));
-    setAddTerm(undefined);
-  }
 
   const onSave = () => {
     if (props.target && relation)
@@ -144,7 +97,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
             </Combobox>
             */}
 
-            <RelationshipBrowser />
+            <RelationshipBrowserPopover />
           </div>
         </li>
       </ol>
