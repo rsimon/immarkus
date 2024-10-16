@@ -23,15 +23,11 @@ interface RelationshipBrowserProps {
 
 export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
-  const [query, setQuery] = useState('');
-
-  const [suggestions, setSuggestions] = useState<RelationshipSearchResult[]>([]);
-
   const [showNotApplicable, setShowNotApplicable] = useState(false);
 
-  const applicableSuggestions = useMemo(() =>  suggestions.filter(s => s.isApplicable), [suggestions]);
+  const { isApplicable, query, setQuery, results } = useRelationshipSearch(props.source, props.target);
 
-  const { search } = useRelationshipSearch(props.source, props.target);
+  const applicableSuggestions = useMemo(() =>  results.filter(s => s.isApplicable), [results]);
 
   const [createNew, setCreateNew] = useState<Partial<RelationshipType> | undefined>(undefined);
 
@@ -40,10 +36,9 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
       props.onSelect(result);
   }
 
-  const onGetSuggestions = useCallback(({ value }: { value: string }) => {   
-    const suggestions = search(value);
-    setSuggestions(suggestions);
-  }, [search]);
+  const onGetSuggestions = useCallback(({ value }: { value: string }) => {  
+    setQuery(value);
+  }, [setQuery]);
 
   const renderSuggestion = (type: RelationshipSearchResult, { isHighlighted }) => (
     <RelationshipBrowserSuggestion
@@ -61,13 +56,13 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
   const onCreated = (type?: RelationshipType) => {
     setCreateNew(undefined);
 
-    if (type) {
-      // Check if valid
+    if (type && isApplicable(type)) {
+      // Select and close
       props.onSelect(type);
     }
   }
 
-  const notApplicable = suggestions.length - applicableSuggestions.length;
+  const notApplicable = results.length - applicableSuggestions.length;
 
   return (
     <div>
@@ -86,7 +81,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
               {children}
             </div>
           ) : (
-            suggestions.length === 0 ? (
+            results.length === 0 ? (
               <div className="flex flex-col justify-center items-center p-6 text-xs text-muted-foreground font-light bg-muted">
                 <span>No types found.</span>
               </div>
@@ -99,7 +94,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
                   className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent h-auto py-0.5 px-2 mt-2"
                   variant="link"
                   onClick={() => setShowNotApplicable(true)}>
-                  {suggestions.length} not applicable
+                  {results.length} not applicable
                 </Button>
               </div>
             )
@@ -116,9 +111,9 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
         {(showNotApplicable && notApplicable > 0) ? (
           <div>
-            <ul>
-            <li>
-                {suggestions.filter(t => !t.isApplicable).map(t => (
+            <ul className={applicableSuggestions.length > 0 ? "w-full p-1 pt-0 -mt-1" : "w-full p-1 pt-0"}>
+              <li>
+                {results.filter(t => !t.isApplicable).map(t => (
                   <RelationshipBrowserSuggestion
                     key={t.name}
                     type={t} 
@@ -155,7 +150,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           variant="ghost"
           onClick={onCreateNew}>
           <Spline className="h-4 w-4" /> 
-          Create {(query && !suggestions.some(t => t.name === query)) ? (
+          Create {(query && !results.some(t => t.name === query)) ? (
             <span className="font-light border rounded px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{query}</span>
           ) : 'New Type'}
         </Button>

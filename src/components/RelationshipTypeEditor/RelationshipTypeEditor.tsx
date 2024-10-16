@@ -68,11 +68,12 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
         });
     }
 
-    setOpen(false);
     if (props.onClose) {
       const saved = relationship.name ? relationship : undefined;
       props.onClose(saved as RelationshipType);
     }
+
+    setOpen(false);
   }
 
   const onRestrictSource = (restrict: boolean) => {
