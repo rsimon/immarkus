@@ -47,7 +47,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
       shouldRenderSuggestions={() => true}
       renderSuggestion={renderSuggestion}
       renderSuggestionsContainer={({ containerProps, children }) => suggestions.length > 0 ? (
-        <div {...containerProps} key={containerProps.key} className="w-full px-1.5 py-2.5">
+        <div {...containerProps} key={containerProps.key} className="w-full p-1">
           {children}
         </div>
       ) : (
