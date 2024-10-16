@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
 import { ImageAnnotation } from '@annotorious/react';
 import { RelationshipType } from '@/model';
@@ -22,14 +22,10 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
   const { search } = useRelationshipSearch(props.source, props.target);
 
-  const updateSuggestions = (value?: string) => {
-    console.log('update suggestions', value);
-  }
-
-  const onGetSuggestions = ({ value }: { value: string }) => {   
-    console.log('get suggestions', value);
-    updateSuggestions(value);
-  }
+  const onGetSuggestions = useCallback(({ value }: { value: string }) => {   
+    const suggestions = search(query);
+    setSuggestions(suggestions);
+  }, [search]);
 
   const renderSuggestion = (type: RelationshipType, { isHighlighted }) => (
     <RelationshipBrowserSuggestion
@@ -44,7 +40,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
   return (
     <ReactAutosuggest
       alwaysRenderSuggestions
-      suggestions={[]} 
+      suggestions={suggestions} 
       getSuggestionValue={suggestion => suggestion.name}
       onSuggestionSelected={(_, { suggestion }) => onSelect(suggestion)}
       onSuggestionsFetchRequested={onGetSuggestions}
