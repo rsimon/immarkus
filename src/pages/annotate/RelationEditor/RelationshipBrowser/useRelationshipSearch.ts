@@ -54,8 +54,6 @@ export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnn
   }), [allTypes.map(r => r.name).join(',')]);
 
   const search = useCallback((query: string, limit = 10): RelationshipSearchResult[] =>  {
-    console.log('search', query);
-
     const applicable = new Set(applicableTypes.map(t => t.name));
 
     if (query) { 

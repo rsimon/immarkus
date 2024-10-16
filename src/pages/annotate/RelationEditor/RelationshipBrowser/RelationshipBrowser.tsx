@@ -55,6 +55,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
       <div>
         <ReactAutosuggest
           alwaysRenderSuggestions
+          focusInputOnSuggestionClick={false}
           suggestions={applicableSuggestions} 
           getSuggestionValue={suggestion => suggestion.name}
           onSuggestionSelected={(_, { suggestion }) => onSelect(suggestion)}
@@ -94,10 +95,10 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
             onChange: (_, { newValue }) => setQuery(newValue)
           }} />
 
-        {showNotApplicable ? (
+        {(showNotApplicable && notApplicable > 0) ? (
           <div>
             <ul>
-              <li>
+            <li>
                 {suggestions.filter(t => !t.isApplicable).map(t => (
                   <RelationshipBrowserSuggestion
                     key={t.name}
