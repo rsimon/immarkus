@@ -18,6 +18,8 @@ interface RelationshipBrowserProps {
 
   onSelect(relation: RelationshipType): void;
 
+  onCreateNew(name?: string): void;
+
 }
 
 export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
@@ -133,7 +135,8 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
         <Button
           size="sm"
           className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto overflow-hidden"
-          variant="ghost">
+          variant="ghost"
+          onClick={() => props.onCreateNew(query)}>
           <Spline className="h-4 w-4" /> 
           Create {(query && !suggestions.some(t => t.name === query)) ? (
             <span className="font-light border rounded px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{query}</span>
