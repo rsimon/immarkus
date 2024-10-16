@@ -39,11 +39,24 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
             className={fromId === refId ? 'border shadow-sm h-12 w-12' : 'border shadow-sm h-9 w-9'} /> 
         </div>
 
-        <div className="flex-grow h-[1px] border-gray-400 border-t border-dashed relative">
-          <div className="absolute -top-[0.75rem] w-full text-center">
+        <div className="flex-grow h-[1px] relative text-muted-foreground">
+          <svg 
+            width="100%" 
+            height={18}
+            className="absolute overflow-visible top-1/2 -mt-[10px] opacity-60">
+            <defs>
+              <marker id="arrowhead" markerWidth="8" markerHeight="9" refX="8" refY="3.5" orient="auto">
+                <line x1="0" y1="0" x2="8" y2="3.5" stroke="currentColor" />
+                <line x1="0" y1="7" x2="7" y2="3.5" stroke="currentColor" />
+              </marker>
+            </defs>
+
+            <line x1="0" y1="10" x2="100%" y2="10" stroke="currentColor" strokeWidth="1.2" markerEnd="url(#arrowhead)" />
+          </svg>
+          
+          <div className="absolute -top-[0.625rem] w-full text-center">
             <span className="bg-white px-1 font-light text-muted-foreground">{relationship || 'to'}</span>
           </div>
-          <div className="absolute -right-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[12px] border-l-gray-400"></div>
         </div>
 
         <div className={toId === refId ? undefined : 'p-1.5'}>
