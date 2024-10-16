@@ -5,7 +5,7 @@ import { RelationshipType } from '@/model';
 import { RelationshipBrowserSuggestion } from './RelationshipBrowserSuggestion';
 import { RelationshipBrowserInput } from './RelationshipBrowserInput';
 import { RelationshipSearchResult, useRelationshipSearch } from './useRelationshipSearch';
-import { Spline } from 'lucide-react';
+import { Eye, EyeOff, Spline } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 
@@ -77,7 +77,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           shouldRenderSuggestions={() => true}
           renderSuggestion={renderSuggestion}
           renderSuggestionsContainer={({ containerProps, children }) => applicableSuggestions.length > 0 ? (
-            <div {...containerProps} key={containerProps.key} className="w-full p-1">
+            <div {...containerProps} key={containerProps.key} className="w-full p-1 bg-muted">
               {children}
             </div>
           ) : (
@@ -86,15 +86,14 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
                 <span>No types found.</span>
               </div>
             ) : !showNotApplicable && (
-              <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
+              <div className="flex flex-col justify-center items-center px-2 pt-6 pb-4 text-xs bg-muted">
                 <span>No applicable types found.</span>
 
-                <Button
-                  size="sm"
-                  className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent h-auto py-0.5 px-2 mt-2"
-                  variant="link"
+                <Button 
+                  variant="outline"
+                  className="py-0.5 px-1.5 mt-3 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
                   onClick={() => setShowNotApplicable(true)}>
-                  {results.length} not applicable
+                  <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {results.length} not applicable type{results.length === 1 ? '' : 's'}
                 </Button>
               </div>
             )
@@ -110,7 +109,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           }} />
 
         {(showNotApplicable && notApplicable > 0) ? (
-          <div>
+          <div className="bg-muted">
             <ul className={applicableSuggestions.length > 0 ? "w-full p-1 pt-0 -mt-1" : "w-full p-1 pt-0"}>
               <li>
                 {results.filter(t => !t.isApplicable).map(t => (
@@ -122,38 +121,49 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
               </li>
             </ul>
 
-            <div className="flex justify-center bg-muted border-t">
+            <div className="flex justify-center bg-muted pt-1 pb-3">
               <Button
-                variant="link"
-                className="text-[11.5px] font-normal text-muted-foreground"
+                variant="outline"
+                className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
                 onClick={() => setShowNotApplicable(false)}>
-                Hide not applicable types.
+                <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} /> Hide not applicable types.
               </Button>
             </div>
           </div>
         ) : (notApplicable > 0 && applicableSuggestions.length > 0) && (
-          <div className="flex justify-center bg-muted border-t">
+          <div className="flex justify-center bg-muted pt-1 pb-3">
             <Button 
-              variant="link"
-              className="text-[11.5px] font-normal text-muted-foreground"
+              variant="outline"
+              className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
               onClick={() => setShowNotApplicable(true)}>
-              {notApplicable} not applicable type{notApplicable === 1 ? '' : 's'}
+              <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {notApplicable} not applicable type{notApplicable === 1 ? '' : 's'}
             </Button>
           </div>
         )}
       </div>
 
-      <div className="flex p-1 border-t overflow-hidden">
-        <Button
-          size="sm"
-          className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto overflow-hidden"
-          variant="ghost"
-          onClick={onCreateNew}>
-          <Spline className="h-4 w-4" /> 
-          Create {(query && !results.some(t => t.name === query)) ? (
-            <span className="font-light border rounded px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{query}</span>
-          ) : 'New Type'}
-        </Button>
+      <div className="flex px-1 pt-2 pb-1.5 border-t overflow-hidden">
+        {(query && !results.some(t => t.name === query)) ? (
+          <div className="px-1.5 py-1 flex gap-1 items-center text-[11px] text-muted-foreground">
+            <Spline className="h-4 w-4" /> Create
+            <Button
+              size="sm"
+              className="font-light border h-auto text-[11px] rounded px-1.5 py-1 whitespace-nowrap overflow-hidden text-ellipsis"
+              variant="ghost"
+              onClick={onCreateNew}>
+              {query}
+            </Button>
+          </div>
+        ): (
+          <Button
+            size="sm"
+            className="px-1.5 pr-2 pt-2 pb-1.5 text-[11px] text-muted-foreground flex gap-1 h-auto overflow-hidden"
+            variant="ghost"
+            onClick={onCreateNew}>
+            <Spline className="h-4 w-4" /> 
+            Create New Type
+          </Button>
+        )}
       </div>
 
       <RelationshipTypeEditor 
