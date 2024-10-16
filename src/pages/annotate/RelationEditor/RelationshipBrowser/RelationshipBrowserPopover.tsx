@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
+import { RelationshipBrowser } from './RelationshipBrowser';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
-import { RelationshipBrowser } from './RelationshipBrowser';
 
 interface RelationshipBrowserPopoverProps {
 
-  disabled?: boolean;
+  source: ImageAnnotation;
 
-  placeholder?: string;
-
-  value?: string;
+  target?: ImageAnnotation;
 
 }
 
 export const RelationshipBrowserPopover = (props: RelationshipBrowserPopoverProps) => {
 
-  const { disabled, placeholder, value } = props;
+  const { source, target } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -28,15 +27,13 @@ export const RelationshipBrowserPopover = (props: RelationshipBrowserPopoverProp
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          disabled={disabled}
+          disabled={!target}
           variant="outline"
           role="combobox"
           aria-expanded={open}
           className="w-56 text-xs font-normal justify-between overflow-hidden relative">
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-            {value
-              ? value
-              : placeholder}
+            Foo
           </span>
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -45,7 +42,9 @@ export const RelationshipBrowserPopover = (props: RelationshipBrowserPopoverProp
       <PopoverContent 
         align="start"
         className="w-56 p-0 overflow-hidden">
-        <RelationshipBrowser />
+        <RelationshipBrowser 
+          source={source}
+          target={target} />
       </PopoverContent>
     </Popover>
   )

@@ -97,7 +97,9 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
             </Combobox>
             */}
 
-            <RelationshipBrowserPopover />
+            <RelationshipBrowserPopover 
+              source={source} 
+              target={target} />
           </div>
         </li>
       </ol>

@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { Search } from 'lucide-react';
 import { RenderInputComponentProps } from 'react-autosuggest';
 
@@ -7,9 +8,7 @@ interface RelationshipBrowserInputProps extends RenderInputComponentProps  {
 
 }
 
-export const RelationshipBrowserInput = (props: RelationshipBrowserInputProps) => {
-
-  const { ...inputProps } = props;
+export const RelationshipBrowserInput = forwardRef((props: RelationshipBrowserInputProps, ref: React.Ref<HTMLDivElement>) => {
 
   return (
     <div className="flex border-b items-center py-1.5 px-1 text-xs">
@@ -17,10 +16,10 @@ export const RelationshipBrowserInput = (props: RelationshipBrowserInputProps) =
 
       <input 
         autoFocus
-        {...inputProps}
+        {...props}
         placeholder="Search..."
         className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
     </div>
   )
 
-}
+});

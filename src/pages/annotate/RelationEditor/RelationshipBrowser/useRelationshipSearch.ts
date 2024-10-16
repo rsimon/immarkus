@@ -1,14 +1,22 @@
-import { useMemo } from 'react';
-import { useDataModel } from '@/store';
+import { useCallback, useMemo } from 'react';
+import Fuse from 'fuse.js';
 import { ImageAnnotation } from '@annotorious/react';
+import { RelationshipType } from '@/model';
+import { useDataModel } from '@/store';
+
+interface RelationshipSearchResult extends RelationshipType {
+
+  isApplicable: boolean;
+
+}
 
 export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnnotation) => {
 
   const model = useDataModel();
 
-  const allRelationshipTypes = model.relationshipTypes;
+  const allTypes = model.relationshipTypes;
 
-  const applicableRelationshipTypes = useMemo(() => {
+  const applicableTypes = useMemo(() => {
     if (!target) return [];
 
     const getEntityTypes = (annotation: ImageAnnotation) => {
@@ -38,6 +46,24 @@ export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnn
     return filteredByTarget;
   }, [source, target, model]);
 
-  return { allRelationshipTypes, applicableRelationshipTypes };
+  const fuse = useMemo(() => new Fuse<RelationshipType>([...allTypes], { 
+    keys: ['name'],
+    shouldSort: true,
+    threshold: 0.6,
+    includeScore: true 
+  }), [allTypes.map(r => r.name).join(',')]);
+
+  const search = useCallback((query: string, limit = 10) =>  {
+    const applicable = new Set(applicableTypes.map(t => t.name));
+
+    return fuse.search(query, { limit }).map(r => {
+      const { item } = r;
+      const isApplicable = applicable.has(item.name);
+
+      return { ...item, isApplicable } as RelationshipSearchResult;
+    });
+  }, [fuse, applicableTypes]);
+
+  return { allTypes, applicableTypes, search };
 
 }

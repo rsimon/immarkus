@@ -1,10 +1,16 @@
-import { RelationshipType } from '@/model';
 import { useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
+import { ImageAnnotation } from '@annotorious/react';
+import { RelationshipType } from '@/model';
 import { RelationshipBrowserSuggestion } from './RelationshipBrowserSuggestion';
 import { RelationshipBrowserInput } from './RelationshipBrowserInput';
+import { useRelationshipSearch } from './useRelationshipSearch';
 
 interface RelationshipBrowserProps {
+
+  source: ImageAnnotation;
+
+  target?: ImageAnnotation;
 
 }
 
@@ -12,9 +18,9 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
   const [query, setQuery] = useState('');
 
-  const [selected, setSelected] = useState<RelationshipType | undefined>();
-
   const [suggestions, setSuggestions] = useState<RelationshipType[]>([]);
+
+  const { search } = useRelationshipSearch(props.source, props.target);
 
   const updateSuggestions = (value?: string) => {
     console.log('update suggestions', value);
@@ -32,7 +38,6 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
   )
 
   const onSelect = (type: RelationshipType) => {
-    setSelected(type);
     // props.onSelect(type);
   }
 
@@ -55,7 +60,9 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
         </div>
       )}
       renderInputComponent={inputProps => (
-        <RelationshipBrowserInput {...inputProps} />
+        <RelationshipBrowserInput 
+          {...inputProps} 
+          key={'key' in inputProps ? inputProps.key as string : undefined} />
       )}
       inputProps={{
         value: query,
