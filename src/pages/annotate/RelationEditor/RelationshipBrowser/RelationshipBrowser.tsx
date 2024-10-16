@@ -7,6 +7,7 @@ import { RelationshipBrowserInput } from './RelationshipBrowserInput';
 import { RelationshipSearchResult, useRelationshipSearch } from './useRelationshipSearch';
 import { Spline } from 'lucide-react';
 import { Button } from '@/ui/Button';
+import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 
 interface RelationshipBrowserProps {
 
@@ -17,8 +18,6 @@ interface RelationshipBrowserProps {
   relation: RelationshipType;
 
   onSelect(relation: RelationshipType): void;
-
-  onCreateNew(name?: string): void;
 
 }
 
@@ -34,6 +33,8 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
   const { search } = useRelationshipSearch(props.source, props.target);
 
+  const [createNew, setCreateNew] = useState<Partial<RelationshipType> | undefined>(undefined);
+
   const onSelect = (result: RelationshipSearchResult) => {
     if (result.isApplicable)
       props.onSelect(result);
@@ -48,7 +49,23 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
     <RelationshipBrowserSuggestion
       type={type} 
       highlighted={isHighlighted} />
-  )
+  );
+
+  const onCreateNew = () => {
+    if (query)
+      setCreateNew({ name: query });
+    else
+      setCreateNew({});
+  }
+
+  const onCreated = (type?: RelationshipType) => {
+    setCreateNew(undefined);
+
+    if (type) {
+      // Check if valid
+      props.onSelect(type);
+    }
+  }
 
   const notApplicable = suggestions.length - applicableSuggestions.length;
 
@@ -136,13 +153,18 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           size="sm"
           className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto overflow-hidden"
           variant="ghost"
-          onClick={() => props.onCreateNew(query)}>
+          onClick={onCreateNew}>
           <Spline className="h-4 w-4" /> 
           Create {(query && !suggestions.some(t => t.name === query)) ? (
             <span className="font-light border rounded px-1.5 py-0.5 whitespace-nowrap overflow-hidden text-ellipsis">{query}</span>
           ) : 'New Type'}
         </Button>
       </div>
+
+      <RelationshipTypeEditor 
+        open={Boolean(createNew)} 
+        relationshipType={createNew}
+        onClose={onCreated} />
     </div>
   )
 

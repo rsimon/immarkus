@@ -9,7 +9,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/ui/Popover';
-import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 
 interface RelationshipBrowserPopoverProps {
 
@@ -29,59 +28,37 @@ export const RelationshipBrowserPopover = (props: RelationshipBrowserPopoverProp
 
   const [open, setOpen] = useState(false);
 
-  const [createNew, setCreateNew] = useState<Partial<RelationshipType> | undefined>(undefined);
-
   const onSelect = (relation: RelationshipType) => {
     setOpen(false);
     props.onChange(relation);
   }
 
-  const onCreateNew = (name?: string) => {
-    if (name)
-      setCreateNew({ name });
-    else
-      setCreateNew({});
-  }
-
-  const onCreated = (type?: RelationshipType) => {
-    // TODO
-    setCreateNew(undefined)
-  }
-
   return (
-    <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            disabled={!target}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="w-56 text-xs font-normal justify-between overflow-hidden relative">
-            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-              {props.relation ? props.relation.name : ''}
-            </span>
-            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          disabled={!target}
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-56 text-xs font-normal justify-between overflow-hidden relative">
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            {props.relation ? props.relation.name : ''}
+          </span>
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
 
-        <PopoverContent 
-          align="start"
-          className="w-56 p-0 overflow-hidden">
-          <RelationshipBrowser 
-            source={source}
-            target={target} 
-            relation={props.relation}
-            onSelect={onSelect} 
-            onCreateNew={onCreateNew} />
-        </PopoverContent>
-      </Popover>
-
-      <RelationshipTypeEditor 
-        open={Boolean(createNew)} 
-        relationshipType={createNew}
-        onClose={onCreated} />
-    </>
+      <PopoverContent 
+        align="start"
+        className="w-56 p-0 overflow-hidden">
+        <RelationshipBrowser 
+          source={source}
+          target={target} 
+          relation={props.relation}
+          onSelect={onSelect} />
+      </PopoverContent>
+    </Popover>
   )
 
 }
