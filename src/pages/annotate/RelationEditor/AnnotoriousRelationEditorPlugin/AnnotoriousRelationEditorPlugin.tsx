@@ -1,7 +1,7 @@
 import OpenSeadragon from 'openseadragon';
 import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from '@annotorious/react';
 import { useEffect } from 'react';
-import { useRelationEditor } from './RelationEditorRoot';
+import { useRelationEditor } from '../RelationEditorRoot';
 import { useStore } from '@/store';
 
 interface AnnotoriousRelationEditorPluginProps {

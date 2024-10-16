@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CirclePlus, Spline } from 'lucide-react';
+import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
-import { Combobox, ComboboxOption, ComboboxState } from '@/components/Combobox';
-import { RelationshipType } from '@/model';
+import { ComboboxOption, ComboboxState } from '@/components/Combobox';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
+import { RelationshipBrowser } from './RelationshipBrowser';
 
 interface RelationEditorContentProps {
   
@@ -118,6 +118,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
           Choose a relation type.
 
           <div className="ml-4 mt-2">
+            {/*
             <Combobox
               className="w-56"
               disabled={!target}
@@ -141,6 +142,9 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
               )}
 
             </Combobox>
+            */}
+
+            <RelationshipBrowser />
           </div>
         </li>
       </ol>
