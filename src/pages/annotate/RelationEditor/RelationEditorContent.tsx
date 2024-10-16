@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Spline } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
-import { ComboboxOption } from '@/components/Combobox';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 import { RelationshipBrowserPopover } from './RelationshipBrowser';
+import { RelationshipType } from '@/model';
 
 interface RelationEditorContentProps {
   
@@ -23,7 +23,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const { source, target } = props;
   
-  const [relation, setRelation] = useState<ComboboxOption | undefined>();
+  const [relation, setRelation] = useState<RelationshipType | undefined>();
 
   useEffect(() => {
     // Reset the relation when the target changes (may no longer fit restrictions!)
@@ -32,7 +32,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
   const onSave = () => {
     if (props.target && relation)
-      props.onSave(source, props.target, relation.value);
+      props.onSave(source, props.target, relation.name);
   }
 
   return (
@@ -71,35 +71,11 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
           Choose a relation type.
 
           <div className="ml-4 mt-2">
-            {/*
-            <Combobox
-              className="w-56"
-              disabled={!target}
-              value={relation}
-              options={options}
-              onChange={setRelation}
-              onStateChange={onComboboxStateChange}>
-
-              {addTerm && (
-                <div className="p-2 border-t bg-muted">
-                  <p className="p-1 pb-2 text-center text-xs text-muted-foreground">
-                    Add to vocabulary:
-                  </p>
-                  <Button 
-                    size="sm"
-                    className="w-full font-semibold text-xs"
-                    onClick={() => onAddTerm(addTerm)}>
-                    <CirclePlus className="h-4 w-4 mr-2" />{addTerm}
-                  </Button>
-                </div>
-              )}
-
-            </Combobox>
-            */}
-
             <RelationshipBrowserPopover 
               source={source} 
-              target={target} />
+              target={target} 
+              relation={relation}
+              onChange={setRelation} />
           </div>
         </li>
       </ol>

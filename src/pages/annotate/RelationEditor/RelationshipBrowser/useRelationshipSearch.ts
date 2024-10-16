@@ -4,7 +4,7 @@ import { ImageAnnotation } from '@annotorious/react';
 import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 
-interface RelationshipSearchResult extends RelationshipType {
+export interface RelationshipSearchResult extends RelationshipType {
 
   isApplicable: boolean;
 
