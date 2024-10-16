@@ -53,16 +53,18 @@ export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnn
     includeScore: true 
   }), [allTypes.map(r => r.name).join(',')]);
 
-  const search = useCallback((query: string, limit = 10) =>  {
+  const search = useCallback((query: string, limit = 10): RelationshipSearchResult[] =>  {
     const applicable = new Set(applicableTypes.map(t => t.name));
+
+    if (!query) return allTypes.map(t => ({ ...t, isApplicable: applicable.has(t.name)} ))
 
     return fuse.search(query, { limit }).map(r => {
       const { item } = r;
       const isApplicable = applicable.has(item.name);
 
-      return { ...item, isApplicable } as RelationshipSearchResult;
+      return { ...item, isApplicable };
     });
-  }, [fuse, applicableTypes]);
+  }, [fuse, allTypes, applicableTypes]);
 
   return { allTypes, applicableTypes, search };
 

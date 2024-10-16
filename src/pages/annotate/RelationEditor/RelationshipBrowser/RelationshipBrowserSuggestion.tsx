@@ -49,7 +49,7 @@ export const RelationshipBrowserSuggestion = (props: RelationshipBrowserSuggesti
 
   return (
     <div 
-      className="flex items-center justify-between text-xs py-1 pl-2 pr-2.5 rounded-sm cursor-pointer data-[highlighted]:bg-accent data-[not-applicable]:opacity-40"
+      className="flex items-center justify-between text-xs py-2 pl-2 pr-2.5 rounded-sm cursor-pointer data-[highlighted]:bg-accent data-[not-applicable]:opacity-40"
       data-highlighted={(isApplicable && props.highlighted) ? 'true' : undefined}
       data-not-applicable={isApplicable ? undefined : 'true'}>
       {name}

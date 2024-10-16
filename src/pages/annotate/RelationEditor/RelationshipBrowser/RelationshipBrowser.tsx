@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
 import { ImageAnnotation } from '@annotorious/react';
 import { RelationshipType } from '@/model';
@@ -28,7 +28,14 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
   const [showNotApplicable, setShowNotApplicable] = useState(false);
 
+  const applicableSuggestions = useMemo(() =>  suggestions.filter(s => s.isApplicable), [suggestions]);
+
   const { search } = useRelationshipSearch(props.source, props.target);
+
+  const onSelect = (result: RelationshipSearchResult) => {
+    if (result.isApplicable)
+      props.onSelect(result);
+  }
 
   const onGetSuggestions = useCallback(({ value }: { value: string }) => {   
     const suggestions = search(query);
@@ -41,33 +48,41 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
       highlighted={isHighlighted} />
   )
 
+  const notApplicable = suggestions.length - applicableSuggestions.length;
+
   return (
     <div>
       <div>
         <ReactAutosuggest
           alwaysRenderSuggestions
-          suggestions={suggestions} 
+          suggestions={applicableSuggestions} 
           getSuggestionValue={suggestion => suggestion.name}
-          onSuggestionSelected={(_, { suggestion }) => props.onSelect(suggestion)}
+          onSuggestionSelected={(_, { suggestion }) => onSelect(suggestion)}
           onSuggestionsFetchRequested={onGetSuggestions}
           shouldRenderSuggestions={() => true}
           renderSuggestion={renderSuggestion}
-          renderSuggestionsContainer={({ containerProps, children }) => suggestions.length > 0 ? (
+          renderSuggestionsContainer={({ containerProps, children }) => applicableSuggestions.length > 0 ? (
             <div {...containerProps} key={containerProps.key} className="w-full p-1">
               {children}
             </div>
           ) : (
-            <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
-              No applicable types.
+            suggestions.length === 0 ? (
+              <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
+                <span>No types found.</span>
+              </div>
+            ) : !showNotApplicable && (
+              <div className="flex flex-col justify-center items-center p-6 text-xs bg-muted">
+                <span>No applicable types.</span>
 
-              <Button
-                size="sm"
-                className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent hover:bg-white h-auto py-0.5 px-2 mt-4 rounded-full"
-                variant="outline"
-                onClick={() => setShowNotApplicable(true)}>
-                3 not applicable
-              </Button>
-            </div>
+                <Button
+                  size="sm"
+                  className="text-[11.5px] whitespace-nowrap font-normal text-muted-foreground bg-transparent hover:bg-white h-auto py-0.5 px-2 mt-4 rounded-full"
+                  variant="outline"
+                  onClick={() => setShowNotApplicable(true)}>
+                  {suggestions.length} not applicable
+                </Button>
+              </div>
+            )
           )}
           renderInputComponent={inputProps => (
             <RelationshipBrowserInput 
@@ -78,6 +93,39 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
             value: query,
             onChange: (_, { newValue }) => setQuery(newValue)
           }} />
+
+        {showNotApplicable ? (
+          <div>
+            <ul>
+              <li>
+                {suggestions.filter(t => !t.isApplicable).map(t => (
+                  <RelationshipBrowserSuggestion
+                    key={t.name}
+                    type={t} 
+                    highlighted={false} />
+                ))}
+              </li>
+            </ul>
+
+            <div className="flex justify-center bg-muted border-t">
+              <Button
+                variant="link"
+                className="text-[11.5px] font-normal text-muted-foreground"
+                onClick={() => setShowNotApplicable(false)}>
+                Hide not applicable types.
+              </Button>
+            </div>
+          </div>
+        ) : (notApplicable > 0 && applicableSuggestions.length > 0) && (
+          <div className="flex justify-center bg-muted border-t">
+            <Button 
+              variant="link"
+              className="text-[11.5px] font-normal text-muted-foreground"
+              onClick={() => setShowNotApplicable(true)}>
+              {notApplicable} not applicable type{notApplicable === 1 ? '' : 's'}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="flex p-1 border-t">
@@ -86,7 +134,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           className="px-1.5 pr-2 py-1 text-xs text-muted-foreground flex gap-1 h-auto"
           variant="ghost">
           <Spline className="h-4 w-4" /> 
-          Create {query ? (
+          Create {(query && !suggestions.some(t => t.name === query)) ? (
             <>Type <span className="font-light border rounded px-1">{query}</span></>
           ) : 'New Type'}
         </Button>
