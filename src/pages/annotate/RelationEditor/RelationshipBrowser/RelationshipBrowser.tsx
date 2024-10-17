@@ -77,16 +77,16 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           shouldRenderSuggestions={() => true}
           renderSuggestion={renderSuggestion}
           renderSuggestionsContainer={({ containerProps, children }) => applicableSuggestions.length > 0 ? (
-            <div {...containerProps} key={containerProps.key} className="w-full p-1 bg-muted">
+            <div {...containerProps} key={containerProps.key} className="w-full bg-muted">
               {children}
             </div>
           ) : (
             results.length === 0 ? (
-              <div className="flex flex-col justify-center items-center p-6 text-xs text-muted-foreground font-light bg-muted">
+              <div className="flex flex-col border-b justify-center items-center p-6 text-xs text-muted-foreground font-light bg-muted">
                 <span>No types found.</span>
               </div>
             ) : !showNotApplicable && (
-              <div className="flex flex-col justify-center items-center px-2 pt-6 pb-4 text-xs bg-muted">
+              <div className="flex flex-col justify-center items-center border-b px-2 pt-6 pb-4 text-xs bg-muted">
                 <span>No applicable types found.</span>
 
                 <Button 
@@ -110,7 +110,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
         {(showNotApplicable && notApplicable > 0) ? (
           <div className="bg-muted">
-            <ul className={applicableSuggestions.length > 0 ? "w-full p-1 pt-0 -mt-1" : "w-full p-1 pt-0"}>
+            <ul className={applicableSuggestions.length > 0 ? "w-full p-1 pt-0" : "w-full p-1 pt-0"}>
               <li>
                 {results.filter(t => !t.isApplicable).map(t => (
                   <RelationshipBrowserSuggestion
@@ -121,7 +121,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
               </li>
             </ul>
 
-            <div className="flex justify-center bg-muted pt-1 pb-3">
+            <div className="flex justify-center bg-muted border-b pt-3 pb-3">
               <Button
                 variant="outline"
                 className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
@@ -131,7 +131,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
             </div>
           </div>
         ) : (notApplicable > 0 && applicableSuggestions.length > 0) && (
-          <div className="flex justify-center bg-muted pt-1 pb-3">
+          <div className="flex justify-center bg-muted pt-3 pb-3 border-b">
             <Button 
               variant="outline"
               className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
@@ -142,7 +142,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
         )}
       </div>
 
-      <div className="flex px-1 pt-2 pb-1.5 border-t overflow-hidden">
+      <div className="flex px-1 pt-2 pb-1.5 overflow-hidden">
         {(query && !results.some(t => t.name === query)) ? (
           <div className="px-1.5 py-1 flex gap-1 items-center text-[11px] text-muted-foreground overflow-hidden">
             <Spline className="h-4 w-4" /> Create

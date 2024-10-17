@@ -112,6 +112,11 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     setRelationsEditorOpen(props.mode === 'connect');
   }, [props.mode]);
 
+  useEffect(() => {
+    // If collapsed state changes, this will force-unmount the RelationEditor...
+    props.onChangeMode('move');
+  }, [collapsed]);
+
   return (
     <section 
       ref={ref}
