@@ -3,10 +3,10 @@ import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from
 import { useEffect } from 'react';
 import { useRelationEditor } from '../RelationEditorRoot';
 import { useStore } from '@/store';
-import { useHover } from './useHover';
-import { isConnectedTo } from './useRelationEmphasisStyle';
+// import { useHover } from './useHover';
+// import { isConnectedTo } from './useRelationEmphasisStyle';
 
-import './AnnotoriousRelationEditorPlugin.css';
+// import './AnnotoriousRelationEditorPlugin.css';
 
 interface AnnotoriousRelationEditorPluginProps {
 
@@ -20,7 +20,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
-  const hover = useHover();
+  // const hover = useHover();
 
   const { source, setTarget, cancel } = useRelationEditor();
 
@@ -36,7 +36,9 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
       const annotation: ImageAnnotation = (anno.state.store as any).getAt(x, y);
       if (annotation) {
-        const isValidTarget = annotation.id !== source.id && !isConnectedTo(source.id, store).has(annotation.id);   
+        const isValidTarget = // annotation.id !== source.id && !isConnectedTo(source.id, store).has(annotation.id); 
+          annotation.id !== source.id;
+
         if (isValidTarget)
           setTarget(annotation);
       } else {
@@ -66,6 +68,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
     }
   }, [anno, store]);
 
+  /*
   useEffect(() => {
     if (!props.enabled || !source) return;
 
@@ -81,6 +84,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
       canvas.classList.remove('not-allowed');
     }
   }, [props.enabled, source, hover, store]);
+  */
 
   return null;
 
