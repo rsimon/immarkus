@@ -144,11 +144,11 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
 
       <div className="flex px-1 pt-2 pb-1.5 border-t overflow-hidden">
         {(query && !results.some(t => t.name === query)) ? (
-          <div className="px-1.5 py-1 flex gap-1 items-center text-[11px] text-muted-foreground">
+          <div className="px-1.5 py-1 flex gap-1 items-center text-[11px] text-muted-foreground overflow-hidden">
             <Spline className="h-4 w-4" /> Create
             <Button
               size="sm"
-              className="font-light border h-auto text-[11px] rounded px-1.5 py-1 whitespace-nowrap overflow-hidden text-ellipsis"
+              className="block font-light border h-auto text-[11px] rounded px-1.5 py-1 whitespace-nowrap overflow-hidden text-ellipsis"
               variant="ghost"
               onClick={onCreateNew}>
               {query}

@@ -55,7 +55,10 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
           </svg>
           
           <div className="absolute -top-[0.625rem] w-full text-center">
-            <span className="bg-white px-1 font-light text-muted-foreground">{relationship || 'to'}</span>
+            <span 
+              className="bg-white inline-block px-1 font-light text-muted-foreground whitespace-nowrap max-w-[80%] overflow-hidden text-ellipsis">
+              {relationship || 'to'}
+            </span>
           </div>
         </div>
 
