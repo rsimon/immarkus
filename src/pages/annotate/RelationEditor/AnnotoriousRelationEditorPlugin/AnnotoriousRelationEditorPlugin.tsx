@@ -29,17 +29,16 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
     const { viewer } = anno;
 
+    const { store } = anno.state;
+
     const onPointerDown = (evt: PointerEvent) => {
       const { offsetX, offsetY } = evt;
 
       const { x, y } = viewer.viewport.viewerElementToImageCoordinates(new OpenSeadragon.Point(offsetX, offsetY));
 
-      const annotation: ImageAnnotation = (anno.state.store as any).getAt(x, y);
+      const annotation: ImageAnnotation = (store as any).getAt(x, y);
       if (annotation) {
-        const isValidTarget = // annotation.id !== source.id && !isConnectedTo(source.id, store).has(annotation.id); 
-          annotation.id !== source.id;
-
-        if (isValidTarget)
+        if (annotation.id !== source?.id)
           setTarget(annotation);
       } else {
         cancel();
@@ -51,7 +50,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
     return () => {
       viewer.element?.removeEventListener('pointerdown', onPointerDown);
     }
-  }, [anno, props.enabled]);
+  }, [anno, props.enabled, source]);
 
   useEffect(() => {
     if (!anno || !store) return;
