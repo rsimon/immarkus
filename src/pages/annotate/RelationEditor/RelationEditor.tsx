@@ -13,6 +13,8 @@ import { useRelationEditor } from './RelationEditorRoot';
 
 interface RelationEditorProps {
 
+  open: boolean;
+
   onOpenChange(open: boolean): void;
 
 }
@@ -23,12 +25,8 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
   const { setSavingState } = useSavingState();
 
-  const [open, setOpen] = useState(false);
-
-  const onCancel = () => {
-    setOpen(false);
+  const onCancel = () =>
     props.onOpenChange(false);
-  }
 
   const { source, setSource, target, setTarget } = useRelationEditor({ onCancel });
 
@@ -44,19 +42,17 @@ export const RelationEditor = (props: RelationEditorProps) => {
   }, [selection]);
 
   // Don't enable if there is no selection, or no relationship types
-  const disabled = !open && selection.selected.length === 0;
+  const disabled = !props.open && selection.selected.length === 0;
 
   useEffect(() => {
     // When the editor opens, keep the current selection as source
-    if (open) {
+    if (props.open) {
       setSource(lastSelected.current);
     } else {
       setSource(undefined);
       setTarget(undefined)
     }
-    
-    props.onOpenChange(open);
-  }, [open]);
+  }, [props.open]);
 
   const onSave = (from: ImageAnnotation, to: ImageAnnotation, relation: string) => {
     const id = uuidv4();
@@ -81,7 +77,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
     store.upsertRelation(link, meta).then(() => {
       setSource(undefined);
-      setOpen(false);  
+      props.onOpenChange(false);  
       setSavingState({ value: 'success' });
     }).catch(error => {
       console.error(error);
@@ -90,13 +86,14 @@ export const RelationEditor = (props: RelationEditorProps) => {
   }
 
   return (
-    <Popover open={open}>
+    <Popover 
+      open={props.open}>
       <PopoverTrigger asChild>
         <div>
           <ToolbarButton
             className="flex items-center pr-2"
             disabled={disabled}
-            onClick={() => setOpen(open => !open)}>
+            onClick={() => props.onOpenChange(!props.open)}>
             <Spline
               className="h-8 w-8 p-2" /> Relation
           </ToolbarButton>
@@ -113,7 +110,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
             source={source} 
             target={target}
             onSave={onSave} 
-            onCancel={() => setOpen(false)} />
+            onCancel={() => props.onOpenChange(false)} />
         )}
       </PopoverContent>
     </Popover>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
@@ -54,6 +55,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const osdToolsDisabled = props.images.length > 1;
 
+  const [relationsEditorOpen, setRelationsEditorOpen] = useState(false);
+
   /** 
    * The toolbar has a 'collapsed mode', GDocs-style, 
    * which we'll enable as soon as it overflows.
@@ -65,6 +68,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
       props.onChangeTool(tool);
 
     props.onChangeMode('draw');
+
+    if (relationsEditorOpen)
+      setRelationsEditorOpen(false);
   }
 
   const onRotate = (clockwise: boolean) => {
@@ -94,13 +100,17 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     ? `/images/${folder && ('id' in folder) ? folder.id : ''}`
     : '/images/';
 
-  const onOpenRelationEditor = (open: boolean) => {
+  const onRelationsEditorOpenChange = (open: boolean) => {
     if (open) {
       props.onChangeMode('connect');
     } else {
       props.onChangeMode('move');
     }
   }
+
+  useEffect(() => {
+    setRelationsEditorOpen(props.mode === 'connect');
+  }, [props.mode]);
 
   return (
     <section 
@@ -128,11 +138,12 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <MoreToolsPanel 
               images={props.images}
               mode={props.mode}
+              relationsEditorOpen={relationsEditorOpen}
               osdToolsDisabled={osdToolsDisabled}
               onAddImage={props.onAddImage}
               onChangeImage={props.onChangeImage} 
               onChangeMode={props.onChangeMode}
-              onOpenRelationEditor={onOpenRelationEditor}
+              onRelationsEditorOpenChange={onRelationsEditorOpenChange}
               onRedo={onRedo}
               onRotate={onRotate}
               onUndo={onUndo} />
@@ -235,7 +246,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             </button>
           ) : (
             <RelationEditor 
-              onOpenChange={onOpenRelationEditor}/>
+              open={relationsEditorOpen}
+              onOpenChange={onRelationsEditorOpenChange}/>
           )
         )}
       </section>

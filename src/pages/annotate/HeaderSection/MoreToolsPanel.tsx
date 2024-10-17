@@ -19,13 +19,15 @@ interface MoreToolsPanelProps {
 
   osdToolsDisabled: boolean;
 
+  relationsEditorOpen: boolean;
+
   onAddImage(image: Image): void;
 
   onChangeImage(previous: Image, next: Image): void;
 
   onChangeMode(props: ToolMode): void;
 
-  onOpenRelationEditor(open: boolean): void;
+  onRelationsEditorOpenChange(open: boolean): void;
 
   onRedo(): void;
 
@@ -114,7 +116,8 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             </button>
           ) : (
             <RelationEditor 
-              onOpenChange={props.onOpenRelationEditor}/>
+              open={props.relationsEditorOpen}
+              onOpenChange={props.onRelationsEditorOpenChange} />
           )}
         </section>
       </PopoverContent>
