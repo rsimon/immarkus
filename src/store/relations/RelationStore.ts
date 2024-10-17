@@ -97,10 +97,6 @@ export const loadRelationStore = (
         });
     });
 
-  const getRelatedEntityTypes = (typeId: string) => {
-    // TODO
-  }
-
   const hasRelatedAnnotations = (annotationId: string) =>
     annotations.some(a => a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
 

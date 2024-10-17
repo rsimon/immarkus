@@ -3,6 +3,10 @@ import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from
 import { useEffect } from 'react';
 import { useRelationEditor } from '../RelationEditorRoot';
 import { useStore } from '@/store';
+import { useHover } from './useHover';
+import { isConnectedTo } from './useRelationEmphasisStyle';
+
+import './AnnotoriousRelationEditorPlugin.css';
 
 interface AnnotoriousRelationEditorPluginProps {
 
@@ -16,6 +20,8 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
+  const hover = useHover();
+
   const { source, setTarget, cancel } = useRelationEditor();
 
   useEffect(() => {
@@ -23,16 +29,15 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
 
     const { viewer } = anno;
 
-    const { store } = anno.state;
-
     const onPointerDown = (evt: PointerEvent) => {
       const { offsetX, offsetY } = evt;
 
       const { x, y } = viewer.viewport.viewerElementToImageCoordinates(new OpenSeadragon.Point(offsetX, offsetY));
 
-      const annotation: ImageAnnotation = (store as any).getAt(x, y);
+      const annotation: ImageAnnotation = (anno.state.store as any).getAt(x, y);
       if (annotation) {
-        if (annotation.id !== source?.id)
+        const isValidTarget = annotation.id !== source.id && !isConnectedTo(source.id, store).has(annotation.id);   
+        if (isValidTarget)
           setTarget(annotation);
       } else {
         cancel();
@@ -60,6 +65,22 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
       anno.off('deleteAnnotation', onDelete);
     }
   }, [anno, store]);
+
+  useEffect(() => {
+    if (!props.enabled || !source) return;
+
+    const canvas = anno.viewer.element.querySelector('.a9s-gl-canvas');
+
+    if (hover) {
+      const isValidTarget = hover.id !== source.id && !isConnectedTo(source.id, store).has(hover.id);      
+      if (isValidTarget)
+        canvas.classList.remove('not-allowed');
+      else 
+        canvas.classList.add('not-allowed');
+    } else {
+      canvas.classList.remove('not-allowed');
+    }
+  }, [props.enabled, source, hover, store]);
 
   return null;
 

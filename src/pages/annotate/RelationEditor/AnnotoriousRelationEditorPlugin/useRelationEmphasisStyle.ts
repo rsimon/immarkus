@@ -1,10 +1,16 @@
 import { useMemo } from 'react';
 import { Annotation, AnnotationState, DrawingStyle, DrawingStyleExpression, ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
-import { useStore } from '@/store';
-import { useRelationEditor } from './RelationEditorRoot';
+import { Store, useStore } from '@/store';
+import { useRelationEditor } from '../RelationEditorRoot';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
+
+export const isConnectedTo = (sourceId: string, store: Store) =>
+  new Set(store.getRelatedAnnotations(sourceId).reduce<string[]>((all, [link, _]) => {
+    const { target, body } = link;
+    return [...all, target, body].filter(id => id !== sourceId);
+  }, []));
 
 export const useRelationEmphasisStyle = (
   enabled: boolean,
@@ -21,6 +27,8 @@ export const useRelationEmphasisStyle = (
   const { source, target } = useRelationEditor();
 
   const enabledStyle = useMemo(() => {
+    const alreadyConnected = source?.id ? isConnectedTo(source.id, store) : new Set([]);
+
     if (enabled) {
       const emphasis: DrawingStyleExpression = (a: ImageAnnotation, state?: AnnotationState) => {
         if (a.id === source?.id) {
@@ -36,7 +44,7 @@ export const useRelationEmphasisStyle = (
             strokeWidth: 3
           }
         } else if (state?.hovered) {
-          return {
+          return !alreadyConnected.has(a.id) && {
             stroke: '#22c55e',
             strokeOpacity: 1,
             strokeWidth: 1.2
@@ -48,7 +56,7 @@ export const useRelationEmphasisStyle = (
     } else {
       return base;
     }
-  }, [enabled, base, source, target]);
+  }, [enabled, base, source, target, store]);
 
   const defaultStyle: DrawingStyleExpression = useMemo(() => {
     // This style isn't needed when the editor is enabled 
