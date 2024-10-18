@@ -7,7 +7,6 @@ import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
-import { cn } from '@/ui/utils';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
@@ -15,8 +14,6 @@ import { ImageRelationships } from './ImageRelationships';
 import { KnowledgeGraphSettings } from '../../Types';
 
 interface SelectedImageProps {
-
-  settings: KnowledgeGraphSettings;
 
   image: Image;
 
@@ -26,9 +23,7 @@ interface SelectedImageProps {
 
 const SelectedImageComponent = (props: SelectedImageProps) => {
 
-  const { image, settings } = props;
-
-  const [isInitialRender, setIsInitialRender] = useState(true);
+  const { image } = props;
 
   const store = useStore();
 
@@ -44,9 +39,6 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   useEffect(() => {
     setLoaded(undefined);
-    
-    // Wait for initial transition to complete
-    setTimeout(() => setIsInitialRender(false), 700);
     
     setTimeout(() => (
       store.loadImage(image.id).then(setLoaded)
@@ -181,6 +173,5 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 // Memo-ize the component to avoid unncessary re-renders. (Large preview images slow things down!)
 export const SelectedImage = memo(SelectedImageComponent, (prevProps, nextProps) => (
   prevProps.image.id === nextProps.image.id &&
-  prevProps.settings.graphMode === nextProps.settings.graphMode &&
   prevProps.onClose === nextProps.onClose
 ));

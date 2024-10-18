@@ -34,13 +34,11 @@ export const SelectionDetailsDrawer = (props: SelectionDetailsDrawerProps) => {
       {props.selected?.type === 'ENTITY_TYPE' ? (
         <SelectedEntityType 
           graph={props.graph}
-          settings={props.settings}
           type={store.getDataModel().getEntityType(props.selected.id)} 
           onClose={props.onClose} />
       ) : props.selected?.type === 'IMAGE' ? (
         <SelectedImage 
           image={store.getImage(props.selected.id)}
-          settings={props.settings}
           onClose={props.onClose} />
       ) : props.selected?.type === 'FOLDER' && (
         <SelectedFolder 
