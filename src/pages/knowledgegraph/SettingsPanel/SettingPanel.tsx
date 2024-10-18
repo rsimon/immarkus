@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useTransition, animated } from '@react-spring/web';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, X } from 'lucide-react';
+import { Button } from '@/ui/Button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { Label } from '@/ui/Label';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
@@ -7,13 +9,13 @@ import { Switch } from '@/ui/Switch';
 import { KnowledgeGraphSettings } from '../Types';
 import { Separator } from '@/ui/Separator';
 
-import { useState } from 'react';
-
 interface SettingsPanelProps {
 
   open: boolean;
 
   settings: KnowledgeGraphSettings;
+
+  onClose(): void;
 
   onChangeSettings(changed: KnowledgeGraphSettings): void;
 
@@ -106,6 +108,15 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       className="bg-white/80 backdrop-blur-sm text-sm overflow-y-auto rounded 
         border pointer-events-auto shadow grow-0 shrink-0 basis-auto"
       style={style}>
+      
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-1 right-1 text-muted-foreground p-0 h-auto w-auto"
+        onClick={props.onClose}>
+        <X className="h-8 w-8 p-2" />
+      </Button>
+
       <fieldset className="p-3">
         <div className="pb-3">
           <legend>

@@ -115,6 +115,7 @@ export const KnowledgeGraph = () => {
               <SettingsPanel 
                 open={showSettingsPanel} 
                 settings={settings}
+                onClose={() => setShowSettingsPanel(false)}
                 onChangeSettings={setSettings} />
             </div>
               
