@@ -131,7 +131,28 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
             onChange={evt => setRelationship(r => ({...r, name: evt.target.value }))} />
         </fieldset>
 
-        <fieldset className="mt-6">
+        <fieldset>
+          <div className="flex items-start gap-3">
+            <Switch 
+              id="directionality" 
+              className="mt-0.5" 
+              checked={relationship.directed} 
+              onCheckedChange={checked => setRelationship(r => ({...r, directed: checked }))} />
+
+            <div>
+              <Label htmlFor="directionality">
+                Directed Relation
+              </Label>
+
+              <p className="text-muted-foreground text-xs mt-1">
+                Enable this option if the relationship is meant to be directional, 
+                in the sense that source and target roles are relevant.
+              </p>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset className="mt-4">
           <Label 
             htmlFor="relationship-description"
             className="inline-block text-xs mb-1.5 ml-0.5">Relationship Type Description</Label>
@@ -144,7 +165,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
             onChange={evt => setRelationship(r => ({...r, description: evt.target.value }))} />
         </fieldset>
 
-        <fieldset className="pt-8">
+        <fieldset className="pt-6">
           <div className="flex items-start gap-3">
             <Switch 
               id="restrict-source" 
@@ -169,7 +190,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
           </div>
         </fieldset>
 
-        <fieldset className="pt-6 pb-4">
+        <fieldset className="pt-4 pb-4">
           <div className="flex items-start gap-3">
             <Switch 
               id="restrict-source" 
@@ -195,7 +216,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
         </fieldset>
 
         <Button 
-          className="w-full mt-4 mb-3"
+          className="w-full mt-2 mb-3"
           disabled={!relationship.name}
           onClick={onSave}>
           Save
