@@ -11,7 +11,7 @@ interface RelationshipBrowserSuggestionProps {
 
 }
 
-const RelationshipArrow = () => {
+const RelationshipArrow = (props: { directed: boolean }) => {
 
   return (
     <div className="flex-grow h-[1px] relative text-muted-foreground w-3">
@@ -20,13 +20,13 @@ const RelationshipArrow = () => {
         height={14}
         className="absolute overflow-visible top-1/2 -mt-[7px] opacity-60">
         <defs>
-          <marker id="arrowhead" markerWidth="8" markerHeight="7" refX="8" refY="3.5" orient="auto">
-            <line x1="0" y1="0" x2="8" y2="3.5" stroke="currentColor" />
-            <line x1="0" y1="7" x2="7" y2="3.5" stroke="currentColor" />
+          <marker id="arrowhead" markerWidth="5" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <line x1="0" y1="0" x2="5" y2="3.5" stroke="#000"  />
+            <line x1="0" y1="7" x2="5" y2="3.5" stroke="#000" />
           </marker>
         </defs>
 
-        <line x1="0" y1="10" x2="100%" y2="10" stroke="#000" />
+        <line x1="0" y1="10" x2="100%" y2="10" stroke="#000" markerEnd={props.directed ? 'url(#arrowhead)' : undefined} />
       </svg>
     </div>
   )
@@ -37,7 +37,7 @@ export const RelationshipBrowserSuggestion = (props: RelationshipBrowserSuggesti
 
   const model = useDataModel();
 
-  const { name, sourceTypeId, targetTypeId, isApplicable } = props.type;
+  const { name, sourceTypeId, targetTypeId, isApplicable, directed } = props.type;
 
   const sourceType = useMemo(() => {
     if (sourceTypeId) return model.getEntityType(sourceTypeId);
@@ -64,7 +64,7 @@ export const RelationshipBrowserSuggestion = (props: RelationshipBrowserSuggesti
         )}
 
         {(sourceType || targetType) ? (
-          <RelationshipArrow />
+          <RelationshipArrow directed={directed} />
         ) : (
           <div />
         )}
