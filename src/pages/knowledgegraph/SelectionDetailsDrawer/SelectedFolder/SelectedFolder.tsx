@@ -44,13 +44,14 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
     <div className="p-2">
       <article className="flex flex-col">
         <div className="bg-white rounded border shadow-sm">
-          <div className="px-3 py-2 flex justify-between items-center">
-            <h2 className="flex gap-1.5 items-center text-sm">
-              <FolderOpen className="h-4 w-4" /> {folder.name}
+          <div className="px-3 py-2 pr-2 flex justify-between items-center overflow-hidden gap-2">
+            <h2 className="flex gap-1.5 items-center whitespace-nowrap overflow-hidden text-sm">
+              <FolderOpen className="h-4 w-4" /> 
+              <div className="overflow-hidden text-ellipsis">{folder.name}</div>
             </h2>
 
             <Button 
-              className="h-8 w-8 right-1.5 top-1.5 rounded-full"
+              className="h-8 w-8 right-1.5 top-1.5 rounded"
               size="icon"
               variant="ghost"
               onClick={props.onClose}>
@@ -58,7 +59,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             </Button>
           </div>
 
-          <div className="px-3 py-2 flex justify-between border-t items-center text-xs">
+          <div className="p-3 pr-2.5 flex justify-between border-t items-center text-xs">
             <div className="text-muted-foreground flex gap-4">
               {imageCount > 0 && (
                 <div className="flex gap-1 items-center">

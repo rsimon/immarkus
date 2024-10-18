@@ -83,7 +83,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8 rounded-full"
+                  className="h-8 w-8 rounded"
                   onClick={props.onClose}>
                   <X className="h-4 w-4" />
                 </Button>
@@ -110,7 +110,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
               asChild
               size="icon"
               variant="ghost"
-              className="h-8 w-8 rounded-full">
+              className="h-8 w-8 rounded">
               <a href={`#/annotate/${image.id}`}>
                 <SquareArrowOutUpRight className="h-4 w-4" />
               </a>
