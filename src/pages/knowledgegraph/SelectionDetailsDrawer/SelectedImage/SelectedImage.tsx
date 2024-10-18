@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { Info, MessagesSquare, MoveDiagonal, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
+import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { Image, LoadedImage } from '@/model';
@@ -7,6 +7,7 @@ import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
+import { cn } from '@/ui/utils';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
@@ -117,25 +118,40 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
           </div>
         
           <div className="px-1.5 pb-2.5">
-            <TabsList className="gap-2 bg-transparent">
-              {settings.graphMode === 'HIERARCHY' ? (
-                <TabsTrigger 
-                  value="annotations" 
-                  className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
-                  <MessagesSquare size={16} className="mr-2" /> {annotations.length} Annotations
-                </TabsTrigger>
-              ) : (
-                <TabsTrigger 
-                  value="relationships" 
-                  className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
-                  <Spline size={16} className="mr-2" /> {relationships.length} Relationships
-                </TabsTrigger>
-              )}
+            <TabsList className="gap-1.5 bg-transparent">
+              <TabsTrigger 
+                value="annotations" 
+                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                <MessagesSquare size={15} className="mr-1.5" /> 
+                {annotations.length} 
+                <span 
+                  className={cn(tab === 'annotations' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  style={{ maxWidth: tab === 'annotations' ? '150px' : '0px' }}>
+                  Annotations
+                </span>
+              </TabsTrigger>
+
+              <TabsTrigger 
+                value="relationships" 
+                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                <Spline size={15} className="mr-1.5" /> 
+                {relationships.length} 
+                <span 
+                  className={cn(tab === 'relationships' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  style={{ maxWidth: tab === 'relationships' ? '150px' : '0px' }}>
+                  Relationships
+                </span>
+              </TabsTrigger>
 
               <TabsTrigger 
                 value="metadata" 
-                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
-                <Info size={16} className="mr-2" /> Metadata
+                className="px-2.5 py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                <NotebookPen size={15} className="mx-1" />
+                <span 
+                  className={cn(tab === 'metadata' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  style={{ maxWidth: tab === 'metadata' ? '150px' : '0px' }}>
+                  Metadata
+                </span>
               </TabsTrigger>
             </TabsList>
           </div>
