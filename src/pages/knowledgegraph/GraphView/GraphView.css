@@ -9,4 +9,5 @@
 .graph-view .force-graph-container .graph-tooltip {
   font-size: 0.8rem;
   padding: 4px 6px;
+  z-index: 999;
 }

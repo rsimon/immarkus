@@ -40,7 +40,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const [relationships, setRelationships] = useState<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>([]);
 
-  const [tab, setTab] = useState<string>(); 
+  const [tab, setTab] = useState<string>('annotations'); 
 
   useEffect(() => {
     setLoaded(undefined);
@@ -62,11 +62,6 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
     store.getAnnotations(image.id, { type: 'image' })
       .then(a => setAnnotations(a as W3CImageAnnotation[]));
   }, [store, image]);
-
-  useEffect(() => {
-    if (tab !== 'metadata')
-      setTab(settings.graphMode === 'HIERARCHY' ? 'annotations' : 'relationships');
-  }, [settings.graphMode]);
 
   return (
     <div className="p-2">
