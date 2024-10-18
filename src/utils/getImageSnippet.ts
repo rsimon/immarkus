@@ -25,8 +25,8 @@ interface ScheduledSnippet {
 
 const SnippetScheduler = () => {
 
-  // Drop all cached images older than 10s
-  const MAX_AGE_MS = 10000;
+  // Drop all cached images older than MAX_AGE 
+  const MAX_AGE_MS = 2000;
 
   const cache: Map<string, ScheduledSnippet> = new Map();
 

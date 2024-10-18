@@ -1,6 +1,7 @@
 import { Table2 } from 'lucide-react';
 import { Dialog, DialogTitle, DialogContent } from '@/ui/Dialog';
 import { Progress } from '@/ui/Progress';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 interface ExportProgressDialogProps {
 
@@ -22,9 +23,9 @@ export const ExportProgressDialog = (props: ExportProgressDialogProps) => {
         </DialogTitle>
 
         <div className="pb-4">
-          <p className="text-sm leading-relaxed pt-6 pb-3 px-0.5">
+          <DialogDescription className="text-sm leading-relaxed pt-6 pb-3 px-0.5">
             {props.message}
-          </p>
+          </DialogDescription>
 
           <Progress value={props.progress} />
 

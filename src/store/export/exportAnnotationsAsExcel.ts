@@ -208,6 +208,8 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
 
   const root = store.getRootFolder().handle;
 
+  console.debug(`Exporting annotations for ${images.length} images`);
+
   // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
   const progressIncrement = 100 / (images.length + 2);
   onProgress(progressIncrement);
@@ -231,6 +233,8 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
     }, Promise.resolve([]));
 
   promise.then(annotations => {
+    console.debug(`${annotations.length} annotations total`);
+
     const workbook = new ExcelJS.Workbook();
 
     workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
