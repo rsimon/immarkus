@@ -26,8 +26,8 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
         annotation={props.fromAnnotation} 
         image={props.fromImage} />
 
-      <div className="flex-grow h-[1px] border-gray-400 border-t border-dashed relative">
-        <div className="absolute -top-[0.675rem] w-full text-center">
+      <div className="flex-grow flex justify-center h-[1px] border-gray-400 border-t border-dashed relative whitespace-nowrap">
+        <div className="absolute -top-[0.675rem] w-full text-center overflow-hidden max-w-[70%] text-ellipsis">
           <span className="bg-white px-1 font-light text-muted-foreground">{props.label || ''}</span>
         </div>
         <div className="absolute -right-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[12px] border-l-gray-400"></div>

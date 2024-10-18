@@ -121,37 +121,31 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
             <TabsList className="gap-1.5 bg-transparent">
               <TabsTrigger 
                 value="annotations" 
-                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                className="transition-none px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
                 <MessagesSquare size={15} className="mr-1.5" /> 
                 {annotations.length} 
-                <span 
-                  className={`${tab === 'annotations' ? 'duration-700' : 'duration-100'} ml-1 overflow-hidden ${isInitialRender ? 'transition-none' : 'transition-all'}`}
-                  style={{ maxWidth: tab === 'annotations' ? '150px' : '0px' }}>
-                  Annotations
-                </span>
+                {tab === 'annotations' && (
+                  <span className="ml-1">Annotations</span>
+                )}
               </TabsTrigger>
 
               <TabsTrigger 
                 value="relationships" 
-                className="px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                className="transition-none px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
                 <Spline size={15} className="mr-1.5" /> 
                 {relationships.length} 
-                <span 
-                  className={cn(tab === 'relationships' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
-                  style={{ maxWidth: tab === 'relationships' ? '150px' : '0px' }}>
-                  Relationships
-                </span>
+                {tab === 'relationships' && (
+                  <span className="ml-1">Relationships</span>
+                )}
               </TabsTrigger>
 
               <TabsTrigger 
                 value="metadata" 
-                className={`px-2 ${tab === 'metadata' ? 'pr-3' : 'pr-1'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
+                className={`transition-none pl-2 ${tab === 'metadata' ? 'pr-3' : 'pr-2'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
                 <NotebookPen size={15} className="mx-1" />
-                <span 
-                  className={cn(tab === 'metadata' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
-                  style={{ maxWidth: tab === 'metadata' ? '150px' : '0px' }}>
-                  Metadata
-                </span>
+                {tab === 'metadata' && (
+                  <span className="ml-1">Metadata</span>
+                )}
               </TabsTrigger>
             </TabsList>
           </div>
