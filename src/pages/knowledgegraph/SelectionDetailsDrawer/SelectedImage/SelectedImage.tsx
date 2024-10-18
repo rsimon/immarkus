@@ -125,7 +125,11 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <MessagesSquare size={15} className="mr-1.5" /> 
                 {annotations.length} 
                 <span 
-                  className={cn(tab === 'annotations' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  className={cn(
+                    tab === 'annotations' ? 'duration-700' : 'duration-100', 
+                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
+                    'after:content-[""] after:block after:transition-none'
+                  )}                  
                   style={{ maxWidth: tab === 'annotations' ? '150px' : '0px' }}>
                   Annotations
                 </span>
@@ -137,7 +141,11 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <Spline size={15} className="mr-1.5" /> 
                 {relationships.length} 
                 <span 
-                  className={cn(tab === 'relationships' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  className={cn(
+                    tab === 'relationships' ? 'duration-700' : 'duration-100', 
+                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
+                    'after:content-[""] after:block after:transition-none'
+                  )}     
                   style={{ maxWidth: tab === 'relationships' ? '150px' : '0px' }}>
                   Relationships
                 </span>
@@ -148,7 +156,11 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 className="px-2.5 py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
                 <NotebookPen size={15} className="mx-1" />
                 <span 
-                  className={cn(tab === 'metadata' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
+                  className={cn(
+                    tab === 'metadata' ? 'duration-700' : 'duration-100', 
+                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
+                    'after:content-[""] after:block after:transition-none'
+                  )}     
                   style={{ maxWidth: tab === 'metadata' ? '150px' : '0px' }}>
                   Metadata
                 </span>
