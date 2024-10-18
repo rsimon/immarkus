@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
@@ -28,6 +28,8 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const { image, settings } = props;
 
+  const [isInitialRender, setIsInitialRender] = useState(true);
+
   const store = useStore();
 
   const [loaded, setLoaded] = useState<LoadedImage | undefined>();
@@ -42,6 +44,9 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   useEffect(() => {
     setLoaded(undefined);
+    
+    // Wait for initial transition to complete
+    setTimeout(() => setIsInitialRender(false), 700);
     
     setTimeout(() => (
       store.loadImage(image.id).then(setLoaded)
@@ -125,11 +130,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <MessagesSquare size={15} className="mr-1.5" /> 
                 {annotations.length} 
                 <span 
-                  className={cn(
-                    tab === 'annotations' ? 'duration-700' : 'duration-100', 
-                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
-                    'after:content-[""] after:block after:transition-none'
-                  )}                  
+                  className={`${tab === 'annotations' ? 'duration-700' : 'duration-100'} ml-1 overflow-hidden ${isInitialRender ? 'transition-none' : 'transition-all'}`}
                   style={{ maxWidth: tab === 'annotations' ? '150px' : '0px' }}>
                   Annotations
                 </span>
@@ -141,11 +142,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <Spline size={15} className="mr-1.5" /> 
                 {relationships.length} 
                 <span 
-                  className={cn(
-                    tab === 'relationships' ? 'duration-700' : 'duration-100', 
-                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
-                    'after:content-[""] after:block after:transition-none'
-                  )}     
+                  className={cn(tab === 'relationships' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
                   style={{ maxWidth: tab === 'relationships' ? '150px' : '0px' }}>
                   Relationships
                 </span>
@@ -153,14 +150,10 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
               <TabsTrigger 
                 value="metadata" 
-                className="px-2.5 py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
+                className={`px-2 ${tab === 'metadata' ? 'pr-3' : 'pr-1'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
                 <NotebookPen size={15} className="mx-1" />
                 <span 
-                  className={cn(
-                    tab === 'metadata' ? 'duration-700' : 'duration-100', 
-                    'ml-1 overflow-hidden motion-safe:transition-[max-width] motion-reduce:transition-none',
-                    'after:content-[""] after:block after:transition-none'
-                  )}     
+                  className={cn(tab === 'metadata' ? 'duration-700' : 'duration-100', 'ml-1 overflow-hidden transition-all')}
                   style={{ maxWidth: tab === 'metadata' ? '150px' : '0px' }}>
                   Metadata
                 </span>
