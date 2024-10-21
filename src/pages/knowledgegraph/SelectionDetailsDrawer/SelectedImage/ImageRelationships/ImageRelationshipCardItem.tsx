@@ -25,6 +25,13 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
 
   const [to, setTo] = useState<{ annotation: W3CImageAnnotation, image: Image }>(); 
 
+  const directed = useMemo(() => {
+    if (!props.meta?.body?.value) return false;
+
+    const relationshipType = store.getDataModel().getRelationshipType(props.meta.body.value);
+    return relationshipType?.directed;
+  }, [props.meta]);
+
   useEffect(() => {
     store.findAnnotation(props.link.target).then(([annotation, image]) => 
       setFrom({ annotation: annotation as W3CImageAnnotation, image }));
@@ -39,6 +46,7 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
 
   return (from && to) && (
     <RelationshipThumbnail 
+      directed={directed}
       fromAnnotation={from.annotation}
       fromImage={isOutbound ? props.selectedImage : props.otherImage}
       toAnnotation={to.annotation}
