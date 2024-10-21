@@ -1,4 +1,3 @@
-import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { useMemo } from 'react';
 import { RelationshipSearchResult } from './useRelationshipSearch';

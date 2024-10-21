@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
 
-interface RelationshipListItemActionsProps {
+interface RelationshipActionsProps {
 
   onEdit(): void;
 
@@ -17,7 +17,7 @@ interface RelationshipListItemActionsProps {
 
 }
 
-export const RelationshipListItemActions = (props: RelationshipListItemActionsProps) => {
+export const RelationshipActions = (props: RelationshipActionsProps) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
