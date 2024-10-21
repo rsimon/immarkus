@@ -84,9 +84,11 @@ export const AnnotationList = () => {
       <div>
         {imageIds.length === 1 ? (
           <div className="py-2 grow">
-            <ul>
+            <ul className="space-y-2">
               {listAnnotations(imageIds[0]).map(annotation => (
-                <li key={annotation.id} onClick={onClick(annotation)}>
+                <li 
+                  key={annotation.id} 
+                  onClick={onClick(annotation)}>
                   <AnnotationListItem 
                     annotation={annotation} 
                     onEdit={onEdit(annotation)}
@@ -99,14 +101,16 @@ export const AnnotationList = () => {
           <Accordion className="py-2 grow" type="multiple">
             {Array.from(annotations.keys()).map(source => (
               <AccordionItem key={source} value={source}>
-                <AccordionTrigger className="text-xs font-medium mb-2 hover:no-underline overflow-hidden">
+                <AccordionTrigger className="text-xs font-medium hover:no-underline overflow-hidden">
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis pr-1">{store.getImage(source).name}</span>
                 </AccordionTrigger>
 
                 <AccordionContent>
-                  <ul>
+                  <ul className="space-y-2">
                     {listAnnotations(source).map(annotation => (
-                      <li key={annotation.id} onClick={onClick(annotation)}>
+                      <li 
+                        key={annotation.id} 
+                        onClick={onClick(annotation)}>
                         <AnnotationListItem 
                           annotation={annotation} 
                           onEdit={onEdit(annotation)}
