@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
+import { useDataModel } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
-import { NODE_COLORS, LINK_COLORS, LINK_STYLES, ORANGE } from '../Styles';
-import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { NODE_COLORS, LINK_COLORS, LINK_STYLES, ORANGE, DARK_ORANGE } from '../Styles';
+import { Graph, GraphLink, GraphLinkPrimitive, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { hasRelations } from './graphViewUtils';
 
 import './GraphView.css';
@@ -34,7 +35,7 @@ interface GraphViewProps {
 const MAX_NODE_SIZE = 10;
 const MIN_NODE_SIZE = 5;
 
-const MAX_LINK_WIDTH = 10;
+const MAX_LINK_WIDTH = 6;
 const MIN_LINK_WIDTH = 1;
 
 let globalScale = 1;
@@ -42,6 +43,8 @@ let globalScale = 1;
 export const GraphView = (props: GraphViewProps) => {
 
   const { graph, settings } = props;
+
+  const model = useDataModel();
 
   const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);
 
@@ -272,6 +275,31 @@ export const GraphView = (props: GraphViewProps) => {
 
   const getLinkWidth = (link: LinkObject) => linkScale * (link.weight - 1) + MIN_LINK_WIDTH;
 
+  const getLinkArrowLength = (link: LinkObject) => {
+    const primitives: GraphLinkPrimitive[] = link.primitives;
+
+    if (primitives.length === 0) return;
+
+    const isRelation = primitives.every((l: GraphLinkPrimitive) => 
+      l.type === 'HAS_RELATED_ANNOTATION_IN' || l.type === 'IS_RELATED_VIA_ANNOTATION');
+
+    // Only relation links get arrow heads
+    if (isRelation) {
+      // Only show arrow head if all primitives go into the same direction
+      const hasSameDirection = primitives.length === 1 || primitives.every(p =>
+        p.source === primitives[0].source);
+      
+      if (hasSameDirection) {
+        const distinctRelations = [...new Set(primitives.map(p => p.value))];
+        const types = distinctRelations.map(name => model.getRelationshipType(name)).filter(Boolean);
+
+        // Only show arrow if all relations are directed
+        const allDirected = types.every(t => t.directed);
+        return allDirected ? 10 / Math.cbrt(globalScale) : undefined;
+      }
+    }
+  }
+
   const getLinkLabel = (link: LinkObject) => {
     const primitives = (link as GraphLink).primitives;
 
@@ -367,7 +395,9 @@ export const GraphView = (props: GraphViewProps) => {
           graphData={graph} 
           linkColor={getLinkColor}
           linkCurvature={getLinkCurvature}
-          linkDirectionalArrowRelPos={1}
+          linkDirectionalArrowColor={() => DARK_ORANGE}
+          linkDirectionalArrowLength={getLinkArrowLength}
+          linkDirectionalArrowRelPos={0.5}
           linkLineDash={getLinkStyle}
           linkLabel={getLinkLabel}
           linkVisibility={isLinkVisible}

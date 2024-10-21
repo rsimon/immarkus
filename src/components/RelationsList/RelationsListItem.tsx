@@ -58,12 +58,12 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
               <marker 
                 id={markerId} 
                 markerWidth="6" 
-                markerHeight="7" 
+                markerHeight="8" 
                 refX="6" 
-                refY="3" 
+                refY="4" 
                 orient={ltr ? '0' : '180'}>
-                <line x1="0" y1="0" x2="6" y2="3" stroke="currentColor" />
-                <line x1="0" y1="6" x2="6" y2="3" stroke="currentColor" />
+                <line x1="0" y1="0" x2="6" y2="4" stroke="currentColor" />
+                <line x1="0" y1="8" x2="6" y2="4" stroke="currentColor" />
               </marker>
             </defs>
 
@@ -74,6 +74,7 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
               y2="10" 
               stroke="currentColor"
               strokeWidth="1.25" 
+              strokeDasharray="2 1"
               markerStart={relationshipType?.directed && !ltr ? `url(#${markerId})` : undefined}
               markerEnd={relationshipType?.directed && ltr ? `url(#${markerId})` : undefined} />
           </svg>

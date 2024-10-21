@@ -7,6 +7,7 @@ export const GREEN =  '#77b41f';
 
 // Selection
 export const ORANGE = '#ff8800';
+export const DARK_ORANGE = '#d76409';
 
 export const NODE_COLORS = {
 
