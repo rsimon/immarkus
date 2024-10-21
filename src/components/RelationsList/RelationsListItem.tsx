@@ -1,16 +1,17 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Trash2 } from 'lucide-react';
-import type { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '../AnnotationThumbnail';
 import { Button } from '@/ui/Button';
+import { useDataModel } from '@/store';
 
 interface RelationsListItemProps {
 
-  referenceAnnotation: ImageAnnotation;
+  // ID of the annotation to appear on the left
+  leftSideId: string;
 
-  fromId: string;
+  sourceId: string;
 
-  toId: string;
+  targetId: string;
 
   relationship?: string;
 
@@ -20,9 +21,20 @@ interface RelationsListItemProps {
 
 export const RelationsListItem = (props: RelationsListItemProps) => {
 
-  const { fromId, toId, relationship } = props;
+  const model = useDataModel();
 
-  const refId = props.referenceAnnotation.id;    
+  const { leftSideId, sourceId, targetId, relationship } = props;
+
+  // Can be undefined if the user has meanwhile deleted the 
+  // relationship type from the data model!
+  const relationshipType = useMemo(() => 
+    model.getRelationshipType(relationship), [model, relationship]);
+
+  // Is the arrow left-to-right or other right-to-left?
+  const ltr = relationshipType?.directed
+    ? leftSideId === sourceId : false;  
+
+  const markerId = useMemo(() => `arrowhead-${sourceId}-${targetId}`, [sourceId, targetId]);
 
   const onDelete = useCallback((evt: React.MouseEvent) => {
     evt.stopPropagation();
@@ -33,11 +45,9 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
   return (
     <div className="flex items-center w-full">
       <div className="flex flex-grow items-center justify-between px-1 py-1.5 text-xs gap-2">
-        <div className={fromId === refId ? undefined : 'p-1.5'}>
-          <AnnotationThumbnail 
-            annotation={fromId} 
-            className={fromId === refId ? 'border shadow-sm h-12 w-12' : 'border shadow-sm h-9 w-9'} /> 
-        </div>
+        <AnnotationThumbnail 
+          annotation={leftSideId === sourceId ? sourceId : targetId} 
+          className="border shadow-sm h-12 w-12" /> 
 
         <div className="flex-grow h-[1px] relative text-muted-foreground">
           <svg 
@@ -45,13 +55,27 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
             height={18}
             className="absolute overflow-visible top-1/2 -mt-[10px] opacity-60">
             <defs>
-              <marker id="arrowhead" markerWidth="8" markerHeight="9" refX="8" refY="3.5" orient="auto">
-                <line x1="0" y1="0" x2="8" y2="3.5" stroke="currentColor" />
-                <line x1="0" y1="7" x2="7" y2="3.5" stroke="currentColor" />
+              <marker 
+                id={markerId} 
+                markerWidth="6" 
+                markerHeight="7" 
+                refX="6" 
+                refY="3" 
+                orient={ltr ? '0' : '180'}>
+                <line x1="0" y1="0" x2="6" y2="3" stroke="currentColor" />
+                <line x1="0" y1="6" x2="6" y2="3" stroke="currentColor" />
               </marker>
             </defs>
 
-            <line x1="0" y1="10" x2="100%" y2="10" stroke="currentColor" strokeWidth="1.2" markerEnd="url(#arrowhead)" />
+            <line 
+              x1="0" 
+              y1="10" 
+              x2="100%" 
+              y2="10" 
+              stroke="currentColor"
+              strokeWidth="1.25" 
+              markerStart={relationshipType?.directed && !ltr ? `url(#${markerId})` : undefined}
+              markerEnd={relationshipType?.directed && ltr ? `url(#${markerId})` : undefined} />
           </svg>
           
           <div className="absolute -top-[0.625rem] w-full text-center">
@@ -62,11 +86,9 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
           </div>
         </div>
 
-        <div className={toId === refId ? undefined : 'p-1.5'}>
-          <AnnotationThumbnail 
-            annotation={props.toId} 
-            className={toId === refId ? 'border shadow-sm h-12 w-12' : 'border shadow-sm h-9 w-9'} />
-        </div>
+        <AnnotationThumbnail 
+          annotation={leftSideId === sourceId ? targetId : sourceId} 
+          className="border shadow-sm h-12 w-12" />
       </div>
 
       <Button

@@ -20,6 +20,8 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
   updateEntityType(type: EntityType): Promise<void>;
 
   // Relationship Types
+  getRelationshipType(name: string): RelationshipType | undefined;
+
   upsertRelationshipType(type: RelationshipType): Promise<void>;
 
   removeRelationShipType(name: string): Promise<void>;
@@ -171,6 +173,9 @@ export const loadDataModel = (
   const getImageSchema = (name: string) =>
     imageSchemas.find(s => s.name === name);
 
+  const getRelationshipType = (name: string) =>
+    relationshipTypes.find(t => t.name === name);
+
   const removeEntityType = (typeOrId: EntityType | string) => {
     const id = typeof typeOrId === 'string' ? typeOrId : typeOrId.id;
     const next = entityTypes.filter(e => e.id !== id);
@@ -265,6 +270,7 @@ export const loadDataModel = (
     getEntityType,
     getFolderSchema,
     getImageSchema,
+    getRelationshipType,
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,

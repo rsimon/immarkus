@@ -15,6 +15,8 @@ export const RelationsList = (props: RelationsListProps) => {
 
   const store = useStore();
 
+  const model = store.getDataModel();
+
   const relations = useMemo(() => (
     store.getRelatedAnnotations(props.annotation.id)
   ), [props.annotation.id, store]);
@@ -34,9 +36,9 @@ export const RelationsList = (props: RelationsListProps) => {
         {relations.map(([link, meta]) => (
           <li key={link.id}>
             <RelationsListItem
-              referenceAnnotation={props.annotation}
-              fromId={link.target}
-              toId={link.body}
+              leftSideId={props.annotation.id}
+              sourceId={link.target}
+              targetId={link.body}
               relationship={meta.body?.value} 
               onDelete={() => onDeleteRelation(link)} />
           </li>
