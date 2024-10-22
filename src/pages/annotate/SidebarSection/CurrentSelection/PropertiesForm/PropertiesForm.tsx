@@ -5,11 +5,11 @@ import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
-import { RelationsList } from '@/components/RelationsList';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
+import { RelationsList } from './RelationsList';
 import { Note } from '../Note';
 import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
 import { PropertiesFormActions } from './PropertiesFormActions';

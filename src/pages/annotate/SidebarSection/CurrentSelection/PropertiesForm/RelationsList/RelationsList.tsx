@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation } from '@annotorious/plugin-connectors-react';
 import { useStore } from '@/store';
-import { RelationsListItem } from './RelationsListItem';
 import { Separator } from '@/ui/Separator';
+import { RelationsListItem } from './RelationsListItem';
 
 interface RelationsListProps {
 
@@ -14,8 +14,6 @@ interface RelationsListProps {
 export const RelationsList = (props: RelationsListProps) => {
 
   const store = useStore();
-
-  const model = store.getDataModel();
 
   const relations = useMemo(() => (
     store.getRelatedAnnotations(props.annotation.id)
