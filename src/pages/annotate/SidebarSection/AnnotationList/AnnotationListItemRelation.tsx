@@ -46,22 +46,30 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
   }, [props.relation, store]);
 
   return (
-    <div className="w-full flex justify-between items-center py-0.5 px-2">
-      <div className="h-2 w-2 border border-gray-400 rounded-full" />
+    <div className="w-full flex justify-between items-center py-0.5 px-2 gap-1">
+      <div className="h-2.5 w-2.5 border border-gray-600 rounded-full" />
 
       <div className="relative flex-grow flex items-center">
-        <div className="absolute border-t border-gray-400 border-dashed h-[1px] w-full z-0" />
+        <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
       
         <div className="w-full flex justify-center z-10 font-light text-[11px]">
           <span className="bg-white px-1 max-w-32 whitespace-nowrap overflow-hidden text-ellipsis">{props.relation}</span>
         </div>
+
+        {type?.directed && (
+          leftSideAnnotation.id === sourceId ? (
+            <div className="absolute right-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[10px] border-l-gray-600" />
+          ) : (
+            <div className="absolute left-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[10px] border-r-gray-600" />
+          )
+        )}
       </div>
 
       {entity ? (
         <EntityBadge 
           entityType={entity} />
       ) : (
-        <div className="h-2 w-2 border border-gray-400 rounded-full" />
+        <div className="h-2.5 w-2.5 border border-gray-600 rounded-full" />
       )}
     </div>
   )

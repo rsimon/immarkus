@@ -76,7 +76,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         )}
 
         {relations.length > 0 && (
-          <ul className="rounded-b border-slate-200/80 px-1 pb-2.5 text-muted-foreground">
+          <ul className="rounded-b border-slate-200/80 space-y-1 px-1 pb-2.5">
             {relations.map(([link, meta]) => (
               <AnnotationListItemRelation
                 key={link.id}
