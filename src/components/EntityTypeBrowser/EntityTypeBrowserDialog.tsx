@@ -3,7 +3,7 @@ import { Cuboid } from 'lucide-react';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
-import { Dialog, DialogContent } from '@/ui/Dialog';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { EntityTypeBrowser } from './EntityTypeBrowser';
 
 interface EntityTypeBrowserDialogProps {
@@ -38,7 +38,15 @@ export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => 
         <EntityTypeBrowser 
           onSelect={setSelected} 
           onConfirm={props.onAddEntityType} />
+
+        <DialogTitle className="hidden">
+          Search
+        </DialogTitle>
     
+        <DialogDescription className="hidden">
+          Search and select an entity class.
+        </DialogDescription>
+
         <div className="p-1 pt-1.5 border-t flex justify-between text-muted-foreground">
           <EntityTypeEditor>
             <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm mr-2">
@@ -46,21 +54,21 @@ export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => 
             </Button>
           </EntityTypeEditor>
 
-        <div>
-          <Button 
-            onClick={props.onCancel}
-            variant="ghost" className="text-xs h-8 px-2 rounded-sm">
-            Cancel
-          </Button>
+          <div>
+            <Button 
+              onClick={props.onCancel}
+              variant="ghost" className="text-xs h-8 px-2 rounded-sm">
+              Cancel
+            </Button>
 
-          <Button 
-            variant="ghost" 
-            className="text-xs h-8 rounded-sm"
-            onClick={onOk}>
-            OK
-          </Button>
+            <Button 
+              variant="ghost" 
+              className="text-xs h-8 rounded-sm"
+              onClick={onOk}>
+              OK
+            </Button>
+          </div>
         </div>
-      </div>
 
       </DialogContent>
     </Dialog>
