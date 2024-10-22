@@ -34,7 +34,7 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
         </div>
 
         {props.directed && (
-          <div className="absolute -right-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-l-[12px] border-l-gray-600" />
+          <div className="absolute -right-0.5 -top-[4.5px] border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[12px] border-l-gray-600" />
         )}
       </div>
 

@@ -58,9 +58,9 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
 
         {type?.directed && (
           leftSideAnnotation.id === sourceId ? (
-            <div className="absolute right-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[10px] border-l-gray-600" />
+            <div className="absolute -right-0.5 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[10px] border-l-gray-600" />
           ) : (
-            <div className="absolute left-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[10px] border-r-gray-600" />
+            <div className="absolute -left-0.5 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[10px] border-r-gray-600" />
           )
         )}
       </div>
