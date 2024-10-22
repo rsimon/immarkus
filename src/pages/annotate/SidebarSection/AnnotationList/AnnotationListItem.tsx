@@ -58,7 +58,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           </ul>
         )}
 
-        <div className="line-clamp-2 px-2.5">
+        <div className="line-clamp-2 px-2.5 mb-2">
           <AnnotationValuePreview 
             bodies={entityTags} />
         </div>
