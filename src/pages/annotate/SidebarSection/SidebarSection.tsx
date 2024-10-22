@@ -43,24 +43,25 @@ export const SidebarSection = () => {
             </Tabs.List>
           </section>
 
-          <section className="sidebar-content bg-white flex flex-grow border-l overflow-y-auto">
+          <section 
+            className="sidebar-contentflex flex-grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
-                className="flex flex-grow text-sm justify-center items-center w-full pt-1 pb-3 px-4">
+                className="flex flex-grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="annotation-list" asChild>
               <div 
-                className="flex-grow text-sm justify-center items-center w-full p-3 px-4">
+                className="flex-grow h-full text-sm justify-center items-center w-full">
                 <AnnotationList />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
               <div 
-                className="w-full pt-1.5">
+                className="w-full h-full pt-1.5">
                 <ImageMetadata />
               </div>
             </Tabs.Content>

@@ -17,7 +17,7 @@ export const ImageMetadata = () => {
   const images = anno.sources.map(source => store.getImage(source));
 
   return images.length === 1 ? (
-    <div className="flex-grow flex flex-col text-sm justify-center items-center w-full p-3 px-4">
+    <div className="flex-grow justify-start h-full flex flex-col text-sm items-center w-full p-3 px-4">
       <ImageMetadataSection image={images[0]} />
     </div>
   ) : (

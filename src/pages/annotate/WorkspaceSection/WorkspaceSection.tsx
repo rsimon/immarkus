@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
 import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
+import { useWindowSize } from '@/utils/useWindowSize';
 import { AnnotatableImage } from './AnnotatableImage';
 import { Tool, ToolMode } from '../Tool';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component/react-mosaic-component.css';
-import { useWindowSize } from '@/utils/useWindowSize';
 
 interface WorkspaceSectionProps {
 

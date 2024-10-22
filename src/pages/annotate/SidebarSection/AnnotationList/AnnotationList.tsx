@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
@@ -62,17 +62,17 @@ export const AnnotationList = () => {
       .slice().sort((a, b) => (a.label || a.id).localeCompare(b.label || b.id));
   }, [annotations]);
 
-  const listAnnotations = (imageId: string) => {
+  const listAnnotations = useCallback((imageId: string) => {
     const filtered = filter 
       ? annotations.get(imageId).filter(filter)
-      : annotations.get(imageId);
+      : annotations.get(imageId).filter(a => a.target.selector);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
-  }
+  }, [filter, sorting, annotations]);
 
   return (
-    <div>
-      <div className="text-xs text-muted-foreground flex justify-between mb-1">
+    <div className="py-3 px-2 bg-slate-100/50 flex-grow h-full">
+      <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
         <SelectSortOrder 
           onSelect={sorting => setSorting(() => sorting)} />
 
@@ -84,9 +84,11 @@ export const AnnotationList = () => {
       <div>
         {imageIds.length === 1 ? (
           <div className="py-2 grow">
-            <ul>
+            <ul className="space-y-2">
               {listAnnotations(imageIds[0]).map(annotation => (
-                <li key={annotation.id} onClick={onClick(annotation)}>
+                <li 
+                  key={annotation.id} 
+                  onClick={onClick(annotation)}>
                   <AnnotationListItem 
                     annotation={annotation} 
                     onEdit={onEdit(annotation)}
@@ -99,14 +101,16 @@ export const AnnotationList = () => {
           <Accordion className="py-2 grow" type="multiple">
             {Array.from(annotations.keys()).map(source => (
               <AccordionItem key={source} value={source}>
-                <AccordionTrigger className="text-xs font-medium mb-2 hover:no-underline overflow-hidden">
+                <AccordionTrigger className="text-xs font-medium hover:no-underline overflow-hidden">
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis pr-1">{store.getImage(source).name}</span>
                 </AccordionTrigger>
 
                 <AccordionContent>
-                  <ul>
+                  <ul className="space-y-2">
                     {listAnnotations(source).map(annotation => (
-                      <li key={annotation.id} onClick={onClick(annotation)}>
+                      <li 
+                        key={annotation.id} 
+                        onClick={onClick(annotation)}>
                         <AnnotationListItem 
                           annotation={annotation} 
                           onEdit={onEdit(annotation)}
