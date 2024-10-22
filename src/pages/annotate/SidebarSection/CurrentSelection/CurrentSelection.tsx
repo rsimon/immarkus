@@ -44,6 +44,8 @@ export const CurrentSelection = () => {
           });
         }
       });
+    } else {
+      setShowAsEmpty(true);
     }
   }, [selected, store]);
 
