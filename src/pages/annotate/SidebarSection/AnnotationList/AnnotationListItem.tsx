@@ -48,9 +48,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
       <div className="relative border mb-2 rounded text-xs bg-white cursor-pointer">
         {entityTags.length > 0 && (
           <ul 
-            className="line-clamp-1 mr-8 px-2 pt-3 pb-1">
+            className="line-clamp-1 mr-8 px-2 py-3">
             {entityTags.map(tag => (
-              <li key={tag.id} className="inline-block mr-1 mb-1 whitespace-nowrap">
+              <li key={tag.id} className="inline-block mr-1 whitespace-nowrap">
                 <EntityBadge 
                   entityType={getEntityType(tag.source)} />
               </li>
@@ -58,25 +58,25 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           </ul>
         )}
 
-        <div className="line-clamp-2 px-2.5 pt-0 mb-3">
+        <div className="line-clamp-2 px-2.5">
           <AnnotationValuePreview 
             bodies={entityTags} />
         </div>
       
         {note && (
-          <p className="line-clamp-2 pl-0.5 pr-5 pt-1 pb-0.5 italic text-muted-foreground">
+          <p className="line-clamp-2 pl-2.5 pr-5 pt-0 pb-3 font-light text-muted-foreground">
             {note.value}
           </p>
         )}
 
         {isEmpty && (
-          <div className="pt-2.5 pb-4 flex justify-center text-muted-foreground">
+          <div className="py-6 flex justify-center text-muted-foreground">
             Empty annotation
           </div>
         )}
 
         {relations.length > 0 && (
-          <ul className="bg-slate-50 border-t rounded-b border-slate-200/80 px-1 py-2 space-y-1 text-muted-foreground">
+          <ul className="rounded-b border-slate-200/80 px-1 pb-2.5 text-muted-foreground">
             {relations.map(([link, meta]) => (
               <AnnotationListItemRelation
                 key={link.id}
@@ -88,8 +88,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           </ul>
         )}
 
-        {/*
-        <div className="pl-0.5 pt-3 flex justify-between items-center">
+        <div className="bg-slate-50 border-t py-0.5 pl-2.5 pr-1 flex justify-between items-center text-[11px]">
           {lastEdit ? (
             <div className="text-gray-400">
               <Moment format="LT MMM DD">
@@ -112,13 +111,12 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="rounded-full h-8 w-8 -ml-1.5 text-red-400 hover:text-red-600"
+              className="rounded-full h-8 w-8 -ml-1.5 text-gray-400 hover:text-red-600"
               onClick={() => setConfirmDelete(true)}>
               <Trash2 className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
-        */}
       </div>
 
       <ConfirmedDelete

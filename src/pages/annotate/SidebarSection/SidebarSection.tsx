@@ -54,7 +54,7 @@ export const SidebarSection = () => {
 
             <Tabs.Content value="annotation-list" asChild>
               <div 
-                className="flex-grow h-full text-sm justify-center items-center w-full bg-slate-100/40 px-2 py-3">
+                className="flex-grow h-full text-sm justify-center items-center w-full">
                 <AnnotationList />
               </div> 
             </Tabs.Content>

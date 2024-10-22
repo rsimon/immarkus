@@ -53,13 +53,15 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
         <div className="absolute border-t border-gray-400 border-dashed h-[1px] w-full z-0" />
       
         <div className="w-full flex justify-center z-10 font-light text-[11px]">
-          <span className="bg-slate-50 px-1">{props.relation}</span>
+          <span className="bg-white px-1 max-w-32 whitespace-nowrap overflow-hidden text-ellipsis">{props.relation}</span>
         </div>
       </div>
 
-      {entity && (
+      {entity ? (
         <EntityBadge 
           entityType={entity} />
+      ) : (
+        <div className="h-2 w-2 border border-gray-400 rounded-full" />
       )}
     </div>
   )
