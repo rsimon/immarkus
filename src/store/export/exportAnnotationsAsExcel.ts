@@ -3,7 +3,7 @@ import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { EntityType, Image, PropertyDefinition } from '@/model';
 import { ImageSnippet, getAnntotationsWithSnippets } from '@/utils/getImageSnippet';
-import { fitColumnWidths } from './utils';
+import { addImageToCell, fitColumnWidths } from './utils';
 
 interface ImageAnnotationSnippetTuple {
 
@@ -15,39 +15,6 @@ interface ImageAnnotationSnippetTuple {
 
   snippet?: ImageSnippet;
 
-}
-
-const addImageToCell = (
-  workbook: any,
-  worksheet: any,
-  snippet: ImageSnippet,
-  row: number
-) => {
-  const embeddedImage = workbook.addImage({
-    buffer: snippet.data,
-    extension: 'jpg',
-  });
-
-  const aspectRatio = snippet.width / snippet.height;
-  const boxAspectRatio = 300 / 100;
-
-  let scaledWidth: number;
-  let scaledHeight: number;
-
-  if (aspectRatio > boxAspectRatio) {
-    scaledWidth = 300;
-    scaledHeight = scaledWidth / aspectRatio;
-  } else {
-    scaledHeight = 100;
-    scaledWidth = scaledHeight * aspectRatio;
-  }
-
-  worksheet.addImage(embeddedImage, {
-    tl: { col: 0, row },
-    ext: { width: scaledWidth, height: scaledHeight }
-  });
-
-  worksheet.lastRow.height = 100;
 }
 
 /**
@@ -151,7 +118,7 @@ const createEntityWorksheet = (
       worksheet.addRow(row);
 
       if (snippet)
-        addImageToCell(workbook, worksheet, snippet, rowIndex);
+        addImageToCell(workbook, worksheet, snippet, 0, rowIndex);
 
       rowIndex += 1;
     });
@@ -194,7 +161,7 @@ const createNotesWorksheet = (
       });
 
       if (snippet)
-        addImageToCell(workbook, worksheet, snippet, rowIndex);
+        addImageToCell(workbook, worksheet, snippet, 0, rowIndex);
 
       rowIndex += 1;
     }
@@ -233,8 +200,6 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
     }, Promise.resolve([]));
 
   promise.then(annotations => {
-    console.debug(`${annotations.length} annotations total`);
-
     const workbook = new ExcelJS.Workbook();
 
     workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
