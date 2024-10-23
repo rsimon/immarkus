@@ -57,8 +57,8 @@ export const Relationships = () => {
     <>
       <div>
         <p className="p-1 mt-4 text-sm max-w-xl leading-6">
-          You can connect two annotations through a Relationship. A Relationship must have a 
-          relationship type, such as 'is next to' or 'is part of'.
+          You can connect two annotations through a Relationship. A Relationship has a 
+          name (e.g. 'is next to' or 'is part of') and can be directed or undirected.
         </p>
 
         <div className="rounded-md border mt-6">

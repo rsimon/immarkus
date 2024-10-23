@@ -42,7 +42,25 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-xl pt-16">
           <h3 className="font-medium leading-relaxed">
-            Image Metadata
+            Relationship Types
+          </h3>
+
+          <p className="text-sm pt-3 pb-5 leading-relaxed">
+            Your Relationship Type model, in proprietary IMMARKUS JSON Format.
+          </p>
+
+          <Button 
+            className="whitespace-nowrap flex gap-3 w-36 justify-center"
+            onClick={() => exportData(datamodel.relationshipTypes, 'relationship-types.json')}>
+            <FileJson className="h-5 w-5" /> JSON
+          </Button>
+        </div>
+      </li>
+
+      <li>
+        <div className="max-w-xl pt-16">
+          <h3 className="font-medium leading-relaxed">
+            Image Metadata Schemas
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
@@ -60,7 +78,7 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-xl pt-16">
           <h3 className="font-medium leading-relaxed">
-            Folder Metadata
+            Folder Metadata Schemas
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
