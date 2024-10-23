@@ -1,16 +1,16 @@
 import { Button } from '@/ui/Button';
 import { ChevronDown, Download, FileBarChart2 } from 'lucide-react';
-import { useStore, useExcelAnnotationExport } from '@/store';
+import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
 import { exportImages } from './exportImages';
-import { useExcelRelationshipExport } from './exportRelationships';
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
+import { getRelationships } from './exportRelationships';
 
 interface ExportSelectorProps {
 
@@ -45,7 +45,8 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const onExportRelationships = () => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
-    exportRelationships(props.graph, store, matches, 'search_results_relations.xlsx');
+    const relationships = getRelationships(props.graph, matches);
+    exportRelationships(store, relationships, 'search_results_relations.xlsx');
   }
 
   return (
