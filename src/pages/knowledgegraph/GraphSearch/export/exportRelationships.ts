@@ -1,9 +1,12 @@
-import { Store } from '@/store';
-import { Graph, GraphLinkPrimitive, GraphNode } from '../../Types';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
-import { W3CImageAnnotation } from '@annotorious/react';
 import { useState } from 'react';
+import { W3CImageAnnotation } from '@annotorious/react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { Store } from '@/store';
+import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
+import { Graph, GraphLinkPrimitive, GraphNode } from '../../Types';
+import { addImageToCell } from '@/store/export/utils';
+import { getEntityTypes } from '@/utils/annotation';
 
 interface RowData {
 
@@ -69,15 +72,12 @@ const toRowData = (
         source_filename: sourceImage.name,
         source_foldername: store.getFolder(sourceImage.folder)?.name,      
         source_annotation_id: sourceAnnotation.id,
-    
-        // source_entity_classes?: string;
-      
+        source_entity_classes: getEntityTypes(sourceAnnotation).join(','),
         target_snippet: targetSnippet,
         target_filename: targetImage.name,
         target_foldername: store.getFolder(targetImage.folder)?.name,
-        target_annotation_id: targetAnnotation.id
-
-        // target_entity_classes?: string;
+        target_annotation_id: targetAnnotation.id,
+        target_entity_classes: getEntityTypes(targetAnnotation).join(',')
       } as RowData))
     })
   });
@@ -151,7 +151,48 @@ export const _exportRelationships = (
     }))
   ), Promise.resolve([]));
 
-  promise.then(data => console.log('exporting', data));
+  promise.then(data => {
+    const workbook = new ExcelJS.Workbook();
+
+    workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
+    workbook.lastModifiedBy = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
+    workbook.created = new Date();
+    workbook.modified = new Date();
+  
+    const worksheet = workbook.addWorksheet();
+  
+    if (data.length > 0) {
+      const headers = Object.keys(data[0]);
+
+      worksheet.columns = headers.map(header => (
+        { header, key: header, width: 30 }
+      ));
+
+      let rowIndex = 1;
+  
+      data.forEach(({ source_snippet, target_snippet, ...rest }) => {
+        worksheet.addRow(rest);
+
+        addImageToCell(workbook, worksheet, source_snippet, 3, rowIndex);
+        addImageToCell(workbook, worksheet, target_snippet, 8, rowIndex);
+
+        rowIndex += 1;
+      });
+    }
+  
+    workbook.xlsx.writeBuffer().then(buffer => {
+      onProgress(100);
+
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.ms-excel'
+      });
+  
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(blob);
+      anchor.download = filename;
+      anchor.click();
+    });
+  });
 }
 
 export const useExcelRelationshipExport = () => {
