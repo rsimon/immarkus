@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { exportRelationshipsAsExcel } from '@/store';
 import { Store } from '../Store';
-import { exportRelationshipsAsExcel } from '../export/exportRelationshipsAsExcel';
 
 export const useExcelRelationshipExport = () => {
 

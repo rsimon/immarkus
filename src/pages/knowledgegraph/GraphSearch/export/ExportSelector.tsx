@@ -4,13 +4,14 @@ import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
 import { exportImages } from './exportImages';
+import { getRelationships } from './exportRelationships';
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { getRelationships } from './exportRelationships';
+
 
 interface ExportSelectorProps {
 

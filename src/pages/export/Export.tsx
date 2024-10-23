@@ -4,10 +4,11 @@ import { Separator } from '@/ui/Separator';
 import { ExportAnnotations } from './ExportAnnotations';
 import { ExportDataModel } from './ExportDataModel';
 import { ExportMetadata } from './ExportMetadata';
+import { ExportRelationships } from './ExportRelationships';
 
 interface ExportProps {
   
-  tab: 'annotations' | 'model' | 'metadata'
+  tab: 'annotations' | 'relationships' | 'model' | 'metadata'
 
 }
 
@@ -48,6 +49,11 @@ export const Export = (props: ExportProps) => {
                   active={props.tab === 'annotations'} />
 
                 <NavListItem 
+                  path="/export/relationships" 
+                  label="Relationships" 
+                  active={props.tab === 'relationships'} />
+
+                <NavListItem 
                   path="/export/model" 
                   label="Data Model" 
                   active={props.tab === 'model'} />
@@ -61,13 +67,15 @@ export const Export = (props: ExportProps) => {
           </aside>
 
           <section className="pl-12 py-2 flex-grow">
-            {props.tab === 'model' ? (
-              <ExportDataModel />
-            ) : props.tab === 'annotations' ? (
+            {props.tab === 'annotations' ? (
               <ExportAnnotations />
-            ) : (
+            ) : props.tab === 'relationships' ? (
+              <ExportRelationships />
+            ) : props.tab === 'model' ? (
+              <ExportDataModel />
+            ) : props.tab === 'metadata' ? (
               <ExportMetadata />
-            )}
+            ) : null}
           </section>
         </div>
       </main>
