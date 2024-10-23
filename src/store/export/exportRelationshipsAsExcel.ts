@@ -14,7 +14,7 @@ interface RowData {
 
   directed?: string;
 
-  // created?: string;
+  created?: string;
 
   source_snippet: ImageSnippet;
   
@@ -66,6 +66,7 @@ const toRowData = (
         relationship_name: relationshipName,
         relationship_id: link.id,
         directed: relationshipType?.directed ? 'YES' : undefined,
+        created: link.created,
         source_snippet: sourceSnippet,  
         source_filename: sourceImage.name,
         source_foldername: store.getFolder(sourceImage.folder)?.name,      
@@ -139,8 +140,8 @@ export const exportRelationshipsAsExcel = (
       data.forEach(({ source_snippet, target_snippet, ...rest }) => {
         worksheet.addRow(rest);
 
-        addImageToCell(workbook, worksheet, source_snippet, 3, rowIndex);
-        addImageToCell(workbook, worksheet, target_snippet, 8, rowIndex);
+        addImageToCell(workbook, worksheet, source_snippet, 4, rowIndex);
+        addImageToCell(workbook, worksheet, target_snippet, 9, rowIndex);
 
         rowIndex += 1;
       });

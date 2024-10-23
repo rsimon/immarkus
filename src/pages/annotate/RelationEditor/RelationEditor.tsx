@@ -61,7 +61,8 @@ export const RelationEditor = (props: RelationEditorProps) => {
       id,
       motivation: 'linking',
       body: to.id,
-      target: from.id
+      target: from.id,
+      created: new Date().toISOString()
     };
 
     const meta: W3CRelationMetaAnnotation = {
@@ -70,7 +71,8 @@ export const RelationEditor = (props: RelationEditorProps) => {
       body: {
         value: relation
       },
-      target: id
+      target: id,
+      created: new Date().toISOString()
     };
 
     setSavingState({ value: 'saving' });
