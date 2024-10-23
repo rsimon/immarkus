@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
@@ -14,9 +14,11 @@ import './Annotate.css';
 
 export const Annotate = () => {
 
-  const navigate = useNavigate();
-
   const params = useParams();
+
+  const location = useLocation();
+
+  const navigate = useNavigate();
 
   const [imageIds, setImageIds] = useState(params.images.split('&'));
 
@@ -35,8 +37,13 @@ export const Annotate = () => {
   }, [params]);
 
   useEffect(() => {
+    const { pathname } = location;
+
     // Update the URL in response to image change
-    navigate(`/annotate/${imageIds.join('&')}`);
+    const url = `/annotate/${imageIds.join('&')}`;
+
+    if (pathname !== url)
+      navigate(url);
   }, [imageIds]);
 
   const onAddImage = (image: Image) =>
