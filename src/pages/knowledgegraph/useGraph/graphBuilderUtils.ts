@@ -123,7 +123,8 @@ export const inferImageToImageRelationPrimitives = (
         source: image.id,
         target: findImage(link.body)?.id,
         type: 'HAS_RELATED_ANNOTATION_IN',
-        value: getRelationName(meta)
+        value: getRelationName(meta),
+        data: [link, meta]
       } as GraphLinkPrimitive))];
     }, []);
 

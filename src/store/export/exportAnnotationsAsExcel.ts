@@ -233,8 +233,6 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
     }, Promise.resolve([]));
 
   promise.then(annotations => {
-    console.debug(`${annotations.length} annotations total`);
-
     const workbook = new ExcelJS.Workbook();
 
     workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;

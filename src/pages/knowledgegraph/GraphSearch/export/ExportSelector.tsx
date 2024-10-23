@@ -4,6 +4,7 @@ import { useStore, useExcelAnnotationExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode } from '../../Types';
 import { exportImages } from './exportImages';
+import { useExcelRelationshipExport } from './exportRelationships';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +24,13 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const store = useStore();
 
-  const { exportAnnotations, busy, progress } = useExcelAnnotationExport();
+  const { exportAnnotations, busy: busyAnnotations, progress: progressAnnotations } = useExcelAnnotationExport();
+
+  const { exportRelationships, busy: busyRelations, progress: progressRelations } = useExcelRelationshipExport();
+
+  const busy = busyAnnotations || busyRelations;
+
+  const progress = busyAnnotations ? progressAnnotations : busyRelations ? progressRelations : 0;
 
   const onExportMetadata = () => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
@@ -34,6 +41,11 @@ export const ExportSelector = (props: ExportSelectorProps) => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
     const images = matches.filter(n => n.type === 'IMAGE').map(n => store.getImage(n.id));
     exportAnnotations(images, 'search_results_annotations.xlsx');
+  }
+
+  const onExportRelationships = () => {
+    const matches = props.graph.nodes.filter(n => props.query!(n));
+    exportRelationships(props.graph, store, matches, 'search_results_relations.xlsx');
   }
 
   return (
@@ -59,6 +71,10 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
           <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportAnnotations}>
             <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export annotations
+          </DropdownMenuItem>
+
+          <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportRelationships}>
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export relationships
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
