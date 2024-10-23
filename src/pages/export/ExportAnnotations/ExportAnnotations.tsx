@@ -17,9 +17,9 @@ export const ExportAnnotations = () => {
 
   return (
     <> 
-      <ul className="py-2">
+      <ul className="py-2 space-y-5">
         <li>
-          <div className="max-w-xl py-2">
+          <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
               Annotation Data
             </h3>
@@ -31,36 +31,40 @@ export const ExportAnnotations = () => {
                 href="https://www.w3.org/TR/annotation-model/" target="_blank">W3C Web Annotation</a> JSON-LD format.
             </p>
 
-            <Button
-              className="whitespace-nowrap flex gap-3 w-36"
-              onClick={() => exportAnnotationsAsJSONLD(store)}>
-              <FileJson className="h-5 w-5" /> JSON-LD
-            </Button>
+            <div className="flex justify-end pt-3">
+              <Button
+                className="whitespace-nowrap flex gap-3 w-36"
+                onClick={() => exportAnnotationsAsJSONLD(store)}>
+                <FileJson className="h-5 w-5" /> JSON-LD
+              </Button>
+            </div>
           </div>
         </li>
 
         <li>
-          <div className="max-w-xl pt-16">
+          <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
               Annotations and Images
             </h3>
 
             <p className="text-sm pt-3 pb-5 leading-relaxed">
-              An export of all annotations, on all images in your current work folder, as an Excel file. 
+              All annotations, on all images in your current work folder, as an Excel file. 
               Each top-level Entity Class will be on a separate worksheet. Image snippets are included
-              as a spreadhseet column.
+              as a spreadsheet column.
             </p>
 
-            <Button 
-              disabled={busy}
-              className="whitespace-nowrap flex gap-3 w-36"
-              onClick={() => exportAnnotationsAsExcel()}>
-              {busy ? (
-                <Spinner className="w-4 h-4 text-white" />
-              ) : (
-                <><FileChartColumn className="h-5 w-5" /> XLSX</>
-              )}
-            </Button>
+            <div className="flex justify-end pt-3">
+              <Button 
+                disabled={busy}
+                className="whitespace-nowrap flex gap-3 w-36"
+                onClick={() => exportAnnotationsAsExcel()}>
+                {busy ? (
+                  <Spinner className="w-4 h-4 text-white" />
+                ) : (
+                  <><FileChartColumn className="h-5 w-5" /> XLSX</>
+                )}
+              </Button>
+            </div>
           </div>
         </li>
       </ul>
