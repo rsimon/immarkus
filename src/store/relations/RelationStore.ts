@@ -11,7 +11,9 @@ export interface RelationStore {
 
   getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
-  getRelatedImageAnnotations(imageId: string): Promise<{ [image: string]: string[] }>
+  getRelatedImageAnnotations(imageId: string): Promise<{ [image: string]: string[] }>;
+
+  getRelationAnnotation(annotationId: string): W3CRelationLinkAnnotation | W3CRelationMetaAnnotation | undefined;
 
   getRelations(imageId: string, direction?: Directionality): Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][]>;
 
@@ -97,6 +99,9 @@ export const loadRelationStore = (
         });
     });
 
+  const getRelationAnnotation = (id: string) =>
+    annotations.find(a => a.id === id); 
+
   const hasRelatedAnnotations = (annotationId: string) =>
     annotations.some(a => a.motivation === 'linking' && (a.body === annotationId || a.target === annotationId));
 
@@ -126,6 +131,7 @@ export const loadRelationStore = (
     deleteRelation,
     getRelatedAnnotations,
     getRelatedImageAnnotations,
+    getRelationAnnotation,
     getRelations,
     hasRelatedAnnotations,
     listAllRelations,

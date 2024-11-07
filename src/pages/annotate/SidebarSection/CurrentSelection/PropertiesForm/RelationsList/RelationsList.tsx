@@ -23,9 +23,6 @@ export const RelationsList = (props: RelationsListProps) => {
   ), [props.annotation.id, store]);
 
   const onChangeRelationshipType = useCallback((meta: W3CRelationMetaAnnotation, type: RelationshipType) => {
-    const current = meta.body?.value;
-    if (current === type.name) return;
-    
     const next = {
       ...meta,
       body: { value: type.name }

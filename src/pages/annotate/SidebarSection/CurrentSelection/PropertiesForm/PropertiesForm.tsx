@@ -91,8 +91,18 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       [key]: value
     })), []);
 
-  const onChangeRelationship = useCallback((meta: W3CRelationMetaAnnotation) =>
-    setChangedRelationships(current => ([...current, meta])), []);
+  const onChangeRelationship = useCallback((meta: W3CRelationMetaAnnotation) => (
+    setChangedRelationships(state => {
+      const currentValue = store.getRelationAnnotation(meta.id)?.body?.value;
+      
+      // Remove no-ops (happen when the user changes back to original value)
+      return (meta?.body.value !== currentValue) ? [
+        // Only keep latest change for this anntotation
+        ...state.filter(a => a.id !== meta.id),
+        meta
+      ] : state.filter(a => a.id !== meta.id);
+    })
+  ), []);
 
   const hasChanges = !dequal(formState, initialValues) || changedRelationships.length > 0;
 
