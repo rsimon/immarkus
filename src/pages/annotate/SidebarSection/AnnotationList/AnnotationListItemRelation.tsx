@@ -1,10 +1,10 @@
-import { ImageAnnotation } from '@annotorious/react';
-import { useStore } from '@/store';
 import { useEffect, useMemo, useState } from 'react';
+import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { EntityBadge } from '@/components/EntityBadge';
-import { getEntityTypes } from '@/utils/annotation';
 import { EntityType } from '@/model';
+import { useStore } from '@/store';
+import { getEntityTypes } from '@/utils/annotation';
 
 interface AnnotationListItemRelationProps {
 
@@ -22,6 +22,8 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
 
   const { leftSideAnnotation, sourceId, targetId } = props;
 
+  const rightSideId = leftSideAnnotation.id === sourceId ? targetId : sourceId;
+
   const store = useStore();
 
   const model = store.getDataModel();
@@ -29,8 +31,6 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
   const [entity, setEntity] = useState<EntityType |  undefined>();
 
   useEffect(() => {
-    const rightSideId = leftSideAnnotation.id === sourceId ? targetId : sourceId;
-    
     store.findAnnotation(rightSideId).then(result => {
       if (result) {
         const types = getEntityTypes(result[0]);
@@ -38,7 +38,7 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
           setEntity(model.getEntityType(types[0]));
       }
     });
-  }, [leftSideAnnotation, sourceId, targetId, store])
+  }, [rightSideId, store])
 
   const type = useMemo(() => {
     if (props.relation)
@@ -47,7 +47,9 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
 
   return (
     <div className="w-full flex justify-between items-center py-0.5 px-2 gap-1">
-      <div className="h-2.5 w-2.5 border border-gray-600 rounded-full" />
+      <AnnotationThumbnail 
+        className="rounded-full h-7 w-7 border border-gray-400"
+        annotation={leftSideAnnotation} />
 
       <div className="relative flex-grow flex items-center">
         <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
@@ -65,12 +67,17 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
         )}
       </div>
 
-      {entity ? (
-        <EntityBadge 
-          entityType={entity} />
-      ) : (
-        <div className="h-2.5 w-2.5 border border-gray-600 rounded-full" />
-      )}
+      <div className="flex gap-1 items-center">
+        <AnnotationThumbnail 
+          className="rounded-full h-7 w-7 border border-gray-400"
+          annotation={rightSideId} />
+
+        {entity && (
+          <EntityBadge 
+            className="h-7"
+            entityType={entity} />
+        )}
+      </div>
     </div>
   )
 
