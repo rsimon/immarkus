@@ -10,6 +10,8 @@ interface RelationsListProps {
 
   annotation: ImageAnnotation;
 
+  onUpdateRelationship(meta: W3CRelationMetaAnnotation): void;
+
 }
 
 export const RelationsList = (props: RelationsListProps) => {
@@ -25,9 +27,9 @@ export const RelationsList = (props: RelationsListProps) => {
       ...meta,
       body: { value: type.name }
     };
-    
-    store.upsertRelation(undefined, next);
-  }, [store]);
+
+    props.onUpdateRelationship(next);
+  }, [props.onUpdateRelationship]);
 
   const onDeleteRelation = useCallback((link: W3CRelationLinkAnnotation) => {
     // Note that this will automatically delete link AND meta

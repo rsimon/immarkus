@@ -109,10 +109,6 @@ export const loadRelationStore = (
     link: W3CRelationLinkAnnotation | undefined, 
     meta: W3CRelationMetaAnnotation | undefined
   ) => {
-    console.log('upserting', link, meta);
-
-    console.log('before', annotations);
-
     const toUpsert = [link, meta].filter(Boolean);
     if (toUpsert.length === 0) return;
 
@@ -122,8 +118,6 @@ export const loadRelationStore = (
       ...annotations.filter(a => !idsToUpsert.has(a.id)),
       ...toUpsert
     ];
-
-    console.log('after', annotations);
 
     return save();
   }
