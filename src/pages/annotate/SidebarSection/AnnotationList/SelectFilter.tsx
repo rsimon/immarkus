@@ -57,7 +57,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
     <div className="flex text-xs">
       Show <Select defaultValue="all" onValueChange={onValueChange}>
         <SelectTrigger 
-          className="p-0 shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
+          className="p-0 whitespace-nowrap [&>span]:max-w-24 [&>span]:overflow-hidden [&>span]:text-ellipsis shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
           <SelectValue />
         </SelectTrigger>
 
