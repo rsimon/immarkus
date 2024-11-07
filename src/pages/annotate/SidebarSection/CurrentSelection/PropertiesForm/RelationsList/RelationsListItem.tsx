@@ -25,12 +25,14 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
 
   const { leftSideId, sourceId, targetId, relationship } = props;
 
-  // const options: ComboboxOption[] = model.relationshipTypes.map(r => ({ label: r.name, value: r.name }))
-
   // Can be undefined if the user has meanwhile deleted the 
   // relationship type from the data model!
   const type = useMemo(() => 
     model.getRelationshipType(relationship), [model, relationship]);
+
+  const allowedOptions = useMemo(() => {
+
+  }, [model, sourceId, targetId]);
 
   const onDelete = useCallback((evt: React.MouseEvent) => {
     evt.stopPropagation();
