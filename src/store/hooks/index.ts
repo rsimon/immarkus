@@ -1,3 +1,4 @@
+export * from './useAnnotation';
 export * from './useAnnotations';
 export * from './useDataModel';
 export * from './useExcelAnnotationExport';

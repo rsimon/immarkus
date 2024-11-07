@@ -106,11 +106,25 @@ export const loadRelationStore = (
   }
 
   const upsertRelation = (
-    link: W3CRelationLinkAnnotation, 
-    meta: W3CRelationMetaAnnotation
-    // imageId?: string // for future use
+    link: W3CRelationLinkAnnotation | undefined, 
+    meta: W3CRelationMetaAnnotation | undefined
   ) => {
-    annotations = [...annotations, link, meta];
+    console.log('upserting', link, meta);
+
+    console.log('before', annotations);
+
+    const toUpsert = [link, meta].filter(Boolean);
+    if (toUpsert.length === 0) return;
+
+    const idsToUpsert = new Set(toUpsert.map(a => a.id));
+
+    annotations = [
+      ...annotations.filter(a => !idsToUpsert.has(a.id)),
+      ...toUpsert
+    ];
+
+    console.log('after', annotations);
+
     return save();
   }
 

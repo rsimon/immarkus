@@ -117,7 +117,7 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
               ? value.label
               : placeholder}
           </span>
-          <ChevronDown className={cn('ml-2 h-4 w-4 shrink-0 opacity-50', props.size === 'sm' ? 'ml-0.5 h-3 w-3' : undefined)} />
+          <ChevronDown className={cn('ml-2 h-4 w-4 shrink-0 opacity-50', props.size === 'sm' ? 'ml-[2px] h-3 w-3' : undefined)} />
         </Button>
       </PopoverTrigger>
 
