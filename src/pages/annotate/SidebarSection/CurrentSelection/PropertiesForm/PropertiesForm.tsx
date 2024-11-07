@@ -1,7 +1,8 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
+import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
@@ -73,6 +74,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const [formState, setFormState] = useState<{[key: string]: any}>(initialValues);
 
+  const [changedRelationships, setChangedRelationships] = useState<W3CRelationMetaAnnotation[]>([]);
+
   const [valid, setIsValid] = useState(false);
 
   const [showValidationErrors, setShowValidationErrors] = useState(false); 
@@ -82,13 +85,16 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   const onDeleteBody = (body: W3CAnnotationBody) =>
     anno.deleteBody(body as unknown as AnnotationBody);
  
-  const onChange = (key: string, value: any) =>
+  const onChangeFormValue = useCallback((key: string, value: any) =>
     setFormState(state => ({
       ...state, 
       [key]: value
-    }));
+    })), []);
 
-  const hasChanges = !dequal(formState, initialValues);
+  const onChangeRelationship = useCallback((meta: W3CRelationMetaAnnotation) =>
+    setChangedRelationships(current => ([...current, meta])), []);
+
+  const hasChanges = !dequal(formState, initialValues) || changedRelationships.length > 0;
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -124,6 +130,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       };
 
       anno.updateAnnotation(updatedAnnotation);
+
+      // Store changed relationships, if any
+      changedRelationships.forEach(meta => store.upsertRelation(undefined, meta));
+      setChangedRelationships([]);
 
       setFormKey(Math.random());
     } else {
@@ -167,7 +177,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                 entityType={schemaBodies[0].entityType}
                 safeKeys={safeKeys}
                 values={formState} 
-                onChange={onChange} />
+                onChange={onChangeFormValue} />
 
               <Separator />
             </div>
@@ -196,7 +206,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                       entityType={entityType}
                       safeKeys={safeKeys}
                       values={formState}
-                      onChange={onChange} />
+                      onChange={onChangeFormValue} />
                   </AccordionContent>
                 </AccordionItem>
               ) : (
@@ -219,21 +229,22 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               annotation={annotation} />
           ) : hasRelations && (
             <RelationsList 
-              annotation={annotation} />
+              annotation={annotation} 
+              onUpdateRelationship={onChangeRelationship} />
           )} 
 
           {hasNote && (
             <Note
               id={noteKey}
               value={formState[noteKey]}
-              onChange={value => onChange(noteKey, value)} />
+              onChange={value => onChangeFormValue(noteKey, value)} />
           )}
           
           <PropertiesFormActions 
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
-            onAddNote={() => onChange(noteKey, '')} 
-            onClearNote={() => onChange(noteKey, undefined)}/>
+            onAddNote={() => onChangeFormValue(noteKey, '')} 
+            onClearNote={() => onChangeFormValue(noteKey, undefined)}/>
         </div>
 
         <Button 

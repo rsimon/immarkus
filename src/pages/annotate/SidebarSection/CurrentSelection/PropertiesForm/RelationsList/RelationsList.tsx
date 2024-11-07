@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { RelationsListItem } from './RelationsListItem';
+import { RelationshipType } from '@/model';
 
 interface RelationsListProps {
 
   annotation: ImageAnnotation;
+
+  onUpdateRelationship(meta: W3CRelationMetaAnnotation): void;
 
 }
 
@@ -19,9 +22,19 @@ export const RelationsList = (props: RelationsListProps) => {
     store.getRelatedAnnotations(props.annotation.id)
   ), [props.annotation.id, store]);
 
-  const onDeleteRelation = (link: W3CRelationLinkAnnotation) =>
+  const onChangeRelationshipType = useCallback((meta: W3CRelationMetaAnnotation, type: RelationshipType) => {
+    const next = {
+      ...meta,
+      body: { value: type.name }
+    };
+
+    props.onUpdateRelationship(next);
+  }, [props.onUpdateRelationship]);
+
+  const onDeleteRelation = useCallback((link: W3CRelationLinkAnnotation) => {
     // Note that this will automatically delete link AND meta
-    store.deleteRelation(link.id);
+    store.deleteRelation(link.id)
+  }, [store]);
 
   return (
     <div>
@@ -38,6 +51,7 @@ export const RelationsList = (props: RelationsListProps) => {
               sourceId={link.target}
               targetId={link.body}
               relationship={meta.body?.value} 
+              onChangeRelationship={t => onChangeRelationshipType(meta, t)}
               onDelete={() => onDeleteRelation(link)} />
           </li>
         ))}

@@ -26,6 +26,8 @@ export interface ComboboxOption {
  
 interface ComboboxProps <T extends ComboboxOption>{
 
+  align?: 'end' | 'center' | 'start';
+
   autofocus?: boolean;
 
   className?: string;
@@ -39,6 +41,8 @@ interface ComboboxProps <T extends ComboboxOption>{
   value?: T;
   
   options: T[];
+
+  size?: 'sm';
 
   onChange(value: T): void;
 
@@ -113,12 +117,12 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
               ? value.label
               : placeholder}
           </span>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <ChevronDown className={cn('ml-2 h-4 w-4 shrink-0 opacity-50', props.size === 'sm' ? 'ml-[2px] h-3 w-3' : undefined)} />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent 
-        align="start"
+        align={props.align || 'start'}
         className="min-w-[80px] max-w-[60vw] w-auto p-0 overflow-hidden">
         <Command>
           <CommandInput 

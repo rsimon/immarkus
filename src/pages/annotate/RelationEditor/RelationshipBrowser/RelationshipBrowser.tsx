@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
 import { ImageAnnotation } from '@annotorious/react';
+import { RelationshipSearchResult, useRelationshipSearch } from '@/store';
 import { RelationshipType } from '@/model';
 import { RelationshipBrowserSuggestion } from './RelationshipBrowserSuggestion';
 import { RelationshipBrowserInput } from './RelationshipBrowserInput';
-import { RelationshipSearchResult, useRelationshipSearch } from './useRelationshipSearch';
 import { Eye, EyeOff, Spline } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';

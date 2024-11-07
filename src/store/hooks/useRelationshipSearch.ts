@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
-import { ImageAnnotation } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 
@@ -10,7 +10,7 @@ export interface RelationshipSearchResult extends RelationshipType {
 
 }
 
-export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnnotation) => {
+export const useRelationshipSearch = (source?: ImageAnnotation | W3CImageAnnotation, target?: ImageAnnotation | W3CImageAnnotation) => {
 
   const model = useDataModel();
 
@@ -19,11 +19,18 @@ export const useRelationshipSearch = (source: ImageAnnotation, target?: ImageAnn
   const allTypes = model.relationshipTypes;
 
   const isApplicable = useCallback((type: RelationshipType) => {
+    if (!source) return;
+
     if (type.targetTypeId && !target) return false;
 
-    const getEntityTypes = (annotation: ImageAnnotation) => {
+    const getEntityTypes = (annotation: ImageAnnotation | W3CImageAnnotation) => {
+      const bodies: AnnotationBody[] = annotation.bodies || (
+        'body' in annotation ? 
+          Array.isArray(annotation.body) ? annotation.body : [annotation.body]
+        : []);
+
       // The entity type ID tags on this annotation
-      const entityIds = annotation.bodies
+      const entityIds = bodies
         .filter(b => b.purpose === 'classifying')
         .map(body => (body as any).source as string);
 

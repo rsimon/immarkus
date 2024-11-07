@@ -1,8 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Trash2 } from 'lucide-react';
+import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
+import { Combobox, ComboboxOption } from '@/components/Combobox';
+import { RelationshipType } from '@/model';
+import { useAnnotation, useDataModel, useRelationshipSearch } from '@/store';
 import { Button } from '@/ui/Button';
-import { useDataModel } from '@/store';
 
 interface RelationsListItemProps {
 
@@ -13,6 +16,8 @@ interface RelationsListItemProps {
   targetId: string;
 
   relationship?: string;
+  
+  onChangeRelationship(type: RelationshipType): void;
 
   onDelete(): void;
 
@@ -29,26 +34,50 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
   const type = useMemo(() => 
     model.getRelationshipType(relationship), [model, relationship]);
 
+  const sourceAnnotation = useAnnotation(sourceId) as W3CImageAnnotation;
+
+  const targetAnnotation = useAnnotation(targetId) as W3CImageAnnotation;
+
+  // Relationship type dropdown
+  const [selectedType, setSelectedType] = useState<ComboboxOption>(({ label: relationship, value: relationship }));
+
+  const { applicableTypes } = useRelationshipSearch(sourceAnnotation, targetAnnotation);
+
+  const options = useMemo(() => 
+    applicableTypes.map(({ name })=> ({ value: name, label: name })), [applicableTypes]);
+
+  const onChangeRelationship = useCallback((option: ComboboxOption) => {
+    setSelectedType(option);
+
+    const next = model.relationshipTypes.find(t => t.name === option.value);
+    if (next) 
+      props.onChangeRelationship(next);
+  }, [model, props.onChangeRelationship]);
+
   const onDelete = useCallback((evt: React.MouseEvent) => {
     evt.stopPropagation();
     evt.preventDefault();
     props.onDelete();
   }, []);
 
-  return (
+  return (sourceAnnotation && targetAnnotation) && (
     <div className="flex items-center w-full">
       <div className="flex flex-grow items-center justify-between px-1 py-1.5 text-xs gap-2">
         <AnnotationThumbnail 
-          annotation={leftSideId === sourceId ? sourceId : targetId} 
+          annotation={leftSideId === sourceId ? sourceAnnotation : targetAnnotation} 
           className="border shadow-sm h-12 w-12" /> 
 
         <div className="relative flex-grow flex items-center">
           <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
         
           <div className="w-full flex justify-center z-10 font-light text-[11px]">
-            <span className="bg-white px-1 max-w-32 whitespace-nowrap overflow-hidden text-ellipsis">
-              {relationship || 'to'}
-            </span>
+            <Combobox
+              align="center"
+              className="h-6 pl-1 rounded-sm pr-0.5 max-w-28"
+              size="sm"
+              value={selectedType}
+              options={options}
+              onChange={onChangeRelationship} />
           </div>
 
           {type?.directed && (
@@ -61,7 +90,7 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
         </div>
 
         <AnnotationThumbnail 
-          annotation={leftSideId === sourceId ? targetId : sourceId} 
+          annotation={leftSideId === sourceId ? targetAnnotation : sourceAnnotation} 
           className="border shadow-sm h-12 w-12" />
       </div>
 
