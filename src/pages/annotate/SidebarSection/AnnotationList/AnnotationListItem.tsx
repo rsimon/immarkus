@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { useInView } from 'react-intersection-observer';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -22,6 +23,8 @@ interface AnnotationListItemProps {
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const store = useStore();
+
+  const { ref, inView } = useInView();
 
   const { getEntityType } = useDataModel();
 
@@ -45,7 +48,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   return (
     <>
-      <div className="relative border mb-2 rounded text-xs bg-white cursor-pointer">
+      <div 
+        ref={ref}
+        className="relative border mb-2 rounded text-xs bg-white cursor-pointer">
         {entityTags.length > 0 && (
           <ul 
             className="line-clamp-1 mr-8 px-2 py-3">
@@ -75,7 +80,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           </div>
         )}
 
-        {relations.length > 0 && (
+        {(inView && relations.length > 0) && (
           <ul className="rounded-b border-slate-200/80 space-y-1 px-1 pb-2.5">
             {relations.map(([link, meta]) => (
               <AnnotationListItemRelation
