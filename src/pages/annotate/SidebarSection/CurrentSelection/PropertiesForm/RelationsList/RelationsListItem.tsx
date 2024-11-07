@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Button } from '@/ui/Button';
 import { useDataModel } from '@/store';
+import { Combobox, ComboboxOption } from '@/components/Combobox';
 
 interface RelationsListItemProps {
 
@@ -23,6 +24,8 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
   const model = useDataModel();
 
   const { leftSideId, sourceId, targetId, relationship } = props;
+
+  // const options: ComboboxOption[] = model.relationshipTypes.map(r => ({ label: r.name, value: r.name }))
 
   // Can be undefined if the user has meanwhile deleted the 
   // relationship type from the data model!
@@ -46,9 +49,13 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
           <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
         
           <div className="w-full flex justify-center z-10 font-light text-[11px]">
-            <span className="bg-white px-1 max-w-32 whitespace-nowrap overflow-hidden text-ellipsis">
-              {relationship || 'to'}
-            </span>
+            <Combobox
+              align="center"
+              className="h-6 pl-1 rounded-sm pr-0.5 max-w-32"
+              value={{ label: relationship!, value: relationship }}
+              options={[]}
+              size="sm"
+              onChange={() => {}}/>
           </div>
 
           {type?.directed && (
