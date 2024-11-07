@@ -3,9 +3,9 @@ import { Trash2 } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Combobox, ComboboxOption } from '@/components/Combobox';
+import { TooltippedButton } from '@/components/TooltippedButton';
 import { RelationshipType } from '@/model';
 import { useAnnotation, useDataModel, useRelationshipSearch } from '@/store';
-import { Button } from '@/ui/Button';
 
 interface RelationsListItemProps {
 
@@ -94,13 +94,15 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
           className="border shadow-sm h-12 w-12" />
       </div>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-9 w-9 rounded-full"
+      <TooltippedButton 
+        variant="ghost" 
+        size="icon" 
+        type="button"
+        className="rounded-full h-8 w-8 hover:text-red-500"
+        tooltip="Delete this relationship"
         onClick={onDelete}>
         <Trash2 className="h-4 w-4" />
-      </Button>
+      </TooltippedButton>
     </div>
   )
 

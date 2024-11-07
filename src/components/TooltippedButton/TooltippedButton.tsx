@@ -15,7 +15,7 @@ interface TooltippedButtonProps {
 
   children: ReactNode;
 
-  onClick?(): void;
+  onClick?(evt: React.MouseEvent): void;
 
   size?: 'default' | 'sm' | 'lg' | 'icon';
   
