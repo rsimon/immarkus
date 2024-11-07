@@ -20,6 +20,9 @@ export const AnnotationList = () => {
 
   const annotations = useAnnotations<ImageAnnotation>();
 
+  const flattened = useMemo(() => Array.from(annotations.values())
+    .reduce<ImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []), [annotations]);
+
   const [sorting, setSorting] = useState<((a: ImageAnnotation, b: ImageAnnotation) => number) | undefined>(
     () => DEFAULT_SORTING
   );
@@ -44,9 +47,6 @@ export const AnnotationList = () => {
   const imageIds = Array.from(annotations.keys());
 
   const entityTypes = useMemo(() => { 
-    const flattened = Array.from(annotations.values())
-      .reduce<ImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []);
-
     const sources = new Set(flattened.reduce<string[]>((all, annotation) => {
       const sources = annotation.bodies
         .filter(b => b.purpose === 'classifying' && 'source' in b)
@@ -60,7 +60,18 @@ export const AnnotationList = () => {
     return Array.from(sources)
       .map(id => datamodel.getEntityType(id)).filter(Boolean)
       .slice().sort((a, b) => (a.label || a.id).localeCompare(b.label || b.id));
-  }, [annotations]);
+  }, [store, flattened]);
+
+  const relationshipNames: string[] = useMemo(() => {
+    const relationshipNames = flattened.reduce<string[]>((all, annotation) => {
+      const meta = store.getRelatedAnnotations(annotation.id)
+        .map(t => t[1]).filter(m => m?.body?.value);
+
+      return [...all, ...meta.map(m => m.body.value)];
+    }, []);
+
+    return [...new Set(relationshipNames)];
+  }, [flattened]);
 
   const listAnnotations = useCallback((imageId: string) => {
     const filtered = filter 
@@ -78,6 +89,7 @@ export const AnnotationList = () => {
 
         <SelectFilter 
           entityTypes={entityTypes}
+          relationshipNames={relationshipNames}
           onSelect={filter => setFilter(() => filter)} />
       </div>
 
