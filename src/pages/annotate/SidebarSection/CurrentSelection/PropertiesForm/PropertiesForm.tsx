@@ -131,7 +131,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
       anno.updateAnnotation(updatedAnnotation);
 
+      // Store changed relationships, if any
       changedRelationships.forEach(meta => store.upsertRelation(undefined, meta));
+      setChangedRelationships([]);
 
       setFormKey(Math.random());
     } else {
