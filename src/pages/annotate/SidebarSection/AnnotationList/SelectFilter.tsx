@@ -63,19 +63,19 @@ export const SelectFilter = (props: SelectFilterOpts) => {
 
         <SelectContent>
           <UndecoratedSelectItem value="all">
-            all
+            All
           </UndecoratedSelectItem>
 
           <UndecoratedSelectItem 
             disabled={props.entityTypes.length === 0}
             value="all_entity">
-            with Entity
+            With Entity
           </UndecoratedSelectItem>
 
           <UndecoratedSelectItem 
             disabled={props.relationshipNames.length === 0}
             value="all_relationship">
-            with Relation
+            With Relation
           </UndecoratedSelectItem>
 
           {props.entityTypes.length > 0 && (

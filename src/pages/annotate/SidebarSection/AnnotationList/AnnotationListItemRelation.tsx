@@ -16,6 +16,10 @@ interface AnnotationListItemRelationProps {
 
   relation?: string;
 
+  onClickSource(): void;
+
+  onClickTarget(): void;
+
 }
 
 export const AnnotationListItemRelation = (props: AnnotationListItemRelationProps) => {
@@ -47,15 +51,19 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
 
   return (
     <div className="w-full flex justify-between items-center py-0.5 px-2 gap-1">
-      <AnnotationThumbnail 
-        className="rounded-full h-7 w-7 border border-gray-400"
-        annotation={leftSideAnnotation} />
+      <button 
+        className="flex-shrink-0 rounded-full"
+        onClick={leftSideAnnotation.id === sourceId ? props.onClickSource : props.onClickTarget}>
+        <AnnotationThumbnail 
+          className="rounded-full h-7 w-7 border border-gray-400"
+          annotation={leftSideAnnotation} />
+      </button>
 
-      <div className="relative flex-grow flex items-center">
+      <div className="relative flex-grow flex items-center justify-center">
         <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
       
-        <div className="w-full flex justify-center z-10 font-light text-[11px]">
-          <span className="bg-white px-1 max-w-32 whitespace-nowrap overflow-hidden text-ellipsis">{props.relation}</span>
+        <div className="w-[85%] flex justify-center z-10 font-light text-[11px]">
+          <span className="bg-white px-1 max-w-28 whitespace-nowrap overflow-hidden text-ellipsis">{props.relation}</span>
         </div>
 
         {type?.directed && (
@@ -68,9 +76,13 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
       </div>
 
       <div className="flex gap-1 items-center">
-        <AnnotationThumbnail 
-          className="rounded-full h-7 w-7 border border-gray-400"
-          annotation={rightSideId} />
+        <button
+          className="flex-shrink-0 rounded-full"
+          onClick={rightSideId === targetId ? props.onClickTarget : props.onClickSource}>
+          <AnnotationThumbnail 
+            className="rounded-full h-7 w-7 border border-gray-400"
+            annotation={rightSideId} />
+        </button>
 
         {entity && (
           <EntityBadge 

@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
-import { ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { useInView } from 'react-intersection-observer';
+import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { AnnotationListItemRelation } from './AnnotationListItemRelation';
 
 interface AnnotationListItemProps {
@@ -23,6 +24,8 @@ interface AnnotationListItemProps {
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const store = useStore();
+
+  const manifold = useAnnotoriousManifold();
 
   const { ref, inView } = useInView();
 
@@ -46,39 +49,50 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
+  const onMoveIntoView = (annotationId: string) => {
+    console.log('moving', annotationId);
+    const annotator = manifold.findAnnotator(annotationId);
+    if (annotator)
+      (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotationId, { padding: 200 });
+  }
+
   return (
     <>
       <div 
         ref={ref}
-        className="relative border mb-2 rounded text-xs bg-white cursor-pointer">
-        {entityTags.length > 0 && (
-          <ul 
-            className="line-clamp-1 mr-8 px-2 py-3">
-            {entityTags.map(tag => (
-              <li key={tag.id} className="inline-block mr-1 whitespace-nowrap">
-                <EntityBadge 
-                  entityType={getEntityType(tag.source)} />
-              </li>
-            ))}
-          </ul>
-        )}
+        className="relative border mb-2 rounded text-xs bg-white">
+        <button 
+          className="w-full text-left"
+          onClick={() => onMoveIntoView(props.annotation.id)}>
+          {entityTags.length > 0 && (
+            <ul 
+              className="line-clamp-1 mr-8 px-2 py-3">
+              {entityTags.map(tag => (
+                <li key={tag.id} className="inline-block mr-1 whitespace-nowrap">
+                  <EntityBadge 
+                    entityType={getEntityType(tag.source)} />
+                </li>
+              ))}
+            </ul>
+          )}
 
-        <div className="line-clamp-2 px-2.5 mb-2">
-          <AnnotationValuePreview 
-            bodies={entityTags} />
-        </div>
-      
-        {note && (
-          <p className="line-clamp-2 pl-2.5 pr-5 pt-0 pb-3 font-light text-muted-foreground">
-            {note.value}
-          </p>
-        )}
-
-        {isEmpty && (
-          <div className="py-6 flex justify-center text-muted-foreground">
-            Empty annotation
+          <div className="line-clamp-2 px-2.5 mb-2">
+            <AnnotationValuePreview 
+              bodies={entityTags} />
           </div>
-        )}
+        
+          {note && (
+            <p className="line-clamp-2 pl-2.5 pr-5 pt-0 pb-3 font-light text-muted-foreground">
+              {note.value}
+            </p>
+          )}
+
+          {isEmpty && (
+            <div className="py-6 flex justify-center text-muted-foreground">
+              Empty annotation
+            </div>
+          )}
+        </button>
 
         {(inView && relations.length > 0) && (
           <ul className="rounded-b border-slate-200/80 space-y-1 px-1 pb-2.5">
@@ -88,7 +102,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
                 leftSideAnnotation={props.annotation} 
                 sourceId={link.target} 
                 targetId={link.body} 
-                relation={meta?.body?.value} />
+                relation={meta?.body?.value} 
+                onClickSource={() => onMoveIntoView(link.target)}
+                onClickTarget={() => onMoveIntoView(link.body)} />
             ))}
           </ul>
         )}

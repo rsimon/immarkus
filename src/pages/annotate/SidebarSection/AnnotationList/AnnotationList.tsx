@@ -29,11 +29,6 @@ export const AnnotationList = () => {
 
   const [filter, setFilter] = useState<((a: ImageAnnotation) => boolean) | undefined>();
 
-  const onClick = (annotation: ImageAnnotation) => () => {
-    const annotator = manifold.findAnnotator(annotation.id);
-    (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
-  }
-
   const onEdit = (annotation: ImageAnnotation) => () => {
     manifold.setSelected(annotation.id);
 
@@ -98,9 +93,7 @@ export const AnnotationList = () => {
           <div className="py-2 grow">
             <ul className="space-y-2">
               {listAnnotations(imageIds[0]).map(annotation => (
-                <li 
-                  key={annotation.id} 
-                  onClick={onClick(annotation)}>
+                <li key={annotation.id}>
                   <AnnotationListItem 
                     annotation={annotation} 
                     onEdit={onEdit(annotation)}
@@ -120,9 +113,7 @@ export const AnnotationList = () => {
                 <AccordionContent>
                   <ul className="space-y-2">
                     {listAnnotations(source).map(annotation => (
-                      <li 
-                        key={annotation.id} 
-                        onClick={onClick(annotation)}>
+                      <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 
                           onEdit={onEdit(annotation)}
