@@ -1,6 +1,7 @@
 # IMMARKUS
 
-An image annotation environment for the [MARKUS platform](https://dh.chinese-empires.eu/markus/).
+An image annotation environment for the [MARKUS platform](https://dh.chinese-empires.eu/markus/). 
+For documenation, see the [Wiki](https://github.com/rsimon/immarkus/wiki).
 
 ## Acknowledgements
 
