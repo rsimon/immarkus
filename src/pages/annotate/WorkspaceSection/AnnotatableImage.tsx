@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type OpenSeadragon from 'openseadragon';
-import { AnnotoriousPlugin, OpenSeadragonAnnotator, UserSelectAction } from '@annotorious/react';
+import type { ChangeSet } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
@@ -12,6 +12,14 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
+import { 
+  AnnotoriousOpenSeadragonAnnotator, 
+  AnnotoriousPlugin, 
+  ImageAnnotation,
+  OpenSeadragonAnnotator, 
+  UserSelectAction, 
+  useAnnotator 
+} from '@annotorious/react';
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
@@ -25,11 +33,37 @@ interface AnnotatableImageProps {
 
   image: LoadedImage;
 
+  initialHistory: ChangeSet<ImageAnnotation>[];
+
   windowId?: string;
   
   mode: ToolMode;
 
   tool: Tool;
+
+  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
+
+}
+
+interface HistoryConsumerProps {
+
+  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
+
+}
+
+const HistoryConsumer = (props: HistoryConsumerProps) => {
+
+  const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
+
+  useEffect(() => {
+    if (!anno) return;
+
+    return () => {
+      props.onUnmount(anno.getHistory())
+    }
+  }, [anno]);
+
+  return null;
 
 }
 
@@ -76,9 +110,13 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
+        initialHistory={props.initialHistory}
         userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
         style={style}
         tool={props.tool}>
+
+        <HistoryConsumer 
+          onUnmount={props.onUnmount} />
 
         <OpenSeadragonViewer
           id={props.windowId || props.image.id}

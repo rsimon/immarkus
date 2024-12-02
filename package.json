@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -26,8 +26,8 @@
   },
   "dependencies": {
     "@annotorious/plugin-connectors-react": "0.2.4",
-    "@annotorious/react": "^3.0.15",
-    "@annotorious/react-manifold": "^3.0.15",
+    "@annotorious/react": "^3.0.18",
+    "@annotorious/react-manifold": "^3.0.18",
     "@annotorious/plugin-tools": "^1.0.2",
     "@neodrag/react": "^2.0.4",
     "@radix-ui/react-accordion": "^1.2.1",
