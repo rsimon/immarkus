@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type OpenSeadragon from 'openseadragon';
 import type { ChangeSet } from '@annotorious/core';
-import { AnnotoriousOpenSeadragonAnnotator, AnnotoriousPlugin, ImageAnnotation, OpenSeadragonAnnotator, UserSelectAction, useAnnotator } from '@annotorious/react';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
@@ -13,6 +12,14 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
+import { 
+  AnnotoriousOpenSeadragonAnnotator, 
+  AnnotoriousPlugin, 
+  ImageAnnotation,
+  OpenSeadragonAnnotator, 
+  UserSelectAction, 
+  useAnnotator 
+} from '@annotorious/react';
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
@@ -25,6 +32,8 @@ if (ENABLE_CONNECTOR_PLUGIN)
 interface AnnotatableImageProps {
 
   image: LoadedImage;
+
+  initialHistory: ChangeSet<ImageAnnotation>[];
 
   windowId?: string;
   
@@ -101,6 +110,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
+        initialHistory={props.initialHistory}
         userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
         style={style}
         tool={props.tool}>
