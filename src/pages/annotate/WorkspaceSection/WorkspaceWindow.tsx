@@ -1,6 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
+import type { ChangeSet } from '@annotorious/core';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
 import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { Image, LoadedImage } from '@/model';
@@ -13,6 +14,7 @@ import { MoreToolsPanel } from './MoreToolsPanel';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 
 import './WorkspaceWindow.css';
+import { ImageAnnotation } from '@annotorious/react';
 
 interface WorkspaceWindowProps {
 
@@ -31,6 +33,8 @@ interface WorkspaceWindowProps {
   onChangeImage(previous: Image, next: Image): void;
 
   onClose(): void;
+
+  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
 
 }
 
@@ -157,7 +161,8 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
         windowId={props.windowId}
         image={props.image} 
         mode={props.mode}
-        tool={props.tool} />
+        tool={props.tool} 
+        onUnmount={props.onUnmount} />
     </MosaicWindow>
   )
 

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
+import type { ChangeSet } from '@annotorious/core';
 import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { useWindowSize } from '@/utils/useWindowSize';
@@ -8,6 +9,7 @@ import { Tool, ToolMode } from '../Tool';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component/react-mosaic-component.css';
+import { ImageAnnotation } from '@annotorious/react';
 
 interface WorkspaceSectionProps {
 
@@ -96,6 +98,10 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   useEffect(() => {
     windowRefs.current?.forEach(ref => ref?.onResize());
   }, [width]);
+
+  const onUnmountImage = useCallback((imageId: string) => (history: ChangeSet<ImageAnnotation>[]) => {
+    console.log('persisting history', imageId, history);
+  }, []);
   
   return (
     <section className="workspace flex-grow bg-muted">
@@ -103,7 +109,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
         <AnnotatableImage
           image={props.images[0]}
           mode={props.mode}
-          tool={props.tool} />
+          tool={props.tool} 
+          onUnmount={onUnmountImage(props.images[0].id)} />
       ) : props.images.length > 1 && (
         <Mosaic<string>
           renderTile={(windowId, path) => (
@@ -116,7 +123,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
               tool={props.tool}
               onAddImage={props.onAddImage}
               onChangeImage={(_, next) => onChangeImage(windowId, next)} 
-              onClose={() => onClose(windowId)} />
+              onClose={() => onClose(windowId)} 
+              onUnmount={onUnmountImage(windowMap.current.find(t => t.windowId === windowId)?.image.id)} />
           )}
           value={value}
           onChange={onChange}
