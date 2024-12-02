@@ -75,6 +75,7 @@
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   box-shadow: none;
+  overflow: hidden;
   padding: 16px 0;
   position: relative;
 }
