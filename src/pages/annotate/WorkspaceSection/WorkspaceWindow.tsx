@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
 import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
-import type { ChangeSet } from '@annotorious/core';
+import type { History } from '@annotorious/core';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
 import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
@@ -22,7 +22,7 @@ interface WorkspaceWindowProps {
 
   windowPath: MosaicBranch[];
 
-  initialHistory: ChangeSet<ImageAnnotation>[];
+  initialHistory: History<ImageAnnotation>;
 
   image: LoadedImage;
 
@@ -36,7 +36,7 @@ interface WorkspaceWindowProps {
 
   onClose(): void;
 
-  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
+  onUnmount(history: History<ImageAnnotation>): void;
 
 }
 

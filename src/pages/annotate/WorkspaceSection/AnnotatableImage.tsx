@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import type OpenSeadragon from 'openseadragon';
-import type { ChangeSet } from '@annotorious/core';
+import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
@@ -33,7 +33,7 @@ interface AnnotatableImageProps {
 
   image: LoadedImage;
 
-  initialHistory: ChangeSet<ImageAnnotation>[];
+  initialHistory: History<ImageAnnotation>;
 
   windowId?: string;
   
@@ -41,13 +41,13 @@ interface AnnotatableImageProps {
 
   tool: Tool;
 
-  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
+  onUnmount(history: History<ImageAnnotation>): void;
 
 }
 
 interface HistoryConsumerProps {
 
-  onUnmount(history: ChangeSet<ImageAnnotation>[]): void;
+  onUnmount(history: History<ImageAnnotation>): void;
 
 }
 
