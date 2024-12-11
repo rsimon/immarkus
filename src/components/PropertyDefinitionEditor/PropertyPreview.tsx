@@ -1,13 +1,13 @@
 import { EnumPropertyDefinition, PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { 
+  ColorField,
   EnumField,
   ExternalAuthorityField,
   GeoCoordinatesField, 
   MeasurementField,
   NumberField, 
   PropertyValidation, 
-  RelationField,
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -42,7 +42,12 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
       <PropertyValidation>
         {stub.name && (
           <div className="mt-1" key={preview.name}>
-            {preview.type === 'enum' ? (
+            {preview.type === 'color' ? (
+              <ColorField 
+                id={preview.name}
+                className="bg-white"
+                definition={preview} />
+            ) : preview.type === 'enum' ? (
               <EnumField 
                 id={preview.name}
                 className="bg-white"
@@ -64,11 +69,6 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 definition={preview} />
             ) : preview.type === 'number' ? (
               <NumberField 
-                id={preview.name}
-                className="bg-white"
-                definition={preview} />   
-            ) : preview.type === 'relation' ? (
-              <RelationField 
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />   

@@ -14,7 +14,8 @@ type BasePropertyDefinition = {
 
 export type PrimitivePropertyDefinition = BasePropertyDefinition & {
 
-  type: 'geocoordinate' 
+  type: 'color'
+    | 'geocoordinate' 
     | 'measurement'
     | 'number'
     | 'uri'
@@ -37,16 +38,6 @@ export type ExternalAuthorityPropertyDefinition = BasePropertyDefinition & {
 
 }
 
-export type RelationPropertyDefinition = BasePropertyDefinition & {
-
-  type: 'relation',
-
-  targetType: string,
-  
-  labelProperty: string
-
-}
-
 export type TextPropertyDefinition = BasePropertyDefinition & {
 
   type: 'text',
@@ -58,7 +49,6 @@ export type TextPropertyDefinition = BasePropertyDefinition & {
 export type PropertyDefinition = PrimitivePropertyDefinition 
   | EnumPropertyDefinition
   | ExternalAuthorityPropertyDefinition
-  | RelationPropertyDefinition
   | TextPropertyDefinition;
 
 

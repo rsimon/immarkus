@@ -24,6 +24,8 @@ import {
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
 
+import { ColorSampler } from './ColorSampler';
+
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 if (ENABLE_CONNECTOR_PLUGIN)
@@ -117,6 +119,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <HistoryConsumer 
           onUnmount={props.onUnmount} />
+
+        <ColorSampler />
 
         <OpenSeadragonViewer
           id={props.windowId || props.image.id}

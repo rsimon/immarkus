@@ -33,9 +33,6 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
       ) : type === 'number' ? (
         <Hash 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
-      ) : type === 'relation' ? (
-        <Spline
-          className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'text' ? (
         <CaseSensitive 
           className={cn('w-4.5 h-5 relative top-[1px]', className)} />

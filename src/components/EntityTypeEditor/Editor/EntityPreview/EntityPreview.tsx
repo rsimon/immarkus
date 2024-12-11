@@ -5,13 +5,13 @@ import { getBrightness } from '@/utils/color';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { 
+  ColorField,
   EnumField,
   ExternalAuthorityField, 
   GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
-  RelationField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -84,7 +84,12 @@ export const EntityPreview = (props: EntityPreviewProps) => {
         <div>
           {properties.map(property => (
             <div className="mt-1" key={property.name}>
-              {property.type === 'enum' ? (
+              {property.type === 'color' ? (
+                <ColorField
+                  id={property.name}
+                  className="bg-white"
+                  definition={property} />
+              ) : property.type === 'enum' ? (
                 <EnumField 
                   id={property.name}
                   className="bg-white" 
@@ -108,12 +113,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                 <NumberField 
                   id={property.name}
                   className="bg-white" 
-                  definition={property} /> 
-              ) : property.type === 'relation' ? (
-                <RelationField
-                  id={property.name}
-                  className="bg-white" 
-                  definition={property} />     
+                  definition={property} />  
               ) : property.type === 'text' ? (
                 <TextField 
                   id={property.name}

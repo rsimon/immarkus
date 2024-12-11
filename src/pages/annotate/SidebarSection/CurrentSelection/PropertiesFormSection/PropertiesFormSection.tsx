@@ -2,6 +2,7 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { createSafeKeys } from '../PropertiesForm/PropertyKeys';
 import { 
+  ColorField,
   EnumField,
   ExternalAuthorityField, 
   GeoCoordinatesField, 
@@ -39,7 +40,13 @@ export const PropertiesFormSection = (props: PropertiesFormSectionProps) => {
     <div>
       {fields.map(({ property, key }) => (
         <div className="mt-2" key={key}>
-          {property.type === 'enum' ? (
+          {property.type === 'color' ? (
+            <ColorField
+              id={key}
+              definition={property}
+              value={props.values[key]}
+              onChange={value => props.onChange(key, value)} />
+          ) : property.type === 'enum' ? (
             <EnumField
               id={key}
               definition={property} 

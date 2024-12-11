@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react';
 import { W3CAnnotationBody } from '@annotorious/react';
-import { ExternalAuthority, PropertyDefinition, RelationPropertyDefinition } from '@/model';
+import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { useDataModel } from '@/store';
 import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
@@ -14,13 +14,6 @@ interface AnnotationValuePreviewProps {
 
 }
 
-const serializeRelation = (definition: RelationPropertyDefinition, value: any) => {
-  const firstValue = Array.isArray(value) ? value[0] : value;
-  return [
-    `${definition.name}:${firstValue.instance}`
-  ];
-}
-
 const getValuePreviews = (
   schema: PropertyDefinition[], 
   body: W3CAnnotationBody, 
@@ -30,10 +23,7 @@ const getValuePreviews = (
     return schema.reduce<ReactNode[]>((previews, definition) => {
       const value = body.properties[definition.name];
       if (value) {
-        const serialized = (definition.type === 'relation')
-          // Custom serialization for relations!
-          ? serializeRelation(definition, value)
-          : serializePropertyValue(definition, value);
+        const serialized = serializePropertyValue(definition, value);
 
         const nodes = serialized.map(str =>
           definition.type === 'uri' ? 
