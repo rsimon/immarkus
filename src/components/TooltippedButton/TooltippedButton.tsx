@@ -38,7 +38,6 @@ export const TooltippedButton = forwardRef<HTMLButtonElement, TooltippedButtonPr
           <Button {...rest} ref={ref}>
             {props.children}
           </Button>
-
         </TooltipTrigger>
 
         <TooltipContent>

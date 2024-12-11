@@ -16,6 +16,8 @@ import {
 
 interface DeleteButtonProps {
 
+  asChild?: boolean;
+
   children?: ReactNode;
 
   className?: string;
@@ -28,7 +30,7 @@ interface DeleteButtonProps {
 
   variant?: 'link' | 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost';
 
-  onConfirm(): void;
+  onConfirm(evt: React.MouseEvent): void;
 
   onOpenChange?(open: boolean): void;
 
@@ -44,12 +46,16 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
       onOpenChange={isControlled ? props.onOpenChange : undefined}>
       {props.children && ( 
         <AlertDialogTrigger asChild>
-          <Button
-            className={props.className}
-            type="button"
-            variant={props.variant}>
-            {props.children}
-          </Button>
+          {props.asChild ? (
+            props.children
+          ) : (
+            <Button
+              className={props.className}
+              type="button"
+              variant={props.variant}>
+              {props.children}
+            </Button>
+          )}
         </AlertDialogTrigger>
       )}
       

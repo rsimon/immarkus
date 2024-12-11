@@ -3,6 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Combobox, ComboboxOption } from '@/components/Combobox';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { TooltippedButton } from '@/components/TooltippedButton';
 import { RelationshipType } from '@/model';
 import { useAnnotation, useDataModel, useRelationshipSearch } from '@/store';
@@ -94,15 +95,19 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
           className="border shadow-sm h-12 w-12" />
       </div>
 
-      <TooltippedButton 
-        variant="ghost" 
-        size="icon" 
-        type="button"
-        className="rounded-full h-8 w-8 hover:text-red-500"
-        tooltip="Delete this relationship"
-        onClick={onDelete}>
-        <Trash2 className="h-4 w-4" />
-      </TooltippedButton>
+      <ConfirmedDelete
+        asChild
+        message="This action will delete the relation permanently."
+        onConfirm={onDelete}>
+        <TooltippedButton 
+          variant="ghost" 
+          size="icon" 
+          type="button"
+          className="rounded-full h-8 w-8 hover:text-red-500"
+          tooltip="Delete this relationship">
+          <Trash2 className="h-4 w-4" />  
+        </TooltippedButton>
+      </ConfirmedDelete>
     </div>
   )
 
