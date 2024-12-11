@@ -17,6 +17,8 @@ interface ColorFieldProps {
 
   onChange?(value: string | string[]): void;
 
+  onStartSampling?(): void;
+
 }
 
 export const ColorField = (props: ColorFieldProps) => {
@@ -51,7 +53,8 @@ export const ColorField = (props: ColorFieldProps) => {
           <div className="absolute right-2 top-0 bottom-0 flex items-center"> 
             <button
               type="button"
-              className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
+              className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground"
+              onClick={props.onStartSampling}>
               <Pipette
                 className="w-5.5 h-5.5 p-1 text-muted-foreground hover:text-black" />
             </button>
