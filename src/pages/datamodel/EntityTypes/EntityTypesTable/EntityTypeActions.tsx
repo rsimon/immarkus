@@ -56,7 +56,7 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label={message}
+        message={message}
         onConfirm={props.onDeleteEntityType}
         onOpenChange={setConfirmDelete} />
     </>

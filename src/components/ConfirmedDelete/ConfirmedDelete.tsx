@@ -20,7 +20,9 @@ interface DeleteButtonProps {
 
   className?: string;
 
-  label: string;
+  title?: string;
+
+  message: string;
 
   open?: boolean;
 
@@ -53,9 +55,9 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
       
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogTitle>{props.title || 'Are you sure?'}</AlertDialogTitle>
           <AlertDialogDescription>
-            {props.label}
+            {props.message}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -64,7 +66,7 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
           <AlertDialogAction 
             className="bg-destructive hover:bg-destructive/90"
             onClick={props.onConfirm}>
-            <Trash2 className="w-4 h-4 mr-2" />  Delete
+            <Trash2 className="w-4 h-4 mr-2" /> Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

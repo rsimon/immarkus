@@ -142,7 +142,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label="This action will delete the annotation permanently."
+        title="Delete Annotation"
+        message="Are you sure you want to delete this annotation?"
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

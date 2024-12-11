@@ -44,7 +44,7 @@ export const MetadataTableActions = (props: MetadataTableActionsProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label="This action will delete the schema permanently."
+        message="This action will delete the schema permanently."
         onConfirm={props.onDeleteSchema}
         onOpenChange={setConfirmDelete} />
     </>

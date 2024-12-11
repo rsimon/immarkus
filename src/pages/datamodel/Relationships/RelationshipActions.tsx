@@ -44,7 +44,7 @@ export const RelationshipActions = (props: RelationshipActionsProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        label="This action will delete the relationship type from your data model."
+        message="This action will delete the relationship type from your data model."
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

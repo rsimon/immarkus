@@ -104,7 +104,8 @@ export const CurrentSelection = () => {
         <ConfirmedDelete
           variant="destructive" 
           className="w-full mt-2 mb-2"
-          label="This action will delete the annotation permanently."
+          title="Delete Annotation"
+          message="Are you sure you want to delete this annotation?"
           onConfirm={onDelete}>
           <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
         </ConfirmedDelete>
