@@ -101,7 +101,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     windowRefs.current?.forEach(ref => ref?.onResize());
   }, [width]);
 
-  const renderWindow = useCallback((windowId: string, path: MosaicBranch[]) => {
+  const renderWindow = (windowId: string, path: MosaicBranch[]) => {
     const image = windowMap.current.find(t => t.windowId === windowId)?.image;
 
     return (
@@ -118,7 +118,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
         onClose={() => onClose(windowId)} 
         onUnmount={onUnmountAnnotator(image.id)} />
     )
-  }, []);
+  }
   
   return (
     <section className="workspace flex-grow bg-muted">
