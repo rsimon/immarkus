@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
-import { ChevronRight, NotebookPen } from 'lucide-react';
+import { Bookmark, BookmarkPlus, ChevronRight, CirclePlus, CloudDownload, NotebookPen } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
@@ -8,6 +8,7 @@ import { Button } from '@/ui/Button';
 import { ItemGrid } from './ItemGrid';
 import { MetadataDrawer } from './MetadataDrawer';
 import { GridItem } from './Types';
+import { ImportIIIF } from './ImportIIIF';
 
 export const Images = () => {
 
@@ -71,15 +72,17 @@ export const Images = () => {
               {currentFolder.name}
             </h2>
 
-            <p className="text-sm text-muted-foreground flex gap-2 pt-0.5">
+            <p className="text-sm text-muted-foreground flex gap-2.5 pt-0.5">
               <span>{images.length} images</span>
               <span>·</span> 
               <Button 
                 variant="link"
-                className="text-muted-foreground flex items-center gap-1 p-0 h-auto font-normal"
+                className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"
                 onClick={onShowFolderMetadata}>
-                <NotebookPen className="h-4 w-4" /> Metadata
+                <NotebookPen className="size-4" /> Metadata
               </Button>
+              <span>·</span> 
+              <ImportIIIF />
             </p>
           </div>
 
