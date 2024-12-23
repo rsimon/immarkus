@@ -18,8 +18,6 @@ export interface IIIFResource {
 
   majorVersion: number;
 
-  pages: number;
-
 }
 
 export const isIIIFResource = (arg: Folder | IIIFResource): arg is IIIFResource =>
