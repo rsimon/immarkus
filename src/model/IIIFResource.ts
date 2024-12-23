@@ -1,10 +1,18 @@
+import { Folder } from "./Folder";
+
 export interface IIIFResource {
+
+  id: string;
+
+  name: string;
+
+  path: string[];
+
+  folder: FileSystemDirectoryHandle;
 
   uri: string;
 
   importedAt: string;
-
-  name: string;
 
   type: 'image' | 'manifest';
 
@@ -13,3 +21,9 @@ export interface IIIFResource {
   pages: number;
 
 }
+
+export const isIIIFResource = (arg: Folder | IIIFResource): arg is IIIFResource =>
+  (arg as IIIFResource).uri !== undefined;
+
+export const isFolder = (arg: Folder | IIIFResource): arg is Folder => 
+  !('uri' in arg);

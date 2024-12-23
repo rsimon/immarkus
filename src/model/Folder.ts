@@ -1,3 +1,4 @@
+import { IIIFResource } from './IIIFResource';
 import { Image } from './Image';
 
 export interface Folder {
@@ -16,4 +17,4 @@ export interface Folder {
 
 export interface RootFolder extends Omit<Folder, 'id'> {};
 
-export type FolderItems = { images: Image[], folders: Folder[] };
+export type FolderItems = { images: Image[], folders: Folder[], iiifResources: IIIFResource[] };

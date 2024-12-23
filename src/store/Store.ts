@@ -5,6 +5,7 @@ import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFil
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
+import { IIIFResource } from '@/model/IIIFResource';
 
 export interface AnnotationStore {
   
@@ -63,7 +64,8 @@ const loadDirectory = async (
   dirHandle: FileSystemDirectoryHandle, 
   path: string[] = [],
   images: Image[] = [], 
-  folders: Folder[] = []
+  folders: Folder[] = [],
+  iiifResources: IIIFResource[] = []
 ): Promise<FolderItems> => {
 
   for await (const entry of dirHandle.values()) {
@@ -87,6 +89,8 @@ const loadDirectory = async (
           const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
 
           images.push({ id, name, path, file, folder: dirHandle });
+        } else {
+          // TODO load IIIF resource pointers
         }
       }
     } catch (error) {
@@ -94,7 +98,7 @@ const loadDirectory = async (
     }
   }
 
-  return { images, folders };
+  return { images, folders, iiifResources };
 
 }
 
@@ -102,7 +106,7 @@ export const loadStore = (
   rootDir: FileSystemDirectoryHandle
 ): Promise<Store> => new Promise(async resolve => {
 
-  const { images, folders } = await loadDirectory(rootDir);
+  const { images, iiifResources, folders } = await loadDirectory(rootDir);
 
   const datamodel = await loadDataModel(rootDir);
 
@@ -243,8 +247,9 @@ export const loadStore = (
 
   const getFolderContents = (dir: FileSystemDirectoryHandle): FolderItems => {
     const imageItems = images.filter(i => i.folder === dir);
+    const iiifItems = iiifResources.filter(i => i.folder === dir);
     const folderItems = folders.filter(f => f.parent === dir);
-    return { images: imageItems, folders: folderItems };
+    return { images: imageItems, folders: folderItems, iiifResources: iiifItems };
   }
 
   const getFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation> => {
