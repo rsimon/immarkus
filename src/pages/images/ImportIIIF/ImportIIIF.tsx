@@ -1,17 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CloudDownload } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { IIIFResource } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
+import { useManifestValidation } from './useManifestValidation';
+import { generateShortId } from '@/store/utils';
+
+interface ImportIIIFProps {
+
+  onImportResource(resource: IIIFResource): void;
+
+}
+
+export type ImportableIIIFResource = Omit<IIIFResource, 'path' | 'folder'>;
 
 export const ImportIIIF = () => {
 
   const [url, setURL] = useState('');
 
+  const { isFetching, result, validate } = useManifestValidation();
+
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
+    validate(url);
   }
+
+  useEffect(() => {
+    if (!result?.isValid) return;
+
+    const { manifest } = result;
+
+    generateShortId(manifest.uri).then(id => {
+      const resource: ImportableIIIFResource = {
+        id,
+        name: manifest.label || manifest.uri,
+        uri: manifest.uri,
+        importedAt: new Date().toISOString(),
+        type: manifest.type,
+        majorVersion: manifest.majorVersion,
+      }
+  
+      console.log(resource);
+    });
+  }, [url, result]);
+
+  console.log(isFetching, result);
 
   return (
     <Dialog>

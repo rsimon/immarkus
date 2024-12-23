@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { IIIF } from '@allmaps/iiif-parser';
 import { parseIIIFLabel } from '@/utils/parseIIIFLabel';
 
@@ -23,7 +23,9 @@ interface ValidationResult {
 
   manifest?: {
 
-    type: 'image' | 'manifest' | 'collection';
+    uri: string;
+
+    type: 'image' | 'manifest';
 
     majorVersion: number;
   
@@ -47,7 +49,8 @@ const validateIIIF = (url: string): Promise<ValidationResult> => {
               // Image API v1/2/3
               return {
                 isValid: true,
-                result: {
+                manifest: {
+                  uri: parsed.uri,
                   type: 'image',
                   majorVersion: parsed.majorVersion
                 }
@@ -58,6 +61,7 @@ const validateIIIF = (url: string): Promise<ValidationResult> => {
               return {
                 isValid: true,
                 manifest: {
+                  uri: parsed.uri,
                   type: 'manifest',
                   majorVersion: parsed.majorVersion, 
                   label 
@@ -65,12 +69,9 @@ const validateIIIF = (url: string): Promise<ValidationResult> => {
               } as ValidationResult;
             } else {
               // Probably collection manifest... unsupported!
+              console.error('Unsupported IIIF type', parsed);
               return {
                 isValid: false,
-                manifest: {
-                  type: parsed.type,
-                  majorVersion: parsed.majorVersion
-                },
                 error: 'unsupported_manifest_type'
               } as ValidationResult;
             }
@@ -100,28 +101,27 @@ const validateIIIF = (url: string): Promise<ValidationResult> => {
   } 
 }
 
-export const useManifestValidation = (url: string) => {
+export const useManifestValidation = () => {
 
   const [isFetching, setIsFetching] = useState(false);
 
-  const [lastResult, setLastResult] = useState<ValidationResult | undefined>();
+  const [result, setResult] = useState<ValidationResult | undefined>();
 
-  const validate = (url: string) => {
-    setIsFetching(true);
+  const validate = useCallback((url: string) => {
+    setIsFetching(false);
+    setResult(undefined);
+
+    if (!url) return;
 
     validateIIIF(url).then(result => {
-      setLastResult(result);
+      setResult(result);
       setIsFetching(false);
     });
-  }
-
-  useEffect(() => validate(url), [url])
+  }, []);
 
   return {
     isFetching,
-    isValid: lastResult?.isValid,
-    lastError: lastResult?.error,
-    manfiest: lastResult?.manifest,
+    result,
     validate
   }
 
