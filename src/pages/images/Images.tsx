@@ -82,7 +82,7 @@ export const Images = () => {
                 <NotebookPen className="size-4" /> Metadata
               </Button>
               <span>·</span> 
-              <ImportIIIF />
+              <ImportIIIF onImportResource={() => {}}/>
             </p>
           </div>
 

@@ -5,7 +5,7 @@ import { IIIFResource } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
-import { useManifestValidation } from './useManifestValidation';
+import { useManifestParser } from './useManifestParser';
 import { generateShortId } from '@/store/utils';
 
 interface ImportIIIFProps {
@@ -16,18 +16,20 @@ interface ImportIIIFProps {
 
 export type ImportableIIIFResource = Omit<IIIFResource, 'path' | 'folder'>;
 
-export const ImportIIIF = () => {
+export const ImportIIIF = (props: ImportIIIFProps) => {
 
   const [url, setURL] = useState('');
 
-  const { isFetching, result, validate } = useManifestValidation();
+  const { validate } = useManifestParser();
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
+    console.log('validating', url);
     validate(url);
   }
 
   useEffect(() => {
+    /*
     if (!result?.isValid) return;
 
     const { manifest } = result;
@@ -44,9 +46,10 @@ export const ImportIIIF = () => {
   
       console.log(resource);
     });
-  }, [url, result]);
+    */
+  }, [url /* , result */]);
 
-  console.log(isFetching, result);
+  // console.log(isFetching, result);
 
   return (
     <Dialog>

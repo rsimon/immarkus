@@ -64,7 +64,7 @@ export const AddImage = (props: AddImageProps) => {
       const folders = items.filter(i => 'handle' in i) as Folder[];
       const images = items.filter(i => 'file' in i) as Image[];
 
-      setItems({ folders, images });
+      setItems({ folders, images, iiifResources: [] });
     } else {
       setItems(store.getFolderContents(currentFolder.handle));
     }
