@@ -24,7 +24,7 @@ export const ImportIIIF = (props: ImportIIIFProps) => {
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
-    console.log('validating', url);
+    
     validate(url);
   }
 

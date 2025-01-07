@@ -6,7 +6,7 @@ export const isIIIFIdentifyResult = (result: IdentifyResult): result is IIIFIden
   (result as IIIFIdentifyResult).majorVersion !== undefined;
 
 export const isImageFileIdentifyResult = (result: IdentifyResult): result is ImageFileIdentifyResult =>
-  (result as ImageFileIdentifyResult).type === 'PLAIN_IMAGE';
+  (result as ImageFileIdentifyResult).type === 'IMAGE_FILE';
 
 export interface IIIFIdentifyResult {
 
@@ -18,7 +18,7 @@ export interface IIIFIdentifyResult {
 
 export interface ImageFileIdentifyResult {
 
-  type: 'PLAIN_IMAGE';
+  type: 'IMAGE_FILE';
 
 }
 
@@ -39,3 +39,41 @@ export type ParseError = {
   message: string;
 
 }
+
+/** Convenience type to abstract over IIIF / plain image file differences **/
+interface BaseImage {
+
+  width: number;
+
+  height: number;
+
+}
+
+export interface IIIFImage extends BaseImage {
+
+  type: 'IIIF_IMAGE';
+
+  id: string;
+
+  format: string;
+
+  service?: {
+
+    majorVersion: number;
+
+    profileLevel: number;
+  }
+  
+  jsonld: any;
+
+}
+
+export interface ImageFile extends BaseImage {
+
+  type: 'IMAGE_FILE';
+
+  url: string;
+
+}
+
+export type Image = IIIFImage | ImageFile;

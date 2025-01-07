@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 import { parseIIIF } from './lib';
+import { getOSDTilesets } from './lib/openseadragon';
+import { getImages } from './lib/helpers/imageHelper';
 
 export const useManifestParser = () => {
 
@@ -8,8 +10,8 @@ export const useManifestParser = () => {
       .then(res => res.json())
       .then(data => {
         const { result } = parseIIIF(data);
-
-        console.log(result);
+        const { parsed } = result;
+        console.log(getImages(parsed[0]));
       });
   }, []);
 

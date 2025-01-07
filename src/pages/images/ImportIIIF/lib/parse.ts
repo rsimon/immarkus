@@ -11,8 +11,8 @@ const parsePresentationV3 = (manifest: any): Canvas[] => {
     canvas: [canvas => canvases.push(canvas)]
   });
 
-
   modelBuilder.traverseManifest(manifest);
+  
   return canvases;
 }
 
