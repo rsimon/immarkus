@@ -15,6 +15,8 @@ export interface IIIFManifestResourceInformation extends BaseIIIFResourceInforma
 
   type: 'PRESENTATION_MANIFEST';
 
+  pages: number;
+
 }
 
 export interface IIIFImageResourceInformation extends BaseIIIFResourceInformation {

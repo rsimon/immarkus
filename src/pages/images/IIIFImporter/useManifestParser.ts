@@ -1,14 +1,20 @@
 import { useCallback } from 'react';
-import { identifyIIIF } from './lib';
+import { identifyIIIF, parseIIIF } from './lib';
 
 export const useManifestParser = () => {
 
-  const validate = useCallback((url: string) => {
+  const identify = useCallback((url: string) => {
     return fetch(url)
       .then(res => res.json())
       .then(data => identifyIIIF(data));
   }, []);
 
-  return { validate };
+  const parse = useCallback((url: string) => {
+    return fetch(url)
+      .then(res => res.json())
+      .then(data => parseIIIF(data));
+  }, []);
+
+  return { identify, parse };
 
 }

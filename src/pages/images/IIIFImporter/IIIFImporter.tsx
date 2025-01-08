@@ -28,7 +28,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [busy, setBusy] = useState(false);
 
-  const { validate } = useManifestParser();
+  const { parse } = useManifestParser();
 
   useEffect(() => {
     if (!open) {
@@ -42,7 +42,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
     setBusy(true);
 
-    validate(uri).then(({ result, error }) => {
+    parse(uri).then(({ result, error }) => {
       setBusy(false);
 
       if (error || !result) {
@@ -55,7 +55,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             uri,
             importedAt: new Date().toISOString(),
             type: result.type,
-            majorVersion: result.majorVersion
+            majorVersion: result.majorVersion,
+            pages: result.parsed.length
           }  
 
           store.importIIIFResource(info, props.folderId).then(resource => {

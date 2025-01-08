@@ -8,7 +8,7 @@ const parsePresentationV3 = (manifest: any): Canvas[] => {
   const canvases: Canvas[] = [];
 
   const modelBuilder = new Traverse({
-    canvas: [canvas => canvases.push(canvas)]
+    canvas: [canvas => { if (canvas.items) canvases.push(canvas) }]
   });
 
   modelBuilder.traverseManifest(manifest);

@@ -13,7 +13,7 @@ type ImageService = ImageService2 | ImageService3;
 const isImageResource = (body: AnnotationBody): body is IIIFExternalWebResource => 
   (body as IIIFExternalWebResource).type === 'Image';
 
-const isImageService = (s: any): s is ImageService =>
+export const isImageService = (s: any): s is ImageService =>
   (('@type' in s) && (s['@type'].startsWith('ImageService')) || (('type' in s ) && s.type.startsWith('ImageService')));
 
 const parseImageService = (service: Service) => {

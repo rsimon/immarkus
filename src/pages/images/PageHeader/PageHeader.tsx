@@ -23,13 +23,11 @@ export const PageHeader = (props: PageHeaderProps) => {
 
   const images = useMemo(() => {
     if (isPresentationManifest(folder)) {
-      // TODO
-      return 0;
+      return folder.pages;
     } else {
       return store.getFolderContents(folder.handle)?.images.length || 0;
     }
   }, [folder, store]);
-
 
   return (
     <div className="space-y-1 flex-grow">
@@ -64,20 +62,19 @@ export const PageHeader = (props: PageHeaderProps) => {
       </h2>
 
       <p className="text-sm text-muted-foreground flex gap-2.5 pt-0.5">
-        {isPresentationManifest(folder) ? (
-          <div></div>
-        ) : (
+        <span>{images} images</span>
+        <span>·</span> 
+        <Button 
+          variant="link"
+          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"
+          onClick={props.onShowMetadata}>
+          <NotebookPen className="size-4" /> Metadata
+        </Button>
+
+        {!isPresentationManifest(folder) && (
           <>
-            <span>{images} images</span>
             <span>·</span> 
-            <Button 
-              variant="link"
-              className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"
-              onClick={props.onShowMetadata}>
-              <NotebookPen className="size-4" /> Metadata
-            </Button>
-            <span>·</span> 
-    
+
             <IIIFImporter 
               folderId={'id' in folder ? folder.id : undefined}
               onImport={resource => console.log('imported', resource)} />
