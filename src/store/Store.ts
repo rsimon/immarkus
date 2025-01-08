@@ -5,11 +5,13 @@ import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFil
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
-import { IIIFResource } from '@/model/IIIFResource';
+import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 
 export interface AnnotationStore {
   
   folders: Folder[];
+
+  iiifResources: IIIFResource[];
 
   images: Image[];
 
@@ -35,11 +37,15 @@ export interface AnnotationStore {
 
   getFolderMetadata(idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation>;
 
+  getIIIFResource(id: string): IIIFResource;
+
   getImage(imageId: string): Image;
 
   getImageMetadata(imageId: string): Promise<W3CAnnotationBody | undefined>;
 
   getRootFolder(): RootFolder;
+
+  importIIIFResource(info: IIIFResourceInformation, folderId?: string): Promise<IIIFResource>;
 
   listImagesInFolder(folderId: string): Image[];
 
@@ -64,8 +70,8 @@ const loadDirectory = async (
   dirHandle: FileSystemDirectoryHandle, 
   path: string[] = [],
   images: Image[] = [], 
-  folders: Folder[] = [],
-  iiifResources: IIIFResource[] = []
+  iiifResources: IIIFResource[] = [],
+  folders: Folder[] = []
 ): Promise<FolderItems> => {
 
   for await (const entry of dirHandle.values()) {
@@ -79,7 +85,7 @@ const loadDirectory = async (
         folders.push({ id, name, path, handle: subDirHandle, parent: dirHandle });
 
         const nextPath = [...path, id ];
-        await loadDirectory(subDirHandle, nextPath, images, folders);
+        await loadDirectory(subDirHandle, nextPath, images, iiifResources, folders);
       } else {
         const fileHandle = await dirHandle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
@@ -89,8 +95,18 @@ const loadDirectory = async (
           const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
 
           images.push({ id, name, path, file, folder: dirHandle });
-        } else {
-          // TODO load IIIF resource pointers
+        } else if (file.type === 'application/json' && file.name.startsWith('_iiif.')) {
+          const { name } = file;
+          const id = name.substring('_iiif.'.length, name.lastIndexOf('.json'));
+
+          const data: any = await readJSONFile(file);
+
+          iiifResources.push({ 
+            id, 
+            path, 
+            folder: dirHandle, 
+            ...data
+          });
         }
       }
     } catch (error) {
@@ -98,7 +114,7 @@ const loadDirectory = async (
     }
   }
 
-  return { images, folders, iiifResources };
+  return { folders, iiifResources, images };
 
 }
 
@@ -106,7 +122,7 @@ export const loadStore = (
   rootDir: FileSystemDirectoryHandle
 ): Promise<Store> => new Promise(async resolve => {
 
-  const { images, iiifResources, folders } = await loadDirectory(rootDir);
+  const { iiifResources, folders, images } = await loadDirectory(rootDir);
 
   const datamodel = await loadDataModel(rootDir);
 
@@ -263,6 +279,8 @@ export const loadStore = (
     }
   }
 
+  const getIIIFResource = (id: string) => iiifResources.find(r => r.id === id);
+
   const getImage = (id: string) => images.find(f => f.id === id);
 
   const _getImageMetadataAnnotation = (imageId: string): Promise<W3CAnnotation | undefined> =>
@@ -295,6 +313,42 @@ export const loadStore = (
 
   const getRootFolder = () => ({
     name: rootDir.name, path: [], handle: rootDir
+  });
+
+  const importIIIFResource = (
+    info: IIIFResourceInformation, 
+    folderId?: string
+  ) => new Promise<IIIFResource>(async (resolve, reject) => {
+    const id = await generateShortId(info.uri);
+
+    const folder = folderId ? getFolder(folderId) : getRootFolder();
+    if (!folder) {
+      console.error(`Cannot import IIIF - unknown folder: ${folderId}`);
+      reject();
+    } else {
+      const filename = `_iiif.${id}.json`;
+
+      // Don't import the same manifest twice into the same folder
+      try {
+        await folder.handle.getFileHandle(filename, { create: false });
+        reject(new Error('IIIF resource already exists in this folder'));
+        return;
+      } catch {
+        const handle = await folder.handle.getFileHandle(filename, { create: true });
+
+        await writeJSONFile(handle, info);
+
+        const resource: IIIFResource = {
+          id,
+          folder: folder.handle,
+          path: folder.path,
+          ...info
+        }
+
+        iiifResources.push(resource);
+        resolve(resource);
+      }
+    }
   });
 
   const listImagesInFolder = (folderId: string) => {
@@ -426,6 +480,7 @@ export const loadStore = (
 
   const store = {
     folders,
+    iiifResources,
     images,
     bulkDeleteAnnotations,
     bulkUpsertAnnotation,
@@ -438,9 +493,11 @@ export const loadStore = (
     getFolder,
     getFolderContents,
     getFolderMetadata,
+    getIIIFResource,
     getImage,
     getImageMetadata,
     getRootFolder,
+    importIIIFResource,
     listImagesInFolder,
     loadImage,
     upsertAnnotation,

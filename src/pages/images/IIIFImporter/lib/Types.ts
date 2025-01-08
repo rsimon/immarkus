@@ -10,6 +10,8 @@ export const isImageFileIdentifyResult = (result: IdentifyResult): result is Ima
 
 export interface IIIFIdentifyResult {
 
+  label?: string;
+
   type: IIIFContentType;
 
   majorVersion: 2 | 3;
@@ -62,6 +64,7 @@ export interface IIIFImage extends BaseImage {
     majorVersion: number;
 
     profileLevel: number;
+    
   }
   
   jsonld: any;

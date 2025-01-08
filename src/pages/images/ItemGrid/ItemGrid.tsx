@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useImages } from '@/store';
-import { Folder, Image, LoadedImage } from '@/model';
+import { useImages, useStore } from '@/store';
+import { Folder, IIIFManifestResource, Image, LoadedImage, RootFolder } from '@/model';
 import { FolderItem } from './FolderItem';
+import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
 import { GridItem } from '../Types';
 
@@ -9,9 +11,7 @@ import './ItemGrid.css';
 
 interface ItemGridProps {
 
-  folders: Folder[];
-
-  images: Image[];
+  folder: Folder | RootFolder; 
 
   selected?: GridItem;
 
@@ -21,11 +21,17 @@ interface ItemGridProps {
 
 export const ItemGrid = (props: ItemGridProps) => {
 
-  const images = useImages(props.images.map(i => i.id)) as LoadedImage[];
+  const store = useStore();
+  
+  const { folders, iiifResources, images } = useMemo(() => {
+    return store.getFolderContents(props.folder.handle)
+  }, [props.folder]);
+
+  const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
 
   const navigate = useNavigate();
 
-  const onOpenFolder = (folder: Folder) =>
+  const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
     navigate(`/images/${folder.id}`);
 
   const onOpenImage = (image: Image) =>
@@ -40,7 +46,7 @@ export const ItemGrid = (props: ItemGridProps) => {
   return (
     <div className="item-grid">
       <ul>
-        {props.folders.map(folder => (
+        {folders.map(folder => (
           <li key={folder.id}>
             <FolderItem
               folder={folder} 
@@ -49,7 +55,17 @@ export const ItemGrid = (props: ItemGridProps) => {
           </li>
         ))}
 
-        {images.map(image => (
+        {iiifResources.map(resource => (
+          <li key={resource.id}>
+            {resource.type === 'PRESENTATION_MANIFEST' ? (
+              <IIIFManifestItem
+                resource={resource} 
+                onOpen={() => onOpenFolder(resource)} />
+            ) : null}
+          </li>
+        ))}
+
+        {loadedImages.map(image => (
           <li key={image.id}>
             <ImageItem 
               image={image} 

@@ -1,27 +1,43 @@
-import { Folder } from "./Folder";
-
-export interface IIIFResource {
-
-  id: string;
+/** Data contained in a descriptor JSON file */
+interface BaseIIIFResourceInformation {
 
   name: string;
-
-  path: string[];
-
-  folder: FileSystemDirectoryHandle;
 
   uri: string;
 
   importedAt: string;
 
-  type: 'image' | 'manifest';
-
   majorVersion: number;
 
 }
 
-export const isIIIFResource = (arg: Folder | IIIFResource): arg is IIIFResource =>
-  (arg as IIIFResource).uri !== undefined;
+export interface IIIFManifestResourceInformation extends BaseIIIFResourceInformation {
 
-export const isFolder = (arg: Folder | IIIFResource): arg is Folder => 
-  !('uri' in arg);
+  type: 'PRESENTATION_MANIFEST';
+
+}
+
+export interface IIIFImageResourceInformation extends BaseIIIFResourceInformation {
+
+  type: 'IIIF_IMAGE';
+
+}
+
+export type IIIFResourceInformation = IIIFManifestResourceInformation | IIIFImageResourceInformation;
+
+/** Full resources from parsed JSON info file (IIIF + descriptor file meta) **/
+interface BaseIIIFResource {
+
+  id: string;
+
+  path: string[];
+
+  folder: FileSystemDirectoryHandle;
+
+}
+
+export type IIIFManifestResource = IIIFManifestResourceInformation & BaseIIIFResource;
+
+export type IIIFImageResource = IIIFImageResourceInformation & BaseIIIFResource;
+
+export type IIIFResource = IIIFManifestResource | IIIFImageResource;

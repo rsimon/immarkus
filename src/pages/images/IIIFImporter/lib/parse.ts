@@ -1,7 +1,7 @@
 import type { Canvas  } from '@iiif/presentation-3';
 import { Traverse } from '@iiif/parser';
 import { convertPresentation2  } from '@iiif/parser/presentation-2';
-import { identify } from './identify';
+import { identifyIIIF } from './identify';
 import { isImageFileIdentifyResult, ParseError, IIIFParseResult } from './Types';
 
 const parsePresentationV3 = (manifest: any): Canvas[] => {
@@ -17,13 +17,13 @@ const parsePresentationV3 = (manifest: any): Canvas[] => {
 }
 
 export const parseIIIF = (data: any): { result?: IIIFParseResult, error?: ParseError } => {
-  const { result, error } = identify(data);
+  const { result, error } = identifyIIIF(data);
 
   if (error || !result) return { error };
 
   if (isImageFileIdentifyResult(result)) return { error: { type: 'VALIDATION_ERROR', message: 'No IIIF content' }};
 
-  const { type, majorVersion } = result;
+  const { type, majorVersion, label } = result;
 
   if (type === 'PRESENTATION_MANIFEST') {
     const v3 = majorVersion === 2 ? convertPresentation2(data) : data;
@@ -33,6 +33,7 @@ export const parseIIIF = (data: any): { result?: IIIFParseResult, error?: ParseE
       result: {
         type,
         majorVersion,
+        label,
         parsed,
         raw: data
       }
