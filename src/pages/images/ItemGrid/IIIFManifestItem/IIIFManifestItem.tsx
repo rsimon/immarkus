@@ -1,6 +1,9 @@
 import { FolderIcon } from '@/components/FolderIcon';
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFResource } from '@/model';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
+
+import './IIIFManifestItem.css';
 
 interface IIIFManifestItemProps {
 
@@ -15,13 +18,15 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
   return (
     <div>
       <div 
-        className="folder-item cursor-pointer relative rounded-md 
+        className="folder-item manifest-item cursor-pointer relative rounded-md 
           w-[200px] h-[200px] flex justify-center items-center">
-
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
             className="w-[190px] h-[190px] transition-all drop-shadow-md" />
+
+          <IIIFIcon
+            className="iiif-logo text-white transition-all absolute bottom-5 left-4 size-6" />
         </button>
         
         <div className="absolute bottom-3.5 right-2 text-white text-sm pointer-events-auto">

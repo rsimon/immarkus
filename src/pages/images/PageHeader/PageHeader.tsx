@@ -1,11 +1,12 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, NotebookPen } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, NotebookPen, Share2, SquareArrowOutUpRight } from 'lucide-react';
 import { Folder, IIIFManifestResource, RootFolder } from '@/model';
 import { isPresentationManifest, isRootFolder } from '../Types';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { IIIFImporter } from '../IIIFImporter';
+import { IIIFIcon } from '@/components/IIIFIcon';
 
 interface PageHeaderProps {
 
@@ -35,7 +36,7 @@ export const PageHeader = (props: PageHeaderProps) => {
         {isRootFolder(folder) ? (
           <span>Folder</span>
         ) : (
-          <nav className="breadcrumbs" aria-label="Breadcrumbs">
+          <nav className="breadcrumbs flex gap-1" aria-label="Breadcrumbs">
             <ol className="flex items-center gap-0.5">
               <li>
                 <Link className="hover:underline" to={`/images`}>{store.getRootFolder().name}</Link>
@@ -53,6 +54,12 @@ export const PageHeader = (props: PageHeaderProps) => {
                 </Fragment>
               ))}
             </ol>
+
+            {isPresentationManifest(folder) && (
+              <IIIFIcon
+                color
+                className="size-5 mb-0.5" />
+            )}
           </nav>
         )}
       </h1>
@@ -61,7 +68,7 @@ export const PageHeader = (props: PageHeaderProps) => {
         {folder.name}
       </h2>
 
-      <p className="text-sm text-muted-foreground flex gap-2.5 pt-0.5">
+      <p className="text-sm text-muted-foreground flex gap-2 pt-0.5 items-center">
         <span>{images} images</span>
         <span>·</span> 
         <Button 
@@ -71,7 +78,16 @@ export const PageHeader = (props: PageHeaderProps) => {
           <NotebookPen className="size-4" /> Metadata
         </Button>
 
-        {!isPresentationManifest(folder) && (
+        {isPresentationManifest(folder) ? (
+          <>
+            <span>·</span> 
+            <Button 
+              variant="link"
+              className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
+              <Share2 className="size-4" strokeWidth={2.2} /> Open Manifest in Other Viewers
+            </Button>
+          </>
+        ) : (
           <>
             <span>·</span> 
 
