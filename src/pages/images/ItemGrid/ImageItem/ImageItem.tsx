@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
-import { LoadedImage } from '@/model';
+import { LoadedFileImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
 import { useStore } from '@/store';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 
 interface ImageItemProps {
 
-  image: LoadedImage;
+  image: LoadedFileImage;
 
   selected?: boolean;
 

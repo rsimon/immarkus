@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImages, useStore } from '@/store';
-import { Folder, IIIFManifestResource, Image, LoadedImage, RootFolder } from '@/model';
+import { Folder, IIIFManifestResource, Image, LoadedFileImage, RootFolder } from '@/model';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
@@ -27,7 +27,7 @@ export const ItemGrid = (props: ItemGridProps) => {
     return store.getFolderContents(props.folder.handle)
   }, [props.folder]);
 
-  const loadedImages = useImages(images.map(i => i.id)) as LoadedImage[];
+  const loadedImages = useImages(images.map(i => i.id)) as LoadedFileImage[];
 
   const navigate = useNavigate();
 

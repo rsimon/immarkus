@@ -23,6 +23,7 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+import { getOSDTilesets } from '@/utils/iiif/lib/openseadragon';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -89,10 +90,10 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   }
 
   const options: OpenSeadragon.Options = useMemo(() => ({
-    tileSources: {
+    tileSources: 'data' in props.image ? {
       type: 'image',
       url: URL.createObjectURL(props.image.data)
-    },
+    } : getOSDTilesets(props.image.canvas),
     gestureSettingsMouse: {
       clickToZoom: false,
       dblClickToZoom: false

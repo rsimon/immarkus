@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
-import { Image, LoadedImage } from '@/model';
+import { Image } from '@/model';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
@@ -13,7 +13,7 @@ const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN ===
 
 interface MoreToolsPanelProps {
 
-  images: LoadedImage[];
+  images: Image[];
 
   mode: ToolMode;
 

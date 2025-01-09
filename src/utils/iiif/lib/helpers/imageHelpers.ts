@@ -59,7 +59,6 @@ export const getImages = (canvas: Canvas): IIIFImage[] => {
   const images: IIIFImage[] = [];
 
   const builder = new Traverse({
-
     annotation: [anno => {
       if (anno.motivation === 'painting') {
         const bodies = Array.isArray(anno.body) ? anno.body : [anno.body];

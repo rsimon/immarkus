@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { identifyIIIF, parseIIIF } from './lib';
+import { identifyIIIF, parseIIIF } from '@/utils/iiif/lib';
 
 export const useManifestParser = () => {
 
