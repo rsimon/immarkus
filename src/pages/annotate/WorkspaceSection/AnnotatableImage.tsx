@@ -144,7 +144,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousKeyboardPlugin />
 
         <AnnotoriousStoragePlugin 
-          imageId={props.image.id}
+          imageId={image.id}
           onSaving={onSave} 
           onSaved={onSaved}
           onError={onError} />

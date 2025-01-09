@@ -163,21 +163,27 @@ export const loadStore = (
   });
 
   const deleteAnnotation = (
-    imageId: string, 
+    sourceOrSourceId: FileImage | IIIFResource | string, 
     annotation: W3CAnnotation
   ): Promise<void> => new Promise(async (resolve, reject) => {
-    const img = images.find(i => i.id === imageId);
-    if (img) {
-      const all = await getAnnotations(imageId);
+    const id = typeof sourceOrSourceId === 'string' ? sourceOrSourceId :
+      'data' in sourceOrSourceId ? sourceOrSourceId.id :
+      `iiif:${sourceOrSourceId.id}`;
+
+    const normalizedId = _normalizeSourceId(id);
+      
+    const source = _findSource(normalizedId);
+    if (source) {
+      const all = await getAnnotations(normalizedId);
       const next = all.filter(a => a.id !== annotation.id);
 
-      cachedAnnotations.set(imageId, next);
+      cachedAnnotations.set(normalizedId, next);
 
-      const fileHandle = await getAnnotationsFile(img);
+      const fileHandle = await getAnnotationsFile(source);
       await writeJSONFile(fileHandle, next);
       resolve();
     } else {
-      reject(Error(`Image ${imageId} not found`));
+      reject(Error(`Image ${normalizedId} not found`));
     }
   });
 

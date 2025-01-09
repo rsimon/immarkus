@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
 import { useStore } from '@/store';
 import { isW3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { parseIIIF } from '@/utils/iiif/lib';
+import { parseIIIFId } from '@/utils/iiif/utils';
 
 interface AnnotoriousStoragePluginProps {
 
@@ -59,14 +61,21 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
           });
         } else {
           // No previous tags to delete - just insert
+          
           return store.bulkUpsertAnnotation(imageId, relation);
         }
       });
 
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
-        anno.setAnnotations(annotations);
-        
+        // IIIF? If so, these are all annotations on the resource - filter by canvas
+        if (imageId.startsWith('iiif:')) {
+          const onThisCanvas = annotations.filter(a => !Array.isArray(a.target) && a.target.source === imageId);
+          anno.setAnnotations(onThisCanvas);
+        } else {
+          anno.setAnnotations(annotations);
+        }
+
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
   
