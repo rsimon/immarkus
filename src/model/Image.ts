@@ -12,9 +12,13 @@ export interface Image {
 
 }
 
-export interface LoadedFileImage extends Image {
+export interface FileImage extends Image {
 
   file: File;
+
+}
+
+export interface LoadedFileImage extends Image {
 
   data: Blob;
 
