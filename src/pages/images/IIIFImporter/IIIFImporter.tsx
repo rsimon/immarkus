@@ -14,8 +14,6 @@ interface IIIFImporterProps {
 
   folderId?: string;
 
-  onImport(resource: IIIFResource): void;
-
 }
 
 export type ImportableIIIFResource = Omit<IIIFResource, 'path' | 'folder'>;
@@ -67,7 +65,6 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
           store.importIIIFResource(info, props.folderId).then(resource => {
             setOpen(false);
-            props.onImport(resource);
           });
         } else {
           console.log('Todo...')

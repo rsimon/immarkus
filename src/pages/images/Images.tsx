@@ -32,12 +32,12 @@ export const Images = () => {
   if (!currentFolder)
     navigate('/404');
 
-  const onShowFolderMetadata = () => setSelected({ type: 'folder', ...currentFolder });
-
   useEffect(() => {
     // Reset selection when folder changes
     setSelected(undefined);
   }, [folderId]);
+
+  const onShowFolderMetadata = () => setSelected({ type: 'folder', ...currentFolder });
 
   return store && (
     <div className="page-root">

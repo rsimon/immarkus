@@ -24,7 +24,7 @@ export const PageHeader = (props: PageHeaderProps) => {
 
   const images = useMemo(() => {
     if (isPresentationManifest(folder)) {
-      return folder.pages;
+      return folder.canvases.length;
     } else {
       return store.getFolderContents(folder.handle)?.images.length || 0;
     }
@@ -94,8 +94,7 @@ export const PageHeader = (props: PageHeaderProps) => {
             <span>·</span> 
 
             <IIIFImporter 
-              folderId={'id' in folder ? folder.id : undefined}
-              onImport={resource => console.log('imported', resource)} />
+              folderId={'id' in folder ? folder.id : undefined} />
           </>
         )}
       </p>
