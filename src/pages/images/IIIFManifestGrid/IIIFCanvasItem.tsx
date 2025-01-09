@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { MessagesSquare } from 'lucide-react';
-import { Canvas } from '@iiif/presentation-3';
 import { useInView } from 'react-intersection-observer';
+import { Canvas } from '@iiif/presentation-3';
 import { getCanvasLabel, getThumbnail } from '@/utils/iiif/lib/helpers';
 
 interface IIIFCanvasItemProps {
