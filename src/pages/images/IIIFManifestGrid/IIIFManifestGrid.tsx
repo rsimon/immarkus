@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Canvas } from '@iiif/presentation-3';
 import { IIIFManifestResource } from '@/model';
 import { ToastTitle, useToast } from '@/ui/Toaster';
 import { useManifestParser } from '../IIIFImporter/useManifestParser';
-import { useEffect, useState } from 'react';
 import { IIIFParseResult } from '../IIIFImporter/lib/Types';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 
@@ -12,6 +14,8 @@ interface IIIFManifestGridProps {
 }
 
 export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
+
+  const navigate = useNavigate();
 
   const { parse } = useManifestParser();
 
@@ -38,6 +42,11 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     });
   }, [props.manifest]);
 
+  const onOpenCanvas = (canvas: Canvas) => {
+    console.log('annotating', props.manifest, canvas);
+    // navigate(`/annotate/${canvas.id}`);
+  }
+
   return (
     <div className="item-grid">
       {parsedManifest ? (
@@ -46,14 +55,11 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
             <li key={`${canvas.id}.${idx}`}>
               <IIIFCanvasItem
                 canvas={canvas} 
-               /* onOpen={() => onOpenFolder(folder)} 
-                onSelect={() => onSelectFolder(folder)} */ />
+                onOpen={() => onOpenCanvas(canvas)} />
             </li>
           ))}
         </ul>
-      ) : (
-        <div></div>
-      )}
+      ) : null}
     </div>
   );
 

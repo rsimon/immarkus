@@ -12,6 +12,8 @@ interface IIIFCanvasItemProps {
 
   selected?: boolean;
 
+  onOpen(): void;
+
 }
 
 export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
@@ -28,7 +30,8 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
         {inView ? (
           <img
           src={src}
-          className="h-auto w-auto object-cover transition-all aspect-square" />
+          className="h-auto w-auto object-cover transition-all aspect-square" 
+          onClick={props.onOpen} />
         ) :(
           <div className="h-full w-full bg-muted" />
         )}

@@ -18,7 +18,7 @@ export const IIIFIcon = (props: IIIFIconProps) => {
       viewBox="0 0 97.6 75.201" 
       xmlns="http://www.w3.org/2000/svg">
       <g 
-        fill-rule="evenodd"
+        fillRule="evenodd"
         style={{ strokeWidth: 0, fill: props.color ? undefined: 'currentcolor' }}>
         <path 
           fill={props.color ? '#0073A3' : undefined}
@@ -42,7 +42,7 @@ export const IIIFIcon = (props: IIIFIconProps) => {
       viewBox="0 0 104.4 74.801" 
       xmlns="http://www.w3.org/2000/svg">
       <g 
-        fill-rule="evenodd" 
+        fillRule="evenodd" 
         style={{ strokeWidth: 0, fill: props.color ? undefined: 'currentcolor' }}>
         <path 
           fill={props.color ? '#0073A3' : undefined}

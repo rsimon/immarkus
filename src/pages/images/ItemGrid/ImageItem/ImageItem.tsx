@@ -1,4 +1,4 @@
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
