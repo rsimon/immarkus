@@ -100,7 +100,7 @@ const loadDirectory = async (
           const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
 
           images.push({ id, name, path, file, folder: dirHandle });
-        } else if (file.type === 'application/json' && file.name.startsWith('_iiif.')) {
+        } else if (file.type === 'application/json' && file.name.startsWith('_iiif.') && !file.name.endsWith('.annotations.json')) {
           const { name } = file;
           const id = name.substring('_iiif.'.length, name.lastIndexOf('.json'));
 
