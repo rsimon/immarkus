@@ -1,9 +1,11 @@
+import { useCallback } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate } from 'react-router-dom';
 import { Canvas } from '@iiif/presentation-3';
 import { IIIFManifestResource } from '@/model';
-import { IIIFCanvasItem } from './IIIFCanvasItem';
+import { useAnnotations } from '@/store';
 import { useIIIFResource } from '@/utils/iiif';
+import { IIIFCanvasItem } from './IIIFCanvasItem';
 
 interface IIIFManifestGridProps {
 
@@ -12,15 +14,24 @@ interface IIIFManifestGridProps {
 }
 
 export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
-
+  
   const navigate = useNavigate();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
+
+  const annotations = useAnnotations(`iiif:${props.manifest.id}`);
 
   const onOpenCanvas = (canvas: Canvas) => {
     const id = murmur.v3(canvas.id);
     navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
   }
+
+  const countAnnotations = useCallback((canvas: Canvas) => {
+    const id = murmur.v3(canvas.id);
+    const sourceId = `iiif:${props.manifest.id}:${id}`;
+    return annotations.filter(a => 
+      !Array.isArray(a.target) && a.target.source === sourceId).length;
+  }, [annotations, props.manifest]);
 
   return (
     <div className="item-grid">
@@ -30,6 +41,7 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
             <li key={`${canvas.id}.${idx}`}>
               <IIIFCanvasItem
                 canvas={canvas} 
+                annotationCount={countAnnotations(canvas)}
                 onOpen={() => onOpenCanvas(canvas)} />
             </li>
           ))}

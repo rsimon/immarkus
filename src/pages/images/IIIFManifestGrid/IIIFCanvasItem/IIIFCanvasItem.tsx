@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-
+import { MessagesSquare } from 'lucide-react';
 import { Canvas } from '@iiif/presentation-3';
 import { useInView } from 'react-intersection-observer';
-import { getCanvasLabel, getThumbnail } from '../../../../utils/iiif/lib/helpers';
-import { MessagesSquare } from 'lucide-react';
-
+import { getCanvasLabel, getThumbnail } from '@/utils/iiif/lib/helpers';
 
 interface IIIFCanvasItemProps {
+
+  annotationCount: number;
 
   canvas: Canvas;
 
@@ -44,7 +44,7 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
               <MessagesSquare 
                 size={18} 
                 className="inline align-text-bottom mr-1" /> 
-                {/* annotations || */ 0}
+                {props.annotationCount}
             </div>
           </div>
         </div>
