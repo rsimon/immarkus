@@ -15,7 +15,17 @@ export interface IIIFManifestResourceInformation extends BaseIIIFResourceInforma
 
   type: 'PRESENTATION_MANIFEST';
 
-  pages: number;
+  canvases: CanvasInformation[];
+
+}
+
+export interface CanvasInformation{
+
+  id: string;
+
+  uri: string;
+
+  label: string;
 
 }
 

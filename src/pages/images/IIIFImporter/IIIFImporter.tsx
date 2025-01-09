@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CloudDownload } from 'lucide-react';
+import murmur from 'murmurhash';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
@@ -7,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { Input } from '@/ui/Input';
 import { useManifestParser } from './useManifestParser';
 import { useStore } from '@/store';
+import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
 
 interface IIIFImporterProps {
 
@@ -56,8 +58,12 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             importedAt: new Date().toISOString(),
             type: result.type,
             majorVersion: result.majorVersion,
-            pages: result.parsed.length
-          }  
+            canvases: result.parsed.map(canvas => ({
+              id: murmur.v3(canvas.id).toString(),
+              uri: canvas.id,
+              label: getCanvasLabel(canvas)
+            }))
+          }
 
           store.importIIIFResource(info, props.folderId).then(resource => {
             setOpen(false);

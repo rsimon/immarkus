@@ -1,6 +1,7 @@
 import { Image, LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Spinner } from '../Spinner';
+import { getThumbnail } from '@/utils/iiif/lib/helpers';
 
 interface ThumbnailProps {
 
@@ -16,9 +17,11 @@ export const Thumbnail = (props: ThumbnailProps) => {
 
   const loaded = useImages(props.image.id, delay) as LoadedImage;
 
+  const url = loaded && ('data' in loaded ? URL.createObjectURL(loaded.data) : getThumbnail(loaded.canvas, { size: 112 }));
+
   return loaded ? (
     <img
-      src={URL.createObjectURL(loaded.data)}
+      src={url}
       alt={image.name}
       className="w-14 h-14 object-cover aspect-square rounded-sm shadow border border-black/20" />
   ) : (

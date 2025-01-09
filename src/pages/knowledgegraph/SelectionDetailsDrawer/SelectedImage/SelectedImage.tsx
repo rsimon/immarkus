@@ -11,7 +11,6 @@ import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
-import { KnowledgeGraphSettings } from '../../Types';
 
 interface SelectedImageProps {
 

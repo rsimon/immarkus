@@ -47,7 +47,7 @@ const generateImageServiceUrl = (
 export const getThumbnail = (
   canvas: Canvas,
   options: ThumbnailOptions = { size: 400 }
-) => {
+): string => {
   const { width, height } = canvas;
 
   if (!width || !canvas.height) return;

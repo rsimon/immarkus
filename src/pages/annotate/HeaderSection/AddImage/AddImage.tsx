@@ -4,11 +4,7 @@ import { Thumbnail } from '@/components/Thumbnail';
 import { FolderIcon } from '@/components/FolderIcon';
 import { Folder, FolderItems, Image, RootFolder } from '@/model';
 import { useStore } from '@/store';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/ui/Popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { useSearch } from './useSearch';
 
 interface AddImageProps {
