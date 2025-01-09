@@ -26,7 +26,7 @@ export interface GraphNode {
 
   label: string;
 
-  type: 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
+  type: 'FOLDER' | 'IMAGE' | 'IIIF_CANVAS' | 'ENTITY_TYPE';
 
   degree: number;
 
@@ -86,7 +86,7 @@ export interface KnowledgeGraphSettings {
 
   hideAllLabels?: boolean;
 
-  hideNodeTypeLabels?: ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE')[];
+  hideNodeTypeLabels?: ('FOLDER' | 'IMAGE' | 'IIIF_CANVAS' | 'ENTITY_TYPE')[];
 
   includeFolders?: boolean;
 

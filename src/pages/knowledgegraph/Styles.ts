@@ -15,6 +15,8 @@ export const NODE_COLORS = {
 
   IMAGE: BLUE,
 
+  IIIF_CANVAS: BLUE,
+
   ENTITY_TYPE: GREEN
 
 } 

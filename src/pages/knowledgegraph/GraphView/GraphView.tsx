@@ -48,7 +48,7 @@ export const GraphView = (props: GraphViewProps) => {
 
   const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);
 
-  const nodeScale = graph && (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
+  const nodeScale = graph && (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree + 0.000001); // Prevent division by zero if max = min!
 
   const linkScale = graph && (MAX_LINK_WIDTH - MIN_LINK_WIDTH) / (graph.maxLinkWeight - graph.minLinkWeight);
 

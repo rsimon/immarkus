@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { Image } from '@/model';
+import { IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
@@ -14,6 +14,7 @@ import {
   removeUnconnectedLinks, 
   toEntityTypeNode, 
   toFolderNode, 
+  toIIIFCanvasNodes, 
   toImageNode 
 } from './graphBuilderUtils';
 
@@ -27,7 +28,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const [graph, setGraph] = useState<Graph>();
 
-  const { images, folders } = store;
+  const { images, iiifResources, folders } = store;
 
   const { includeFolders, graphMode } = settings;
   
@@ -61,6 +62,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         const nodesWithoutDegree: GraphNode[] = [
           ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
           ...images.map(i => toImageNode(i, imageMetadata)),
+          ...iiifResources.reduce<GraphNode[]>((all, r) => [...all, ...toIIIFCanvasNodes(r as IIIFManifestResource)], []),
           ...datamodel.entityTypes.map(toEntityTypeNode)
         ];
 
