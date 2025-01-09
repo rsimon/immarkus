@@ -70,6 +70,8 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
+  const { image } = props;
+
   const { setSavingState } = useSavingState();
 
   const { colorByEntity } = useDrawingStyles();
@@ -90,10 +92,10 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   }
 
   const options: OpenSeadragon.Options = useMemo(() => ({
-    tileSources: 'data' in props.image ? {
+    tileSources: 'data' in image ? {
       type: 'image',
-      url: URL.createObjectURL(props.image.data)
-    } : getOSDTilesets(props.image.canvas),
+      url: URL.createObjectURL(image.data)
+    } : getOSDTilesets(image.canvas),
     gestureSettingsMouse: {
       clickToZoom: false,
       dblClickToZoom: false
@@ -102,12 +104,12 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     crossOriginPolicy: 'Anonymous',
     minZoomLevel: 0.1,
     maxZoomLevel: 100
-  }), [props.image.id]);
+  }), [image.id]);
   
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        adapter={W3CImageRelationFormat(props.image.name)}
+        adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
