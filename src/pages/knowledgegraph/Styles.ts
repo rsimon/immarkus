@@ -15,13 +15,8 @@ export const NODE_COLORS = {
 
   FOLDER: PURPLE,
 
-  IIIF_MANIFEST: PURPLE,
-
-  IIIF_CANVAS: BLUE,
-
-  IMAGE: BLUE,
-
-
+  IMAGE: BLUE
+  
 } 
 
 export const LINK_COLORS = {

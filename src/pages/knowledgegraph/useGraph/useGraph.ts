@@ -5,7 +5,8 @@ import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   aggregatePrimitives,
-  getEntityAnnotationPrimitives, 
+  getCanvasManifestPrimitives,
+  getEntityAnnotationPrimitives,
   getEntityHierarchyPrimitives, 
   getFolderStructurePrimitives, 
   getImageFolderPrimitives, 
@@ -25,7 +26,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const datamodel = store.getDataModel();
 
-  const [annotations, setAnnotations] = useState<{ image: Image, annotations: W3CAnnotation[] }[]>([]);
+  const [annotations, setAnnotations] = useState<{ sourceId: string, annotations: W3CAnnotation[] }[]>([]);
 
   const [graph, setGraph] = useState<Graph>();
 
@@ -41,19 +42,21 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
 
-    const imagesQuery = images.map(image => 
-      store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
+    const annotationsQuery = [
+      ...images.map(i => i.id),
+      ...iiifResources.map(r => `iiif:${r.id}`)
+    ].map(sourceId => store.getAnnotations(sourceId).then(annotations => ({ annotations, sourceId })));
 
     Promise.all(foldersQuery).then(foldersResult => {
       const folderMetadata: Map<string, W3CAnnotation> = new Map(foldersResult
         .map(({ folder, metadata }) => ([folder.id, metadata] as [string, W3CAnnotation]))
         .filter(t => t[1]));
 
-      Promise.all(imagesQuery).then(imagesResult => {
+      Promise.all(annotationsQuery).then(imagesResult => {
         const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
-          .map(({ image, annotations }) => ([
-            image.id, 
-            annotations.find(a => (typeof a.target === 'object' && 'selector' in a.target))
+          .map(({ sourceId, annotations }) => ([
+            sourceId, 
+            annotations.find(a => (typeof a.target === 'object' && !('selector' in a.target)))
           ] as [string, W3CAnnotation]))
           .filter(t => t[1]));
 
@@ -81,6 +84,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(store) : [];
 
         // TODO links between canvases and manifests
+        const canvasManifestPrimitives = includeFolders ? getCanvasManifestPrimitives(iiifResources): [];
 
         // Parent-child model hierarchy links between entity classes
         const entityHierarchyPrimitives = graphMode === 'HIERARCHY' ? getEntityHierarchyPrimitives(datamodel) : [];
@@ -88,24 +92,23 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         // Links between images and entity types
         const entityAnnotationPrimitives = getEntityAnnotationPrimitives(imagesResult);
 
-        // TODO Links between IIIF canvases and entity types
-
         // Links between images, mediated by relations
-        const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
-          ? inferImageToImageRelationPrimitives(imagesResult, store)
-          : [];
+        // const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
+        //   ? inferImageToImageRelationPrimitives(imagesResult, store)
+        //   : [];
 
-        const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
-          ? inferEntityToEntityRelationPrimitives(imagesResult, store)
-          : [];
+        // const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
+        //   ? inferEntityToEntityRelationPrimitives(imagesResult, store)
+        //   : [];
 
         const primitives = [
           ...folderStructurePrimitives, 
           ...imageFolderPrimitives, 
+          ...canvasManifestPrimitives,
           ...entityHierarchyPrimitives, 
           ...entityAnnotationPrimitives,
-          ...imageToImageRelationPrimitives,
-          ...entityToEntityRelationPrimitives
+          // ...imageToImageRelationPrimitives,
+          // ...entityToEntityRelationPrimitives
         ];
 
         /** 

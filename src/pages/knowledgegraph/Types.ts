@@ -20,7 +20,7 @@ export interface Graph {
 
 }
 
-export type GraphNodeType = 'FOLDER' | 'IIIF_MANIFEST' | 'IMAGE' | 'IIIF_CANVAS' | 'ENTITY_TYPE';
+export type GraphNodeType = 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
 
 export interface GraphNode {
 

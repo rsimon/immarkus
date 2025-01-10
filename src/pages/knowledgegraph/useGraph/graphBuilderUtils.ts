@@ -20,16 +20,16 @@ export const toImageNode = (image: Image, metadata: Map<string, W3CAnnotation>):
 } as GraphNode);
 
 export const toManifestNode = (r: IIIFResource): GraphNode => ({
-  id: r.id,
+  id: `iiif:${r.id}`,
   label: r.name,
-  type: 'IIIF_MANIFEST'
+  type: 'FOLDER'
 } as GraphNode)
 
 export const toCanvasNodes = (manifest: IIIFManifestResource): GraphNode[] => 
   manifest.canvases.map(canvas => ({
     id: `iiif:${manifest.id}:${canvas.id}`,
     label: canvas.name,
-    type: 'IIIF_CANVAS'
+    type: 'IMAGE',
   } as GraphNode));
 
 export const toEntityTypeNode = (type: EntityType): GraphNode => ({
@@ -70,6 +70,17 @@ export const getImageFolderPrimitives = (store: Store) =>
     }
   }, []);
 
+export const getCanvasManifestPrimitives = (iiifResources: IIIFResource[]) =>
+  iiifResources.reduce<GraphLinkPrimitive[]>((all, resource) => {
+    const manifest = resource as IIIFManifestResource;
+    return [...all, ...manifest.canvases.map(canvas => ({
+      source: manifest.id,
+      target: `iiif:${manifest.id}:${canvas.id}`,
+      type: 'FOLDER_CONTAINS_IMAGE'
+    } as GraphLinkPrimitive))]
+    return all;
+  }, [])
+
 export const getEntityHierarchyPrimitives = (model: DataModelStore) =>
   model.entityTypes.reduce<GraphLinkPrimitive[]>((all, type) => {
     if (type.parentId) {
@@ -90,16 +101,18 @@ export const getEntityHierarchyPrimitives = (model: DataModelStore) =>
     }
   }, []);
 
-export const getEntityAnnotationPrimitives = (annotatedImages: { image: Image; annotations: W3CAnnotation[]; }[]) =>
-  annotatedImages.reduce<GraphLinkPrimitive[]>((all, { annotations, image }) => {
+export const getEntityAnnotationPrimitives = (annotatedImages: { sourceId: string; annotations: W3CAnnotation[]; }[]) =>
+  annotatedImages.reduce<GraphLinkPrimitive[]>((all, { sourceId, annotations }) => {
       // n annotations on this image, each carrying 0 to m entity links
       const entityLinks = annotations.reduce<GraphLinkPrimitive[]>((all, annotation) => {
         if ('selector' in annotation.target) {
           const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
 
+          const source = sourceId.startsWith('iiif:') ? annotation.target.source : sourceId;
+
           const links: GraphLinkPrimitive[] = 
             bodies.filter(b => b.source).map(b => ({ 
-              source: image.id, 
+              source, 
               target: b.source,
               type: 'HAS_ENTITY_ANNOTATION'
             }));
@@ -113,6 +126,10 @@ export const getEntityAnnotationPrimitives = (annotatedImages: { image: Image; a
 
       return [...all, ...entityLinks];
   }, []);
+
+export const getEntityCanvasAnnotationPrimitives = () => {
+
+}
 
 const getRelationName = (a: W3CRelationMetaAnnotation) => {
   const body = Array.isArray(a.body) ? a.body[0] : a.body;

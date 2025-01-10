@@ -6,6 +6,7 @@ import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
+import { parseIIIFId } from '@/utils/iiif/utils';
 
 export interface AnnotationStore {
   
@@ -28,6 +29,8 @@ export interface AnnotationStore {
   findImageForAnnotation(annotationId: string): Promise<Image>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
+
+  getCanvasAnnotations(id: string): Promise<W3CAnnotation[]>;
 
   getDataModel(): DataModelStore;
 
@@ -288,6 +291,13 @@ export const loadStore = (
     }
   });
 
+  const getCanvasAnnotations = (id: string) => {
+    const [manifestId, _] = parseIIIFId(id);
+    return getAnnotations(`iiif:${manifestId}`).then(annotations => {
+      return annotations.filter(a => !Array.isArray(a.target) && a.target.source === id);
+    })
+  }
+
   const getDataModel = () => datamodel;
 
   const getFolder = (arg: string | FileSystemDirectoryHandle) =>
@@ -524,6 +534,7 @@ export const loadStore = (
     findAnnotation,
     findImageForAnnotation,
     getAnnotations,
+    getCanvasAnnotations,
     getDataModel,
     getFolder,
     getFolderContents,

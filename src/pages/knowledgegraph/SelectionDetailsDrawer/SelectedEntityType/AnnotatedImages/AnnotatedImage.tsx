@@ -1,18 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { W3CImageAnnotation } from '@annotorious/react';
+import { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
+import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { EntityType, LoadedImage } from '@/model';
 import { useStore } from '@/store';
-import { AnnotationThumbnail } from '../../AnnotationThumbnail';
 import { Button } from '@/ui/Button';
-import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
+import { GraphNode } from '../../../Types';
+import { AnnotationThumbnail } from '../../AnnotationThumbnail';
+import { parseIIIFId } from '@/utils/iiif/utils';
 
 interface AnnotatedImageProps {
 
   entityType: EntityType;
 
-  imageId: string;
+  node: GraphNode;
 
   onLoadAnnotations(count: number): void;
 
@@ -20,37 +22,44 @@ interface AnnotatedImageProps {
 
 export const AnnotatedImage = (props: AnnotatedImageProps) => {
 
-  const { imageId, entityType } = props;
+  const { node, entityType } = props;
 
   const { ref, inView } = useInView();
 
   const store = useStore();
 
-  const image = useMemo(() => store.getImage(imageId), [imageId]);
-
   const [loadedImage, setLoadedImage] = useState<LoadedImage | undefined>();
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
+  const setForThisType = (annotations: W3CAnnotation[]) => {
+    const forThisType = annotations.filter(a => {
+      const bodies = Array.isArray(a.body) ? a.body : [a.body];
+      return bodies.some(b => b.source === entityType.id);
+    }) as W3CImageAnnotation[];
+
+    setAnnotations(forThisType);
+
+    props.onLoadAnnotations(forThisType.length);
+  }
+
   useEffect(() => {
-    store.getAnnotations(imageId, { type: 'image' }).then(annotations => {
-      const forThisType = annotations.filter(a => {
-        const bodies = Array.isArray(a.body) ? a.body : [a.body];
-        return bodies.some(b => b.source === entityType.id);
-      }) as W3CImageAnnotation[];
-
-      setAnnotations(forThisType);
-
-      props.onLoadAnnotations(forThisType.length);
-    });
-  }, [imageId, entityType]);
+    if (node.id.startsWith('iiif:')) {
+      store.getCanvasAnnotations(node.id).then(setForThisType);
+    } else {
+      store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
+    }
+  }, [node, entityType]);
 
   useEffect(() => {
     if (!inView) return;
 
-    // Lazy-load the image when this component is in view
-    store.loadImage(image.id).then(setLoadedImage);
-  }, [image, inView, store]);
+    if (node.id.startsWith('iiif:')) {
+      // TODO
+    } else {
+      store.loadImage(node.id).then( setLoadedImage);
+    }
+  }, [node, inView, store]);
 
   const getEntityBodies = (annotation: W3CImageAnnotation) => {
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
@@ -65,7 +74,7 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
       <div className="flex justify-between items-center p-1 pl-3">
         <h3 className="flex gap-1.5 pr-1 items-center text-xs whitespace-nowrap overflow-hidden">
           <Image className="h-3.5 w-3.5" />
-          <span className="overflow-hidden text-ellipsis">{image.name}</span>
+          <span className="overflow-hidden text-ellipsis">{node.label}</span>
         </h3>
 
         <Button
@@ -73,7 +82,7 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
           size="icon"
           variant="ghost"
           className="h-8 w-8 flex-shrink-0">
-          <a href={`#/annotate/${imageId}`}><SquareArrowOutUpRight className="h-3.5 w-3.5" /></a>
+          <a href={`#/annotate/${node.id}`}><SquareArrowOutUpRight className="h-3.5 w-3.5" /></a>
         </Button>
       </div>      
 
