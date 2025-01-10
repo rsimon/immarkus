@@ -11,10 +11,12 @@ import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
+import { GraphNode } from '../../Types';
+import { FilePreviewImage, IIIFPreviewImage } from './PreviewImage';
 
 interface SelectedImageProps {
 
-  image: FileImage;
+  image: GraphNode;
 
   onClose(): void;
 
@@ -26,8 +28,6 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const store = useStore();
 
-  const [loaded, setLoaded] = useState<LoadedImage | undefined>();
-
   const { onLoad, dimensions } = useImageDimensions();
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
@@ -36,6 +36,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const [tab, setTab] = useState<string>('annotations'); 
 
+  /*
   useEffect(() => {
     setLoaded(undefined);
     
@@ -43,6 +44,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
       store.loadImage(image.id).then(setLoaded)
     ), 180);
   }, [image]);
+  */
 
   useEffect(() => {
     if (annotations.length === 0) return;
@@ -62,13 +64,19 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
         <article className="bg-white shadow-sm rounded border overflow-hidden">
           <header>
             <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
-              {loaded ? (
+              {image.id.startsWith('iiif:') ? (
+                <IIIFPreviewImage id={image.id} />
+              ) : (
+                <FilePreviewImage id={image.id} />
+              )}
+              {/*loaded ? (
                 <img 
                   onLoad={onLoad}
-                  className="object-cover scale-105 object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
+                  className="object-cover scale-105 object-center h-full w-full" 
+                  src={URL.createObjectURL(loaded.data)} />
               ) : (
                 <Skeleton className="" />
-              )}
+              ) */}
 
               <div className="absolute top-2 right-2 bg-white/70 rounded-full">
                 <Button
@@ -85,7 +93,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
           <div className="flex py-2 px-3 pr-2 text-sm items-start justify-between">
             <div className="overflow-hidden py-1 leading-relaxed">
               <h2 className="whitespace-nowrap overflow-hidden text-ellipsis font-medium">
-                {image.name}
+                {image.label}
               </h2>
               
               {dimensions && (
@@ -161,7 +169,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
         <TabsContent value="metadata">
           <Metadata 
-            image={image} />
+            imageId={image.id} />
         </TabsContent>
       </Tabs>
     </div>

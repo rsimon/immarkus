@@ -3,6 +3,9 @@ import { parseIIIF } from '../lib';
 import { IIIFParseResult } from '../lib/Types';
 import { useStore } from '@/store';
 
+// Cached IIIF manifests
+const cache = new Map<string, IIIFParseResult>();
+
 export const useIIIFResource = (id: string) => {
 
   const store = useStore();
@@ -18,17 +21,21 @@ export const useIIIFResource = (id: string) => {
       return;
     }
 
-    fetch(resource.uri)
-      .then(res => res.json())
-      .then(data => {
-        const { error, result } = parseIIIF(data);
-        if (error || !result) {
-          console.error(error);
-        } else {
-          setResource(result);
-        }
-      });
-  
+    if (cache.has(id)) {
+      setResource(cache.get(id));
+    } else {
+      fetch(resource.uri)
+        .then(res => res.json())
+        .then(data => {
+          const { error, result } = parseIIIF(data);
+          if (error || !result) {
+            console.error(error);
+          } else {
+            cache.set(id, result);
+            setResource(result);
+          }
+        });
+    }  
   }, [store, id]);
 
   return resource;

@@ -7,8 +7,6 @@ import { EntityType, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { GraphNode } from '../../../Types';
-import { AnnotationThumbnail } from '../../AnnotationThumbnail';
-import { parseIIIFId } from '@/utils/iiif/utils';
 
 interface AnnotatedImageProps {
 
@@ -40,15 +38,12 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
 
     setAnnotations(forThisType);
 
-    props.onLoadAnnotations(forThisType.length);
+    setTimeout(() => 
+      props.onLoadAnnotations(forThisType.length), 1);
   }
 
   useEffect(() => {
-    if (node.id.startsWith('iiif:')) {
-      store.getCanvasAnnotations(node.id).then(setForThisType);
-    } else {
-      store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
-    }
+    store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
   }, [node, entityType]);
 
   useEffect(() => {
@@ -87,7 +82,26 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
       </div>      
 
       <ul>
-        {loadedImage && annotations.map(annotation => (
+        {annotations.map(annotation => (
+          <li
+            key={annotation.id}
+            className="border-t p-2.5">
+            <div className="flex items-start w-full">
+              <div className="flex-shrink-0">
+                {/** TODO **/}
+              </div>
+
+              <AnnotationValuePreview
+                className="text-xs text-muted-foreground font-light pl-2.5 flex-grow flex-shrink line-clamp-3 leading-relaxed overflow-hidden"
+                bodies={getEntityBodies(annotation)} />
+            </div>
+          </li>
+        ))}
+        <li>
+
+        </li>
+
+        {/* loadedImage && annotations.map(annotation => (
           <li 
             key={annotation.id}
             className="border-t p-2.5">
@@ -104,7 +118,7 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
                 bodies={getEntityBodies(annotation)} />
             </div>
           </li>
-        ))}
+        )) */}
       </ul>
     </article>
   )

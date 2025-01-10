@@ -247,7 +247,7 @@ export const loadStore = (
       return match ? match[1] : undefined;
     });
 
-  const getAnnotations = (
+  const _getAnnotations = (
     sourceId: string,
     opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
   ): Promise<W3CAnnotation[]> => new Promise(async resolve => {
@@ -291,10 +291,23 @@ export const loadStore = (
     }
   });
 
+  const getAnnotations = (
+    sourceId: string,
+    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+  ) => {
+    if (sourceId.startsWith('iiif:')) {
+      return getCanvasAnnotations(sourceId);
+    } else {
+      return _getAnnotations(sourceId, opts);
+    }
+  }
+
   const getCanvasAnnotations = (id: string) => {
-    const [manifestId, _] = parseIIIFId(id);
-    return getAnnotations(`iiif:${manifestId}`).then(annotations => {
-      return annotations.filter(a => !Array.isArray(a.target) && a.target.source === id);
+    const [manifestId, canvasId] = parseIIIFId(id);
+    return _getAnnotations(`iiif:${manifestId}`).then(annotations => {
+      return canvasId 
+        ? annotations.filter(a => !Array.isArray(a.target) && a.target.source === id)
+        : annotations;
     })
   }
 

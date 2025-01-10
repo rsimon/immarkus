@@ -8,13 +8,13 @@ import { Button } from '@/ui/Button';
 
 interface MetadataProps {
 
-  image: Image;
+  imageId: string;
 
 }
 
 export const Metadata = (props: MetadataProps) => {
 
-  const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
+  const { metadata, updateMetadata } = useImageMetadata(props.imageId);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
