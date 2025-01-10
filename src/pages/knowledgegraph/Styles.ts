@@ -11,13 +11,16 @@ export const DARK_ORANGE = '#d76409';
 
 export const NODE_COLORS = {
 
+  ENTITY_TYPE: GREEN,
+
   FOLDER: PURPLE,
 
-  IMAGE: BLUE,
+  IIIF_MANIFEST: PURPLE,
 
   IIIF_CANVAS: BLUE,
 
-  ENTITY_TYPE: GREEN
+  IMAGE: BLUE,
+
 
 } 
 

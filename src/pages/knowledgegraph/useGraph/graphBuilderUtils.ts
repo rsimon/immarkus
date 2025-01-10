@@ -1,6 +1,6 @@
 import { W3CAnnotation } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { EntityType, Folder, IIIFManifestResource, Image } from '@/model';
+import { EntityType, Folder, IIIFManifestResource, IIIFResource, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { GraphLink, GraphLinkPrimitive, GraphNode } from '../Types';
 import { getEntityTypes } from '@/utils/annotation';
@@ -19,7 +19,13 @@ export const toImageNode = (image: Image, metadata: Map<string, W3CAnnotation>):
   properties: (metadata.get(image.id)?.body as any)?.properties 
 } as GraphNode);
 
-export const toIIIFCanvasNodes = (manifest: IIIFManifestResource): GraphNode[] => 
+export const toManifestNode = (r: IIIFResource): GraphNode => ({
+  id: r.id,
+  label: r.name,
+  type: 'IIIF_MANIFEST'
+} as GraphNode)
+
+export const toCanvasNodes = (manifest: IIIFManifestResource): GraphNode[] => 
   manifest.canvases.map(canvas => ({
     id: `iiif:${manifest.id}:${canvas.id}`,
     label: canvas.name,

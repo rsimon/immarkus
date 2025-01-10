@@ -12,10 +12,11 @@ import {
   inferEntityToEntityRelationPrimitives, 
   inferImageToImageRelationPrimitives, 
   removeUnconnectedLinks, 
+  toCanvasNodes, 
   toEntityTypeNode, 
   toFolderNode, 
-  toIIIFCanvasNodes, 
-  toImageNode 
+  toImageNode,
+  toManifestNode 
 } from './graphBuilderUtils';
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
@@ -61,8 +62,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          */
         const nodesWithoutDegree: GraphNode[] = [
           ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
+          ...(includeFolders ? iiifResources.map(r => toManifestNode(r)) : []),
           ...images.map(i => toImageNode(i, imageMetadata)),
-          ...iiifResources.reduce<GraphNode[]>((all, r) => [...all, ...toIIIFCanvasNodes(r as IIIFManifestResource)], []),
+          ...iiifResources.reduce<GraphNode[]>((all, r) => [...all, ...toCanvasNodes(r as IIIFManifestResource)], []),
           ...datamodel.entityTypes.map(toEntityTypeNode)
         ];
 
@@ -73,14 +75,20 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         // Links between folders & subfolderss
         const folderStructurePrimitives = includeFolders ? getFolderStructurePrimitives(store): [];
 
+        // TODO links between folders and IIIF manifests
+
         // Links between images and subfolders
         const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(store) : [];
+
+        // TODO links between canvases and manifests
 
         // Parent-child model hierarchy links between entity classes
         const entityHierarchyPrimitives = graphMode === 'HIERARCHY' ? getEntityHierarchyPrimitives(datamodel) : [];
 
         // Links between images and entity types
         const entityAnnotationPrimitives = getEntityAnnotationPrimitives(imagesResult);
+
+        // TODO Links between IIIF canvases and entity types
 
         // Links between images, mediated by relations
         const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
