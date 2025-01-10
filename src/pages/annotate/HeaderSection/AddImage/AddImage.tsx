@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { useSearch } from './useSearch';
-import { AddImageItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
+import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
 import { FolderListItem, ImageListItem } from './AddImageListItems';
 import { 
   CanvasInformation, 
@@ -39,15 +39,18 @@ export const AddImage = (props: AddImageProps) => {
 
   const [query, setQuery] = useState<string>('');
 
-  const [items, setItems] = useState<AddImageItem[]>([]);
+  const [items, setItems] = useState<AddImageListItem[]>([]);
+
+  const getInitialContents = useCallback(() => {
+    const root = store.getRootFolder();
+    const { folders, iiifResources, images } = store.getFolderContents(root.handle);
+    return [...folders, ...iiifResources, ...images] as AddImageListItem[];
+  }, [store]);
 
   useEffect(() => {
     if (open) {
       // Initialize search with root folder options
-      const root = store.getRootFolder();
-      const { folders, iiifResources, images } = store.getFolderContents(root.handle);
-      const items = [...folders, ...iiifResources, ...images] as AddImageItem[];
-      setItems(items);
+      setItems(getInitialContents());
     } else {
       // Reset on close
       const root = store.getRootFolder();
@@ -55,7 +58,7 @@ export const AddImage = (props: AddImageProps) => {
       setItems([]);
       setQuery('');
     }
-  }, [store, open, [...openImages].join('.')])
+  }, [store, getInitialContents, open, [...openImages].join('.')])
 
 
   const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
@@ -65,7 +68,7 @@ export const AddImage = (props: AddImageProps) => {
       setItems(folder.canvases);
     } else if ('handle' in folder) {
       const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
-      const items = [...folders, ...iiifResources, ...images] as AddImageItem[];
+      const items = [...folders, ...iiifResources, ...images] as AddImageListItem[];
       setItems(items);
     }
   }
@@ -100,19 +103,11 @@ export const AddImage = (props: AddImageProps) => {
   }
 
   useEffect(() => {
-    /*
-    if (query) {
-      const items = search(query);
-
-      const folders = items.filter(i => 'handle' in i) as Folder[];
-      const images = items.filter(i => 'file' in i) as Image[];
-
-      setItems({ folders, images, iiifResources: [] });
-    } else {
-      setItems(store.getFolderContents(currentFolder.handle));
-    }
-    */
-  }, [query]);
+    if (query)
+      setItems(search(query));
+    else
+      setItems(getInitialContents());
+  }, [query, getInitialContents]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
