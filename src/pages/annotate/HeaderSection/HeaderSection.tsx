@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
-import { Image, LoadedImage } from '@/model';
+import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';

@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
-import { CanvasInformation, FileImage, LoadedImage } from '@/model';
+import { LoadedImage } from '@/model';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';

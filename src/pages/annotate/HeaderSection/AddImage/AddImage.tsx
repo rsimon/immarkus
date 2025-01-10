@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
-import { CanvasInformation, FileImage, Folder, IIIFResource, Image, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { useSearch } from './useSearch';
 import { AddImageItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
 import { FolderListItem, ImageListItem } from './AddImageListItems';
+import { 
+  CanvasInformation, 
+  FileImage, 
+  Folder, 
+  IIIFManifestResource, 
+  IIIFResource, 
+  Image, 
+  RootFolder 
+} from '@/model';
 
 interface AddImageProps {
 
@@ -23,11 +31,11 @@ export const AddImage = (props: AddImageProps) => {
 
   const openImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
 
-  const isOpen = (image: FileImage | CanvasInformation) => openImages.has(image.id);
-
   const [open, setOpen] = useState(false);
 
   const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder | IIIFResource>(store.getRootFolder());
+
+  const isRootLevel = !('canvases' in currentFolder) && !('parent' in currentFolder);
 
   const [query, setQuery] = useState<string>('');
 
@@ -49,6 +57,7 @@ export const AddImage = (props: AddImageProps) => {
     }
   }, [store, open, [...openImages].join('.')])
 
+
   const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
     setCurrentFolder(folder);
 
@@ -58,6 +67,24 @@ export const AddImage = (props: AddImageProps) => {
       const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
       const items = [...folders, ...iiifResources, ...images] as AddImageItem[];
       setItems(items);
+    }
+  }
+
+  const onGoBack = () => {
+    const parent = ('uri' in currentFolder) 
+      ? store.getFolder(currentFolder.folder)
+      : currentFolder.parent ? store.getFolder(currentFolder.parent) : undefined;
+
+    if (parent)
+      onOpenFolder(parent);
+  }
+
+  const isOpen = (image: FileImage | CanvasInformation) => {
+    if (isCanvasInformation(image)) {
+      const id = `iiif:${image.manifestId}:${image.id}`;
+      return openImages.has(id);
+    } else {
+      return openImages.has(image.id);
     }
   }
 
@@ -109,18 +136,20 @@ export const AddImage = (props: AddImageProps) => {
             onChange={evt => setQuery(evt.target.value)} />
         </div>
         
-        {/*currentFolder.parent && !query && (
+        {!(isRootLevel || query) && (
           <div className="px-2">
             <button 
               className="flex w-full text-xs items-center p-2 rounded-md hover:bg-muted"
-              onClick={() => onOpenFolder(store.getFolder(currentFolder.parent))}>
+              onClick={onGoBack}>
               <ArrowLeft className="h-5 w-5 mr-2" />
               <div>
-                {currentFolder.parent.name}
+                {'parent' in currentFolder 
+                  ? currentFolder.parent.name 
+                  : (currentFolder as IIIFManifestResource).folder.name}
               </div>
             </button>
           </div>
-        ) */}
+        )}
 
         <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
