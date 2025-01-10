@@ -101,13 +101,8 @@ const loadDirectory = async (
 
           images.push({ id, name, path, file, folder: dirHandle });
         } else if (file.type === 'application/json' && file.name.startsWith('_iiif.') && !file.name.endsWith('.annotations.json')) {
-          const { name } = file;
-          const id = name.substring('_iiif.'.length, name.lastIndexOf('.json'));
-
           const data: any = await readJSONFile(file);
-
           iiifResources.push({ 
-            id, 
             path, 
             folder: dirHandle, 
             ...data
@@ -360,14 +355,12 @@ export const loadStore = (
     info: IIIFResourceInformation, 
     folderId?: string
   ) => new Promise<IIIFResource>(async (resolve, reject) => {
-    const id = await generateShortId(info.uri);
-
     const folder = folderId ? getFolder(folderId) : getRootFolder();
     if (!folder) {
       console.error(`Cannot import IIIF - unknown folder: ${folderId}`);
       reject();
     } else {
-      const filename = `_iiif.${id}.json`;
+      const filename = `_iiif.${info.id}.json`;
 
       // Don't import the same manifest twice into the same folder
       try {
@@ -380,7 +373,6 @@ export const loadStore = (
         await writeJSONFile(handle, info);
 
         const resource: IIIFResource = {
-          id,
           folder: folder.handle,
           path: folder.path,
           ...info

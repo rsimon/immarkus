@@ -1,4 +1,4 @@
-import { Canvas } from "@iiif/presentation-3";
+import { Canvas } from '@iiif/presentation-3';
 
 export interface Image {
 

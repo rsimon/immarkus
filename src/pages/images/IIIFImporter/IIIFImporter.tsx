@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { Input } from '@/ui/Input';
 import { useManifestParser } from './useManifestParser';
 import { useStore } from '@/store';
+import { generateShortId } from '@/store/utils';
 import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
 
 interface IIIFImporterProps {
@@ -50,24 +51,28 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         console.error(error);
       } else {
         if (result.type === 'PRESENTATION_MANIFEST') {
-          const info: IIIFResourceInformation = {
-            name: result.label || `IIIF Presentation API v${result.majorVersion}`,
-            uri,
-            importedAt: new Date().toISOString(),
-            type: result.type,
-            majorVersion: result.majorVersion,
-            canvases: result.parsed.map(canvas => ({
-              id: murmur.v3(canvas.id).toString(),
-              uri: canvas.id,
-              label: getCanvasLabel(canvas)
-            }))
-          }
-
-          store.importIIIFResource(info, props.folderId).then(resource => {
-            setOpen(false);
+          generateShortId(uri).then(id => {
+            const info: IIIFResourceInformation = {
+              id,
+              name: result.label || `IIIF Presentation API v${result.majorVersion}`,
+              uri,
+              importedAt: new Date().toISOString(),
+              type: result.type,
+              majorVersion: result.majorVersion,
+              canvases: result.parsed.map(canvas => ({
+                id: murmur.v3(canvas.id).toString(),
+                uri: canvas.id,
+                label: getCanvasLabel(canvas),
+                manifestId: id
+              }))
+            }
+  
+            store.importIIIFResource(info, props.folderId).then(resource => {
+              setOpen(false);
+            });
           });
         } else {
-          console.log('Todo...')
+          console.error('Unsupported content type: ' + result.type);
         }
       }
     });

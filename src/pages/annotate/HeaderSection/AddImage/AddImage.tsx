@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, Check, ImagePlus, Search } from 'lucide-react';
 import { Thumbnail } from '@/components/Thumbnail';
 import { FolderIcon } from '@/components/FolderIcon';
-import { Folder, FolderItems, Image, RootFolder } from '@/model';
+import { CanvasInformation, FileImage, Folder, FolderItems, Image, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { useSearch } from './useSearch';
@@ -11,7 +11,7 @@ interface AddImageProps {
 
   current: Image[];
 
-  onAddImage(image: Image): void;
+  onAddImage(image: FileImage | CanvasInformation): void;
 
 }
 

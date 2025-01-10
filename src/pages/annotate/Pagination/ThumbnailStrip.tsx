@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Thumbnail } from '@/components/Thumbnail';
-import { Image, LoadedImage } from '@/model';
+import { CanvasInformation, FileImage, IIIFResource, Image } from '@/model';
 import { useStore } from '@/store';
 import {
   ContextMenu,
@@ -15,11 +15,11 @@ interface ThumbnailStripProps {
 
   open: boolean;
 
-  image: LoadedImage;
+  image: Image | IIIFResource;
 
-  onSelect(image: Image): void;
+  onSelect(image: FileImage | CanvasInformation): void;
 
-  onAdd(image: Image): void;
+  onAdd(image: FileImage | CanvasInformation): void;
 
 }
 
@@ -50,7 +50,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
     }
   });
 
-  const onSelect = (image: Image) => {
+  const onSelect = (image: FileImage | CanvasInformation) => {
     setSelected(image.id);
     props.onSelect(image)
   }

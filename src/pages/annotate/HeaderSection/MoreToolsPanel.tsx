@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
-import { Image } from '@/model';
+import { CanvasInformation, FileImage, Image, LoadedImage } from '@/model';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
@@ -13,7 +13,7 @@ const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN ===
 
 interface MoreToolsPanelProps {
 
-  images: Image[];
+  images: LoadedImage[];
 
   mode: ToolMode;
 
@@ -21,9 +21,9 @@ interface MoreToolsPanelProps {
 
   relationsEditorOpen: boolean;
 
-  onAddImage(image: Image): void;
+  onAddImage(image: FileImage | CanvasInformation): void;
 
-  onChangeImage(previous: Image, next: Image): void;
+  onChangeImage(previous: FileImage | CanvasInformation, next: FileImage | CanvasInformation): void;
 
   onChangeMode(props: ToolMode): void;
 
@@ -41,7 +41,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const onAddImage = (image: Image) => {
+  const onAddImage = (image: FileImage | CanvasInformation) => {
     setOpen(false);
     props.onAddImage(image);
   }

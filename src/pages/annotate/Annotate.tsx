@@ -49,8 +49,8 @@ export const Annotate = () => {
   const onAddImage = (image: Image) =>
     setImageIds(ids => ([...ids, image.id]));
 
-  const onChangeImage = (previous: Image, next: Image) =>
-    setImageIds(ids => ids.map(id => id === previous.id ? next.id : id));
+  const onChangeImage = (previousId: string, nextId: string) =>
+    setImageIds(ids => ids.map(id => id === previousId ? nextId : id));
 
   return (
     <div className="page annotate h-full w-full">

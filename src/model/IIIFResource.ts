@@ -1,6 +1,8 @@
 /** Data contained in a descriptor JSON file */
 interface BaseIIIFResourceInformation {
 
+  id: string;
+
   name: string;
 
   uri: string;
@@ -19,13 +21,15 @@ export interface IIIFManifestResourceInformation extends BaseIIIFResourceInforma
 
 }
 
-export interface CanvasInformation{
+export interface CanvasInformation {
 
   id: string;
 
   uri: string;
 
   label: string;
+
+  manifestId: string;
 
 }
 
@@ -39,8 +43,6 @@ export type IIIFResourceInformation = IIIFManifestResourceInformation | IIIFImag
 
 /** Full resources from parsed JSON info file (IIIF + descriptor file meta) **/
 interface BaseIIIFResource {
-
-  id: string;
 
   path: string[];
 
