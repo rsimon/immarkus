@@ -27,7 +27,7 @@ export interface CanvasInformation {
 
   uri: string;
 
-  label: string;
+  name: string;
 
   manifestId: string;
 

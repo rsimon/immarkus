@@ -23,7 +23,7 @@ interface MoreToolsPanelProps {
 
   onAddImage(image: FileImage | CanvasInformation): void;
 
-  onChangeImage(previous: FileImage | CanvasInformation, next: FileImage | CanvasInformation): void;
+  onChangeImage(previousId: string, nextId: string): void;
 
   onChangeMode(props: ToolMode): void;
 

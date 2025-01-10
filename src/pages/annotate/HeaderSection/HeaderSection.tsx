@@ -35,7 +35,7 @@ interface HeaderSectionProps {
 
   tool: Tool;
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
   onChangeImage(previousId: string, nextId: string): void;
 

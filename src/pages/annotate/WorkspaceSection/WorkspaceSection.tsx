@@ -18,7 +18,7 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
   onChangeImages(images: Image[]): void;
 

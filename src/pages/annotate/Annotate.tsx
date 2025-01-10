@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
-import { Image, LoadedImage } from '@/model';
+import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
@@ -46,8 +46,8 @@ export const Annotate = () => {
       navigate(url);
   }, [imageIds]);
 
-  const onAddImage = (image: Image) =>
-    setImageIds(ids => ([...ids, image.id]));
+  const onAddImage = (imageId: string) =>
+    setImageIds(ids => ([...ids, imageId]));
 
   const onChangeImage = (previousId: string, nextId: string) =>
     setImageIds(ids => ids.map(id => id === previousId ? nextId : id));

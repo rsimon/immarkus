@@ -62,7 +62,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               canvases: result.parsed.map(canvas => ({
                 id: murmur.v3(canvas.id).toString(),
                 uri: canvas.id,
-                label: getCanvasLabel(canvas),
+                name: getCanvasLabel(canvas),
                 manifestId: id
               }))
             }

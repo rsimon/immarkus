@@ -2,8 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Thumbnail } from '@/components/Thumbnail';
-import { CanvasInformation, FileImage, IIIFResource, Image } from '@/model';
-import { useStore } from '@/store';
+import { CanvasInformation, FileImage, LoadedImage } from '@/model';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -15,11 +14,13 @@ interface ThumbnailStripProps {
 
   open: boolean;
 
-  image: Image | IIIFResource;
+  currentImage: LoadedImage;
 
-  onSelect(image: FileImage | CanvasInformation): void;
+  images: FileImage[] | CanvasInformation[];
 
-  onAdd(image: FileImage | CanvasInformation): void;
+  onSelect(imageId: string): void;
+
+  onAdd(imageId: string): void;
 
 }
 
@@ -29,16 +30,21 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   const el = useRef<HTMLOListElement>();
 
-  const store = useStore();
-
   // Use a state for instant feedback!
-  const [selected, setSelected] = useState(props.image.id);
+  const [selected, setSelected] = useState(props.currentImage.id);
 
   const [scrollable, setScrollable] = useState(false);
 
-  const { images } = store.getFolderContents(props.image.folder);
+  useEffect(() => setSelected(props.currentImage.id), [props.currentImage.id]);
 
-  useEffect(() => setSelected(props.image.id), [props.image.id]);
+  const isSelected = (image: FileImage | CanvasInformation) => {
+    if ('manifestId' in image) {
+      const id = `iiif:${image.manifestId}:${image.id}`;
+      return selected === id;
+    } else {
+      return selected === image.id;
+    }
+  }
 
   const transition = useTransition([props.open], {
     from: { maxHeight: 0 },
@@ -52,7 +58,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
   const onSelect = (image: FileImage | CanvasInformation) => {
     setSelected(image.id);
-    props.onSelect(image)
+    props.onSelect(image.id)
   }
 
   const onScroll = (inc: number) => () =>
@@ -92,14 +98,14 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
       <ol 
         ref={el}
         className="flex justify-start px-8 h-full items-center whitespace-nowrap overflow-x-auto">
-        {images.map(image => (
+        {props.images.map((image: FileImage | CanvasInformation) => (
           <li 
             key={image.id}
             className="flex-shrink-0 inline-block mx-1.5">
             <ContextMenu>
               <ContextMenuTrigger>
                 <button
-                  className={selected === image.id 
+                  className={isSelected(image)  
                     ? 'block outline outline-2 outline-offset-2 rounded-sm outline-black' 
                     : 'block hover:outline outline-2 outline-offset-2 rounded-sm outline-black'}
                   onClick={() => onSelect(image)}>
@@ -118,7 +124,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
                 <ContextMenuItem 
                   className="flex gap-2 items-center text-xs"
-                  onClick={() => props.onAdd(image)}>
+                  onClick={() => props.onAdd(image.id)}>
                   <ImagePlus className="h-3.5 w-3.5" /> Add image to workspace
                 </ContextMenuItem>
               </ContextMenuContent>

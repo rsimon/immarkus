@@ -17,7 +17,7 @@ interface PaginationWidgetProps {
 
   onChangeImage(previousId: string, nextId: string): void;
 
-  onAddImage(image: FileImage | CanvasInformation): void;
+  onAddImage(imageId: string): void;
 
 }
 
@@ -68,8 +68,17 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
     }
   }
 
-  const onSetImage = (image: FileImage | CanvasInformation) =>
-    props.onChangeImage(images[currentIndex], image);
+  const onSetImage = (imageId: string) => {
+    const currentImage = images[currentIndex];
+
+    if ('manifestId' in currentImage) {
+      const currentId = `iiif:${currentImage.manifestId}:${currentImage.id}`;
+      const nextId = `iiif:${currentImage.manifestId}:${imageId}`;
+      props.onChangeImage(currentId, nextId);
+    } else {
+      props.onChangeImage(currentImage.id, imageId);
+    }
+  }
 
   return (
     <div
@@ -128,7 +137,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
       )}
 
       <ThumbnailStrip 
-        image={props.image} 
+        currentImage={props.image} 
+        images={images}
         open={showThumbnails} 
         onSelect={onSetImage} 
         onAdd={props.onAddImage} />
