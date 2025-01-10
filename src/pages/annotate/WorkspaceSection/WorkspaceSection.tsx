@@ -20,7 +20,7 @@ interface WorkspaceSectionProps {
 
   onAddImage(imageId: string): void;
 
-  onChangeImages(images: Image[]): void;
+  onChangeImages(imageIds: string[]): void;
 
   onRemoveImage(image: Image): void;
 
@@ -67,9 +67,9 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     }
   }, [props.images]);
 
-  const onChangeImage = (windowId: string, nextImage: Image) => {
+  const onChangeImage = (windowId: string, nextImageId: string) => {
     const nextImages = windowMap.current
-      .map(entry => entry.windowId === windowId ? nextImage : entry.image);
+      .map(entry => entry.windowId === windowId ? nextImageId : entry.image.id);
 
     props.onChangeImages(nextImages);
   }
@@ -79,7 +79,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       .filter(entry => entry.windowId !== windowId)
       .map(entry => entry.image);
 
-    props.onChangeImages(nextImages);
+    props.onChangeImages(nextImages.map(i => i.id));
   }
 
   const onChange = (value: MosaicNode<string>) => {

@@ -22,7 +22,7 @@ export const toImageNode = (image: Image, metadata: Map<string, W3CAnnotation>):
 export const toIIIFCanvasNodes = (manifest: IIIFManifestResource): GraphNode[] => 
   manifest.canvases.map(canvas => ({
     id: `iiif:${manifest.id}:${canvas.id}`,
-    label: canvas.label,
+    label: canvas.name,
     type: 'IIIF_CANVAS'
   } as GraphNode));
 

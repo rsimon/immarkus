@@ -1,8 +1,8 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { Image, LoadedImage } from '@/model';
+import { FileImage, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Skeleton } from '@/ui/Skeleton';
@@ -14,7 +14,7 @@ import { ImageRelationships } from './ImageRelationships';
 
 interface SelectedImageProps {
 
-  image: Image;
+  image: FileImage;
 
   onClose(): void;
 
