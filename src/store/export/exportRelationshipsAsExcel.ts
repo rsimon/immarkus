@@ -5,6 +5,7 @@ import { Store } from '@/store';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
+import { CanvasInformation, FileImage } from '@/model';
 
 interface RowData {
 
@@ -50,6 +51,15 @@ const toRowData = (
 
   const relationshipType = relationshipName ? model.getRelationshipType(relationshipName) : undefined;
 
+  const getFolder = (image: FileImage | CanvasInformation) => {
+    if ('uri' in image) {
+      const manifest = store.iiifResources.find(r => r.id === image.manifestId);
+      return manifest.folder;
+    } else {
+      return image.folder;
+    }
+  }
+
   // Keep in mind, W3C has an inverted idea of "source" and "target"!
   return Promise.all([
     store.findAnnotation(link.target), 
@@ -69,12 +79,12 @@ const toRowData = (
         created: link.created,
         source_snippet: sourceSnippet,  
         source_filename: sourceImage.name,
-        source_foldername: store.getFolder(sourceImage.folder)?.name,      
+        source_foldername: getFolder(sourceImage)?.name,      
         source_annotation_id: sourceAnnotation.id,
         source_entity_classes: getEntityTypes(sourceAnnotation).join(','),
         target_snippet: targetSnippet,
         target_filename: targetImage.name,
-        target_foldername: store.getFolder(targetImage.folder)?.name,
+        target_foldername: getFolder(targetImage)?.name,
         target_annotation_id: targetAnnotation.id,
         target_entity_classes: getEntityTypes(targetAnnotation).join(',')
       } as RowData))

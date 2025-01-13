@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
-import { parseIIIF } from '../lib';
 import { IIIFParseResult } from '../lib/Types';
 import { useStore } from '@/store';
-
-// Cached IIIF manifests
-const cache = new Map<string, IIIFParseResult>();
+import { fetchManifest } from '../utils/fetchManifest';
 
 export const useIIIFResource = (id: string) => {
 
@@ -21,21 +18,7 @@ export const useIIIFResource = (id: string) => {
       return;
     }
 
-    if (cache.has(id)) {
-      setResource(cache.get(id));
-    } else {
-      fetch(resource.uri)
-        .then(res => res.json())
-        .then(data => {
-          const { error, result } = parseIIIF(data);
-          if (error || !result) {
-            console.error(error);
-          } else {
-            cache.set(id, result);
-            setResource(result);
-          }
-        });
-    }  
+    fetchManifest(resource.uri).then(setResource);
   }, [store, id]);
 
   return resource;

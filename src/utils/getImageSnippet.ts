@@ -1,8 +1,11 @@
+import murmur from 'murmurhash';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
-import { Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
+import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
-import { getRegion } from './iiif/lib/helpers';
+import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
+import { fetchManifest } from './iiif/utils/fetchManifest';
+import { parseIIIFId } from './iiif/utils';
 
 interface BaseImageSnippet {
 
@@ -140,16 +143,44 @@ export const getImageSnippet = (
 }
 
 export const getAnntotationsWithSnippets = (
-  image: Image, 
+  image: Image | CanvasInformation, 
   store: Store
-): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> =>
-  store.loadImage(image.id).then(loaded =>
-    store.getAnnotations(image.id, { type: 'image' }).then(annotations => 
-      Promise.all(annotations.map(a => {
-        const annotation = a as W3CImageAnnotation;
-        return getImageSnippet(loaded, annotation)
-          .then(snippet => ({ annotation, snippet }))
-          .catch(() => ({ annotation }))
-      }))
+): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> => {
+  if ('uri' in image) {
+    const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
+
+    return fetchManifest(manifest.uri).then(result => {  
+      const loadedCanvases: LoadedIIIFImage[] = result.parsed.map(canvas => ({
+        canvas,
+        folder: manifest.folder,
+        id: murmur.v3(canvas.id).toString(),
+        manifestId: manifest.id,
+        name: getCanvasLabel(canvas),
+        path: manifest.path
+      }));
+
+      return store.getAnnotations(`iiif:${manifest.id}`, { type: 'image' }).then(annotations => {
+        return Promise.all(annotations.map(a => {
+          const annotation = a as W3CImageAnnotation;
+          const { source } = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
+          const [_, canvasId] = parseIIIFId(source);
+          const loadedCanvas = loadedCanvases.find(c => c.id === canvasId);
+          return getImageSnippet(loadedCanvas, annotation)
+            .then(snippet => ({ annotation, snippet }))
+            .catch(() => ({ annotation }));
+        }));
+      });
+    })
+  } else {
+    return store.loadImage(image.id).then(loaded =>
+      store.getAnnotations(image.id, { type: 'image' }).then(annotations => 
+        Promise.all(annotations.map(a => {
+          const annotation = a as W3CImageAnnotation;
+          return getImageSnippet(loaded, annotation)
+            .then(snippet => ({ annotation, snippet }))
+            .catch(() => ({ annotation }))
+        }))
+      )
     )
-  )
+  }
+}
