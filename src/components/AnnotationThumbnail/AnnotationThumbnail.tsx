@@ -1,7 +1,7 @@
+import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { useImageSnippet } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { cn } from '@/ui/utils';
-import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 
 interface AnnotationThumbnailProps {
 

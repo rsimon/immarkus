@@ -13,7 +13,7 @@ export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
   const src = useMemo(() => {
     if (!props.image) return;
 
-    return getThumbnail(props.image.canvas, { size: 400 });
+    return getThumbnail(props.image.canvas, { size: 600 });
   }, [props.image]);
 
   return props.image ? (

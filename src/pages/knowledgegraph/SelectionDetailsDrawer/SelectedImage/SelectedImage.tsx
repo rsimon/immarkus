@@ -39,8 +39,6 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
     if (loaded.id.startsWith('iiif:')) {
       const { canvas }= (loaded as LoadedIIIFImage);
       return [canvas.width!, canvas.height!];
-    } else {
-
     }
   }, [loaded, fileImageDimensions])
 
