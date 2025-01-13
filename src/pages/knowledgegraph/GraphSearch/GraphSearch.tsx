@@ -12,8 +12,8 @@ import {
   Condition, 
   Graph, 
   GraphNode, 
+  GraphNodeType, 
   KnowledgeGraphSettings,
-  ObjectType, 
   Operator, 
   Sentence
 } from '../Types';
@@ -27,7 +27,7 @@ import {
 
 interface GraphSearchProps {
 
-  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
@@ -122,7 +122,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }
 
   const onSelectObjectType = (value: string) => {
-    setObjectType(value as ObjectType);
+    setObjectType(value as GraphNodeType);
 
     if (value) {
       setConditions([{...EMPTY_CONDITION}]);

@@ -1,9 +1,10 @@
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
-import { Image, LoadedImage } from '@/model';
+import { Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
+import { getRegion } from './iiif/lib/helpers';
 
-export interface ImageSnippet {
+interface BaseImageSnippet {
 
   annotation: ImageAnnotation;
 
@@ -11,13 +12,25 @@ export interface ImageSnippet {
 
   width: number;
 
+}
+
+export interface FileImageSnippet extends BaseImageSnippet {
+
   data: Uint8Array;
 
 }
 
+export interface IIIFImageSnippet extends BaseImageSnippet {
+
+  src: string;
+
+}
+
+export type ImageSnippet = FileImageSnippet | IIIFImageSnippet;
+
 interface ScheduledSnippet {
 
-  snippet: ImageSnippet;
+  snippet: FileImageSnippet;
 
   time: Date;
 
@@ -30,7 +43,7 @@ const SnippetScheduler = () => {
 
   const cache: Map<string, ScheduledSnippet> = new Map();
 
-  const inProgress: Map<string, Promise<ImageSnippet>> = new Map();
+  const inProgress: Map<string, Promise<FileImageSnippet>> = new Map();
 
   const purgeCache = () => {
     [...cache.entries()].forEach(([id, snippet]) => {
@@ -41,7 +54,7 @@ const SnippetScheduler = () => {
     });
   }
 
-  const getSnippet = (image: LoadedImage, annotation: ImageAnnotation): Promise<ImageSnippet> => {
+  const getSnippet = (image: LoadedFileImage, annotation: ImageAnnotation): Promise<FileImageSnippet> => {
     const cacheKey = `${image.id}-${annotation.id}`;
 
     // Already cached?
@@ -53,7 +66,7 @@ const SnippetScheduler = () => {
       return inProgress.get(cacheKey)!;
 
     // If not, start processing and store the promise
-    const snippetPromise = new Promise<ImageSnippet>((resolve, reject) => {
+    const snippetPromise = new Promise<FileImageSnippet>((resolve, reject) => {
       const worker = new Worker();
 
       const messageHandler = (e: MessageEvent) => {
@@ -61,7 +74,7 @@ const SnippetScheduler = () => {
         if (e.data.error) {
           reject(new Error(e.data.error));
         } else {
-          const snippet: ImageSnippet = e.data.snippet;
+          const snippet: FileImageSnippet = e.data.snippet;
           cache.set(cacheKey, { snippet, time: new Date() });
           resolve(snippet);
         }
@@ -110,7 +123,20 @@ export const getImageSnippet = (
     a = annotation;
   }
 
-  return scheduler.getSnippet(image, a);
+  if (image.id.startsWith('iiif:')) {
+    const { bounds } = a.target.selector.geometry;
+    const { canvas } = (image as LoadedIIIFImage);
+    const src = getRegion(canvas, bounds);
+
+    return Promise.resolve({
+      annotation: a,
+      height: bounds.maxY - bounds.minY,
+      width: bounds.maxX - bounds.minX,
+      src
+    } as ImageSnippet);
+  } else {
+    return scheduler.getSnippet(image as LoadedFileImage, a);
+  }
 }
 
 export const getAnntotationsWithSnippets = (

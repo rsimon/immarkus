@@ -5,8 +5,8 @@ import { Image } from '@/model';
 import { 
   DropdownOption, 
   Graph,
+  GraphNodeType,
   NestedConditionSentence, 
-  ObjectType, 
   Sentence, 
   SimpleConditionSentence 
 } from '../Types';
@@ -30,9 +30,9 @@ const ComparatorOptions = [
 ];
 
 export const useGraphSearch = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   graph: Graph, 
-  objectType: ObjectType, 
+  objectType: GraphNodeType, 
   initialValue?: Partial<Sentence>
 ) => {
   const store = useStore();
@@ -113,8 +113,8 @@ export const useGraphSearch = (
         const imageNodes = findImagesByEntityClass(store, graph, s.Value.value);
         setMatches(imageNodes.map(n => n.id));
       } else {
-        const images = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
-        setMatches(images.map(i => i.id));
+        const imageIds = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
+        setMatches(imageIds);
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
       if (!sentence.Value) {

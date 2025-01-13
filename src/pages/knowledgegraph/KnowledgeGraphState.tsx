@@ -1,6 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from 'react';
 import type { NodeObject } from 'react-force-graph-2d';
-import { Condition, GraphNode, KnowledgeGraphSettings, ObjectType } from './Types';
+import { Condition, GraphNode, GraphNodeType, KnowledgeGraphSettings } from './Types';
 
 type Point = { x: number, y: number };
 
@@ -10,7 +10,7 @@ interface KnowledgeGraphStateContextValue {
 
   searchDialogPos?: Point;
 
-  searchObjectType?: ObjectType;
+  searchObjectType?: GraphNodeType;
 
   selectedNodes: NodeObject<GraphNode>[];
 
@@ -22,7 +22,7 @@ interface KnowledgeGraphStateContextValue {
 
   setSearchDialogPos: Dispatch<SetStateAction<Point>>;
 
-  setSearchObjectType: Dispatch<SetStateAction<ObjectType | undefined>>;
+  setSearchObjectType: Dispatch<SetStateAction<GraphNodeType | undefined>>;
 
   setSelectedNodes: Dispatch<SetStateAction<NodeObject<GraphNode>[]>>;
 
@@ -40,7 +40,7 @@ export const KnowledgeGraphStateProvider = (props: { children: ReactNode }) => {
 
   const [searchDialogPos, setSearchDialogPos] = useState<Point | undefined>();
  
-  const [searchObjectType, setSearchObjectType] = useState<ObjectType | undefined>();
+  const [searchObjectType, setSearchObjectType] = useState<GraphNodeType | undefined>();
 
   const [selectedNodes, setSelectedNodes] = useState<NodeObject<GraphNode>[]>([]);
 

@@ -34,12 +34,13 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
     setTimeout(() => getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
   }, [props.annotation, inView, props.image]);
 
-
   return (
     <div ref={ref} key={props.annotation.id}>
       {snippet ? (
         <img
-          src={URL.createObjectURL(new Blob([snippet.data]))}
+          src={'src' in snippet 
+            ? snippet.src
+            : URL.createObjectURL(new Blob([snippet.data]))}
           className={clsImg} />
       ) : (
         <Skeleton className={clsSkeleton} /> 
