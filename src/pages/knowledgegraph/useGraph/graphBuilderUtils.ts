@@ -137,21 +137,21 @@ const getRelationName = (a: W3CRelationMetaAnnotation) => {
 }
 
 export const inferImageToImageRelationPrimitives = (
-  annotatedImages: { image: Image; annotations: W3CAnnotation[]; }[], 
+  annotatedImages: { sourceId: string; annotations: W3CAnnotation[]; }[], 
   store: Store
 ) => {
   // Returns the image for this annotation
   const findImage = (annotationId: string) =>
     annotatedImages
-      .find(({ annotations }) => annotations.some(a => a.id === annotationId))?.image;
+      .find(({ annotations }) => annotations.some(a => a.id === annotationId))?.sourceId;
 
   // Loop through each image...
-  return annotatedImages.reduce<GraphLinkPrimitive[]>((all, { image, annotations }) => {
+  return annotatedImages.reduce<GraphLinkPrimitive[]>((all, { sourceId, annotations }) => {
     // ...get outbound relations for all annotations on this image
     const outboundRelations = annotations.reduce<GraphLinkPrimitive[]>((onThisImage, annotation) => {
       return [...onThisImage, ...store.getRelatedAnnotations(annotation.id, 'OUTBOUND').map(([link, meta]) => ({
-        source: image.id,
-        target: findImage(link.body)?.id,
+        source: sourceId,
+        target: findImage(link.body),
         type: 'HAS_RELATED_ANNOTATION_IN',
         value: getRelationName(meta),
         data: [link, meta]
@@ -163,7 +163,7 @@ export const inferImageToImageRelationPrimitives = (
 }
 
 export const inferEntityToEntityRelationPrimitives = (
-  annotatedImages: { image: Image; annotations: W3CAnnotation[]; }[],
+  annotatedImages: { sourceId: string; annotations: W3CAnnotation[]; }[],
   store: Store
 ) => {
   // All annotations as a flat list

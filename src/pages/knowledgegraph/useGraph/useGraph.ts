@@ -42,9 +42,13 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
 
+    const canvasIds = iiifResources.reduce<string[]>((all, manifest) => (
+      [...all, ...(manifest as IIIFManifestResource).canvases.map(c => `iiif:${c.manifestId}:${c.id}`)]
+    ), []);
+
     const annotationsQuery = [
       ...images.map(i => i.id),
-      ...iiifResources.map(r => `iiif:${r.id}`)
+      ...canvasIds
     ].map(sourceId => store.getAnnotations(sourceId).then(annotations => ({ annotations, sourceId })));
 
     Promise.all(foldersQuery).then(foldersResult => {
@@ -91,13 +95,13 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         const entityAnnotationPrimitives = getEntityAnnotationPrimitives(imagesResult);
 
         // Links between images, mediated by relations
-        // const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
-        //   ? inferImageToImageRelationPrimitives(imagesResult, store)
-        //   : [];
+        const imageToImageRelationPrimitives = graphMode === 'RELATIONS' 
+          ? inferImageToImageRelationPrimitives(imagesResult, store)
+          : [];
 
-        // const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
-        //   ? inferEntityToEntityRelationPrimitives(imagesResult, store)
-        //   : [];
+        const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
+          ? inferEntityToEntityRelationPrimitives(imagesResult, store)
+          : [];
 
         const primitives = [
           ...folderStructurePrimitives, 
@@ -105,8 +109,8 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ...canvasManifestPrimitives,
           ...entityHierarchyPrimitives, 
           ...entityAnnotationPrimitives,
-          // ...imageToImageRelationPrimitives,
-          // ...entityToEntityRelationPrimitives
+          ...imageToImageRelationPrimitives,
+          ...entityToEntityRelationPrimitives
         ];
 
         /** 
