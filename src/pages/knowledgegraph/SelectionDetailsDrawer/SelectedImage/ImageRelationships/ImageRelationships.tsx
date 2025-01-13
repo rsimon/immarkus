@@ -27,20 +27,21 @@ export const ImageRelationships = (props: ImageRelationshipsProps) => {
     store.getRelatedImageAnnotations(selectedImage.id).then(setRelated);
   }, [selectedImage]);
 
-  const getRelationshipsTo = useCallback((imageId: string) => {
+  const getRelationshipsTo = useCallback((otherId: string) => {
     if (!related) return [];
 
     // All annotations on this image
     const onThisImage = new Set(annotations.map(a => a.id));
 
     // All annotations on the 'other' image
-    const onOtherImage = new Set(related[imageId] || []);
+    // const otherId = 'canvas' in source ? `iiif:${source.manifestId}:${source.id}` : source.id;
+    const onOtherImage = new Set(related[otherId] || []);
     
     // Return only relations that point from this image to the other
     // (or vice versa).
     return relationships.filter(([link, _]) => {
       const { body, target } = link;
-
+    
       return (onThisImage.has(body) && onOtherImage.has(target)) || 
         (onThisImage.has(target) && onOtherImage.has(body));
     });

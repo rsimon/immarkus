@@ -7,17 +7,17 @@ import { Canvas } from '@iiif/presentation-3';
 import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
 
 export const useImages = (
-  imageIdOrIds: string | string[],
+  imageIdOrIds?: string | string[],
   delay?: number
 ): LoadedImage | LoadedImage[] => {
   const store = useStore();
 
-  const imageIds = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
+  const imageIds = imageIdOrIds ? Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds] : undefined;
 
   const [images, setImages] = useState<LoadedImage[]>([]);
 
   useEffect(() => {
-    if (!store) return;
+    if (!store || !imageIds) return;
 
     const findCanvas = (canvases: Canvas[], canvasHash: string) =>
       canvases.find(c => {
@@ -66,7 +66,7 @@ export const useImages = (
       setTimeout(() => load(), delay);
     else
       load();
-  }, [imageIds.join(','), store]);
+  }, [(imageIds || []).join(','), store]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }

@@ -1,5 +1,5 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { Image, LoadedImage } from '@/model';
+import { CanvasInformation, Image, LoadedImage } from '@/model';
 import { useEffect, useMemo, useState } from 'react';
 import { useStore } from '@/store';
 import { W3CImageAnnotation } from '@annotorious/react';
@@ -21,9 +21,9 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
 
   const store = useStore();
 
-  const [from, setFrom] = useState<{ annotation: W3CImageAnnotation, image: Image }>(); 
+  const [from, setFrom] = useState<{ annotation: W3CImageAnnotation, image: Image | CanvasInformation }>(); 
 
-  const [to, setTo] = useState<{ annotation: W3CImageAnnotation, image: Image }>(); 
+  const [to, setTo] = useState<{ annotation: W3CImageAnnotation, image: Image | CanvasInformation }>(); 
 
   const directed = useMemo(() => {
     if (!props.meta?.body?.value) return false;
@@ -33,7 +33,7 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
   }, [props.meta]);
 
   useEffect(() => {
-    store.findAnnotation(props.link.target).then(([annotation, image]) => 
+    store.findAnnotation(props.link.target).then(([annotation, image]) =>
       setFrom({ annotation: annotation as W3CImageAnnotation, image }));
 
     store.findAnnotation(props.link.body).then(([annotation, image]) => 
@@ -41,7 +41,13 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
   }, [store, props.link]);
 
   const isOutbound = useMemo(() => {
-    return from?.image.id === props.selectedImage.id;
+    if (!from?.image) return; // Should never happen
+
+    const imageId = 'uri' in from.image 
+      ? `iiif:${from.image.manifestId}:${from.image.id}` 
+      : from.image.id;
+
+    return imageId === props.selectedImage.id;
   }, [from, to, props.selectedImage]);
 
   return (from && to) && (

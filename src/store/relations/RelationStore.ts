@@ -1,4 +1,5 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { CanvasInformation, Image } from '@/model';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 
@@ -10,7 +11,7 @@ export interface RelationStore {
 
   getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
-  getRelatedImageAnnotations(imageId: string): Promise<{ [image: string]: string[] }>;
+  getRelatedImageAnnotations(sourceId: string): Promise<{ [image: string]: string[] }>;
 
   getRelationAnnotation(annotationId: string): W3CRelationLinkAnnotation | W3CRelationMetaAnnotation | undefined;
 
@@ -83,15 +84,18 @@ export const loadRelationStore = (
       const annotationIds = 
         new Set(relations.reduce<string[]>((ids, [link, _]) => [...ids, link.body, link.target], []));
 
+      const getSourceId = (source: Image | CanvasInformation) =>
+        'uri' in source ? `iiif:${source.manifestId}:${source.id}` : source.id;
+
       return Promise.all([...annotationIds].map(annotation => store.findImageForAnnotation(annotation)
-        .then(image => ({ annotation, image }))))
+        .then(source => ({ annotation, source }))))
         .then(result => {
           // From a list tuples annotation/image, aggregate to a map image -> annotations
-          const imageIds = new Set(result.map(t => t.image.id));
+          const sourceIds = new Set(result.map(t => getSourceId(t.source)));
 
-          const entries = [...imageIds].map(imageId => ([
-            imageId, 
-            (result.filter(t => t.image.id === imageId) || []).map(t => t.annotation)
+          const entries = [...sourceIds].map(sourceId => ([
+            sourceId, 
+            (result.filter(t => getSourceId(t.source) === sourceId) || []).map(t => t.annotation)
           ])) as [string, string[]][];
 
           return Object.fromEntries(entries);
