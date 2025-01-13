@@ -104,15 +104,19 @@ export const AnnotationList = () => {
           </div>
         ) : (
           <Accordion className="py-2 grow" type="multiple">
-            {Array.from(annotations.keys()).map(source => (
-              <AccordionItem key={source} value={source}>
+            {Array.from(annotations.keys()).map(sourceId => (
+              <AccordionItem key={sourceId} value={sourceId}>
                 <AccordionTrigger className="text-xs font-medium hover:no-underline overflow-hidden">
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis pr-1">{store.getImage(source).name}</span>
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis pr-1">
+                    {sourceId.startsWith('iiif:') 
+                      ? store.getCanvas(sourceId).name 
+                      : store.getImage(sourceId).name}
+                  </span>
                 </AccordionTrigger>
 
                 <AccordionContent>
                   <ul className="space-y-2">
-                    {listAnnotations(source).map(annotation => (
+                    {listAnnotations(sourceId).map(annotation => (
                       <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 

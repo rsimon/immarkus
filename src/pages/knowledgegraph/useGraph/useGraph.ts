@@ -78,12 +78,10 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         // Links between folders & subfolderss
         const folderStructurePrimitives = includeFolders ? getFolderStructurePrimitives(store): [];
 
-        // TODO links between folders and IIIF manifests
-
         // Links between images and subfolders
         const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(store) : [];
 
-        // TODO links between canvases and manifests
+        // Links between manifests and canvases
         const canvasManifestPrimitives = includeFolders ? getCanvasManifestPrimitives(iiifResources): [];
 
         // Parent-child model hierarchy links between entity classes

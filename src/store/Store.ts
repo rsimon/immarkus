@@ -5,7 +5,7 @@ import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFil
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
-import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
+import { CanvasInformation, IIIFManifestResource, IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { parseIIIFId } from '@/utils/iiif/utils';
 
 export interface AnnotationStore {
@@ -29,6 +29,8 @@ export interface AnnotationStore {
   findImageForAnnotation(annotationId: string): Promise<Image>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
+
+  getCanvas(id: string): CanvasInformation | undefined;
 
   getCanvasAnnotations(id: string): Promise<W3CAnnotation[]>;
 
@@ -302,6 +304,14 @@ export const loadStore = (
     }
   }
 
+  const getCanvas = (id: string) => {
+    const [manifestId, canvasId] = parseIIIFId(id);
+    if (manifestId && canvasId) {
+      const manifest = iiifResources.find(r => r.id === manifestId) as IIIFManifestResource;
+      return manifest.canvases.find(c => c.id === canvasId);
+    }
+  }
+
   const getCanvasAnnotations = (id: string) => {
     const [manifestId, canvasId] = parseIIIFId(id);
     return _getAnnotations(`iiif:${manifestId}`).then(annotations => {
@@ -547,6 +557,7 @@ export const loadStore = (
     findAnnotation,
     findImageForAnnotation,
     getAnnotations,
+    getCanvas,
     getCanvasAnnotations,
     getDataModel,
     getFolder,

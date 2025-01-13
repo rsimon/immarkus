@@ -74,7 +74,7 @@ export const getCanvasManifestPrimitives = (iiifResources: IIIFResource[]) =>
   iiifResources.reduce<GraphLinkPrimitive[]>((all, resource) => {
     const manifest = resource as IIIFManifestResource;
     return [...all, ...manifest.canvases.map(canvas => ({
-      source: manifest.id,
+      source: `iiif:${manifest.id}`,
       target: `iiif:${manifest.id}:${canvas.id}`,
       type: 'FOLDER_CONTAINS_IMAGE'
     } as GraphLinkPrimitive))]
