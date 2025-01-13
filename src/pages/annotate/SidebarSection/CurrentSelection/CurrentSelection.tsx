@@ -38,7 +38,7 @@ export const CurrentSelection = () => {
         if (result) {
           const [_, source] = result;
 
-          const id = 'data' in source ? source.id : `iiif:${source.id}`;
+          const id = 'uri' in source ? `iiif:${source.manifestId}:${source.id}` : source.id;
           store.getAnnotations(id).then(all => {
             const links = all.filter(a => isW3CRelationLinkAnnotation(a));
             const hasLinks = links.find(link => link.body === selected.id || link.target === selected.id);
