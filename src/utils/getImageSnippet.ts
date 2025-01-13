@@ -6,6 +6,7 @@ import Worker from './getImageSnippetWorker?worker';
 import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
 import { fetchManifest } from './iiif/utils/fetchManifest';
 import { parseIIIFId } from './iiif/utils';
+import { Canvas } from '@iiif/presentation-3';
 
 interface BaseImageSnippet {
 
@@ -150,22 +151,21 @@ export const getAnntotationsWithSnippets = (
     const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
 
     return fetchManifest(manifest.uri).then(result => {  
-      const loadedCanvases: LoadedIIIFImage[] = result.parsed.map(canvas => ({
+      const canvas: Canvas = result.parsed.find(c => c.id === image.uri);
+
+      const loaded: LoadedIIIFImage = {
         canvas,
         folder: manifest.folder,
         id: murmur.v3(canvas.id).toString(),
         manifestId: manifest.id,
         name: getCanvasLabel(canvas),
         path: manifest.path
-      }));
+      }
 
-      return store.getAnnotations(`iiif:${manifest.id}`, { type: 'image' }).then(annotations => {
+      return store.getCanvasAnnotations(`iiif:${manifest.id}:${image.id}`).then(annotations => {
         return Promise.all(annotations.map(a => {
           const annotation = a as W3CImageAnnotation;
-          const { source } = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
-          const [_, canvasId] = parseIIIFId(source);
-          const loadedCanvas = loadedCanvases.find(c => c.id === canvasId);
-          return getImageSnippet(loadedCanvas, annotation)
+          return getImageSnippet(loaded, annotation)
             .then(snippet => ({ annotation, snippet }))
             .catch(() => ({ annotation }));
         }));
