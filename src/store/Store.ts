@@ -24,9 +24,9 @@ export interface AnnotationStore {
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  findAnnotation(annotationId: string): Promise<[W3CAnnotation, FileImage | IIIFResource] | undefined>;
+  findAnnotation(annotationId: string): Promise<[W3CAnnotation, FileImage | CanvasInformation] | undefined>;
 
-  findImageForAnnotation(annotationId: string): Promise<Image>;
+  findImageForAnnotation(annotationId: string): Promise<Image | CanvasInformation>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
 
@@ -209,12 +209,23 @@ export const loadStore = (
   });
 
   const findAnnotation = (annotationId: string) => {
+    const getCanvas = (annotation: W3CAnnotation, manifest: IIIFManifestResource) => {
+      const targetSource = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
+      const [_, canvasId] = parseIIIFId(targetSource.source);
+      const { canvases } = (manifest as IIIFManifestResource);
+      return canvases.find(c => c.id === canvasId);
+    }
+
     // Let's try cached anntoations first
     for (const [sourceId, annotations] of cachedAnnotations.entries()) {
       const found = annotations.find(a => a.id === annotationId);
       if (found) {
         const source = _findSource(sourceId);
-        return Promise.resolve([found, source] as [W3CAnnotation, FileImage | IIIFResource]);
+        if ('uri' in source) {
+          return Promise.resolve([found, getCanvas(found, source as IIIFManifestResource)] as [W3CAnnotation, CanvasInformation]);
+        } else {
+          return Promise.resolve([found, source] as [W3CAnnotation, FileImage]);
+        }
       }
     }
 
@@ -227,7 +238,7 @@ export const loadStore = (
       ...iiifResources.filter(r => !cachedIds.has(`iiif:${r.id}`))
     ];
 
-    return uncachedSources.reduce<Promise<[W3CAnnotation, FileImage | IIIFResource] | undefined>>((promise, source) => promise.then(result => {
+    return uncachedSources.reduce<Promise<[W3CAnnotation, FileImage | CanvasInformation] | undefined>>((promise, source) => promise.then(result => {
       if (result) return result; // Skip
 
       const id = 'file' in source ? source.id : `iiif:${source.id}`;
@@ -236,7 +247,11 @@ export const loadStore = (
       return getAnnotations(id).then(annotations => {
         const found = annotations.find(a => a.id === annotationId);
         if (found) {
-          return [found, source];
+          if (source.id.startsWith('iiif')) {
+            return [found, getCanvas(found, source as IIIFManifestResource)];
+          } else {
+            return [found, source] as [W3CAnnotation, FileImage];
+          }
         } else {
           return;
         }

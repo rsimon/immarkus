@@ -58,24 +58,23 @@ export const useImageSnippet = (annotationOrId: ImageAnnotation | W3CImageAnnota
 
   const [annotation, setAnnotation] = useState<ImageAnnotation | W3CImageAnnotation | undefined>();
 
-  const [imageId, setImageId] = useState<string | undefined>();
+  const [sourceId, setSourceId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (typeof annotationOrId === 'string') {
-      store.findAnnotation(annotationOrId).then(([annotation, image]) => {
-        setAnnotation(annotation as W3CImageAnnotation);
-        setImageId(image.id);
-      });
-    } else {
-      store.findImageForAnnotation(annotationOrId.id).then(image => {
-        setAnnotation(annotationOrId);
-        setImageId(image.id);
-      })
-    }
+    const id = typeof annotationOrId === 'string' ? annotationOrId : annotationOrId.id;
+
+    store.findAnnotation(id).then(([annotation, source]) => {
+      setAnnotation(annotation as W3CImageAnnotation);
+      if ('uri' in source) {
+        setSourceId(`iiif:${source.manifestId}:${source.id}`);
+      } else {
+        setSourceId(source.id);
+      }
+    });
   }, [annotationOrId]);
 
-  const tuple = annotation && imageId 
-    ? [[annotation, imageId]] as [ImageAnnotation | W3CImageAnnotation, string][] 
+  const tuple = annotation && sourceId 
+    ? [[annotation, sourceId]] as [ImageAnnotation | W3CImageAnnotation, string][] 
     : []; 
 
   const snippets = _useImageSnippets(tuple)
