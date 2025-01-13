@@ -4,9 +4,10 @@ import { useInView } from 'react-intersection-observer';
 import { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { EntityType, LoadedImage } from '@/model';
-import { useStore } from '@/store';
+import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { GraphNode } from '../../../Types';
+import { AnnotationThumbnail } from '../../AnnotationThumbnail';
 
 interface AnnotatedImageProps {
 
@@ -18,15 +19,13 @@ interface AnnotatedImageProps {
 
 }
 
-export const AnnotatedImage = (props: AnnotatedImageProps) => {
+const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
 
   const { node, entityType } = props;
 
-  const { ref, inView } = useInView();
-
   const store = useStore();
 
-  const [loadedImage, setLoadedImage] = useState<LoadedImage | undefined>();
+  const loadedImage = useImages(node.id) as LoadedImage;
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
@@ -46,26 +45,13 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
     store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
   }, [node, entityType]);
 
-  useEffect(() => {
-    if (!inView) return;
-
-    if (node.id.startsWith('iiif:')) {
-      // TODO
-    } else {
-      store.loadImage(node.id).then( setLoadedImage);
-    }
-  }, [node, inView, store]);
-
   const getEntityBodies = (annotation: W3CImageAnnotation) => {
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
     return bodies.filter(b => b.source === props.entityType.id);
   }
 
   return (
-    <article
-      ref={ref} 
-      className="bg-white shadow-sm rounded border mt-1.5">
-
+    <article className="bg-white shadow-sm rounded border mt-1.5">
       <div className="flex justify-between items-center p-1 pl-3">
         <h3 className="flex gap-1.5 pr-1 items-center text-xs whitespace-nowrap overflow-hidden">
           <Image className="h-3.5 w-3.5" />
@@ -88,25 +74,6 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
             className="border-t p-2.5">
             <div className="flex items-start w-full">
               <div className="flex-shrink-0">
-                {/** TODO **/}
-              </div>
-
-              <AnnotationValuePreview
-                className="text-xs text-muted-foreground font-light pl-2.5 flex-grow flex-shrink line-clamp-3 leading-relaxed overflow-hidden"
-                bodies={getEntityBodies(annotation)} />
-            </div>
-          </li>
-        ))}
-        <li>
-
-        </li>
-
-        {/* loadedImage && annotations.map(annotation => (
-          <li 
-            key={annotation.id}
-            className="border-t p-2.5">
-            <div className="flex items-start w-full">
-              <div className="flex-shrink-0">
                 <AnnotationThumbnail
                   annotation={annotation}
                   className="w-20 h-20 bg-muted" 
@@ -118,9 +85,24 @@ export const AnnotatedImage = (props: AnnotatedImageProps) => {
                 bodies={getEntityBodies(annotation)} />
             </div>
           </li>
-        )) */}
+        ))}
       </ul>
     </article>
+  )
+
+}
+
+
+export const AnnotatedImage = (props: AnnotatedImageProps) => {
+
+  const { ref, inView } = useInView();
+
+  return (
+    <div ref={ref}>
+      {inView ? (
+        <LazyLoadingAnnotatedImage {...props} />
+      ) : null}
+    </div>
   )
 
 }
