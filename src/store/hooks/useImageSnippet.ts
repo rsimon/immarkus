@@ -36,14 +36,17 @@ export const useImageSnippets = (annotations: (ImageAnnotation | W3CImageAnnotat
   const [arg, setArg] = useState<[ImageAnnotation | W3CImageAnnotation, string][]>([]);
   
   useEffect(() => {
+    if (!annotations) return;
+
     const promise = annotations.reduce<Promise<[ImageAnnotation | W3CImageAnnotation, string][]>>((promise, annotation) => promise.then(tuples => {
       return store.findImageForAnnotation(annotation.id).then(image => {
-        return [...tuples, [annotation, image.id]]
+        const id = 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+        return [...tuples, [annotation, id]];
       });
     }), Promise.resolve([]));
 
     promise.then(setArg);
-  }, [annotations.map(a => a.id).join('-')]);
+  }, [(annotations || []).map(a => a.id).join('-')]);
 
   return _useImageSnippets(arg);
 

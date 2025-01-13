@@ -31,8 +31,7 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
     
     setSnippet(undefined);
 
-    setTimeout(() => 
-        getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
+    setTimeout(() => getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
   }, [props.annotation, inView, props.image]);
 
   return (

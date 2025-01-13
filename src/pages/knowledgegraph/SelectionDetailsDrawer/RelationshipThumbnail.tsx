@@ -1,18 +1,12 @@
-import { W3CImageAnnotation } from '@annotorious/react';
-import { AnnotationThumbnail } from './AnnotationThumbnail';
-import { LoadedImage } from '@/model';
+import { ImageSnippet } from '@/utils/getImageSnippet';
 
 interface RelationshipThumbnailProps {
 
   directed?: boolean;
 
-  fromAnnotation: W3CImageAnnotation;
+  fromSnippet: ImageSnippet;
 
-  fromImage: LoadedImage;
-
-  toAnnotation: W3CImageAnnotation;
-
-  toImage: LoadedImage;
+  toSnippet: ImageSnippet;
 
   label?: string
 
@@ -22,11 +16,17 @@ interface RelationshipThumbnailProps {
 
 export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
 
+  const { fromSnippet, toSnippet } = props;
+
+  const className = 'w-14 h-14 object-cover aspect-square rounded-sm border';
+
   return props.outbound ? (
     <div className="flex justify-between p-2.5 border-t items-center gap-2 text-xs">
-      <AnnotationThumbnail 
-        annotation={props.fromAnnotation} 
-        image={props.fromImage} />
+      <img
+        src={'src' in fromSnippet 
+          ? fromSnippet.src
+          : URL.createObjectURL(new Blob([fromSnippet.data]))}
+        className={className} />
 
       <div className="flex-grow flex justify-center h-[1px] border-gray-600 border-t border-dashed relative whitespace-nowrap">
         <div className="absolute -top-[0.675rem] w-full text-center overflow-hidden max-w-[70%] text-ellipsis">
@@ -38,15 +38,19 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
         )}
       </div>
 
-      <AnnotationThumbnail 
-        annotation={props.toAnnotation} 
-        image={props.toImage} />
+      <img
+        src={'src' in toSnippet 
+          ? toSnippet.src
+          : URL.createObjectURL(new Blob([toSnippet.data]))}
+        className={className} />
     </div>
   ) : (
     <div className="flex justify-between p-2.5 border-t items-center gap-3 text-xs">
-      <AnnotationThumbnail
-        annotation={props.toAnnotation} 
-        image={props.toImage} />
+      <img
+        src={'src' in toSnippet 
+          ? toSnippet.src
+          : URL.createObjectURL(new Blob([toSnippet.data]))}
+        className={className} />
 
       <div className="flex-grow h-[1px] border-gray-400 border-t border-dashed relative">
         {props.directed && (
@@ -58,9 +62,11 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
         </div>
       </div>
 
-      <AnnotationThumbnail 
-        annotation={props.fromAnnotation} 
-        image={props.fromImage} />
+      <img
+        src={'src' in fromSnippet 
+          ? fromSnippet.src
+          : URL.createObjectURL(new Blob([fromSnippet.data]))}
+        className={className} />
     </div>
   )
 

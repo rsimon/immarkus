@@ -15,7 +15,7 @@ interface EntityRelationshipCardProps {
 
 export const EntityRelationshipCard = (props: EntityRelationshipCardProps) => {
 
-  const { relatedType, relationships, selectedType } = props;
+  const { relatedType, relationships } = props;
 
   return (
     <article className="bg-white border shadow-sm rounded">
