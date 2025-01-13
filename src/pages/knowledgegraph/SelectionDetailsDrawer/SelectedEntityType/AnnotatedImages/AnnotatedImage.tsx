@@ -74,10 +74,12 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
             className="border-t p-2.5">
             <div className="flex items-start w-full">
               <div className="flex-shrink-0">
-                <AnnotationThumbnail
-                  annotation={annotation}
-                  className="w-20 h-20 bg-muted" 
-                  image={loadedImage} /> 
+                {loadedImage && (
+                  <AnnotationThumbnail
+                    annotation={annotation}
+                    className="w-20 h-20 bg-muted" 
+                    image={loadedImage} /> 
+                )}
               </div>
 
               <AnnotationValuePreview

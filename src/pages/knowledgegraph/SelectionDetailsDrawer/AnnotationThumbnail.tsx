@@ -27,11 +27,12 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
   const clsSkeleton = cn('w-14 h-14 flex-shrink-0', props.className);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || !props.image) return;
     
     setSnippet(undefined);
 
-    setTimeout(() => getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
+    setTimeout(() => 
+        getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
   }, [props.annotation, inView, props.image]);
 
   return (
