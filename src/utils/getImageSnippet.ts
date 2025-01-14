@@ -1,4 +1,5 @@
 import murmur from 'murmurhash';
+import pThrottle from 'p-throttle';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
 import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
@@ -6,6 +7,10 @@ import Worker from './getImageSnippetWorker?worker';
 import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
 import { fetchManifest } from './iiif/utils/fetchManifest';
 import { Canvas } from '@iiif/presentation-3';
+
+// See https://www.npmjs.com/package/p-throttle
+const IMAGE_API_CALL_LIMIT = 5; // Max number of calls within the interval
+const IMAGE_API_CALL_INTERVAL = 1000; // The interval (milliseconds)
 
 interface BaseImageSnippet {
 
@@ -142,6 +147,18 @@ export const getImageSnippet = (
   }
 }
 
+const throttle = pThrottle({
+  limit: IMAGE_API_CALL_LIMIT, 
+  interval: IMAGE_API_CALL_INTERVAL
+});
+
+const throttledFetch = throttle(async (url) => {
+  console.log('fetch!');
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
+});
+
 export const getAnnotationsWithSnippets = (
   image: Image | CanvasInformation, 
   store: Store
@@ -169,20 +186,15 @@ export const getAnnotationsWithSnippets = (
             return getImageSnippet(loaded, annotation)
               .then(snippet => {  
                 if ('src' in snippet) {
-                  return fetch(snippet.src)
-                    .then(response => response.arrayBuffer())
-                    .then(buffer => ({ 
+                  return throttledFetch(snippet.src)
+                    .then(data => ({ 
                       annotation,
-                      snippet: {
-                        ...snippet,
-                        data: new Uint8Array(buffer)
-                      } as FileImageSnippet
+                      snippet: {...snippet, data} as FileImageSnippet
                     }));
                 } else {
                   return { annotation, snippet};
                 }
-              })
-              .catch(error => { 
+              }).catch(error => { 
                 console.warn(error);
                 return { annotation };
               });
