@@ -114,9 +114,21 @@ const scheduler = SnippetScheduler();
 const isW3C = (annotation: ImageAnnotation | W3CImageAnnotation): annotation is W3CImageAnnotation =>
   (annotation as W3CImageAnnotation).body !== undefined;
 
+const throttle = pThrottle({
+  limit: IMAGE_API_CALL_LIMIT, 
+  interval: IMAGE_API_CALL_INTERVAL
+});
+
+const throttledFetch = throttle(async (url) => {
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
+});
+
 export const getImageSnippet = (
   image: LoadedImage, 
-  annotation: ImageAnnotation | W3CImageAnnotation
+  annotation: ImageAnnotation | W3CImageAnnotation,
+  downloadIIIF?: boolean
 ): Promise<ImageSnippet> => {
   let a: ImageAnnotation;
 
@@ -141,27 +153,23 @@ export const getImageSnippet = (
       height: bounds.maxY - bounds.minY,
       width: bounds.maxX - bounds.minX,
       src
-    } as ImageSnippet);
+    } as IIIFImageSnippet).then(snippet => {  
+      if (downloadIIIF) {
+        return throttledFetch(snippet.src)
+          .then(data => ({...snippet, data}) as FileImageSnippet);
+      } else {
+        return snippet;
+      }
+    });
   } else {
     return scheduler.getSnippet(image as LoadedFileImage, a);
   }
 }
 
-const throttle = pThrottle({
-  limit: IMAGE_API_CALL_LIMIT, 
-  interval: IMAGE_API_CALL_INTERVAL
-});
-
-const throttledFetch = throttle(async (url) => {
-  console.log('fetch!');
-  const response = await fetch(url);
-  const buffer = await response.arrayBuffer();
-  return new Uint8Array(buffer);
-});
-
 export const getAnnotationsWithSnippets = (
   image: Image | CanvasInformation, 
-  store: Store
+  store: Store,
+  downloadIIIF?: boolean
 ): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> => {
   if ('uri' in image) {
     const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
@@ -183,18 +191,9 @@ export const getAnnotationsWithSnippets = (
           return Promise.all(annotations.map(a => {
             const annotation = a as W3CImageAnnotation;
 
-            return getImageSnippet(loaded, annotation)
-              .then(snippet => {  
-                if ('src' in snippet) {
-                  return throttledFetch(snippet.src)
-                    .then(data => ({ 
-                      annotation,
-                      snippet: {...snippet, data} as FileImageSnippet
-                    }));
-                } else {
-                  return { annotation, snippet};
-                }
-              }).catch(error => { 
+            return getImageSnippet(loaded, annotation, downloadIIIF)
+              .then(snippet => ({ annotation, snippet }))
+              .catch(error => { 
                 console.warn(error);
                 return { annotation };
               });

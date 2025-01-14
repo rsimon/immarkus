@@ -172,10 +172,7 @@ const createNotesWorksheet = (
 
 export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasInformation)[], onProgress: ((progress: number) => void), filename?: string) => {
   const model = store.getDataModel();
-
   const root = store.getRootFolder().handle;
-
-  console.debug(`Exporting annotations for ${images.length} images`);
 
   // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
   const progressIncrement = 100 / (images.length + 2);
@@ -189,7 +186,7 @@ export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasIn
         : image.folder;
 
       return root.resolve(folder).then(path => {
-        return getAnnotationsWithSnippets(image, store)
+        return getAnnotationsWithSnippets(image, store, true)
           .then(t => { 
             onProgress((idx + 2) * progressIncrement);
 

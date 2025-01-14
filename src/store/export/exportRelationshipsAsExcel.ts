@@ -1,11 +1,14 @@
+import murmur from 'murmurhash';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { CanvasInformation, FileImage, LoadedIIIFImage } from '@/model';
 import { Store } from '@/store';
-import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
-import { CanvasInformation, FileImage } from '@/model';
+import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
+import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
+import { fetchManifest } from '@/utils/iiif/utils/fetchManifest';
 
 interface RowData {
 
@@ -60,18 +63,39 @@ const toRowData = (
     }
   }
 
+  const getLoadedImage = (source: FileImage | CanvasInformation) => {
+    if ('uri' in source) {
+      const manifest = store.getIIIFResource(source.manifestId);
+
+      return fetchManifest(manifest.uri).then(result => {
+        const canvas = result.parsed.find(c => c.id === source.uri);
+
+        return {
+          canvas,
+          folder: manifest.folder,
+          id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
+          manifestId: manifest.id,
+          name: getCanvasLabel(canvas),
+          path: manifest.path
+        } as LoadedIIIFImage;
+      });
+    } else {
+      return store.loadImage(source.id);
+    }
+  }
+
   // Keep in mind, W3C has an inverted idea of "source" and "target"!
   return Promise.all([
     store.findAnnotation(link.target), 
     store.findAnnotation(link.body)
   ]).then(([[sourceAnnotation, sourceImage], [targetAnnotation, targetImage]]) => {
     return Promise.all([
-      store.loadImage(sourceImage.id),
-      store.loadImage(targetImage.id)
+      getLoadedImage(sourceImage),
+      getLoadedImage(targetImage)
     ]).then(([sourceLoadedImage, targetLoadedImage]) => {
       return Promise.all([
-        getImageSnippet(sourceLoadedImage, sourceAnnotation as W3CImageAnnotation),
-        getImageSnippet(targetLoadedImage, targetAnnotation as W3CImageAnnotation)
+        getImageSnippet(sourceLoadedImage, sourceAnnotation as W3CImageAnnotation, true),
+        getImageSnippet(targetLoadedImage, targetAnnotation as W3CImageAnnotation, true)
       ]).then(([sourceSnippet, targetSnippet]) => ({
         relationship_name: relationshipName,
         relationship_id: link.id,

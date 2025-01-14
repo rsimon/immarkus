@@ -208,7 +208,7 @@ export const loadStore = (
     }
   });
 
-  const findAnnotation = (annotationId: string) => {
+  const findAnnotation = (annotationId: string) => {    
     const getCanvas = (annotation: W3CAnnotation, manifest: IIIFManifestResource) => {
       const targetSource = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
       const [_, canvasId] = parseIIIFId(targetSource.source);
@@ -247,7 +247,7 @@ export const loadStore = (
       return getAnnotations(id).then(annotations => {
         const found = annotations.find(a => a.id === annotationId);
         if (found) {
-          if (source.id.startsWith('iiif')) {
+          if ('uri' in source) {
             return [found, getCanvas(found, source as IIIFManifestResource)];
           } else {
             return [found, source] as [W3CAnnotation, FileImage];
