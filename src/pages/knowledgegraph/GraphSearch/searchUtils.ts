@@ -175,9 +175,10 @@ export const findImagesByRelationship = (
   // IDs of all images for the given annotations
   return [...annotationIds].reduce<Promise<string[]>>((promise, annotationId) => promise.then(all => {
     return store.findImageForAnnotation(annotationId).then(image => {
-      return [...all, image.id];
+      const id = 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+      return [...all, id];
     });
-  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicat
+  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicate
 }
 
 export const findEntityTypesByRelationship = (
