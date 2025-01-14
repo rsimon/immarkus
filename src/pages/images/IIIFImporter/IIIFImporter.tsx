@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { CloudDownload } from 'lucide-react';
 import murmur from 'murmurhash';
+import { Ban, Check, CloudDownload, Loader2 } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
-import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
-import { useManifestParser } from './useManifestParser';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
 import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
+import { IIIFParseResult, ParseError } from '@/utils/iiif/lib/Types';
+import { useManifestParser } from './useManifestParser';
 
 interface IIIFImporterProps {
 
@@ -29,6 +30,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [busy, setBusy] = useState(false);
 
+  const [response, setResponse] = useState<{ result?: IIIFParseResult, error?: ParseError } | undefined>();
+
   const { parse } = useManifestParser();
 
   useEffect(() => {
@@ -38,44 +41,53 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     }
   }, [open]);
 
-  const onSubmit = (evt: React.FormEvent) => {
-    evt.preventDefault();
+  useEffect(() => {
+    setResponse(undefined);
+
+    if (!uri) {
+      setBusy(false);
+      return;
+    }
 
     setBusy(true);
 
-    parse(uri).then(({ result, error }) => {
-      setBusy(false);
-
-      if (error || !result) {
-        console.error('Error validating IIIF:' + uri);
+    parse(uri)
+      .then((response: { result?: IIIFParseResult, error?: ParseError}) => {
+        setBusy(false);
+        setResponse(response);
+      })
+      .catch(error => {
         console.error(error);
-      } else {
-        if (result.type === 'PRESENTATION_MANIFEST') {
-          generateShortId(uri).then(id => {
-            const info: IIIFResourceInformation = {
-              id,
-              name: result.label || `IIIF Presentation API v${result.majorVersion}`,
-              uri,
-              importedAt: new Date().toISOString(),
-              type: result.type,
-              majorVersion: result.majorVersion,
-              canvases: result.parsed.map(canvas => ({
-                id: murmur.v3(canvas.id).toString(),
-                uri: canvas.id,
-                name: getCanvasLabel(canvas),
-                manifestId: id
-              }))
-            }
-  
-            store.importIIIFResource(info, props.folderId).then(resource => {
-              setOpen(false);
-            });
-          });
-        } else {
-          console.error('Unsupported content type: ' + result.type);
-        }
+        setBusy(false);
+      });
+  }, [uri]);
+
+  const onSubmit = (evt: React.FormEvent) => {
+    evt.preventDefault();
+
+    const result = response?.result;
+    if (!result) return; // Should never happen
+
+    generateShortId(uri).then(id => {
+      const info: IIIFResourceInformation = {
+        id,
+        name: result.label || `IIIF Presentation API v${result.majorVersion}`,
+        uri,
+        importedAt: new Date().toISOString(),
+        type: result.type,
+        majorVersion: result.majorVersion,
+        canvases: result.parsed.map(canvas => ({
+          id: murmur.v3(canvas.id).toString(),
+          uri: canvas.id,
+          name: getCanvasLabel(canvas),
+          manifestId: id
+        }))
       }
-    });
+
+      store.importIIIFResource(info, props.folderId).then(() => {
+        setOpen(false);
+      });
+    });  
   }
 
   return (
@@ -109,13 +121,40 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         </DialogDescription>
 
         <form 
-          className="space-y-4"
+          className="text-xs space-y-2"
           onSubmit={onSubmit}>
           <Input 
             autoFocus
             value={uri}
             placeholder="IIIF Presentation API URL"
             onChange={evt => setURI(evt.target.value)} />
+
+          {busy ? (
+            <div className="flex items-center gap-1.5 pl-0.5">
+              <Loader2 className="animate-spin size-3.5 mb-[1px]" /> Fetching...
+            </div>
+          ) : Boolean(response?.error) ? (
+            <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
+              <Ban className="size-3.5 mb-[1px]" /> 
+              {response.error.type === 'FETCH_ERROR' ? (
+                <span>
+                  Failed to fetch. Server may restrict access. <a className="underline" href="https://iiif.io/guides/guide_for_implementers/#other-considerations" target="_blank">Learn more</a>.
+                </span>
+              ) : (
+                <span>{response.error.message}</span>
+              )}
+            </div>
+          ) : response?.result?.type === 'IIIF_IMAGE' ? (
+            <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
+              <Ban className="size-3.5 mb-[1px]" /> Image API URLs are currently unsupported
+            </div>
+          ) : response?.result?.type === 'PRESENTATION_MANIFEST' ? (
+            <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
+              <Check className="size-4" /> {response.result.label || `Presentation API v${response.result.majorVersion}`}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
+          )}
 
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
@@ -126,7 +165,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               </Button>
             </DialogClose>
 
-            <Button>Import</Button>
+            <Button
+              disabled={!response?.result || Boolean(response.error)}>
+              Import
+            </Button>
           </div>
         </form>
       </DialogContent>

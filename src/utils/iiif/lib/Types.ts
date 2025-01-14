@@ -36,7 +36,7 @@ export interface IIIFParseResult extends IIIFIdentifyResult {
 
 export type ParseError = {
   
-  type: 'VALIDATION_ERROR' | 'UNSUPPORTED_FORMAT';
+  type: 'VALIDATION_ERROR' | 'UNSUPPORTED_FORMAT' | 'FETCH_ERROR';
 
   message: string;
 
