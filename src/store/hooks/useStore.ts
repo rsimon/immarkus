@@ -2,7 +2,7 @@ import { useCallback, useContext, useMemo } from 'react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { loadStore } from '../Store';
 import { StoreContext } from '../StoreProvider';
-import { IIIFResourceInformation } from '@/model';
+import { IIIFResource, IIIFResourceInformation } from '@/model';
 
 export const useStore = () => {
   const { store, setStore } = useContext(StoreContext);
@@ -20,6 +20,9 @@ export const useStore = () => {
     })
   }, []);
 
+  const removeIIIFResource = useCallback((resource: IIIFResource) =>
+    set(store.removeIIIFResource(resource)), []); 
+
   const deleteRelation = useCallback((linkId: string) =>
     set(store.deleteRelation(linkId)), []);
 
@@ -30,8 +33,9 @@ export const useStore = () => {
 
   const reactive = useMemo(() => store ? {
     ...store,
-    importIIIFResource,
     deleteRelation,
+    importIIIFResource,
+    removeIIIFResource,
     upsertRelation
   } : undefined, [store]);
 

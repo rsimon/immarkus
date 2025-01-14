@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Images, MoreVertical } from 'lucide-react';
+import { Images, MoreVertical, Trash2 } from 'lucide-react';
 import { IIIFResource } from '@/model';
+import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,32 +10,48 @@ import {
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
 
-
 interface IIIFManifestItemActionsProps {
 
   resource: IIIFResource;
+
+  onDelete(): void;
 
 }
 
 export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => {
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="item-actions-trigger absolute bottom-2 right-1">
-          <MoreVertical size={18} />
-        </button>
-      </DropdownMenuTrigger>
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
-      <DropdownMenuContent align="start">
-        <DropdownMenuItem asChild>
-          <Link to={`/images/${props.resource.id}`}>
-            <Images className="h-4 w-4 text-muted-foreground mr-2" /> Open Manifest
-          </Link>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className="item-actions-trigger absolute bottom-2 right-1">
+            <MoreVertical size={18} />
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem asChild>
+            <Link to={`/images/${props.resource.id}`}>
+              <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
+              <Trash2 className="size-4 mr-2 mb-[1px] text-red-700/70" />
+              <span className="text-red-700 hover:text-red-700">Delete</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <ConfirmedDelete
+        open={confirmDelete}
+        message="This will remove the manifest and will permanently delete all annotations from your computer."
+        onConfirm={props.onDelete}
+        onOpenChange={setConfirmDelete} />
+    </>
   )
 
 }

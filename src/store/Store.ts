@@ -1,12 +1,17 @@
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
 import { FileImage, Folder, FolderItems, Image, LoadedFileImage, LoadedImage, RootFolder } from '@/model';
+import { parseIIIFId } from '@/utils/iiif/utils';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
-import { CanvasInformation, IIIFManifestResource, IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
-import { parseIIIFId } from '@/utils/iiif/utils';
+import { 
+  CanvasInformation, 
+  IIIFManifestResource, 
+  IIIFResource, 
+  IIIFResourceInformation 
+} from '@/model/IIIFResource';
 
 export interface AnnotationStore {
   
@@ -55,6 +60,8 @@ export interface AnnotationStore {
   listImagesInFolder(folderId: string): Image[];
 
   loadImage(id: string): Promise<LoadedImage>;
+
+  removeIIIFResource(resource: IIIFResource): Promise<void>;
 
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
@@ -399,6 +406,22 @@ export const loadStore = (
     name: rootDir.name, path: [], handle: rootDir
   });
 
+  const removeIIIFResource = async (resource: IIIFResource) => {
+    const handle = resource.folder;
+
+    try {
+      await handle.removeEntry(`_iiif.${resource.id}.annotations.json`);
+    } catch {
+      // Could fail in case there are no annotations yet - ignore
+    }
+
+    await handle.removeEntry(`_iiif.${resource.id}.json`);
+
+    // Remove from store
+    const toRemove = iiifResources.findIndex(r => r.id === resource.id);
+    iiifResources.splice(toRemove, 1);
+  }
+
   const importIIIFResource = (
     info: IIIFResourceInformation, 
     folderId?: string
@@ -585,6 +608,7 @@ export const loadStore = (
     importIIIFResource,
     listImagesInFolder,
     loadImage,
+    removeIIIFResource,
     upsertAnnotation,
     upsertFolderMetadata,
     upsertImageMetadata
