@@ -88,13 +88,24 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="">
+      <DialogContent className="max-w-2xl">
         <DialogTitle>
-          Import IIIF
+          Import IIIF Manifest
         </DialogTitle>
         
-        <DialogDescription>
-          Paste a IIIF Image URL
+        <DialogDescription asChild> 
+          <div className="leading-relaxed space-y-1 mb-2">
+            <p>
+            Paste the URL to a <strong className="font-semibold">IIIF Presentation Manifest</strong>. The 
+            following links will <strong className="font-semibold">not</strong> work:
+            </p>
+
+            <ul className="list-disc pl-5">
+              <li>viewer pages – e.g. pages that embed Mirador or Universal Viewer.</li>
+              <li>links to image files – <code className="text-xs">jpg</code>, <code className="text-xs">png</code>, etc.</li>
+              <li>IIIF Image API endpoints – ending with <code className="text-xs">info.json</code>.</li>
+            </ul>
+          </div>
         </DialogDescription>
 
         <form 
@@ -103,9 +114,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           <Input 
             autoFocus
             value={uri}
+            placeholder="IIIF Presentation API URL"
             onChange={evt => setURI(evt.target.value)} />
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
               <Button 
                 type="button"
