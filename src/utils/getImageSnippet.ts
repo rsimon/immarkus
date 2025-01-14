@@ -5,7 +5,6 @@ import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
 import { fetchManifest } from './iiif/utils/fetchManifest';
-import { parseIIIFId } from './iiif/utils';
 import { Canvas } from '@iiif/presentation-3';
 
 interface BaseImageSnippet {
@@ -143,7 +142,7 @@ export const getImageSnippet = (
   }
 }
 
-export const getAnntotationsWithSnippets = (
+export const getAnnotationsWithSnippets = (
   image: Image | CanvasInformation, 
   store: Store
 ): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> => {
@@ -156,19 +155,41 @@ export const getAnntotationsWithSnippets = (
       const loaded: LoadedIIIFImage = {
         canvas,
         folder: manifest.folder,
-        id: murmur.v3(canvas.id).toString(),
+        id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
         manifestId: manifest.id,
         name: getCanvasLabel(canvas),
         path: manifest.path
       }
 
       return store.getCanvasAnnotations(`iiif:${manifest.id}:${image.id}`).then(annotations => {
-        return Promise.all(annotations.map(a => {
-          const annotation = a as W3CImageAnnotation;
-          return getImageSnippet(loaded, annotation)
-            .then(snippet => ({ annotation, snippet }))
-            .catch(() => ({ annotation }));
-        }));
+        if (annotations.length > 0) {
+          return Promise.all(annotations.map(a => {
+            const annotation = a as W3CImageAnnotation;
+
+            return getImageSnippet(loaded, annotation)
+              .then(snippet => {  
+                if ('src' in snippet) {
+                  return fetch(snippet.src)
+                    .then(response => response.arrayBuffer())
+                    .then(buffer => ({ 
+                      annotation,
+                      snippet: {
+                        ...snippet,
+                        data: new Uint8Array(buffer)
+                      } as FileImageSnippet
+                    }));
+                } else {
+                  return { annotation, snippet};
+                }
+              })
+              .catch(error => { 
+                console.warn(error);
+                return { annotation };
+              });
+          }));  
+        } else {
+          return Promise.resolve([]);
+        }
       });
     })
   } else {

@@ -2,7 +2,7 @@ import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { CanvasInformation, EntityType, Image, PropertyDefinition } from '@/model';
-import { ImageSnippet, getAnntotationsWithSnippets } from '@/utils/getImageSnippet';
+import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths } from './utils';
 
 interface ImageAnnotationSnippetTuple {
@@ -189,7 +189,7 @@ export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasIn
         : image.folder;
 
       return root.resolve(folder).then(path => {
-        return getAnntotationsWithSnippets(image, store)
+        return getAnnotationsWithSnippets(image, store)
           .then(t => { 
             onProgress((idx + 2) * progressIncrement);
 
