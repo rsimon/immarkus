@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image } from '@/model';
+import { CanvasInformation, IIIFManifestResource, Image } from '@/model';
 import { exportAnnotationsAsExcel, useStore } from '@/store';
 
 export const useExcelAnnotationExport = () => {
@@ -10,8 +10,14 @@ export const useExcelAnnotationExport = () => {
 
   const [progress, setProgress] = useState(0);
 
-  const exportAnnotations = (images?: Image[], filename?: string) => {
-    const imagesToExport = images || store.images;
+  const exportAnnotations = (images?: (Image | CanvasInformation)[], filename?: string) => {
+    const imagesToExport: (Image | CanvasInformation)[] = images || [
+      ...store.images,
+      ...store.iiifResources.reduce((all, manifest) => ([
+        ...all, 
+        ...(manifest as IIIFManifestResource).canvases
+      ]), [])
+    ];
     
     setProgress(0);
     setBusy(true);

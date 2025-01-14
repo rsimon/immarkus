@@ -23,6 +23,7 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+import { getOSDTilesets } from '@/utils/iiif/lib/openseadragon';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -69,6 +70,8 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
+  const { image } = props;
+
   const { setSavingState } = useSavingState();
 
   const { colorByEntity } = useDrawingStyles();
@@ -89,10 +92,10 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   }
 
   const options: OpenSeadragon.Options = useMemo(() => ({
-    tileSources: {
+    tileSources: 'data' in image ? {
       type: 'image',
-      url: URL.createObjectURL(props.image.data)
-    },
+      url: URL.createObjectURL(image.data)
+    } : getOSDTilesets(image.canvas),
     gestureSettingsMouse: {
       clickToZoom: false,
       dblClickToZoom: false
@@ -101,12 +104,12 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     crossOriginPolicy: 'Anonymous',
     minZoomLevel: 0.1,
     maxZoomLevel: 100
-  }), [props.image.id]);
+  }), [image.id]);
   
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        adapter={W3CImageRelationFormat(props.image.name)}
+        adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         autoSave
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
@@ -141,7 +144,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousKeyboardPlugin />
 
         <AnnotoriousStoragePlugin 
-          imageId={props.image.id}
+          imageId={image.id}
           onSaving={onSave} 
           onSaved={onSaved}
           onError={onError} />

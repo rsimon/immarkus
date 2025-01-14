@@ -1,4 +1,4 @@
-import { Folder, Image, RootFolder } from '@/model';
+import { Folder, IIIFManifestResource, IIIFResource, Image, RootFolder } from '@/model';
 
 export type FolderGridItem = (Folder | RootFolder) & {
 
@@ -12,4 +12,10 @@ export type ImageGridItem = Image & {
 
 }
 
-export type GridItem = FolderGridItem | ImageGridItem;
+export type GridItem = FolderGridItem | ImageGridItem | IIIFResource;
+
+export const isPresentationManifest = (f: Folder | RootFolder | IIIFManifestResource): f is IIIFManifestResource =>
+  (f as IIIFManifestResource).uri !== undefined;
+
+export const isRootFolder = (f: Folder | RootFolder | IIIFManifestResource): f is RootFolder =>
+  !isPresentationManifest(f) && (f as Folder).id === undefined;

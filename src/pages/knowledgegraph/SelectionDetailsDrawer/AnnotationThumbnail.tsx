@@ -27,19 +27,20 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
   const clsSkeleton = cn('w-14 h-14 flex-shrink-0', props.className);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || !props.image) return;
     
     setSnippet(undefined);
 
     setTimeout(() => getImageSnippet(props.image, props.annotation).then(setSnippet), 200);
   }, [props.annotation, inView, props.image]);
 
-
   return (
     <div ref={ref} key={props.annotation.id}>
       {snippet ? (
         <img
-          src={URL.createObjectURL(new Blob([snippet.data]))}
+          src={'src' in snippet 
+            ? snippet.src
+            : URL.createObjectURL(new Blob([snippet.data]))}
           className={clsImg} />
       ) : (
         <Skeleton className={clsSkeleton} /> 

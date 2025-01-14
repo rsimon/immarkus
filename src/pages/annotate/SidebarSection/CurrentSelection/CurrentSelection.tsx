@@ -36,8 +36,10 @@ export const CurrentSelection = () => {
 
       store.findAnnotation(selected.id).then(result => {
         if (result) {
-          const [_, image] = result;
-          store.getAnnotations(image.id).then(all => {
+          const [_, source] = result;
+
+          const id = 'uri' in source ? `iiif:${source.manifestId}:${source.id}` : source.id;
+          store.getAnnotations(id).then(all => {
             const links = all.filter(a => isW3CRelationLinkAnnotation(a));
             const hasLinks = links.find(link => link.body === selected.id || link.target === selected.id);
             setShowAsEmpty(!(hasRelations || hasBodies || hasLinks));

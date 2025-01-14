@@ -1,26 +1,38 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import Fuse from 'fuse.js';
+import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
-import { Folder, Image } from '@/model';
+import { AddImageListItem } from './Types';
 
 export const useSearch = () => {
 
   const store = useStore();
 
-  const { images, folders } = store;
+  const items: AddImageListItem[] = useMemo(() => {
+    const { images, iiifResources, folders } = store;
 
-  const fuse = useMemo(() => new Fuse<Folder | Image>([...images, ...folders], { 
+    const manifests = iiifResources as IIIFManifestResource[];
+
+    const canvases = manifests.reduce<CanvasInformation[]>((all, manifest) => (
+      [...all, ...manifest.canvases]
+    ), []);
+      
+    return [...folders, ...manifests, ...images, ...canvases];
+  }, []);
+
+  const fuse = useMemo(() => new Fuse<AddImageListItem>(items, { 
     keys: ['name'],
     shouldSort: true,
     threshold: 0.6,
     includeScore: true,
     useExtendedSearch: true
-  }), []);
+  }), [items]);
 
-  const search = (query: string, limit?: number): (Folder | Image)[] =>
-    fuse.search(query, { limit: limit || 10 })
+  const search = useCallback((query: string, limit?: number) => {
+    return fuse.search(query, { limit: limit || 10 })
       .filter(r => r.score < 0.2)
-      .map(r => r.item);
+      .map(r => r.item)
+  }, [fuse]);
 
   return search;
 

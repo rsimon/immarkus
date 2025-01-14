@@ -1,13 +1,13 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
-import { EntityType, Image, PropertyDefinition } from '@/model';
-import { ImageSnippet, getAnntotationsWithSnippets } from '@/utils/getImageSnippet';
+import { CanvasInformation, EntityType, Image, PropertyDefinition } from '@/model';
+import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths } from './utils';
 
 interface ImageAnnotationSnippetTuple {
 
-  image: Image;
+  image: Image | CanvasInformation;
 
   path: string[];
 
@@ -170,12 +170,9 @@ const createNotesWorksheet = (
   fitColumnWidths(worksheet);
 }
 
-export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgress: ((progress: number) => void), filename?: string) => {
+export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasInformation)[], onProgress: ((progress: number) => void), filename?: string) => {
   const model = store.getDataModel();
-
   const root = store.getRootFolder().handle;
-
-  console.debug(`Exporting annotations for ${images.length} images`);
 
   // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
   const progressIncrement = 100 / (images.length + 2);
@@ -184,8 +181,12 @@ export const exportAnnotationsAsExcel = (store: Store, images: Image[], onProgre
   const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image, idx) => {
     return promise.then(all => {
       // While we're at it, resolve image folder path
-      return root.resolve(image.folder).then(path => {
-        return getAnntotationsWithSnippets(image, store)
+      const folder = 'uri' in image 
+        ? store.iiifResources.find(r => r.id === image.manifestId).folder
+        : image.folder;
+
+      return root.resolve(folder).then(path => {
+        return getAnnotationsWithSnippets(image, store, true)
           .then(t => { 
             onProgress((idx + 2) * progressIncrement);
 

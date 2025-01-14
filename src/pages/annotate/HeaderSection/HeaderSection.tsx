@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
-import { Image, LoadedImage } from '@/model';
+import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
@@ -35,9 +35,9 @@ interface HeaderSectionProps {
 
   tool: Tool;
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
-  onChangeImage(previous: Image, next: Image): void;
+  onChangeImage(previousId: string, nextId: string): void;
 
   onChangeTool(tool: Tool): void;
 
@@ -94,11 +94,18 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     anno.redo();
   }
 
-  const folder = store.getFolder(props.images[0].folder);
+  const back = useMemo(() => {
+    // Just return to gallery root if there are multiple images open
+    if (props.images.length > 1) return '/images/';
 
-  const back = props.images.length === 1 
-    ? `/images/${folder && ('id' in folder) ? folder.id : ''}`
-    : '/images/';
+    const source = props.images[0];
+    if ('manifestId' in source)
+      return `/images/${source.manifestId}`;
+
+    // Return to parent folder (might be root)
+    const folder = store.getFolder(source.folder);
+    return `/images/${folder && ('id' in folder) ? folder.id : ''}`;
+  }, [props.images]);
 
   const onRelationsEditorOpenChange = (open: boolean) => {
     if (open) {

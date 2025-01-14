@@ -1,9 +1,18 @@
+import murmur from 'murmurhash';
+import pThrottle from 'p-throttle';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
-import { Image, LoadedImage } from '@/model';
+import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
+import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
+import { fetchManifest } from './iiif/utils/fetchManifest';
+import { Canvas } from '@iiif/presentation-3';
 
-export interface ImageSnippet {
+// See https://www.npmjs.com/package/p-throttle
+const IMAGE_API_CALL_LIMIT = 5; // Max number of calls within the interval
+const IMAGE_API_CALL_INTERVAL = 1000; // The interval (milliseconds)
+
+interface BaseImageSnippet {
 
   annotation: ImageAnnotation;
 
@@ -11,13 +20,25 @@ export interface ImageSnippet {
 
   width: number;
 
+}
+
+export interface FileImageSnippet extends BaseImageSnippet {
+
   data: Uint8Array;
 
 }
 
+export interface IIIFImageSnippet extends BaseImageSnippet {
+
+  src: string;
+
+}
+
+export type ImageSnippet = FileImageSnippet | IIIFImageSnippet;
+
 interface ScheduledSnippet {
 
-  snippet: ImageSnippet;
+  snippet: FileImageSnippet;
 
   time: Date;
 
@@ -30,7 +51,7 @@ const SnippetScheduler = () => {
 
   const cache: Map<string, ScheduledSnippet> = new Map();
 
-  const inProgress: Map<string, Promise<ImageSnippet>> = new Map();
+  const inProgress: Map<string, Promise<FileImageSnippet>> = new Map();
 
   const purgeCache = () => {
     [...cache.entries()].forEach(([id, snippet]) => {
@@ -41,7 +62,7 @@ const SnippetScheduler = () => {
     });
   }
 
-  const getSnippet = (image: LoadedImage, annotation: ImageAnnotation): Promise<ImageSnippet> => {
+  const getSnippet = (image: LoadedFileImage, annotation: ImageAnnotation): Promise<FileImageSnippet> => {
     const cacheKey = `${image.id}-${annotation.id}`;
 
     // Already cached?
@@ -53,7 +74,7 @@ const SnippetScheduler = () => {
       return inProgress.get(cacheKey)!;
 
     // If not, start processing and store the promise
-    const snippetPromise = new Promise<ImageSnippet>((resolve, reject) => {
+    const snippetPromise = new Promise<FileImageSnippet>((resolve, reject) => {
       const worker = new Worker();
 
       const messageHandler = (e: MessageEvent) => {
@@ -61,7 +82,7 @@ const SnippetScheduler = () => {
         if (e.data.error) {
           reject(new Error(e.data.error));
         } else {
-          const snippet: ImageSnippet = e.data.snippet;
+          const snippet: FileImageSnippet = e.data.snippet;
           cache.set(cacheKey, { snippet, time: new Date() });
           resolve(snippet);
         }
@@ -93,9 +114,21 @@ const scheduler = SnippetScheduler();
 const isW3C = (annotation: ImageAnnotation | W3CImageAnnotation): annotation is W3CImageAnnotation =>
   (annotation as W3CImageAnnotation).body !== undefined;
 
+const throttle = pThrottle({
+  limit: IMAGE_API_CALL_LIMIT, 
+  interval: IMAGE_API_CALL_INTERVAL
+});
+
+const throttledFetch = throttle(async (url) => {
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  return new Uint8Array(buffer);
+});
+
 export const getImageSnippet = (
   image: LoadedImage, 
-  annotation: ImageAnnotation | W3CImageAnnotation
+  annotation: ImageAnnotation | W3CImageAnnotation,
+  downloadIIIF?: boolean
 ): Promise<ImageSnippet> => {
   let a: ImageAnnotation;
 
@@ -110,20 +143,76 @@ export const getImageSnippet = (
     a = annotation;
   }
 
-  return scheduler.getSnippet(image, a);
+  if (image.id.startsWith('iiif:')) {
+    const { bounds } = a.target.selector.geometry;
+    const { canvas } = (image as LoadedIIIFImage);
+    const src = getRegion(canvas, bounds);
+
+    return Promise.resolve({
+      annotation: a,
+      height: bounds.maxY - bounds.minY,
+      width: bounds.maxX - bounds.minX,
+      src
+    } as IIIFImageSnippet).then(snippet => {  
+      if (downloadIIIF) {
+        return throttledFetch(snippet.src)
+          .then(data => ({...snippet, data}) as FileImageSnippet);
+      } else {
+        return snippet;
+      }
+    });
+  } else {
+    return scheduler.getSnippet(image as LoadedFileImage, a);
+  }
 }
 
-export const getAnntotationsWithSnippets = (
-  image: Image, 
-  store: Store
-): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> =>
-  store.loadImage(image.id).then(loaded =>
-    store.getAnnotations(image.id, { type: 'image' }).then(annotations => 
-      Promise.all(annotations.map(a => {
-        const annotation = a as W3CImageAnnotation;
-        return getImageSnippet(loaded, annotation)
-          .then(snippet => ({ annotation, snippet }))
-          .catch(() => ({ annotation }))
-      }))
+export const getAnnotationsWithSnippets = (
+  image: Image | CanvasInformation, 
+  store: Store,
+  downloadIIIF?: boolean
+): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> => {
+  if ('uri' in image) {
+    const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
+
+    return fetchManifest(manifest.uri).then(result => {  
+      const canvas: Canvas = result.parsed.find(c => c.id === image.uri);
+
+      const loaded: LoadedIIIFImage = {
+        canvas,
+        folder: manifest.folder,
+        id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
+        manifestId: manifest.id,
+        name: getCanvasLabel(canvas),
+        path: manifest.path
+      }
+
+      return store.getCanvasAnnotations(`iiif:${manifest.id}:${image.id}`).then(annotations => {
+        if (annotations.length > 0) {
+          return Promise.all(annotations.map(a => {
+            const annotation = a as W3CImageAnnotation;
+
+            return getImageSnippet(loaded, annotation, downloadIIIF)
+              .then(snippet => ({ annotation, snippet }))
+              .catch(error => { 
+                console.warn(error);
+                return { annotation };
+              });
+          }));  
+        } else {
+          return Promise.resolve([]);
+        }
+      });
+    })
+  } else {
+    return store.loadImage(image.id).then(loaded =>
+      store.getAnnotations(image.id, { type: 'image' }).then(annotations => 
+        Promise.all(annotations.map(a => {
+          const annotation = a as W3CImageAnnotation;
+          return getImageSnippet(loaded, annotation)
+            .then(snippet => ({ annotation, snippet }))
+            .catch(() => ({ annotation }))
+        }))
+      )
     )
-  )
+  }
+}

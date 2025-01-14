@@ -1,7 +1,7 @@
+import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { useImageSnippet } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { cn } from '@/ui/utils';
-import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 
 interface AnnotationThumbnailProps {
 
@@ -22,7 +22,9 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
   return snippet ? (
     <img
       loading="lazy"
-      src={URL.createObjectURL(new Blob([snippet.data]))}
+      src={'src' in snippet 
+        ? snippet.src
+        : URL.createObjectURL(new Blob([snippet.data]))}
       className={clsImg} />
   ) : (
     <Skeleton className={clsSkeleton} /> 

@@ -1,9 +1,9 @@
 import { useCallback, useRef } from 'react';
 import type { History } from '@annotorious/core';
 import { ImageAnnotation } from '@annotorious/react';
-import { LoadedImage } from '@/model';
+import { Image } from '@/model';
 
-export const usePersistentHistory = (images: LoadedImage[]) => {
+export const usePersistentHistory = (images: Image[]) => {
 
   const historyRefs = useRef<Map<string, History<ImageAnnotation>>>(new Map());
 

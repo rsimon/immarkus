@@ -1,4 +1,4 @@
-import { ImageSnippet } from '@/utils/getImageSnippet';
+import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 
 export const fitColumnWidths = (worksheet: any) => {
   worksheet.columns.forEach(column => {
@@ -18,7 +18,7 @@ export const addImageToCell = (
   row: number
 ) => {
   const embeddedImage = workbook.addImage({
-    buffer: snippet.data,
+    buffer: (snippet as FileImageSnippet).data,
     extension: 'jpg',
   });
 

@@ -11,12 +11,12 @@ export const DARK_ORANGE = '#d76409';
 
 export const NODE_COLORS = {
 
+  ENTITY_TYPE: GREEN,
+
   FOLDER: PURPLE,
 
-  IMAGE: BLUE,
-
-  ENTITY_TYPE: GREEN
-
+  IMAGE: BLUE
+  
 } 
 
 export const LINK_COLORS = {

@@ -35,7 +35,7 @@ export const AnnotatedImages = (props: AnnotatedImagesProps) => {
       {annotatedImages.map(image => (
         <AnnotatedImage 
           key={image.id}
-          imageId={image.id}
+          node={image}
           entityType={type} 
           onLoadAnnotations={onLoadAnnotations} />
       ))}

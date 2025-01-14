@@ -1,21 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Check, ImagePlus, Search } from 'lucide-react';
-import { Thumbnail } from '@/components/Thumbnail';
-import { FolderIcon } from '@/components/FolderIcon';
-import { Folder, FolderItems, Image, RootFolder } from '@/model';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
 import { useStore } from '@/store';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/ui/Popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { useSearch } from './useSearch';
+import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
+import { FolderListItem, ImageListItem } from './AddImageListItems';
+import { 
+  CanvasInformation, 
+  FileImage, 
+  Folder, 
+  IIIFManifestResource, 
+  IIIFResource, 
+  Image, 
+  RootFolder 
+} from '@/model';
 
 interface AddImageProps {
 
   current: Image[];
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
 }
 
@@ -27,48 +31,83 @@ export const AddImage = (props: AddImageProps) => {
 
   const openImages = useMemo(() => new Set(props.current.map(image => image.id)), [props.current]);
 
-  const isOpen = (image: Image) => openImages.has(image.id)
-
   const [open, setOpen] = useState(false);
 
-  const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder>(store.getRootFolder());
+  const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder | IIIFResource>(store.getRootFolder());
+
+  const isRootLevel = !('canvases' in currentFolder) && !('parent' in currentFolder);
 
   const [query, setQuery] = useState<string>('');
 
-  const [items, setItems] = useState<FolderItems>(store.getFolderContents(store.getRootFolder().handle));
+  const [items, setItems] = useState<AddImageListItem[]>([]);
 
-  const onOpenFolder = (folder: Folder | RootFolder) => {
-    setCurrentFolder(folder);
-    setItems(store.getFolderContents(folder.handle));
-  }
-
-  const onAddImage = (image: Image) => {
-    setOpen(false);
-    props.onAddImage(image);
-  }
+  const getInitialContents = useCallback(() => {
+    const root = store.getRootFolder();
+    const { folders, iiifResources, images } = store.getFolderContents(root.handle);
+    return [...folders, ...iiifResources, ...images] as AddImageListItem[];
+  }, [store]);
 
   useEffect(() => {
-    // Reset to root when closing
-    if (!open) {
+    if (open) {
+      // Initialize search with root folder options
+      setItems(getInitialContents());
+    } else {
+      // Reset on close
       const root = store.getRootFolder();
       setCurrentFolder(root); 
-      setItems(store.getFolderContents(root.handle));
+      setItems([]);
       setQuery('');
     }
-  }, [open]);
+  }, [store, getInitialContents, open, [...openImages].join('.')])
+
+
+  const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
+    setCurrentFolder(folder);
+
+    if ('canvases' in folder) {
+      setItems(folder.canvases);
+    } else if ('handle' in folder) {
+      const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
+      const items = [...folders, ...iiifResources, ...images] as AddImageListItem[];
+      setItems(items);
+    }
+  }
+
+  const onGoBack = () => {
+    const parent = ('uri' in currentFolder) 
+      ? store.getFolder(currentFolder.folder)
+      : currentFolder.parent ? store.getFolder(currentFolder.parent) : undefined;
+
+    if (parent)
+      onOpenFolder(parent);
+  }
+
+  const isOpen = (image: FileImage | CanvasInformation) => {
+    if (isCanvasInformation(image)) {
+      const id = `iiif:${image.manifestId}:${image.id}`;
+      return openImages.has(id);
+    } else {
+      return openImages.has(image.id);
+    }
+  }
+
+  const onAddImage = (image: FileImage | CanvasInformation) => {
+    setOpen(false);
+
+    if (isCanvasInformation(image)) {
+      const id = `iiif:${image.manifestId}:${image.id}`;
+      props.onAddImage(id);
+    } else {
+      props.onAddImage(image.id);
+    }
+  }
 
   useEffect(() => {
-    if (query) {
-      const items = search(query);
-
-      const folders = items.filter(i => 'handle' in i) as Folder[];
-      const images = items.filter(i => 'file' in i) as Image[];
-
-      setItems({ folders, images });
-    } else {
-      setItems(store.getFolderContents(currentFolder.handle));
-    }
-  }, [query]);
+    if (query)
+      setItems(search(query));
+    else
+      setItems(getInitialContents());
+  }, [query, getInitialContents]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -92,54 +131,37 @@ export const AddImage = (props: AddImageProps) => {
             onChange={evt => setQuery(evt.target.value)} />
         </div>
         
-        {currentFolder.parent && !query && (
+        {!(isRootLevel || query) && (
           <div className="px-2">
             <button 
               className="flex w-full text-xs items-center p-2 rounded-md hover:bg-muted"
-              onClick={() => onOpenFolder(store.getFolder(currentFolder.parent))}>
+              onClick={onGoBack}>
               <ArrowLeft className="h-5 w-5 mr-2" />
               <div>
-                {currentFolder.parent.name}
+                {'parent' in currentFolder 
+                  ? currentFolder.parent.name 
+                  : (currentFolder as IIIFManifestResource).folder.name}
               </div>
             </button>
           </div>
         )}
+
         <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
-            {items.folders.map(folder => (
-              <li key={folder.id} className="mt-0.5 py-2 px-3 hover:bg-muted rounded-lg cursor-pointer">
-                <button 
-                  className="flex gap-3 w-full items-start"
-                  onClick={() => onOpenFolder(folder)}>
-                  <FolderIcon className="w-14 h-14 -ml-[1px] drop-shadow-md" />
-                  <div className="py-1">{folder.name}</div>
-                </button>
-              </li>
-            ))}
-            {items.images.map(image => (
-              <li 
-                key={image.id} 
-                className={`mt-0.5 py-2 px-3 rounded-lg cursor-pointer${isOpen(image) ?  '' : ' hover:bg-muted'}`}>
-                <button 
-                  disabled={isOpen(image)}
-                  className="flex gap-3 w-full"
-                  onClick={() => onAddImage(image)}>
-                  {isOpen(image) ? (
-                    <div className="relative">
-                      <Thumbnail image={image} /> 
-                      <div className="absolute w-full h-full top-0 left-0 bg-white/60 flex items-center justify-center">
-                        <Check className="text-black h-10 w-10" />
-                      </div>
-                    </div>
-                  ) : (
-                    <Thumbnail image={image} /> 
-                  )}
-                  <div className="flex-grow line-clamp-3 overflow-hidden text-ellipsis text-left">
-                    {image.name}
-                  </div>
-                </button>
-              </li>
-            ))}
+            {items.map(item => 
+              isFolder(item) || isIIIManifestResource(item) ? (
+                <FolderListItem 
+                  key={item.id} 
+                  folder={item} 
+                  onOpenFolder={() => onOpenFolder(item)} />
+              ) : (
+                <ImageListItem 
+                  key={item.id} 
+                  image={item} 
+                  isOpen={isOpen(item)} 
+                  onSelect={() => onAddImage(item)} />
+              )
+            )}
           </ul>
         </div>
       </PopoverContent>

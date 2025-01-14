@@ -10,9 +10,9 @@ import {
   ConditionType, 
   DropdownOption,
   Graph,
+  GraphNodeType,
   KnowledgeGraphSettings,
   NestedConditionSentence,
-  ObjectType,
   Sentence, 
   SimpleConditionSentence, 
   SubCondition
@@ -27,11 +27,11 @@ import {
 
 interface GraphSearchConditionBuilderProps {
 
-  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
-  objectType: ObjectType;
+  objectType: GraphNodeType;
 
   sentence: Partial<Sentence>;
 

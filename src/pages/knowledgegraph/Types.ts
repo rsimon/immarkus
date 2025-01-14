@@ -20,13 +20,15 @@ export interface Graph {
 
 }
 
+export type GraphNodeType = 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
+
 export interface GraphNode {
 
   id: string;
 
   label: string;
 
-  type: 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
+  type: GraphNodeType;
 
   degree: number;
 
@@ -86,7 +88,7 @@ export interface KnowledgeGraphSettings {
 
   hideAllLabels?: boolean;
 
-  hideNodeTypeLabels?: ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE')[];
+  hideNodeTypeLabels?: GraphNodeType[];
 
   includeFolders?: boolean;
 
@@ -113,8 +115,6 @@ export interface BaseSentence {
   ConditionType: ConditionType;
 
 }
-
-export type ObjectType = 'ENTITY_TYPE' | 'FOLDER' | 'IMAGE';
 
 export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP';
 
@@ -164,7 +164,7 @@ export interface SchemaProperty {
 
   builtIn?: boolean;
 
-  type: ObjectType;
+  type: GraphNodeType;
 
   propertyName: string;
 

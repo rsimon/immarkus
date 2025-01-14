@@ -7,8 +7,8 @@ import {
   GraphNode, 
   SchemaPropertyValue, 
   SchemaProperty, 
-  ObjectType, 
-  SubCondition 
+  SubCondition, 
+  GraphNodeType
 } from '../Types';
 
 /** Converts a metadata annotation body to a list of SchemaProperties **/
@@ -73,7 +73,7 @@ export const getParentFolders = (store: Store, imageId: string) => {
   }
 }
 
-const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSchema }[]): SchemaProperty[] => {
+const listMetadataProperties = (schemas: { type: GraphNodeType, schema: MetadataSchema }[]): SchemaProperty[] => {
   // Different schemas may include properties with the same name. De-duplicate!
   return schemas.reduce<SchemaProperty[]>((all, { type, schema }) => {
     const properties: SchemaProperty[] = (schema.properties || []).map(p => ({ type, propertyName: p.name }));
@@ -105,8 +105,8 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
 
   const schemas = [
-    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema })), 
-    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
+    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as GraphNodeType, schema })), 
+    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as GraphNodeType, schema }))
   ];
 
   return sortProperties([
@@ -119,7 +119,7 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
 /** List metadata properties from all folder schemas **/
 export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
-  const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
+  const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as GraphNodeType, schema }));
   return sortProperties([
     { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
     ...listMetadataProperties(schemas)
@@ -127,14 +127,14 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
 }
 
 const enumerateNotes = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
 ) => {
-  return annotations.reduce<{ image: Image, note: string }[]>((all, { image, annotations }) => {
-    const notesOnThisImage = annotations.reduce<{ image: Image, note: string }[]>((all, annotation) => {
+  return annotations.reduce<{ sourceId: string, note: string }[]>((all, { sourceId, annotations }) => {
+    const notesOnThisImage = annotations.reduce<{ sourceId: string, note: string }[]>((all, annotation) => {
       const notes = 
         (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
           .filter(b => b.purpose === 'commenting' && b.value)
-          .map(b => ({ image, note: b.value! }));
+          .map(b => ({ sourceId, note: b.value! }));
 
       return [...all, ...notes];
     }, []);
@@ -144,19 +144,19 @@ const enumerateNotes = (
 }
 
 export const listAllNotes = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
 ): string[] => {
   const notes = enumerateNotes(annotations);
   return Array.from(new Set(notes.map(n => n.note))).sort();
 }
 
 export const findImagesByNote = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   note: string
 ): string[] => {
   const notes = enumerateNotes(annotations);
   const matches = notes.filter(n => n.note === note);
-  return Array.from(new Set(matches.map(n => n.image.id)));
+  return Array.from(new Set(matches.map(n => n.sourceId)));
 }
 
 export const findImagesByRelationship = (
@@ -175,9 +175,10 @@ export const findImagesByRelationship = (
   // IDs of all images for the given annotations
   return [...annotationIds].reduce<Promise<string[]>>((promise, annotationId) => promise.then(all => {
     return store.findImageForAnnotation(annotationId).then(image => {
-      return [...all, image.id];
+      const id = 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+      return [...all, id];
     });
-  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicat
+  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicate
 }
 
 export const findEntityTypesByRelationship = (
@@ -417,10 +418,10 @@ export const findImagesByEntityClass = (
 
 export const findImagesByEntityConditions = (
   store: Store,
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   entityId: string, 
   conditions: SubCondition[]
-): Image[] => {
+): string[] => {
   // ID of this entity and all descendant types
   const model = store.getDataModel();
 
@@ -431,7 +432,7 @@ export const findImagesByEntityConditions = (
   const descendants = 
     new Set(model.getDescendants(entityId).map(t => t.id));
   
-  return annotations.reduce<Image[]>((images, { image, annotations }) => {
+  return annotations.reduce<string[]>((all, { sourceId, annotations }) => {
     // Check if this image has *any annotations* that have *any bodies*
     // that match the given query conditions
     const hasMatchingAnnotations = annotations.some(annotation => {
@@ -459,7 +460,7 @@ export const findImagesByEntityConditions = (
       });
     });
 
-    return hasMatchingAnnotations ? [...images, image] : images;
-  }, []);  
+    return hasMatchingAnnotations ? [...all, sourceId] : all;
+  }, []);
 
 }

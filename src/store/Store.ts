@@ -1,16 +1,25 @@
-import { W3CAnnotation, W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
-import { Folder, FolderItems, Image, LoadedImage, RootFolder } from '@/model';
+import { FileImage, Folder, FolderItems, Image, LoadedFileImage, LoadedImage, RootFolder } from '@/model';
+import { parseIIIFId } from '@/utils/iiif/utils';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
+import { 
+  CanvasInformation, 
+  IIIFManifestResource, 
+  IIIFResource, 
+  IIIFResourceInformation 
+} from '@/model/IIIFResource';
 
 export interface AnnotationStore {
   
   folders: Folder[];
 
-  images: Image[];
+  iiifResources: IIIFResource[];
+
+  images: FileImage[];
 
   bulkDeleteAnnotations(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
 
@@ -20,11 +29,15 @@ export interface AnnotationStore {
 
   deleteAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
-  findAnnotation(annotationId: string): Promise<[W3CAnnotation, Image] | undefined>;
+  findAnnotation(annotationId: string): Promise<[W3CAnnotation, FileImage | CanvasInformation] | undefined>;
 
-  findImageForAnnotation(annotationId: string): Promise<Image>;
+  findImageForAnnotation(annotationId: string): Promise<Image | CanvasInformation>;
 
   getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
+
+  getCanvas(id: string): CanvasInformation | undefined;
+
+  getCanvasAnnotations(id: string): Promise<W3CAnnotation[]>;
 
   getDataModel(): DataModelStore;
 
@@ -34,15 +47,21 @@ export interface AnnotationStore {
 
   getFolderMetadata(idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation>;
 
+  getIIIFResource(id: string): IIIFResource;
+
   getImage(imageId: string): Image;
 
   getImageMetadata(imageId: string): Promise<W3CAnnotationBody | undefined>;
 
   getRootFolder(): RootFolder;
 
+  importIIIFResource(info: IIIFResourceInformation, folderId?: string): Promise<IIIFResource>;
+
   listImagesInFolder(folderId: string): Image[];
 
   loadImage(id: string): Promise<LoadedImage>;
+
+  removeIIIFResource(resource: IIIFResource): Promise<void>;
 
   upsertAnnotation(imageId: string, annotation: W3CAnnotation): Promise<void>;
 
@@ -54,15 +73,21 @@ export interface AnnotationStore {
 
 export type Store = AnnotationStore & RelationStore;
 
-const getAnnotationsFile = (image: Image) => {
-  const filename = `${image.name.substring(0, image.name.lastIndexOf('.'))}.json`;
-  return image.folder.getFileHandle(filename, { create: true });
+const getAnnotationsFile = (source: FileImage | IIIFResource) => {
+  if ('file' in source) {
+    const filename = `${source.name.substring(0, source.name.lastIndexOf('.'))}.json`;
+    return source.folder.getFileHandle(filename, { create: true });
+  } else {
+    const filename = `_iiif.${source.id}.annotations.json`;
+    return source.folder.getFileHandle(filename, { create: true });
+  }
 }
 
 const loadDirectory = async (
   dirHandle: FileSystemDirectoryHandle, 
   path: string[] = [],
-  images: Image[] = [], 
+  images: FileImage[] = [], 
+  iiifResources: IIIFResource[] = [],
   folders: Folder[] = []
 ): Promise<FolderItems> => {
 
@@ -77,7 +102,7 @@ const loadDirectory = async (
         folders.push({ id, name, path, handle: subDirHandle, parent: dirHandle });
 
         const nextPath = [...path, id ];
-        await loadDirectory(subDirHandle, nextPath, images, folders);
+        await loadDirectory(subDirHandle, nextPath, images, iiifResources, folders);
       } else {
         const fileHandle = await dirHandle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
@@ -87,6 +112,13 @@ const loadDirectory = async (
           const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
 
           images.push({ id, name, path, file, folder: dirHandle });
+        } else if (file.type === 'application/json' && file.name.startsWith('_iiif.') && !file.name.endsWith('.annotations.json')) {
+          const data: any = await readJSONFile(file);
+          iiifResources.push({ 
+            path, 
+            folder: dirHandle, 
+            ...data
+          });
         }
       }
     } catch (error) {
@@ -94,7 +126,7 @@ const loadDirectory = async (
     }
   }
 
-  return { images, folders };
+  return { folders, iiifResources, images };
 
 }
 
@@ -102,11 +134,30 @@ export const loadStore = (
   rootDir: FileSystemDirectoryHandle
 ): Promise<Store> => new Promise(async resolve => {
 
-  const { images, folders } = await loadDirectory(rootDir);
+  const { iiifResources, folders, images } = await loadDirectory(rootDir);
 
   const datamodel = await loadDataModel(rootDir);
 
   const cachedAnnotations = new Map<string, W3CAnnotation[]>();
+
+  /** Helpers **/
+  const _findSource = (id: string): FileImage | IIIFResource | undefined => {
+    if (id.startsWith('iiif:')) {
+      const [manifestId, _] = id.substring('iiif:'.length).split(':');
+      return iiifResources.find(r => r.id === manifestId);
+    } else {
+      return images.find(i => i.id === id);
+    }
+  }
+
+  const _normalizeSourceId = (id: string) => {
+    if (id.startsWith('iiif:')) {
+      const [manifestId, _] = id.substring('iiif:'.length).split(':');
+      return `iiif:${manifestId}`;
+    } else {
+      return id;
+    }
+  }
 
   const countAnnotations = (
     imageId: string, withSelectorOnly = true
@@ -119,21 +170,27 @@ export const loadStore = (
   });
 
   const deleteAnnotation = (
-    imageId: string, 
+    sourceOrSourceId: FileImage | IIIFResource | string, 
     annotation: W3CAnnotation
   ): Promise<void> => new Promise(async (resolve, reject) => {
-    const img = images.find(i => i.id === imageId);
-    if (img) {
-      const all = await getAnnotations(imageId);
+    const id = typeof sourceOrSourceId === 'string' ? sourceOrSourceId :
+      'data' in sourceOrSourceId ? sourceOrSourceId.id :
+      `iiif:${sourceOrSourceId.id}`;
+
+    const normalizedId = _normalizeSourceId(id);
+      
+    const source = _findSource(normalizedId);
+    if (source) {
+      const all = await getAnnotations(normalizedId);
       const next = all.filter(a => a.id !== annotation.id);
 
-      cachedAnnotations.set(imageId, next);
+      cachedAnnotations.set(normalizedId, next);
 
-      const fileHandle = await getAnnotationsFile(img);
+      const fileHandle = await getAnnotationsFile(source);
       await writeJSONFile(fileHandle, next);
       resolve();
     } else {
-      reject(Error(`Image ${imageId} not found`));
+      reject(Error(`Image ${normalizedId} not found`));
     }
   });
 
@@ -158,28 +215,50 @@ export const loadStore = (
     }
   });
 
-  const findAnnotation = (annotationId: string) => {
+  const findAnnotation = (annotationId: string) => {    
+    const getCanvas = (annotation: W3CAnnotation, manifest: IIIFManifestResource) => {
+      const targetSource = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
+      const [_, canvasId] = parseIIIFId(targetSource.source);
+      const { canvases } = (manifest as IIIFManifestResource);
+      return canvases.find(c => c.id === canvasId);
+    }
+
     // Let's try cached anntoations first
-    for (const [imageId, annotations] of cachedAnnotations.entries()) {
+    for (const [sourceId, annotations] of cachedAnnotations.entries()) {
       const found = annotations.find(a => a.id === annotationId);
-      if (found)
-        return Promise.resolve([found, getImage(imageId)] as [W3CImageAnnotation, Image]);
+      if (found) {
+        const source = _findSource(sourceId);
+        if ('uri' in source) {
+          return Promise.resolve([found, getCanvas(found, source as IIIFManifestResource)] as [W3CAnnotation, CanvasInformation]);
+        } else {
+          return Promise.resolve([found, source] as [W3CAnnotation, FileImage]);
+        }
+      }
     }
 
     // Not cached - not much we can do except go through all images we
     // haven't loaded yet.
-    const cachedImageIds = new Set([...cachedAnnotations.keys()]);
+    const cachedIds = new Set([...cachedAnnotations.keys()]);
 
-    const uncachedImages = images.filter(i => !cachedImageIds.has(i.id));
+    const uncachedSources = [
+      ...images.filter(i => !cachedIds.has(i.id)),
+      ...iiifResources.filter(r => !cachedIds.has(`iiif:${r.id}`))
+    ];
 
-    return uncachedImages.reduce<Promise<[W3CAnnotation, Image] | undefined>>((promise, image) => promise.then(result => {
+    return uncachedSources.reduce<Promise<[W3CAnnotation, FileImage | CanvasInformation] | undefined>>((promise, source) => promise.then(result => {
       if (result) return result; // Skip
 
-      // Load annotations for this image
-      return getAnnotations(image.id).then(annotations => {
+      const id = 'file' in source ? source.id : `iiif:${source.id}`;
+
+      // Load annotations for this source
+      return getAnnotations(id).then(annotations => {
         const found = annotations.find(a => a.id === annotationId);
         if (found) {
-          return [found, image] as [W3CImageAnnotation, Image];
+          if ('uri' in source) {
+            return [found, getCanvas(found, source as IIIFManifestResource)];
+          } else {
+            return [found, source] as [W3CAnnotation, FileImage];
+          }
         } else {
           return;
         }
@@ -192,45 +271,77 @@ export const loadStore = (
       return match ? match[1] : undefined;
     });
 
-
-  const getAnnotations = (
-    imageId: string,
+  const _getAnnotations = (
+    sourceId: string,
     opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
   ): Promise<W3CAnnotation[]> => new Promise(async resolve => {
-
     const filterByOpts = (annotations: W3CAnnotation[]) =>
       opts.type === 'image' ? annotations.filter(a => hasSelector(a))  :
       opts.type === 'metadata' ? annotations.filter(a => !hasSelector(a)) :
       annotations;
 
-    const cached = cachedAnnotations.get(imageId);
+    const normalizedId = _normalizeSourceId(sourceId);
+
+    const cached = cachedAnnotations.get(normalizedId);
     if (cached) {
       // A precaution. The data model could have changed meanwhile
       const repaired = repairAnnotations(cached, datamodel);
-      cachedAnnotations.set(imageId, repaired);
+      cachedAnnotations.set(normalizedId, repaired);
       resolve(filterByOpts(repaired));
     } else {
-      const image = images.find(i => i.id === imageId);
-      if (image) {
-        const fileHandle = await getAnnotationsFile(image);
-        const file = await fileHandle.getFile();
+      const readFile = (handle: FileSystemFileHandle): Promise<W3CAnnotation[]> => 
+        handle.getFile().then(file =>
+          readJSONFile<W3CAnnotation[]>(file)
+            .then(data => {
+              const annotations = repairAnnotations(data || [], datamodel);
+              cachedAnnotations.set(normalizedId, annotations);
+              return filterByOpts(annotations);
+            })
+            .catch(() => {
+              cachedAnnotations.set(normalizedId, []);
+              return [];
+            }));
 
-        readJSONFile<W3CAnnotation[]>(file)
-          .then(data => {
-            const annotations = repairAnnotations(data || [], datamodel);
-            cachedAnnotations.set(imageId, annotations);
-            resolve(filterByOpts(annotations));
-          })
-          .catch(() => {
-            cachedAnnotations.set(imageId, []);
-            resolve([]);
-          });
+      const source = _findSource(normalizedId);
+      if (source) {
+        const fileHandle = await getAnnotationsFile(source);
+        readFile(fileHandle).then(annotations => {
+          resolve(annotations);
+        });
       } else {
-        console.warn(`Image ${imageId} not found`);
+        console.warn(`Image ${normalizedId} not found`);
         resolve([]);
       }
     }
   });
+
+  const getAnnotations = (
+    sourceId: string,
+    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+  ) => {
+    if (sourceId.startsWith('iiif:')) {
+      return getCanvasAnnotations(sourceId);
+    } else {
+      return _getAnnotations(sourceId, opts);
+    }
+  }
+
+  const getCanvas = (id: string) => {
+    const [manifestId, canvasId] = parseIIIFId(id);
+    if (manifestId && canvasId) {
+      const manifest = iiifResources.find(r => r.id === manifestId) as IIIFManifestResource;
+      return manifest.canvases.find(c => c.id === canvasId);
+    }
+  }
+
+  const getCanvasAnnotations = (id: string) => {
+    const [manifestId, canvasId] = parseIIIFId(id);
+    return _getAnnotations(`iiif:${manifestId}`).then(annotations => {
+      return canvasId 
+        ? annotations.filter(a => !Array.isArray(a.target) && a.target.source === id)
+        : annotations;
+    })
+  }
 
   const getDataModel = () => datamodel;
 
@@ -243,8 +354,9 @@ export const loadStore = (
 
   const getFolderContents = (dir: FileSystemDirectoryHandle): FolderItems => {
     const imageItems = images.filter(i => i.folder === dir);
+    const iiifItems = iiifResources.filter(i => i.folder === dir);
     const folderItems = folders.filter(f => f.parent === dir);
-    return { images: imageItems, folders: folderItems };
+    return { images: imageItems, folders: folderItems, iiifResources: iiifItems };
   }
 
   const getFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle): Promise<W3CAnnotation> => {
@@ -257,6 +369,8 @@ export const loadStore = (
       return Promise.reject();
     }
   }
+
+  const getIIIFResource = (id: string) => iiifResources.find(r => r.id === id);
 
   const getImage = (id: string) => images.find(f => f.id === id);
 
@@ -292,6 +406,55 @@ export const loadStore = (
     name: rootDir.name, path: [], handle: rootDir
   });
 
+  const removeIIIFResource = async (resource: IIIFResource) => {
+    const handle = resource.folder;
+
+    try {
+      await handle.removeEntry(`_iiif.${resource.id}.annotations.json`);
+    } catch {
+      // Could fail in case there are no annotations yet - ignore
+    }
+
+    await handle.removeEntry(`_iiif.${resource.id}.json`);
+
+    // Remove from store
+    const toRemove = iiifResources.findIndex(r => r.id === resource.id);
+    iiifResources.splice(toRemove, 1);
+  }
+
+  const importIIIFResource = (
+    info: IIIFResourceInformation, 
+    folderId?: string
+  ) => new Promise<IIIFResource>(async (resolve, reject) => {
+    const folder = folderId ? getFolder(folderId) : getRootFolder();
+    if (!folder) {
+      console.error(`Cannot import IIIF - unknown folder: ${folderId}`);
+      reject();
+    } else {
+      const filename = `_iiif.${info.id}.json`;
+
+      // Don't import the same manifest twice into the same folder
+      try {
+        await folder.handle.getFileHandle(filename, { create: false });
+        reject(new Error('IIIF resource already exists in this folder'));
+        return;
+      } catch {
+        const handle = await folder.handle.getFileHandle(filename, { create: true });
+
+        await writeJSONFile(handle, info);
+
+        const resource: IIIFResource = {
+          folder: folder.handle,
+          path: folder.path,
+          ...info
+        }
+
+        iiifResources.push(resource);
+        resolve(resource);
+      }
+    }
+  });
+
   const listImagesInFolder = (folderId: string) => {
     const folder = folders.find(f => f.id === folderId);
 
@@ -318,7 +481,7 @@ export const loadStore = (
 
   const loadImage = (
     id: string
-  ): Promise<LoadedImage> => new Promise((resolve, reject) => {
+  ): Promise<LoadedFileImage> => new Promise((resolve, reject) => {
     const img = images.find(i => i.id === id);
     if (img) {
       readImageFile(img.file).then(data => {
@@ -332,40 +495,42 @@ export const loadStore = (
   });
 
   const _upsertOneAnnotation = (
-    imageId: string, 
+    sourceId: string, 
     annotation: W3CAnnotation
   ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
-    const img = images.find(i => i.id === imageId);
-    if (img) {
-      const annotations = await getAnnotations(imageId);
+    // Strip image hash, if any
+    const normalizedId = _normalizeSourceId(sourceId);
+    const source = _findSource(normalizedId);
+    if (source) {
+      const annotations = await getAnnotations(normalizedId);
 
       const exists = annotations.find(a => a.id === annotation.id);
       const next = exists ? 
         annotations.map(a => a.id === annotation.id ? annotation : a) :
         [...annotations, annotation];
 
-      cachedAnnotations.set(imageId, next);
+      cachedAnnotations.set(normalizedId, next);
       resolve(next);
     } else {
-      reject(Error(`Image ${imageId} not found`));
+      reject(Error(`Image ${normalizedId} not found`));
     }
   });
 
   const upsertAnnotation = (
-    imageId: string, 
+    sourceId: string, 
     annotation: W3CAnnotation
   ): Promise<void> => _upsertOneAnnotation(
-    imageId,
+    sourceId,
     annotation
   ).then(next => new Promise(async (resolve, reject) => {
-    const img = images.find(i => i.id === imageId);
-    if (img) {
-      const fileHandle = await getAnnotationsFile(img);
+    const source = _findSource(sourceId);
+    if (source) {
+      const fileHandle = await getAnnotationsFile(source);
       await writeJSONFile(fileHandle, next);
       resolve();
     } else {
       // Should never happen
-      reject(Error(`Image ${imageId} not found`));
+      reject(Error(`Image ${sourceId} not found`));
     }
   }));
 
@@ -421,6 +586,7 @@ export const loadStore = (
 
   const store = {
     folders,
+    iiifResources,
     images,
     bulkDeleteAnnotations,
     bulkUpsertAnnotation,
@@ -429,15 +595,20 @@ export const loadStore = (
     findAnnotation,
     findImageForAnnotation,
     getAnnotations,
+    getCanvas,
+    getCanvasAnnotations,
     getDataModel,
     getFolder,
     getFolderContents,
     getFolderMetadata,
+    getIIIFResource,
     getImage,
     getImageMetadata,
     getRootFolder,
+    importIIIFResource,
     listImagesInFolder,
     loadImage,
+    removeIIIFResource,
     upsertAnnotation,
     upsertFolderMetadata,
     upsertImageMetadata

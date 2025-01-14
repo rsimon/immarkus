@@ -1,3 +1,5 @@
+import { Canvas } from '@iiif/presentation-3';
+
 export interface Image {
 
   id: string;
@@ -6,14 +8,28 @@ export interface Image {
 
   path: string[];
 
-  file: File;
-
   folder: FileSystemDirectoryHandle;
 
 }
 
-export interface LoadedImage extends Image {
+export interface FileImage extends Image {
+
+  file: File;
+
+}
+
+export interface LoadedFileImage extends Image {
 
   data: Blob;
 
 }
+
+export interface LoadedIIIFImage extends Image  {
+
+  canvas: Canvas;
+
+  manifestId: string;
+
+}
+
+export type LoadedImage = LoadedFileImage | LoadedIIIFImage
