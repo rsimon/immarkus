@@ -6,6 +6,7 @@ import { IIIFManifestResource } from '@/model';
 import { useAnnotations } from '@/store';
 import { useIIIFResource } from '@/utils/iiif';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
+import { Skeleton } from '@/ui/Skeleton';
 
 interface IIIFManifestGridProps {
 
@@ -46,7 +47,15 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
             </li>
           ))}
         </ul>
-      ) : null}
+      ) : (
+        <ul>
+          {[0, 1].map(key => (
+            <li key={`idx-${key}`}>
+              <Skeleton className="size-[178px] rounded-md shadow" />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 
