@@ -1,12 +1,13 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, NotebookPen, Share2 } from 'lucide-react';
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, RootFolder } from '@/model';
-import { isPresentationManifest, isRootFolder } from '../Types';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
+import { isPresentationManifest, isRootFolder } from '../Types';
 import { IIIFImporter } from '../IIIFImporter';
-import { IIIFIcon } from '@/components/IIIFIcon';
+import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
 
 interface PageHeaderProps {
 
@@ -58,7 +59,7 @@ export const PageHeader = (props: PageHeaderProps) => {
         )}
       </h1>
 
-      <h2 className="text-3xl font-semibold tracking-tight -ml-0.5">
+      <h2 className="text-3xl font-semibold leading-snug tracking-tight -ml-0.5">
         {folder.name}
       </h2>
 
@@ -83,16 +84,11 @@ export const PageHeader = (props: PageHeaderProps) => {
         {isPresentationManifest(folder) ? (
           <>
             <span>·</span> 
-            <Button 
-              variant="link"
-              className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-              <Share2 className="size-4" strokeWidth={2.2} /> Open Manifest in Other Viewers
-            </Button>
+            <IIIFOpenOtherViewer manifest={folder} />
           </>
         ) : (
           <>
             <span>·</span> 
-
             <IIIFImporter 
               folderId={'id' in folder ? folder.id : undefined} />
           </>
