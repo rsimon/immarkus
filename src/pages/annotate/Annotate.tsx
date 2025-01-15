@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
@@ -57,18 +58,18 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <OSDViewerManifold>
           <RelationEditorRoot>
-            {images.length > 0 && ( 
-              <SavingState.Root>
-                <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-                  <HeaderSection
-                    images={images} 
-                    mode={mode}
-                    tool={tool}
-                    onAddImage={onAddImage} 
-                    onChangeImage={onChangeImage}
-                    onChangeMode={setMode}
-                    onChangeTool={setTool} />
+            <SavingState.Root>
+              <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                <HeaderSection
+                  images={images} 
+                  mode={mode}
+                  tool={tool}
+                  onAddImage={onAddImage} 
+                  onChangeImage={onChangeImage}
+                  onChangeMode={setMode}
+                  onChangeTool={setTool} />
 
+                {images.length > 0 ? ( 
                   <WorkspaceSection 
                     images={images} 
                     mode={mode}
@@ -76,11 +77,15 @@ export const Annotate = () => {
                     onAddImage={onAddImage} 
                     onChangeImages={imageIds => setImageIds(imageIds)}
                     onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-                </main>
+                ) : (
+                  <div className="flex items-center justify-center h-full bg-muted">
+                    <Loader2 className="animate-spin size-5 opacity-50" />
+                  </div>
+                )}
+              </main>
 
-                <SidebarSection />
-              </SavingState.Root>
-            )}
+              <SidebarSection />
+            </SavingState.Root>
           </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>

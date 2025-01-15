@@ -53,7 +53,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const store = useStore();
 
-  const osdToolsDisabled = props.images.length > 1;
+  const osdToolsDisabled = props.images.length === 0 || props.images.length > 1;
 
   const [relationsEditorOpen, setRelationsEditorOpen] = useState(false);
 
@@ -96,7 +96,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const back = useMemo(() => {
     // Just return to gallery root if there are multiple images open
-    if (props.images.length > 1) return '/images/';
+    if (props.images.length === 0 || props.images.length > 1) return '/images/';
 
     const source = props.images[0];
     if ('manifestId' in source)
@@ -166,19 +166,23 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         {!collapsed && (
           <>
-            <AddImage 
-              current={props.images} 
-              onAddImage={props.onAddImage} />
+            {props.images.length > 0 && (
+              <>
+                <AddImage 
+                  current={props.images} 
+                  onAddImage={props.onAddImage} />
 
-            <Separator orientation="vertical" className="h-4" />
+                <Separator orientation="vertical" className="h-4" />
 
-            <PaginationWidget 
-              disabled={osdToolsDisabled}
-              image={props.images[0]} 
-              onChangeImage={props.onChangeImage} 
-              onAddImage={props.onAddImage} />
+                <PaginationWidget 
+                  disabled={osdToolsDisabled}
+                  image={props.images[0]} 
+                  onChangeImage={props.onChangeImage} 
+                  onAddImage={props.onAddImage} />
 
-            <Separator orientation="vertical" className="h-4" />
+                <Separator orientation="vertical" className="h-4" />
+              </>
+            )}
 
             <ToolbarButton
               disabled={osdToolsDisabled}

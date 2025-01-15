@@ -57,6 +57,6 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
         </ul>
       )}
     </div>
-  );
+  )
 
 }
