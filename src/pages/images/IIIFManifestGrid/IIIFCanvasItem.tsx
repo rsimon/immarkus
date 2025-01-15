@@ -32,9 +32,9 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
           className="data-[selected]:outline outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
           {inView ? (
             <img
-            src={src}
-            className="h-auto w-auto object-cover transition-all aspect-square" 
-            onClick={props.onOpen} />
+              src={src}
+              className="h-auto w-auto min-h-full min-w-full object-cover transition-all aspect-square" 
+              onClick={props.onOpen} />
           ) :(
             <div className="h-full w-full bg-muted" />
           )}
