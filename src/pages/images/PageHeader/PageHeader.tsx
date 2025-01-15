@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, NotebookPen, Share2 } from 'lucide-react';
+import { ChevronRight, NotebookPen } from 'lucide-react';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, RootFolder } from '@/model';
 import { useStore } from '@/store';
