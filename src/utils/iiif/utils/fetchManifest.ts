@@ -1,24 +1,21 @@
-import { parseIIIF } from '../lib';
-import { IIIFParseResult } from '../lib/Types';
+import { type CozyManifest, Cozy } from '@/utils/cozy-iiif';
 
-const cache = new Map<string, IIIFParseResult>();
+const cache = new Map<string, CozyManifest>();
 
-export const fetchManifest = (uri: string) => {
-
+export const fetchManifest = (uri: string): Promise<CozyManifest | undefined> => {
   if (cache.has(uri)) {
     return Promise.resolve(cache.get(uri));
   } else {
-    return fetch(uri)
-      .then(res => res.json())
-      .then(data => {
-        const { error, result } = parseIIIF(data);
-        if (error || !result) {
-          console.error(error);
+    return Cozy.parseURL(uri)
+      .then(result => {
+        if (result.type === 'error') {
+          console.error(result);
+        } else if (result.type !== 'manifest') {
+          console.error('Unsupported content type', result);
         } else {
-          cache.set(uri, result);
-          return result;
+          cache.set(uri, result.resource);
+          return result.resource;
         }
       });
   }
-
 }

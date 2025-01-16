@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { IIIFParseResult } from '../lib/Types';
 import { useStore } from '@/store';
 import { fetchManifest } from '../utils/fetchManifest';
+import { CozyManifest } from '@/utils/cozy-iiif';
 
 export const useIIIFResource = (id: string) => {
 
   const store = useStore();
 
-  const [resource, setResource] = useState<IIIFParseResult | undefined>();
+  const [resource, setResource] = useState<CozyManifest | undefined>();
   
   useEffect(() => {
     if (!store || !id) return;

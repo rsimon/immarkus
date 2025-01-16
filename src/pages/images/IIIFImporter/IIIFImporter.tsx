@@ -8,7 +8,7 @@ import { Input } from '@/ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
-import { CozyParseResult, parseURL } from '@/utils/cozy-iiif';
+import { type CozyParseResult, Cozy } from '@/utils/cozy-iiif';
 
 interface IIIFImporterProps {
 
@@ -47,7 +47,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
     setBusy(true);
 
-    parseURL(uri)
+    Cozy.parseURL(uri)
       .then(result => {
         setBusy(false);
         setParseResult(result);

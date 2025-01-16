@@ -1,11 +1,13 @@
 import { Canvas, IIIFExternalWebResource } from '@iiif/presentation-3';
 import { Traverse } from '@iiif/parser';
-import { CozyImageResource, ImageServiceResource, StaticImageResource } from '../Types';
-import { getPropertyValue } from './resourceUtils';
-import { isImageService, parseImageService } from './imageServiceUtils';
+import { CozyImageResource, ImageServiceResource, StaticImageResource } from '../../Types';
+import { getPropertyValue } from './resource';
+import { isImageService, parseImageService } from './imageService';
 
 const toCozyImageResource = (resource: IIIFExternalWebResource) => {
-  const { format, height, id, width } = resource;
+  const { format, height, width } = resource;
+
+  const id = getPropertyValue(resource, 'id');
 
   const imageService = (resource.service || []).find(isImageService);
 

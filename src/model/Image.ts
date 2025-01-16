@@ -1,4 +1,4 @@
-import { Canvas } from '@iiif/presentation-3';
+import { CozyCanvas } from '@/utils/cozy-iiif';
 
 export interface Image {
 
@@ -26,7 +26,7 @@ export interface LoadedFileImage extends Image {
 
 export interface LoadedIIIFImage extends Image  {
 
-  canvas: Canvas;
+  canvas: CozyCanvas;
 
   manifestId: string;
 

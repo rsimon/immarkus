@@ -1,4 +1,4 @@
-import type { Manifest, Canvas, Service } from '@iiif/presentation-3';
+import type { Manifest, Canvas, ImageService2, ImageService3 } from '@iiif/presentation-3';
 
 export type CozyParseResult = 
   | { type: 'manifest'; url: string, resource: CozyManifest }
@@ -71,7 +71,7 @@ export interface DynamicImageServiceResource extends BaseImageResource {
 
   type: 'dynamic';
 
-  service: Service;
+  service: ImageService2 | ImageService3;
 
   serviceUrl: string;
 
@@ -83,15 +83,9 @@ export interface Level0ImageServiceResource extends BaseImageResource {
 
   type: 'level0';
 
-  service: Service;
+  service: ImageService2 | ImageService3;
 
-  tiles: Array<{
-    width: number;
-    height: number;
-    scaleFactors: number[];
-  }>;
-
-  baseUrl: string;
+  serviceUrl: string;
 
 }
 
@@ -106,5 +100,17 @@ export interface ImageRequestOptions {
   quality?: 'default' | 'color' | 'gray' | 'bitonal';
 
   format?: 'jpg' | 'png' | 'gif' | 'webp';
+
+}
+
+export interface Bounds {
+
+  x: number;
+
+  y: number;
+
+  w: number;
+
+  h: number;
 
 }

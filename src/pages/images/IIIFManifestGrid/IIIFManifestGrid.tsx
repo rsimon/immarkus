@@ -7,6 +7,7 @@ import { useAnnotations } from '@/store';
 import { useIIIFResource } from '@/utils/iiif';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { Skeleton } from '@/ui/Skeleton';
+import { CozyCanvas } from '@/utils/cozy-iiif';
 
 interface IIIFManifestGridProps {
 
@@ -22,12 +23,12 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
   const annotations = useAnnotations(`iiif:${props.manifest.id}`);
 
-  const onOpenCanvas = (canvas: Canvas) => {
+  const onOpenCanvas = (canvas: CozyCanvas) => {
     const id = murmur.v3(canvas.id);
     navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
   }
 
-  const countAnnotations = useCallback((canvas: Canvas) => {
+  const countAnnotations = useCallback((canvas: CozyCanvas) => {
     const id = murmur.v3(canvas.id);
     const sourceId = `iiif:${props.manifest.id}:${id}`;
     return annotations.filter(a => 
@@ -38,7 +39,7 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     <div className="item-grid">
       {parsedManifest ? (
         <ul>
-          {parsedManifest.parsed.map((canvas, idx) => (
+          {parsedManifest.canvases.map((canvas, idx) => (
             <li key={`${canvas.id}.${idx}`}>
               <IIIFCanvasItem
                 canvas={canvas} 

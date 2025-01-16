@@ -7,7 +7,6 @@ import { Store } from '@/store';
 import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
-import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
 import { fetchManifest } from '@/utils/iiif/utils/fetchManifest';
 
 interface RowData {
@@ -67,15 +66,15 @@ const toRowData = (
     if ('uri' in source) {
       const manifest = store.getIIIFResource(source.manifestId);
 
-      return fetchManifest(manifest.uri).then(result => {
-        const canvas = result.parsed.find(c => c.id === source.uri);
+      return fetchManifest(manifest.uri).then(parsed => {
+        const canvas = parsed.canvases.find(c => c.id === source.uri);
 
         return {
           canvas,
           folder: manifest.folder,
           id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
           manifestId: manifest.id,
-          name: getCanvasLabel(canvas),
+          name: canvas.label,
           path: manifest.path
         } as LoadedIIIFImage;
       });

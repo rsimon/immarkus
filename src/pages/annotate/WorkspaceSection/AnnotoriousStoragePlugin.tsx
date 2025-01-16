@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
 import { useStore } from '@/store';
 import { isW3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { parseIIIF } from '@/utils/iiif/lib';
-import { parseIIIFId } from '@/utils/iiif/utils';
 
 interface AnnotoriousStoragePluginProps {
 

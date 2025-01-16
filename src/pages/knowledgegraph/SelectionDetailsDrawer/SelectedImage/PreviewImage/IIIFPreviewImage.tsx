@@ -1,5 +1,5 @@
 import { LoadedIIIFImage } from '@/model';
-import { getThumbnail } from '@/utils/iiif/lib/helpers';
+import { getThumbnailURL } from '@/utils/cozy-iiif';
 import { useMemo } from 'react';
 
 interface IIIFPreviewImageProps {
@@ -13,7 +13,7 @@ export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
   const src = useMemo(() => {
     if (!props.image) return;
 
-    return getThumbnail(props.image.canvas, { size: 600 });
+    return getThumbnailURL(props.image.canvas, 600);
   }, [props.image]);
 
   return props.image ? (

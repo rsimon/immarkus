@@ -4,9 +4,9 @@ import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotoriou
 import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
-import { getCanvasLabel, getRegion } from './iiif/lib/helpers';
 import { fetchManifest } from './iiif/utils/fetchManifest';
 import { Canvas } from '@iiif/presentation-3';
+import { getRegionURL } from './cozy-iiif';
 
 // See https://www.npmjs.com/package/p-throttle
 const IMAGE_API_CALL_LIMIT = 5; // Max number of calls within the interval
@@ -146,7 +146,13 @@ export const getImageSnippet = (
   if (image.id.startsWith('iiif:')) {
     const { bounds } = a.target.selector.geometry;
     const { canvas } = (image as LoadedIIIFImage);
-    const src = getRegion(canvas, bounds);
+
+    const src = getRegionURL(canvas, { 
+      x: bounds.minX,
+      y: bounds.maxY,
+      w: bounds.maxX - bounds.minX,
+      h: bounds.maxY - bounds.minY
+    });
 
     return Promise.resolve({
       annotation: a,
@@ -174,15 +180,15 @@ export const getAnnotationsWithSnippets = (
   if ('uri' in image) {
     const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
 
-    return fetchManifest(manifest.uri).then(result => {  
-      const canvas: Canvas = result.parsed.find(c => c.id === image.uri);
+    return fetchManifest(manifest.uri).then(parsed => {  
+      const canvas = parsed.canvases.find(c => c.id === image.uri);
 
       const loaded: LoadedIIIFImage = {
         canvas,
         folder: manifest.folder,
         id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
         manifestId: manifest.id,
-        name: getCanvasLabel(canvas),
+        name: canvas.label,
         path: manifest.path
       }
 
