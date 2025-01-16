@@ -49,8 +49,8 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
         </ul>
       ) : (
         <ul>
-          {[0, 1].map(key => (
-            <li key={`idx-${key}`}>
+          {props.manifest.canvases.slice(0, 20).map(canvas => (
+            <li key={canvas.id}>
               <Skeleton className="size-[178px] rounded-md shadow" />
             </li>
           ))}
