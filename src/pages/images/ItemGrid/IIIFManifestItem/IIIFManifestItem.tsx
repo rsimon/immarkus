@@ -1,6 +1,6 @@
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
-import { IIIFResource } from '@/model';
+import { IIIFManifestResource, IIIFResource } from '@/model';
 import { useStore } from '@/store';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 
@@ -16,10 +16,11 @@ interface IIIFManifestItemProps {
 
 export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
 
+  const resource = props.resource as IIIFManifestResource;
+
   const store = useStore();
 
-  const onDeleteManifest = () =>
-    store.removeIIIFResource(props.resource);
+  const onDeleteManifest = () => store.removeIIIFResource(resource);
 
   return (
     <div>
@@ -37,7 +38,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
         
         <div className="absolute bottom-3.5 right-2 text-white text-sm pointer-events-auto">
           <IIIFManifestItemActions 
-            resource={props.resource} 
+            resource={resource} 
             onDelete={onDeleteManifest} />
         </div>
       </div>
@@ -46,8 +47,11 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
         <div>
           <h3
             className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
-            {props.resource.name}
+            {resource.name}
           </h3>
+          <p className="pt-1 text-xs text-muted-foreground">
+            {`${resource.canvases.length.toLocaleString()} Canvas${resource.canvases.length === 1 ? '' : 'es'}`}
+          </p>
         </div>
       </div>
     </div>
