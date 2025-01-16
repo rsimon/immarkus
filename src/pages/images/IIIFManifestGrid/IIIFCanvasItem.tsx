@@ -33,7 +33,7 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
           {inView ? (
             <img
               src={src}
-              className="h-auto w-auto min-h-full min-w-full object-cover transition-all aspect-square" 
+              className="h-full w-full object-cover object-center transition-all aspect-square" 
               onClick={props.onOpen} />
           ) :(
             <div className="h-full w-full bg-muted" />

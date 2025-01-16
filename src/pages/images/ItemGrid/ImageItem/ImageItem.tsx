@@ -43,7 +43,7 @@ export const ImageItem = (props: ImageItemProps) => {
             src={URL.createObjectURL(image.data)}
             alt={image.name}
             onClick={props.onOpen}
-            className="h-auto w-auto object-cover transition-all aspect-square"
+            className="h-full w-full object-cover object-center transition-all aspect-square"
           />
 
           <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full pointer-events-auto">
