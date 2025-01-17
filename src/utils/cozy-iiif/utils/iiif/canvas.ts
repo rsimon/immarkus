@@ -4,6 +4,9 @@ import { CozyImageResource, ImageServiceResource, StaticImageResource } from '..
 import { getPropertyValue } from './resource';
 import { isImageService, parseImageService } from './imageService';
 
+export const normalizeServiceUrl = (url: string) =>
+  url.endsWith('/info.json') ? url : `${url.endsWith('/') ? url : `${url}/`}info.json`;
+
 const toCozyImageResource = (resource: IIIFExternalWebResource) => {
   const { format, height, width } = resource;
 
@@ -19,7 +22,7 @@ const toCozyImageResource = (resource: IIIFExternalWebResource) => {
       width,
       height,
       majorVersion: service.majorVersion,
-      serviceUrl: getPropertyValue<string>(imageService, 'id')
+      serviceUrl: normalizeServiceUrl(getPropertyValue<string>(imageService, 'id'))
     } as ImageServiceResource;
   } else {
     return {

@@ -1,5 +1,4 @@
-import { CozyCanvas } from "@/utils/cozy-iiif";
-import { TileSource } from "openseadragon";
+import { CozyCanvas } from '@/utils/cozy-iiif';
 
 export const getOSDTilesets = (canvas: CozyCanvas) => canvas.images.map(image => {
   if (image.type === 'dynamic' || image.type === 'level0') {

@@ -4,7 +4,7 @@ import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotoriou
 import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
-import { fetchManifest } from './iiif/utils/fetchManifest';
+import { fetchManifest } from './iiif/fetchManifest';
 import { Canvas } from '@iiif/presentation-3';
 import { getRegionURL } from './cozy-iiif';
 

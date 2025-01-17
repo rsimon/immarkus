@@ -7,7 +7,7 @@ import { Store } from '@/store';
 import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
-import { fetchManifest } from '@/utils/iiif/utils/fetchManifest';
+import { fetchManifest } from '@/utils/iiif/fetchManifest';
 
 interface RowData {
 

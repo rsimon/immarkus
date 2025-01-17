@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate } from 'react-router-dom';
-import { Canvas } from '@iiif/presentation-3';
 import { IIIFManifestResource } from '@/model';
 import { useAnnotations } from '@/store';
-import { useIIIFResource } from '@/utils/iiif';
+import { useIIIFResource } from '@/utils/iiif/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { Skeleton } from '@/ui/Skeleton';
 import { CozyCanvas } from '@/utils/cozy-iiif';

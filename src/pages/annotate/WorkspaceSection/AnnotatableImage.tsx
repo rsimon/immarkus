@@ -5,6 +5,7 @@ import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
 import { LoadedImage } from '@/model';
+import { getOSDTilesets } from '@/utils/iiif';
 import { ConnectorPopup } from '../ConnectorPopup';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
 import { Tool, ToolMode } from '../Tool';
@@ -23,7 +24,6 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
-import { getOSDTilesets } from '@/utils/iiif/utils';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -105,6 +105,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     minZoomLevel: 0.1,
     maxZoomLevel: 100
   }), [image.id]);
+
+  console.log('options', options);
   
   return (
     <Annotorious id={props.image.id}>

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { CanvasInformation, FileImage, IIIFManifestResource, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { parseIIIFId } from '@/utils/iiif/utils';
+import { parseIIIFId } from '@/utils/iiif';
 import { ToolbarButton } from '../ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 import { useClickOutside } from './useClickoutside';

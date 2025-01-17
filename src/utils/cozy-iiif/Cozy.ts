@@ -1,7 +1,7 @@
 import { Canvas, Manifest } from '@iiif/presentation-3';
 import { convertPresentation2  } from '@iiif/parser/presentation-2';
 import { Traverse } from '@iiif/parser';
-import { getImages, getLabel, getPropertyValue, parseImageService } from './utils/iiif';
+import { getImages, getLabel, getPropertyValue, normalizeServiceUrl, parseImageService } from './utils/iiif';
 import { CozyCanvas, CozyManifest, CozyParseResult, ImageServiceResource } from './Types';
 
 export const Cozy = {
@@ -147,9 +147,6 @@ const parseManifestResource = (resource: any, majorVersion: number): CozyManifes
   }
 }
 
-const normalizeServiceURL = (uri: string) =>
-  uri.endsWith('/info.json') ? uri : `${uri.endsWith('/') ? uri : `${uri}/`}info.json`;
-
 const parseImageResource = (resource: any) => {
   const { width, height } = resource;
 
@@ -161,7 +158,7 @@ const parseImageResource = (resource: any) => {
       width,
       height,
       majorVersion: service.majorVersion,
-      serviceUrl: normalizeServiceURL(getPropertyValue<string>(resource, 'id'))
+      serviceUrl: normalizeServiceUrl(getPropertyValue<string>(resource, 'id'))
     } as ImageServiceResource;
   }
 }
