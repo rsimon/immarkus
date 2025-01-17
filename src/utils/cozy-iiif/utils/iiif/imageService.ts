@@ -90,11 +90,11 @@ export const getRegionURLFromService = (
   const height = Math.ceil(isPortrait ? minSize / aspect : minSize);
   const width = Math.ceil(isPortrait ? minSize : minSize / aspect);
 
-  const regionParam = `${Math.round(x)},${Math.round(y)},${Math.round(width)},${Math.round(height)}`;
+  const regionParam = `${Math.round(x)},${Math.round(y)},${Math.round(w)},${Math.round(h)}`;
 
   if (type === 'ImageService3') {
-    return `${id}/${regionParam}/!${w},${h}/0/default.jpg`;
+    return `${id}/${regionParam}/!${width},${height}/0/default.jpg`;
   } else {
-    return `${id}/${regionParam}/!${w},${h}/0/native.jpg`;
+    return `${id}/${regionParam}/!${width},${height}/0/native.jpg`;
   }
 }

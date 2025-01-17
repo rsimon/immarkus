@@ -149,7 +149,7 @@ export const getImageSnippet = (
 
     const src = getRegionURL(canvas, { 
       x: bounds.minX,
-      y: bounds.maxY,
+      y: bounds.minY,
       w: bounds.maxX - bounds.minX,
       h: bounds.maxY - bounds.minY
     });
