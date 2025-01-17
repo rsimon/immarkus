@@ -5,8 +5,6 @@ import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, Loaded
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { fetchManifest } from './iiif/fetchManifest';
-import { Canvas } from '@iiif/presentation-3';
-import { getRegionURL } from './cozy-iiif';
 
 // See https://www.npmjs.com/package/p-throttle
 const IMAGE_API_CALL_LIMIT = 5; // Max number of calls within the interval
@@ -147,7 +145,16 @@ export const getImageSnippet = (
     const { bounds } = a.target.selector.geometry;
     const { canvas } = (image as LoadedIIIFImage);
 
-    const src = getRegionURL(canvas, { 
+    // For now, we're assuming that each canvas has exactly one image
+    const firstImage = canvas.images[0];
+
+    // Should never happen
+    if (!firstImage) throw 'Canvas has no image';
+
+    // Should never happen
+    if (firstImage.type !== 'dynamic') throw 'Unsupported IIIF content'; 
+
+    const src = firstImage.getRegionURL({ 
       x: bounds.minX,
       y: bounds.minY,
       w: bounds.maxX - bounds.minX,
@@ -188,7 +195,7 @@ export const getAnnotationsWithSnippets = (
         folder: manifest.folder,
         id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
         manifestId: manifest.id,
-        name: canvas.label,
+        name: canvas.getLabel(),
         path: manifest.path
       }
 

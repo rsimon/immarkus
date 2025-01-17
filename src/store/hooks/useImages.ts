@@ -39,7 +39,7 @@ export const useImages = (
             folder: resource.folder,
             id,
             manifestId: resource.id,
-            name: canvas.label,
+            name: canvas.getLabel(),
             path: resource.path
           }
 

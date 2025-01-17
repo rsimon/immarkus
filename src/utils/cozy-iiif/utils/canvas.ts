@@ -1,8 +1,41 @@
 import { Canvas, IIIFExternalWebResource } from '@iiif/presentation-3';
 import { Traverse } from '@iiif/parser';
-import { CozyImageResource, ImageServiceResource, StaticImageResource } from '../../Types';
+import { CozyImageResource, DynamicImageServiceResource, ImageServiceResource, Level0ImageServiceResource, StaticImageResource } from '../Types';
 import { getPropertyValue } from './resource';
-import { isImageService, parseImageService } from './imageService';
+import { getImageURLFromService, getRegionURL, isImageService, parseImageService } from './imageService';
+
+export const getThumbnailURL = (canvas: Canvas, images: CozyImageResource[] = []) => (minSize = 400) => {
+  const { width, height } = canvas;
+
+  if (!width || !height) return;
+
+  const aspect = width / height;
+  const isPortrait = aspect < 1;
+  
+  const h = Math.ceil(isPortrait ? minSize / aspect : minSize);
+  const w = Math.ceil(isPortrait ? minSize : minSize / aspect);
+
+  if (canvas.thumbnail && canvas.thumbnail.length > 0) {
+    const thumbnail = canvas.thumbnail[0];
+
+    if ('service' in thumbnail && Array.isArray(thumbnail.service)) {
+      const service = thumbnail.service.find(s => isImageService(s));
+      if (service)
+        return getImageURLFromService(service, w, h);
+    }
+
+    if ('id' in thumbnail) return thumbnail.id;
+  }
+
+  for (const image of images) {
+    if (image.type === 'dynamic' || image.type === 'level0') {
+      return getImageURLFromService(image.service, w, h);
+    } else if (image.type === 'static') {
+      // TODO
+      console.error('Static image canvas: unspported');
+    }    
+  }
+}
 
 export const normalizeServiceUrl = (url: string) =>
   url.endsWith('/info.json') ? url : `${url.endsWith('/') ? url : `${url}/`}info.json`;
@@ -16,7 +49,7 @@ const toCozyImageResource = (resource: IIIFExternalWebResource) => {
 
   const service = imageService ? parseImageService(imageService) : undefined; 
   if (service) {
-    return {
+    const image = {
       type: service.profileLevel === 0 ? 'level0' : 'dynamic',
       service: imageService,
       width,
@@ -24,6 +57,15 @@ const toCozyImageResource = (resource: IIIFExternalWebResource) => {
       majorVersion: service.majorVersion,
       serviceUrl: normalizeServiceUrl(getPropertyValue<string>(imageService, 'id'))
     } as ImageServiceResource;
+
+    if (service.profileLevel === 0) {
+      return image as Level0ImageServiceResource;
+    } else {
+      return {
+        ...image,
+        getRegionURL: getRegionURL(image)
+      } as DynamicImageServiceResource;
+    }
   } else {
     return {
       type: 'static',

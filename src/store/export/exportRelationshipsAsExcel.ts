@@ -74,7 +74,7 @@ const toRowData = (
           folder: manifest.folder,
           id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
           manifestId: manifest.id,
-          name: canvas.label,
+          name: canvas.getLabel(),
           path: manifest.path
         } as LoadedIIIFImage;
       });

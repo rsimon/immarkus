@@ -1,7 +1,7 @@
 import { Canvas, Manifest } from '@iiif/presentation-3';
 import { convertPresentation2  } from '@iiif/parser/presentation-2';
 import { Traverse } from '@iiif/parser';
-import { getImages, getLabel, getPropertyValue, normalizeServiceUrl, parseImageService } from './utils/iiif';
+import { getImages, getLabel, getPropertyValue, getThumbnailURL, normalizeServiceUrl, parseImageService } from './utils';
 import { CozyCanvas, CozyManifest, CozyParseResult, ImageServiceResource } from './Types';
 
 export const Cozy = {
@@ -124,14 +124,18 @@ const parseManifestResource = (resource: any, majorVersion: number): CozyManifes
   
     modelBuilder.traverseManifest(manifest);
     
-    return canvases.map((c: Canvas) => ({
-      source: c,
-      id: c.id,
-      label: getLabel(c),
-      width: c.width,
-      height: c.height,
-      images: getImages(c)
-    } as CozyCanvas));
+    return canvases.map((c: Canvas) => {
+      const images = getImages(c);
+      return {
+        source: c,
+        id: c.id,
+        width: c.width,
+        height: c.height,
+        images,
+        getLabel: getLabel(c),
+        getThumbnailURL: getThumbnailURL(c, images)
+      } as CozyCanvas;
+    });
   }
 
   const v3: Manifest = majorVersion === 2 ? convertPresentation2(resource) : resource;
@@ -142,8 +146,8 @@ const parseManifestResource = (resource: any, majorVersion: number): CozyManifes
     source: v3,
     id: v3.id,
     majorVersion,
-    label: getLabel(v3),
-    canvases
+    canvases,
+    getLabel: getLabel(v3)
   }
 }
 

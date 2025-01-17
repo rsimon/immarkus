@@ -19,9 +19,9 @@ export interface CozyManifest {
 
   readonly id: string;
 
-  readonly label: string;
-
   readonly canvases: CozyCanvas[];
+
+  getLabel(locale?: string): string;
 
 }
 
@@ -31,13 +31,15 @@ export interface CozyCanvas {
 
   readonly id: string;
 
-  readonly label: string;
-
   readonly width: number;
 
   readonly height: number;
 
   readonly images: CozyImageResource[];
+
+  getLabel(locale?: string): string;
+
+  getThumbnailURL(minSize?: number): string;
 
 }
 
@@ -76,6 +78,8 @@ export interface DynamicImageServiceResource extends BaseImageResource {
   serviceUrl: string;
 
   majorVersion: number;
+
+  getRegionURL(bounds: Bounds, minSize?: number): string;
 
 }
 

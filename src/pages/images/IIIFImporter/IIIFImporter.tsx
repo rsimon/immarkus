@@ -69,7 +69,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
         const info: IIIFResourceInformation = {
           id,
-          name: resource.label || `IIIF Presentation API v${resource.majorVersion}`,
+          name: resource.getLabel() || `IIIF Presentation API v${resource.majorVersion}`,
           uri,
           importedAt: new Date().toISOString(),
           type: 'PRESENTATION_MANIFEST',
@@ -77,7 +77,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           canvases: resource.canvases.map(canvas => ({
             id: murmur.v3(canvas.id).toString(),
             uri: canvas.id,
-            name: canvas.label,
+            name: canvas.getLabel(),
             manifestId: id
           }))
         }
@@ -152,7 +152,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             </div>
           ) : parseResult?.type === 'manifest' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-              <Check className="size-4" /> {parseResult.resource.label || `Presentation API v${parseResult.resource.majorVersion}`}
+              <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
             </div>
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>

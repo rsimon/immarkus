@@ -2,7 +2,6 @@ import { useInView } from 'react-intersection-observer';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Spinner } from '../Spinner';
-import { getThumbnailURL } from '@/utils/cozy-iiif';
 
 interface ThumbnailProps {
 
@@ -23,7 +22,7 @@ const ThumbnailImage = (props: ThumbnailProps) => {
   const url = loaded && (
     'data' in loaded 
       ? URL.createObjectURL(loaded.data) 
-      : getThumbnailURL(loaded.canvas, 112));
+      : loaded.canvas.getThumbnailURL(112));
 
   return loaded ? (
     <img

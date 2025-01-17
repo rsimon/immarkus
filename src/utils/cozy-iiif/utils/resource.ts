@@ -24,7 +24,7 @@ export const getStringValue = (propertyValue: string | InternationalString, loca
   }
 }
 
-export const getLabel = (data: any, locale = 'en') => {
+export const getLabel = (data: any) => (locale = 'en') => {
   const propertyValue = getPropertyValue<string | InternationalString>(data, 'label');
   return getStringValue(propertyValue, locale);
 } 

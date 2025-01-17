@@ -1,6 +1,6 @@
 import { ImageService2, ImageService3, Service } from '@iiif/presentation-3';
 import { getPropertyValue } from './resource';
-import { Bounds } from '../../Types';
+import { Bounds, CozyImageResource } from '../Types';
 
 type ImageService = ImageService2 | ImageService3;
 
@@ -96,5 +96,19 @@ export const getRegionURLFromService = (
     return `${id}/${regionParam}/!${width},${height}/0/default.jpg`;
   } else {
     return `${id}/${regionParam}/!${width},${height}/0/native.jpg`;
+  }
+}
+
+export const getRegionURL = (
+  image: CozyImageResource
+) => (
+  bounds: Bounds,
+  minSize = 400
+): string | undefined => {
+  if (image.type === 'dynamic') {
+    return getRegionURLFromService(image.service, bounds, minSize);
+  } else {
+    // TODO
+    console.error('Level 0 or static image canvas: unspported');
   }
 }
