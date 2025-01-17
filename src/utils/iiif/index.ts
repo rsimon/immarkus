@@ -1,1 +1,3 @@
-export * from './hooks/useIIIFResource';
+export * from './fetchManifest';
+export * from './getOSDTilesets';
+export * from './parseIIIFId';

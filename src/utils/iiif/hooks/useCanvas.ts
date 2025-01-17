@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
-import { parseIIIFId } from '../utils';
+import { parseIIIFId } from '..';
 
 export const useCanvas = (id: string): CanvasInformation => {
 

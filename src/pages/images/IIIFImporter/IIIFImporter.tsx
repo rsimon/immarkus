@@ -8,9 +8,7 @@ import { Input } from '@/ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
-import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
-import { IIIFParseResult, ParseError } from '@/utils/iiif/lib/Types';
-import { useManifestParser } from './useManifestParser';
+import { type CozyParseResult, Cozy } from '@/utils/cozy-iiif';
 
 interface IIIFImporterProps {
 
@@ -30,9 +28,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [busy, setBusy] = useState(false);
 
-  const [response, setResponse] = useState<{ result?: IIIFParseResult, error?: ParseError } | undefined>();
-
-  const { parse } = useManifestParser();
+  const [parseResult, setParseResult] = useState<CozyParseResult | undefined>();
 
   useEffect(() => {
     if (!open) {
@@ -42,7 +38,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
   }, [open]);
 
   useEffect(() => {
-    setResponse(undefined);
+    setParseResult(undefined);
 
     if (!uri) {
       setBusy(false);
@@ -51,10 +47,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
     setBusy(true);
 
-    parse(uri)
-      .then((response: { result?: IIIFParseResult, error?: ParseError}) => {
+    Cozy.parseURL(uri)
+      .then(result => {
         setBusy(false);
-        setResponse(response);
+        setParseResult(result);
       })
       .catch(error => {
         console.error(error);
@@ -65,29 +61,35 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
-    const result = response?.result;
-    if (!result) return; // Should never happen
+    if (!parseResult || parseResult.type === 'error') return; // Should never happen
 
-    generateShortId(uri).then(id => {
-      const info: IIIFResourceInformation = {
-        id,
-        name: result.label || `IIIF Presentation API v${result.majorVersion}`,
-        uri,
-        importedAt: new Date().toISOString(),
-        type: result.type,
-        majorVersion: result.majorVersion,
-        canvases: result.parsed.map(canvas => ({
-          id: murmur.v3(canvas.id).toString(),
-          uri: canvas.id,
-          name: getCanvasLabel(canvas),
-          manifestId: id
-        }))
-      }
+    if (parseResult.type === 'manifest') {
+      generateShortId(uri).then(id => {
+        const { resource } = parseResult;
 
-      store.importIIIFResource(info, props.folderId).then(() => {
-        setOpen(false);
-      });
-    });  
+        const info: IIIFResourceInformation = {
+          id,
+          name: resource.getLabel() || `IIIF Presentation API v${resource.majorVersion}`,
+          uri,
+          importedAt: new Date().toISOString(),
+          type: 'PRESENTATION_MANIFEST',
+          majorVersion: resource.majorVersion,
+          canvases: resource.canvases.map(canvas => ({
+            id: murmur.v3(canvas.id).toString(),
+            uri: canvas.id,
+            name: canvas.getLabel(),
+            manifestId: id
+          }))
+        }
+
+        store.importIIIFResource(info, props.folderId).then(() => {
+          setOpen(false);
+        });
+      });  
+    } else {
+      // Should never happen
+      console.warn('Unsupported content type', parseResult);
+    }
   }
 
   return (
@@ -133,24 +135,24 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             <div className="flex items-center gap-1.5 pl-0.5">
               <Loader2 className="animate-spin size-3.5 mb-[1px]" /> Fetching...
             </div>
-          ) : Boolean(response?.error) ? (
+          ) : parseResult?.type === 'error' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
               <Ban className="size-3.5 mb-[1px]" /> 
-              {response.error.type === 'FETCH_ERROR' ? (
+              {parseResult.code === 'FETCH_ERROR' ? (
                 <span>
                   Failed to fetch. Server may restrict access. <a className="underline" href="https://iiif.io/guides/guide_for_implementers/#other-considerations" target="_blank">Learn more</a>.
                 </span>
               ) : (
-                <span>{response.error.message}</span>
+                <span>{parseResult.message}</span>
               )}
             </div>
-          ) : response?.result?.type === 'IIIF_IMAGE' ? (
+          ) : parseResult?.type === 'iiif-image' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
               <Ban className="size-3.5 mb-[1px]" /> Image API URLs are currently unsupported
             </div>
-          ) : response?.result?.type === 'PRESENTATION_MANIFEST' ? (
+          ) : parseResult?.type === 'manifest' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-              <Check className="size-4" /> {response.result.label || `Presentation API v${response.result.majorVersion}`}
+              <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
             </div>
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
@@ -166,7 +168,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             </DialogClose>
 
             <Button
-              disabled={!response?.result || Boolean(response.error)}>
+              disabled={!parseResult || parseResult?.type !== 'manifest'}>
               Import
             </Button>
           </div>

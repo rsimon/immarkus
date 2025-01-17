@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { Canvas } from '@iiif/presentation-3';
-import { getCanvasLabel, getThumbnail } from '@/utils/iiif/lib/helpers';
+import { CozyCanvas } from '@/utils/cozy-iiif';
 
 interface IIIFCanvasItemProps {
 
   annotationCount: number;
 
-  canvas: Canvas;
+  canvas: CozyCanvas;
 
   selected?: boolean;
 
@@ -22,7 +21,7 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
 
   const { ref, inView } = useInView();
   
-  const src = useMemo(() => getThumbnail(props.canvas), [props.canvas]);
+  const src = useMemo(() => props.canvas.getThumbnailURL(), [props.canvas]);
 
   return (
     <div ref={ref}>
@@ -53,7 +52,7 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
       <div className="text-sm ml-1 pl-2 max-w-[190px] overflow-hidden">
         <h3 
           className="overflow-hidden whitespace-nowrap text-ellipsis">
-          {getCanvasLabel(canvas)}
+          {canvas.getLabel()}
         </h3>
         <p className="pt-1 text-xs text-muted-foreground">
           {canvas.width} x {canvas.height}

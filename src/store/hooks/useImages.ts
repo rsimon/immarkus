@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
+import { CozyCanvas } from '@/utils/cozy-iiif';
+import { fetchManifest } from '@/utils/iiif/fetchManifest';
 import { useStore } from './useStore';
-import { parseIIIF } from '@/utils/iiif/lib';
-import { Canvas } from '@iiif/presentation-3';
-import { getCanvasLabel } from '@/utils/iiif/lib/helpers';
 
 export const useImages = (
   imageIdOrIds?: string | string[],
@@ -19,7 +18,7 @@ export const useImages = (
   useEffect(() => {
     if (!store || !imageIds) return;
 
-    const findCanvas = (canvases: Canvas[], canvasHash: string) =>
+    const findCanvas = (canvases: CozyCanvas[], canvasHash: string) =>
       canvases.find(c => {
         const hash = murmur.v3(c.id).toString();
         return hash === canvasHash;
@@ -31,26 +30,20 @@ export const useImages = (
 
       const resource = store.getIIIFResource(resourceId);
 
-      return fetch(resource.uri)
-        .then(res => res.json())
-        .then(data => {
-          const { error, result } = parseIIIF(data);
-          if (error || !result) {
-            console.error(error);
-          } else {
-            const canvas = findCanvas(result.parsed, canvasHash);
+      return fetchManifest(resource.uri)
+        .then(manifest => {
+          const canvas = findCanvas(manifest.canvases, canvasHash);
 
-            const image: LoadedIIIFImage = {
-              canvas,
-              folder: resource.folder,
-              id,
-              manifestId: resource.id,
-              name: getCanvasLabel(canvas),
-              path: resource.path
-            }
-
-            return image;
+          const image: LoadedIIIFImage = {
+            canvas,
+            folder: resource.folder,
+            id,
+            manifestId: resource.id,
+            name: canvas.getLabel(),
+            path: resource.path
           }
+
+          return image;
         });
     }
 
