@@ -105,8 +105,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     minZoomLevel: 0.1,
     maxZoomLevel: 100
   }), [image.id]);
-
-  console.log('options', options);
   
   return (
     <Annotorious id={props.image.id}>
