@@ -7,11 +7,13 @@ import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CozyCanvas } from '@/utils/cozy-iiif';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
-import { CanvasGridItem } from '../Types';
+import { CanvasGridItem, GridItem } from '../Types';
 
 interface IIIFManifestGridProps {
 
   manifest: IIIFManifestResource;
+
+  selected?: GridItem;
 
   onSelect(item: CanvasGridItem): void;
 
@@ -41,8 +43,12 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     const info = props.manifest.canvases.find(c => c.uri === canvas.id);
     const item: CanvasGridItem = ({ type: 'canvas', canvas, info });
 
+    const isSelected = props.selected?.type === 'canvas' ?
+      props.selected.info.uri === canvas.id : false;
+
     return (
       <IIIFCanvasItem
+        selected={isSelected}
         canvas={canvas} 
         canvasInfo={info}
         annotationCount={countAnnotations(canvas)}
