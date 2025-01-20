@@ -50,7 +50,7 @@ const MetadataList = (props: MetadataListProps) => {
       value={tab}
       onValueChange={setTab}
       className="h-full flex flex-col">
-      <TabsList className="gap-2 bg-transparent justify-start px-5 pt-6">
+      <TabsList className="gap-2 bg-transparent justify-start px-6 pt-6">
         <TabsTrigger 
           value="custom" 
           className="flex gap-1 transition-none px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
