@@ -27,7 +27,7 @@ export const Metadata = (props: MetadataProps) => {
     updateMetadata(formState);
   }
 
-  return (
+  return props.imageId.startsWith('iiif:') ? null : (
     <PropertyValidation>
       <form 
         className="bg-white border rounded shadow-sm min-h-48 flex flex-col justify-between p-3 pt-5 pb-2"
