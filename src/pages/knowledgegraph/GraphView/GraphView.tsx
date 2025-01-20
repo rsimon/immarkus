@@ -199,9 +199,10 @@ export const GraphView = (props: GraphViewProps) => {
 
     // Faded nodes never get labels
     if (!hideLabel) {
+      const label = node.label.length > 53 ? `${node.label.substring(0, 50)}...` : node.label;
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
-      ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
+      ctx.fillText(label, node.x + 12 / scale, node.y + 12 / scale); 
     }
 
     ctx.globalAlpha = 1;
