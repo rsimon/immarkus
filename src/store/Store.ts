@@ -281,7 +281,6 @@ export const loadStore = (
       annotations;
 
     const normalizedId = _normalizeSourceId(sourceId);
-
     const cached = cachedAnnotations.get(normalizedId);
     if (cached) {
       // A precaution. The data model could have changed meanwhile

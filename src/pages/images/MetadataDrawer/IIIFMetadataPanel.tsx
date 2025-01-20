@@ -3,16 +3,18 @@ import { NotebookPen, PanelTop, PenOff } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { IIIFManifestResource } from '@/model';
-import { useImageMetadata } from '@/store';
+import { useImageMetadata, useManifestMetadata } from '@/store';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { CozyMetadata } from '@/utils/cozy-iiif';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasGridItem } from '../Types';
-import { hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
+import { FolderMetadataForm, hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
 import { useNavigate } from 'react-router-dom';
 
 interface MetadataListProps {
+
+  folder?: boolean;
 
   title?: string;
 
@@ -67,7 +69,7 @@ const MetadataList = (props: MetadataListProps) => {
         className="flex-grow">
         {iiifMetadata ? (
           iiifMetadata.length > 0 ? (
-            <ul className="h-full space-y-4 text-sm leading-relaxed py-2 px-2.5">
+            <ul className="h-full space-y-4 text-sm leading-relaxed pt-8 py-4 px-6">
               {props.iiifMetadata.map(({ label, value }, index) => (
                 <li key={`${label}:${index}`}>
                   <div 
@@ -103,9 +105,15 @@ const MetadataList = (props: MetadataListProps) => {
                 </h2>
               )}
               
-              <ImageMetadataForm
-                metadata={formState}
-                onChange={setFormState} />
+              {props.folder ? (
+                <FolderMetadataForm
+                  metadata={formState}
+                  onChange={setFormState} />
+              ) : (
+                <ImageMetadataForm
+                  metadata={formState}
+                  onChange={setFormState} />
+              )}
             </div>
 
             <div className="pt-2 pb-4">        
@@ -137,8 +145,7 @@ export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource
 
   const manifest = useIIIFResource(item.id);
 
-
-  // const { metadata, updateMetadata } = useFolderMetadata(item.id);
+  const { metadata, updateMetadata } = useManifestMetadata(item.id);
 
   const iiifMetadata = useMemo(() => {
     if (!manifest) return;
@@ -147,20 +154,23 @@ export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource
 
   return (
     <MetadataList 
-      // customMetadata={metadata}
+      folder
+      title={item.name}
+      customMetadata={metadata}
       iiifMetadata={iiifMetadata} 
-      /* onUpdateMetadata={updateMetadata} */ />
+      onUpdateMetadata={updateMetadata} 
+      onOpen={() => {}} />
   )
-
+  
 }
 
 export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasGridItem }) => {
 
   const id = `iiif:${item.info.manifestId}:${item.info.id}`;
 
-  const navigate = useNavigate();
-
   const { metadata, updateMetadata } = useImageMetadata(id);
+
+  const navigate = useNavigate();
 
   const onOpen = () => navigate(`/annotate/${id}`);
 
