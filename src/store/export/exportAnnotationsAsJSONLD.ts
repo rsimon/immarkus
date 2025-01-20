@@ -1,13 +1,18 @@
 import { W3CAnnotation } from '@annotorious/react';
-import { Folder, Image, RootFolder } from '@/model';
+import { CanvasInformation, Folder, IIIFManifestResource, Image, RootFolder } from '@/model';
 import { Store } from '@/store';
 
 export const exportAnnotationsAsJSONLD = (store: Store) => {
 
-  const getImagesRecursive = (folder: RootFolder | Folder, allImages: Image[] = []): Image[] => {
-    const { images, folders } = store.getFolderContents(folder.handle);
+  const getImagesRecursive = (folder: RootFolder | Folder, allImages: (Image | CanvasInformation)[] = []): Image[] => {
+    const { images, folders, iiifResources } = store.getFolderContents(folder.handle);
 
-    const updatedImages = [...allImages, ...images];
+    const canvases = iiifResources.reduce((all, manifest) => ([
+        ...all, 
+        ...(manifest as IIIFManifestResource).canvases
+      ]), [])
+
+    const updatedImages = [...allImages, ...images, ...canvases];
 
     return folders.reduce((all, subfolder) => getImagesRecursive(subfolder, all), updatedImages);
   }
@@ -16,7 +21,8 @@ export const exportAnnotationsAsJSONLD = (store: Store) => {
 
   const annotations = images.reduce<Promise<W3CAnnotation[]>>((promise, image) => {
     return promise.then((all) => {
-      return store.getAnnotations(image.id).then(annotations => {
+      const id = 'manifestId' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+      return store.getAnnotations(id).then(annotations => {
         return [...all, ...annotations]
       })
     })
