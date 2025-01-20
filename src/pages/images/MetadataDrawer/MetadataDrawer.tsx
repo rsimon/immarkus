@@ -5,6 +5,8 @@ import { FolderMetadataPanel } from './FolderMetadataPanel';
 import { ImageMetadataPanel } from './ImageMetadataPanel';
 import { Button } from '@/ui/Button';
 import { X } from 'lucide-react';
+import { IIIFMetadataPanel } from './IIIFMetadataPanel';
+import { IIIFManifestResource } from '@/model';
 
 interface MetadataDrawerProps {
 
@@ -56,10 +58,13 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
         {item.type === 'folder' ? (
           <FolderMetadataPanel 
             folder={item as FolderGridItem} />
-        ) : item.type === 'image' && (
+        ) : item.type === 'image' ? (
           <ImageMetadataPanel 
             image={item as ImageGridItem} />
-        )}
+        ) : item.type === 'PRESENTATION_MANIFEST' ? (
+          <IIIFMetadataPanel
+            manifest={item as IIIFManifestResource} />
+        ) : null}
       </aside>
     </animated.div>
   ))

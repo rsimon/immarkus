@@ -43,6 +43,9 @@ export const ItemGrid = (props: ItemGridProps) => {
   const onSelectImage = (image: Image) =>
     props.onSelect({ type: 'image', ...image });
 
+  const onSelectManifest = (manifest: IIIFManifestResource) =>
+    props.onSelect(manifest);
+
   return (
     <div className="item-grid">
       <ul>
@@ -60,7 +63,8 @@ export const ItemGrid = (props: ItemGridProps) => {
             {resource.type === 'PRESENTATION_MANIFEST' ? (
               <IIIFManifestItem
                 resource={resource} 
-                onOpen={() => onOpenFolder(resource)} />
+                onOpen={() => onOpenFolder(resource)} 
+                onSelect={() => onSelectManifest(resource)}/>
             ) : null}
           </li>
         ))}
