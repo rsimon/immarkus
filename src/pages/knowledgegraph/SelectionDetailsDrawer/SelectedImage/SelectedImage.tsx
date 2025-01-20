@@ -66,13 +66,15 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
         <article className="bg-white shadow-sm rounded border overflow-hidden">
           <header>
             <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
-              {image.id.startsWith('iiif:') ? (
-                <IIIFPreviewImage 
-                  image={loaded as LoadedIIIFImage} />
-              ) : (
-                <FilePreviewImage 
-                  image={loaded as LoadedFileImage} 
-                  onLoad={onLoad} />
+              {loaded && (
+                loaded.id.startsWith('iiif:') ? (
+                  <IIIFPreviewImage 
+                    image={loaded as LoadedIIIFImage} />
+                ) : (
+                  <FilePreviewImage 
+                    image={loaded as LoadedFileImage} 
+                    onLoad={onLoad} />
+                )
               )}
 
               <div className="absolute top-2 right-2 bg-white/70 rounded-full">
