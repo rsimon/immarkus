@@ -1,4 +1,5 @@
-import { InternationalString } from '@iiif/presentation-3';
+import { InternationalString, MetadataItem } from '@iiif/presentation-3';
+import { CozyMetadata } from '../Types';
 
 export const getPropertyValue = <T extends unknown = any>(data: any, name: string) => {
   let prop: any = data[name];
@@ -28,3 +29,13 @@ export const getLabel = (data: any) => (locale = 'en') => {
   const propertyValue = getPropertyValue<string | InternationalString>(data, 'label');
   return getStringValue(propertyValue, locale);
 } 
+
+export const getMetadata = (data: any) => (locale?: string): CozyMetadata[] => {
+  const metadata = getPropertyValue(data, 'metadata') as MetadataItem[];
+  if (!metadata) return [];
+
+  return metadata.map(({ label, value }) => ({
+    label: getStringValue(label, locale),
+    value: getStringValue(value, locale)
+  }));
+}

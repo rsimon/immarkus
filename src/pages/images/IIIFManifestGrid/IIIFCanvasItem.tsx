@@ -3,6 +3,8 @@ import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { CozyCanvas } from '@/utils/cozy-iiif';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
+import { CanvasInformation } from '@/model';
+import { IIIFCanvasItemActions } from './IIIFCanvasItemActions';
 
 interface IIIFCanvasItemProps {
 
@@ -10,9 +12,13 @@ interface IIIFCanvasItemProps {
 
   canvas: CozyCanvas;
 
+  canvasInfo: CanvasInformation;
+
   selected?: boolean;
 
   onOpen(): void;
+
+  onSelect(): void;
 
 }
 
@@ -47,6 +53,13 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
                 size={18} 
                 className="inline align-text-bottom mr-1" /> 
                 {props.annotationCount}
+            </div>
+
+            <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
+              <IIIFCanvasItemActions 
+                canvas={canvas}
+                canvasInfo={props.canvasInfo} 
+                onSelect={props.onSelect}/>
             </div>
           </div>
         </div>

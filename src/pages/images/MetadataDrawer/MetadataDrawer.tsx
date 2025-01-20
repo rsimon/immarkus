@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 import { animated, easings, useTransition } from '@react-spring/web';
+import { Button } from '@/ui/Button';
 import { FolderGridItem, GridItem, ImageGridItem } from '../Types';
 import { FolderMetadataPanel } from './FolderMetadataPanel';
 import { ImageMetadataPanel } from './ImageMetadataPanel';
-import { Button } from '@/ui/Button';
-import { X } from 'lucide-react';
-import { IIIFMetadataPanel } from './IIIFMetadataPanel';
-import { IIIFManifestResource } from '@/model';
+import { IIIFManifestMetadataPanel, IIIFCanvasMetadataPanel } from './IIIFMetadataPanel';
 
 interface MetadataDrawerProps {
 
@@ -62,8 +61,9 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
           <ImageMetadataPanel 
             image={item as ImageGridItem} />
         ) : item.type === 'PRESENTATION_MANIFEST' ? (
-          <IIIFMetadataPanel
-            manifest={item as IIIFManifestResource} />
+          <IIIFManifestMetadataPanel item={item} />
+        ) : item.type === 'canvas' ? (
+          <IIIFCanvasMetadataPanel item={item} />
         ) : null}
       </aside>
     </animated.div>

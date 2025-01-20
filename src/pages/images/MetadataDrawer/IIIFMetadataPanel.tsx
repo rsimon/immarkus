@@ -1,21 +1,56 @@
 import { IIIFManifestResource } from '@/model';
+import { CozyMetadata } from '@/utils/cozy-iiif';
 import { useIIIFResource } from '@/utils/iiif/hooks';
-import { useEffect } from 'react';
+import { useMemo } from 'react';
+import { CanvasGridItem } from '../Types';
 
-interface IIIFMetadataPanelProps {
+const MetadataList = ({ metadata } : { metadata?: CozyMetadata[] }) => {
 
-  manifest: IIIFManifestResource;
+  return metadata ? (
+    metadata.length > 0 ? (
+      <ul className="h-full pt-8 pb-4 px-6 space-y-4 text-sm leading-relaxed">
+        {metadata.map(({ label, value }, index) => (
+          <li key={`${label}:${index}`}>
+            <div 
+              className="font-semibold">
+              {label}
+            </div>
+            
+            <div 
+              className="pl-4 [&_a]:text-sky-700 [&_a]:hover:underline"
+              dangerouslySetInnerHTML={{ __html: value || '' }} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+        No Metadata
+      </div>
+    )
+  ) : null;
 
 }
 
-export const IIIFMetadataPanel = (props: IIIFMetadataPanelProps) => {
 
-  const manifest = useIIIFResource(props.manifest.id);
+export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource }) => {
 
-  useEffect(() => {
-    console.log(manifest);
+  const manifest = useIIIFResource(item.id);
+
+  const metadata = useMemo(() => {
+    if (!manifest) return;
+    return manifest.getMetadata();
   }, [manifest]);
 
-  return null;
+  return (
+    <MetadataList metadata={metadata} />
+  )
+
+}
+
+export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasGridItem }) => {
+
+  return (
+    <MetadataList metadata={item.canvas.getMetadata()} />
+  )
 
 }
