@@ -4,13 +4,14 @@ import { FolderIcon, FolderOpen, ImageIcon, X } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
-import { Folder } from '@/model';
+import { Folder, IIIFManifestResource } from '@/model';
 import { useFolderMetadata, useStore } from '@/store';
 import { Button } from '@/ui/Button';
+import { GraphNode } from '../../Types';
 
 interface SelectedFolderProps {
 
-  folder: Folder;
+  folder: GraphNode;
 
   onClose(): void;
 
@@ -18,26 +19,41 @@ interface SelectedFolderProps {
 
 export const SelectedFolder = (props: SelectedFolderProps) => {
 
-  const { folder } = props;
-
   const store = useStore();
 
+  const folder = useMemo(() => {
+    if (props.folder.id.startsWith('iiif:')) {
+      const id = props.folder.id.substring('iiif:'.length);
+      return store.getIIIFResource(id) as IIIFManifestResource;
+    } else {
+      return store.getFolder(props.folder.id) as Folder;
+    }
+  }, [props.folder]);
+
   const [imageCount, folderCount] = useMemo(() => {
-    const items = store.getFolderContents(folder.handle);
-    return [items.images.length, items.folders.length];
+    if ('canvases' in folder) {
+      return [folder.canvases.length, 0];
+    } else {
+      const items = store.getFolderContents(folder.handle);
+      return [items.images.length, items.folders.length];
+    }
   }, [folder, store]);
 
-  const { metadata, updateMetadata } = useFolderMetadata(folder);
+  const meta = 'canvases' in folder ? undefined : useFolderMetadata(folder);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
   useEffect(() => {
-    setFormState(metadata);    
-  }, [metadata]);
+    if (!meta) return;
+
+    setFormState(meta.metadata);    
+  }, [meta]);
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    if (!meta) return;
+
     evt.preventDefault();
-    updateMetadata(formState);
+    meta.updateMetadata(formState);
   }
 
   return (
@@ -82,26 +98,28 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
           </div>
         </div>
 
-        <PropertyValidation>
-          <form 
-            onSubmit={onSubmit} 
-            className="bg-white p-3 rounded border shadow-sm mt-2">
-            <div className="flex flex-col flex-grow">          
-              <FolderMetadataForm
-                metadata={formState}
-                onChange={setFormState} />
-            </div>
+        {meta && (
+          <PropertyValidation>
+            <form 
+              onSubmit={onSubmit} 
+              className="bg-white p-3 rounded border shadow-sm mt-2">
+              <div className="flex flex-col flex-grow">          
+                <FolderMetadataForm
+                  metadata={formState}
+                  onChange={setFormState} />
+              </div>
 
-            <div className="pt-2">        
-              <Button 
-                disabled={!hasChanges(metadata, formState)} 
-                className="w-full mb-2"
-                type="submit">
-                Save
-              </Button>
-            </div>
-          </form>
-        </PropertyValidation> 
+              <div className="pt-2">        
+                <Button 
+                  disabled={!hasChanges(meta.metadata, formState)} 
+                  className="w-full mb-2"
+                  type="submit">
+                  Save
+                </Button>
+              </div>
+            </form>
+          </PropertyValidation> 
+        )}
       </article>
     </div>
   )
