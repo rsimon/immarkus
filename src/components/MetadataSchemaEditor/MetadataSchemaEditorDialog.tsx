@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
-import { useToast } from '@/ui/Toaster';
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { MetadataSchemaEditor } from './MetadataSchemaEditor';
 import { MetadataSchema } from '@/model';
 
@@ -56,6 +55,14 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
       )}
 
       <DialogContent className="p-0 max-w-3xl my-8 rounded-lg">
+        <DialogTitle className="sr-only">
+          Edit Schema
+        </DialogTitle>
+
+        <DialogDescription className="sr-only">
+          {props.editorHint}
+        </DialogDescription>
+
         <MetadataSchemaEditor 
           editorHint={props.editorHint} 
           previewHint={props.previewHint} 
