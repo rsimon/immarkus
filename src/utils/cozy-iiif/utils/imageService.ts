@@ -37,7 +37,6 @@ export const getImageURLFromService = (
   height: number
 ): string => {
   const id = getPropertyValue(service, 'id');
-  const type = getPropertyValue(service, 'type');
 
   const compliance = service.profile || '';
 
@@ -58,12 +57,8 @@ export const getImageURLFromService = (
     // Fallback: full image
     return `${id}/full/full/0/default.jpg`;
   }
-  
-  if (type === 'ImageService3') {
-    return `${id}/full/!${width},${height}/0/default.jpg`;
-  } else {
-    return `${id}/full/!${width},${height}/0/native.jpg`;
-  }
+
+  return `${id}/full/!${width},${height}/0/default.jpg`;
 }
 
 export const getRegionURLFromService = (
