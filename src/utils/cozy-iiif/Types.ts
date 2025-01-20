@@ -87,6 +87,8 @@ export interface Level0ImageServiceResource extends BaseImageResource {
 
   type: 'level0';
 
+  majorVersion: number;
+
   service: ImageService2 | ImageService3;
 
   serviceUrl: string;

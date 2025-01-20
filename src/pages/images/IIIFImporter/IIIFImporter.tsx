@@ -8,6 +8,7 @@ import { Input } from '@/ui/Input';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
+import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { type CozyParseResult, Cozy } from '@/utils/cozy-iiif';
 
 interface IIIFImporterProps {
@@ -77,7 +78,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           canvases: resource.canvases.map(canvas => ({
             id: murmur.v3(canvas.id).toString(),
             uri: canvas.id,
-            name: canvas.getLabel(),
+            name: getCanvasLabelWithFallback(canvas),
             manifestId: id
           }))
         }
