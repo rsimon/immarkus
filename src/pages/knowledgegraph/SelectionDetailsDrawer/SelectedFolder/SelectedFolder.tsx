@@ -17,6 +17,46 @@ interface SelectedFolderProps {
 
 }
 
+const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
+
+  const { metadata, updateMetadata } = useFolderMetadata(folder);
+
+  const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
+
+  useEffect(() => {
+    setFormState(metadata);    
+  }, [metadata]);
+
+  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    updateMetadata(formState);
+  }
+
+  return (
+    <PropertyValidation>
+      <form 
+        onSubmit={onSubmit} 
+        className="bg-white p-3 rounded border shadow-sm mt-2">
+        <div className="flex flex-col flex-grow">          
+          <FolderMetadataForm
+            metadata={formState}
+            onChange={setFormState} />
+        </div>
+
+        <div className="pt-2">        
+          <Button 
+            disabled={!hasChanges(metadata, formState)} 
+            className="w-full mb-2"
+            type="submit">
+            Save
+          </Button>
+        </div>
+      </form>
+    </PropertyValidation> 
+  )
+
+}
+
 export const SelectedFolder = (props: SelectedFolderProps) => {
 
   const store = useStore();
@@ -38,23 +78,6 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
       return [items.images.length, items.folders.length];
     }
   }, [folder, store]);
-
-  const meta = 'canvases' in folder ? undefined : useFolderMetadata(folder);
-
-  const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
-
-  useEffect(() => {
-    if (!meta) return;
-
-    setFormState(meta.metadata);    
-  }, [meta]);
-
-  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    if (!meta) return;
-
-    evt.preventDefault();
-    meta.updateMetadata(formState);
-  }
 
   return (
     <div className="p-2">
@@ -98,27 +121,8 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
           </div>
         </div>
 
-        {meta && (
-          <PropertyValidation>
-            <form 
-              onSubmit={onSubmit} 
-              className="bg-white p-3 rounded border shadow-sm mt-2">
-              <div className="flex flex-col flex-grow">          
-                <FolderMetadataForm
-                  metadata={formState}
-                  onChange={setFormState} />
-              </div>
-
-              <div className="pt-2">        
-                <Button 
-                  disabled={!hasChanges(meta.metadata, formState)} 
-                  className="w-full mb-2"
-                  type="submit">
-                  Save
-                </Button>
-              </div>
-            </form>
-          </PropertyValidation> 
+        {!('canvases' in folder) && (
+          <SelectedFolderMetadata folder={folder} />
         )}
       </article>
     </div>

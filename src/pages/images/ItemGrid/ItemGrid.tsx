@@ -25,7 +25,7 @@ export const ItemGrid = (props: ItemGridProps) => {
   
   const { folders, iiifResources, images } = useMemo(() => {
     return store.getFolderContents(props.folder.handle)
-  }, [props.folder]);
+  }, [props.folder, store]);
 
   const loadedImages = useImages(images.map(i => i.id)) as LoadedFileImage[];
 
