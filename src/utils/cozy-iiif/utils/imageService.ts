@@ -67,8 +67,6 @@ export const getRegionURLFromService = (
   minSize: number
 ): string => {
   const id = getPropertyValue(service, 'id');
-  const type = getPropertyValue(service, 'type');
-
   const compliance = service.profile || '';
 
   const isLevel0 = typeof compliance === 'string' &&
@@ -86,12 +84,7 @@ export const getRegionURLFromService = (
   const width = Math.ceil(isPortrait ? minSize : minSize / aspect);
 
   const regionParam = `${Math.round(x)},${Math.round(y)},${Math.round(w)},${Math.round(h)}`;
-
-  if (type === 'ImageService3') {
-    return `${id}/${regionParam}/!${width},${height}/0/default.jpg`;
-  } else {
-    return `${id}/${regionParam}/!${width},${height}/0/native.jpg`;
-  }
+  return `${id}/${regionParam}/!${width},${height}/0/default.jpg`;
 }
 
 export const getRegionURL = (
