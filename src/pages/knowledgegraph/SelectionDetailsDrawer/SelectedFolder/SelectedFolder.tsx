@@ -1,13 +1,16 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderIcon, FolderOpen, ImageIcon, X } from 'lucide-react';
+import { Braces, FolderIcon, FolderOpen, ImageIcon, NotebookPen, X } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
 import { Folder, IIIFManifestResource } from '@/model';
-import { useFolderMetadata, useStore } from '@/store';
+import { useFolderMetadata, useManifestMetadata, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { GraphNode } from '../../Types';
+import { IIIFMetadataList } from '@/components/IIIFMetadataList';
+import { useIIIFResource } from '@/utils/iiif/hooks';
 
 interface SelectedFolderProps {
 
@@ -54,6 +57,48 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
       </form>
     </PropertyValidation> 
   )
+
+}
+
+export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource }) => {
+
+  const cozyManifest = useIIIFResource(manifest.id);
+
+  const { metadata, updateMetadata } = useManifestMetadata(manifest.id);
+
+  const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
+
+  return cozyManifest ? (
+    <div className="bg-white shadow-sm rounded border px-4 py-3 mt-2">
+      <Tabs 
+        defaultValue="my">
+        <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
+          <TabsTrigger 
+            value="my"
+            className="text-xs py-1 px-2 flex gap-1.5">
+            <NotebookPen className="size-3.5" /> My
+          </TabsTrigger>
+
+          <TabsTrigger 
+            value="iiif"
+            className="text-xs py-1 flex gap-1.5">
+            <Braces className="size-3.5" /> IIIF
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent 
+          value="my">
+          
+        </TabsContent>
+
+        <TabsContent value="iiif"
+          className="flex-grow">
+          <IIIFMetadataList 
+            metadata={cozyManifest.getMetadata()} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  ) : null;
 
 }
 
@@ -121,7 +166,9 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
           </div>
         </div>
 
-        {!('canvases' in folder) && (
+        {('canvases' in folder) ? (
+          <SelectedManifestMetadata manifest={folder} />
+        ) : (
           <SelectedFolderMetadata folder={folder} />
         )}
       </article>
