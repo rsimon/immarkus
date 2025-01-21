@@ -9,7 +9,7 @@ interface IIIFMetadataListProps {
 export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
 
   return props.metadata.length > 0 ? (
-    <ul className="h-full space-y-4 text-sm leading-relaxed pt-8 py-4 px-6">
+    <ul className="h-full space-y-4 text-sm leading-relaxed pt-8 py-4 px-1">
       {props.metadata.map(({ label, value }, index) => (
         <li key={`${label}:${index}`}>
           <div 

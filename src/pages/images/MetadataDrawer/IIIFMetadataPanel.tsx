@@ -17,8 +17,6 @@ interface MetadataListProps {
 
   folder?: boolean;
 
-  title?: string;
-
   customMetadata: W3CAnnotationBody;
   
   iiifMetadata?: CozyMetadata[]; 
@@ -51,17 +49,17 @@ const MetadataList = (props: MetadataListProps) => {
       value={tab}
       onValueChange={setTab}
       className="h-full flex flex-col">
-      <TabsList className="gap-2 bg-transparent justify-start px-6 pt-6">
+      <TabsList className="grid grid-cols-2 mr-24 w-auto p-1 h-auto">
         <TabsTrigger 
           value="custom" 
-          className="flex gap-1 transition-none px-2.5 py-1.5 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white">
-          <NotebookPen size={15} className="mx-1" /> My Metadata
+          className="text-xs py-1 px-2 flex gap-1.5">
+          <NotebookPen className="size-3.5" /> My
         </TabsTrigger>
 
         <TabsTrigger 
-          value="embedded" 
-          className={`flex gap-1 transition-none pl-2 ${tab === 'metadata' ? 'pr-3' : 'pr-2'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
-          <Braces size={15} className="mx-1" />IIIF
+          value="embedded"
+          className="text-xs py-1 px-2 flex gap-1.5"> 
+          <Braces className="size-3.5" />IIIF
         </TabsTrigger>
       </TabsList>
 
@@ -78,15 +76,9 @@ const MetadataList = (props: MetadataListProps) => {
         className="flex-grow">
         <PropertyValidation>
           <form 
-            className="flex flex-col justify-between h-full py-4 px-6"
+            className="flex flex-col justify-between h-full pt-4"
             onSubmit={onSubmit}>
             <div className="flex flex-col flex-grow">
-              {props.title && (
-                <h2 className="leading-relaxed mr-5 mb-8 font-medium">
-                  {props.title}
-                </h2>
-              )}
-              
               {props.folder ? (
                 <FolderMetadataForm
                   metadata={formState}
@@ -98,7 +90,7 @@ const MetadataList = (props: MetadataListProps) => {
               )}
             </div>
 
-            <div className="pt-2 pb-4">        
+            <div className="pt-2 pb-2">        
               <Button 
                 disabled={!hasChanges(customMetadata, formState)} 
                 className="w-full mb-2"
@@ -122,7 +114,6 @@ const MetadataList = (props: MetadataListProps) => {
 
 }
 
-
 export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource }) => {
 
   const manifest = useIIIFResource(item.id);
@@ -135,13 +126,14 @@ export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource
   }, [manifest]);
 
   return (
-    <MetadataList 
-      folder
-      title={item.name}
-      customMetadata={metadata}
-      iiifMetadata={iiifMetadata} 
-      onUpdateMetadata={updateMetadata} 
-      onOpen={() => {}} />
+    <div className="px-4 py-3 h-full">
+      <MetadataList 
+        folder
+        customMetadata={metadata}
+        iiifMetadata={iiifMetadata} 
+        onUpdateMetadata={updateMetadata} 
+        onOpen={() => {}} />
+    </div>
   )
   
 }
@@ -157,12 +149,13 @@ export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasGridItem }) => {
   const onOpen = () => navigate(`/annotate/${id}`);
 
   return (
-    <MetadataList 
-      title={item.canvas.getLabel()}
-      customMetadata={metadata}
-      iiifMetadata={item.canvas.getMetadata()} 
-      onUpdateMetadata={updateMetadata} 
-      onOpen={onOpen} />
+    <div className="px-4 py-3 h-full">
+      <MetadataList
+        customMetadata={metadata}
+        iiifMetadata={item.canvas.getMetadata()} 
+        onUpdateMetadata={updateMetadata} 
+        onOpen={onOpen} />
+    </div>
   )
 
 }
