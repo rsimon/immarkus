@@ -41,7 +41,7 @@ export const exportImageMetadataCSV = async (store: Store) => {
     [...images, ...iiifResources].map(source => getMetadata(store, source))
   ).then(results => {
     return results
-    .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
+      .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
       .map(({ source, metadata }) => {
         const entries = zipMetadata(columns, metadata);
         return Object.fromEntries([
@@ -57,7 +57,7 @@ export const exportImageMetadataCSV = async (store: Store) => {
 const createSchemaWorksheet = (
   workbook: any, 
   schema: MetadataSchema,
-  result: { image: Image, metadata: W3CAnnotationBody }[],
+  result: { source: FileImage | CanvasInformation, metadata: W3CAnnotationBody }[],
   store: Store
 ) => {
   const worksheet = workbook.addWorksheet(schema.name);
@@ -66,7 +66,8 @@ const createSchemaWorksheet = (
 
   worksheet.columns = [
     { header: 'Filename', key: 'filename', width: 60 },
-    { header: 'File Path', key: 'path', width: 60 },
+    { header: 'Type', key: 'type', width: 60 }, 
+    { header: 'Path', key: 'path', width: 60 },
     ...schemaProps.map(property => ({
       header: property.name, key: `@property_${property.name}`, width: 60
     }))
@@ -74,10 +75,23 @@ const createSchemaWorksheet = (
 
   const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
 
-  withThisSchema.forEach(({ image, metadata }) => {
+  const getPath = (source: FileImage | CanvasInformation) => {
+    if ('path' in source) { 
+      return source.path.map(id => store.getFolder(id)?.name).filter(Boolean);
+    } else {
+      const manifest = store.getIIIFResource(source.manifestId);
+      return [
+        ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
+        manifest?.name
+      ].filter(Boolean);
+    }
+  }
+
+  withThisSchema.forEach(({ source, metadata }) => {
     const row = {
-      filename: image.name,
-      path: [...image.path.map(id => store.getFolder(id).name), image.name].join('/')
+      filename: source.name,
+      type: 'uri' in source ? 'IIIF Canvas' : 'Local File',
+      path: getPath(source).join('/')
     };
 
     const properties = 'properties' in metadata ? metadata.properties : {};
@@ -92,11 +106,14 @@ const createSchemaWorksheet = (
 }
 
 export const exportImageMetadataExcel = async (store: Store) => {
-  Promise.all(store.images.map(image => 
-    // Fetch metadata annotations for each folder
-    store.getImageMetadata(image.id).then(metadata => ({
-      image, metadata
-    })))).then(result => {
+  const { images, iiifResources } = store;
+
+  Promise.all(
+    [...images, ...iiifResources].map(source => getMetadata(store, source))
+  ).then(result => 
+    // Flatten
+    result.reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
+  ).then(result => {
       const { imageSchemas } = store.getDataModel();
 
       const workbook = new ExcelJS.Workbook();
