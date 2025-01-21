@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { useStore } from './useStore';
-import { GetAnnotationOpts } from '../Store';
+import { GetManifestAnnotationOpts } from '../Store';
 
-export const useAnnotations = (
-  imageId: string,
-  opts: GetAnnotationOpts
+export const useManifestAnnotations = (
+  sourceId: string,
+  opts: GetManifestAnnotationOpts
 ): W3CAnnotation[] => {
   const store = useStore();
 
   const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
 
   useEffect(() => {
-    store.getAnnotations(imageId, opts).then(setAnnotations);
-  }, [imageId]);
+    store.getManifestAnnotations(sourceId, opts).then(setAnnotations);
+  }, [sourceId]);
 
   return annotations;
 }

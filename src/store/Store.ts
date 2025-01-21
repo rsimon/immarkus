@@ -13,6 +13,10 @@ import {
   IIIFResourceInformation 
 } from '@/model/IIIFResource';
 
+export type GetAnnotationOpts = { type: 'image' | 'metadata' | 'both' };
+
+export type GetManifestAnnotationOpts = GetAnnotationOpts & { includeCanvases?: boolean };
+
 export interface AnnotationStore {
   
   folders: Folder[];
@@ -33,11 +37,13 @@ export interface AnnotationStore {
 
   findImageForAnnotation(annotationId: string): Promise<Image | CanvasInformation>;
 
-  getAnnotations(imageId: string, opts?: { type: 'image' | 'metadata' | 'both' }): Promise<W3CAnnotation[]>;
+  getAnnotations(imageId: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
 
   getCanvas(id: string): CanvasInformation | undefined;
 
-  getCanvasAnnotations(id: string): Promise<W3CAnnotation[]>;
+  getCanvasAnnotations(id: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
+
+  getManifestAnnotations(id: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
 
   getDataModel(): DataModelStore;
 
@@ -273,7 +279,7 @@ export const loadStore = (
 
   const _getAnnotations = (
     sourceId: string,
-    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+    opts: GetAnnotationOpts = { type: 'both' }
   ): Promise<W3CAnnotation[]> => new Promise(async resolve => {
     const filterByOpts = (annotations: W3CAnnotation[]) =>
       opts.type === 'image' ? annotations.filter(a => hasSelector(a))  :
@@ -316,7 +322,7 @@ export const loadStore = (
 
   const getAnnotations = (
     sourceId: string,
-    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+    opts: GetAnnotationOpts = { type: 'both' }
   ) => {
     if (sourceId.startsWith('iiif:')) {
       const [manifestId, canvasId] = parseIIIFId(sourceId);
@@ -332,10 +338,14 @@ export const loadStore = (
 
   const getManifestAnnotations = (
     manifestId: string,
-    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+    opts: GetManifestAnnotationOpts
   ) => {
     return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
-      return annotations.filter(a => !Array.isArray(a.target) && a.target.source === `iiif:${manifestId}`)
+      if (opts.includeCanvases) {
+        return annotations;
+      } else {
+        return annotations.filter(a => !Array.isArray(a.target) && a.target.source === `iiif:${manifestId}`)
+      }
     });
   }
 
@@ -349,7 +359,7 @@ export const loadStore = (
 
   const getCanvasAnnotations = (
     id: string,
-    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+    opts: GetAnnotationOpts
   ) => {
     const [manifestId, canvasId] = parseIIIFId(id);
     return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
@@ -516,9 +526,10 @@ export const loadStore = (
   ): Promise<W3CAnnotation[]> => new Promise(async (resolve, reject) => {
     // Strip image hash, if any
     const normalizedId = _normalizeSourceId(sourceId);
+
     const source = _findSource(normalizedId);
     if (source) {
-      const annotations = await getAnnotations(normalizedId);
+      const annotations = await _getAnnotations(normalizedId);
 
       const exists = annotations.find(a => a.id === annotation.id);
       const next = exists ? 
@@ -613,6 +624,7 @@ export const loadStore = (
     getAnnotations,
     getCanvas,
     getCanvasAnnotations,
+    getManifestAnnotations,
     getDataModel,
     getFolder,
     getFolderContents,

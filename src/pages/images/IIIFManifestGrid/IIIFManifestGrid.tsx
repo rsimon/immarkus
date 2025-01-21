@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate } from 'react-router-dom';
 import { IIIFManifestResource } from '@/model';
-import { useAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CozyCanvas } from '@/utils/cozy-iiif';
+import { useManifestAnnotations } from '@/store/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { CanvasGridItem, GridItem } from '../Types';
 
@@ -25,7 +25,10 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
-  const annotations = useAnnotations(`iiif:${props.manifest.id}`);
+  const annotations = useManifestAnnotations(props.manifest.id, { 
+    type: 'image',
+    includeCanvases: true
+  });
 
   const onOpenCanvas = (canvas: CozyCanvas) => {
     const id = murmur.v3(canvas.id);
