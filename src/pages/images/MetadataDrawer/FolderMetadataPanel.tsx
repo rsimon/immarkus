@@ -30,7 +30,7 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="flex flex-col justify-between h-full py-4 px-6"
+        className="flex flex-col justify-between h-full py-3 px-4"
         onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">
           <h2 className="leading-relaxed mr-5 mb-8 font-medium">
