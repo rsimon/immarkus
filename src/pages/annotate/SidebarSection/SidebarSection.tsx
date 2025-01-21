@@ -44,7 +44,7 @@ export const SidebarSection = () => {
           </section>
 
           <section 
-            className="sidebar-contentflex flex-grow border-l overflow-y-auto">
+            className="sidebar-content flex flex-grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
                 className="flex flex-grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
@@ -60,8 +60,7 @@ export const SidebarSection = () => {
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div 
-                className="w-full h-full pt-1.5">
+              <div className="w-full h-full">
                 <ImageMetadata />
               </div>
             </Tabs.Content>

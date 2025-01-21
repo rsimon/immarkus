@@ -1,7 +1,10 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { Braces, NotebookPen, PanelTop } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
+import { FolderMetadataForm, hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
+import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { IIIFManifestResource } from '@/model';
 import { useImageMetadata, useManifestMetadata } from '@/store';
 import { Button } from '@/ui/Button';
@@ -9,8 +12,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { CozyMetadata } from '@/utils/cozy-iiif';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasGridItem } from '../Types';
-import { FolderMetadataForm, hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
-import { useNavigate } from 'react-router-dom';
 
 interface MetadataListProps {
 
@@ -68,26 +69,7 @@ const MetadataList = (props: MetadataListProps) => {
         value="embedded"
         className="flex-grow">
         {iiifMetadata ? (
-          iiifMetadata.length > 0 ? (
-            <ul className="h-full space-y-4 text-sm leading-relaxed pt-8 py-4 px-6">
-              {props.iiifMetadata.map(({ label, value }, index) => (
-                <li key={`${label}:${index}`}>
-                  <div 
-                    className="font-semibold">
-                    {label}
-                  </div>
-                  
-                  <div 
-                    className="pl-4 [&_a]:text-sky-700 [&_a]:hover:underline"
-                    dangerouslySetInnerHTML={{ __html: value || '' }} />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-              No IIIF Metadata
-            </div>
-          )
+          <IIIFMetadataList metadata={iiifMetadata} />
         ) : null}
       </TabsContent>
 

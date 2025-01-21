@@ -1,20 +1,22 @@
 import { useMemo } from 'react';
-import { CanvasInformation, IIIFManifestResource } from '@/model';
-import { useStore } from '@/store';
-import { parseIIIFId } from '..';
+import murmur from 'murmurhash';
+import { CozyCanvas } from '@/utils/cozy-iiif';
+import { useIIIFResource } from './useIIIFResource';
 
-export const useCanvas = (id: string): CanvasInformation => {
+export const useCanvas = (id: string): CozyCanvas => {
 
-  const store = useStore();
+  if (!id.startsWith('iiif:')) return;
+
+  const [manifestId, canvasId] = id.substring('iiif:'.length).split(':');
+
+  if (!manifestId && !canvasId) return;
+  
+  const manifest = useIIIFResource(manifestId);
 
   const canvas = useMemo(() => {
-    if (!store) return;
-
-    const [manifestId, canvasId] = parseIIIFId(id);
-
-    const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
-    return manifest.canvases.find(c => c.id === canvasId);
-  }, [store, id]);
+    if (!manifest) return;
+    return manifest.canvases.find(c => murmur.v3(c.id).toString() === canvasId);
+  }, [id, manifest]);
 
   return canvas;
 
