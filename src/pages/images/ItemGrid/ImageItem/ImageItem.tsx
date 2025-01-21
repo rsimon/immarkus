@@ -70,7 +70,7 @@ export const ImageItem = (props: ImageItemProps) => {
         </h3>
         <p className="pt-1 text-xs text-muted-foreground">
           {dimensions && (
-            <>{dimensions[0]} x {dimensions[1]}</>
+            <>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()}</>
           )}
         </p>
       </div>

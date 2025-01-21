@@ -71,7 +71,7 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
           {label}
         </h3>
         <p className="pt-1 text-xs text-muted-foreground">
-          {canvas.width} x {canvas.height}
+          {canvas.width?.toLocaleString()} x {canvas.height?.toLocaleString()}
         </p>
       </div>
     </div>
