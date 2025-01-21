@@ -24,7 +24,7 @@ export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
       ))}
     </ul>
   ) : (
-    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+    <div className="flex items-center justify-center h-full min-h-16 text-muted-foreground text-sm">
       No IIIF Metadata
     </div>
   )

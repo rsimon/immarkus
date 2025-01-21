@@ -1,10 +1,13 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { Braces, NotebookPen } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
-import { Image } from '@/model';
 import { useImageMetadata } from '@/store';
 import { Button } from '@/ui/Button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
+import { useCanvas } from '@/utils/iiif/hooks';
 
 interface MetadataProps {
 
@@ -12,7 +15,7 @@ interface MetadataProps {
 
 }
 
-export const Metadata = (props: MetadataProps) => {
+const MyMetadata = (props: MetadataProps) => {
 
   const { metadata, updateMetadata } = useImageMetadata(props.imageId);
 
@@ -27,16 +30,14 @@ export const Metadata = (props: MetadataProps) => {
     updateMetadata(formState);
   }
 
-  return props.imageId.startsWith('iiif:') ? null : (
+  return (
     <PropertyValidation>
       <form 
-        className="bg-white border rounded shadow-sm min-h-48 flex flex-col justify-between p-3 pt-5 pb-2"
+        className="py-2"
         onSubmit={onSubmit}>
-        <div className="flex flex-col flex-grow">          
-          <ImageMetadataForm
-            metadata={formState}
-            onChange={setFormState} />
-        </div>
+        <ImageMetadataForm
+          metadata={formState}
+          onChange={setFormState} />
 
         <div className="pt-2">        
           <Button 
@@ -50,4 +51,57 @@ export const Metadata = (props: MetadataProps) => {
     </PropertyValidation>
   )
 
+}
+
+const IIIFMetadata = (props: MetadataProps) => {
+
+  const canvas = useCanvas(props.imageId);
+
+  const metadata = useMemo(() => {
+    if (!canvas) return;
+    return canvas.getMetadata();
+  }, [canvas]);
+
+  return metadata ? (
+    <IIIFMetadataList metadata={metadata} />
+  ) : null;
+
+}
+
+export const Metadata = (props: MetadataProps) => {
+
+  return  props.imageId.startsWith('iiif:') ? (
+    <div className="bg-white shadow-sm rounded border px-4 py-3">
+      <Tabs 
+        defaultValue="my">
+        <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
+          <TabsTrigger 
+            value="my"
+            className="text-xs py-1 px-2 flex gap-1.5">
+            <NotebookPen className="size-3.5" /> My
+          </TabsTrigger>
+
+          <TabsTrigger 
+            value="iiif"
+            className="text-xs py-1 flex gap-1.5">
+            <Braces className="size-3.5" /> IIIF
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent 
+          value="my">
+          <MyMetadata {...props} />
+        </TabsContent>
+
+        <TabsContent value="iiif"
+          className="flex-grow">
+          <IIIFMetadata {...props} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  ) : (
+    <div className="bg-white shadow-sm rounded border px-4">
+      <MyMetadata {...props} />
+    </div>
+  )
 }

@@ -7,13 +7,8 @@ import { Button } from '@/ui/Button';
 import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
 import { useCanvas } from '@/utils/iiif/hooks';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/ui/Tabs';
 
 interface ImageMetadataSectionProps {
 
