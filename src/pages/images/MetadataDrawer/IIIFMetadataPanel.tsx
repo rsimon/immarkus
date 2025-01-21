@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { NotebookPen, PanelTop, PenOff } from 'lucide-react';
+import { Braces, NotebookPen, PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { IIIFManifestResource } from '@/model';
@@ -60,7 +60,7 @@ const MetadataList = (props: MetadataListProps) => {
         <TabsTrigger 
           value="embedded" 
           className={`flex gap-1 transition-none pl-2 ${tab === 'metadata' ? 'pr-3' : 'pr-2'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
-          <PenOff size={15} className="mx-1" />IIIF
+          <Braces size={15} className="mx-1" />IIIF
         </TabsTrigger>
       </TabsList>
 
