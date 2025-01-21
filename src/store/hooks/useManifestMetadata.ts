@@ -2,6 +2,43 @@ import { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { useStore } from './useStore';
+import type { Store } from '../Store';
+
+export const getManifestMetadata = (store: Store, manifestId: string) => {
+  const id = `iiif:${manifestId}`;
+
+  return store.getAnnotations(id, { type: 'metadata'})
+    .then(annotations => {
+      if (annotations.length > 1)
+        console.warn(`Integrity error: multiple metadata annotations for manifest ${manifestId}`);
+
+      if (annotations.length === 1) {
+        const annotation = annotations[0];
+
+        if (Array.isArray(annotation.body)) {
+          if (annotation.body.length !== 1) {
+            console.warn(`Integrity error: metadata annotation for manifest ${manifestId} has != 1 body`);
+            return { annotation, metadata: {} };
+          } else {
+            const metadata = annotation.body[0];
+            return { annotation, metadata };
+          }
+        } else if (!annotation.body) {
+          console.warn(`Integrity error: metadata annotation for manifest ${manifestId} has no body`);
+          return { annotation, metadata: {} };
+        } else {
+          const metadata = annotation.body;
+          return { annotation, metadata };
+        }
+      } else {
+        // Repair
+        annotations.reduce<Promise<void>>((p, a) => 
+            p.then(() => store.deleteAnnotation(id, a)), Promise.resolve());
+
+        return { annotation: undefined, metadata: {} };
+      }
+    });
+}
 
 export const useManifestMetadata = (manifestId: string) => {
   const store = useStore();
@@ -10,38 +47,7 @@ export const useManifestMetadata = (manifestId: string) => {
     useState<{ annotation: W3CAnnotation, metadata: W3CAnnotationBody }>({ annotation: undefined, metadata: undefined });
 
   useEffect(() => {
-    const id = `iiif:${manifestId}`;
-
-    store.getAnnotations(id, { type: 'metadata'})
-      .then(annotations => {
-        if (annotations.length > 1)
-          console.warn(`Integrity error: multiple metadata annotations for manifest ${manifestId}`);
-  
-        if (annotations.length === 1) {
-          const annotation = annotations[0];
-
-          if (Array.isArray(annotation.body)) {
-            if (annotation.body.length !== 1) {
-              console.warn(`Integrity error: metadata annotation for manifest ${manifestId} has != 1 body`);
-            } else {
-              const metadata = annotation.body[0];
-              setData({ annotation, metadata });
-            }
-          } else if (!annotation.body) {
-            console.warn(`Integrity error: metadata annotation for manifest ${manifestId} has no body`);
-            setData({ annotation, metadata: {} });
-          } else {
-            const metadata = annotation.body;
-            setData({ annotation, metadata });
-          }
-        } else {
-          // Repair
-          annotations.reduce<Promise<void>>((p, a) => 
-              p.then(() => store.deleteAnnotation(id, a)), Promise.resolve());
-
-          setData({ annotation: undefined, metadata: {} });
-        }
-      });
+    getManifestMetadata(store, manifestId).then(setData);
   }, [manifestId]);
 
   const updateMetadata = useCallback((metadata: W3CAnnotationBody) => {

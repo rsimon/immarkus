@@ -1,31 +1,48 @@
-import { W3CAnnotationBody } from '@annotorious/react';
+import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
-import { Store } from '@/store';
+import { getManifestMetadata, Store } from '@/store';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
-import { Folder, MetadataSchema } from '@/model';
+import { Folder, IIIFResource, MetadataSchema } from '@/model';
 import { serializePropertyValue } from '@/utils/serialize';
 import { fitColumnWidths } from './utils';
 
-export const exportFolderMetadataCSV = async (store: Store) => {
-  const { folders } = store;
+const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
+  source: IIIFResource | Folder;
+  metadata: W3CAnnotation;
+}> => {
+  if ('uri' in source) {
+    return getManifestMetadata(store, source.id)
+      .then(({ annotation: metadata }) => ({ source, metadata }))
+  } else {
+    return store.getFolderMetadata(source.id)
+      .then(metadata => ({ source, metadata }))
+  }
+}
 
+export const exportFolderMetadataCSV = async (store: Store) => {
   const { folderSchemas } = store.getDataModel();
 
   const columns = aggregateSchemaFields(folderSchemas);
 
-  Promise.all(folders.map(folder => store.getFolderMetadata(folder.id).then(metadata => ({ folder, metadata }))))
-    .then(results => results.map(({ folder, metadata }) => {
-      const entries = zipMetadata(columns, metadata?.body as W3CAnnotationBody);
-      return Object.fromEntries([['folder', folder.name], ...entries]);
-    }))
-    .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
+  const { folders, iiifResources } = store;
+
+  Promise.all(
+    [...folders, ...iiifResources].map(source => getMetadata(store, source))
+  ).then(results => results.map(({ source, metadata }) => {
+    const entries = zipMetadata(columns, metadata?.body as W3CAnnotationBody);
+    return Object.fromEntries([
+      ['folder', source.name], 
+      ['folder_type', 'uri' in source ? 'local' : 'iiif_manifest'],
+      ...entries]);
+  }))
+  .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
 }
 
 const createSchemaWorksheet = (
   workbook: any, 
   schema: MetadataSchema,
-  result: { folder: Folder, metadata: W3CAnnotationBody }[],
+  result: { source: Folder | IIIFResource, metadata: W3CAnnotationBody }[],
   store: Store
 ) => {
   const worksheet = workbook.addWorksheet(schema.name);
@@ -34,6 +51,7 @@ const createSchemaWorksheet = (
 
   worksheet.columns = [
     { header: 'Folder Name', key: 'folder', width: 60 },
+    { header: 'Type', key: 'type', width: 60 }, 
     { header: 'Parent Folder', key: 'parent', width: 60 },
     { header: 'File Path', key: 'path', width: 60 },
     ...schemaProps.map(property => ({
@@ -43,11 +61,12 @@ const createSchemaWorksheet = (
 
   const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
 
-  withThisSchema.forEach(({ folder, metadata }) => {
+  withThisSchema.forEach(({ source, metadata }) => {
     const row = {
-      folder: folder.name,
-      parent: folder.parent ? store.getFolder(folder.parent)?.name : '',
-      path: [...folder.path.map(id => store.getFolder(id).name), folder.name].join('/')
+      folder: source.name,
+      parent: 'parent'  in source ? store.getFolder(source.parent)?.name : '',
+      type: 'uri' in source ? 'IIIF Manifest' : 'Local Folder',
+      path: [...source.path.map(id => store.getFolder(id).name), source.name].join('/')
     };
 
     const properties = 'properties' in metadata ? metadata.properties : {};
@@ -62,15 +81,15 @@ const createSchemaWorksheet = (
 }
 
 export const exportFolderMetadataExcel = async (store: Store) => {
-  Promise.all(store.folders.map(folder => 
-    // Fetch metadata annotations for each folder
-    store.getFolderMetadata(folder.id).then(metadata => ({
-      folder, metadata
-    })))).then(result => result.map(({ folder, metadata }) => {
-      if (!metadata) return { folder, metadata: undefined };
+  const { folders, iiifResources}  = store;
+
+  Promise.all(
+    [...folders, ...iiifResources].map(source => getMetadata(store, source))
+  ).then(result => result.map(({ source, metadata }) => {
+      if (!metadata) return { source, metadata: undefined };
 
       const body = Array.isArray(metadata.body) ? metadata.body[0] : metadata.body;
-      return { folder, metadata: body }
+      return { source, metadata: body }
     })).then(result => {
       const { folderSchemas } = store.getDataModel();
 
