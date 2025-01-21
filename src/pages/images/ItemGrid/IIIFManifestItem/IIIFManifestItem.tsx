@@ -12,6 +12,8 @@ interface IIIFManifestItemProps {
 
   onOpen(): void;
 
+  onSelect(): void;
+
 }
 
 export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
@@ -39,7 +41,8 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
         <div className="absolute bottom-3.5 right-2 text-white text-sm pointer-events-auto">
           <IIIFManifestItemActions 
             resource={resource} 
-            onDelete={onDeleteManifest} />
+            onDelete={onDeleteManifest} 
+            onSelect={props.onSelect} />
         </div>
       </div>
 

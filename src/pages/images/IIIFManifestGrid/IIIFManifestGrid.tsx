@@ -3,14 +3,19 @@ import murmur from 'murmurhash';
 import { useNavigate } from 'react-router-dom';
 import { IIIFManifestResource } from '@/model';
 import { useAnnotations } from '@/store';
-import { useIIIFResource } from '@/utils/iiif/hooks';
-import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { Skeleton } from '@/ui/Skeleton';
+import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CozyCanvas } from '@/utils/cozy-iiif';
+import { IIIFCanvasItem } from './IIIFCanvasItem';
+import { CanvasGridItem, GridItem } from '../Types';
 
 interface IIIFManifestGridProps {
 
   manifest: IIIFManifestResource;
+
+  selected?: GridItem;
+
+  onSelect(item: CanvasGridItem): void;
 
 }
 
@@ -34,16 +39,31 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
       !Array.isArray(a.target) && a.target.source === sourceId).length;
   }, [annotations, props.manifest]);
 
+  const renderCanvasItem = (canvas: CozyCanvas) => {
+    const info = props.manifest.canvases.find(c => c.uri === canvas.id);
+    const item: CanvasGridItem = ({ type: 'canvas', canvas, info });
+
+    const isSelected = props.selected?.type === 'canvas' ?
+      props.selected.info.uri === canvas.id : false;
+
+    return (
+      <IIIFCanvasItem
+        selected={isSelected}
+        canvas={canvas} 
+        canvasInfo={info}
+        annotationCount={countAnnotations(canvas)}
+        onOpen={() => onOpenCanvas(canvas)} 
+        onSelect={() => props.onSelect(item)} />
+      );
+  }
+
   return (
     <div className="item-grid">
       {parsedManifest ? (
         <ul>
           {parsedManifest.canvases.map((canvas, idx) => (
             <li key={`${canvas.id}.${idx}`}>
-              <IIIFCanvasItem
-                canvas={canvas} 
-                annotationCount={countAnnotations(canvas)}
-                onOpen={() => onOpenCanvas(canvas)} />
+              {renderCanvasItem(canvas)}
             </li>
           ))}
         </ul>

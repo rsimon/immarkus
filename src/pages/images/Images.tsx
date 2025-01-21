@@ -51,7 +51,9 @@ export const Images = () => {
 
           {isPresentationManifest(currentFolder) ? (
             <IIIFManifestGrid 
-              manifest={currentFolder} />
+              manifest={currentFolder} 
+              selected={selected}
+              onSelect={setSelected} />
           ) : (
             <ItemGrid 
               folder={currentFolder}

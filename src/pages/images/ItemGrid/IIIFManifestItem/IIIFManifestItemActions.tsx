@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Images, MoreVertical, Trash2 } from 'lucide-react';
+import { Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
 import { IIIFResource } from '@/model';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import {
@@ -15,6 +15,8 @@ interface IIIFManifestItemActionsProps {
   resource: IIIFResource;
 
   onDelete(): void;
+
+  onSelect(): void;
 
 }
 
@@ -33,6 +35,10 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start">
+          <DropdownMenuItem onSelect={props.onSelect}>
+            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+          </DropdownMenuItem>
+
           <DropdownMenuItem asChild>
             <Link to={`/images/${props.resource.id}`}>
               <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest

@@ -7,5 +7,6 @@ export * from './useFolderMetadata';
 export * from './useImageMetadata';
 export * from './useImages';
 export * from './useImageSnippet';
+export * from './useManifestMetadata';
 export * from './useRelationshipSearch';
 export * from './useStore';

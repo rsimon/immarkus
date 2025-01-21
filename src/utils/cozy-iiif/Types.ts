@@ -23,6 +23,8 @@ export interface CozyManifest {
 
   getLabel(locale?: string): string;
 
+  getMetadata(locale?: string): CozyMetadata[];
+
 }
 
 export interface CozyCanvas {
@@ -39,7 +41,17 @@ export interface CozyCanvas {
 
   getLabel(locale?: string): string;
 
+  getMetadata(locale?: string): CozyMetadata[];
+
   getThumbnailURL(minSize?: number): string;
+
+}
+
+export interface CozyMetadata {
+
+  label: string;
+
+  value: string;
 
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
 import { useStore } from './useStore';
@@ -37,7 +37,7 @@ export const useImageMetadata = (imageId: string) => {
     });
   }, [imageId]);
 
-  const updateMetadata = (metadata: W3CAnnotationBody) => {
+  const updateMetadata = useCallback((metadata: W3CAnnotationBody) => {
     const annotation: Partial<W3CAnnotation> = data.annotation || {
       '@context': 'http://www.w3.org/ns/anno.jsonld',
       type: 'Annotation',
@@ -58,7 +58,7 @@ export const useImageMetadata = (imageId: string) => {
     store.upsertAnnotation(imageId, next);
 
     setData({ annotation: next, metadata: next.body as W3CAnnotationBody });
-  }
+  }, [data, imageId]);
 
   return { metadata: data.metadata, updateMetadata };
 }

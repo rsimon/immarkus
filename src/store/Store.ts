@@ -281,7 +281,6 @@ export const loadStore = (
       annotations;
 
     const normalizedId = _normalizeSourceId(sourceId);
-
     const cached = cachedAnnotations.get(normalizedId);
     if (cached) {
       // A precaution. The data model could have changed meanwhile
@@ -320,7 +319,7 @@ export const loadStore = (
     opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
   ) => {
     if (sourceId.startsWith('iiif:')) {
-      return getCanvasAnnotations(sourceId);
+      return getCanvasAnnotations(sourceId, opts);
     } else {
       return _getAnnotations(sourceId, opts);
     }
@@ -334,9 +333,12 @@ export const loadStore = (
     }
   }
 
-  const getCanvasAnnotations = (id: string) => {
+  const getCanvasAnnotations = (
+    id: string,
+    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+  ) => {
     const [manifestId, canvasId] = parseIIIFId(id);
-    return _getAnnotations(`iiif:${manifestId}`).then(annotations => {
+    return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
       return canvasId 
         ? annotations.filter(a => !Array.isArray(a.target) && a.target.source === id)
         : annotations;

@@ -1,8 +1,16 @@
 import { Canvas, Manifest } from '@iiif/presentation-3';
 import { convertPresentation2  } from '@iiif/parser/presentation-2';
 import { Traverse } from '@iiif/parser';
-import { getImages, getLabel, getPropertyValue, getThumbnailURL, normalizeServiceUrl, parseImageService } from './utils';
 import { CozyCanvas, CozyManifest, CozyParseResult, ImageServiceResource } from './Types';
+import { 
+  getImages, 
+  getLabel, 
+  getMetadata, 
+  getPropertyValue, 
+  getThumbnailURL, 
+  normalizeServiceUrl, 
+  parseImageService 
+} from './utils';
 
 export const Cozy = {
   
@@ -133,6 +141,7 @@ const parseManifestResource = (resource: any, majorVersion: number): CozyManifes
         height: c.height,
         images,
         getLabel: getLabel(c),
+        getMetadata: getMetadata(c),
         getThumbnailURL: getThumbnailURL(c, images)
       } as CozyCanvas;
     });
@@ -147,7 +156,8 @@ const parseManifestResource = (resource: any, majorVersion: number): CozyManifes
     id: v3.id,
     majorVersion,
     canvases,
-    getLabel: getLabel(v3)
+    getLabel: getLabel(v3),
+    getMetadata: getMetadata(v3)
   }
 }
 
