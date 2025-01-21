@@ -20,26 +20,31 @@ interface SelectedFolderProps {
 
 }
 
-const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
+interface MetadataProps {
 
-  const { metadata, updateMetadata } = useFolderMetadata(folder);
+  metadata: W3CAnnotationBody;
+
+  onUpdate(updated: W3CAnnotationBody): void;
+
+}
+
+const Metadata = (props: MetadataProps) => {
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
   useEffect(() => {
-    setFormState(metadata);    
-  }, [metadata]);
+    setFormState(props.metadata);    
+  }, [props.metadata]);
 
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    updateMetadata(formState);
+    props.onUpdate(formState);
   }
 
   return (
     <PropertyValidation>
       <form 
-        onSubmit={onSubmit} 
-        className="bg-white p-3 rounded border shadow-sm mt-2">
+        onSubmit={onSubmit}>
         <div className="flex flex-col flex-grow">          
           <FolderMetadataForm
             metadata={formState}
@@ -48,7 +53,7 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
 
         <div className="pt-2">        
           <Button 
-            disabled={!hasChanges(metadata, formState)} 
+            disabled={!hasChanges(props.metadata, formState)} 
             className="w-full mb-2"
             type="submit">
             Save
@@ -60,13 +65,23 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
 
 }
 
+const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
+
+  const { metadata, updateMetadata } = useFolderMetadata(folder);
+
+  return (
+    <div className="bg-white px-4 py-3 rounded border shadow-sm mt-2">
+      <Metadata metadata={metadata} onUpdate={updateMetadata} />
+    </div>
+  )
+
+}
+
 export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource }) => {
 
   const cozyManifest = useIIIFResource(manifest.id);
 
   const { metadata, updateMetadata } = useManifestMetadata(manifest.id);
-
-  const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
   return cozyManifest ? (
     <div className="bg-white shadow-sm rounded border px-4 py-3 mt-2">
@@ -88,11 +103,11 @@ export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestR
 
         <TabsContent 
           value="my">
-          
+          <Metadata metadata={metadata} onUpdate={updateMetadata} />
         </TabsContent>
 
         <TabsContent value="iiif"
-          className="flex-grow">
+          className="flex-grow pb-4">
           <IIIFMetadataList 
             metadata={cozyManifest.getMetadata()} />
         </TabsContent>
