@@ -14,9 +14,13 @@ interface ImageMetadataSectionProps {
 
 export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
-  if ('uri' in props.image) return null;
+  const { image } = props;
 
-  const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
+  const id =  image 
+    ? 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id
+    : undefined;
+
+  const { metadata, updateMetadata } = useImageMetadata(id);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
