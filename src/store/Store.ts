@@ -319,10 +319,24 @@ export const loadStore = (
     opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
   ) => {
     if (sourceId.startsWith('iiif:')) {
-      return getCanvasAnnotations(sourceId, opts);
+      const [manifestId, canvasId] = parseIIIFId(sourceId);
+      if (canvasId) {
+        return getCanvasAnnotations(sourceId, opts);  
+      } else {
+        return getManifestAnnotations(manifestId, opts);
+      }
     } else {
       return _getAnnotations(sourceId, opts);
     }
+  }
+
+  const getManifestAnnotations = (
+    manifestId: string,
+    opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+  ) => {
+    return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
+      return annotations.filter(a => !Array.isArray(a.target) && a.target.source === `iiif:${manifestId}`)
+    });
   }
 
   const getCanvas = (id: string) => {

@@ -10,7 +10,9 @@ export const useManifestMetadata = (manifestId: string) => {
     useState<{ annotation: W3CAnnotation, metadata: W3CAnnotationBody }>({ annotation: undefined, metadata: undefined });
 
   useEffect(() => {
-    store.getAnnotations(`iiif:${manifestId}`, { type: 'metadata'})
+    const id = `iiif:${manifestId}`;
+
+    store.getAnnotations(id, { type: 'metadata'})
       .then(annotations => {
         if (annotations.length > 1)
           console.warn(`Integrity error: multiple metadata annotations for manifest ${manifestId}`);
@@ -33,6 +35,10 @@ export const useManifestMetadata = (manifestId: string) => {
             setData({ annotation, metadata });
           }
         } else {
+          // Repair
+          annotations.reduce<Promise<void>>((p, a) => 
+              p.then(() => store.deleteAnnotation(id, a)), Promise.resolve());
+
           setData({ annotation: undefined, metadata: {} });
         }
       });
