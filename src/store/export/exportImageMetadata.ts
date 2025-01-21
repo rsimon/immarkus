@@ -1,23 +1,56 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
-import { Store } from '@/store';
+import { getImageMetadata, Store } from '@/store';
 import { downloadCSV } from '@/utils/download';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
-import { Image, MetadataSchema } from '@/model';
-import { W3CAnnotationBody } from '@annotorious/react';
+import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, Image, MetadataSchema } from '@/model';
+import {  W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
 import { fitColumnWidths } from './utils';
 
+interface SourceMetadata {
+
+  source: FileImage | CanvasInformation;
+
+  metadata: W3CAnnotationBody;
+
+}
+
+const getMetadata = (store: Store, source: FileImage | IIIFResource): Promise<SourceMetadata[]> => {  
+  if ('uri' in source) {
+    const canvases = (source as IIIFManifestResource).canvases;
+    return canvases.reduce<Promise<SourceMetadata[]>>((p, canvas) => p.then(all => {
+      const id = `iiif:${canvas.manifestId}:${canvas.id}`;
+
+      return getImageMetadata(store, id).then(({ metadata }) => (
+        [...all, { source: canvas, metadata }]
+      ))
+    }), Promise.resolve([]));
+  } else {
+    return store.getImageMetadata(source.id)
+      .then(metadata => ([{ source, metadata }]))
+  }
+}
+
 export const exportImageMetadataCSV = async (store: Store) => {
-  const { images } = store;
+  const { images, iiifResources } = store;
   const { imageSchemas } = store.getDataModel();
 
   const columns = aggregateSchemaFields(imageSchemas);
 
-  Promise.all(images.map(image => store.getImageMetadata(image.id).then(metadata => ({ image, metadata }))))
-    .then(results => results.map(({ image, metadata }) => {
-      const entries = zipMetadata(columns, metadata);
-      return Object.fromEntries([['image', image.name], ...entries]);
-    }))
+  Promise.all(
+    [...images, ...iiifResources].map(source => getMetadata(store, source))
+  ).then(results => {
+    return results
+    .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
+      .map(({ source, metadata }) => {
+        const entries = zipMetadata(columns, metadata);
+        return Object.fromEntries([
+          ['image', source.name], 
+          ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
+          ...entries
+        ]);
+      })
+    })
     .then(rows => downloadCSV(rows, 'image_metadata.csv'));
 }
 

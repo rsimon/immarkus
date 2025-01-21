@@ -33,7 +33,7 @@ export const exportFolderMetadataCSV = async (store: Store) => {
     const entries = zipMetadata(columns, metadata?.body as W3CAnnotationBody);
     return Object.fromEntries([
       ['folder', source.name], 
-      ['folder_type', 'uri' in source ? 'local' : 'iiif_manifest'],
+      ['folder_type', 'uri' in source ? 'iiif_manifest' : 'local'],
       ...entries]);
   }))
   .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
