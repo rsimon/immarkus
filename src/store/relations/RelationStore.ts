@@ -1,5 +1,5 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { CanvasInformation, Image } from '@/model';
+import { CanvasInformation, IIIFManifestResource, IIIFResource, Image } from '@/model';
 import { AnnotationStore } from '../Store';
 import { readJSONFile, writeJSONFile } from '../utils';
 
@@ -20,6 +20,8 @@ export interface RelationStore {
   hasRelatedAnnotations(annotationId: string): boolean;
 
   listAllRelations(): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
+
+  removeIIIFResource(resource: IIIFResource): Promise<void>;
 
   upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation, imageId?: string): Promise<void>;
 
@@ -130,6 +132,28 @@ export const loadRelationStore = (
     return save();
   }
 
+  // Not great...
+  const _removeIIIFResource = store.removeIIIFResource;
+
+  const removeIIIFResource = async (resource: IIIFResource) => {
+    const { canvases } = (resource as IIIFManifestResource);
+
+    // Get all relations to/from any of these canvases
+    return canvases
+      .reduce<Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>>((p, canvas) => (
+        p.then(all => {
+          const id = `iiif:${canvas.manifestId}:${canvas.id}`;
+          return getRelations(id).then(relations => ([...all, ...relations]));
+        })
+      ), Promise.resolve([]))
+      .then(toDelete => {
+        const linkIds = new Set<string>(toDelete.map(([link, _]) => link.id));
+        annotations = annotations.filter(a => !(linkIds.has(a.id) || linkIds.has(a.target)));
+        return save();
+      })
+      .then(() => _removeIIIFResource(resource));
+  }
+
   resolve({
     deleteRelation,
     getRelatedAnnotations,
@@ -138,6 +162,7 @@ export const loadRelationStore = (
     getRelations,
     hasRelatedAnnotations,
     listAllRelations,
+    removeIIIFResource,
     upsertRelation
   });
 
