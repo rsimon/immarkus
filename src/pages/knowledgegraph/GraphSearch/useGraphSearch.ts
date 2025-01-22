@@ -1,7 +1,6 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { Image } from '@/model';
 import { 
   DropdownOption, 
   Graph,
@@ -96,10 +95,10 @@ export const useGraphSearch = (
 
         if (objectType === 'IMAGE') {
           findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
-            setMatches(results.map(image => image.id)));  
+            setMatches(results.map(image => 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id)));  
         } else {
           findFoldersByMetadata(store, propertyName, value, s.Attribute.builtIn).then(results =>
-            setMatches(results.map(folder => folder.id)));
+            setMatches(results.map(folder => 'uri' in folder ? `iiif:${folder.id}` : folder.id)));
         }
       }
     } else if (sentence.ConditionType === 'WITH_ENTITY') {
