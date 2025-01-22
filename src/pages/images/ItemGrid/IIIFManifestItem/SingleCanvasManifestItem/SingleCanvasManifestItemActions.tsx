@@ -1,22 +1,27 @@
 import { useState } from 'react';
-import { Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
+import { Image, Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { CanvasInformation, IIIFManifestResource } from '@/model';
+import { CanvasInformation } from '@/model';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
 
 interface SingleCanvasManifestItemActionsProps {
 
-    canvas: CanvasInformation;
-  
-    onDelete(): void;
-  
-    onSelect(): void;
+  canvas: CanvasInformation;
+
+  onDelete(): void;
+
+  onSelectCanvas(): void;
+
+  onSelectManifest(): void;
 
 }
 
@@ -39,13 +44,24 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onSelect={props.onSelect}>
-            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
-          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onSelect={props.onSelectManifest}>
+                <Images className="size-4 text-muted-foreground mr-2" /> Manifest Metadata
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={props.onSelectCanvas}>
+                <Image className="size-4 text-muted-foreground mr-2" /> Canvas Metadata
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
 
           <DropdownMenuItem asChild>
             <Link to={url}>
-              <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
+              <Image className="size-4 text-muted-foreground mr-2" /> Open Canvas
             </Link>
           </DropdownMenuItem>
 

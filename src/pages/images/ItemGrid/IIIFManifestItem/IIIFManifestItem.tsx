@@ -5,6 +5,7 @@ import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
+import { GridItem } from '../../Types';
 
 import './IIIFManifestItem.css';
 
@@ -14,7 +15,7 @@ interface IIIFManifestItemProps {
 
   onOpen(): void;
 
-  onSelect(): void;
+  onSelect(item: GridItem): void;
 
 }
 
@@ -49,7 +50,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
           <IIIFManifestItemActions 
             resource={resource} 
             onDelete={onDeleteManifest} 
-            onSelect={props.onSelect} />
+            onSelect={() => props.onSelect(resource)} />
         </div>
       </div>
 

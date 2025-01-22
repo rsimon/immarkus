@@ -1,20 +1,21 @@
 import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { IIIFManifestResource } from '@/model';
-import { useManifestAnnotations } from '@/store';
-import { useCanvas } from '@/utils/iiif/hooks';
-import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
 import { useNavigate } from 'react-router-dom';
 import { IIIFIcon } from '@/components/IIIFIcon';
+import { IIIFManifestResource } from '@/model';
+import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
+import { useCanvas } from '@/utils/iiif/hooks';
+import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
+import { GridItem } from '../../../Types';
 
 interface SingleCanvasManifestItemProps {
 
   resource: IIIFManifestResource;
 
   onDelete(): void;
-  
-  onSelect(): void;
+
+  onSelect(item: GridItem): void;
 
 }
 
@@ -38,6 +39,11 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
   const onOpen = () =>
     navigate(`/annotate/iiif:${info.manifestId}:${info.id}`);
 
+  const onSelectCanvas = () =>
+    props.onSelect({ type: 'canvas', canvas, info });
+
+  const onSelectManifest = () => props.onSelect(props.resource);
+
   return (
     <div ref={ref}>
       {(inView && canvas) ? (
@@ -55,7 +61,8 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
               )}
 
               <IIIFIcon
-                className="iiif-logo text-white transition-all absolute top-2.5 left-2.5 size-6" />
+                light
+                className="iiif-logo text-white transition-all absolute top-2.5 left-2.5 size-5" />
 
               <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full pointer-events-auto">
                 <div className="text-white text-sm">
@@ -69,7 +76,8 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
                   <SingleCanvasManifestItemActions
                     canvas={info}
                     onDelete={props.onDelete}
-                    onSelect={props.onSelect} />
+                    onSelectCanvas={onSelectCanvas} 
+                    onSelectManifest={onSelectManifest} />
                 </div>
               </div>
             </div>

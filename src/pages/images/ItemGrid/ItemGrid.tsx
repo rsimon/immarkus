@@ -64,7 +64,7 @@ export const ItemGrid = (props: ItemGridProps) => {
               <IIIFManifestItem
                 resource={resource} 
                 onOpen={() => onOpenFolder(resource)} 
-                onSelect={() => onSelectManifest(resource)}/>
+                onSelect={onSelectManifest}/>
             ) : null}
           </li>
         ))}
