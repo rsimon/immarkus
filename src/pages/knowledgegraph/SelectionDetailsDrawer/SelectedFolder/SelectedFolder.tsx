@@ -150,7 +150,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             </h2>
 
             <Button 
-              className="h-8 w-8 right-1.5 top-1.5 rounded"
+              className="h-8 w-8 right-1.5 top-1.5 rounded-full"
               size="icon"
               variant="ghost"
               onClick={props.onClose}>
