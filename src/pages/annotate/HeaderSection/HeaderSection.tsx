@@ -4,6 +4,7 @@ import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold'
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
+import { isSingleImageManifest } from '@/utils/iiif';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
 import { Tool, ToolMode } from '../Tool';
@@ -99,8 +100,15 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     if (props.images.length === 0 || props.images.length > 1) return '/images/';
 
     const source = props.images[0];
-    if ('manifestId' in source)
-      return `/images/${source.manifestId}`;
+    if ('manifestId' in source) {
+      const manifest = store.getIIIFResource(source.manifestId);
+      if (isSingleImageManifest(manifest)) {
+        const folder = store.getFolder(manifest.folder);
+        return `/images/${folder && ('id' in folder) ? folder.id : ''}`;
+      } else {
+        return `/images/${source.manifestId}`;
+      }
+    }
 
     // Return to parent folder (might be root)
     const folder = store.getFolder(source.folder);

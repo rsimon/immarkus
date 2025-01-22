@@ -2,7 +2,9 @@ import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource, IIIFResource } from '@/model';
 import { useStore } from '@/store';
+import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
+import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
 
 import './IIIFManifestItem.css';
 
@@ -24,9 +26,14 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
 
   const onDeleteManifest = () => store.removeIIIFResource(resource);
 
-  return (
+  return  isSingleImageManifest(props.resource) ? (
+    <SingleCanvasManifestItem
+      resource={props.resource as IIIFManifestResource}
+      onDelete={onDeleteManifest}
+      onSelect={props.onSelect} />
+  ) : (
     <div>
-      <div 
+      <div
         className="folder-item manifest-item cursor-pointer relative rounded-md 
           w-[200px] h-[200px] flex justify-center items-center">
         <button 
@@ -59,4 +66,5 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
       </div>
     </div>
   )
+
 }

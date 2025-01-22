@@ -3,9 +3,9 @@ import murmur from 'murmurhash';
 import { CozyCanvas } from '@/utils/cozy-iiif';
 import { useIIIFResource } from './useIIIFResource';
 
-export const useCanvas = (id: string): CozyCanvas => {
+export const useCanvas = (id?: string): CozyCanvas => {
 
-  if (!id.startsWith('iiif:')) return;
+  if (!id || !id.startsWith('iiif:')) return;
 
   const [manifestId, canvasId] = id.substring('iiif:'.length).split(':');
 

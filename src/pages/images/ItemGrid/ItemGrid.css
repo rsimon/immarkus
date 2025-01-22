@@ -11,7 +11,7 @@
 }
 
 .item-grid li:hover img,
-.item-grid li:hover svg {
+.item-grid li:hover .scale {
   transform: scale(1.05);
 }
 
