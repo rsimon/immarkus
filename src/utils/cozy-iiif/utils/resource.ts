@@ -12,7 +12,7 @@ export const getPropertyValue = <T extends unknown = any>(data: any, name: strin
 
 export const getStringValue = (propertyValue: string | InternationalString, locale = 'en') => {
   if (typeof propertyValue === 'string') return propertyValue;
-
+  
   const localized = propertyValue[locale];
   if (localized) {
     return localized[0];
@@ -27,7 +27,7 @@ export const getStringValue = (propertyValue: string | InternationalString, loca
 
 export const getLabel = (data: any) => (locale = 'en') => {
   const propertyValue = getPropertyValue<string | InternationalString>(data, 'label');
-  return getStringValue(propertyValue, locale);
+  return propertyValue ? getStringValue(propertyValue, locale) : undefined;
 } 
 
 export const getMetadata = (data: any) => (locale?: string): CozyMetadata[] => {
