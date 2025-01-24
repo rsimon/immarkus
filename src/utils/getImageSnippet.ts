@@ -1,10 +1,17 @@
 import murmur from 'murmurhash';
 import pThrottle from 'p-throttle';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
-import { CanvasInformation, IIIFManifestResource, Image, LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { fetchManifest } from './iiif/fetchManifest';
+import { 
+  CanvasInformation, 
+  IIIFManifestResource, 
+  Image, 
+  LoadedFileImage, 
+  LoadedIIIFImage, 
+  LoadedImage 
+} from '@/model';
 
 // See https://www.npmjs.com/package/p-throttle
 const IMAGE_API_CALL_LIMIT = 5; // Max number of calls within the interval
@@ -60,8 +67,8 @@ const SnippetScheduler = () => {
     });
   }
 
-  const getSnippet = (image: LoadedFileImage, annotation: ImageAnnotation): Promise<FileImageSnippet> => {
-    const cacheKey = `${image.id}-${annotation.id}`;
+  const getSnippet = (imageId: string, blob: Blob, annotation: ImageAnnotation): Promise<FileImageSnippet> => {
+    const cacheKey = `${imageId}-${annotation.id}`;
 
     // Already cached?
     if (cache.has(cacheKey))
@@ -90,7 +97,7 @@ const SnippetScheduler = () => {
 
       worker.addEventListener('message', messageHandler);
 
-      worker.postMessage({ image, annotation });
+      worker.postMessage({ blob, annotation });
     });
 
     inProgress.set(cacheKey, snippetPromise);
@@ -151,31 +158,36 @@ export const getImageSnippet = (
     // Should never happen
     if (!firstImage) throw 'Canvas has no image';
 
-    // Should never happen
-    if (firstImage.type !== 'dynamic') throw 'Unsupported IIIF content'; 
+    if (firstImage.type === 'dynamic') {
+      const src = firstImage.getRegionURL({ 
+        x: bounds.minX,
+        y: bounds.minY,
+        w: bounds.maxX - bounds.minX,
+        h: bounds.maxY - bounds.minY
+      });
 
-    const src = firstImage.getRegionURL({ 
-      x: bounds.minX,
-      y: bounds.minY,
-      w: bounds.maxX - bounds.minX,
-      h: bounds.maxY - bounds.minY
-    });
-
-    return Promise.resolve({
-      annotation: a,
-      height: bounds.maxY - bounds.minY,
-      width: bounds.maxX - bounds.minX,
-      src
-    } as IIIFImageSnippet).then(snippet => {  
-      if (downloadIIIF) {
-        return throttledFetch(snippet.src)
-          .then(data => ({...snippet, data}) as FileImageSnippet);
-      } else {
-        return snippet;
-      }
-    });
+      return Promise.resolve({
+        annotation: a,
+        height: bounds.maxY - bounds.minY,
+        width: bounds.maxX - bounds.minX,
+        src
+      } as IIIFImageSnippet).then(snippet => {  
+        if (downloadIIIF) {
+          return throttledFetch(snippet.src)
+            .then(data => ({...snippet, data}) as FileImageSnippet);
+        } else {
+          return snippet;
+        }
+      });
+    } else if (firstImage.type === 'static') {
+      // IIIF static image - fetch blob and crop
+      return fetch(firstImage.url)
+        .then(res => res.blob())
+        .then(blob => scheduler.getSnippet(canvas.id, blob, a));
+    }
   } else {
-    return scheduler.getSnippet(image as LoadedFileImage, a);
+    const blob = new Blob([(image as LoadedFileImage).data])
+    return scheduler.getSnippet(image.id, blob, a);
   }
 }
 

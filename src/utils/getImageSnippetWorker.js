@@ -1,7 +1,7 @@
 self.onmessage = function(e) {
-  const { image, annotation } = e.data;
+  const { blob, annotation } = e.data;
   
-  cropImage(image, annotation)
+  cropImage(blob, annotation)
     .then(snippet => { 
       self.postMessage({ snippet });
       self.close();
@@ -9,14 +9,14 @@ self.onmessage = function(e) {
     .catch(error => self.postMessage({ error: error.message }));
 };
 
-function cropImage(image, annotation, maxWidth = 800, maxHeight = 800) {
+function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
   return new Promise((resolve, reject) => {
     const { bounds } = annotation.target.selector.geometry;
 
     const width = bounds.maxX - bounds.minX;
     const height = bounds.maxY - bounds.minY;
 
-    createImageBitmap(new Blob([image.data]))
+    createImageBitmap(blob)
       .then(imageBitmap => {
         const canvas = new OffscreenCanvas(width, height);
         

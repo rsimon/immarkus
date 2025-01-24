@@ -101,7 +101,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       dblClickToZoom: false
     },
     showNavigationControl: false,
-    crossOriginPolicy: 'Anonymous',
     minZoomLevel: 0.1,
     maxZoomLevel: 100
   }), [image.id]);
