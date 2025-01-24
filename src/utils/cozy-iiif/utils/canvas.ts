@@ -31,8 +31,8 @@ export const getThumbnailURL = (canvas: Canvas, images: CozyImageResource[] = []
     if (image.type === 'dynamic' || image.type === 'level0') {
       return getImageURLFromService(image.service, w, h);
     } else if (image.type === 'static') {
-      // TODO
-      console.error('Static image canvas: unspported');
+      // console.warn('Static image canvas');
+      return image.url;
     }    
   }
 }
