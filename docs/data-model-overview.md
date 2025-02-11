@@ -1,8 +1,6 @@
 # IMMARKUS Data Model and File Structure
 
-IMMARKUS is a browser-based, client-side application for scholarly semantic image annotation. 
-
-All user data is stored **locally on the user's computer in JSON files**, within a user-specified project folder. This document provides an overview of the data model and file structure.
+IMMARKUS is a browser-based, client-side application for scholarly semantic image annotation. All user data is stored **locally on the user's computer in JSON files**, within a user-specified project folder. This document provides an overview of the data model and file structure.
 
 ---
 
