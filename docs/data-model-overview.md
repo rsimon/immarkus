@@ -1,6 +1,8 @@
 # IMMARKUS Data Model and File Structure
 
-IMMARKUS is a browser-based, client-side application for scholarly semantic image annotation. All user data is stored locally on the user's computer in **JSON files** within a user-specified project folder. This document provides an overview of the data model and file structure.
+IMMARKUS is a browser-based, client-side application for scholarly semantic image annotation. 
+
+All user data is stored **locally on the user's computer in JSON files**, within a user-specified project folder. This document provides an overview of the data model and file structure.
 
 ---
 
@@ -8,7 +10,7 @@ IMMARKUS is a browser-based, client-side application for scholarly semantic imag
 
 When the user launches IMMARKUS, they must specify a **project folder**. This folder serves as the root directory for all project-related data. IMMARKUS stores core project-level information in two key files:
 
-### `_immarkus.model.json`
+#### _immarkus.model.json
 This file contains the **data model definitions**, including:
 - **Entity classes** and their properties.
 - **Relationship types** between entities.
@@ -16,7 +18,7 @@ This file contains the **data model definitions**, including:
 
 These definitions are editable by the user in the **Data Model** tab of IMMARKUS.
 
-### `_immarkus.relations.json`
+#### _immarkus.relations.json
 This file stores **relationships between annotations** across the project. Since annotations can link entities on different images, these relationships are stored at the global (root) level.
 
 ---
