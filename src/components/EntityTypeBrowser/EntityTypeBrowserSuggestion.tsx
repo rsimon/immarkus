@@ -25,7 +25,7 @@ export const EntityTypeBrowserSuggestion = (props: EntityTypeBrowserSuggestionPr
 
   return (
     <div
-      className="etb-suggestion pr-2 py-1 rounded-sm data-[highlighted]:bg-accent cursor-pointer" 
+      className="etb-suggestion pr-2 py-1 rounded-sm data-highlighted:bg-accent cursor-pointer" 
       data-highlighted={highlighted ? 'true' : undefined}>
       
       <div className="flex justify-between text-muted-foreground">

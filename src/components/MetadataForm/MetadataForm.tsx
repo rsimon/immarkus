@@ -90,7 +90,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
   }
 
   return (schemas.length === 0) ? (
-    <div className="flex flex-col text-sm items-center px-2 justify-center text-center flex-grow leading-loose text-muted-foreground">
+    <div className="flex flex-col text-sm items-center px-2 justify-center text-center grow leading-loose text-muted-foreground">
       <span>
         No schema defined.<br/>
         Go to <Link to="/model" className="inline-block text-black hover:bg-muted px-1 rounded-sm"><ToyBrick className="inline h-4 w-4 align-text-top" /> Data Model</Link> to 
@@ -105,7 +105,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
             <span className="font-medium">Schema</span>
     
             <Select value={selectedSchema?.name} onValueChange={onChangeSchema}>
-              <SelectTrigger className="flex-grow whitespace-nowrap overflow-hidden">
+              <SelectTrigger className="grow whitespace-nowrap overflow-hidden">
                 <span className="overflow-hidden text-ellipsis">
                   <SelectValue />
                 </span>

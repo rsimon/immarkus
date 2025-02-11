@@ -32,7 +32,7 @@ export const PageHeader = (props: PageHeaderProps) => {
   }, [folder, store]);
 
   return (
-    <div className="space-y-1 flex-grow">
+    <div className="space-y-1 grow">
       <h1 className="text-sm text-muted-foreground tracking-tight">
         {isRootFolder(folder) ? (
           <span>Folder</span>

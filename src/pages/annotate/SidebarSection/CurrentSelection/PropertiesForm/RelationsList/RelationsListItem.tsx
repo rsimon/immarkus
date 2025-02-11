@@ -63,12 +63,12 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
 
   return (sourceAnnotation && targetAnnotation) && (
     <div className="flex items-center w-full">
-      <div className="flex flex-grow items-center justify-between px-1 py-1.5 text-xs gap-2">
+      <div className="flex grow items-center justify-between px-1 py-1.5 text-xs gap-2">
         <AnnotationThumbnail 
           annotation={leftSideId === sourceId ? sourceAnnotation : targetAnnotation} 
-          className="border shadow-sm h-12 w-12" /> 
+          className="border shadow-xs h-12 w-12" /> 
 
-        <div className="relative flex-grow flex items-center">
+        <div className="relative grow flex items-center">
           <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
         
           <div className="w-full flex justify-center z-10 font-light text-[11px]">
@@ -92,7 +92,7 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
 
         <AnnotationThumbnail 
           annotation={leftSideId === sourceId ? targetAnnotation : sourceAnnotation} 
-          className="border shadow-sm h-12 w-12" />
+          className="border shadow-xs h-12 w-12" />
       </div>
 
       <ConfirmedDelete

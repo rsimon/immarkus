@@ -33,7 +33,7 @@ export const ImageListItem = (props: ImageListItemProps) => {
         ) : (
           <Thumbnail image={image} /> 
         )}
-        <div className="flex-grow line-clamp-3 overflow-hidden text-ellipsis text-left">
+        <div className="grow line-clamp-3 overflow-hidden text-ellipsis text-left">
           {image.name}
         </div>
       </button>

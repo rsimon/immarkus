@@ -29,10 +29,10 @@ export const PluginConnectionsListItem = (props: PluginConnectionsListItemProps)
       <div className={fromId === refId ? undefined : 'p-1.5'}>
         <AnnotationThumbnail 
           annotation={fromId} 
-          className={fromId === refId ? 'shadow h-12 w-12' : 'shadow h-9 w-9'} /> 
+          className={fromId === refId ? 'shadow-sm h-12 w-12' : 'shadow-sm h-9 w-9'} /> 
       </div>
 
-      <div className="flex-grow h-[1px] border-gray-700 border-t border-dashed relative">
+      <div className="grow h-[1px] border-gray-700 border-t border-dashed relative">
         <div className="absolute -top-[0.75rem] w-full text-center">
           <span className="bg-white px-1">{relationship}</span>
         </div>
@@ -42,7 +42,7 @@ export const PluginConnectionsListItem = (props: PluginConnectionsListItemProps)
       <div className={toId === refId ? undefined : 'p-1.5'}>
         <AnnotationThumbnail 
           annotation={toId} 
-          className={toId === refId ? 'shadow h-12 w-12' : 'shadow h-9 w-9'} />
+          className={toId === refId ? 'shadow-sm h-12 w-12' : 'shadow-sm h-9 w-9'} />
       </div>
     </div>
   )

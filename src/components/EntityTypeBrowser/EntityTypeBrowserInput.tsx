@@ -30,7 +30,7 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
         </span>
       )}
 
-      <div className="px-0.5 py-1.5 relative flex items-center flex-grow">
+      <div className="px-0.5 py-1.5 relative flex items-center grow">
         {!selected && (
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
         )}
@@ -39,14 +39,14 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
           autoFocus
           {...inputProps}
           placeholder={selected ? `Search in ${selected.label || selected.id}...` : 'Search...'}
-          className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
+          className="relative top-[1px] py-1 outline-hidden px-0.5 grow" />
       </div>
 
       <div className="pr-1.5 flex items-center">
         {(selected || inputProps.value) && (        
           <button 
             onClick={onClearSearch}
-            className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
+            className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
             <X
               strokeWidth={1.7}
               className="w-6 h-6 p-1 text-muted-foreground hover:text-black" />
@@ -56,7 +56,7 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
         <Separator orientation="vertical" className="h-4 mx-1" />
 
         <button 
-          className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
+          className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
           <ListTree className="w-6 h-6 p-1" />
         </button>
       </div>

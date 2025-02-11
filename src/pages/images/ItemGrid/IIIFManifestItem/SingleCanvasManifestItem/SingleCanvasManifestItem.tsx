@@ -95,7 +95,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
         </div>
       ) : (
         <div className="relative flex items-center justify-center w-[180px] h-[200px]">
-          <Skeleton className="size-[178px] rounded-md shadow" />
+          <Skeleton className="size-[178px] rounded-md shadow-sm" />
         </div>
       )}
     </div>

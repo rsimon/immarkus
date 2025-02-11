@@ -65,7 +65,7 @@ const MetadataList = (props: MetadataListProps) => {
 
       <TabsContent 
         value="embedded"
-        className="flex-grow">
+        className="grow">
         {iiifMetadata ? (
           <IIIFMetadataList metadata={iiifMetadata} />
         ) : null}
@@ -73,12 +73,12 @@ const MetadataList = (props: MetadataListProps) => {
 
       <TabsContent
         value="custom"
-        className="flex-grow">
+        className="grow">
         <PropertyValidation>
           <form 
             className="flex flex-col justify-between h-full pt-4"
             onSubmit={onSubmit}>
-            <div className="flex flex-col flex-grow">
+            <div className="flex flex-col grow">
               {props.folder ? (
                 <FolderMetadataForm
                   metadata={formState}

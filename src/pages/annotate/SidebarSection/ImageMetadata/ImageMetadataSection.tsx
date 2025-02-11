@@ -40,7 +40,7 @@ const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
   return (
     <PropertyValidation>
       <form 
-        className="flex flex-col flex-grow justify-between w-full"
+        className="flex flex-col grow justify-between w-full"
         onSubmit={onSubmit}>
         <div>
           <ImageMetadataForm
@@ -85,7 +85,7 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
   return 'uri' in image ? (
     <Tabs 
       defaultValue="my" 
-      className="w-full flex-grow flex flex-col">
+      className="w-full grow flex flex-col">
       <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
         <TabsTrigger 
           value="my"
@@ -102,12 +102,12 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
       <TabsContent 
         value="my"
-        className="data-[state=active]:flex-grow data-[state=active]:flex">
+        className="data-[state=active]:grow data-[state=active]:flex">
         <MyImageMetadataTab {...props} />
       </TabsContent>
 
       <TabsContent value="iiif"
-        className="flex-grow">
+        className="grow">
         <IIIFMetadataTab {...props} />
       </TabsContent>
     </Tabs>

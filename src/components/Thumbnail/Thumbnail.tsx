@@ -28,7 +28,7 @@ const ThumbnailImage = (props: ThumbnailProps) => {
     <img
       src={url}
       alt={image.name}
-      className="w-14 h-14 object-cover aspect-square rounded-sm shadow border border-black/20" />
+      className="w-14 h-14 object-cover aspect-square rounded-sm shadow-sm border border-black/20" />
   ) : (
     <Spinner className="w-3 h-3 text-muted-foreground/80" />
   )

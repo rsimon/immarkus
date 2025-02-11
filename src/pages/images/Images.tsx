@@ -44,7 +44,7 @@ export const Images = () => {
       <AppNavigationSidebar />
 
       <main className="page images flex flex-row p-0 overflow-x-hidden">
-        <div className="flex-grow px-12 py-6 overflow-y-auto">
+        <div className="grow px-12 py-6 overflow-y-auto">
           <PageHeader 
             folder={currentFolder} 
             onShowMetadata={onShowFolderMetadata} />

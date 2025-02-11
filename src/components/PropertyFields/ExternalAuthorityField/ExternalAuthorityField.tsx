@@ -90,7 +90,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
   return (
     <div className="mb-8">
       <div className="ml-0.5 mb-1.5 flex justify-between items-center pr-1">
-        <div className="flex flex-shrink-0">
+        <div className="flex shrink-0">
           <Label htmlFor={id} >
             {definition.name}
           </Label> 

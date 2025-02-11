@@ -101,7 +101,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
         {props.images.map((image: FileImage | CanvasInformation) => (
           <li 
             key={image.id}
-            className="flex-shrink-0 inline-block mx-1.5">
+            className="shrink-0 inline-block mx-1.5">
             <ContextMenu>
               <ContextMenuTrigger>
                 <button

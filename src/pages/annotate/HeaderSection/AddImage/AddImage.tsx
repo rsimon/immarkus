@@ -112,7 +112,7 @@ export const AddImage = (props: AddImageProps) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+        className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
           focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap">
         <ImagePlus className="h-4 w-4 mr-1" /> Add image
       </PopoverTrigger>
@@ -126,7 +126,7 @@ export const AddImage = (props: AddImageProps) => {
           <input 
             autoFocus
             placeholder="Search..."
-            className="relative top-[1px] py-1 outline-none px-0.5 flex-grow text-sm" 
+            className="relative top-[1px] py-1 outline-hidden px-0.5 grow text-sm" 
             value={query} 
             onChange={evt => setQuery(evt.target.value)} />
         </div>

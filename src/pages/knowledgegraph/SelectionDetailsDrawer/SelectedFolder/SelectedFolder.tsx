@@ -45,7 +45,7 @@ const Metadata = (props: MetadataProps) => {
     <PropertyValidation>
       <form 
         onSubmit={onSubmit}>
-        <div className="flex flex-col flex-grow">          
+        <div className="flex flex-col grow">          
           <FolderMetadataForm
             metadata={formState}
             onChange={setFormState} />
@@ -70,7 +70,7 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
   const { metadata, updateMetadata } = useFolderMetadata(folder);
 
   return (
-    <div className="bg-white px-4 py-3 rounded border shadow-sm mt-2">
+    <div className="bg-white px-4 py-3 rounded border shadow-xs mt-2">
       <Metadata metadata={metadata} onUpdate={updateMetadata} />
     </div>
   )
@@ -84,7 +84,7 @@ export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestR
   const { metadata, updateMetadata } = useManifestMetadata(manifest.id);
 
   return cozyManifest ? (
-    <div className="bg-white shadow-sm rounded border px-4 py-3 mt-2">
+    <div className="bg-white shadow-xs rounded border px-4 py-3 mt-2">
       <Tabs 
         defaultValue="my">
         <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
@@ -107,7 +107,7 @@ export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestR
         </TabsContent>
 
         <TabsContent value="iiif"
-          className="flex-grow pb-4">
+          className="grow pb-4">
           <IIIFMetadataList 
             metadata={cozyManifest.getMetadata()} />
         </TabsContent>
@@ -142,7 +142,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
   return (
     <div className="p-2">
       <article className="flex flex-col">
-        <div className="bg-white rounded border shadow-sm">
+        <div className="bg-white rounded border shadow-xs">
           <div className="px-3 py-2 pr-2 flex justify-between items-center overflow-hidden gap-2">
             <h2 className="flex gap-1.5 items-center whitespace-nowrap overflow-hidden text-sm">
               <FolderOpen className="h-4 w-4" /> 

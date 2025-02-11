@@ -31,7 +31,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
   return (
     <article 
       ref={ref}
-      className="bg-white border shadow-sm rounded">
+      className="bg-white border shadow-xs rounded">
       {loaded && (
         <>
           <div className="flex justify-between items-center p-1 pl-3">
@@ -44,7 +44,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
               asChild
               size="icon"
               variant="ghost"
-              className="h-8 w-8 flex-shrink-0 rounded-full">
+              className="h-8 w-8 shrink-0 rounded-full">
                 <Link to={`/annotate/${loaded.id}`}>
                   <SquareArrowOutUpRight className="h-3.5 w-3.5" />
                 </Link>

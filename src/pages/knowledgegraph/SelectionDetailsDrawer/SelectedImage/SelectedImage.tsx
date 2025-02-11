@@ -63,9 +63,9 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
       <Tabs 
         value={tab}
         onValueChange={setTab}>
-        <article className="bg-white shadow-sm rounded border overflow-hidden">
+        <article className="bg-white shadow-xs rounded border overflow-hidden">
           <header>
-            <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
+            <div className="relative h-48 basis-48 shrink-0 overflow-hidden border-b">
               {loaded && (
                 loaded.id.startsWith('iiif:') ? (
                   <IIIFPreviewImage 

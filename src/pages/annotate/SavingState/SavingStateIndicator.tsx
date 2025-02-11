@@ -41,7 +41,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
       {savingState.value === 'idle' ? (
         <Popover>
           <PopoverTrigger 
-            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
             <FolderCheck className="h-4 w-4" />
           </PopoverTrigger>
@@ -56,7 +56,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
       ) : savingState.value === 'success' ? (
         <Popover>
           <PopoverTrigger 
-            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+            className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
             <FolderCheck className="h-4 w-4" />
             <span style={{ opacity, width: opacity === 0 ? 0 : undefined}}>
@@ -74,7 +74,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
       ) : savingState.value === 'failed' ? (
         <Popover>
           <PopoverTrigger
-            className="p-2 flex gap-1 text-xs font-medium rounded-md hover:bg-muted focus-visible:outline-none 
+            className="p-2 flex gap-1 text-xs font-medium rounded-md hover:bg-muted focus-visible:outline-hidden 
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center text-red-600">
             <FolderX size={16} />
             <span>Failed</span>
@@ -90,7 +90,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
         </Popover>
       ) : savingState.value === 'saving' ? (
         <button 
-          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+          className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
           <FolderSync size={16} />
           <span className="ml-1">Saving</span>

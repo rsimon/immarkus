@@ -32,14 +32,14 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         
         <button 
           onClick={props.onClick}
-          className="pl-2 py-2 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+          className="pl-2 py-2 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <SelectValue className="pr-0" />
         </button>        
         
         <SelectTrigger 
           className="tool-dropdown-trigger rounded-l-none bg-transparent border-t-0 border-r-0 border-b-0 
-            border-l-1 border-white/30 pl-[1px] pr-1 hover:bg-slate-200 focus:outline-none focus:ring-0 
-            focus:ring-ring focus:ring-offset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+            border-l-1 border-white/30 pl-[1px] pr-1 hover:bg-slate-200 focus:outline-hidden focus:ring-0 
+            focus:ring-ring focus:ring-offset-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring 
             focus-visible:ring-offset-2 shadow-none" />
       </div>
 

@@ -17,7 +17,7 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
 
   const clsImg = cn('w-14 h-14 object-cover aspect-square rounded-sm border', props.className);
 
-  const clsSkeleton = cn('w-14 h-14 flex-shrink-0', props.className);
+  const clsSkeleton = cn('w-14 h-14 shrink-0', props.className);
 
   return snippet ? (
     <img

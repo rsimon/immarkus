@@ -50,7 +50,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
     <Popover open={open}>
       <PopoverTrigger 
         onClick={() => setOpen(!open)}
-        className="text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+        className="text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         disabled:opacity-25 disabled:hover:bg-transparent">
         <EllipsisVertical
@@ -107,7 +107,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
 
           {ENABLE_CONNECTOR_PLUGIN ? (
             <button 
-              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               aria-selected={props.mode === 'connect'}
               data-state={props.mode === 'connect'}
               onClick={() => props.onChangeMode('connect')}>

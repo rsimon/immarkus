@@ -121,7 +121,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   }
   
   return (
-    <section className="workspace flex-grow bg-muted">
+    <section className="workspace grow bg-muted">
       {props.images.length === 1 ? (
         <AnnotatableImage
           initialHistory={getPersistedHistory(props.images[0].id)}

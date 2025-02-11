@@ -34,7 +34,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
     setSuggestions(props.getSuggestions(value));
 
   const inputClass = cn(
-    'flex h-9 w-full rounded-md shadow-sm outline-black border border-input bg-muted px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+    'flex h-9 w-full rounded-md shadow-xs outline-black border border-input bg-muted px-3 py-2 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
     props.className
   );
 
@@ -42,7 +42,7 @@ export const Autosuggest = <T extends { id: string }>(props: AutosuggestProps<T>
     'react-autosuggest__suggestions-container absolute mt-1.5 w-full z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg';
 
   const suggestionClass =
-    'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground';
+    'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-hidden transition-colors data-highlighted:bg-accent data-highlighted:text-accent-foreground';
 
   const renderSuggestion = (suggestion: T, { isHighlighted }) => (
     <div className={suggestionClass} data-highlighted={isHighlighted ? 'true' : undefined}>

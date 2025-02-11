@@ -77,7 +77,7 @@ export const AnnotationList = () => {
   }, [filter, sorting, annotations]);
 
   return (
-    <div className="py-3 px-2 bg-slate-100/50 flex-grow h-full">
+    <div className="py-3 px-2 bg-slate-100/50 grow h-full">
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
         <SelectSortOrder 
           onSelect={sorting => setSorting(() => sorting)} />
