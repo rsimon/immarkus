@@ -36,7 +36,7 @@ export const ImageItem = (props: ImageItemProps) => {
       <div className="flex items-center justify-center w-[180px] h-[200px]">
         <div 
           data-selected={props.selected ? true : undefined}
-          className="data-selected:outline outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
           <img
             onLoad={onLoad}
             loading="lazy"
