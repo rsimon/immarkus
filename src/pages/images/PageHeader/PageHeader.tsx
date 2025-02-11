@@ -8,12 +8,21 @@ import { Button } from '@/ui/Button';
 import { isPresentationManifest, isRootFolder } from '../Types';
 import { IIIFImporter } from '../IIIFImporter';
 import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
+import { Finder } from './Finder';
 
 interface PageHeaderProps {
 
   folder: Folder | RootFolder | IIIFManifestResource;
 
+  filterQuery: string;
+
+  hideUnannotated: boolean;
+
   onShowMetadata(): void;
+
+  onChangeFilterQuery(query: string): void;
+
+  onChangeHideUnannotated(hide: boolean): void;
 
 }
 
@@ -93,6 +102,13 @@ export const PageHeader = (props: PageHeaderProps) => {
               folderId={'id' in folder ? folder.id : undefined} />
           </>
         )}
+
+        <span>·</span>
+        <Finder 
+          filterQuery={props.filterQuery} 
+          hideUnannotated={props.hideUnannotated} 
+          onChangeFilterQuery={props.onChangeFilterQuery}
+          onChangeHideUnannotated={props.onChangeHideUnannotated} />
       </p>
     </div>
   )
