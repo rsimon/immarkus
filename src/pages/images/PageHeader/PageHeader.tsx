@@ -8,7 +8,7 @@ import { Button } from '@/ui/Button';
 import { isPresentationManifest, isRootFolder } from '../Types';
 import { IIIFImporter } from '../IIIFImporter';
 import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
-import { Finder } from './Finder';
+import { FilterByAnnotations } from './FilterByAnnotations';
 
 interface PageHeaderProps {
 
@@ -104,10 +104,8 @@ export const PageHeader = (props: PageHeaderProps) => {
         )}
 
         <span>·</span>
-        <Finder 
-          filterQuery={props.filterQuery} 
+        <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
-          onChangeFilterQuery={props.onChangeFilterQuery}
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
       </p>
     </div>
