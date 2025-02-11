@@ -76,18 +76,18 @@ export const KnowledgeGraph = () => {
         </animated.div>
       ))}
 
-      <main className="page graph relative overflow-x-hidden !overflow-hidden">
+      <main className="page graph relative overflow-x-hidden overflow-hidden!">
         {transition((style, fullscreen) => !fullscreen && (
           <animated.div 
             style={{ opacity: style.opacity }}
             className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
-              <span className="bg-white/80 backdrop-blur-sm rounded px-1 py-0.5">
+              <span className="bg-white/80 backdrop-blur-xs rounded px-1 py-0.5">
                 Knowledge Graph
               </span>
             </h1>
             <p className="text-sm text-muted-foreground max-w-lg leading-6">
-              <span className="bg-white/80 backdrop-blur-sm box-decoration-clone px-1 py-0.5 rounded">
+              <span className="bg-white/80 backdrop-blur-xs box-decoration-clone px-1 py-0.5 rounded">
                 Explore connections between images and entities. Zoom and pan the graph with your mouse.
                 Grab and pull a node to re-arrange the graph. Click a node to see more information.
               </span>

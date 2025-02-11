@@ -69,7 +69,7 @@ export const RelationOptions = (props: RelationOptionsProps) => {
 
         {invalidTargetClass && (
           <span className="flex items-center text-xs px-0.5 mt-2 text-red-600 whitespace-nowrap">
-            <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
+            <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
             <>Must be a valid entity class ID</>
           </span>
         )}

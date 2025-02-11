@@ -51,7 +51,7 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
   }
 
   return (
-    <article className="bg-white shadow-sm rounded border mt-1.5">
+    <article className="bg-white shadow-xs rounded border mt-1.5">
       <div className="flex justify-between items-center p-1 pl-3">
         <h3 className="flex gap-1.5 pr-1 items-center text-xs whitespace-nowrap overflow-hidden">
           <Image className="h-3.5 w-3.5" />
@@ -62,7 +62,7 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
           asChild
           size="icon"
           variant="ghost"
-          className="h-8 w-8 flex-shrink-0">
+          className="h-8 w-8 shrink-0">
           <a href={`#/annotate/${node.id}`}><SquareArrowOutUpRight className="h-3.5 w-3.5" /></a>
         </Button>
       </div>      
@@ -73,7 +73,7 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
             key={annotation.id}
             className="border-t p-2.5">
             <div className="flex items-start w-full">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 {loadedImage && (
                   <AnnotationThumbnail
                     annotation={annotation}
@@ -83,7 +83,7 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
               </div>
 
               <AnnotationValuePreview
-                className="text-xs text-muted-foreground font-light pl-2.5 flex-grow flex-shrink line-clamp-3 leading-relaxed overflow-hidden"
+                className="text-xs text-muted-foreground font-light pl-2.5 grow shrink line-clamp-3 leading-relaxed overflow-hidden"
                 bodies={getEntityBodies(annotation)} />
             </div>
           </li>

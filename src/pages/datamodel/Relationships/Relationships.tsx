@@ -93,7 +93,7 @@ export const Relationships = () => {
                     {rel.description}
                   </TableCell>
 
-                  <TableCell className="py-1.5 flex-grow px-3">
+                  <TableCell className="py-1.5 grow px-3">
                     <div className="flex items-center justify-center">
                     {rel.directed && ( <Check size={18} /> )}
                     </div>

@@ -25,7 +25,7 @@ export const SidebarSection = () => {
         value={tab}
         onValueChange={setTab}>
         <>
-          <section className="toolbar border-b h-[46px] flex items-center flex-shrink-0">
+          <section className="toolbar border-b h-[46px] flex items-center shrink-0">
             <Separator orientation="vertical" className="h-4" />
 
             <Tabs.List className="flex gap-1.5 py-0.5 px-3">
@@ -44,17 +44,17 @@ export const SidebarSection = () => {
           </section>
 
           <section 
-            className="sidebar-content flex flex-grow border-l overflow-y-auto">
+            className="sidebar-content flex grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
-                className="flex flex-grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
+                className="flex grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="annotation-list" asChild>
               <div 
-                className="flex-grow h-full text-sm justify-center items-center w-full">
+                className="grow h-full text-sm justify-center items-center w-full">
                 <AnnotationList />
               </div> 
             </Tabs.Content>

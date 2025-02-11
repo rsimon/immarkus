@@ -105,7 +105,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
   return transition((style, open) => open && (
     <animated.div 
-      className="bg-white/80 backdrop-blur-sm text-sm overflow-y-auto rounded 
+      className="bg-white/80 backdrop-blur-xs text-sm overflow-y-auto rounded 
         border pointer-events-auto shadow grow-0 shrink-0 basis-auto"
       style={style}>
       
@@ -132,7 +132,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           onValueChange={(graphMode: 'HIERARCHY' | 'RELATIONS') => props.onChangeSettings({...settings, graphMode })}>
           <div className="flex items-start gap-3 pl-1">
             <RadioGroupItem 
-              className="mt-[2px] flex-shrink-0"
+              className="mt-[2px] shrink-0"
               value="HIERARCHY" 
               id="HIERARCHY" />
 
@@ -146,7 +146,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
           <div className="flex items-start gap-3 pl-1">
             <RadioGroupItem 
-              className="mt-[2px] flex-shrink-0"
+              className="mt-[2px] shrink-0"
               value="RELATIONS" 
               id="RELATIONS" />
 

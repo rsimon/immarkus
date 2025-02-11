@@ -28,7 +28,7 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
           : URL.createObjectURL(new Blob([fromSnippet.data]))}
         className={className} />
 
-      <div className="flex-grow flex justify-center h-[1px] border-gray-600 border-t border-dashed relative whitespace-nowrap">
+      <div className="grow flex justify-center h-[1px] border-gray-600 border-t border-dashed relative whitespace-nowrap">
         <div className="absolute -top-[0.675rem] w-full text-center overflow-hidden max-w-[70%] text-ellipsis">
           <span className="bg-white px-1 font-light">{props.label || ''}</span>
         </div>
@@ -52,7 +52,7 @@ export const RelationshipThumbnail = (props: RelationshipThumbnailProps) => {
           : URL.createObjectURL(new Blob([toSnippet.data]))}
         className={className} />
 
-      <div className="flex-grow h-[1px] border-gray-400 border-t border-dashed relative">
+      <div className="grow h-[1px] border-gray-400 border-t border-dashed relative">
         {props.directed && (
           <div className="absolute -left-0.5 -top-[5.5px] border-t-[5px] border-t-transparent border-b-[5px] border-b-transparent border-r-[12px] border-r-gray-400" />
         )}

@@ -82,7 +82,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
       className="text-xs"
       title={props.image.name}
       toolbarControls={(
-        <div ref={toolbarRef} className="inline-flex flex-grow justify-end items-center">
+        <div ref={toolbarRef} className="inline-flex grow justify-end items-center">
           {collapsed ? (
             <>
               <button onClick={onZoom(2)}>

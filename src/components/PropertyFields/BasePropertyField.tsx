@@ -78,7 +78,7 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
                 variant="ghost" 
                 size="icon"
                 type="button"
-                className="rounded-full flex-shrink-0 h-8 w-8 text-muted-foreground"
+                className="rounded-full shrink-0 h-8 w-8 text-muted-foreground"
                 onClick={() => onDeleteField(idx)}>
                 <Trash2 className="h-4 w-4" />
               </Button>

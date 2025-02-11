@@ -245,7 +245,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         )}
 
         <button 
-          className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
@@ -261,7 +261,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         {!collapsed &&
           (ENABLE_CONNECTOR_PLUGIN ? (
             <button 
-              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               aria-selected={props.mode === 'connect'}
               data-state={props.mode === 'connect'}
               onClick={() => props.onChangeMode('connect')}>

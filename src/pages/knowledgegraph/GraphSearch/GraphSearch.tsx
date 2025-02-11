@@ -148,7 +148,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   return createPortal(
     <div 
       ref={el}
-      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-sm border absolute top-0 left-0 rounded shadow-lg z-30">
+      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-xs border absolute top-0 left-0 rounded shadow-lg z-30">
     
       <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">

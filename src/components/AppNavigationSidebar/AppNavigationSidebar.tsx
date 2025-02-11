@@ -9,7 +9,7 @@ export const AppNavigationSidebar = () => {
 
   const active = 
     `rounded-md text-sm font-medium ring-offset-background transition-colors 
-     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring 
+     focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring 
      focus-visible:ring-offset-2 bg-primary text-primary-foreground 
      hover:bg-primary/90 h-10 px-4 py-2`; 
 

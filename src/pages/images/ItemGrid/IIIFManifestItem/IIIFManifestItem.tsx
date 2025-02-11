@@ -40,7 +40,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
-            className="w-[190px] h-[190px] transition-all drop-shadow-md" />
+            className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
 
           <IIIFIcon
             className="iiif-logo text-white transition-all absolute bottom-5 left-4 size-6" />

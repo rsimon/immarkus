@@ -123,11 +123,11 @@ export const Editor = (props: EditorProps) => {
 
             {entityType.id && (!isIdAvailable ? (
               <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
-                <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
+                <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
               </span>
             ) : (props.entityType && !(props.entityType.id === entityType.id)) || !props.entityType && (
               <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-                <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.id} is available
+                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.id} is available
               </span>
             ))}
           </div>
@@ -140,7 +140,7 @@ export const Editor = (props: EditorProps) => {
             <div className="grid grid-cols-4">
               <Button 
                 size="icon" 
-                className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-sm'}
+                className={brightness < 0.9 ? 'h-9 w-9' : 'h-9 w-9 border shadow-xs'}
                 style={{ 
                   backgroundColor: entityType.color,
                   color: brightness > 0.5 ? '#000' : '#fff' 
@@ -185,7 +185,7 @@ export const Editor = (props: EditorProps) => {
 
           {!isValidParent ? (
             <span className="flex items-center text-xs mt-2 text-red-600 whitespace-nowrap">
-              <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
+              <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
                 {entityType.parentId === entityType.id ? (
                   <>{entityType.id} cannot be its own parent</>
                 ) : (
@@ -194,7 +194,7 @@ export const Editor = (props: EditorProps) => {
             </span>
           ) : entityType.parentId && entityType.parentId !== props.entityType?.parentId && isValidParent && (
             <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-              <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is a valid parent
+              <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is a valid parent
             </span>
           )}
         </div>

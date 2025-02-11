@@ -18,7 +18,7 @@ export const ImageMetadata = () => {
     source.startsWith('iiif:') ? store.getCanvas(source) : store.getImage(source));
 
   return images.length === 1 ? (
-    <div className="flex-grow justify-start h-full flex flex-col text-sm items-center w-full p-3 px-4">
+    <div className="grow justify-start h-full flex flex-col text-sm items-center w-full p-3 px-4">
       <ImageMetadataSection image={images[0]} />
     </div>
   ) : (

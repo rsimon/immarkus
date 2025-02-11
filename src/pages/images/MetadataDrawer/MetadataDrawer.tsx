@@ -44,13 +44,13 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
   return transition((style, item) => item && (
     <animated.div 
       style={style}
-      className="flex-grow-0 flex-shrink-0 relative border-l">
+      className="grow-0 shrink-0 relative border-l">
       <aside className="w-[340px] overflow-hidden absolute top-0 left-0 h-full overflow-y-auto box-border">
         <Button 
           size="icon"
           variant="ghost"
           onClick={props.onClose}
-          className="absolute text-muted-foreground right-2 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+          className="absolute text-muted-foreground right-2 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring">
           <X className="w-6 h-6 p-0.5" />
         </Button>
 

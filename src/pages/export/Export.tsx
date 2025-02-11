@@ -66,7 +66,7 @@ export const Export = (props: ExportProps) => {
             </nav>
           </aside>
 
-          <section className="pl-12 py-2 flex-grow">
+          <section className="pl-12 py-2 grow">
             {props.tab === 'annotations' ? (
               <ExportAnnotations />
             ) : props.tab === 'relationships' ? (

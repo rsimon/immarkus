@@ -71,7 +71,7 @@ const IIIFMetadata = (props: MetadataProps) => {
 export const Metadata = (props: MetadataProps) => {
 
   return  props.imageId.startsWith('iiif:') ? (
-    <div className="bg-white shadow-sm rounded border px-4 py-3">
+    <div className="bg-white shadow-xs rounded border px-4 py-3">
       <Tabs 
         defaultValue="my">
         <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
@@ -94,13 +94,13 @@ export const Metadata = (props: MetadataProps) => {
         </TabsContent>
 
         <TabsContent value="iiif"
-          className="flex-grow">
+          className="grow">
           <IIIFMetadata {...props} />
         </TabsContent>
       </Tabs>
     </div>
   ) : (
-    <div className="bg-white shadow-sm rounded border px-4">
+    <div className="bg-white shadow-xs rounded border px-4">
       <MyMetadata {...props} />
     </div>
   )

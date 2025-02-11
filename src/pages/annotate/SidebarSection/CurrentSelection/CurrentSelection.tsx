@@ -84,7 +84,7 @@ export const CurrentSelection = () => {
               ref={ref}
               onClick={() => setShowSearchDialog(true)}
               onKeyDown={onKeyDown}
-              className="px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
+              className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
             <Button
               onClick={() => setShowAsEmpty(false)}

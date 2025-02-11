@@ -18,7 +18,7 @@ export const RelationshipBrowserInput = forwardRef((props: RelationshipBrowserIn
         autoFocus
         {...props}
         placeholder="Search..."
-        className="relative top-[1px] py-1 outline-none px-0.5 flex-grow" />
+        className="relative top-[1px] py-1 outline-hidden px-0.5 grow" />
     </div>
   )
 

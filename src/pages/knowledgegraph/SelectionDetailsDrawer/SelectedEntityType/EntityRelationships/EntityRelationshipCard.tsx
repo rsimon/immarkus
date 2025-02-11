@@ -18,7 +18,7 @@ export const EntityRelationshipCard = (props: EntityRelationshipCardProps) => {
   const { relatedType, relationships } = props;
 
   return (
-    <article className="bg-white border shadow-sm rounded">
+    <article className="bg-white border shadow-xs rounded">
       <h3 className="flex gap-1.5 p-2.5 items-center text-xs whitespace-nowrap overflow-hidden">
         <Cuboid className="h-3.5 w-3.5" />
         <span className="overflow-hidden text-ellipsis">
