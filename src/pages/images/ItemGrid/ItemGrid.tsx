@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useImages, useStore } from '@/store';
-import { Folder, IIIFManifestResource, Image, LoadedFileImage, RootFolder } from '@/model';
+import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
+import { isSingleImageManifest } from '@/utils/iiif';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
@@ -12,6 +13,10 @@ import './ItemGrid.css';
 interface ItemGridProps {
 
   folder: Folder | RootFolder; 
+
+  filterQuery: string;
+
+  hideUnannotated: boolean;
 
   selected?: GridItem;
 
@@ -28,6 +33,28 @@ export const ItemGrid = (props: ItemGridProps) => {
   }, [props.folder, store]);
 
   const loadedImages = useImages(images.map(i => i.id)) as LoadedFileImage[];
+
+  const [annotationCounts, setAnnotationCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const imageCounts = loadedImages
+      .reduce<Promise<Record<string, number>>>((promise, image) => 
+        promise.then(counts =>
+          store.countAnnotations(image.id).then(count => ({...counts, [image.id]: count }))
+        ), Promise.resolve({}));
+
+    const manifestCounts = iiifResources
+      .reduce<Promise<Record<string, number>>>((promise, manifest) =>
+        promise.then(counts =>
+          store.getManifestAnnotations(manifest.id).then(annotations => (
+            {...counts, [`iiif:${manifest.id}`]: annotations.length }
+          ))
+        ), Promise.resolve({}));
+
+    Promise.all([imageCounts, manifestCounts]).then(([a, b]) => {
+      setAnnotationCounts({...a, ...b});   
+    });
+  }, [store, loadedImages]);
 
   const navigate = useNavigate();
 
@@ -46,6 +73,27 @@ export const ItemGrid = (props: ItemGridProps) => {
   const onSelectManifest = (manifest: IIIFManifestResource) =>
     props.onSelect(manifest);
 
+  const filteredIIIFResources = useMemo(() => {
+    const dontHide = (item: IIIFResource) => {
+      if (isSingleImageManifest(item) && 'canvases' in item) {
+        const canvas = item.canvases[0];
+        if (!canvas) return true; // Should never happen
+
+        return annotationCounts[`iiif:${item.id}`] > 0;
+      } else {
+        // Manifests with multiple images (= folder) should always be shown
+        return true;
+      }
+    }
+
+    return props.hideUnannotated ? iiifResources.filter(dontHide) : iiifResources;
+  }, [props.hideUnannotated, iiifResources, annotationCounts]);
+
+  const filteredImages = useMemo(() => {
+    const hasAnnotations = (item: LoadedFileImage) => annotationCounts[item.id] > 0;
+    return props.hideUnannotated ? loadedImages.filter(hasAnnotations) : loadedImages
+  }, [props.hideUnannotated, loadedImages, annotationCounts]);
+
   return (
     <div className="item-grid">
       <ul>
@@ -58,7 +106,7 @@ export const ItemGrid = (props: ItemGridProps) => {
           </li>
         ))}
 
-        {iiifResources.map(resource => (
+        {filteredIIIFResources.map(resource => (
           <li key={resource.id}>
             {resource.type === 'PRESENTATION_MANIFEST' ? (
               <IIIFManifestItem
@@ -69,10 +117,11 @@ export const ItemGrid = (props: ItemGridProps) => {
           </li>
         ))}
 
-        {loadedImages.map(image => (
+        {filteredImages.map(image => (
           <li key={image.id}>
             <ImageItem 
               image={image} 
+              annotationCount={annotationCounts[image.id] || 0}
               selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
               onOpen={() => onOpenImage(image)} 
               onSelect={() => onSelectImage(image)}/>

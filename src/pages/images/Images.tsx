@@ -60,11 +60,15 @@ export const Images = () => {
           {isPresentationManifest(currentFolder) ? (
             <IIIFManifestGrid 
               manifest={currentFolder} 
+              filterQuery={filterQuery}
+              hideUnannotated={hideUnannotated}
               selected={selected}
               onSelect={setSelected} />
           ) : (
             <ItemGrid 
               folder={currentFolder}
+              filterQuery={filterQuery}
+              hideUnannotated={hideUnannotated}
               selected={selected}
               onSelect={setSelected} />
           )}

@@ -338,7 +338,7 @@ export const loadStore = (
 
   const getManifestAnnotations = (
     manifestId: string,
-    opts: GetManifestAnnotationOpts
+    opts: GetManifestAnnotationOpts = { type: 'both', includeCanvases: true }
   ) => {
     return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
       if (opts.includeCanvases) {
