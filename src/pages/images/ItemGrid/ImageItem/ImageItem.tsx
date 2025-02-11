@@ -7,6 +7,8 @@ import { useImageDimensions } from '@/utils/useImageDimensions';
 
 interface ImageItemProps {
 
+  annotationCount: number;
+
   image: LoadedFileImage;
 
   selected?: boolean;
@@ -23,13 +25,7 @@ export const ImageItem = (props: ImageItemProps) => {
 
   const store = useStore();
 
-  const [annotations, setAnnotations] = useState<number | undefined>();
-
   const { onLoad, dimensions } = useImageDimensions();
-
-  useEffect(() => {
-    store.countAnnotations(image.id).then(setAnnotations);
-  }, []);
 
   return (
     <div>
@@ -51,7 +47,7 @@ export const ImageItem = (props: ImageItemProps) => {
               <MessagesSquare 
                 size={18} 
                 className="inline align-text-bottom mr-1" /> 
-                {annotations || 0}
+                {props.annotationCount}
             </div>
 
             <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">

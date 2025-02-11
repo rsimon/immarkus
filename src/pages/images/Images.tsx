@@ -19,6 +19,10 @@ export const Images = () => {
 
   const navigate = useNavigate();
 
+  const [hideUnannotated, setHideUnannotated] = useState(false);
+
+  const [filterQuery, setFilterQuery] = useState('');
+
   const currentFolder: Folder | RootFolder | IIIFManifestResource = useMemo(() => {
     if (!folderId) return store.getRootFolder();
 
@@ -47,16 +51,24 @@ export const Images = () => {
         <div className="grow px-12 py-6 overflow-y-auto">
           <PageHeader 
             folder={currentFolder} 
-            onShowMetadata={onShowFolderMetadata} />
+            filterQuery={filterQuery}
+            hideUnannotated={hideUnannotated}
+            onShowMetadata={onShowFolderMetadata} 
+            onChangeFilterQuery={setFilterQuery} 
+            onChangeHideUnannotated={setHideUnannotated} />
 
           {isPresentationManifest(currentFolder) ? (
             <IIIFManifestGrid 
               manifest={currentFolder} 
+              filterQuery={filterQuery}
+              hideUnannotated={hideUnannotated}
               selected={selected}
               onSelect={setSelected} />
           ) : (
             <ItemGrid 
               folder={currentFolder}
+              filterQuery={filterQuery}
+              hideUnannotated={hideUnannotated}
               selected={selected}
               onSelect={setSelected} />
           )}
