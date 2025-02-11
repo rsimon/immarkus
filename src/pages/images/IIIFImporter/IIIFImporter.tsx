@@ -143,6 +143,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
                 <span>
                   Failed to fetch. Server may restrict access. <a className="underline" href="https://iiif.io/guides/guide_for_implementers/#other-considerations" target="_blank">Learn more</a>.
                 </span>
+              ) : parseResult.code === 'INVALID_HTTP_RESPONSE' ? (
+                <span>
+                  Failed to fetch. {parseResult.message}
+                </span>
               ) : (
                 <span>{parseResult.message}</span>
               )}

@@ -7,7 +7,7 @@ export type CozyParseResult =
   | { type: 'webpage'; url: string }
   | { 
       type: 'error';
-      code: 'INVALID_URL' | 'FETCH_ERROR' | 'INVALID_MANIFEST' | 'UNSUPPORTED_FORMAT';
+      code: 'INVALID_URL' | 'INVALID_HTTP_RESPONSE' | 'FETCH_ERROR' | 'INVALID_MANIFEST' | 'UNSUPPORTED_FORMAT';
       message: string;
     };
 

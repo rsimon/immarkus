@@ -30,7 +30,11 @@ export const Cozy = {
     try {
       response = await fetch(input);
       if (!response.ok) {
-        throw new Error(`Error: HTTP ${response.status}`);
+        return {
+          type: 'error',
+          code: 'INVALID_HTTP_RESPONSE',
+          message: `Server responded: HTTP ${response.status} ${response.statusText ? `(${response.statusText})` : ''}`
+        }
       }
     } catch (error) {
       return {
