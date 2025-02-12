@@ -215,7 +215,7 @@ IMMARKUS also supports metadata at the folder level. Each folder (including the 
 
 Relationships in IMMARKUS are stored in the root-level `_immarkus.relations.json` file and adhere to the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/). Each relationship is represented as a pair of annotations: one for the link, and one for the tag that defines the link type.
 
-## Linking Annotation
+### Linking Annotation
 
 An annotation with a `motivation` of `linking`, which defines the directional connection between two annotations.
 
@@ -224,7 +224,7 @@ An annotation with a `motivation` of `linking`, which defines the directional co
 
 Note that the "arrow" goes from `target` to `body`. This directionality may feel counter-intuitive, but is mandated by the W3C Model, which defines that the `body` must be "about" the `target`.
 
-## Tagging Annotation
+### Tagging Annotation
 
 An annotation with a `motivation` of `tagging`, which "annotates" the linking annotation with the relationship type.
 
