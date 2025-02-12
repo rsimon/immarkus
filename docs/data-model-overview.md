@@ -25,7 +25,7 @@ This file contains the **data model definitions**, including:
 These definitions are editable by the user in IMMARKUS's **Data Model** tab.
 
 ### _immarkus.relations.json
-This file stores **relationships between annotations** across the project. Note that relations can link annotations on different images (in different folders). Therefore, relationships are stored at the global (root) level.
+This file stores **relationships between annotations** across the project. Note that relations can link annotations on different images (in different folders). Therefore, relationships are stored at the global (root) level. See section [5 Relationship Data Format](#5-relationship-data-format) for details of the relationship data model.
 
 ---
 
@@ -48,7 +48,7 @@ Each annotation file contains one or more annotations including the following ke
     - `purpose`: `classifying`
     - `source`: the Entity Class ID in the data model.
     - `properties`: A JSON object containing user-defined properties for the entity.
-  - **Notes:** Free-text comments added by the user.
+  - **Note:** A free-text comment added by the user.
     - `type`: `TextualBody`
     - `purpose`: `commenting`
     - `value`: The comment text.
@@ -61,7 +61,7 @@ In addition to region-specific annotations, each image may have a metadata annot
   - `source`: the metadata schema name in the data model.
   - `properties`: a JSON object containing user-defined metadata.
 
-#### Example 1: Image Annotation (Two Entity Tags and One Note)
+#### Example 1: An image annotation with two Entity tags and a note
 ```jsonc
 {
   "@context": "http://www.w3.org/ns/anno.jsonld",
@@ -157,7 +157,7 @@ Imported IIIF sources are recorded in a JSON file named `_iiif.[manifest-id].jso
 
 ### IIIF Annotations
 
-Annotations on IIIF resources are stored in a JSON file named `_iiif.[manifest-id].annotations.json`. These files have the same structure as image annotation files, with one key difference: the source field in the target object uses the format
+Annotations on IIIF resources are stored in a JSON file named `_iiif.[manifest-id].annotations.json`. These files have the same structure as image annotation files, with one key difference: the `source` field in the `target` object uses the format
  
 `iiif:manifest-id:canvas-id`
 
@@ -184,7 +184,7 @@ where:
 
 ## 4. Folder Metadata
 
-IMMARKUS also supports metadata at the folder level. Each folder (including the root project folder) can contain a JSON file named `_immarkus.folder.meta.json`. This file stores user-provided metadata for the folder and follows the W3C Web Annotation Data Model.
+IMMARKUS also supports metadata at the folder level. Each folder (including the root project folder) can contain a JSON file named `_immarkus.folder.meta.json`. This file stores user-provided metadata for the folder, using the same W3C Web Annotation format as the image metadata annotation.
 
 ### Structure of Folder Metadata Files
 
@@ -208,6 +208,66 @@ IMMARKUS also supports metadata at the folder level. Each folder (including the 
     "purpose": "describing"
   }
 }
+```
+---
+
+## 5. Relationship Data Format
+
+Relationships in IMMARKUS are stored in the root-level `_immarkus.relations.json` file and adhere to the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/). Each relationship is represented as a pair of annotations: one for the link, and one for the tag that defines the link type.
+
+#### Linking Annotation
+
+An annotation with a `motivation` of `linking`, which defines the directional connection between two annotations.
+
+- `target`: The ID of the annotation where the relationship **starts**.
+- `body`: the ID of the annotation where the relationship **ends**.
+
+Note that the "arrow" goes from `target` to `body`. This directionality may feel counter-intuitive, but is mandated by the W3C Model, which defines that the `body` must be "about" the `target`.
+
+#### Tagging Annotation
+
+An annotation with a `motivation` of `tagging`, which "annotates" the linking annotation with the relationship type.
+
+- `target`: The ID of the linking annotation being tagged.
+- `body`: the name of the relationship type in the user's data model.
+
+#### Example:
+
+```jsonc
+[
+  {
+    "id": "6e626ac2-5369-48d3-b88b-90cbd13d2568",
+    "motivation": "linking",
+    "body": "cc21de14-b392-4e10-81ab-43f6f00eac64",
+    "target": "861a3351-6685-483a-b23d-ba81359c378c",
+    "created": "2024-11-07T10:47:12.075Z"
+  },
+  {
+    "id": "b4d15381-2570-446d-aa01-e8027b2a5d94",
+    "motivation": "tagging",
+    "body": {
+      "value": "is part of"
+    },
+    "target": "6e626ac2-5369-48d3-b88b-90cbd13d2568",
+    "created": "2024-11-07T10:47:12.075Z"
+  },
+  {
+    "id": "f6743e97-91db-414d-bd69-6a4060461450",
+    "motivation": "linking",
+    "body": "696674b1-709f-4cd9-99b4-0db55c4537a3",
+    "target": "0f6282bf-58e9-417e-84ce-fe3bb008b691",
+    "created": "2024-12-11T12:42:21.247Z"
+  },
+  {
+    "id": "a8b85320-c3b8-41c0-a204-7d404e033925",
+    "motivation": "tagging",
+    "body": {
+      "value": "is located at"
+    },
+    "target": "f6743e97-91db-414d-bd69-6a4060461450",
+    "created": "2024-12-11T12:42:21.248Z"
+  }
+]
 ```
 ---
 
