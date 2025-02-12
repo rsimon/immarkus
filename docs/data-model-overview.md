@@ -12,7 +12,7 @@ browsers may delete without notice to the user (e.g. after a certain period of i
 
 When the user launches IMMARKUS, they must specify a **project folder**. The browser will prompt the user to grant 
 access and, if the user confirms, IMMARKUS can access this folder and all files in it (incl. in subfolders).
-This folder then serves as the root directory for all project-related data. 
+This folder serves as the root directory for all project-related data. 
 
 IMMARKUS stores core project-level information in two key files:
 
