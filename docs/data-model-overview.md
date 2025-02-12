@@ -1,9 +1,9 @@
 # IMMARKUS Data Model and File Structure
 
 IMMARKUS stores all user data **locally on the user's computer in JSON files**. This architecture choice was made for several reasons:
-- It keeps the architecture simple & privacy-friendly–local-only with no need for cloud storage and online database.
-- It avoids the use of storage mechanisms built into the browser (such as [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)), which 
-browsers may purge unexpectedly, e.g. after two weeks of inactivity.
+- It keeps the architecture simple & privacy-friendly: local-only with no need for cloud storage or an online database.
+- It avoids the use of built-in browser storage mechanisms like [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), which 
+browsers may delete without notice (e.g. after a certain period of inactivity).
 - It simplifies handling of large files, especially images.
 
 ---
