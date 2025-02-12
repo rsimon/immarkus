@@ -99,9 +99,21 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ? inferImageToImageRelationPrimitives(imagesResult, store)
           : [];
 
-        const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
-          ? inferEntityToEntityRelationPrimitives(imagesResult, store)
-          : [];
+        // Links between entities, mediated by relations. Important: there's no 
+        // efficient way to determine these on demand, when the user selects an entity.
+        // However, we still want to be able to show them in the sidebar, even if the
+        // graph is in HIERARCHY mode. Therefore:
+        // 
+        // - we always compute (and cache!) them here
+        // - but we only include them in the graph model conditionally
+        // 
+        // The `getEntityToEntityRelations` method allows consumers to grab
+        // relations for a specific entity from the cached var below.
+        const entityToEntityRelationPrimitives = 
+          inferEntityToEntityRelationPrimitives(imagesResult, store);
+
+        const getEntityToEntityRelationLinks = (entityId: string) =>
+          entityToEntityRelationPrimitives.filter(p => p.source === entityId || p.target === entityId);
 
         const primitives = [
           ...folderStructurePrimitives, 
@@ -110,7 +122,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ...entityHierarchyPrimitives, 
           ...entityAnnotationPrimitives,
           ...imageToImageRelationPrimitives,
-          ...entityToEntityRelationPrimitives
+          ...(graphMode === 'RELATIONS' ? entityToEntityRelationPrimitives : [])
         ];
 
         /** 
@@ -198,6 +210,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }
 
         setGraph({ 
+          getEntityToEntityRelationLinks,
           getLinkedNodes,
           getLinks,
           nodes,

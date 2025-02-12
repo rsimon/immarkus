@@ -2,6 +2,8 @@ import { ComboboxOption } from '@/components/Combobox';
 
 export interface Graph {
 
+  getEntityToEntityRelationLinks(nodeId: string): GraphLinkPrimitive[];
+
   getLinkedNodes(nodeId: string): GraphNode[];
 
   getLinks(nodeId: string): GraphLink[];

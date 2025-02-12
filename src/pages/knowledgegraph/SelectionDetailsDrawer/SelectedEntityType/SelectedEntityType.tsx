@@ -34,22 +34,17 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
   }, [type]);
 
   const entityRelationships = useMemo(() => (
-    graph
-      .getLinks(type.id)
-      .reduce<GraphLinkPrimitive[]>((all, link) => (
-        [...all, ...link.primitives.filter(p => p.type === 'IS_RELATED_VIA_ANNOTATION')]
-      ), [])
+    graph.getEntityToEntityRelationLinks(type.id)
   ), [type]);
 
-  const relatedEntities = useMemo(() => {
+  const relatedEntities = useMemo(() => {    
     const relatedEntityIDs = new Set(entityRelationships.reduce<string[]>((ids, primitive) => {
       return [...ids, primitive.source, primitive.target]
     }, []));
 
     return [...relatedEntityIDs]
       .map(id => entityTypes.find(e => e.id === id))
-      .filter(Boolean)
-      .filter(e => e.id !== type.id); // Don't include self
+      .filter(Boolean);
   }, [entityTypes, entityRelationships]);
 
   return (
