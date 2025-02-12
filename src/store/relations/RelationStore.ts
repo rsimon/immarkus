@@ -1,6 +1,7 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { CanvasInformation, IIIFManifestResource, IIIFResource, Image } from '@/model';
 import { AnnotationStore } from '../Store';
+import { repairRelationships } from '../integrity';
 import { readJSONFile, writeJSONFile } from '../utils';
 
 export type Directionality = 'INBOUND' | 'OUTBOUND';
@@ -36,8 +37,12 @@ export const loadRelationStore = (
   
   const file = await fileHandle.getFile();
 
-  let annotations: (W3CRelationLinkAnnotation | W3CRelationMetaAnnotation)[] = 
+  // For safety, let's assume these relationships may contain integrity issues,
+  // i.e. point to annotations that no longer exist in the store.
+  const unsafe: (W3CRelationLinkAnnotation | W3CRelationMetaAnnotation)[] = 
     await readJSONFile<[]>(file).then(data => (data || [])).catch(() => ([]));
+
+  let annotations = await repairRelationships(unsafe, store);
 
   const save = () => writeJSONFile(fileHandle, annotations);
 

@@ -89,7 +89,6 @@ const toRowData = (
     store.findAnnotation(link.target), 
     store.findAnnotation(link.body)
   ]).then(([sourceTuple, targetTuple]) => {
-    console.log('got', sourceTuple, targetTuple);
     const [sourceAnnotation, sourceImage] = sourceTuple;
     const [targetAnnotation, targetImage] = targetTuple;
 
