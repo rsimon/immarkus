@@ -219,16 +219,15 @@ Relationships in IMMARKUS are stored in the root-level `_immarkus.relations.json
 
 An annotation with a `motivation` of `linking`, which defines the directional connection between two annotations.
 
-- `target`: The ID of the annotation where the relationship **starts**.
-- `body`: the ID of the annotation where the relationship **ends**.
+- `target`: The ID of the annotation where the relationship arrow **starts**.
+- `body`: the ID of the annotation where the relationship arrow **ends**.
 
-Note that the "arrow" goes from `target` to `body`. This directionality may feel counter-intuitive, but is suggested by the W3C Model definition, which defines a linking annotation as an annotation where [the user intends to link to a resource related to the Target](https://www.w3.org/TR/annotation-model/#bodies-and-targets).
-
-This definition is somewhat vague, and could be interpreted in different ways. But concensus seems to be that the linking annotation connects the `target` annotation with additional information in the `body` annotation. As a concrete use case:
+Note that the arrow goes from `target` to `body`. This directionality may seem counter-intuitive. But is suggested by the W3C  definition of a `linking` annotation: [the user intends to link to a resource related to the Target](https://www.w3.org/TR/annotation-model/#bodies-and-targets). Example:
 
 - The user selects an annotation in the user interface.
-- The user wants to link it to another annotation which is related to it.
-- According to the W3C definition, this makes the selected annotation the `target` and the other annotation the `body` resource.
+- The user wants to link this annotation to another annotation which is related to the currently selected annotation.
+
+According to the W3C definition, this would make the currently selected annotation the `target` and the other annotation the `body` resource. The case could be made for a different directionality (e.g. the user might intend to say that the current annotation is related to the other one). In the end, the W3C definition isn't fully clear, and model directionality remains a convention in IMMARKUS.
 
 ### Tagging Annotation
 
