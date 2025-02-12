@@ -222,7 +222,13 @@ An annotation with a `motivation` of `linking`, which defines the directional co
 - `target`: The ID of the annotation where the relationship **starts**.
 - `body`: the ID of the annotation where the relationship **ends**.
 
-Note that the "arrow" goes from `target` to `body`. This directionality may feel counter-intuitive, but is mandated by the W3C Model, which defines that the `body` must be "about" the `target`.
+Note that the "arrow" goes from `target` to `body`. This directionality may feel counter-intuitive, but is suggested by the W3C Model definition, which defines a linking annotation as an annotation where [the user intends to link to a resource related to the Target](https://www.w3.org/TR/annotation-model/#bodies-and-targets).
+
+This definition is somewhat vague, and could be interpreted in different ways. But concensus seems to be that the linking annotation connects the `target` annotation with additional information in the `body` annotation. As a concrete use case:
+
+- The user selects an annotation in the user interface.
+- The user wants to link it to another annotation which is related to it.
+- According to the W3C definition, this makes the selected annotation the `target` and the other annotation the `body` resource.
 
 ### Tagging Annotation
 
