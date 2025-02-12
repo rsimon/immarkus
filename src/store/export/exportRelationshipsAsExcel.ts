@@ -8,6 +8,7 @@ import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { fetchManifest } from '@/utils/iiif/fetchManifest';
+import { sourceMapsEnabled } from 'process';
 
 interface RowData {
 
@@ -87,7 +88,11 @@ const toRowData = (
   return Promise.all([
     store.findAnnotation(link.target), 
     store.findAnnotation(link.body)
-  ]).then(([[sourceAnnotation, sourceImage], [targetAnnotation, targetImage]]) => {
+  ]).then(([sourceTuple, targetTuple]) => {
+    console.log('got', sourceTuple, targetTuple);
+    const [sourceAnnotation, sourceImage] = sourceTuple;
+    const [targetAnnotation, targetImage] = targetTuple;
+
     return Promise.all([
       getLoadedImage(sourceImage),
       getLoadedImage(targetImage)
