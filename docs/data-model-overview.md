@@ -1,9 +1,9 @@
 # IMMARKUS Data Model and File Structure
 
 IMMARKUS stores all user data **locally on the user's computer in JSON files**. This architecture choice was made for several reasons:
-- It keeps the architecture simple & privacy-friendly: local-only with no need for cloud storage or an online database.
-- It avoids the use of built-in browser storage mechanisms like [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), which 
-browsers may delete without notice (e.g. after a certain period of inactivity).
+- It keeps the architecture simple & privacy-friendly: local-only, with no need for cloud storage or an online database.
+- It avoids the use of built-in browser storage technologies like [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API), which 
+browsers may delete without notice to the user (e.g. after a certain period of inactivity).
 - It simplifies handling of large files, especially images.
 
 ---
@@ -18,26 +18,26 @@ This file contains the **data model definitions**, including:
 - **Relationship types** between entities.
 - Definitions for **image and folder metadata** schemas.
 
-These definitions are editable by the user in the **Data Model** tab of IMMARKUS.
+These definitions are editable by the user in IMMARKUS's **Data Model** tab.
 
 ### _immarkus.relations.json
-This file stores **relationships between annotations** across the project. Since annotations can link entities on different images, these relationships are stored at the global (root) level.
+This file stores **relationships between annotations** across the project. Note that relations can link annotations on different images (in different folders). Therefore, relationships are stored at the global (root) level.
 
 ---
 
 ## 2. Image-Specific Files
 
-IMMARKUS recursively loads images from the root project folder and its subfolders. Annotations and metadata for each image are stored in a JSON file named `[image-filename].json`. These files adhere to the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/).
+IMMARKUS recursively loads images from the root project folder and its subfolders. Annotations and metadata for each image are stored in JSON files named `[image-filename].json`. These files adhere to the [W3C Web Annotation Data Model](https://www.w3.org/TR/annotation-model/).
 
 ### Structure of Image Annotation Files
 Each annotation file contains one or more annotations including the following key elements:
 
 - `id`: a UUID identifier for the annotation.
-- `target`: specifies the annotated image region.
-  - The `target.source` field contains the image filename.
-  - The `target.selector` field identifies the annotated region. IMMARKUS uses:
-    - `FragmentSelector` for rectangular regions.
-    - `SvgSelector` for polygon and ellipse regions.
+- `target`: the annotated area of interest.
+  - `target.source`: the image filename.
+  - `target.selector`: the annotated image area. IMMARKUS uses:
+    - W3C `FragmentSelector` for rectangular regions.
+    - W3C `SvgSelector` for polygon and ellipse regions.
 - `body`: the annotation payload. Each body can be one of the following:
   - **Entity Tag:** used to classify the image region with an Entity Class from the user's data model.
     - `type`: `Dataset`
