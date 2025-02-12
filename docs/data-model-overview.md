@@ -1,12 +1,16 @@
 # IMMARKUS Data Model and File Structure
 
-IMMARKUS stores all user data **locally on the user's computer in JSON files**, within a user-specified project folder. This document provides an overview of the data model and file structure.
+IMMARKUS stores all user data **locally on the user's computer in JSON files** (using the [showDirectoryPicker browser API](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker)). This has several reasons:
+- It keeps the architecture simple & privacy-friendly–local-only with no need for cloud storage and online database.
+- It avoids the use of storage mechanisms built into the browser (such as [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) or [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)), which 
+browsers may purge unexpectedly, e.g. after two weeks of inactivity.
+- It simplifies handling of large files, especially images.
 
 ---
 
 ## 1. Core Project Files
 
-When the user launches IMMARKUS, they must specify a **project folder**. This folder serves as the root directory for all project-related data. IMMARKUS stores core project-level information in two key files:
+When the user launches IMMARKUS, they must specify a **project folder**, and grant IMMARKUS access to it. This folder serves as the root directory for all project-related data. IMMARKUS stores core project-level information in two key files:
 
 ### _immarkus.model.json
 This file contains the **data model definitions**, including:
