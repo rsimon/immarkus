@@ -222,12 +222,12 @@ An annotation with a `motivation` of `linking`, which defines the directional co
 - `target`: The ID of the annotation where the relationship arrow **starts**.
 - `body`: the ID of the annotation where the relationship arrow **ends**.
 
-Note that the arrow goes from `target` to `body`. This directionality may seem counter-intuitive. But is suggested by the W3C  definition of a `linking` annotation: [the user intends to link to a resource related to the Target](https://www.w3.org/TR/annotation-model/#bodies-and-targets). Example:
+Note that the arrow goes from `target` to `body`. This directionality may seem counter-intuitive. But is suggested by the W3C  definition of a `linking` annotation: ["the user intends to link to a resource related to the Target"](https://www.w3.org/TR/annotation-model/#bodies-and-targets). Example:
 
 - The user selects an annotation in the user interface.
 - The user wants to link this annotation to another annotation which is related to the currently selected annotation.
 
-According to the W3C definition, this would make the currently selected annotation the `target` and the other annotation the `body` resource. The case could be made for a different directionality (e.g. the user might intend to say that the current annotation is related to the other one). In the end, the W3C definition isn't fully clear, and model directionality remains a convention in IMMARKUS.
+According to the W3C definition, this would make the currently selected annotation the `target` and the other annotation the `body` resource. The case could be made for a different directionality (e.g. the user might intend to say "the current annotation is related to the other one"). In the end, the W3C definition remains slightly ambiguous, and model directionality from target to body remains, simply, a convention in IMMARKUS.
 
 ### Tagging Annotation
 
