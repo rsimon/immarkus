@@ -127,10 +127,6 @@ export const getEntityAnnotationPrimitives = (annotatedImages: { sourceId: strin
       return [...all, ...entityLinks];
   }, []);
 
-export const getEntityCanvasAnnotationPrimitives = () => {
-
-}
-
 const getRelationName = (a: W3CRelationMetaAnnotation) => {
   const body = Array.isArray(a.body) ? a.body[0] : a.body;
   return body?.value;

@@ -125,8 +125,11 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           const sourceLinks = linkMap.get(source);
           linkMap.set(source, [...(sourceLinks || []), link]);
           
-          const targetLinks = linkMap.get(target);
-          linkMap.set(target, [...(targetLinks || []), link]);
+          if (source !== target) {
+            // Don't double-cache self-links!
+            const targetLinks = linkMap.get(target);
+            linkMap.set(target, [...(targetLinks || []), link]);
+          }
         });
 
         /** 
