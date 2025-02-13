@@ -2,6 +2,7 @@ import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useNavigate } from 'react-router-dom';
 import { IIIFIcon } from '@/components/IIIFIcon';
+import { IIIFThumbnail } from '@/components/IIIFThumbnail';
 import { IIIFManifestResource } from '@/model';
 import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
@@ -52,8 +53,8 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
             <div 
               className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
               {inView ? (
-                <img
-                  src={canvas.getThumbnailURL()}
+                <IIIFThumbnail
+                  canvas={canvas}
                   className="h-full w-full object-cover object-center transition-all aspect-square" 
                   onClick={onOpen} />
               ) :(

@@ -11,8 +11,9 @@ export const isImageService = (data: any): data is ImageService => {
 
 export const parseImageService = (service: Service) => {
   const t = getPropertyValue<string>(service, 'type');
+  const context = getPropertyValue<string>(service, 'context');
 
-  if (t === 'ImageService2') {
+  if (t === 'ImageService2' || context?.includes('image/2')) {
     const service2 = service as ImageService2;
 
     const labels = ['level0', 'level1', 'level2'];
@@ -24,7 +25,7 @@ export const parseImageService = (service: Service) => {
       .sort((a, b) => b - a); // Sort descending
 
     return { majorVersion: 2, profileLevel: levels[0] };
-  } else if (t) {
+  } else if (t || context) {
     // Image API 3
     const service3 = service as ImageService3;
     return { majorVersion: 3, profileLevel: parseInt(service3.profile)}

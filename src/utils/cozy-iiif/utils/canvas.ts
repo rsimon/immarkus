@@ -50,6 +50,7 @@ const toCozyImageResource = (resource: IIIFExternalWebResource) => {
   const service = imageService ? parseImageService(imageService) : undefined; 
   if (service) {
     const image = {
+      source: resource,
       type: service.profileLevel === 0 ? 'level0' : 'dynamic',
       service: imageService,
       width,
@@ -68,6 +69,7 @@ const toCozyImageResource = (resource: IIIFExternalWebResource) => {
     }
   } else {
     return {
+      source: resource,
       type: 'static',
       width,
       height,
