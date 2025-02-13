@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { LoadedIIIFImage } from '@/model';
-import { useMemo } from 'react';
+import { getThumbnail } from '@/utils/cozy-iiif/level0';
 
 interface IIIFPreviewImageProps {
 
@@ -8,11 +9,22 @@ interface IIIFPreviewImageProps {
 }
 
 export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
+  
+  const [src, setSrc] = useState<string | undefined>();
 
-  const src = useMemo(() => {
+  useEffect(() => {
     if (!props.image) return;
 
-    return props.image.canvas.getThumbnailURL(600);
+    const firstResource = props.image.canvas?.images[0];
+
+    if (!firstResource || firstResource.type !== 'level0') {
+      setSrc(props.image.canvas.getThumbnailURL());
+    } else {
+      getThumbnail(firstResource, { width: 600, height: 400 }).then(blob => {
+        setSrc(URL.createObjectURL(blob));
+      });
+    }
+    // return props.image.canvas.getThumbnailURL(600);
   }, [props.image]);
 
   return props.image ? (
