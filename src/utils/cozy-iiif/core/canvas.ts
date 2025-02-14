@@ -8,7 +8,7 @@ import {
   ImageServiceResource, 
   Level0ImageServiceResource, 
   StaticImageResource 
-} from '../types';
+} from '../typez';
 
 export const getThumbnailURL = (canvas: Canvas, images: CozyImageResource[] = []) => (minSize = 400) => {
   const { width, height } = canvas;

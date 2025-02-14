@@ -1,4 +1,4 @@
-import { Bounds, Level0ImageServiceResource } from '../types';
+import { Bounds, Level0ImageServiceResource } from '../typez';
 import { getThrottledLoader } from './throttled-loader';
 import { ImageInfo, Tile } from './types';
 
