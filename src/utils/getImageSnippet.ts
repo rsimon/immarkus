@@ -4,7 +4,7 @@ import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotoriou
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { fetchManifest } from './iiif/fetchManifest';
-import { cropRegion } from './cozy-iiif/level0';
+import { cropRegion } from './cozy-iiif/level-0';
 import { 
   CanvasInformation, 
   IIIFManifestResource, 

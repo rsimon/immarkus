@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CozyCanvas } from '@/utils/cozy-iiif';
-import { getThumbnail } from '@/utils/cozy-iiif/level0';
+import { getThumbnail } from '@/utils/cozy-iiif/level-0';
 
 interface IIIFThumbnailProps {
 
