@@ -1,5 +1,5 @@
 import { ImageInfo, Bounds, Tile, Level0ImageServiceResource } from '../Types';
-import { loadImage } from './common';
+import { getThrottledLoader } from './throttled-loader';
 
 const getTileUrl = (
   info: ImageInfo,
@@ -72,9 +72,11 @@ export const cropRegion = async (resource: Level0ImageServiceResource, bounds: B
   canvas.width = tilesWidth;
   canvas.height = tilesHeight;
 
+  const loader = getThrottledLoader({ callsPerSecond: 20 });
+
   // TODO implement polite harvesting!
   await Promise.all(tiles.map(async (tile) => {
-    const img = await loadImage(tile.url);
+    const img = await loader.loadImage(tile.url);
     const x = (tile.x * tileWidth) - bounds.x;
     const y = (tile.y * tileHeight) - bounds.y;
     ctx.drawImage(img, x, y);

@@ -1,5 +1,5 @@
 import { ImageInfo, Level0ImageServiceResource } from '../Types';
-import { loadImage } from './common';
+import { getThrottledLoader } from './throttled-loader';
 
 const getBestScaleFactor = (
   info: ImageInfo,
@@ -105,8 +105,10 @@ export const getThumbnail = async (
   if (!ctx) 
       throw new Error('Error creating canvas context');
 
+  const loader = getThrottledLoader();
+
   await Promise.all(tiles.map(async (tile) => {
-    const img = await loadImage(tile.url);
+    const img = await loader.loadImage(tile.url);
     ctx.drawImage(img, tile.x, tile.y);
   }));
 
