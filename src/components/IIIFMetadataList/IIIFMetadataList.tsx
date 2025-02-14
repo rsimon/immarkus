@@ -1,4 +1,4 @@
-import { CozyMetadata } from '@/utils/cozy-iiif';
+import { CozyMetadata } from 'cozy-iiif';
 
 interface IIIFMetadataListProps {
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { CozyManifest } from 'cozy-iiif';
 import { useStore } from '@/store';
 import { fetchManifest } from '../fetchManifest';
-import { CozyManifest } from '@/utils/cozy-iiif';
 
 export const useIIIFResource = (id: string) => {
 

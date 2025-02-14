@@ -58,6 +58,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
+    "cozy-iiif": "^0.1.0",
     "dequal": "^2.0.3",
     "exceljs": "^4.4.0",
     "fuse.js": "^7.1.0",

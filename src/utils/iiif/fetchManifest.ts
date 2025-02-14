@@ -1,4 +1,4 @@
-import { type CozyManifest, Cozy } from '@/utils/cozy-iiif';
+import { type CozyManifest, Cozy } from 'cozy-iiif';
 
 const cache = new Map<string, CozyManifest>();
 

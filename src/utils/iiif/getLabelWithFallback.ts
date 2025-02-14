@@ -1,4 +1,4 @@
-import { CozyCanvas } from '../cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 
 export const getCanvasLabelWithFallback = (canvas: CozyCanvas) => {
   const label = canvas.getLabel(); 

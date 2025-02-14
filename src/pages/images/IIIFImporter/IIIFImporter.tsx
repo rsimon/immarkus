@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
-import { type CozyParseResult, Cozy } from '@/utils/cozy-iiif';
+import { type CozyParseResult, Cozy } from 'cozy-iiif';
 
 interface IIIFImporterProps {
 

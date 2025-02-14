@@ -1,4 +1,4 @@
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 
 export interface Image {
 
