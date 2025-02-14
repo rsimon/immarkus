@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LoadedIIIFImage } from '@/model';
-import { getThumbnail } from '@/utils/cozy-iiif/level-0';
+import { getThumbnail } from 'cozy-iiif/level-0';
 
 interface IIIFPreviewImageProps {
 

@@ -9,7 +9,7 @@ import { IIIFManifestResource } from '@/model';
 import { useImageMetadata, useManifestMetadata } from '@/store';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
-import { CozyMetadata } from '@/utils/cozy-iiif';
+import { CozyMetadata } from 'cozy-iiif';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasGridItem } from '../Types';
 

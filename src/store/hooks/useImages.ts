@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import { fetchManifest } from '@/utils/iiif/fetchManifest';
 import { useStore } from './useStore';
 

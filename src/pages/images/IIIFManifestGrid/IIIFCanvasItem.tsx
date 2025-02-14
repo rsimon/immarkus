@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { CanvasInformation } from '@/model';
 import { IIIFCanvasItemActions } from './IIIFCanvasItemActions';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import murmur from 'murmurhash';
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import { useIIIFResource } from './useIIIFResource';
 
 export const useCanvas = (id?: string): CozyCanvas => {

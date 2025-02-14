@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Images, MoreVertical, NotebookPen } from 'lucide-react';
 import { CanvasInformation } from '@/model';
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import {
   DropdownMenu,
   DropdownMenuContent,

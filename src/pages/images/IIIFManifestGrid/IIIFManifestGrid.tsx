@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
-import { CozyCanvas } from '@/utils/cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import { useManifestAnnotations } from '@/store/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { CanvasGridItem, GridItem } from '../Types';

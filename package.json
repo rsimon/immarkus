@@ -10,7 +10,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.6",
     "@types/chroma-js": "^3.1.1",
-    "@types/node": "^22.13.1",
+    "@types/node": "^22.13.4",
     "@types/openseadragon": "^3.0.10",
     "@types/react": "^18.3.18",
     "@types/react-autosuggest": "^10.1.11",
@@ -58,6 +58,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
+    "cozy-iiif": "^0.1.1",
     "dequal": "^2.0.3",
     "exceljs": "^4.4.0",
     "fuse.js": "^7.1.0",
