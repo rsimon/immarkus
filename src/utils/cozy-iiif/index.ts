@@ -1,3 +1,3 @@
-export * from './utils';
+export * from './core';
+export * from './types';
 export * from './Cozy';
-export * from './Types';

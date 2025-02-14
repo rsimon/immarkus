@@ -1,10 +1,8 @@
-import { ImageInfo, Level0ImageServiceResource } from '../Types';
+import { Level0ImageServiceResource } from '../../types';
 import { getThrottledLoader } from './throttled-loader';
+import { ImageInfo, Size, Tile } from './types';
 
-const getBestScaleFactor = (
-  info: ImageInfo,
-  minSize?: { width?: number; height?: number }
-): number => {
+const getBestScaleFactor = (info: ImageInfo, minSize?: Partial<Size>): number => {
   // Sort descending
   const scaleFactors = info.tiles[0].scaleFactors.sort((a, b) => b - a); 
   
@@ -27,10 +25,7 @@ const getBestScaleFactor = (
   return scaleFactors[scaleFactors.length - 1];
 };
 
-const getThumbnailDimensions = (
-  info: ImageInfo,
-  minSize?: { width?: number; height?: number }
-): { width: number; height: number } => {
+const getThumbnailDimensions = (info: ImageInfo, minSize?: Partial<Size>): Size => {
   const scaleFactor = getBestScaleFactor(info, minSize);
 
   let width = Math.ceil(info.width / scaleFactor);
@@ -53,10 +48,7 @@ const getThumbnailDimensions = (
   return { width, height };
 }
 
-const getThumbnailTiles = (
-  info: ImageInfo,
-  minSize?: { width?: number; height?: number }
-): { url: string; x: number; y: number }[] => {
+const getThumbnailTiles = (info: ImageInfo, minSize?: Partial<Size>): Tile[] => {
   const scaleFactor = getBestScaleFactor(info, minSize);
 
   const tileWidth = info.tiles[0].width;
@@ -79,6 +71,8 @@ const getThumbnailTiles = (
       
       tiles.push({
         url: `${info['@id']}/${x * tileWidth * scaleFactor},${y * tileHeight * scaleFactor},${actualWidth * scaleFactor},${actualHeight * scaleFactor}/${Math.ceil(actualWidth)},/0/default.jpg`,
+        width: Math.ceil(actualWidth),
+        height: Math.ceil(actualHeight), 
         x: x * tileWidth,
         y: y * tileHeight
       });
@@ -88,10 +82,7 @@ const getThumbnailTiles = (
   return tiles;
 }
 
-export const getThumbnail = async (
-  resource: Level0ImageServiceResource,
-  minSize?: { width?: number; height?: number }
-): Promise<Blob> => {
+export const getThumbnail = async (resource: Level0ImageServiceResource, minSize?: Partial<Size>): Promise<Blob> => {
   const info = await fetch(resource.serviceUrl).then(res => res.json());
 
   const tiles = getThumbnailTiles(info, minSize);

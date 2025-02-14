@@ -11,7 +11,7 @@ export const getCanvasLabelWithFallback = (canvas: CozyCanvas) => {
     return  `Unnamed (Image API v${firstImage.majorVersion})`;
 
   if (firstImage.type === 'level0')
-    return  `Unnamed (Image API v${firstImage.majorVersion} Lvl 0)`;
+    return  `Unnamed (Image API v${firstImage.majorVersion} Level 0)`;
 
   if (firstImage.type === 'static')
     return 'Unnamed (static image)';

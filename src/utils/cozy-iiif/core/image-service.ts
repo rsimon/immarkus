@@ -1,6 +1,6 @@
 import { ImageService2, ImageService3, Service } from '@iiif/presentation-3';
 import { getPropertyValue } from './resource';
-import { Bounds, CozyImageResource } from '../Types';
+import { Bounds, CozyImageResource } from '../types';
 
 type ImageService = ImageService2 | ImageService3;
 

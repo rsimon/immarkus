@@ -1,8 +1,14 @@
 import { Canvas, IIIFExternalWebResource } from '@iiif/presentation-3';
 import { Traverse } from '@iiif/parser';
-import { CozyImageResource, DynamicImageServiceResource, ImageServiceResource, Level0ImageServiceResource, StaticImageResource } from '../Types';
 import { getPropertyValue } from './resource';
-import { getImageURLFromService, getRegionURL, isImageService, parseImageService } from './imageService';
+import { getImageURLFromService, getRegionURL, isImageService, parseImageService } from './image-service';
+import { 
+  CozyImageResource, 
+  DynamicImageServiceResource, 
+  ImageServiceResource, 
+  Level0ImageServiceResource, 
+  StaticImageResource 
+} from '../types';
 
 export const getThumbnailURL = (canvas: Canvas, images: CozyImageResource[] = []) => (minSize = 400) => {
   const { width, height } = canvas;

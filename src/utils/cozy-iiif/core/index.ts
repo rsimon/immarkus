@@ -1,3 +1,3 @@
 export * from './canvas';
-export * from './imageService';
+export * from './image-service';
 export * from './resource';

@@ -1,7 +1,7 @@
 import { Canvas, Manifest } from '@iiif/presentation-3';
 import { convertPresentation2  } from '@iiif/parser/presentation-2';
 import { Traverse } from '@iiif/parser';
-import { CozyCanvas, CozyManifest, CozyParseResult, ImageServiceResource } from './Types';
+import { CozyCanvas, CozyManifest, CozyParseResult, ImageServiceResource } from './types';
 import { 
   getImages, 
   getLabel, 
@@ -10,7 +10,7 @@ import {
   getThumbnailURL, 
   normalizeServiceUrl, 
   parseImageService 
-} from './utils';
+} from './core';
 
 export const Cozy = {
   
