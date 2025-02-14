@@ -4,6 +4,7 @@ import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotoriou
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { fetchManifest } from './iiif/fetchManifest';
+import { cropRegion } from './cozy-iiif/level0';
 import { 
   CanvasInformation, 
   IIIFManifestResource, 
@@ -152,6 +153,13 @@ export const getImageSnippet = (
     const { bounds } = a.target.selector.geometry;
     const { canvas } = (image as LoadedIIIFImage);
 
+    const region = { 
+      x: bounds.minX,
+      y: bounds.minY,
+      w: bounds.maxX - bounds.minX,
+      h: bounds.maxY - bounds.minY
+    };
+
     // For now, we're assuming that each canvas has exactly one image
     const firstImage = canvas.images[0];
 
@@ -159,12 +167,7 @@ export const getImageSnippet = (
     if (!firstImage) throw 'Canvas has no image';
 
     if (firstImage.type === 'dynamic') {
-      const src = firstImage.getRegionURL({ 
-        x: bounds.minX,
-        y: bounds.minY,
-        w: bounds.maxX - bounds.minX,
-        h: bounds.maxY - bounds.minY
-      });
+      const src = firstImage.getRegionURL(region);
 
       return Promise.resolve({
         annotation: a,
@@ -184,6 +187,15 @@ export const getImageSnippet = (
       return fetch(firstImage.url)
         .then(res => res.blob())
         .then(blob => scheduler.getSnippet(canvas.id, blob, a));
+    } else if (firstImage.type === 'level0') {
+      return cropRegion(firstImage, region).then(blob => {
+        return blob.arrayBuffer().then(buffer => ({
+          annotation: a,
+          height: bounds.maxY - bounds.minY,
+          width: bounds.maxX - bounds.minX,
+          data: new Uint8Array(buffer)
+        }));
+      });
     }
   } else {
     const blob = new Blob([(image as LoadedFileImage).data])

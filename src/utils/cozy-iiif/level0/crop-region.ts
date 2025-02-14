@@ -1,4 +1,4 @@
-import { ImageInfo, Bounds, Tile } from '../Types';
+import { ImageInfo, Bounds, Tile, Level0ImageServiceResource } from '../Types';
 import { loadImage } from './common';
 
 const getTileUrl = (
@@ -50,7 +50,10 @@ const getTilesForRegion = (info: ImageInfo, bounds: Bounds): Tile[] => {
   return tiles;
 }
 
-export const cropRegion = async (info: ImageInfo, bounds: Bounds): Promise<Blob> => {
+export const cropRegion = async (resource: Level0ImageServiceResource, bounds: Bounds): Promise<Blob> => {
+
+  const info = await fetch(resource.serviceUrl).then(res => res.json());
+
   const tiles = getTilesForRegion(info, bounds);
   
   const canvas = document.createElement('canvas');
@@ -76,7 +79,6 @@ export const cropRegion = async (info: ImageInfo, bounds: Bounds): Promise<Blob>
     const y = (tile.y * tileHeight) - bounds.y;
     ctx.drawImage(img, x, y);
   }));
-
 
   const cropCanvas = document.createElement('canvas');
   cropCanvas.width = bounds.w;
