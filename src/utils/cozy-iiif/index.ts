@@ -1,3 +1,3 @@
 export * from './core';
-export * from './typez';
+export * from './types';
 export * from './Cozy';
