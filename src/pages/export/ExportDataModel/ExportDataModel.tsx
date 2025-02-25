@@ -109,7 +109,7 @@ export const ExportDataModel = () => {
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
             All of the above - Entity Classes, Relationship Types, Image and Folder metadata schemas. This export is the same
-            file you will find in your work foldder as <code className="text-muted-foreground">_immarkus.model.json</code>.  
+            file you will find in your work folder as <code className="text-muted-foreground">_immarkus.model.json</code>.  
             It is re-published here for convenience.
           </p>
 
