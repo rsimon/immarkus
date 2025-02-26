@@ -1,4 +1,4 @@
-import { Circle, Square, TriangleRight } from 'lucide-react';
+import { Circle, Square, TriangleRight, Wand } from 'lucide-react';
 import { Tool } from '../Tool';
 import {
   Select,
@@ -62,6 +62,12 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         <SelectItem value="ellipse" >
           <div className="flex items-center text-xs">
             <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" /> Ellipse
+          </div>
+        </SelectItem>
+
+        <SelectItem value="smart-selection">
+          <div className="flex items-center text-xs whitespace-nowrap">
+            <Wand className="w-3.5 h-3.5 mr-2 mb-[1px]" /> Smart Selection
           </div>
         </SelectItem>
       </SelectContent>

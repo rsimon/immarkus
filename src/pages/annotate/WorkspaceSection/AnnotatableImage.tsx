@@ -104,6 +104,10 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     minZoomLevel: 0.1,
     maxZoomLevel: 100
   }), [image.id]);
+
+  // Temporary
+  const tool = props.tool === 'smart-selection' ? undefined : props.tool;
+  const drawingEnabled = props.tool === 'smart-selection' ? false : props.mode === 'draw';
   
   return (
     <Annotorious id={props.image.id}>
@@ -111,11 +115,11 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         autoSave
         drawingMode="click"
-        drawingEnabled={props.mode === 'draw'}
+        drawingEnabled={drawingEnabled}
         initialHistory={props.initialHistory}
         userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
         style={style}
-        tool={props.tool}>
+        tool={tool}>
 
         <HistoryConsumer 
           onUnmount={props.onUnmount} />

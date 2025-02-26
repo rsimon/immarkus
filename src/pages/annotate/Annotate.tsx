@@ -8,6 +8,7 @@ import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
+import { SmartSelectionPanel } from './SmartSelectionPanel';
 import { ToolMode, Tool } from './Tool';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -81,6 +82,10 @@ export const Annotate = () => {
                   <div className="flex items-center justify-center h-full bg-muted">
                     <Loader2 className="animate-spin size-5 opacity-50" />
                   </div>
+                )}
+
+                {tool === 'smart-selection' && (
+                  <SmartSelectionPanel />
                 )}
               </main>
 

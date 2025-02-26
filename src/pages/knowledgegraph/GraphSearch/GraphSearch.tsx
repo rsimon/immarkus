@@ -46,7 +46,7 @@ const EMPTY_CONDITION: Condition = { operator: 'AND', sentence: {} };
 
 export const GraphSearch = (props: GraphSearchProps) => {
 
-  const el = useRef(null);
+  const el = useRef<HTMLDivElement>(null);
 
   const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 10 : 260, y: 10 });
 
