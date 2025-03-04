@@ -17,10 +17,6 @@ export const SmartSelection = () => {
     const plugin = mountOpenSeadragonPlugin(anno);
     setSamPlugin(plugin);
 
-    anno.on('createAnnotation', annotation => {
-      console.log('yay!', annotation);
-    })
-
     return () => {
       plugin.destroy();
     }

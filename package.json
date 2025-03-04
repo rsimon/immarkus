@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@annotorious/plugin-connectors-react": "^0.3.0",
-    "@annotorious/plugin-segment-anything": "github:annotorious/plugin-segment-anything",
+    "@annotorious/plugin-segment-anything": "^0.1.1",
     "@annotorious/plugin-tools": "^1.0.2",
     "@annotorious/react": "3.1.4",
     "@annotorious/react-manifold": "3.1.4",
