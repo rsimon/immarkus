@@ -4,7 +4,7 @@ interface MagneticOutlinePanelProps {
 
 }
 
-export const MagneticOutlinePanel = (props: MagneticOutlinePanelProps) => {
+export const MagneticOutlineSection = (props: MagneticOutlinePanelProps) => {
 
   return (
     <div>

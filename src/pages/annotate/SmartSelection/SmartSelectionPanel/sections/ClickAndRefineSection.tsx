@@ -5,7 +5,7 @@ interface ClickAndRefinePanelProps {
 
 }
 
-export const ClickAndRefinePanel = (props: ClickAndRefinePanelProps) => {
+export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   return (
     <div>

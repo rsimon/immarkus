@@ -4,7 +4,7 @@ interface BoxPanelProps {
 
 }
 
-export const BoxPanel = (props: BoxPanelProps) => {
+export const BoxSection = (props: BoxPanelProps) => {
 
   return (
     <div>

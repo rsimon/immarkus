@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { Grip, Magnet, SquareDashedMousePointer, SquareSquare } from 'lucide-react';
-import { ClickAndRefinePanel } from './panels/ClickAndRefinePanel';
+import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { BoxPanel, MagneticOutlinePanel } from './panels';
+import { useSAMPlugin } from '../SmartSelectionRoot';
 
 export const SmartSelectionPanel = () => {
 
@@ -16,10 +16,24 @@ export const SmartSelectionPanel = () => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  const sam = useSAMPlugin();
+
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
     setTimeout(() => el.current.style.translate = null, 0);
   }, []);
+
+  useEffect(() => {
+    try {
+      sam.setEnabled(true);
+    } catch (error) {
+      console.error(error);
+    }
+
+    return () => {
+      sam.setEnabled(false);
+    }
+  }, [sam]);
 
   useDraggable(el, {
     position,
@@ -49,7 +63,7 @@ export const SmartSelectionPanel = () => {
           </AccordionTrigger>
 
           <AccordionContent className="bg-muted border-t text-xs pt-0" asChild>
-            <ClickAndRefinePanel />
+            <ClickAndRefineSection />
           </AccordionContent>
         </AccordionItem>
 
@@ -62,7 +76,7 @@ export const SmartSelectionPanel = () => {
           </AccordionTrigger>
 
           <AccordionContent className="bg-muted border-t text-xs pt-0" >
-            <BoxPanel />
+            <BoxSection />
           </AccordionContent>
         </AccordionItem>
 
@@ -75,7 +89,7 @@ export const SmartSelectionPanel = () => {
           </AccordionTrigger>
 
           <AccordionContent className="bg-muted border-t text-xs pt-0" >
-            <MagneticOutlinePanel />
+            <MagneticOutlineSection />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

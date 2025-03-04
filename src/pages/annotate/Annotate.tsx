@@ -8,7 +8,7 @@ import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
-import { SmartSelectionPanel } from './SmartSelectionPanel';
+import { SmartSelectionPanel, SmartSelectionRoot } from './SmartSelection';
 import { ToolMode, Tool } from './Tool';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -59,38 +59,40 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <OSDViewerManifold>
           <RelationEditorRoot>
-            <SavingState.Root>
-              <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-                <HeaderSection
-                  images={images} 
-                  mode={mode}
-                  tool={tool}
-                  onAddImage={onAddImage} 
-                  onChangeImage={onChangeImage}
-                  onChangeMode={setMode}
-                  onChangeTool={setTool} />
-
-                {images.length > 0 ? ( 
-                  <WorkspaceSection 
+            <SmartSelectionRoot>
+              <SavingState.Root>
+                <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                  <HeaderSection
                     images={images} 
                     mode={mode}
-                    tool={tool} 
+                    tool={tool}
                     onAddImage={onAddImage} 
-                    onChangeImages={imageIds => setImageIds(imageIds)}
-                    onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-muted">
-                    <Loader2 className="animate-spin size-5 opacity-50" />
-                  </div>
-                )}
+                    onChangeImage={onChangeImage}
+                    onChangeMode={setMode}
+                    onChangeTool={setTool} />
 
-                {tool === 'smart-selection' && (
-                  <SmartSelectionPanel />
-                )}
-              </main>
+                  {images.length > 0 ? ( 
+                    <WorkspaceSection 
+                      images={images} 
+                      mode={mode}
+                      tool={tool} 
+                      onAddImage={onAddImage} 
+                      onChangeImages={imageIds => setImageIds(imageIds)}
+                      onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-muted">
+                      <Loader2 className="animate-spin size-5 opacity-50" />
+                    </div>
+                  )}
 
-              <SidebarSection />
-            </SavingState.Root>
+                  {tool === 'smart-selection' && (
+                    <SmartSelectionPanel />
+                  )}
+                </main>
+
+                <SidebarSection />
+              </SavingState.Root>
+            </SmartSelectionRoot>
           </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>

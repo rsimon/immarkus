@@ -13,6 +13,7 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
+import { SmartSelection } from '../SmartSelection';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
   AnnotoriousPlugin, 
@@ -100,6 +101,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       clickToZoom: false,
       dblClickToZoom: false
     },
+    crossOriginPolicy: 'Anonymous',
     showNavigationControl: false,
     minZoomLevel: 0.1,
     maxZoomLevel: 100
@@ -131,6 +133,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
+
+        <SmartSelection />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 
