@@ -183,8 +183,8 @@ export const loadStore = (
       'data' in sourceOrSourceId ? sourceOrSourceId.id :
       `iiif:${sourceOrSourceId.id}`;
 
+    // Normalized ID will point to 
     const normalizedId = _normalizeSourceId(id);
-      
     const source = _findSource(normalizedId);
     if (source) {
       const all = await getAnnotations(normalizedId);
@@ -329,7 +329,7 @@ export const loadStore = (
       if (canvasId) {
         return getCanvasAnnotations(sourceId, opts);  
       } else {
-        return getManifestAnnotations(manifestId, opts);
+        return getManifestAnnotations(manifestId, {...opts, includeCanvases: true });
       }
     } else {
       return _getAnnotations(sourceId, opts);
