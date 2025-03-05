@@ -42,18 +42,12 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
     if (!samPlugin) return;
 
     try {
-      if (enabled) {
-        console.log('starting');
+      if (enabled)
         samPlugin.start();
-      } else {
+      else
         samPlugin.stop();
-      }
     } catch (error) {
       console.error(error);
-    }
-
-    return () => {
-      samPlugin?.stop();
     }
   }, [samPlugin, enabled]);
 
@@ -84,7 +78,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   return (
     <div className="px-6">
-      <p className="pt-4 pb-2 font-light text-fuchsia-900">
+      <p className="pt-4 pb-2 font-light tracking-wide text-muted-foreground">
         Click to select an object. Add points to expand or remove areas.
       </p>
 
@@ -96,7 +90,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="add"
-            className="!rounded-md aspect-square h-12 hover:border-fuchsia-800/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-800 data-[state=on]:bg-fuchsia-800 data-[state=on]:border-fuchsia-800 data-[state=on]:[&+*]:text-fuchsia-800">
+            className="!rounded-md aspect-square h-12 hover:border-fuchsia-900/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-900/70 data-[state=on]:bg-fuchsia-900 data-[state=on]:border-fuchsia-900 data-[state=on]:[&+*]:text-fuchsia-900">
             {samPluginBusy ? (
               <Spinner />
             ) : (
@@ -109,26 +103,26 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="remove"
-            className="!rounded-md aspect-square h-12 hover:border-fuchsia-800/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-800 data-[state=on]:bg-fuchsia-800 data-[state=on]:border-fuchsia-800 data-[state=on]:[&+*]:text-fuchsia-800">
+            className="!rounded-md aspect-square h-12 hover:border-fuchsia-900/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-900/70 data-[state=on]:bg-fuchsia-900 data-[state=on]:border-fuchsia-900 data-[state=on]:[&+*]:text-fuchsia-900">
             <Minus className="size-5"/>
           </ToggleGroupItem>
           <span className="pt-1 text-fuchsia-900/40">Remove area</span>
         </div>
       </ToggleGroup>
 
-      <div className="flex justify-around pt-7 pb-3">
+      <div className="flex justify-around pt-8 pb-4">
         <div className="text-white flex">
           <button
             disabled={!enabled || !hasPrompt}
             onClick={onConfirm}
-            className="px-8 rounded-l-md border-r border-indigo-50/70 py-1.5 bg-fuchsia-800 hover:bg-fuchsia-900 disabled:bg-fuchsia-900/25">
+            className="px-8 rounded-l-md border border-r-0 border-fuchsia-900 py-1.5 bg-fuchsia-900 hover:bg-fuchsia-950 disabled:border-fuchsia-900/5 disabled:bg-fuchsia-900/25">
             Done
           </button>
 
           <button 
             disabled={!enabled || !hasPrompt}
             onClick={onReset}
-            className="px-8 rounded-r-md py-1.5 bg-fuchsia-800 hover:bg-fuchsia-900 disabled:bg-fuchsia-900/25">
+            className="px-8 rounded-r-md py-1.5 bg-transparent text-fuchsia-950 border border-l-0 border-fuchsia-900 hover:bg-fuchsia-900/10 disabled:bg-fuchsia-900/25 disabled:border-fuchsia-900/5 disabled:text-white">
             Reset
           </button>
         </div>
