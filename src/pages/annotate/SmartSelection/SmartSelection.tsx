@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { AnnotoriousOpenSeadragonAnnotator, useAnnotator } from '@annotorious/react';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { SmartSelectionContext } from './SmartSelectionRoot';
@@ -14,7 +14,7 @@ export const SmartSelection = () => {
   useEffect(() => {
     if (!anno?.viewer) return;
 
-    const plugin = mountOpenSeadragonPlugin(anno);
+    const plugin = mountOpenSeadragonPlugin(anno, { maxPreviewCoverage: 0.33 });
     setSamPlugin(plugin);
 
     return () => {

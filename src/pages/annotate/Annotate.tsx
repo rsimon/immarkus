@@ -86,7 +86,9 @@ export const Annotate = () => {
                   )}
 
                   {tool === 'smart-selection' && (
-                    <SmartSelectionPanel />
+                    <SmartSelectionPanel 
+                      mode={mode} 
+                      onChangeMode={setMode} />
                   )}
                 </main>
 
