@@ -17,11 +17,14 @@ import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
   ChevronLeft, 
   MousePointer2, 
+  PocketKnife, 
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
+  Sparkles, 
   Spline, 
   Undo2, 
+  WandSparkles, 
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
@@ -244,35 +247,47 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           </>
         )}
 
+        <ToolbarButton
+          onClick={() => onEnableDrawing('smart-selection')}
+          data-state={(props.mode === 'draw' && props.tool === 'smart-selection') ? 'active' : undefined}
+          className="text-orange-400 mx-1 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
+          <WandSparkles className="size-4 h-8 w-8 p-2" />
+        </ToolbarButton>
+
         <button 
           className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
-          <MousePointer2 className="h-4 w-4 mr-1" /> Move
+          <MousePointer2 className="size-4 mr-1" /> Move
         </button>
 
         <ToolSelector 
           tool={props.tool} 
-          active={props.mode === 'draw'}
+          active={props.mode === 'draw' && props.tool !== 'smart-selection'}
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
 
-        {!collapsed &&
-          (ENABLE_CONNECTOR_PLUGIN ? (
-            <button 
-              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              aria-selected={props.mode === 'connect'}
-              data-state={props.mode === 'connect'}
-              onClick={() => props.onChangeMode('connect')}>
-              <Spline
-                className="h-8 w-8 p-2" /> Connect
-            </button>
-          ) : (
-            <RelationEditor 
-              open={relationsEditorOpen}
-              onOpenChange={onRelationsEditorOpenChange}/>
-          )
+
+        {!collapsed && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+
+            {ENABLE_CONNECTOR_PLUGIN ? (
+              <button 
+                className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-selected={props.mode === 'connect'}
+                data-state={props.mode === 'connect'}
+                onClick={() => props.onChangeMode('connect')}>
+                <Spline
+                  className="h-8 w-8 p-2" /> Connect
+              </button>
+            ) : (
+              <RelationEditor 
+                open={relationsEditorOpen}
+                onOpenChange={onRelationsEditorOpenChange}/>
+            )}
+          </>
         )}
       </section>
     </section>

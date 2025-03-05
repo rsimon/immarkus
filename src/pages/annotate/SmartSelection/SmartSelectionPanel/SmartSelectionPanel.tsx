@@ -44,7 +44,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       ref={el}
       className="bg-white absolute w-64 top-16 right-6 rounded border shadow-lg z-30">
 
-      <div className="flex items-center gap-1.5 text-xs font-semibold p-2 border-b cursor-grab drag-handle">
+      <div className="flex items-center gap-1.5 text-xs font-semibold p-2 border-b border-stone-200 cursor-grab drag-handle">
         <Grip className="size-4" />
         <span>Smart Selection Tools</span>
       </div>
@@ -60,7 +60,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </span>
           </AccordionTrigger>
 
-          <AccordionContent className="bg-indigo-50/70 border-t text-xs pt-0" asChild>
+          <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
             <ClickAndRefineSection 
               enabled={props.mode === 'draw'} 
               onSetEnabled={onSetEnabled} />
@@ -75,7 +75,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </span>
           </AccordionTrigger>
 
-          <AccordionContent className="bg-muted border-t text-xs pt-0" >
+          <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
             <BoxSection />
           </AccordionContent>
         </AccordionItem>
@@ -88,7 +88,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </span>
           </AccordionTrigger>
 
-          <AccordionContent className="bg-muted border-t text-xs pt-0" >
+          <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
             <MagneticOutlineSection />
           </AccordionContent>
         </AccordionItem>

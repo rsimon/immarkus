@@ -43,9 +43,9 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
     try {
       if (enabled)
-        samPlugin.start();
+        samPlugin?.start();
       else
-        samPlugin.stop();
+        samPlugin?.stop();
     } catch (error) {
       console.error(error);
     }
@@ -78,7 +78,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   return (
     <div className="px-6">
-      <p className="pt-4 pb-2 font-light tracking-wide text-muted-foreground">
+      <p className="pt-4 pb-2 font-light text-center">
         Click to select an object. Add points to expand or remove areas.
       </p>
 
@@ -90,23 +90,23 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="add"
-            className="!rounded-md aspect-square h-12 hover:border-fuchsia-900/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-900/70 data-[state=on]:bg-fuchsia-900 data-[state=on]:border-fuchsia-900 data-[state=on]:[&+*]:text-fuchsia-900">
+            className="!rounded-md aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             {samPluginBusy ? (
               <Spinner />
             ) : (
               <WandSparkles className="size-5" />
             )}
           </ToggleGroupItem>
-          <span className="pt-1 text-fuchsia-900/40">Select object</span>
+          <span className="pt-1 text-orange-600/40">Select object</span>
         </div>
 
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="remove"
-            className="!rounded-md aspect-square h-12 hover:border-fuchsia-900/70 hover:[&+*]:text-fuchsia-800 border border-fuchsia-900/25 text-fuchsia-900/25 hover:text-fuchsia-900/70 data-[state=on]:bg-fuchsia-900 data-[state=on]:border-fuchsia-900 data-[state=on]:[&+*]:text-fuchsia-900">
+            className="!rounded-md aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             <Minus className="size-5"/>
           </ToggleGroupItem>
-          <span className="pt-1 text-fuchsia-900/40">Remove area</span>
+          <span className="pt-1 text-orange-600/40">Remove area</span>
         </div>
       </ToggleGroup>
 
@@ -115,14 +115,14 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
           <button
             disabled={!enabled || !hasPrompt}
             onClick={onConfirm}
-            className="px-8 rounded-l-md border border-r-0 border-fuchsia-900 py-1.5 bg-fuchsia-900 hover:bg-fuchsia-950 disabled:border-fuchsia-900/5 disabled:bg-fuchsia-900/25">
+            className="px-8 rounded-l-md border border-r-0 border-orange-400 py-1.5 bg-orange-400 hover:bg-orange-400/90 disabled:border-orange-300/5 disabled:bg-orange-400/25">
             Done
           </button>
 
           <button 
             disabled={!enabled || !hasPrompt}
             onClick={onReset}
-            className="px-8 rounded-r-md py-1.5 bg-transparent text-fuchsia-950 border border-l-0 border-fuchsia-900 hover:bg-fuchsia-900/10 disabled:bg-fuchsia-900/25 disabled:border-fuchsia-900/5 disabled:text-white">
+            className="px-8 rounded-r-md py-1.5 bg-transparent text-orange-500 border border-l-0 border-orange-400 hover:bg-orange-500/10 disabled:bg-orange-400/25 disabled:border-orange-300/5 disabled:text-white">
             Reset
           </button>
         </div>
