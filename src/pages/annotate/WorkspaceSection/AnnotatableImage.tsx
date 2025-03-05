@@ -119,7 +119,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingMode="click"
         drawingEnabled={drawingEnabled}
         initialHistory={props.initialHistory}
-        userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
+        userSelectAction={(props.mode === 'connect' || props.tool === 'smart-selection') ? UserSelectAction.NONE : undefined}
         style={style}
         tool={tool}>
 
