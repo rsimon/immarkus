@@ -88,7 +88,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
               </span>
             </AccordionTrigger>
 
-            <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
+            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
               <BoxSection />
             </AccordionContent>
           </AccordionItem>
@@ -101,7 +101,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
               </span>
             </AccordionTrigger>
 
-            <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
+            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
               <MagneticOutlineSection />
             </AccordionContent>
           </AccordionItem>

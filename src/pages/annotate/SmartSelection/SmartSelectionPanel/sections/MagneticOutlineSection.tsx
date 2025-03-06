@@ -7,17 +7,18 @@ interface MagneticOutlinePanelProps {
 export const MagneticOutlineSection = (props: MagneticOutlinePanelProps) => {
 
   return (
-    <div>
-      <div className="flex justify-center pt-6 pb-1">
+    <div className="px-4">
+      <p className="pt-3 pb-2 font-light leading-relaxed">
+        <span className="font-semibold">Coming soon!</span> Click to add points along the edge of an object. 
+        The outline snaps to the contour.
+      </p>
+
+      <div className="flex justify-center pt-5 pb-4">
         <div 
-          className="size-10 flex items-center justify-center rounded-full aspect-square text-white bg-primary">
-          <MousePointerClick className="size-5" />
+          className="!rounded-md aspect-square h-12 border border-orange-500/25 text-orange-400/25 flex items-center justify-center">
+          <MousePointerClick className="size-5"/>
         </div>
       </div>
-
-      <p className="pt-3 px-4 text-muted-foreground leading-relaxed font-light text-center">
-        Click to place points along the edge of an object. The outline will snap to detected contours.
-      </p>
     </div>
   )
 
