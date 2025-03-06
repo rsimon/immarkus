@@ -28,12 +28,20 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { samPluginError } = useSAMPlugin();
+  const { samPlugin, samPluginError } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
     setTimeout(() => el.current.style.translate = null, 0);
   }, []);
+
+  useEffect(() => {
+    if (!samPlugin) return;
+
+    return () => {
+      samPlugin?.stop();
+    }
+  }, [samPlugin]);
 
   useDraggable(el, {
     position,
