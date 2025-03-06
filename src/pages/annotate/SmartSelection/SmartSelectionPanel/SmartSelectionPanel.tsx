@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Button } from '@/ui/Button';
+import { useSAMPlugin } from '../SmartSelectionRoot';
 
 interface SmartSelectionProps {
 
@@ -26,6 +27,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   const el = useRef(null);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
+
+  const { samPluginError } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
@@ -61,7 +64,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
         </Button>
       </div>
 
-      {'gpu' in navigator ? (
+      {('gpu' in navigator && !samPluginError) ? (
         <Accordion 
           type="single"
           defaultValue="click-and-refine">
