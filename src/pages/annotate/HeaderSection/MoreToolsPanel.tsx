@@ -6,7 +6,7 @@ import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { useState } from 'react';
-import { ToolMode } from '../Tool';
+import { AnnotationMode } from '../AnnotationMode';
 import { RelationEditor } from '../RelationEditor';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
@@ -15,7 +15,7 @@ interface MoreToolsPanelProps {
 
   images: LoadedImage[];
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   osdToolsDisabled: boolean;
 
@@ -25,7 +25,7 @@ interface MoreToolsPanelProps {
 
   onChangeImage(previousId: string, nextId: string): void;
 
-  onChangeMode(props: ToolMode): void;
+  onChangeMode(props: AnnotationMode): void;
 
   onRelationsEditorOpenChange(open: boolean): void;
 
@@ -108,9 +108,9 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           {ENABLE_CONNECTOR_PLUGIN ? (
             <button 
               className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              aria-selected={props.mode === 'connect'}
-              data-state={props.mode === 'connect'}
-              onClick={() => props.onChangeMode('connect')}>
+              aria-selected={props.mode === 'relation'}
+              data-state={props.mode === 'relation'}
+              onClick={() => props.onChangeMode('relation')}>
               <Spline
                 className="h-8 w-8 p-2" /> Connect
             </button>

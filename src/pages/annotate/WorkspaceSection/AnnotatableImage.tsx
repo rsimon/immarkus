@@ -8,11 +8,12 @@ import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { ConnectorPopup } from '../ConnectorPopup';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
+import { SmartSelection } from '../SmartSelection';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
   AnnotoriousPlugin, 
@@ -38,7 +39,7 @@ interface AnnotatableImageProps {
 
   windowId?: string;
   
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 
@@ -76,7 +77,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { colorByEntity } = useDrawingStyles();
 
-  const style = useRelationEmphasisStyle(props.mode === 'connect', colorByEntity);
+  const style = useRelationEmphasisStyle(props.mode === 'relation', colorByEntity);
 
   const onSave = () => setSavingState({ value: 'saving' });
 
@@ -100,6 +101,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       clickToZoom: false,
       dblClickToZoom: false
     },
+    crossOriginPolicy: 'Anonymous',
     showNavigationControl: false,
     minZoomLevel: 0.1,
     maxZoomLevel: 100
@@ -113,7 +115,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         initialHistory={props.initialHistory}
-        userSelectAction={props.mode === 'connect' ? UserSelectAction.NONE : undefined}
+        userSelectAction={(props.mode === 'relation' || props.mode === 'smart') ? UserSelectAction.NONE : undefined}
         style={style}
         tool={props.tool}>
 
@@ -128,16 +130,18 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousPlugin
           plugin={SelectorPack} />
 
+        <SmartSelection />
+
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 
-            enabled={props.mode === 'connect'}>
+            enabled={props.mode === 'relation'}>
             <OSDConnectionPopup popup={props => (
               <ConnectorPopup {...props} />
             )} />
           </OSDConnectorPlugin>
         ) : (
           <AnnotoriousRelationEditorPlugin
-            enabled={props.mode === 'connect'} />
+            enabled={props.mode === 'relation'} />
         )}
 
         <AnnotoriousKeyboardPlugin />

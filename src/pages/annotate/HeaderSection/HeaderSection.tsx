@@ -7,7 +7,7 @@ import { Separator } from '@/ui/Separator';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { ToolSelector } from './ToolSelector';
@@ -22,6 +22,7 @@ import {
   RotateCwSquare, 
   Spline, 
   Undo2, 
+  WandSparkles, 
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
@@ -32,7 +33,7 @@ interface HeaderSectionProps {
 
   images: LoadedImage[];
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 
@@ -42,7 +43,7 @@ interface HeaderSectionProps {
 
   onChangeTool(tool: Tool): void;
 
-  onChangeMode(mode: ToolMode): void;
+  onChangeMode(mode: AnnotationMode): void;
 
 }
 
@@ -117,14 +118,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const onRelationsEditorOpenChange = (open: boolean) => {
     if (open) {
-      props.onChangeMode('connect');
+      props.onChangeMode('relation');
     } else {
       props.onChangeMode('move');
     }
   }
 
   useEffect(() => {
-    setRelationsEditorOpen(props.mode === 'connect');
+    setRelationsEditorOpen(props.mode === 'relation');
   }, [props.mode]);
 
   useEffect(() => {
@@ -249,7 +250,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
-          <MousePointer2 className="h-4 w-4 mr-1" /> Move
+          <MousePointer2 className="size-4 mr-1" /> Move
         </button>
 
         <ToolSelector 
@@ -258,21 +259,32 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={() => onEnableDrawing()}
           onToolChange={onEnableDrawing} />
 
-        {!collapsed &&
-          (ENABLE_CONNECTOR_PLUGIN ? (
-            <button 
-              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              aria-selected={props.mode === 'connect'}
-              data-state={props.mode === 'connect'}
-              onClick={() => props.onChangeMode('connect')}>
-              <Spline
-                className="h-8 w-8 p-2" /> Connect
-            </button>
-          ) : (
-            <RelationEditor 
-              open={relationsEditorOpen}
-              onOpenChange={onRelationsEditorOpenChange}/>
-          )
+        <ToolbarButton
+          onClick={() => props.onChangeMode('smart')}
+          data-state={props.mode === 'smart' ? 'active' : undefined}
+          className="text-orange-400 mr-1 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
+          <WandSparkles className="size-4 h-8 w-8 p-2" />
+        </ToolbarButton>
+
+        {!collapsed && (
+          <>
+            <Separator orientation="vertical" className="h-4" />
+
+            {ENABLE_CONNECTOR_PLUGIN ? (
+              <button 
+                className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-selected={props.mode === 'relation'}
+                data-state={props.mode === 'relation'}
+                onClick={() => props.onChangeMode('relation')}>
+                <Spline
+                  className="h-8 w-8 p-2" /> Connect
+              </button>
+            ) : (
+              <RelationEditor 
+                open={relationsEditorOpen}
+                onOpenChange={onRelationsEditorOpenChange}/>
+            )}
+          </>
         )}
       </section>
     </section>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
@@ -8,7 +8,8 @@ import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
-import { ToolMode, Tool } from './Tool';
+import { SmartSelectionPanel, SmartSelectionRoot } from './SmartSelection';
+import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';
@@ -25,9 +26,20 @@ export const Annotate = () => {
 
   const images = useImages(imageIds) as LoadedImage[];
 
+  const [mode, setMode] = useState<AnnotationMode>('move');
+
   const [tool, setTool] = useState<Tool>('rectangle');
 
-  const [mode, setMode] = useState<ToolMode>('move');
+  const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
+
+  useEffect(() => {
+    if (mode === 'smart' && !isSmartPanelOpen) setIsSmartPanelOpen(true);
+  }, [mode]);
+
+  const onCloseSmartPanel = useCallback(() => {
+    setMode('move');
+    setIsSmartPanelOpen(false);
+  }, []);
 
   useEffect(() => {
     // Update the imagesIds in case the params change
@@ -58,34 +70,43 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <OSDViewerManifold>
           <RelationEditorRoot>
-            <SavingState.Root>
-              <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-                <HeaderSection
-                  images={images} 
-                  mode={mode}
-                  tool={tool}
-                  onAddImage={onAddImage} 
-                  onChangeImage={onChangeImage}
-                  onChangeMode={setMode}
-                  onChangeTool={setTool} />
-
-                {images.length > 0 ? ( 
-                  <WorkspaceSection 
+            <SmartSelectionRoot>
+              <SavingState.Root>
+                <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                  <HeaderSection
                     images={images} 
                     mode={mode}
-                    tool={tool} 
+                    tool={tool}
                     onAddImage={onAddImage} 
-                    onChangeImages={imageIds => setImageIds(imageIds)}
-                    onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-                ) : (
-                  <div className="flex items-center justify-center h-full bg-muted">
-                    <Loader2 className="animate-spin size-5 opacity-50" />
-                  </div>
-                )}
-              </main>
+                    onChangeImage={onChangeImage}
+                    onChangeMode={setMode}
+                    onChangeTool={setTool} />
 
-              <SidebarSection />
-            </SavingState.Root>
+                  {images.length > 0 ? ( 
+                    <WorkspaceSection 
+                      images={images} 
+                      mode={mode}
+                      tool={tool} 
+                      onAddImage={onAddImage} 
+                      onChangeImages={imageIds => setImageIds(imageIds)}
+                      onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-muted">
+                      <Loader2 className="animate-spin size-5 opacity-50" />
+                    </div>
+                  )}
+
+                  {isSmartPanelOpen && (
+                    <SmartSelectionPanel 
+                      mode={mode} 
+                      onChangeMode={setMode} 
+                      onClosePanel={onCloseSmartPanel} />
+                  )}
+                </main>
+
+                <SidebarSection />
+              </SavingState.Root>
+            </SmartSelectionRoot>
           </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>
