@@ -31,7 +31,7 @@ const MetadataList = (props: MetadataListProps) => {
 
   const { customMetadata, iiifMetadata } = props;
 
-  const [tab, setTab] = useState<string>('custom'); 
+  const [tab, setTab] = useState<string>('embedded'); 
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
@@ -51,15 +51,15 @@ const MetadataList = (props: MetadataListProps) => {
       className="h-full flex flex-col">
       <TabsList className="grid grid-cols-2 mr-24 w-auto p-1 h-auto">
         <TabsTrigger 
-          value="custom" 
-          className="text-xs py-1 px-2 flex gap-1.5">
-          <NotebookPen className="size-3.5" /> My
-        </TabsTrigger>
-
-        <TabsTrigger 
           value="embedded"
           className="text-xs py-1 px-2 flex gap-1.5"> 
           <Braces className="size-3.5" />IIIF
+        </TabsTrigger>
+
+        <TabsTrigger 
+          value="custom" 
+          className="text-xs py-1 px-2 flex gap-1.5">
+          <NotebookPen className="size-3.5" /> My
         </TabsTrigger>
       </TabsList>
 

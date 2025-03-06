@@ -84,19 +84,19 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
   return 'uri' in image ? (
     <Tabs 
-      defaultValue="my" 
+      defaultValue="iiif" 
       className="w-full grow flex flex-col">
       <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
-        <TabsTrigger 
-          value="my"
-          className="text-xs py-1 px-2 flex gap-1.5">
-          <NotebookPen className="size-3.5" /> My Metadata
-        </TabsTrigger>
-
         <TabsTrigger 
           value="iiif"
           className="text-xs py-1 flex gap-1.5">
           <Braces className="size-3.5" /> IIIF Metadata
+        </TabsTrigger>
+
+        <TabsTrigger 
+          value="my"
+          className="text-xs py-1 px-2 flex gap-1.5">
+          <NotebookPen className="size-3.5" /> My Metadata
         </TabsTrigger>
       </TabsList>
 
