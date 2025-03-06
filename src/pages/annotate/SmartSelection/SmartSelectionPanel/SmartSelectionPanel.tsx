@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
+import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
 import { AnnotationMode } from '../../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import {
@@ -60,51 +60,74 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
           <X className="size-4" />
         </Button>
       </div>
-      
-      <Accordion 
-        type="single"
-        defaultValue="click-and-refine">
-        <AccordionItem value="click-and-refine" defaultChecked={true}>
-          <AccordionTrigger 
-            className="text-xs font-normal hover:no-underline overflow-hidden p-2">
-            <span className="flex grow items-center gap-2 justify-start">
-              <SquareDashedMousePointer className="size-4" /> Click and Refine
-            </span>
-          </AccordionTrigger>
 
-          <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
-            <ClickAndRefineSection 
-              enabled={props.mode === 'smart'} 
-              onSetEnabled={onSetEnabled} />
-          </AccordionContent>
-        </AccordionItem>
+      {!('gpu' in navigator) ? (
+        <Accordion 
+          type="single"
+          defaultValue="click-and-refine">
+          <AccordionItem value="click-and-refine" defaultChecked={true}>
+            <AccordionTrigger 
+              className="text-xs font-normal hover:no-underline overflow-hidden p-2">
+              <span className="flex grow items-center gap-2 justify-start">
+                <SquareDashedMousePointer className="size-4" /> Click and Refine
+              </span>
+            </AccordionTrigger>
 
-        <AccordionItem value="box">
-          <AccordionTrigger 
-            className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
-            <span className="flex grow items-center gap-2 justify-start">
-              <SquareSquare className="size-4"/> Box
-            </span>
-          </AccordionTrigger>
+            <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
+              <ClickAndRefineSection 
+                enabled={props.mode === 'smart'} 
+                onSetEnabled={onSetEnabled} />
+            </AccordionContent>
+          </AccordionItem>
 
-          <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
-            <BoxSection />
-          </AccordionContent>
-        </AccordionItem>
+          <AccordionItem value="box">
+            <AccordionTrigger 
+              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              <span className="flex grow items-center gap-2 justify-start">
+                <SquareSquare className="size-4"/> Box
+              </span>
+            </AccordionTrigger>
 
-        <AccordionItem value="magnetic-outline" className="border-b-0">
-          <AccordionTrigger 
-            className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
-            <span className="flex grow items-center gap-2 justify-start">
-              <Magnet className="size-4" /> Magnetic Outline
-            </span>
-          </AccordionTrigger>
+            <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
+              <BoxSection />
+            </AccordionContent>
+          </AccordionItem>
 
-          <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
-            <MagneticOutlineSection />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          <AccordionItem value="magnetic-outline" className="border-b-0">
+            <AccordionTrigger 
+              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              <span className="flex grow items-center gap-2 justify-start">
+                <Magnet className="size-4" /> Magnetic Outline
+              </span>
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-muted border-t border-stone-200 text-xs pt-0" >
+              <MagneticOutlineSection />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      ) : (
+        <div className="p-5">
+          <div className="flex flex-col items-center gap-2 pt-4">
+            <div className="bg-orange-400 rounded-full text-white p-2">
+              <FlaskConical className="size-5" />
+            </div>
+
+            <div className="text font-medium text-orange-400">
+              Not Supported
+            </div>
+
+            <p className="pt-4 text-xs text-muted-foreground font-light leading-relaxed">
+              Smart selection uses experimental WebGPU technology not 
+              available in your browser. Please switch to a recent version 
+              of Chrome or Edge to use this 
+              feature. <a 
+                className="underline text-slate-800"
+                href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API#browser_compatibility" target="_blank">View browser compatibility</a>.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 

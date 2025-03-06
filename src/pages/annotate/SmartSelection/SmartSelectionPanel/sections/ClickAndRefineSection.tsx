@@ -77,9 +77,9 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
   }
 
   return (
-    <div className="px-6">
-      <p className="pt-4 pb-2 font-light">
-        Click to select an object. Add points to expand or remove areas.
+    <div className="px-4">
+      <p className="pt-3 pb-2 font-light leading-relaxed">
+        Hover over the image to preview selection. Click to confirm. Add or remove points to refine.
       </p>
 
       <ToggleGroup
