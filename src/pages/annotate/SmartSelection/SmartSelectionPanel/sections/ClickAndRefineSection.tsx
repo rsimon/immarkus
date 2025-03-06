@@ -78,7 +78,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   return (
     <div className="px-6">
-      <p className="pt-4 pb-2 font-light text-center">
+      <p className="pt-4 pb-2 font-light">
         Click to select an object. Add points to expand or remove areas.
       </p>
 
@@ -115,14 +115,14 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
           <button
             disabled={!enabled || !hasPrompt}
             onClick={onConfirm}
-            className="px-8 rounded-l-md border border-r-0 border-orange-400 py-1.5 bg-orange-400 hover:bg-orange-400/90 disabled:border-orange-300/5 disabled:bg-orange-400/25">
+            className="px-8 rounded-l-md border border-r-0 border-orange-400 py-1.5 bg-orange-400 hover:bg-orange-400/90 disabled:border-orange-300/5 disabled:bg-orange-500/25">
             Done
           </button>
 
           <button 
             disabled={!enabled || !hasPrompt}
             onClick={onReset}
-            className="px-8 rounded-r-md py-1.5 bg-transparent text-orange-500 border border-l-0 border-orange-400 hover:bg-orange-500/10 disabled:bg-orange-400/25 disabled:border-orange-300/5 disabled:text-white">
+            className="px-8 rounded-r-md py-1.5 bg-transparent text-orange-500 border border-l-0 border-orange-400 hover:bg-orange-500/10 disabled:bg-orange-500/25 disabled:border-orange-300/5 disabled:text-white">
             Reset
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
@@ -9,7 +9,7 @@ import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
 import { SmartSelectionPanel, SmartSelectionRoot } from './SmartSelection';
-import { ToolMode, Tool } from './Tool';
+import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';
@@ -26,9 +26,20 @@ export const Annotate = () => {
 
   const images = useImages(imageIds) as LoadedImage[];
 
+  const [mode, setMode] = useState<AnnotationMode>('move');
+
   const [tool, setTool] = useState<Tool>('rectangle');
 
-  const [mode, setMode] = useState<ToolMode>('move');
+  const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
+
+  useEffect(() => {
+    if (mode === 'smart' && !isSmartPanelOpen) setIsSmartPanelOpen(true);
+  }, [mode]);
+
+  const onCloseSmartPanel = useCallback(() => {
+    setMode('move');
+    setIsSmartPanelOpen(false);
+  }, []);
 
   useEffect(() => {
     // Update the imagesIds in case the params change
@@ -85,10 +96,11 @@ export const Annotate = () => {
                     </div>
                   )}
 
-                  {tool === 'smart-selection' && (
+                  {isSmartPanelOpen && (
                     <SmartSelectionPanel 
                       mode={mode} 
-                      onChangeMode={setMode} />
+                      onChangeMode={setMode} 
+                      onClosePanel={onCloseSmartPanel} />
                   )}
                 </main>
 

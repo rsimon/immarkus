@@ -8,7 +8,7 @@ import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } fro
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { PaginationWidget } from '../Pagination';
 import { AnnotatableImage } from './AnnotatableImage';
 import { MoreToolsPanel } from './MoreToolsPanel';
@@ -26,7 +26,7 @@ interface WorkspaceWindowProps {
 
   image: LoadedImage;
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 

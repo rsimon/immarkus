@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Image, LoadedImage } from '@/model';
 import { useWindowSize } from '@/utils/useWindowSize';
 import { AnnotatableImage } from './AnnotatableImage';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 import { usePersistentHistory } from './usePersistentHistory';
 
@@ -14,7 +14,7 @@ interface WorkspaceSectionProps {
 
   images: LoadedImage[];
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 

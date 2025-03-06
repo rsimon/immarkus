@@ -8,7 +8,7 @@ import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { ConnectorPopup } from '../ConnectorPopup';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
@@ -39,7 +39,7 @@ interface AnnotatableImageProps {
 
   windowId?: string;
   
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 
@@ -77,7 +77,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { colorByEntity } = useDrawingStyles();
 
-  const style = useRelationEmphasisStyle(props.mode === 'connect', colorByEntity);
+  const style = useRelationEmphasisStyle(props.mode === 'relation', colorByEntity);
 
   const onSave = () => setSavingState({ value: 'saving' });
 
@@ -106,10 +106,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     minZoomLevel: 0.1,
     maxZoomLevel: 100
   }), [image.id]);
-
-  // Temporary
-  const tool = props.tool === 'smart-selection' ? undefined : props.tool;
-  const drawingEnabled = props.tool === 'smart-selection' ? false : props.mode === 'draw';
   
   return (
     <Annotorious id={props.image.id}>
@@ -117,11 +113,11 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         autoSave
         drawingMode="click"
-        drawingEnabled={drawingEnabled}
+        drawingEnabled={props.mode === 'draw'}
         initialHistory={props.initialHistory}
-        userSelectAction={(props.mode === 'connect' || (props.tool === 'smart-selection' && props.mode === 'draw')) ? UserSelectAction.NONE : undefined}
+        userSelectAction={(props.mode === 'relation' || props.mode === 'smart') ? UserSelectAction.NONE : undefined}
         style={style}
-        tool={tool}>
+        tool={props.tool}>
 
         <HistoryConsumer 
           onUnmount={props.onUnmount} />
@@ -138,14 +134,14 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 
-            enabled={props.mode === 'connect'}>
+            enabled={props.mode === 'relation'}>
             <OSDConnectionPopup popup={props => (
               <ConnectorPopup {...props} />
             )} />
           </OSDConnectorPlugin>
         ) : (
           <AnnotoriousRelationEditorPlugin
-            enabled={props.mode === 'connect'} />
+            enabled={props.mode === 'relation'} />
         )}
 
         <AnnotoriousKeyboardPlugin />

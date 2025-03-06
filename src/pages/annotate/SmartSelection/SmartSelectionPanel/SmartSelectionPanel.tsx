@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { Grip, Magnet, SquareDashedMousePointer, SquareSquare } from 'lucide-react';
-import { ToolMode } from '../../Tool';
+import { Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
+import { AnnotationMode } from '../../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import {
   Accordion,
@@ -9,12 +9,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Button } from '@/ui/Button';
 
 interface SmartSelectionProps {
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
-  onChangeMode(mode: ToolMode): void;
+  onChangeMode(mode: AnnotationMode): void;
+
+  onClosePanel(): void;
 
 }
 
@@ -36,17 +39,26 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   });
 
   const onSetEnabled = useCallback((enabled: boolean) => {
-    props.onChangeMode(enabled ? 'draw' : 'move');
+    props.onChangeMode(enabled ? 'smart' : 'move');
   }, []);
 
   return (
     <div
       ref={el}
-      className="bg-white absolute w-64 top-16 right-6 rounded border shadow-lg z-30">
+      className="bg-white absolute w-64 top-14 -right-24 rounded border shadow-lg z-30">
 
-      <div className="flex items-center gap-1.5 text-xs font-semibold p-2 border-b border-stone-200 cursor-grab drag-handle">
-        <Grip className="size-4" />
-        <span>Smart Selection Tools</span>
+      <div className="flex items-center justify-between gap-1.5 text-xs font-semibold py-1 px-2 border-b border-stone-200 cursor-grab drag-handle">
+        <div className="flex items-center gap-1.5">
+          <Grip className="size-4" />
+          <span>Smart Selection</span>
+        </div>
+
+        <Button
+          variant="ghost"
+          className="p-1 h-auto -mr-1"
+          onClick={props.onClosePanel}>
+          <X className="size-4" />
+        </Button>
       </div>
       
       <Accordion 
@@ -62,7 +74,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
           <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
             <ClickAndRefineSection 
-              enabled={props.mode === 'draw'} 
+              enabled={props.mode === 'smart'} 
               onSetEnabled={onSetEnabled} />
           </AccordionContent>
         </AccordionItem>

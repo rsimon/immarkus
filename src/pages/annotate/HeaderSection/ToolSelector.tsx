@@ -1,5 +1,5 @@
 import { Circle, Square, TriangleRight, Wand } from 'lucide-react';
-import { Tool } from '../Tool';
+import { Tool } from '../AnnotationMode';
 import {
   Select,
   SelectContent,
