@@ -61,7 +61,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
         </Button>
       </div>
 
-      {!('gpu' in navigator) ? (
+      {'gpu' in navigator ? (
         <Accordion 
           type="single"
           defaultValue="click-and-refine">

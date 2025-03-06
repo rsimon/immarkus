@@ -33,18 +33,16 @@ export default defineConfig({
     }
   },
   build: {
+    chunkSizeWarningLimit: 12000,
     rollupOptions: {
-      external: [
-        'chart.js/auto',
-        'quill'
-      ],
       output: {
         entryFileNames: 'assets/immarkus-[hash].js',
         assetFileNames: 'assets/immarkus-[hash].[ext]',
         manualChunks: {
           'dep-annotorious': ['@annotorious/react'],
           'dep-exceljs': ['exceljs/dist/exceljs.min.js'],
-          'dep-primereact': ['primereact/treetable']
+          'dep-primereact': ['primereact/treetable'],
+          'dep-sam': ['@annotorious/plugin-segment-anything']
         }
       }
     }
