@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.9",
+    "@tailwindcss/postcss": "^4.0.10",
     "@types/chroma-js": "^3.1.1",
-    "@types/node": "^22.13.8",
+    "@types/node": "^22.13.9",
     "@types/openseadragon": "^3.0.10",
     "@types/react": "^18.3.18",
     "@types/react-autosuggest": "^10.1.11",
@@ -19,7 +19,7 @@
     "@types/wicg-file-system-access": "^2023.10.5",
     "@vitejs/plugin-react": "^4.3.4",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.9",
+    "tailwindcss": "^4.0.10",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
     "vite-plugin-babel-macros": "^1.0.6",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@annotorious/plugin-connectors-react": "^0.3.0",
-    "@annotorious/plugin-segment-anything": "^0.1.3",
+    "@annotorious/plugin-segment-anything": "^0.1.4",
     "@annotorious/plugin-tools": "^1.0.2",
     "@annotorious/react": "3.1.4",
     "@annotorious/react-manifold": "3.1.4",
@@ -74,7 +74,7 @@
     "react-autosuggest": "^10.1.0",
     "react-dom": "^18.3.1",
     "react-force-graph-2d": "^1.27.0",
-    "react-intersection-observer": "^9.15.1",
+    "react-intersection-observer": "^9.16.0",
     "react-moment": "^1.1.3",
     "react-mosaic-component": "^6.1.1",
     "react-router-dom": "^7.2.0",
