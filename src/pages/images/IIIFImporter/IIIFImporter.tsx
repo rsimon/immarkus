@@ -10,6 +10,8 @@ import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
+import { ErrorAlert } from './ErrorAlert';
+import { parse } from 'path';
 
 interface IIIFImporterProps {
 
@@ -137,18 +139,16 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               <Loader2 className="animate-spin size-3.5 mb-[1px]" /> Fetching...
             </div>
           ) : parseResult?.type === 'error' ? (
-            <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
-              <Ban className="size-3.5 mb-[1px]" /> 
+            <div 
+              className="p-3 mt-6 items-start leading-relaxed
+                rounded text-destructive border border-destructive">
+
               {parseResult.code === 'FETCH_ERROR' ? (
-                <span>
-                  Failed to fetch. Server may restrict access. <a className="underline" href="https://iiif.io/guides/guide_for_implementers/#other-considerations" target="_blank">Learn more</a>.
-                </span>
+                <ErrorAlert message="Failed to fetch. Server may restrict access." />
               ) : parseResult.code === 'INVALID_HTTP_RESPONSE' ? (
-                <span>
-                  Failed to fetch. {parseResult.message}
-                </span>
+                <ErrorAlert message={`Failed to fetch. ${parseResult.message}`} />
               ) : (
-                <span>{parseResult.message}</span>
+                <ErrorAlert message={parseResult.message} />
               )}
             </div>
           ) : parseResult?.type === 'iiif-image' ? (
