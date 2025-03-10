@@ -3,7 +3,8 @@ import { Minus, WandSparkles } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
 import { useSAMPlugin } from '../../SmartSelectionRoot';
-import { SAM2DecoderPrompt } from '@annotorious/plugin-segment-anything/openseadragon';
+import { ImageAnnotation } from '@annotorious/react';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 
 interface ClickAndRefinePanelProps {
 
@@ -19,20 +20,24 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const { samPlugin, samPluginBusy } = useSAMPlugin();
 
+  const anno = useAnnotoriousManifold();
+
   const [mode, setMode] = useState<'add' | 'remove' | ''>('add');
 
-  const [hasPrompt ,setHasPrompt] = useState(false);
+  const [currentAnnotationId, setCurrentAnnotationId] = useState<string | undefined>();
 
   useEffect(() => {
     if (!samPlugin) return;
 
-    const onPromptChanged = (prompt?: SAM2DecoderPrompt) =>
-       setHasPrompt(Boolean(prompt));
+    const onCreate = (a: ImageAnnotation) => setCurrentAnnotationId(a.id);
+    const onDelete = () => setCurrentAnnotationId(undefined);
 
-    const unsubscribe = samPlugin.on('promptChanged', onPromptChanged);
+    const removeCreateHandler = samPlugin.on('createAnnotation', onCreate);
+    const removeDeleteHandler = samPlugin.on('deleteAnnotation', onDelete);
 
     return () => {
-      unsubscribe();
+      removeCreateHandler();
+      removeDeleteHandler();
     }
   }, [samPlugin]);
 
@@ -68,6 +73,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const onConfirm = () => {
     setMode('add');
+    anno.setSelected(currentAnnotationId, true);
     samPlugin?.restart();
   }
 
@@ -113,14 +119,14 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
       <div className="flex justify-around pt-8 pb-4">
         <div className="text-white flex">
           <button
-            disabled={!enabled || !hasPrompt}
+            disabled={!enabled || !currentAnnotationId}
             onClick={onConfirm}
             className="px-8 rounded-l-md border border-r-0 border-orange-400 py-1.5 bg-orange-400 hover:bg-orange-400/90 disabled:border-orange-300/5 disabled:bg-orange-500/25">
             Done
           </button>
 
           <button 
-            disabled={!enabled || !hasPrompt}
+            disabled={!enabled || !currentAnnotationId}
             onClick={onReset}
             className="px-8 rounded-r-md py-1.5 bg-transparent text-orange-500 border border-l-0 border-orange-400 hover:bg-orange-500/10 disabled:bg-orange-500/25 disabled:border-orange-300/5 disabled:text-white">
             Reset
