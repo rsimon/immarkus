@@ -12,7 +12,13 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
-export const AnnotationList = () => {
+interface AnnotationListProps {
+
+  onEdit(): void;
+
+}
+
+export const AnnotationList = (props: AnnotationListProps) => {
 
   const manifold = useAnnotoriousManifold();
 
@@ -34,6 +40,8 @@ export const AnnotationList = () => {
 
     const annotator = manifold.findAnnotator(annotation.id);
     (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
+
+    props.onEdit();
   }
 
   const onDelete = (annotation: ImageAnnotation) => () =>

@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
-import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { CurrentSelection } from './CurrentSelection';
@@ -9,14 +8,9 @@ import { ImageMetadata } from './ImageMetadata';
 
 export const SidebarSection = () => {
 
-  const { selected } = useSelection();
-
   const [tab, setTab] = useState('selection');
 
-  useEffect(() => {
-    if (selected.length > 0)
-      setTab('selection');
-  }, [selected]);
+  const onEdit = () => setTab('selection');
 
   return (
     <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
@@ -55,7 +49,8 @@ export const SidebarSection = () => {
             <Tabs.Content value="annotation-list" asChild>
               <div 
                 className="grow h-full text-sm justify-center items-center w-full">
-                <AnnotationList />
+                <AnnotationList 
+                  onEdit={onEdit} />
               </div> 
             </Tabs.Content>
 

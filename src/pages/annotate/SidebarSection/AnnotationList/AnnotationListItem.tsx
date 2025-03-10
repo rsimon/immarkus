@@ -49,8 +49,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
-  const onMoveIntoView = (annotationId: string) => {
-    console.log('moving', annotationId);
+  const onClick = (annotationId: string) => {
+    manifold.setSelected(annotationId);
+
     const annotator = manifold.findAnnotator(annotationId);
     if (annotator)
       (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotationId, { padding: 200 });
@@ -63,7 +64,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         className="relative border mb-2 rounded text-xs bg-white">
         <button 
           className="w-full text-left"
-          onClick={() => onMoveIntoView(props.annotation.id)}>
+          onClick={() => onClick(props.annotation.id)}>
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">
@@ -103,8 +104,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
                 sourceId={link.target} 
                 targetId={link.body} 
                 relation={meta?.body?.value} 
-                onClickSource={() => onMoveIntoView(link.target)}
-                onClickTarget={() => onMoveIntoView(link.body)} />
+                onClickSource={() => onClick(link.target)}
+                onClickTarget={() => onClick(link.body)} />
             ))}
           </ul>
         )}
