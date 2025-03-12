@@ -1,4 +1,4 @@
-import { ImageAnnotation } from '@annotorious/react';
+import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
 import { 
@@ -17,7 +17,7 @@ interface SelectFilterOpts {
 
   relationshipNames: string[];
 
-  onSelect(filter: ((a: ImageAnnotation) => boolean) | undefined): void;
+  onSelect(filter: ((a: W3CImageAnnotation) => boolean) | undefined): void;
 
 }
 
@@ -26,27 +26,27 @@ export const SelectFilter = (props: SelectFilterOpts) => {
   const store = useStore();
 
   const onValueChange = (value: string) => {
-    let filter: ((a: ImageAnnotation) => boolean) = undefined;
+    let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
 
     if (value === 'all_entity') {
       // Filter all annotations with any 'classifying' body
-      filter = (a: ImageAnnotation) =>
+      filter = (a: W3CImageAnnotation) =>
         a.bodies.some(b => b.purpose === 'classifying');
     } else if (value === 'all_relationship') {
       // Filter all annotations with related annotations
-      filter = (a: ImageAnnotation) => 
+      filter = (a: W3CImageAnnotation) => 
         store.getRelatedAnnotations(a.id).length > 0;
     } else if (value.startsWith('entity-')) { 
       // Filter annotations with the given 'classifying' source
       const id = value.substring('entity-'.length);
 
-      filter = (a: ImageAnnotation) =>
+      filter = (a: W3CImageAnnotation) =>
         a.bodies.some(b => b.purpose === 'classifying' && 'source' in b && b.source === id);
     } else if (value.startsWith('rel-')) {
       // Filter annotations with any relation of the given name
       const name = value.substring('rel-'.length);
 
-      filter = (a: ImageAnnotation) =>
+      filter = (a: W3CImageAnnotation) =>
         store.getRelatedAnnotations(a.id).some(([_, meta]) => meta?.body?.value === name);
     }
 

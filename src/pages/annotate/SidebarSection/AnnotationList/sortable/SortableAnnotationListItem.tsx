@@ -1,15 +1,13 @@
-import { ReactNode } from 'react';
 import {useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
-import { ImageAnnotation } from '@annotorious/react';
-import { AnnotationListItemRelation } from './AnnotationListItemRelation';
-import { AnnotationListItem } from './AnnotationListItem';
+import { W3CImageAnnotation } from '@annotorious/react';
+import { AnnotationListItem } from '../AnnotationListItem';
 
 interface SortableAnnotationListItemProps {
 
   isActive: boolean;
 
-  annotation: ImageAnnotation;
+  annotation: W3CImageAnnotation;
 
   onEdit(): void;
 
@@ -18,6 +16,7 @@ interface SortableAnnotationListItemProps {
 }
 
 export const SortableAnnotationListItem = (props: SortableAnnotationListItemProps) => {
+  
   const {
     attributes,
     listeners,
@@ -35,11 +34,16 @@ export const SortableAnnotationListItem = (props: SortableAnnotationListItemProp
   };
   
   return (
-    <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <li 
+      ref={setNodeRef} 
+      style={style} 
+      {...attributes} 
+      {...listeners}>
       <AnnotationListItem 
         annotation={props.annotation} 
         onEdit={props.onEdit} 
         onDelete={props.onDelete} />
     </li>
-  );
+  )
+
 }

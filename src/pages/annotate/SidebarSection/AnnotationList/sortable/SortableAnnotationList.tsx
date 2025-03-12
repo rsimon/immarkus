@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ImageAnnotation } from '@annotorious/react';
+import { useMemo, useState } from 'react';
+import { W3CImageAnnotation } from '@annotorious/react';
 import { SortableAnnotationListItem } from './SortableAnnotationListItem';
 import {
   DndContext, 
@@ -21,23 +21,23 @@ import {
 
 interface SortableAnnotationListProps {
 
-  annotations: ImageAnnotation[];
+  annotations: W3CImageAnnotation[];
 
-  onEdit(annotation: ImageAnnotation): void;
+  onEdit(annotation: W3CImageAnnotation): void;
 
-  onDelete(annotation: ImageAnnotation): void
+  onDelete(annotation: W3CImageAnnotation): void;
+
+  onUpdateOrder(annotationIds: string[]): void;
 
 }
 
 export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
 
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState<string | undefined>();
 
-  const [items, setItems] = useState<string[]>([]);
-
-  useEffect(() => {
-    setItems(props.annotations.map(a => a.id));
-  }, [props.annotations]);
+  const items = useMemo(() => (
+    props.annotations.map(a => a.id)
+  ), [props.annotations.map(a => a.id).join(':')]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -46,23 +46,22 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
     })
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id);
-  }
+  const onDragStart = (event: DragStartEvent) =>
+    setActiveId(event.active.id as string);
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     
     if (active.id !== over.id) {
-      setItems((items) => {
-        const oldIndex = items.indexOf(active.id.valueOf() as string);
-        const newIndex = items.indexOf(over.id.valueOf() as string);
-        
-        return arrayMove(items, oldIndex, newIndex);
-      });
+      const oldIndex = items.indexOf(active.id as string);
+      const newIndex = items.indexOf(over.id as string);
+      
+      const next = arrayMove(items, oldIndex, newIndex);
+
+      props.onUpdateOrder(next);      
     }
 
-    setActiveId(null);
+    setActiveId(undefined);
   }
 
   const renderSortableItem = (id: string, not: boolean) => {
@@ -82,8 +81,8 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
     <DndContext 
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}>
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}>
       <SortableContext 
         items={items}
         strategy={verticalListSortingStrategy}>

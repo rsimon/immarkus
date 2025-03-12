@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ImageAnnotation } from '@annotorious/react';
+import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { EntityBadge } from '@/components/EntityBadge';
 import { EntityType } from '@/model';
@@ -8,7 +8,7 @@ import { getEntityTypes } from '@/utils/annotation';
 
 interface AnnotationListItemRelationProps {
 
-  leftSideAnnotation: ImageAnnotation;
+  leftSideAnnotation: W3CImageAnnotation;
 
   sourceId: string;
 
