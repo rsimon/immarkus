@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { useDataModel } from '@/store';
+import { usePersistentState } from '@/utils/usePersistentState';
 import { 
   Select, 
   SelectContent, 
@@ -34,6 +36,19 @@ export const SelectListOrder = (props: SelectListOrderProps) => {
 
   const datamodel = useDataModel();
 
+  const [value, setValue] = usePersistentState('immarkus:annotate:list:sort', 'recent');
+
+  useEffect(() => {
+    if (value === 'recent')
+      props.onChangeOrdering(SORT_BY_CREATED_DESCENDING);
+    else if (value === 'oldest')
+      props.onChangeOrdering(SORT_BY_CREATED_ASCENDING);
+    else if (value === 'entity')
+      props.onChangeOrdering(SORT_BY_FIRST_ENTITY);
+    else if (value === 'custom')
+      props.onChangeOrdering(undefined);
+  }, [value]);
+
   // Define inside SelectSortOrder, for datamodel closure
   const SORT_BY_FIRST_ENTITY = (a: W3CImageAnnotation, b: W3CImageAnnotation) => {
     const getFirstEntity = (anno: W3CImageAnnotation) => {
@@ -54,20 +69,9 @@ export const SelectListOrder = (props: SelectListOrderProps) => {
     return (firstEntityA.label || firstEntityA.id).localeCompare(firstEntityB.label || firstEntityB.id);
   }
   
-  const onValueChange = (value: string) => {
-    if (value === 'recent')
-      props.onChangeOrdering(SORT_BY_CREATED_DESCENDING);
-    else if (value === 'oldest')
-      props.onChangeOrdering(SORT_BY_CREATED_ASCENDING);
-    else if (value === 'entity')
-      props.onChangeOrdering(SORT_BY_FIRST_ENTITY);
-    else if (value === 'custom')
-      props.onChangeOrdering(undefined);
-  }
-
   return (
     <div className="flex text-xs">
-      Sort by <Select defaultValue="recent" onValueChange={onValueChange}>
+      Sort by <Select value={value} onValueChange={setValue}>
         <SelectTrigger 
           className="p-0 shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
           <SelectValue />
