@@ -8,12 +8,15 @@ export const getManifestMetadata = (store: Store, manifestId: string) => {
   const id = `iiif:${manifestId}`;
 
   return store.getAnnotations(id, { type: 'metadata'})
+    // Note: metadata annotations on this manifest AND ALL CANVASES!
     .then(annotations => {
-      if (annotations.length > 1)
+      const meta = annotations.filter(a => (a.target as any).source === id);
+
+      if (meta.length > 1)
         console.warn(`Integrity error: multiple metadata annotations for manifest ${manifestId}`);
 
-      if (annotations.length === 1) {
-        const annotation = annotations[0];
+      if (meta.length === 1) {
+        const annotation = meta[0];
 
         if (Array.isArray(annotation.body)) {
           if (annotation.body.length !== 1) {
@@ -30,13 +33,13 @@ export const getManifestMetadata = (store: Store, manifestId: string) => {
           const metadata = annotation.body;
           return { annotation, metadata };
         }
-      } else {
+      } else if (meta.length > 1) {
         // Repair
-        annotations.reduce<Promise<void>>((p, a) => 
+        meta.reduce<Promise<void>>((p, a) => 
             p.then(() => store.deleteAnnotation(id, a)), Promise.resolve());
-
-        return { annotation: undefined, metadata: {} };
       }
+
+      return { annotation: undefined, metadata: {} };
     });
 }
 

@@ -70,33 +70,3 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
   ))
 
 }
-
-/*
-
-import { ReactNode, useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
-import { useTransition, animated, easings } from '@react-spring/web';
-import { cn } from '@/ui/utils';
-import { Button } from '@/ui/Button';
-*/
-/*
-interface MetadataDrawerProps <T extends unknown> {
-
-  className?: string;
-
-  content: (data: T) => ReactNode;
-
-  data?: T;
-
-  duration?: number;
-
-  open?: boolean;
-
-  skipInitialAnimation?: boolean;
-
-  width?: number;
-
-  onClose(): void;
-
-}
-  */
