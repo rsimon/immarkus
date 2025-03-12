@@ -37,7 +37,8 @@ export const SelectListOrder = (props: SelectListOrderProps) => {
   // Define inside SelectSortOrder, for datamodel closure
   const SORT_BY_FIRST_ENTITY = (a: W3CImageAnnotation, b: W3CImageAnnotation) => {
     const getFirstEntity = (anno: W3CImageAnnotation) => {
-      const tag = anno.bodies.find(b => b.purpose === 'classifying' && 'source' in b);
+      const bodies = Array.isArray(anno.body) ? anno.body : [anno.body];
+      const tag = bodies.find(b => b.purpose === 'classifying' && 'source' in b);
       if (tag) {
         return datamodel.getEntityType((tag as any).source);
       }

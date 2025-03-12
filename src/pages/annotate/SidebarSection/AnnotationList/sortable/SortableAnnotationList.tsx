@@ -64,13 +64,13 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
     setActiveId(undefined);
   }
 
-  const renderSortableItem = (id: string, not: boolean) => {
+  const renderSortableItem = (id: string, ghost?: boolean) => {
     const annotation = props.annotations.find(a => a.id === id);
 
     return (
       <SortableAnnotationListItem
         key={id}
-        isActive={not && id === activeId}
+        ghost={ghost}
         annotation={annotation}
         onEdit={() => props.onEdit(annotation)}
         onDelete={() => props.onDelete(annotation)} />
@@ -86,11 +86,11 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
       <SortableContext 
         items={items}
         strategy={verticalListSortingStrategy}>
-        {items.map(i => renderSortableItem(i, true))}
+        {items.map(i => renderSortableItem(i, activeId === i))}
       </SortableContext>
 
       <DragOverlay>
-        {activeId ? renderSortableItem(activeId, false) : null}
+        {activeId ? renderSortableItem(activeId) : null}
       </DragOverlay>
     </DndContext>
   )

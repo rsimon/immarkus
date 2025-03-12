@@ -5,7 +5,7 @@ import { AnnotationListItem } from '../AnnotationListItem';
 
 interface SortableAnnotationListItemProps {
 
-  isActive: boolean;
+  ghost?: boolean;
 
   annotation: W3CImageAnnotation;
 
@@ -30,7 +30,7 @@ export const SortableAnnotationListItem = (props: SortableAnnotationListItemProp
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: props.isActive ? 0.3 : undefined
+    opacity: props.ghost ? 0.3 : undefined
   };
   
   return (

@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
+import { Move } from 'lucide-react';
+import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
@@ -97,6 +98,14 @@ export const AnnotationList = (props: AnnotationListProps) => {
           relationshipNames={relationshipNames}
           onSelect={filter => setFilter(() => filter)} />
       </div>
+
+      {!sorting && (
+        <div className="px-1.5 py-3 border border-dashed border-slate-300/50 rounded mt-2.5 mb-1 text-muted-foreground/80 text-xs flex justify-center">
+          <span className="flex gap-1.5">
+            <Move className="size-3.5 mt-[1px]" /> Drag cards to change order
+          </span>
+        </div>
+      )}
 
       <div>
         {imageIds.length === 1 ? (

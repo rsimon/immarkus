@@ -569,13 +569,12 @@ export const loadStore = (
 
     // All current annotations for the given source (image or entire manifest)
     const currentAnnotations = await _getAnnotations(normalizedId);
-    console.log('current', currentAnnotations);
 
     // Keep annotations that are not updated
     const updatedIds = new Set(annotations.map(a => a.id));
     const unchanged = currentAnnotations.filter(a => !updatedIds.has(a.id));
 
-    const next = [...unchanged, ...annotations];
+    const next = [...annotations, ...unchanged];
 
     // Update cache
     cachedAnnotations.set(_normalizeSourceId(sourceId), next);

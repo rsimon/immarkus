@@ -1,4 +1,4 @@
-import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
+import { W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
 import { 
@@ -28,10 +28,12 @@ export const SelectFilter = (props: SelectFilterOpts) => {
   const onValueChange = (value: string) => {
     let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
 
+    const bodies = (a: W3CImageAnnotation) => Array.isArray(a.body) ? a.body : [a.body];
+
     if (value === 'all_entity') {
       // Filter all annotations with any 'classifying' body
       filter = (a: W3CImageAnnotation) =>
-        a.bodies.some(b => b.purpose === 'classifying');
+        bodies(a).some(b => b.purpose === 'classifying');
     } else if (value === 'all_relationship') {
       // Filter all annotations with related annotations
       filter = (a: W3CImageAnnotation) => 
@@ -41,7 +43,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
       const id = value.substring('entity-'.length);
 
       filter = (a: W3CImageAnnotation) =>
-        a.bodies.some(b => b.purpose === 'classifying' && 'source' in b && b.source === id);
+        bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && b.source === id);
     } else if (value.startsWith('rel-')) {
       // Filter annotations with any relation of the given name
       const name = value.substring('rel-'.length);
