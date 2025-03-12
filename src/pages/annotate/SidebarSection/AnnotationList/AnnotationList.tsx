@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
-import { ImageAnnotation, AnnotoriousOpenSeadragonAnnotator } from '@annotorious/react';
+import { Move } from 'lucide-react';
+import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
-import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
 import { SelectFilter } from './SelectFilter';
-import { DEFAULT_SORTING, SelectSortOrder } from './SelectSortOrder';
+import { SortableAnnotationList } from './sortable';
+import { DEFAULT_SORTING, SelectListOrder } from './SelectListOrder';
+import { useSortableAnnotations } from './useSortableAnnotations';
 import {
   Accordion,
   AccordionContent,
@@ -24,18 +27,18 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const store = useStore();
 
-  const annotations = useAnnotations<ImageAnnotation>();
+  const { annotations, updateOrder } = useSortableAnnotations();
 
-  const flattened = useMemo(() => Array.from(annotations.values())
-    .reduce<ImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []), [annotations]);
-
-  const [sorting, setSorting] = useState<((a: ImageAnnotation, b: ImageAnnotation) => number) | undefined>(
+  const [sorting, setSorting] = useState<((a: W3CImageAnnotation, b: W3CImageAnnotation) => number) | undefined>(
     () => DEFAULT_SORTING
   );
 
-  const [filter, setFilter] = useState<((a: ImageAnnotation) => boolean) | undefined>();
+  const flattened = useMemo(() => Array.from(annotations.values())
+    .reduce<W3CImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []), [annotations]);
 
-  const onEdit = (annotation: ImageAnnotation) => () => {
+  const [filter, setFilter] = useState<((a: W3CImageAnnotation) => boolean) | undefined>();
+
+  const onEdit = (annotation: W3CImageAnnotation) => () => {
     manifold.setSelected(annotation.id);
 
     const annotator = manifold.findAnnotator(annotation.id);
@@ -44,14 +47,14 @@ export const AnnotationList = (props: AnnotationListProps) => {
     props.onEdit();
   }
 
-  const onDelete = (annotation: ImageAnnotation) => () =>
+  const onDelete = (annotation: W3CImageAnnotation) => () =>
     manifold.deleteAnnotation(annotation.id);
 
   const imageIds = Array.from(annotations.keys());
 
   const entityTypes = useMemo(() => { 
     const sources = new Set(flattened.reduce<string[]>((all, annotation) => {
-      const sources = annotation.bodies
+      const sources = (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
         .filter(b => b.purpose === 'classifying' && 'source' in b)
         .map(b => (b as any).source);
 
@@ -79,7 +82,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
   const listAnnotations = useCallback((imageId: string) => {
     const filtered = filter 
       ? annotations.get(imageId).filter(filter)
-      : annotations.get(imageId).filter(a => a.target.selector);
+      : annotations.get(imageId).filter(a => 'selector'  in a.target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [filter, sorting, annotations]);
@@ -87,8 +90,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
   return (
     <div className="py-3 px-2 bg-slate-100/50 grow h-full">
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
-        <SelectSortOrder 
-          onSelect={sorting => setSorting(() => sorting)} />
+        <SelectListOrder 
+          onChangeOrdering={sorting => setSorting(() => sorting)} />
 
         <SelectFilter 
           entityTypes={entityTypes}
@@ -96,19 +99,33 @@ export const AnnotationList = (props: AnnotationListProps) => {
           onSelect={filter => setFilter(() => filter)} />
       </div>
 
+      {!sorting && (
+        <div className="px-1.5 py-3 border border-dashed border-slate-300/50 rounded mt-2.5 mb-1 text-muted-foreground/80 text-xs flex justify-center">
+          <span className="flex gap-1.5">
+            <Move className="size-3.5 mt-[1px]" /> Drag cards to change order
+          </span>
+        </div>
+      )}
+
       <div>
         {imageIds.length === 1 ? (
           <div className="py-2 grow">
             <ul className="space-y-2">
-              {listAnnotations(imageIds[0]).map(annotation => (
+              {sorting ? (listAnnotations(imageIds[0]).map(annotation => (
                 <li key={annotation.id}>
                   <AnnotationListItem 
                     annotation={annotation} 
                     onEdit={onEdit(annotation)}
                     onDelete={onDelete(annotation)} />
                 </li>
-              ))}
-            </ul>
+              ))) : (
+                <SortableAnnotationList 
+                  annotations={listAnnotations(imageIds[0])} 
+                  onEdit={onEdit} 
+                  onDelete={onDelete} 
+                  onUpdateOrder={a => updateOrder(imageIds[0], a)} />
+              )}
+            </ul> 
           </div>
         ) : (
           <Accordion className="py-2 grow" type="multiple">
@@ -124,15 +141,21 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
                 <AccordionContent>
                   <ul className="space-y-2">
-                    {listAnnotations(sourceId).map(annotation => (
+                    {sorting ? (listAnnotations(sourceId).map(annotation => (
                       <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 
                           onEdit={onEdit(annotation)}
                           onDelete={onDelete(annotation)} />
                       </li>
-                    ))}
-                  </ul>
+                    ))) : (
+                      <SortableAnnotationList 
+                        annotations={listAnnotations(sourceId)} 
+                        onEdit={onEdit} 
+                        onDelete={onDelete} 
+                        onUpdateOrder={a => updateOrder(sourceId, a)} />
+                    )}
+                  </ul> 
                 </AccordionContent>
               </AccordionItem>
             ))}

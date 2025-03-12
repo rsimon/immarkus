@@ -130,7 +130,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousPlugin
           plugin={SelectorPack} />
 
-        <SmartSelection />
+        {/* <SmartSelection /> */}
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { useInView } from 'react-intersection-observer';
-import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation, W3CAnnotationBody, W3CImageAnnotationTarget } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
@@ -13,7 +13,7 @@ import { AnnotationListItemRelation } from './AnnotationListItemRelation';
 
 interface AnnotationListItemProps {
 
-  annotation: ImageAnnotation;
+  annotation: W3CImageAnnotation;
 
   onEdit(): void;
 
@@ -33,18 +33,20 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const bodies = (Array.isArray(props.annotation.body) ? props.annotation.body : [props.annotation.body])
+
   const entityTags: W3CAnnotationBody[] = 
-    props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
+    bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
   const relations = useMemo(() => store.getRelatedAnnotations(props.annotation.id), [props.annotation]);
 
-  const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
+  const note = bodies.find(b => b.purpose === 'commenting');
 
   const isEmpty = !note && entityTags.length === 0;
 
   const timestamps = [
-    props.annotation.target.created,
-    ...props.annotation.bodies.map(b => b.created)
+    props.annotation.created,
+    ...bodies.map(b => b.created)
   ].filter(Boolean).map(d => new Date(d));
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;

@@ -562,21 +562,27 @@ export const loadStore = (
   }));
 
   const bulkUpsertAnnotation = async (
-    imageId: string, 
+    sourceId: string, 
     annotations: W3CAnnotation[]
   ): Promise<void> => {
-    // Upsert each annotation in sequence
-    const next = await annotations.reduce<Promise<W3CAnnotation[]>>((promise, annotation) => {
-      return promise.then(() => _upsertOneAnnotation(imageId, annotation)).then(next => {
-        return next;
-      })
-    }, Promise.resolve([]));
+    const normalizedId = _normalizeSourceId(sourceId);
 
-    const img = images.find(i => i.id === imageId);
-    if (img) {
-      const fileHandle = await getAnnotationsFile(img);
-      await writeJSONFile(fileHandle, next);
-    }
+    // All current annotations for the given source (image or entire manifest)
+    const currentAnnotations = await _getAnnotations(normalizedId);
+
+    // Keep annotations that are not updated
+    const updatedIds = new Set(annotations.map(a => a.id));
+    const unchanged = currentAnnotations.filter(a => !updatedIds.has(a.id));
+
+    const next = [...annotations, ...unchanged];
+
+    // Update cache
+    cachedAnnotations.set(_normalizeSourceId(sourceId), next);
+
+    // Write to file
+    const source = _findSource(normalizedId);
+    const fileHandle = await getAnnotationsFile(source);
+    return writeJSONFile(fileHandle, next);
   }
 
   const upsertFolderMetadata = (idOrHandle: string | FileSystemDirectoryHandle, annotation: W3CAnnotation): Promise<void> => {
