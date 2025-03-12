@@ -36,13 +36,13 @@ export const SortableAnnotationListItem = (props: SortableAnnotationListItemProp
   return (
     <li 
       ref={setNodeRef} 
-      style={style} 
-      {...attributes} 
-      {...listeners}>
+      style={style}>
       <AnnotationListItem 
         annotation={props.annotation} 
         onEdit={props.onEdit} 
-        onDelete={props.onDelete} />
+        onDelete={props.onDelete}       
+        dragAttributes={attributes} 
+        dragListeners={listeners} />
     </li>
   )
 

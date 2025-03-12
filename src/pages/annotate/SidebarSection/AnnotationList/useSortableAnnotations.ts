@@ -11,7 +11,7 @@ export const useSortableAnnotations = () => {
 
   const [annotations, setAnnotations] = useState<Map<string, W3CImageAnnotation[]>>(new Map());
 
-  useEffect(() => {    
+  useEffect(() => {
     const p = sources.reduce<Promise<[string, W3CImageAnnotation[]][]>>((p, sourceId) => 
       p.then(agg =>
         store.getAnnotations(sourceId, { type: 'image' }).then(annotations => ([

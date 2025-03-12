@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { useInView } from 'react-intersection-observer';
-import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation, W3CAnnotationBody, W3CImageAnnotationTarget } from '@annotorious/react';
+import { DraggableAttributes } from '@dnd-kit/core';
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
@@ -18,6 +20,10 @@ interface AnnotationListItemProps {
   onEdit(): void;
 
   onDelete(): void;
+
+  dragAttributes?: DraggableAttributes;
+
+  dragListeners?: SyntheticListenerMap;
 
 }
 
@@ -66,7 +72,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         className="relative border mb-2 rounded text-xs bg-white">
         <button 
           className="w-full text-left"
-          onClick={() => onClick(props.annotation.id)}>
+          onClick={() => onClick(props.annotation.id)}
+          {...(props.dragAttributes || {})}
+          {...(props.dragListeners || {})}>
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">

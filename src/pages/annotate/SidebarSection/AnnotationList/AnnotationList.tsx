@@ -38,7 +38,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const [filter, setFilter] = useState<((a: W3CImageAnnotation) => boolean) | undefined>();
 
-  const onEdit = (annotation: W3CImageAnnotation) => () => {
+  const onEdit = (annotation: W3CImageAnnotation) => {
     manifold.setSelected(annotation.id);
 
     const annotator = manifold.findAnnotator(annotation.id);
@@ -47,7 +47,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
     props.onEdit();
   }
 
-  const onDelete = (annotation: W3CImageAnnotation) => () =>
+  const onDelete = (annotation: W3CImageAnnotation) =>
     manifold.deleteAnnotation(annotation.id);
 
   const imageIds = Array.from(annotations.keys());
@@ -115,8 +115,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
                 <li key={annotation.id}>
                   <AnnotationListItem 
                     annotation={annotation} 
-                    onEdit={onEdit(annotation)}
-                    onDelete={onDelete(annotation)} />
+                    onEdit={() => onEdit(annotation)}
+                    onDelete={() => onDelete(annotation)} />
                 </li>
               ))) : (
                 <SortableAnnotationList 
@@ -145,8 +145,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
                       <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 
-                          onEdit={onEdit(annotation)}
-                          onDelete={onDelete(annotation)} />
+                          onEdit={() => onEdit(annotation)}
+                          onDelete={() => onDelete(annotation)} />
                       </li>
                     ))) : (
                       <SortableAnnotationList 
