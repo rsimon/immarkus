@@ -11,6 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { SortableAnnotationList } from './SortableAnnotationList';
 
 interface AnnotationListProps {
 
@@ -100,6 +101,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
         {imageIds.length === 1 ? (
           <div className="py-2 grow">
             <ul className="space-y-2">
+              {/*
               {listAnnotations(imageIds[0]).map(annotation => (
                 <li key={annotation.id}>
                   <AnnotationListItem 
@@ -108,7 +110,12 @@ export const AnnotationList = (props: AnnotationListProps) => {
                     onDelete={onDelete(annotation)} />
                 </li>
               ))}
-            </ul>
+              */}
+              <SortableAnnotationList 
+                annotations={listAnnotations(imageIds[0])} 
+                onEdit={onEdit} 
+                onDelete={onDelete} />
+            </ul> 
           </div>
         ) : (
           <Accordion className="py-2 grow" type="multiple">
