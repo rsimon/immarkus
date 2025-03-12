@@ -40,7 +40,10 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
   ), [props.annotations.map(a => a.id).join(':')]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      // This keeps the cards clickable
+      activationConstraint: { distance: 0 }
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
