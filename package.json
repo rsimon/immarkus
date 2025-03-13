@@ -26,6 +26,7 @@
     "vite-plugin-static-copy": "^2.3.0"
   },
   "dependencies": {
+    "@annotorious/plugin-boolean-operations": "^0.1.0",
     "@annotorious/plugin-connectors-react": "^0.3.0",
     "@annotorious/plugin-segment-anything": "^0.1.12",
     "@annotorious/plugin-tools": "^1.0.2",
