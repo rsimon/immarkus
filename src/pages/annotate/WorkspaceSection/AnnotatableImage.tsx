@@ -110,8 +110,9 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
   return (
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
-        adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         autoSave
+        multiSelect
+        adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         initialHistory={props.initialHistory}
@@ -130,7 +131,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousPlugin
           plugin={SelectorPack} />
 
-        {/* <SmartSelection /> */}
+        <SmartSelection />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 

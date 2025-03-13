@@ -70,7 +70,7 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <OSDViewerManifold>
           <RelationEditorRoot>
-            {/* <SmartSelectionRoot> */}
+            <SmartSelectionRoot>
               <SavingState.Root>
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection
@@ -96,17 +96,17 @@ export const Annotate = () => {
                     </div>
                   )}
 
-                  {/* isSmartPanelOpen && (
+                  {isSmartPanelOpen && (
                     <SmartSelectionPanel 
                       mode={mode} 
                       onChangeMode={setMode} 
                       onClosePanel={onCloseSmartPanel} />
-                  ) */}
+                  )}
                 </main>
 
                 <SidebarSection />
               </SavingState.Root>
-            {/* </SmartSelectionRoot> */}
+            </SmartSelectionRoot>
           </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>
