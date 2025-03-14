@@ -5,10 +5,11 @@ import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manif
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
+import { PluginProvider } from './PluginProvider';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
-import { SmartSelectionPanel, SmartSelectionRoot } from './SmartSelection';
+import { SmartSelectionPanel } from './SmartSelection';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -70,7 +71,7 @@ export const Annotate = () => {
       <AnnotoriousManifold>
         <OSDViewerManifold>
           <RelationEditorRoot>
-            <SmartSelectionRoot>
+            <PluginProvider>
               <SavingState.Root>
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection
@@ -106,7 +107,7 @@ export const Annotate = () => {
 
                 <SidebarSection />
               </SavingState.Root>
-            </SmartSelectionRoot>
+            </PluginProvider>
           </RelationEditorRoot>
         </OSDViewerManifold>
       </AnnotoriousManifold>

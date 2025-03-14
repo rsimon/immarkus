@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
+import { Button } from '@/ui/Button';
+import { useSAMPlugin } from '../../PluginProvider';
 import { AnnotationMode } from '../../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import {
@@ -9,8 +11,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Button } from '@/ui/Button';
-import { useSAMPlugin } from '../SmartSelectionRoot';
 
 interface SmartSelectionProps {
 

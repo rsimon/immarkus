@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Minus, WandSparkles } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
-import { useSAMPlugin } from '../../SmartSelectionRoot';
+import { useSAMPlugin } from '../../../PluginProvider';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 

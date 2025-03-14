@@ -25,6 +25,7 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+import { BooleanPlugin } from '../SidebarSection/CurrentSelection/MultiSelectionTools/BooleanPlugin';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -111,6 +112,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
         autoSave
+        multiSelect
         adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
@@ -131,6 +133,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           plugin={SelectorPack} />
 
         <SmartSelection />
+
+        <BooleanPlugin />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 
