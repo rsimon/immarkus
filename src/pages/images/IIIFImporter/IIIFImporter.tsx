@@ -64,7 +64,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
-    if (!parseResult || parseResult.type === 'error') return; // Should never happen
+    if (!parseResult || parseResult.type === 'error') return;
 
     if (parseResult.type === 'manifest') {
       generateShortId(uri).then(id => {
@@ -88,7 +88,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         store.importIIIFResource(info, props.folderId).then(() => {
           setOpen(false);
         });
-      });  
+      });
     } else {
       // Should never happen
       console.warn('Unsupported content type', parseResult);
@@ -158,6 +158,12 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           ) : parseResult?.type === 'manifest' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
               <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
+            </div>
+          ) : parseResult?.type === 'collection' ? (
+            <div 
+              className="p-3 mt-6 items-start leading-relaxed
+                rounded text-destructive border border-destructive">
+              <ErrorAlert message="Collection manifests are currently unsupported" />
             </div>
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
