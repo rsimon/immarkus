@@ -111,6 +111,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     <Annotorious id={props.image.id}>
       <OpenSeadragonAnnotator
         autoSave
+        multiSelect
         adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
