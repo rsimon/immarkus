@@ -1,7 +1,7 @@
 import { Button } from '@/ui/Button';
 import { ImageAnnotation } from '@annotorious/react';
+import { useBooleanPlugin } from '../../../PluginProvider';
 import { Combine, Subtract } from './Icons';
-import { Separator } from '@/ui/Separator';
 
 interface MultiSelectionOptionsProps {
 
@@ -10,13 +10,16 @@ interface MultiSelectionOptionsProps {
 }
 
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
+
+  const plugin = useBooleanPlugin();
   
   return (
     <div className="p-2 flex flex-col gap-12">
       <div className="flex flex-col">
         <Button 
           className="flex gap-2"
-          variant="outline">
+          variant="outline"
+          onClick={() => plugin.mergeSelected()}>
           <Combine className="size-5" /> Merge selected shapes
         </Button>
 
@@ -30,7 +33,8 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
       <div className="flex flex-col">
         <Button 
           className="flex gap-2"
-          variant="outline">
+          variant="outline"
+          onClick={() => plugin.subtractSelected()}>
           <Subtract className="size-5" /> Subtract
         </Button>
 

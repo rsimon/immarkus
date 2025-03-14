@@ -1,4 +1,5 @@
-import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
+import { mountOpenSeadragonPlugin as mountSAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
+import { mountPlugin as mountBooleanPlugin } from '@annotorious/plugin-boolean-operations';
 import { 
   Dispatch, 
   ReactNode, 
@@ -9,24 +10,30 @@ import {
   useState 
 } from 'react';
 
-interface SmartSelectionContextValue {
+interface PluginProviderContextValue {
 
-  samPlugin: ReturnType<typeof mountOpenSeadragonPlugin>;
+  samPlugin: ReturnType<typeof mountSAMPlugin>;
 
   samPluginBusy: boolean;
 
   samPluginError?: any;
 
-  setSamPlugin: Dispatch<SetStateAction<ReturnType<typeof mountOpenSeadragonPlugin>>>;
+  setSamPlugin: Dispatch<SetStateAction<ReturnType<typeof mountSAMPlugin>>>;
+
+  booleanPlugin: ReturnType<typeof mountBooleanPlugin>;
+
+  setBooleanPlugin: Dispatch<SetStateAction<ReturnType<typeof mountBooleanPlugin>>>;
 
 }
 
 // @ts-expect-error
-export const SmartSelectionContext = createContext<SmartSelectionContextValue>();
+export const PluginProviderContext = createContext<PluginProviderContextValue>();
 
-export const SmartSelectionRoot = (props: { children: ReactNode }) => {
+export const PluginProvider = (props: { children: ReactNode }) => {
 
-  const [samPlugin, setSamPlugin] = useState<ReturnType<typeof mountOpenSeadragonPlugin>>();
+  const [samPlugin, setSamPlugin] = useState<ReturnType<typeof mountSAMPlugin>>();
+
+  const [booleanPlugin, setBooleanPlugin] = useState<ReturnType<typeof mountBooleanPlugin>>();
 
   const [samPluginBusy, setSamPluginBusy] = useState(true);
 
@@ -51,19 +58,26 @@ export const SmartSelectionRoot = (props: { children: ReactNode }) => {
   }, [samPlugin]);
 
   return (
-    <SmartSelectionContext.Provider value={{  
+    <PluginProviderContext.Provider value={{  
       samPlugin,
       samPluginBusy,
       samPluginError,
-      setSamPlugin
+      setSamPlugin,
+      booleanPlugin,
+      setBooleanPlugin
     }}>
       {props.children}
-    </SmartSelectionContext.Provider> 
+    </PluginProviderContext.Provider> 
   )
 
 }
 
 export const useSAMPlugin = () => {
-  const { samPlugin, samPluginBusy, samPluginError } = useContext(SmartSelectionContext);
+  const { samPlugin, samPluginBusy, samPluginError } = useContext(PluginProviderContext);
   return { samPlugin, samPluginBusy, samPluginError };
+}
+
+export const useBooleanPlugin = () => {
+  const { booleanPlugin } = useContext(PluginProviderContext);
+  return booleanPlugin;
 }

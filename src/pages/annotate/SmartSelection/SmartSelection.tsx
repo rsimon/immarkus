@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { AnnotoriousOpenSeadragonAnnotator, useAnnotator } from '@annotorious/react';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
-import { SmartSelectionContext } from './SmartSelectionRoot';
+import { PluginProviderContext } from '../PluginProvider';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
@@ -9,7 +9,7 @@ export const SmartSelection = () => {
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
-  const { setSamPlugin } = useContext(SmartSelectionContext);
+  const { setSamPlugin } = useContext(PluginProviderContext);
 
   useEffect(() => {
     if (!anno?.viewer) return;
