@@ -4,6 +4,7 @@ import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useSAMPlugin } from '../useSAMPlugin';
 
 interface ClickAndRefinePanelProps {
 
@@ -17,7 +18,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const { enabled } = props;
 
-  // const { samPlugin, samPluginBusy } = useSAMPlugin();
+  const { plugin, busy } = useSAMPlugin();
 
   const anno = useAnnotoriousManifold();
 
@@ -25,69 +26,61 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const [currentAnnotationId, setCurrentAnnotationId] = useState<string | undefined>();
 
-  /*
   useEffect(() => {
-    if (!samPlugin) return;
+    if (!plugin) return;
 
     const onCreate = (a: ImageAnnotation) => setCurrentAnnotationId(a.id);
     const onDelete = () => setCurrentAnnotationId(undefined);
 
-    const removeCreateHandler = samPlugin.on('createAnnotation', onCreate);
-    const removeDeleteHandler = samPlugin.on('deleteAnnotation', onDelete);
+    const removeCreateHandler = plugin.on('createAnnotation', onCreate);
+    const removeDeleteHandler = plugin.on('deleteAnnotation', onDelete);
 
     return () => {
       removeCreateHandler();
       removeDeleteHandler();
     }
-  }, [samPlugin]);
-  */
+  }, [plugin]);
 
-  /*
   useEffect(() => { 
     setMode(m => enabled ? m || 'add' : '');
 
-    if (!samPlugin) return;
+    if (!plugin) return;
 
     try {
       if (enabled)
-        samPlugin?.start();
+        plugin?.start();
       else
-        samPlugin?.stop();
+        plugin?.stop();
     } catch (error) {
       console.error(error);
     }
-  }, [samPlugin, enabled]);
-  */
+  }, [plugin, enabled]);
 
-  /*
   useEffect(() => {
-    if (!samPlugin) return;
+    if (!plugin) return;
 
     if (mode) {
-      samPlugin.setQueryMode(mode);
+      plugin.setQueryMode(mode);
     } else if (enabled) {
-      samPlugin.restart();
+      plugin.restart();
     }
-  }, [mode, samPlugin, enabled]);
-  */
+  }, [mode, plugin, enabled]);
 
   const onChangeMode = (m: string) => {
     setMode((m || '') as 'add' | 'remove' | '');
     props.onSetEnabled(Boolean(m));
   }
 
-  /*
   const onConfirm = () => {
     setMode('add');
     anno.setSelected(currentAnnotationId, true);
-    samPlugin?.restart();
+    plugin?.restart();
   }
 
   const onReset = () => {
     setMode('add');
-    samPlugin?.reset();
+    plugin?.reset();
   }
-  */
 
   return (
     <div className="px-4">
@@ -104,7 +97,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
           <ToggleGroupItem 
             value="add"
             className="!rounded-md aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
-            {samPluginBusy ? (
+            {busy ? (
               <Spinner />
             ) : (
               <WandSparkles className="size-5" />

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
-import { mountPlugin as mountBooleanPlugin } from '@annotorious/plugin-boolean-operations';
+import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
+import { mountPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
@@ -14,6 +15,8 @@ import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';
+
+import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
 export const Annotate = () => {
 
@@ -74,7 +77,11 @@ export const Annotate = () => {
             <PluginProvider>
               <Plugin 
                 name="boolean" 
-                mountFn={mountBooleanPlugin} />
+                plugin={BooleanPlugin} />
+
+              <Plugin
+                name="smart-selection"
+                plugin={SAMPlugin} />
 
               <SavingState.Root>
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
