@@ -4,7 +4,7 @@ import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/o
 
 export const useSAMPlugin = () => {
 
-  const plugin = usePluginManifold<ReturnType<typeof mountOpenSeadragonPlugin>>('smart-select');
+  const plugin = usePluginManifold<ReturnType<typeof mountOpenSeadragonPlugin>>('smart-selection');
 
   const [busy, setBusy] = useState(true);
 

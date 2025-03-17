@@ -3,7 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
-import { mountPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything';
+import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
