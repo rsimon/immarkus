@@ -13,7 +13,6 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
-import { SmartSelection } from '../SmartSelection';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
   AnnotoriousPlugin, 
@@ -25,7 +24,6 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
-import { BooleanPlugin } from '../SidebarSection/CurrentSelection/MultiSelectionTools/BooleanPlugin';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -131,10 +129,6 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
-
-        <SmartSelection />
-
-        <BooleanPlugin />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 

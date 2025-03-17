@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
-import { useSAMPlugin } from '../../PluginProvider';
-import { AnnotationMode } from '../../AnnotationMode';
+import { AnnotationMode } from '../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
+import { useSAMPlugin } from './useSAMPlugin';
 import {
   Accordion,
   AccordionContent,
@@ -28,7 +28,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { samPlugin, samPluginError } = useSAMPlugin();
+  const { plugin, error } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
@@ -36,12 +36,12 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   }, []);
 
   useEffect(() => {
-    if (!samPlugin) return;
+    if (!plugin) return;
 
     return () => {
-      samPlugin?.stop();
+      plugin?.stop();
     }
-  }, [samPlugin]);
+  }, [plugin]);
 
   useDraggable(el, {
     position,
@@ -72,7 +72,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
         </Button>
       </div>
 
-      {('gpu' in navigator && !samPluginError) ? (
+      {('gpu' in navigator && !error) ? (
         <Accordion 
           type="single"
           defaultValue="click-and-refine">

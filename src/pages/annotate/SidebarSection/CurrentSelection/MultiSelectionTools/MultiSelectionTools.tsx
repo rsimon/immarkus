@@ -1,7 +1,8 @@
 import { Button } from '@/ui/Button';
 import { ImageAnnotation } from '@annotorious/react';
-import { useBooleanPlugin } from '../../../PluginProvider';
+import { usePluginManifold, type AnnotoriousPlugin } from '@annotorious/react-manifold';
 import { Combine, Subtract } from './Icons';
+import { mountPlugin } from '@annotorious/plugin-boolean-operations';
 
 interface MultiSelectionOptionsProps {
 
@@ -11,7 +12,7 @@ interface MultiSelectionOptionsProps {
 
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
-  const plugin = useBooleanPlugin();
+  const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
   
   return (
     <div className="p-2 flex flex-col gap-12">

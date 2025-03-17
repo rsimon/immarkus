@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
+import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
+import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
+import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
-import { PluginProvider } from './PluginProvider';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
@@ -14,6 +15,8 @@ import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
 import './Annotate.css';
+
+import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
 export const Annotate = () => {
 
@@ -72,6 +75,14 @@ export const Annotate = () => {
         <OSDViewerManifold>
           <RelationEditorRoot>
             <PluginProvider>
+              <Plugin 
+                name="boolean" 
+                plugin={BooleanPlugin} />
+
+              <Plugin
+                name="smart-selection"
+                plugin={SAMPlugin} />
+
               <SavingState.Root>
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection
