@@ -1,6 +1,5 @@
 import { Button } from '@/ui/Button';
 import { ImageAnnotation } from '@annotorious/react';
-import { useBooleanPlugin } from '../../../PluginProvider';
 import { Combine, Subtract } from './Icons';
 
 interface MultiSelectionOptionsProps {

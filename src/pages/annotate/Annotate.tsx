@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { AnnotoriousManifold, OSDViewerManifold } from '@annotorious/react-manifold';
+import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
+import { mountPlugin as mountBooleanPlugin } from '@annotorious/plugin-boolean-operations';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { HeaderSection } from './HeaderSection';
-import { PluginProvider } from './PluginProvider';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
@@ -72,6 +72,10 @@ export const Annotate = () => {
         <OSDViewerManifold>
           <RelationEditorRoot>
             <PluginProvider>
+              <Plugin 
+                name="boolean" 
+                mountFn={mountBooleanPlugin} />
+
               <SavingState.Root>
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection

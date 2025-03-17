@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
-import { useSAMPlugin } from '../../PluginProvider';
 import { AnnotationMode } from '../../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import {
@@ -28,13 +27,16 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  /*
   const { samPlugin, samPluginError } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
     setTimeout(() => el.current.style.translate = null, 0);
   }, []);
+  */
 
+  /*
   useEffect(() => {
     if (!samPlugin) return;
 
@@ -42,6 +44,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       samPlugin?.stop();
     }
   }, [samPlugin]);
+  */
 
   useDraggable(el, {
     position,

@@ -3,10 +3,6 @@ import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from
 import { useEffect } from 'react';
 import { useRelationEditor } from '../RelationEditorRoot';
 import { useStore } from '@/store';
-// import { useHover } from './useHover';
-// import { isConnectedTo } from './useRelationEmphasisStyle';
-
-// import './AnnotoriousRelationEditorPlugin.css';
 
 interface AnnotoriousRelationEditorPluginProps {
 

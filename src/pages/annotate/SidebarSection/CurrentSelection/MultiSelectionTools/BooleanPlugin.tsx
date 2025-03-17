@@ -1,15 +1,15 @@
 import { useContext, useEffect } from 'react';
 import { AnnotoriousOpenSeadragonAnnotator, useAnnotator } from '@annotorious/react';
 import { mountPlugin } from '@annotorious/plugin-boolean-operations';
-import { PluginProviderContext } from '../../../PluginProvider';
 
 export const BooleanPlugin = () => {
 
     const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
   
-    const { setBooleanPlugin } = useContext(PluginProviderContext);
+    // const { setBooleanPlugin } = useContext(PluginProviderContext);
   
     useEffect(() => {
+      /*
       if (!anno?.viewer) return;
   
       // @ts-ignore
@@ -19,6 +19,7 @@ export const BooleanPlugin = () => {
       return () => {
         // plugin.destroy();
       }
+        */
     }, [anno]);
   
     return null;

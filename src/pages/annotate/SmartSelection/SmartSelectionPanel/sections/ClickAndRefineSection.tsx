@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Minus, WandSparkles } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
-import { useSAMPlugin } from '../../../PluginProvider';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 
@@ -18,7 +17,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const { enabled } = props;
 
-  const { samPlugin, samPluginBusy } = useSAMPlugin();
+  // const { samPlugin, samPluginBusy } = useSAMPlugin();
 
   const anno = useAnnotoriousManifold();
 
@@ -26,6 +25,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   const [currentAnnotationId, setCurrentAnnotationId] = useState<string | undefined>();
 
+  /*
   useEffect(() => {
     if (!samPlugin) return;
 
@@ -40,7 +40,9 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
       removeDeleteHandler();
     }
   }, [samPlugin]);
+  */
 
+  /*
   useEffect(() => { 
     setMode(m => enabled ? m || 'add' : '');
 
@@ -55,7 +57,9 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
       console.error(error);
     }
   }, [samPlugin, enabled]);
+  */
 
+  /*
   useEffect(() => {
     if (!samPlugin) return;
 
@@ -65,12 +69,14 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
       samPlugin.restart();
     }
   }, [mode, samPlugin, enabled]);
+  */
 
   const onChangeMode = (m: string) => {
     setMode((m || '') as 'add' | 'remove' | '');
     props.onSetEnabled(Boolean(m));
   }
 
+  /*
   const onConfirm = () => {
     setMode('add');
     anno.setSelected(currentAnnotationId, true);
@@ -81,6 +87,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
     setMode('add');
     samPlugin?.reset();
   }
+  */
 
   return (
     <div className="px-4">
