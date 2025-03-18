@@ -22,18 +22,13 @@ const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   }
 }
 
-const resolveManifests = (manifests: IIIFManifestResource[]) => 
+const resolveManifests = (manifests: IIIFManifestResource[], onProgress: () => void) => 
   manifests.reduce<Promise<CozyManifest[]>>((promise, manifest) => promise.then(manifests =>
-    fetchManifest(manifest.uri).then(fetched => ([...manifests, fetched]))
-  ), Promise.resolve([]));
-
-const aggregateIIIFMetadataLabels = (manifests: IIIFManifestResource[]) =>
-  manifests.reduce<Promise<Set<string>>>((promise, manifest) => promise.then(distinctLabels =>
     fetchManifest(manifest.uri).then(fetched => {
-      const labels = fetched.getMetadata().map(m => m.label);
-      return new Set([...distinctLabels, ...labels]);
+      onProgress();
+      return [...manifests, fetched]
     })
-  ), Promise.resolve(new Set([])));
+  ), Promise.resolve([]));
 
 export const exportFolderMetadataCSV = async (store: Store) => {
   const { folderSchemas } = store.getDataModel();
@@ -58,7 +53,8 @@ const createSchemaWorksheet = (
   workbook: any, 
   schema: MetadataSchema,
   result: { source: Folder | IIIFResource, metadata: W3CAnnotationBody }[],
-  store: Store
+  store: Store,
+  onProgress: () => void
 ) => {
   const worksheet = workbook.addWorksheet(schema.name);
 
@@ -67,7 +63,10 @@ const createSchemaWorksheet = (
   const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
 
   // Filter for IIIF manifests and resolve them
-  return resolveManifests(withThisSchema.map(t => t.source).filter(s => 'canvases' in s)).then(manifests => {
+  return resolveManifests(
+    withThisSchema.map(t => t.source).filter(s => 'canvases' in s),
+    onProgress
+  ).then(manifests => {
     const iiifMetadataLabels = [...manifests.reduce<Set<string>>((distinctLabels, manifest) => (
       new Set([...distinctLabels, ...manifest.getMetadata().map(m => m.label)])
     ), new Set([]))];
@@ -116,8 +115,20 @@ const createSchemaWorksheet = (
   
 }
 
-export const exportFolderMetadataExcel = async (store: Store) => {
-  const { folders, iiifResources}  = store;
+export const exportFolderMetadataExcel = async (store: Store, onProgress: ((progress: number) => void)) => {
+  const { folders, iiifResources }  = store;
+
+  // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
+  const progressIncrement = 100 / (iiifResources.length + 1);
+
+  let progress = 0;
+
+  const updateProgress = () => {
+    progress += progressIncrement;
+    onProgress(progress);
+  }
+
+  updateProgress();
 
   Promise.all(
     [...folders, ...iiifResources].map(source => getMetadata(store, source))
@@ -137,7 +148,7 @@ export const exportFolderMetadataExcel = async (store: Store) => {
       workbook.modified = new Date();
     
       return folderSchemas.reduce<Promise<void>>((promise, schema) => promise.then(() => {
-        return createSchemaWorksheet(workbook, schema, result, store);
+        return createSchemaWorksheet(workbook, schema, result, store, updateProgress);
       }), Promise.resolve()).then(() => {
         return workbook.xlsx.writeBuffer().then(buffer => {
           const blob = new Blob([buffer], {
