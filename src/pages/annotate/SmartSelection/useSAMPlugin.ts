@@ -11,20 +11,20 @@ export const useSAMPlugin = () => {
   const [error, setError] = useState<any | undefined>();
 
   useEffect(() => {
-    if (!plugin) return;
+    if (!plugin?.on) return;
 
-    const removeInitHandler = plugin.on('initialized', () => setBusy(false));
-    const removeInitErrorHander = plugin.on('initError', (error: any) => setError(error));
-    const removeStartAnimationHandler = plugin.on('animationStart', () => setBusy(true));
-    const removeStartEncodingHandler = plugin.on('encodingStart', () => setBusy(true));
-    const removeEncodingCompleteHanlder = plugin.on('encodingFinished', () => setBusy(false));
+    const removeInitHandlers = plugin.on('initialized', () => setBusy(false));
+    const removeInitErrorHanders = plugin.on('initError', (error: any) => setError(error));
+    const removeStartAnimationHandlers = plugin.on('animationStart', () => setBusy(true));
+    const removeStartEncodingHandlers = plugin.on('encodingStart', () => setBusy(true));
+    const removeEncodingCompleteHanlders = plugin.on('encodingFinished', () => setBusy(false));
 
     return () => {
-      removeInitHandler();
-      removeInitErrorHander();
-      removeStartAnimationHandler();
-      removeStartEncodingHandler();
-      removeEncodingCompleteHanlder();
+      removeInitHandlers.forEach(fn => fn());
+      removeInitErrorHanders.forEach(fn => fn());
+      removeStartAnimationHandlers.forEach(fn => fn());
+      removeStartEncodingHandlers.forEach(fn => fn());
+      removeEncodingCompleteHanlders.forEach(fn => fn());
     }
   }, [plugin]);
 
