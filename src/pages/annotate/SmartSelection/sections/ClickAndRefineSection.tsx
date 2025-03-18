@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Minus, WandSparkles } from 'lucide-react';
+import { Minus, TriangleAlert, WandSparkles } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
@@ -87,6 +87,11 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
   return (
     <div className="px-4">
+      <div className="border border-orange-300 bg-orange-100 text-orange-400 mt-3 p-1.5 flex justify-center rounded">
+        <div className="flex items-center gap-2">
+          <TriangleAlert className="size-3.5 mb-[1px]" /> Beta
+        </div>
+      </div>
       <p className="pt-3 pb-2 font-light leading-relaxed">
         Hover over the image to preview selection. Click to confirm. Add or remove points to refine.
       </p>
