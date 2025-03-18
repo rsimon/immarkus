@@ -5,9 +5,7 @@ import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
 import { Folder, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
 import { serializePropertyValue } from '@/utils/serialize';
-import { fitColumnWidths } from './utils';
-import { fetchManifest } from '@/utils/iiif';
-import { CozyManifest } from 'cozy-iiif';
+import { fitColumnWidths, resolveManifests } from './utils';
 
 const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   source: IIIFResource | Folder;
@@ -21,14 +19,6 @@ const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
       .then(metadata => ({ source, metadata }))
   }
 }
-
-const resolveManifests = (manifests: IIIFManifestResource[], onProgress: () => void) => 
-  manifests.reduce<Promise<CozyManifest[]>>((promise, manifest) => promise.then(manifests =>
-    fetchManifest(manifest.uri).then(fetched => {
-      onProgress();
-      return [...manifests, fetched]
-    })
-  ), Promise.resolve([]));
 
 export const exportFolderMetadataCSV = async (store: Store) => {
   const { folderSchemas } = store.getDataModel();

@@ -48,7 +48,7 @@ export const ExportMetadata = () => {
 
               <Button 
                 className="whitespace-nowrap flex gap-3 w-36"
-                onClick={() => exportImageMetadataExcel (store)}>
+                onClick={() => exportImageMetadataExcel(store)}>
                 <FileChartColumn className="h-4 w-4" /> XSLX
               </Button>
             </div>
