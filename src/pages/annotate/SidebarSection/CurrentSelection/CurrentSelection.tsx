@@ -65,69 +65,86 @@ export const CurrentSelection = () => {
   const onDelete = (annotation: ImageAnnotation) => 
     anno.deleteAnnotation(annotation.id);
 
+  const onBulkDelete = (annotations: ImageAnnotation[]) =>
+    anno.bulkDeleteAnnotations(annotations);
+
   const onKeyDown = (evt: React.KeyboardEvent) => {
     const ignore = ['Alt', 'Control', 'Meta', 'Shift', 'Tab'];
     if (!ignore.includes(evt.key) && !showSearchDialog)
       setShowSearchDialog(true)
   }
 
-  const onAddEntityType = (annotation: ImageAnnotation, entity: EntityType) => {
-    const body = createBody(annotation, {
-      type: 'Dataset',
-      purpose: 'classifying',
-      source: entity.id
-    }, new Date());
+  const onAddEntityType = (annotations: ImageAnnotation[], entity: EntityType) => {
+    const updated: ImageAnnotation[] = annotations.map(a => { 
+      const body = createBody(a, {
+          type: 'Dataset',
+          purpose: 'classifying',
+          source: entity.id
+        }, new Date());
 
-    anno.addBody(body);
+      return {
+        ...a,
+        bodies: [...a.bodies, body]
+      }
+    });
+
+    anno.bulkUpdateAnnotations(updated);
 
     setShowSearchDialog(false);
   }
 
-  return selected.length === 0 ? (
-    <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
-      No annotation selected
-    </div> 
-  ) : selected.length === 1 ? (
-    <div key={selected[0].id} className="flex flex-col grow h-full max-w-full">
-      {showAsEmpty ? (
-        <div className="flex grow justify-center items-center">
-          <div>
-            <Button
-              ref={ref}
-              onClick={() => setShowSearchDialog(true)}
-              onKeyDown={onKeyDown}
-              className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
+  return (
+    <>
+      {selected.length === 0 ? (
+        <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
+          No annotation selected
+        </div> 
+      ) : selected.length === 1 ? (
+        <div key={selected[0].id} className="flex flex-col grow h-full max-w-full">
+          {showAsEmpty ? (
+            <div className="flex grow justify-center items-center">
+              <div>
+                <Button
+                  ref={ref}
+                  onClick={() => setShowSearchDialog(true)}
+                  onKeyDown={onKeyDown}
+                  className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
-            <Button
-              onClick={() => setShowAsEmpty(false)}
-              variant="outline">Add Note</Button>
-          </div>
+                <Button
+                  onClick={() => setShowAsEmpty(false)}
+                  variant="outline">Add Note</Button>
+              </div>
+            </div>
+          ) : (
+            <PropertiesForm 
+              annotation={selected[0]} 
+              onAddTag={() => setShowSearchDialog(true)} />
+          )}
+
+          <footer>
+            <ConfirmedDelete
+              variant="destructive" 
+              className="w-full mt-2 mb-2"
+              title="Delete Annotation"
+              message="Are you sure you want to delete this annotation?"
+              onConfirm={() => onDelete(selected[0])}>
+              <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
+            </ConfirmedDelete>
+          </footer>
         </div>
       ) : (
-        <PropertiesForm 
-          annotation={selected[0]} 
-          onAddTag={() => setShowSearchDialog(true)} />
+        <MultiSelectionTools 
+          selected={selected}
+          onAddTag={() => setShowSearchDialog(true)} 
+          onDeleteSelected={() => onBulkDelete(selected)}
+          onKeyDown={onKeyDown} />
       )}
 
       <EntityTypeBrowserDialog 
         open={showSearchDialog} 
-        onAddEntityType={entity => onAddEntityType(selected[0], entity)}
+        onAddEntityType={entity => onAddEntityType(selected, entity)}
         onCancel={() => setShowSearchDialog(false)} />
-  
-      <footer>
-        <ConfirmedDelete
-          variant="destructive" 
-          className="w-full mt-2 mb-2"
-          title="Delete Annotation"
-          message="Are you sure you want to delete this annotation?"
-          onConfirm={() => onDelete(selected[0])}>
-          <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
-        </ConfirmedDelete>
-      </footer>
-    </div>
-  ) : (
-    <MultiSelectionTools 
-      selected={selected} />
+    </>
   )
 
 }
