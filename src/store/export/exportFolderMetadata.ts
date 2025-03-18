@@ -3,9 +3,11 @@ import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { getManifestMetadata, Store } from '@/store';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
-import { Folder, IIIFResource, MetadataSchema } from '@/model';
+import { Folder, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
 import { serializePropertyValue } from '@/utils/serialize';
 import { fitColumnWidths } from './utils';
+import { fetchManifest } from '@/utils/iiif';
+import { CozyManifest } from 'cozy-iiif';
 
 const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   source: IIIFResource | Folder;
@@ -19,6 +21,19 @@ const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
       .then(metadata => ({ source, metadata }))
   }
 }
+
+const resolveManifests = (manifests: IIIFManifestResource[]) => 
+  manifests.reduce<Promise<CozyManifest[]>>((promise, manifest) => promise.then(manifests =>
+    fetchManifest(manifest.uri).then(fetched => ([...manifests, fetched]))
+  ), Promise.resolve([]));
+
+const aggregateIIIFMetadataLabels = (manifests: IIIFManifestResource[]) =>
+  manifests.reduce<Promise<Set<string>>>((promise, manifest) => promise.then(distinctLabels =>
+    fetchManifest(manifest.uri).then(fetched => {
+      const labels = fetched.getMetadata().map(m => m.label);
+      return new Set([...distinctLabels, ...labels]);
+    })
+  ), Promise.resolve(new Set([])));
 
 export const exportFolderMetadataCSV = async (store: Store) => {
   const { folderSchemas } = store.getDataModel();
@@ -49,35 +64,56 @@ const createSchemaWorksheet = (
 
   const schemaProps = schema.properties || [];
 
-  worksheet.columns = [
-    { header: 'Folder Name', key: 'folder', width: 60 },
-    { header: 'Type', key: 'type', width: 60 }, 
-    { header: 'Parent Folder', key: 'parent', width: 60 },
-    { header: 'File Path', key: 'path', width: 60 },
-    ...schemaProps.map(property => ({
-      header: property.name, key: `@property_${property.name}`, width: 60
-    }))
-  ];
-
   const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
 
-  withThisSchema.forEach(({ source, metadata }) => {
-    const row = {
-      folder: source.name,
-      parent: 'parent'  in source ? store.getFolder(source.parent)?.name : '',
-      type: 'uri' in source ? 'IIIF Manifest' : 'Local Folder',
-      path: [...source.path.map(id => store.getFolder(id).name), source.name].join('/')
-    };
+  // Filter for IIIF manifests and resolve them
+  return resolveManifests(withThisSchema.map(t => t.source).filter(s => 'canvases' in s)).then(manifests => {
+    const iiifMetadataLabels = [...manifests.reduce<Set<string>>((distinctLabels, manifest) => (
+      new Set([...distinctLabels, ...manifest.getMetadata().map(m => m.label)])
+    ), new Set([]))];
 
-    const properties = 'properties' in metadata ? metadata.properties : {};
+    worksheet.columns = [
+      { header: 'Folder Name', key: 'folder', width: 60 },
+      { header: 'Type', key: 'type', width: 60 }, 
+      { header: 'Parent Folder', key: 'parent', width: 60 },
+      { header: 'File Path', key: 'path', width: 60 },
+      ...schemaProps.map(property => ({
+        header: property.name, key: `@property_${property.name}`, width: 60
+      })),
+      ...iiifMetadataLabels.map(label => ({
+        header: label, key: `@iiif_property_${label}`, width: 60
+      }))
+    ];
 
-    schemaProps.forEach(d => 
-      row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
+    withThisSchema.forEach(({ source, metadata }) => {
+      const row = {
+        folder: source.name,
+        parent: 'parent'  in source ? store.getFolder(source.parent)?.name : '',
+        type: 'uri' in source ? 'IIIF Manifest' : 'Local Folder',
+        path: [...source.path.map(id => store.getFolder(id).name), source.name].join('/')
+      };
+  
+      const properties = 'properties' in metadata ? metadata.properties : {};
+  
+      schemaProps.forEach(d => 
+        row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
 
-    worksheet.addRow(row);
+      if ('canvases' in source) {
+        const manifest = manifests.find(m => m.id === (source as IIIFManifestResource).uri);
+        if (manifest) {
+          const meta = manifest.getMetadata();
+
+          iiifMetadataLabels.forEach(p => 
+            row[`@iiif_property_${p}`] = meta.find(m => m.label === p)?.value || '');
+        }
+      }
+  
+      worksheet.addRow(row);
+    });
+  
+    fitColumnWidths(worksheet);
   });
-
-  fitColumnWidths(worksheet);
+  
 }
 
 export const exportFolderMetadataExcel = async (store: Store) => {
@@ -100,18 +136,19 @@ export const exportFolderMetadataExcel = async (store: Store) => {
       workbook.created = new Date();
       workbook.modified = new Date();
     
-      // Create one worksheet per schema
-      folderSchemas.forEach(schema => createSchemaWorksheet(workbook, schema, result, store));
-    
-      workbook.xlsx.writeBuffer().then(buffer => {
-        const blob = new Blob([buffer], {
-          type: 'application/vnd.ms-excel'
-        });
-    
-        const anchor = document.createElement('a');
-        anchor.href = URL.createObjectURL(blob);
-        anchor.download = 'folder_metadata.xlsx';
-        anchor.click();
-      });
+      return folderSchemas.reduce<Promise<void>>((promise, schema) => promise.then(() => {
+        return createSchemaWorksheet(workbook, schema, result, store);
+      }), Promise.resolve()).then(() => {
+        return workbook.xlsx.writeBuffer().then(buffer => {
+          const blob = new Blob([buffer], {
+            type: 'application/vnd.ms-excel'
+          });
+      
+          const anchor = document.createElement('a');
+          anchor.href = URL.createObjectURL(blob);
+          anchor.download = 'folder_metadata.xlsx';
+          anchor.click();
+        });  
+      })
     });
 }
