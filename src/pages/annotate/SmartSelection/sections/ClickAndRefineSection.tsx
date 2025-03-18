@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Minus, WandSparkles } from 'lucide-react';
-import { Spinner } from '@/components/Spinner';
-import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
-import { useSAMPlugin } from '../useSAMPlugin';
+import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
+import { Spinner } from '@/components/Spinner';
+import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
+import { PluginManifoldProxy } from 'node_modules/@annotorious/react-manifold/dist/plugins/PluginManifoldInstance';
 
 interface ClickAndRefinePanelProps {
+
+  plugin: PluginManifoldProxy<ReturnType<typeof mountOpenSeadragonPlugin>>;
+  
+  busy: boolean;
 
   enabled: boolean;
 
@@ -16,9 +21,7 @@ interface ClickAndRefinePanelProps {
 
 export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
 
-  const { enabled } = props;
-
-  const { plugin, busy } = useSAMPlugin();
+  const { busy, enabled, plugin } = props;
 
   const anno = useAnnotoriousManifold();
 
@@ -27,37 +30,33 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
   const [currentAnnotationId, setCurrentAnnotationId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (!plugin) return;
+    if (!plugin?.on) return;
 
     const onCreate = (a: ImageAnnotation) => setCurrentAnnotationId(a.id);
     const onDelete = () => setCurrentAnnotationId(undefined);
 
-    const removeCreateHandler = plugin.on('createAnnotation', onCreate);
-    const removeDeleteHandler = plugin.on('deleteAnnotation', onDelete);
+    const removeCreateHandlers = plugin.on('createAnnotation', onCreate);
+    const removeDeleteHandlers = plugin.on('deleteAnnotation', onDelete);
 
     return () => {
-      removeCreateHandler();
-      removeDeleteHandler();
+      removeCreateHandlers.forEach(fn => fn());
+      removeDeleteHandlers.forEach(fn => fn());
     }
   }, [plugin]);
 
   useEffect(() => { 
     setMode(m => enabled ? m || 'add' : '');
 
-    if (!plugin) return;
+    if (!plugin?.start || !plugin?.stop) return;
 
-    try {
-      if (enabled)
-        plugin?.start();
-      else
-        plugin?.stop();
-    } catch (error) {
-      console.error(error);
-    }
+    if (enabled)
+      plugin.start();
+    else
+      plugin.stop();
   }, [plugin, enabled]);
 
   useEffect(() => {
-    if (!plugin) return;
+    if (!plugin?.setQueryMode || !plugin.restart) return;
 
     if (mode) {
       plugin.setQueryMode(mode);
@@ -74,12 +73,16 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
   const onConfirm = () => {
     setMode('add');
     anno.setSelected(currentAnnotationId, true);
-    plugin?.restart();
+
+    if (plugin?.restart)
+      plugin.restart();
   }
 
   const onReset = () => {
     setMode('add');
-    plugin?.reset();
+
+    if (plugin.reset)
+      plugin.reset();
   }
 
   return (

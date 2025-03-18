@@ -28,7 +28,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { plugin, error } = useSAMPlugin();
+  const { plugin, busy, error } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
@@ -36,10 +36,10 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   }, []);
 
   useEffect(() => {
-    if (!plugin) return;
+    if (!plugin?.destroy) return;
 
     return () => {
-      plugin?.stop();
+      plugin.destroy();
     }
   }, [plugin]);
 
@@ -86,6 +86,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
             <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
               <ClickAndRefineSection 
+                plugin={plugin}
+                busy={busy}
                 enabled={props.mode === 'smart'} 
                 onSetEnabled={onSetEnabled} />
             </AccordionContent>
