@@ -93,7 +93,7 @@ const createSchemaWorksheet = (
           const meta = manifest.getMetadata();
 
           iiifMetadataLabels.forEach(p => 
-            row[`@iiif_property_${p}`] = meta.find(m => m.label === p)?.value || '');
+            row[`@iiif_property_${p}`] = meta.find(m => m.label === p)?.value.toString() || '');
         }
       }
   
