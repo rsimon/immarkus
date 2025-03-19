@@ -56,7 +56,9 @@ const createSchemaWorksheet = (
   return resolveManifests(
     withThisSchema.map(t => t.source).filter(s => 'canvases' in s),
     onProgress
-  ).then(manifests => {
+  ).then(resolved => {
+    const manifests = resolved.map(p => p.manifest);
+
     const iiifMetadataLabels = [...manifests.reduce<Set<string>>((distinctLabels, manifest) => (
       new Set([...distinctLabels, ...manifest.getMetadata().map(m => m.label)])
     ), new Set([]))];
@@ -141,6 +143,8 @@ export const exportFolderMetadataExcel = async (store: Store, onProgress: ((prog
         return createSchemaWorksheet(workbook, schema, result, store, updateProgress);
       }), Promise.resolve()).then(() => {
         return workbook.xlsx.writeBuffer().then(buffer => {
+          onProgress(100);
+
           const blob = new Blob([buffer], {
             type: 'application/vnd.ms-excel'
           });
