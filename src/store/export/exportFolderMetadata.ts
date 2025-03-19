@@ -41,16 +41,16 @@ export const exportFolderMetadataCSV = async (store: Store) => {
 
 const createSchemaWorksheet = (
   workbook: any, 
-  schema: MetadataSchema,
+  schema: MetadataSchema | undefined,
   result: { source: Folder | IIIFResource, metadata: W3CAnnotationBody }[],
   store: Store,
   onProgress: () => void
 ) => {
-  const worksheet = workbook.addWorksheet(schema.name);
+  const worksheet = workbook.addWorksheet(schema?.name || 'No Schema');
 
-  const schemaProps = schema.properties || [];
+  const schemaProps = schema?.properties || [];
 
-  const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
+  const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema?.name);
 
   // Filter for IIIF manifests and resolve them
   return resolveManifests(
@@ -82,7 +82,7 @@ const createSchemaWorksheet = (
         path: [...source.path.map(id => store.getFolder(id).name), source.name].join('/')
       };
   
-      const properties = 'properties' in metadata ? metadata.properties : {};
+      const properties = (metadata && 'properties' in metadata) ? metadata.properties : {};
   
       schemaProps.forEach(d => 
         row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
@@ -137,7 +137,7 @@ export const exportFolderMetadataExcel = async (store: Store, onProgress: ((prog
       workbook.created = new Date();
       workbook.modified = new Date();
     
-      return folderSchemas.reduce<Promise<void>>((promise, schema) => promise.then(() => {
+      return [...folderSchemas, undefined].reduce<Promise<void>>((promise, schema) => promise.then(() => {
         return createSchemaWorksheet(workbook, schema, result, store, updateProgress);
       }), Promise.resolve()).then(() => {
         return workbook.xlsx.writeBuffer().then(buffer => {

@@ -64,6 +64,8 @@ const createSchemaWorksheet = (
 
   const schemaProps = schema.properties || [];
 
+  const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
+
   worksheet.columns = [
     { header: 'Filename', key: 'filename', width: 60 },
     { header: 'Type', key: 'type', width: 60 }, 
@@ -73,7 +75,6 @@ const createSchemaWorksheet = (
     }))
   ];
 
-  const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema.name);
 
   const getPath = (source: FileImage | CanvasInformation) => {
     if ('path' in source) { 
