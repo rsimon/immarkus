@@ -90,7 +90,7 @@ const createSchemaWorksheet = (
         row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
 
       if ('canvases' in source) {
-        const manifest = manifests.find(m => m.id === (source as IIIFManifestResource).uri);
+        const manifest = manifests.find(m => (source as IIIFManifestResource).uri.startsWith(m.id));
         if (manifest) {
           const meta = manifest.getMetadata();
 
