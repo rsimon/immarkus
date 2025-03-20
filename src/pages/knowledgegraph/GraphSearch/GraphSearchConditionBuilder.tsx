@@ -64,7 +64,8 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
       { label: 'where', value: 'WHERE' },
       (props.settings.graphMode === 'RELATIONS' ? { label: 'with relationship', value: 'WITH_RELATIONSHIP' } : undefined),
       { label: 'with entity', value: 'WITH_ENTITY' },
-      { label: 'with note', value: 'WITH_NOTE' }
+      { label: 'with note', value: 'WITH_NOTE' },
+      { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
     ].filter(Boolean) : 
     props.objectType === 'ENTITY_TYPE' ? [
       { label: 'with relationship', value: 'WITH_RELATIONSHIP' }

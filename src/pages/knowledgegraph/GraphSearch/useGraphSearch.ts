@@ -1,6 +1,7 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
+import { IIIFManifestResource } from '@/model';
 import { IIIFMetadataIndexRecord } from './iiif';
 import { 
   CustomSentence,
@@ -150,8 +151,19 @@ export const useGraphSearch = (
     } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
       const data = (sentence as CustomSentence).data as IIIFMetadataIndexRecord;
       if (data) {
-        const folderIds = data.manifests.map(m => `iiif:${m.id}`);
-        setMatches(folderIds);
+        const manifestIds = data.manifests.map(m => m.id);
+
+        if (objectType === 'IMAGE') {
+          const canvasIds = manifestIds.reduce((ids, manifestId) => {
+            const { canvases } = (store.getIIIFResource(manifestId) as IIIFManifestResource);
+            const canvasIds = canvases.map(c => `iiif:${manifestId}:${c.id}`);
+            return [...ids, ...canvasIds];
+          }, []);
+
+          setMatches(canvasIds);
+        } else if (objectType === 'FOLDER') {
+          setMatches(manifestIds.map(id => `iiif:${id}`));
+        }
       }
     }
   }, [annotations, graph, objectType, sentence]);
