@@ -33,39 +33,77 @@ const getMetadata = (store: Store, source: FileImage | IIIFResource): Promise<So
 }
 
 const aggregateIIIFMetadataLabels = (manifests: CozyManifest[]) => {
-  return [...manifests.flatMap(m => m.canvases)
-    .reduce<Set<string>>((distinctLabels, canvas) => (
-      new Set([...distinctLabels, ...canvas.getMetadata().map(m => m.label)])
-    ), new Set([]))];
+  return [
+    ...manifests.reduce<Set<string>>((distinct, manifest) => {
+      const manifestLabels = manifest.getMetadata().map(m => m.label);
+
+      const canvasLabels = manifest.canvases.reduce<Set<string>>((distinct, canvas) => (
+        new Set([...distinct, ...canvas.getMetadata().map(m => m.label)])
+      ), new Set([]));
+
+      return new Set([...distinct, ...manifestLabels, ...canvasLabels]);
+    }, new Set([]))
+  ];  
 }
 
-export const exportImageMetadataCSV = async (store: Store) => {
+export const exportImageMetadataCSV = async (
+  store: Store,
+  onProgress: ((progress: number) => void)
+) => {
   const { images, iiifResources } = store;
   const { imageSchemas } = store.getDataModel();
 
-  const columns = aggregateSchemaFields(imageSchemas);  
+  // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
+  const progressIncrement = 100 / (iiifResources.length + 1);
 
-  return resolveManifests(iiifResources as IIIFManifestResource[]).then(manifests => {
-    const iiifMetadataLabels = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
+  let progress = 0;
+
+  const updateProgress = () => {
+    progress += progressIncrement;
+    onProgress(progress);
+  }
+
+  updateProgress();
+
+  const customColumns = aggregateSchemaFields(imageSchemas);  
+
+  return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
+    const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
+
+    const getCanvasMetadata = (info: CanvasInformation, field: string) => {
+      const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
+      const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
+      
+      const metadata = [
+        ...(cozyManifest?.getMetadata() || []),
+        ...(cozyCanvas?.getMetadata() || []) 
+      ];
+
+      return metadata.find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
+    }
 
     return Promise.all(
       [...images, ...iiifResources].map(source => getMetadata(store, source))
     ).then(results => {
+      onProgress(100);
+
       return results
         .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
         .map(({ source, metadata }) => {
-          const entries = zipMetadata(columns, metadata);
+          const entries = zipMetadata(customColumns, metadata);
 
           return Object.fromEntries([
             ['image', source.name], 
             ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
             ...entries,
-            // ...iiifMetadataLabels.map(label => ([label, ]))
+            ...('uri' in source
+              ? iiifColumns.map(label => ([label, getCanvasMetadata(source, label)]))
+              : []
+            )
           ]);
         })
       })
-      .then(rows => 
-        downloadCSV(rows, 'image_metadata.csv'));  
+      .then(rows => downloadCSV(rows, 'image_metadata.csv'));  
   });
 }
 

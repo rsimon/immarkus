@@ -53,6 +53,8 @@ export const exportFolderMetadataCSV = async (
     return Promise.all(
       [...folders, ...iiifResources].map(source => getMetadata(store, source))
     ).then(results => results.map(({ source, metadata }) => {
+      onProgress(100);
+      
       const entries = zipMetadata(customColumns, metadata?.body as W3CAnnotationBody);
       return Object.fromEntries([
         ['folder', source.name], 
