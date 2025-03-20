@@ -8,7 +8,6 @@ import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { fetchManifest } from '@/utils/iiif/fetchManifest';
-import { sourceMapsEnabled } from 'process';
 
 interface RowData {
 
