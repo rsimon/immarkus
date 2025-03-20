@@ -141,6 +141,12 @@ export const useGraphSearch = (
           setMatches(entityIds);
         }
       }
+    } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
+      if (!sentence.Value) {
+        // 
+      } else {
+        // findFolderByIIIFMetadata(graph, setence.Value.value);
+      }
     }
   }, [annotations, graph, objectType, sentence]);
 

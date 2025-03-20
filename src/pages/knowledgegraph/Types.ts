@@ -118,7 +118,7 @@ export interface BaseSentence {
 
 }
 
-export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP';
+export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP' | 'WITH_IIIF_METADATA';
 
 export interface SimpleConditionSentence extends BaseSentence {
 
