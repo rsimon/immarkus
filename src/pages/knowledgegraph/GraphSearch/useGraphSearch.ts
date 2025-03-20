@@ -150,7 +150,7 @@ export const useGraphSearch = (
     } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
       const data = (sentence as CustomSentence).data as IIIFMetadataIndexRecord;
       if (data) {
-        const folderIds = data.manifests.map(m => m.id);
+        const folderIds = data.manifests.map(m => `iiif:${m.id}`);
         setMatches(folderIds);
       }
     }
