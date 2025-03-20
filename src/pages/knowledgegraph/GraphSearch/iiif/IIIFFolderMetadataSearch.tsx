@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
-import { CozyMetadata } from 'cozy-iiif';
 import { Command, CommandEmpty, CommandItem, CommandList } from '@/ui/Command';
 import { Spinner } from '@/components/Spinner';
 import { Button } from '@/ui/Button';
 import { Popover,PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import { DropdownOption } from '../../Types';
-import { useManifestMetadataSearch } from './useManifestMetadataSearch';
+import { IIIFMetadataIndexRecord, useManifestMetadataSearch } from './useManifestMetadataSearch';
 
 interface IIIFFolderMetadataSearchProps {
   
-  onChange(value: DropdownOption): void;
+  onChange(data: IIIFMetadataIndexRecord): void;
 
 }
 
@@ -22,12 +20,13 @@ export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) =
 
   const [query, setQuery] = useState('');
 
-  const [options, setOptions] = useState<CozyMetadata[]>([]);
+  const [options, setOptions] = useState<IIIFMetadataIndexRecord[]>([]);
 
   useEffect(() => setOptions(search(query)), [query]);
 
-  const onSelect = (option: CozyMetadata) => {
-    console.log('selected', option);
+  const onSelect = (option: IIIFMetadataIndexRecord) => {
+    setOpen(false);
+    props.onChange(option);
   }
 
   return (
@@ -52,7 +51,7 @@ export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) =
 
       <PopoverContent 
         align="start"
-        className="min-w-[80px] max-w-[60vw] w-auto p-0 overflow-hidden">
+        className="min-w-[80px] max-w-72 w-auto p-0 overflow-hidden">
         <Command>
           <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
@@ -71,12 +70,12 @@ export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) =
 
             {options.map(option => (
               <CommandItem 
-                key={`${option.label}:${option.value}`}
+                key={option.stringified}
                 className="block text-xs overflow-hidden whitespace-nowrap text-ellipsis"
                 value={JSON.stringify(option)}
                 // Warning: cmdk trims the values, possibly breaking them!
                 onSelect={() => onSelect(option)}>
-                <strong>{option.label}</strong>:{option.value}
+                <strong>{option.data.label}</strong>: {option.data.value}
               </CommandItem>
             ))}          
           </CommandList>

@@ -13,6 +13,7 @@ import {
   GraphNode, 
   GraphNodeType, 
   KnowledgeGraphSettings,
+  NestedConditionSentence,
   Operator, 
   Sentence
 } from '../Types';
@@ -103,9 +104,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
     if ('Attribute' in sentence && sentence.Attribute) {
       // SimpleConditionSentence
       return Boolean(sentence.Comparator);
+    } else if ('data' in sentence) {
+      return Boolean(sentence.data);
     } else {
       // NestedConditionSentence
-      return Boolean(sentence.Value);
+      return Boolean((sentence as NestedConditionSentence).Value);
     }
   }
   

@@ -73,7 +73,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
       { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
     ], [props.objectType, props.settings]);
 
-  const showAddSubCondition = sentence.Value && sentence.ConditionType === 'WITH_ENTITY';
+  const showAddSubCondition = sentence.ConditionType === 'WITH_ENTITY' && 'Value' in sentence;
 
   const onAddSubcondition = () => {
     const s = sentence as NestedConditionSentence;
@@ -163,7 +163,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         ) : sentence.ConditionType === 'WITH_NOTE' ? (
           <Combobox
             className={selectStyle}
-            value={sentence.Value}
+            value={(sentence as SimpleConditionSentence).Value}
             options={valueOptions} 
             onChange={value => updateSentence({
               Attribute: undefined,
@@ -171,10 +171,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             })} />
         ) : sentence.ConditionType === 'WITH_IIIF_METADATA' && (
           <IIIFFolderMetadataSearch 
-            onChange={value => updateSentence({
-              Attribute: undefined,
-              Value:  value
-            })} />
+            onChange={data => updateSentence({ data })} />
         )}
 
         {'Attribute' in sentence && sentence.Attribute && 
@@ -190,7 +187,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
             <Combobox 
               className={selectStyle}
-              value={sentence.Value}
+              value={(sentence as SimpleConditionSentence).Value}
               options={valueOptions} 
               onChange={value => updateSentence({ Value: value })} />
           )

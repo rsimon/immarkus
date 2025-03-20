@@ -4,17 +4,47 @@ import { CozyManifest, CozyMetadata } from 'cozy-iiif';
 import { useStore } from '@/store';
 import { fetchManifests } from '@/utils/iiif';
 
-const buildIndex = (manifests: CozyManifest[]) => {
-  const metadata = manifests
-    .flatMap(m => m.getMetadata())
-    .reduce<CozyMetadata[]>((distinctFields, meta) => {
-      const exists = distinctFields.some(({ label, value })=>
-        label.toLowerCase() === meta.label.toLowerCase() && value.toLowerCase() === meta.value.toLowerCase());
-      return exists ? distinctFields : [...distinctFields, meta ];
-    }, []);
+export interface IIIFMetadataIndexRecord {
 
-  const fuse = new Fuse<CozyMetadata>(metadata, { 
-    keys: ['label', 'value'],
+  data: CozyMetadata;
+
+  stringified: string;
+
+  manifests: { id: string, manifest: CozyManifest }[];
+
+}
+
+const isPossiblyHTML = (str: string): boolean => {
+  // Check for common HTML patterns: tags with attributes, closing tags, or self-closing tags
+  const htmlPattern = /<\/?[a-z][\s\S]*?(?:>|\s+\/>)/i;
+  return htmlPattern.test(str);
+}
+
+const normalize = (str: string): string => 
+  isPossiblyHTML(str) ? str.replace(/<[^>]*>/g, '') : str;
+
+const buildIndex = (manifests: { id: string, manifest: CozyManifest }[]) => {
+  const records = manifests.reduce<IIIFMetadataIndexRecord[]>((distinctFields, t) => {
+    return t.manifest.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinctFields, meta) => {
+      const normalized = { label: normalize(meta.label), value: normalize(meta.value) };
+      const stringified = `${normalized.label}: ${normalized.value}`.toLowerCase();
+
+      const existing = distinctFields.find(record => record.stringified === stringified);
+      if (existing) {
+        return distinctFields.map(record => record === existing
+          ? { ...record, manifest: [...record.manifests, t ]}
+          : record);
+      } else {
+        return [
+          ...distinctFields,
+          { data: normalized, stringified, manifests: [t] }
+        ];
+      }    
+    }, distinctFields);
+  }, []);
+
+  const fuse = new Fuse<IIIFMetadataIndexRecord>(records, { 
+    keys: ['stringified'],
     shouldSort: true,
     threshold: 0.6,
     includeScore: true,
@@ -30,16 +60,23 @@ export const useManifestMetadataSearch = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const [fuse, setFuse] = useState<Fuse<CozyMetadata> | undefined>();
+  const [fuse, setFuse] = useState<Fuse<IIIFMetadataIndexRecord> | undefined>();
 
   useEffect(() => {
-    const uris = store.iiifResources.map(r => r.uri);
+    const { iiifResources } = store;
+
+    const uris = iiifResources.map(r => r.uri);
 
     // Fetches all manifests, using cached versions if possbile,
     // or throttled HTTP downloads if not.
     fetchManifests(uris).then(manifests => {
+      const withId = manifests.map(manifest => {
+        const id = iiifResources.find(r => r.uri === manifest.id)?.id;
+        return { id, manifest }
+      });
+
       setLoading(false);
-      setFuse(buildIndex(manifests));
+      setFuse(buildIndex(withId));
     });
   }, [store]);
 

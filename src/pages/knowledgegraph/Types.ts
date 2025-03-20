@@ -130,6 +130,12 @@ export interface SimpleConditionSentence extends BaseSentence {
 
 }
 
+export interface CustomSentence extends BaseSentence {
+
+  data: any;
+
+}
+
 export interface NestedConditionSentence extends BaseSentence {
 
   Value: DropdownOption;
@@ -138,7 +144,7 @@ export interface NestedConditionSentence extends BaseSentence {
 
 }
 
-export type Sentence = SimpleConditionSentence | NestedConditionSentence;
+export type Sentence = SimpleConditionSentence | NestedConditionSentence | CustomSentence;
 
 export type Comparator = 'IS' | 'IS_NOT_EMPTY';
 
