@@ -1,7 +1,9 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
+import { IIIFMetadataIndexRecord } from './iiif';
 import { 
+  CustomSentence,
   DropdownOption, 
   Graph,
   GraphNodeType,
@@ -116,15 +118,19 @@ export const useGraphSearch = (
         setMatches(imageIds);
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
-      if (!sentence.Value) {
+      const s = sentence as SimpleConditionSentence;
+
+      if (!s.Value) {
         const notes = listAllNotes(annotations);
         setValueOptions(notes.map(n => ({ label: n, value: n })));
       } else {
-        const imageIds = findImagesByNote(annotations, sentence.Value.value);
+        const imageIds = findImagesByNote(annotations, s.Value.value);
         setMatches(imageIds);
       }
     } else if (sentence.ConditionType === 'WITH_RELATIONSHIP') {
-      if (!sentence.Value) {
+      const s = sentence as SimpleConditionSentence;
+
+      if (!s.Value) {
         const relations = store.listAllRelations();
 
         const distinctRelationships = relations.reduce<string[]>((all, [_, meta]) => {
@@ -135,11 +141,17 @@ export const useGraphSearch = (
         setValueOptions(distinctRelationships);
       } else {
         if (objectType === 'IMAGE') {
-          findImagesByRelationship(store, sentence.Value.value).then(setMatches);
+          findImagesByRelationship(store, s.Value.value).then(setMatches);
         } else if (objectType === 'ENTITY_TYPE') {
-          const entityIds = findEntityTypesByRelationship(graph, sentence.Value.value);
+          const entityIds = findEntityTypesByRelationship(graph, s.Value.value);
           setMatches(entityIds);
         }
+      }
+    } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
+      const data = (sentence as CustomSentence).data as IIIFMetadataIndexRecord;
+      if (data) {
+        const folderIds = data.manifests.map(m => `iiif:${m.id}`);
+        setMatches(folderIds);
       }
     }
   }, [annotations, graph, objectType, sentence]);
