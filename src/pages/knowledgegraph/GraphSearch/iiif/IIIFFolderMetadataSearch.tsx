@@ -7,6 +7,8 @@ import { Popover,PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { IIIFMetadataIndexRecord, useManifestMetadataSearch } from './useManifestMetadataSearch';
 
 interface IIIFFolderMetadataSearchProps {
+
+  value?: IIIFMetadataIndexRecord;
   
   onChange(data: IIIFMetadataIndexRecord): void;
 
@@ -37,10 +39,14 @@ export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) =
           variant="outline"
           role="combobox"
           aria-expanded={options.length > 0}
-          className="rounded-none min-w-32 max-w-40 text-xs font-normal overflow-hidden relative px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap text-ellipsis">
+          className="rounded-none min-w-32 justify-start max-w-40 text-xs font-normal overflow-hidden relative px-2 py-1 h-auto bg-white shadow-none border-l-0 whitespace-nowrap text-ellipsis">
           {loading ? (
             <div className="grow flex justify-center">
               <Spinner className="w-3 h-3 text-muted-foreground" />
+            </div>
+          ) : props.value ? (
+            <div>
+              <strong>{props.value.data.label}:</strong> {props.value.data.value}
             </div>
           ) : (
             <div className="grow" />
