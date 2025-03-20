@@ -74,7 +74,7 @@ export const ExportMetadata = () => {
               <Button 
                 className="whitespace-nowrap flex gap-3 w-36"
                 variant="outline"
-                onClick={() => exportFolderMetadataCSV(store)}>
+                onClick={() => exportFolderMetadataCSV(store, onProgress)}>
                 <FileSpreadsheet className="h-4 w-4" /> CSV
               </Button>
 

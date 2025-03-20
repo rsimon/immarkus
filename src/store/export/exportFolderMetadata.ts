@@ -1,5 +1,6 @@
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { CozyManifest } from 'cozy-iiif';
 import { getManifestMetadata, Store } from '@/store';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
@@ -20,24 +21,56 @@ const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   }
 }
 
-export const exportFolderMetadataCSV = async (store: Store) => {
+export const exportFolderMetadataCSV = async (
+  store: Store,
+  onProgress: ((progress: number) => void)
+) => {
   const { folderSchemas } = store.getDataModel();
-
-  const columns = aggregateSchemaFields(folderSchemas);
-
   const { folders, iiifResources } = store;
 
-  Promise.all(
-    [...folders, ...iiifResources].map(source => getMetadata(store, source))
-  ).then(results => results.map(({ source, metadata }) => {
-    const entries = zipMetadata(columns, metadata?.body as W3CAnnotationBody);
-    return Object.fromEntries([
-      ['folder', source.name], 
-      ['folder_type', 'uri' in source ? 'iiif_manifest' : 'local'],
-      ...entries]);
-  }))
-  .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
+  // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
+  const progressIncrement = 100 / (iiifResources.length + 1);
+
+  let progress = 0;
+
+  const updateProgress = () => {
+    progress += progressIncrement;
+    onProgress(progress);
+  }
+
+  updateProgress();
+
+  const customColumns = aggregateSchemaFields(folderSchemas);
+
+  return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
+    const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(m => m.manifest));
+
+    const getResourceMetadata = (resource: IIIFManifestResource, field: string) => {
+      const cozy = manifests.find(c => c.manifest.id === resource.uri);
+      return cozy?.manifest.getMetadata().find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
+    }
+
+    return Promise.all(
+      [...folders, ...iiifResources].map(source => getMetadata(store, source))
+    ).then(results => results.map(({ source, metadata }) => {
+      const entries = zipMetadata(customColumns, metadata?.body as W3CAnnotationBody);
+      return Object.fromEntries([
+        ['folder', source.name], 
+        ['folder_type', 'uri' in source ? 'iiif_manifest' : 'local'],
+        ...entries, 
+        ...('canvases' in source 
+          ? iiifColumns.map(label => ([label, getResourceMetadata(source, label)]))
+          : [])
+      ]);
+    }))
+    .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
+  });
 }
+
+const aggregateIIIFMetadataLabels = (manifests: CozyManifest[]) =>
+  [...manifests.reduce<Set<string>>((distinctLabels, manifest) => (
+    new Set([...distinctLabels, ...manifest.getMetadata().map(m => m.label)])
+  ), new Set([]))];
 
 const createSchemaWorksheet = (
   workbook: any, 
@@ -59,9 +92,7 @@ const createSchemaWorksheet = (
   ).then(resolved => {
     const manifests = resolved.map(p => p.manifest);
 
-    const iiifMetadataLabels = [...manifests.reduce<Set<string>>((distinctLabels, manifest) => (
-      new Set([...distinctLabels, ...manifest.getMetadata().map(m => m.label)])
-    ), new Set([]))];
+    const iiifMetadataLabels = aggregateIIIFMetadataLabels(manifests);
 
     worksheet.columns = [
       { header: 'Folder Name', key: 'folder', width: 60 },

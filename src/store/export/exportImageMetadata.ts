@@ -1,12 +1,12 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { CozyManifest, CozyMetadata } from 'cozy-iiif';
 import { getImageMetadata, Store } from '@/store';
 import { downloadCSV } from '@/utils/download';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
-import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, Image, MetadataSchema } from '@/model';
-import {  W3CAnnotationBody } from '@annotorious/react';
+import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
+import { W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
 import { fitColumnWidths, resolveManifests } from './utils';
-import { CozyMetadata } from 'cozy-iiif';
 
 interface SourceMetadata {
 
@@ -32,27 +32,41 @@ const getMetadata = (store: Store, source: FileImage | IIIFResource): Promise<So
   }
 }
 
+const aggregateIIIFMetadataLabels = (manifests: CozyManifest[]) => {
+  return [...manifests.flatMap(m => m.canvases)
+    .reduce<Set<string>>((distinctLabels, canvas) => (
+      new Set([...distinctLabels, ...canvas.getMetadata().map(m => m.label)])
+    ), new Set([]))];
+}
+
 export const exportImageMetadataCSV = async (store: Store) => {
   const { images, iiifResources } = store;
   const { imageSchemas } = store.getDataModel();
 
-  const columns = aggregateSchemaFields(imageSchemas);
+  const columns = aggregateSchemaFields(imageSchemas);  
 
-  Promise.all(
-    [...images, ...iiifResources].map(source => getMetadata(store, source))
-  ).then(results => {
-    return results
-      .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
-      .map(({ source, metadata }) => {
-        const entries = zipMetadata(columns, metadata);
-        return Object.fromEntries([
-          ['image', source.name], 
-          ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
-          ...entries
-        ]);
+  return resolveManifests(iiifResources as IIIFManifestResource[]).then(manifests => {
+    const iiifMetadataLabels = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
+
+    return Promise.all(
+      [...images, ...iiifResources].map(source => getMetadata(store, source))
+    ).then(results => {
+      return results
+        .reduce<SourceMetadata[]>((all, batch) => ([...all, ...batch]), [])
+        .map(({ source, metadata }) => {
+          const entries = zipMetadata(columns, metadata);
+
+          return Object.fromEntries([
+            ['image', source.name], 
+            ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
+            ...entries,
+            // ...iiifMetadataLabels.map(label => ([label, ]))
+          ]);
+        })
       })
-    })
-    .then(rows => downloadCSV(rows, 'image_metadata.csv'));
+      .then(rows => 
+        downloadCSV(rows, 'image_metadata.csv'));  
+  });
 }
 
 const createSchemaWorksheet = (
@@ -74,11 +88,7 @@ const createSchemaWorksheet = (
   return resolveManifests(
     manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource)
   ).then(resolved => {
-    const iiifMetadataLabels = [...resolved.flatMap(m => m.manifest.canvases)
-      .reduce<Set<string>>((distinctLabels, canvas) => (
-        new Set([...distinctLabels, ...canvas.getMetadata().map(m => m.label)])
-      ), new Set([]))];
-
+    const iiifMetadataLabels = aggregateIIIFMetadataLabels(resolved.map(r => r.manifest));
 
     worksheet.columns = [
       { header: 'Filename', key: 'filename', width: 60 },
