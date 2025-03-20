@@ -173,6 +173,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             })} />
         ) : sentence.ConditionType === 'WITH_IIIF_METADATA' && (
           <IIIFFolderMetadataSearch 
+            objectType={props.objectType}
             value={(sentence as CustomSentence).data as IIIFMetadataIndexRecord}
             onChange={data => updateSentence({ data })} />
         )}

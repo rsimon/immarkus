@@ -151,16 +151,25 @@ export const useGraphSearch = (
     } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
       const data = (sentence as CustomSentence).data as IIIFMetadataIndexRecord;
       if (data) {
-        const manifestIds = data.manifests.map(m => m.id);
+        // Manifests for which this metadata record matches at the manifest level
+        const manifestIds = (data.manifests || []).map(m => m.id);
 
         if (objectType === 'IMAGE') {
-          const canvasIds = manifestIds.reduce((ids, manifestId) => {
+          // Canvases for which this record matches at the canvas level
+          const matchingCanvasIds = (data.canvases || []).map(({ manifestId, canvas }) => {
+            const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
+            const canvasId = manifest.canvases.find(info => info.uri === canvas.id)?.id;
+            return `iiif:${manifest.id}:${canvasId}`;
+          });
+
+          // Canvases that are children to manifests where this record matches at the manifest level
+          const inheritedCanvasIds = manifestIds.reduce((ids, manifestId) => {
             const { canvases } = (store.getIIIFResource(manifestId) as IIIFManifestResource);
             const canvasIds = canvases.map(c => `iiif:${manifestId}:${c.id}`);
             return [...ids, ...canvasIds];
           }, []);
-
-          setMatches(canvasIds);
+          
+          setMatches([...matchingCanvasIds, ...inheritedCanvasIds]);
         } else if (objectType === 'FOLDER') {
           setMatches(manifestIds.map(id => `iiif:${id}`));
         }

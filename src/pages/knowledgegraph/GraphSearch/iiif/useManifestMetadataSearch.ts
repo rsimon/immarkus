@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
-import { CozyManifest, CozyMetadata } from 'cozy-iiif';
+import { CozyCanvas, CozyManifest, CozyMetadata } from 'cozy-iiif';
 import { useStore } from '@/store';
 import { fetchManifests } from '@/utils/iiif';
+import { GraphNodeType } from '../../Types';
 
 export interface IIIFMetadataIndexRecord {
 
@@ -10,7 +11,9 @@ export interface IIIFMetadataIndexRecord {
 
   stringified: string;
 
-  manifests: { id: string, manifest: CozyManifest }[];
+  manifests?: { id: string, manifest: CozyManifest }[];
+
+  canvases?: { manifestId: string, canvas: CozyCanvas }[];
 
 }
 
@@ -21,40 +24,64 @@ const isPossiblyHTML = (str: string): boolean => {
 }
 
 const normalize = (str: string): string => 
-  isPossiblyHTML(str) ? str.replace(/<[^>]*>/g, '') : str;
+  isPossiblyHTML(str) ? str.replace(/<[^>]*>/g, '') : str; 
 
-const buildIndex = (manifests: { id: string, manifest: CozyManifest }[]) => {
-  const records = manifests.reduce<IIIFMetadataIndexRecord[]>((distinctFields, t) => {
-    return t.manifest.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinctFields, meta) => {
+const buildManifestIndexRecords = (manifests: { id: string, manifest: CozyManifest }[]) => {
+  return manifests.reduce<IIIFMetadataIndexRecord[]>((distinct, t) => {
+    return t.manifest.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinct, meta) => {
       const normalized = { label: normalize(meta.label), value: normalize(meta.value) };
       const stringified = `${normalized.label}: ${normalized.value}`.toLowerCase();
 
-      const existing = distinctFields.find(record => record.stringified === stringified);
+      const existing = distinct.find(record => record.stringified === stringified);
       if (existing) {
-        return distinctFields.map(record => record === existing
+        return distinct.map(record => record === existing
           ? { ...record, manifest: [...record.manifests, t ]}
           : record);
       } else {
         return [
-          ...distinctFields,
+          ...distinct,
           { data: normalized, stringified, manifests: [t] }
         ];
       }    
-    }, distinctFields);
+    }, distinct);
   }, []);
-
-  const fuse = new Fuse<IIIFMetadataIndexRecord>(records, { 
-    keys: ['stringified'],
-    shouldSort: true,
-    threshold: 0.6,
-    includeScore: true,
-    useExtendedSearch: true
-  });
-
-  return fuse;  
 }
 
-export const useManifestMetadataSearch = () => {
+const buildCanvasIndexRecords = (manifests: { id: string, manifest: CozyManifest }[]) => {
+  // First, collect the metadata from the manifests themselves
+  const manifestRecords = buildManifestIndexRecords(manifests);
+
+  // Then loop through all manifests,...
+  return manifests.reduce<IIIFMetadataIndexRecord[]>((distinct, t) => {
+    const { canvases } = t.manifest;
+
+    // ...through each canvas on each manifest,...
+    return canvases.reduce<IIIFMetadataIndexRecord[]>((distinct, canvas) => {
+
+      // ...and then through each metadata field
+      return canvas.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinct, meta) => {
+        const normalized = { label: normalize(meta.label), value: normalize(meta.value) };
+        const stringified = `${normalized.label}: ${normalized.value}`.toLowerCase();
+
+        // Check if this key/valu pair already exists
+        const existing = distinct.find(record => record.stringified === stringified);
+        if (existing) {
+          return distinct.map(record => record === existing
+            ? { ...record, canvases: [...(record.canvases || []), { manifestId: t.id, canvas } ]}
+            : record);
+        } else {
+          return [
+            ...distinct,
+            { data: normalized, stringified, canvases: [{ manifestId: t.id, canvas }] }
+          ];
+        }
+        return distinct;
+      }, distinct);  
+    }, distinct);
+  }, manifestRecords);
+}
+
+export const useManifestMetadataSearch = (objectType: GraphNodeType) => {
 
   const store = useStore();
 
@@ -76,9 +103,22 @@ export const useManifestMetadataSearch = () => {
       });
 
       setLoading(false);
-      setFuse(buildIndex(withId));
+
+      const records = objectType === 'FOLDER' 
+        ? buildManifestIndexRecords(withId)
+        : buildCanvasIndexRecords(withId);
+
+      const fuse = new Fuse<IIIFMetadataIndexRecord>(records, { 
+        keys: ['stringified'],
+        shouldSort: true,
+        threshold: 0.6,
+        includeScore: true,
+        useExtendedSearch: true
+      });
+
+      setFuse(fuse);
     });
-  }, [store]);
+  }, [store, objectType]);
 
   const search = (query: string, limit: number = 10) => {
     if (!fuse) return [];

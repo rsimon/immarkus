@@ -4,9 +4,12 @@ import { Command, CommandEmpty, CommandItem, CommandList } from '@/ui/Command';
 import { Spinner } from '@/components/Spinner';
 import { Button } from '@/ui/Button';
 import { Popover,PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import type { GraphNodeType } from '../../Types';
 import { IIIFMetadataIndexRecord, useManifestMetadataSearch } from './useManifestMetadataSearch';
 
 interface IIIFFolderMetadataSearchProps {
+
+  objectType: GraphNodeType;
 
   value?: IIIFMetadataIndexRecord;
   
@@ -16,7 +19,7 @@ interface IIIFFolderMetadataSearchProps {
 
 export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) => {
 
-  const { loading, search } = useManifestMetadataSearch();
+  const { loading, search } = useManifestMetadataSearch(props.objectType);
 
   const [open, setOpen] = useState(false);
 
