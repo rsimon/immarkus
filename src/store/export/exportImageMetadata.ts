@@ -6,7 +6,7 @@ import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
-import { fitColumnWidths, resolveManifests } from './utils';
+import { deduplicateSchemas, fitColumnWidths, resolveManifests } from './utils';
 
 interface SourceMetadata {
 
@@ -46,12 +46,25 @@ const aggregateIIIFMetadataLabels = (manifests: CozyManifest[]) => {
   ];  
 }
 
+const getCanvasMetadata = (info: CanvasInformation, field: string, manifests: { id: string, manifest: CozyManifest}[]) => {
+  const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
+  const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
+  
+  const metadata = [
+    ...(cozyManifest?.getMetadata() || []),
+    ...(cozyCanvas?.getMetadata() || []) 
+  ];
+
+  return metadata.find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
+}
+
 export const exportImageMetadataCSV = async (
   store: Store,
   onProgress: ((progress: number) => void)
 ) => {
   const { images, iiifResources } = store;
-  const { imageSchemas } = store.getDataModel();
+  const { imageSchemas: _imageSchemas } = store.getDataModel();
+  const imageSchemas = deduplicateSchemas(_imageSchemas);
 
   // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
   const progressIncrement = 100 / (iiifResources.length + 1);
@@ -70,17 +83,7 @@ export const exportImageMetadataCSV = async (
   return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
     const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
 
-    const getCanvasMetadata = (info: CanvasInformation, field: string) => {
-      const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
-      const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
-      
-      const metadata = [
-        ...(cozyManifest?.getMetadata() || []),
-        ...(cozyCanvas?.getMetadata() || []) 
-      ];
 
-      return metadata.find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
-    }
 
     return Promise.all(
       [...images, ...iiifResources].map(source => getMetadata(store, source))
@@ -96,10 +99,10 @@ export const exportImageMetadataCSV = async (
             ['image', source.name], 
             ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
             ...entries,
-            ...('uri' in source
-              ? iiifColumns.map(label => ([label, getCanvasMetadata(source, label)]))
-              : []
-            )
+            ...iiifColumns.map(label => [
+              label,
+              'uri' in source ? getCanvasMetadata(source, label, manifests) : ''
+            ])
           ]);
         })
       })
@@ -151,13 +154,6 @@ const createSchemaWorksheet = (
         ].filter(Boolean);
       }
     }
-
-    const getMetadata = (info: CanvasInformation): CozyMetadata[] => {
-      const manifest = resolved.find(({ id }) => id === info.manifestId)?.manifest;
-      const canvas = manifest?.canvases.find(c => c.id === info.uri);
-
-      return canvas ? canvas.getMetadata() : [];
-    }
   
     withThisSchema.forEach(({ source, metadata }) => {
       const row = {
@@ -171,12 +167,12 @@ const createSchemaWorksheet = (
       schemaProps.forEach(d => 
         row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
 
-      const iiifMetadata = 'manifestId' in source ? getMetadata(source) : [];
-      iiifMetadataLabels.forEach(p => 
-        row[`@iiif_property_${p}`] = iiifMetadata.find(m => m.label === p)?.value.toString() || '');
+      if ('manifestId' in source)
+        iiifMetadataLabels.forEach(label => 
+          row[`@iiif_property_${label}`] = getCanvasMetadata(source, label, resolved));
 
-      // Only include this row if there is either IIIF metadata, or a custom schema
-      if (iiifMetadata.length > 0 || schema)
+      // Only include this row if there is actual metadata,
+      if (Object.keys(row).length > 3)
         worksheet.addRow(row);
     });
   
@@ -186,8 +182,8 @@ const createSchemaWorksheet = (
 
 export const exportImageMetadataExcel = async (store: Store, onProgress: (progress: number) => void) => {
   const { images, iiifResources } = store;
-
-  const { imageSchemas } = store.getDataModel();
+  const { imageSchemas: _imageSchemas } = store.getDataModel();
+  const imageSchemas = deduplicateSchemas(_imageSchemas);
 
   // One for each schema + schema-less images, on for final export
   const progressIncrement = 100 / (imageSchemas.length + 2);

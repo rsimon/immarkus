@@ -6,7 +6,7 @@ import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
 import { Folder, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
 import { serializePropertyValue } from '@/utils/serialize';
-import { fitColumnWidths, resolveManifests } from './utils';
+import { deduplicateSchemas, fitColumnWidths, resolveManifests } from './utils';
 
 const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   source: IIIFResource | Folder;
@@ -25,7 +25,8 @@ export const exportFolderMetadataCSV = async (
   store: Store,
   onProgress: ((progress: number) => void)
 ) => {
-  const { folderSchemas } = store.getDataModel();
+  const { folderSchemas: _folderSchemas } = store.getDataModel();
+  const folderSchemas = deduplicateSchemas(_folderSchemas);
   const { folders, iiifResources } = store;
 
   // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
@@ -60,9 +61,10 @@ export const exportFolderMetadataCSV = async (
         ['folder', source.name], 
         ['folder_type', 'uri' in source ? 'iiif_manifest' : 'local'],
         ...entries, 
-        ...('canvases' in source 
-          ? iiifColumns.map(label => ([label, getResourceMetadata(source, label)]))
-          : [])
+        ...iiifColumns.map(label => ([
+          label, 
+          'canvases' in source ? getResourceMetadata(source, label) : ''
+        ]))
       ]);
     }))
     .then(rows => downloadCSV(rows, 'folder_metadata.csv'));
@@ -142,6 +144,8 @@ const createSchemaWorksheet = (
 
 export const exportFolderMetadataExcel = async (store: Store, onProgress: ((progress: number) => void)) => {
   const { folders, iiifResources }  = store;
+  const { folderSchemas: _folderSchemas} = store.getDataModel();
+  const folderSchemas = deduplicateSchemas(_folderSchemas);
 
   // One step for comfort ;-) Then one for each iiifResource, plus final step for creating the XLSX
   const progressIncrement = 100 / (iiifResources.length + 1);
@@ -163,8 +167,6 @@ export const exportFolderMetadataExcel = async (store: Store, onProgress: ((prog
       const body = Array.isArray(metadata.body) ? metadata.body[0] : metadata.body;
       return { source, metadata: body }
     })).then(result => {
-      const { folderSchemas } = store.getDataModel();
-
       const workbook = new ExcelJS.Workbook();
     
       workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;

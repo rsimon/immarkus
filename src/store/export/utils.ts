@@ -1,5 +1,5 @@
 import { CozyManifest } from 'cozy-iiif';
-import { IIIFManifestResource } from '@/model';
+import { IIIFManifestResource, MetadataSchema } from '@/model';
 import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { fetchManifest } from '@/utils/iiif';
 
@@ -20,6 +20,11 @@ export const fitColumnWidths = (worksheet: any) => {
 
   worksheet.columns[0].width = 30;
 }
+
+// Should never be necessary, unless users hack the file outside IMMARKUS...
+export const deduplicateSchemas = (schemas: MetadataSchema[]) =>
+  schemas.reduce<MetadataSchema[]>((distinct, schema) => 
+    distinct.some(s => s.name === schema.name) ? distinct : [...distinct, schema], []);
 
 export const addImageToCell = (
   workbook: any,
