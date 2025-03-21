@@ -62,6 +62,9 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         Cozy.parseURL(uri)
         .then(result => {
           setBusy(false);
+
+          console.log('asddfasfd', result);
+
           setParseResult(result);
         })
         .catch(error => {
@@ -183,11 +186,23 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
               <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
             </div>
+          ) : parseResult?.type === 'webpage' ? (
+            <div 
+              className="p-3 mt-6 items-start leading-relaxed
+                rounded text-destructive border border-destructive">
+              <ErrorAlert message="Invalid URL: web page" />
+            </div>
           ) : parseResult?.type === 'collection' ? (
             <div 
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
               <ErrorAlert message="Collection manifests are currently unsupported" />
+            </div>
+          ) : parseResult?.type === 'plain-image' ? (
+            <div 
+              className="p-3 mt-6 items-start leading-relaxed
+                rounded text-destructive border border-destructive">
+              <ErrorAlert message="Invalid URL: image file" />
             </div>
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
