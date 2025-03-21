@@ -11,7 +11,6 @@ import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
 import { ErrorAlert } from './ErrorAlert';
-import { parse } from 'path';
 
 interface IIIFImporterProps {
 
@@ -29,6 +28,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [uri, setURI] = useState('');
 
+  const [alreadyImported, setAlreadyImported] = useState(false);
+
   const [busy, setBusy] = useState(false);
 
   const [parseResult, setParseResult] = useState<CozyParseResult | undefined>();
@@ -42,23 +43,33 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   useEffect(() => {
     setParseResult(undefined);
+    setAlreadyImported(false);
 
     if (!uri) {
       setBusy(false);
       return;
     }
 
-    setBusy(true);
+    // IMMARKUS can't currently import a manifest twice!
+    generateShortId(uri).then(id => {
+      // ID is derived from the URI–check if it already exists
+      const existing = Boolean(store.getIIIFResource(id));
+      if (existing) {
+        setAlreadyImported(true);
+      } else {
+        setBusy(true);
 
-    Cozy.parseURL(uri)
-      .then(result => {
-        setBusy(false);
-        setParseResult(result);
-      })
-      .catch(error => {
-        console.error(error);
-        setBusy(false);
-      });
+        Cozy.parseURL(uri)
+        .then(result => {
+          setBusy(false);
+          setParseResult(result);
+        })
+        .catch(error => {
+          console.error(error);
+          setBusy(false);
+        });
+      }
+    });
   }, [uri]);
 
   const onSubmit = (evt: React.FormEvent) => {
@@ -137,6 +148,19 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           {busy ? (
             <div className="flex items-center gap-1.5 pl-0.5">
               <Loader2 className="animate-spin size-3.5 mb-[1px]" /> Fetching...
+            </div>
+          ) : alreadyImported ? (
+            <div 
+              className="p-3 mt-6 items-start leading-relaxed
+                rounded text-destructive border border-destructive">
+              <div className="font-semibold mb-2 flex gap-1.5">
+                <Ban className="size-3.5 mt-[3px]" /> Already Imported
+              </div>
+
+              <div>
+                This manifests already exists in your project. IMMARKUS is currently not 
+                able to import the same manifest into a project more than once.
+              </div>
             </div>
           ) : parseResult?.type === 'error' ? (
             <div 
