@@ -441,7 +441,9 @@ export const findFoldersByMetadata = (
 
   if (builtin) {
     if (propertyName === 'folder name') {
-      return Promise.resolve(folderLike.filter(f => f.name === value));
+      return value 
+        ? Promise.resolve(folderLike.filter(f => f.name === value))
+        : Promise.resolve(folderLike);
     } else {
       console.error('Unsupported built-in folder property', propertyName);
       return Promise.resolve([]);

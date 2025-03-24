@@ -47,7 +47,7 @@ export const exportFolders = (store: Store, folderIds: string[]) => {
 
   const promise = folderIds.reduce<Promise<FolderMetadata[]>>((promise, id) => promise.then(rows => {
     const folder : Folder | IIIFManifestResource = 
-      id.startsWith('iiif:') ? store.getIIIFResource(id) as IIIFManifestResource : store.getFolder(id) as Folder;
+      id.startsWith('iiif:') ? store.getIIIFResource(id.substring(5)) as IIIFManifestResource : store.getFolder(id) as Folder;
 
     const meta = 'uri' in folder
       ? getManifestMetadata(store, folder.id).then(t => t.annotation)
