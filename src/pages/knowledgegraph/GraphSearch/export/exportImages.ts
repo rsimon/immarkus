@@ -1,5 +1,5 @@
 import { Store } from '@/store';
-import { Image } from '@/model';
+import { CanvasInformation, Image } from '@/model';
 import { getAggregatedMetadata, listAllMetadataProperties } from '../searchUtils';
 import { serializePropertyValue } from '@/utils/serialize';
 import { downloadExcel } from '@/utils/download';
@@ -7,7 +7,7 @@ import { SchemaPropertyValue } from '../../Types';
 
 interface ImageMetadata {
 
-  image: Image;
+  image: Image | CanvasInformation;
 
   metadata: SchemaPropertyValue[];
 
@@ -19,7 +19,8 @@ export const exportImages = (store: Store, imageIds: string[]) => {
     .map(p => `${p.type.toLowerCase()}:${p.propertyName}`);
 
   const promise = imageIds.reduce<Promise<ImageMetadata[]>>((promise, id) => promise.then(rows => {
-    const image = store.getImage(id);
+    const image = id.startsWith('iiif:') ? store.getCanvas(id) : store.getImage(id);
+
     return getAggregatedMetadata(store, id).then(metadata => {
       return [...rows, { image, metadata }]
     });
