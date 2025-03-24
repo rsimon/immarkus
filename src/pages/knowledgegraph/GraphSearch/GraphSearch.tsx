@@ -268,6 +268,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
             {props.query && (
               <ExportSelector 
+                objectType={objectType}
                 graph={props.graph} 
                 query={props.query} />
             )}

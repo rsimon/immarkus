@@ -34,7 +34,7 @@ const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body:
 }
 
 // Converts a metadata annotation to a list of SchemaProperties
-const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation?: W3CAnnotation): SchemaPropertyValue[] => {
+export const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation?: W3CAnnotation): SchemaPropertyValue[] => {
   if (!annotation) return [];
 
   const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;

@@ -2,9 +2,9 @@ import { Button } from '@/ui/Button';
 import { ChevronDown, Download, FileBarChart2 } from 'lucide-react';
 import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
-import { Graph, GraphNode } from '../../Types';
-import { exportImages } from './exportImages';
+import { Graph, GraphNode, GraphNodeType } from '../../Types';
 import { getRelationships } from './exportRelationships';
+import { exportFolders, exportImages } from './exportMetadata';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,8 @@ import {
 
 
 interface ExportSelectorProps {
+
+  objectType: GraphNodeType;
 
   graph: Graph;
 
@@ -34,8 +36,14 @@ export const ExportSelector = (props: ExportSelectorProps) => {
   const progress = busyAnnotations ? progressAnnotations : busyRelations ? progressRelations : 0;
 
   const onExportMetadata = () => {
-    const matches = props.graph.nodes.filter(n => props.query!(n));
-    exportImages(store, matches.map(m => m.id));
+    const matches = props.graph.nodes
+      .filter(n => props.query!(n))
+      .map(m => m.id);
+
+    if (props.objectType === 'IMAGE')
+      exportImages(store, matches);
+    else if (props.objectType === 'FOLDER')
+      exportFolders(store, matches);
   }
 
   const onExportAnnotations = () => {
