@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -10,7 +10,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.15",
     "@types/chroma-js": "^3.1.1",
-    "@types/node": "^22.13.12",
+    "@types/node": "^22.13.13",
     "@types/openseadragon": "^3.0.10",
     "@types/react": "^18.3.20",
     "@types/react-autosuggest": "^10.1.11",
@@ -30,8 +30,8 @@
     "@annotorious/plugin-connectors-react": "^0.3.0",
     "@annotorious/plugin-segment-anything": "^0.1.15",
     "@annotorious/plugin-tools": "^1.0.2",
-    "@annotorious/react": "^3.2.4",
-    "@annotorious/react-manifold": "^3.2.4",
+    "@annotorious/react": "^3.3.2",
+    "@annotorious/react-manifold": "^3.3.2",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@neodrag/react": "2.3.0",
