@@ -78,7 +78,7 @@ export const exportFolders = (store: Store, folderIds: string[]) => {
         return { folder: folder.name, ...rows };
       });
   
-      downloadExcel(rows, 'search_results_metadata.xlsx');
+      return downloadExcel(rows, 'search_results_metadata.xlsx');
     });
   });
 }
@@ -97,16 +97,40 @@ export const exportImages = (store: Store, imageIds: string[]) => {
   }), Promise.resolve([]));
 
   return promise.then(metadata => {
-    const rows = metadata.map(({ image, metadata }) => {
-      const serialized = serialize(metadata);
+    const canvases = metadata
+      .filter(m => 'uri' in m.image)
+      .map(m => m.image as CanvasInformation);
 
-      const rows = Object.fromEntries(columns.map(key => (
-        [key, serialized[key]]
-      )));
+    const manifestIds = [...new Set(canvases.reduce<Set<string>>((manifestIds, info) => (
+      new Set([...manifestIds, info.manifestId])
+    ), new Set([])))];
 
-      return { image: image.name, ...rows };
+    return resolveManifests(
+      manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource)
+    ).then(resolved => {
+      const rows = metadata.map(({ image, metadata }) => {
+        const serialized = serialize(metadata);
+
+        const manifest = ('uri' in image) 
+          ? resolved.find(r => r.id === image.manifestId)?.manifest
+          : undefined;
+
+        const manifestMetadata = manifest?.getMetadata() || [];
+
+        const canvasMetadata = manifest?.canvases
+          .find(c => c.id === (image as CanvasInformation).uri)?.getMetadata() || [];
+  
+        const rows = Object.fromEntries([
+          ...columns.map(key => ([key, serialized[key]])),
+          ...manifestMetadata.map(m => ([m.label, m.value])),
+          ...canvasMetadata.map(m => ([m.label, m.value]))
+        ]);
+  
+        return { image: image.name, ...rows };
+      });
+  
+      return downloadExcel(rows, 'search_results_metadata.xlsx');
     });
-
-    downloadExcel(rows, 'search_results_metadata.xlsx');
   });
+
 }
