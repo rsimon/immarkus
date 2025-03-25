@@ -1,5 +1,6 @@
-import { getManifestMetadata, Store } from '@/store';
 import { CanvasInformation, Folder, IIIFManifestResource, Image } from '@/model';
+import { getManifestMetadata, Store } from '@/store';
+import { resolveManifests } from '@/store/export/utils';
 import { serializePropertyValue } from '@/utils/serialize';
 import { downloadExcel } from '@/utils/download';
 import { SchemaPropertyValue } from '../../Types';
@@ -59,17 +60,26 @@ export const exportFolders = (store: Store, folderIds: string[]) => {
   }), Promise.resolve([]));
 
   return promise.then(metadata => {
-    const rows = metadata.map(({ folder, metadata }) => {
-      const serialized = serialize(metadata);
+    const manifests = metadata
+      .filter(m => 'canvases' in m.folder)
+      .map(f => f.folder as IIIFManifestResource);
 
-      const rows = Object.fromEntries(columns.map(key => (
-        [key, serialized[key]]
-      )));
+    return resolveManifests(manifests).then(resolved => {
+      const rows = metadata.map(({ folder, metadata }) => {
+        const serialized = serialize(metadata);
 
-      return { folder: folder.name, ...rows };
+        const iiifMetadata = resolved.find(r => r.id === folder.id)?.manifest.getMetadata() || [];
+
+        const rows = Object.fromEntries([
+          ...columns.map(key => ([key, serialized[key]])),
+          ...iiifMetadata.map(m => ([m.label, m.value]))
+        ]);
+  
+        return { folder: folder.name, ...rows };
+      });
+  
+      downloadExcel(rows, 'search_results_metadata.xlsx');
     });
-
-    downloadExcel(rows, 'search_results_metadata.xlsx');
   });
 }
 

@@ -26,7 +26,11 @@ export const downloadExcel = (rows: any[], filename: string) => {
   const worksheet = workbook.addWorksheet();
 
   if (rows.length > 0) {
-    const headers = Object.keys(rows[0]);
+    // Aggregate all row object keys
+    const headers = [...rows.reduce<Set<string>>((headers, row) => {
+      const h = Object.keys(row);
+      return new Set([...headers, ...h]);
+    }, new Set([]))];
 
     worksheet.columns = headers.map(header => (
       { header, key: header, width: 30 }
