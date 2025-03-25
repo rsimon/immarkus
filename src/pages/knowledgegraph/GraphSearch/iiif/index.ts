@@ -1,2 +1,2 @@
-export * from './IIIFFolderMetadataSearch'
+export * from './IIIFMetadataSearch'
 export * from './useManifestMetadataSearch';

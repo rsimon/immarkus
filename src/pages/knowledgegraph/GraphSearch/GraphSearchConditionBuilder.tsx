@@ -4,7 +4,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
 import { GraphSearchSubConditionBuilder } from './GraphSearchSubConditionBuilder';
 import { useGraphSearch } from './useGraphSearch';
-import { IIIFFolderMetadataSearch, IIIFMetadataIndexRecord } from './iiif';
+import { IIIFMetadataSearch, IIIFMetadataIndexRecord } from './iiif';
 import { 
   Comparator, 
   ConditionType, 
@@ -172,7 +172,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
               Value: value
             })} />
         ) : sentence.ConditionType === 'WITH_IIIF_METADATA' && (
-          <IIIFFolderMetadataSearch 
+          <IIIFMetadataSearch 
             objectType={props.objectType}
             value={(sentence as CustomSentence).data as IIIFMetadataIndexRecord}
             onChange={data => updateSentence({ data })} />

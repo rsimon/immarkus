@@ -7,7 +7,7 @@ import { Popover,PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import type { GraphNodeType } from '../../Types';
 import { IIIFMetadataIndexRecord, useManifestMetadataSearch } from './useManifestMetadataSearch';
 
-interface IIIFFolderMetadataSearchProps {
+interface IIIFMetadataSearchProps {
 
   objectType: GraphNodeType;
 
@@ -17,7 +17,7 @@ interface IIIFFolderMetadataSearchProps {
 
 }
 
-export const IIIFFolderMetadataSearch = (props: IIIFFolderMetadataSearchProps) => {
+export const IIIFMetadataSearch = (props: IIIFMetadataSearchProps) => {
 
   const { loading, search } = useManifestMetadataSearch(props.objectType);
 
