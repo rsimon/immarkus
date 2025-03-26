@@ -28,7 +28,7 @@ export const Drawer = (props: DrawerProps) => {
 
   const width = props.width || 340;
 
-  const className = cn('flex-grow-0 flex-shrink-0 relative border-l', props.className);
+  const className = cn('grow-0 shrink-0 relative border-l', props.className);
 
   const [open, setOpen] = useState(props.open);
 
@@ -54,7 +54,7 @@ export const Drawer = (props: DrawerProps) => {
             size="icon"
             variant="ghost"
             onClick={props.onClose}
-            className="absolute text-muted-foreground right-2 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring">
+            className="absolute text-muted-foreground right-2 top-2 rounded-full z-10 p-1 transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring">
             <X className="w-6 h-6 p-0.5" />
           </Button>
         )}

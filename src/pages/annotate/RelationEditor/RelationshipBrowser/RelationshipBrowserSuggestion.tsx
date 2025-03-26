@@ -12,7 +12,7 @@ interface RelationshipBrowserSuggestionProps {
 const RelationshipArrow = (props: { directed: boolean }) => {
 
   return (
-    <div className="flex-grow h-[1px] relative text-muted-foreground w-3">
+    <div className="grow h-[1px] relative text-muted-foreground w-3">
       <svg 
         width="100%" 
         height={14}
@@ -47,7 +47,7 @@ export const RelationshipBrowserSuggestion = (props: RelationshipBrowserSuggesti
 
   return (
     <div 
-      className="flex items-center border-b justify-between text-xs data-[not-applicable]:text-muted-foreground/60 py-2 pl-2 pr-2.5 rounded-sm cursor-pointer data-[highlighted]:bg-accent"
+      className="flex items-center border-b justify-between text-xs data-not-applicable:text-muted-foreground/60 py-2 pl-2 pr-2.5 rounded-sm cursor-pointer data-highlighted:bg-accent"
       data-highlighted={(isApplicable && props.highlighted) ? 'true' : undefined}
       data-not-applicable={isApplicable ? undefined : 'true'}>
       <span className="whitespace-nowrap overflow-hidden text-ellipsis">{name}</span>

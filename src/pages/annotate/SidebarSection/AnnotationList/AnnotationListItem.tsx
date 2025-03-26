@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import Moment from 'react-moment';
 import { useInView } from 'react-intersection-observer';
-import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { DraggableAttributes } from '@dnd-kit/core';
+import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
+import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
@@ -13,11 +15,15 @@ import { AnnotationListItemRelation } from './AnnotationListItemRelation';
 
 interface AnnotationListItemProps {
 
-  annotation: ImageAnnotation;
+  annotation: W3CImageAnnotation;
 
   onEdit(): void;
 
   onDelete(): void;
+
+  dragAttributes?: DraggableAttributes;
+
+  dragListeners?: SyntheticListenerMap;
 
 }
 
@@ -33,24 +39,27 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const bodies = (Array.isArray(props.annotation.body) ? props.annotation.body : [props.annotation.body])
+
   const entityTags: W3CAnnotationBody[] = 
-    props.annotation.bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
+    bodies.filter(b => b.purpose === 'classifying') as unknown as W3CAnnotationBody[];
 
   const relations = useMemo(() => store.getRelatedAnnotations(props.annotation.id), [props.annotation]);
 
-  const note = props.annotation.bodies.find(b => b.purpose === 'commenting');
+  const note = bodies.find(b => b.purpose === 'commenting');
 
   const isEmpty = !note && entityTags.length === 0;
 
   const timestamps = [
-    props.annotation.target.created,
-    ...props.annotation.bodies.map(b => b.created)
+    props.annotation.created,
+    ...bodies.map(b => b.created)
   ].filter(Boolean).map(d => new Date(d));
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
-  const onMoveIntoView = (annotationId: string) => {
-    console.log('moving', annotationId);
+  const onClick = (annotationId: string) => {
+    manifold.setSelected(annotationId);
+
     const annotator = manifold.findAnnotator(annotationId);
     if (annotator)
       (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotationId, { padding: 200 });
@@ -63,7 +72,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         className="relative border mb-2 rounded text-xs bg-white">
         <button 
           className="w-full text-left"
-          onClick={() => onMoveIntoView(props.annotation.id)}>
+          onClick={() => onClick(props.annotation.id)}
+          {...(props.dragAttributes || {})}
+          {...(props.dragListeners || {})}>
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">
@@ -103,8 +114,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
                 sourceId={link.target} 
                 targetId={link.body} 
                 relation={meta?.body?.value} 
-                onClickSource={() => onMoveIntoView(link.target)}
-                onClickTarget={() => onMoveIntoView(link.body)} />
+                onClickSource={() => onClick(link.target)}
+                onClickTarget={() => onClick(link.body)} />
             ))}
           </ul>
         )}

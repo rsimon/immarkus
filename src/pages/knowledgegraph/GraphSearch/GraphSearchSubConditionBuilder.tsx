@@ -15,7 +15,7 @@ import {
 
 interface GraphSearchSubConditionBuilderProps {
 
-  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[];
 
   subjectId: string;
 
@@ -32,7 +32,7 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
   const { subcondition } = props;
 
   const annotations = useMemo(() => (
-    props.annotations.reduce<W3CAnnotation[]>((all, { image, annotations}) => ([...all, ...annotations]), [])
+    props.annotations.reduce<W3CAnnotation[]>((all, { annotations}) => ([...all, ...annotations]), [])
   ), props.annotations);
 
   const { comparatorOptions, properties, values,  } = 

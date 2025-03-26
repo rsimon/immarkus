@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { Image } from '@/model';
+import { IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
   aggregatePrimitives,
-  getEntityAnnotationPrimitives, 
+  getCanvasManifestPrimitives,
+  getEntityAnnotationPrimitives,
   getEntityHierarchyPrimitives, 
   getFolderStructurePrimitives, 
   getImageFolderPrimitives, 
   inferEntityToEntityRelationPrimitives, 
   inferImageToImageRelationPrimitives, 
   removeUnconnectedLinks, 
+  toCanvasNodes, 
   toEntityTypeNode, 
   toFolderNode, 
-  toImageNode 
+  toImageNode,
+  toManifestNode 
 } from './graphBuilderUtils';
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
@@ -23,11 +26,11 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const datamodel = store.getDataModel();
 
-  const [annotations, setAnnotations] = useState<{ image: Image, annotations: W3CAnnotation[] }[]>([]);
+  const [annotations, setAnnotations] = useState<{ sourceId: string, annotations: W3CAnnotation[] }[]>([]);
 
   const [graph, setGraph] = useState<Graph>();
 
-  const { images, folders } = store;
+  const { images, iiifResources, folders } = store;
 
   const { includeFolders, graphMode } = settings;
   
@@ -39,19 +42,25 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
     const foldersQuery = folders.map(folder =>
       store.getFolderMetadata(folder.id).then(metadata => ({ metadata, folder })));
 
-    const imagesQuery = images.map(image => 
-      store.getAnnotations(image.id).then(annotations => ({ annotations, image })));
+    const canvasIds = iiifResources.reduce<string[]>((all, manifest) => (
+      [...all, ...(manifest as IIIFManifestResource).canvases.map(c => `iiif:${c.manifestId}:${c.id}`)]
+    ), []);
+
+    const annotationsQuery = [
+      ...images.map(i => i.id),
+      ...canvasIds
+    ].map(sourceId => store.getAnnotations(sourceId).then(annotations => ({ annotations, sourceId })));
 
     Promise.all(foldersQuery).then(foldersResult => {
       const folderMetadata: Map<string, W3CAnnotation> = new Map(foldersResult
         .map(({ folder, metadata }) => ([folder.id, metadata] as [string, W3CAnnotation]))
         .filter(t => t[1]));
 
-      Promise.all(imagesQuery).then(imagesResult => {
+      Promise.all(annotationsQuery).then(imagesResult => {
         const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
-          .map(({ image, annotations }) => ([
-            image.id, 
-            annotations.find(a => (typeof a.target === 'object' && 'selector' in a.target))
+          .map(({ sourceId, annotations }) => ([
+            sourceId, 
+            annotations.find(a => (typeof a.target === 'object' && !('selector' in a.target)))
           ] as [string, W3CAnnotation]))
           .filter(t => t[1]));
 
@@ -60,7 +69,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
          */
         const nodesWithoutDegree: GraphNode[] = [
           ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
+          ...(includeFolders ? iiifResources.map(r => toManifestNode(r)) : []),
           ...images.map(i => toImageNode(i, imageMetadata)),
+          ...iiifResources.reduce<GraphNode[]>((all, r) => [...all, ...toCanvasNodes(r as IIIFManifestResource)], []),
           ...datamodel.entityTypes.map(toEntityTypeNode)
         ];
 
@@ -74,6 +85,9 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         // Links between images and subfolders
         const imageFolderPrimitives = includeFolders ? getImageFolderPrimitives(store) : [];
 
+        // Links between manifests and canvases
+        const canvasManifestPrimitives = includeFolders ? getCanvasManifestPrimitives(iiifResources): [];
+
         // Parent-child model hierarchy links between entity classes
         const entityHierarchyPrimitives = graphMode === 'HIERARCHY' ? getEntityHierarchyPrimitives(datamodel) : [];
 
@@ -85,17 +99,30 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           ? inferImageToImageRelationPrimitives(imagesResult, store)
           : [];
 
-        const entityToEntityRelationPrimitives = graphMode === 'RELATIONS'
-          ? inferEntityToEntityRelationPrimitives(imagesResult, store)
-          : [];
+        // Links between entities, mediated by relations. Important: there's no 
+        // efficient way to determine these on demand, when the user selects an entity.
+        // However, we still want to be able to show them in the sidebar, even if the
+        // graph is in HIERARCHY mode. Therefore:
+        // 
+        // - we always compute (and cache!) them here
+        // - but we only include them in the graph model conditionally
+        // 
+        // The `getEntityToEntityRelations` method allows consumers to grab
+        // relations for a specific entity from the cached var below.
+        const entityToEntityRelationPrimitives = 
+          inferEntityToEntityRelationPrimitives(imagesResult, store);
+
+        const getEntityToEntityRelationLinks = (entityId: string) =>
+          entityToEntityRelationPrimitives.filter(p => p.source === entityId || p.target === entityId);
 
         const primitives = [
           ...folderStructurePrimitives, 
           ...imageFolderPrimitives, 
+          ...canvasManifestPrimitives,
           ...entityHierarchyPrimitives, 
           ...entityAnnotationPrimitives,
           ...imageToImageRelationPrimitives,
-          ...entityToEntityRelationPrimitives
+          ...(graphMode === 'RELATIONS' ? entityToEntityRelationPrimitives : [])
         ];
 
         /** 
@@ -110,8 +137,11 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           const sourceLinks = linkMap.get(source);
           linkMap.set(source, [...(sourceLinks || []), link]);
           
-          const targetLinks = linkMap.get(target);
-          linkMap.set(target, [...(targetLinks || []), link]);
+          if (source !== target) {
+            // Don't double-cache self-links!
+            const targetLinks = linkMap.get(target);
+            linkMap.set(target, [...(targetLinks || []), link]);
+          }
         });
 
         /** 
@@ -180,6 +210,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         }
 
         setGraph({ 
+          getEntityToEntityRelationLinks,
           getLinkedNodes,
           getLinks,
           nodes,

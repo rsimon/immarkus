@@ -2,17 +2,18 @@ import { useEffect, useMemo } from 'react';
 import { CirclePlus, Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
-import { Image } from '@/model';
 import { GraphSearchSubConditionBuilder } from './GraphSearchSubConditionBuilder';
 import { useGraphSearch } from './useGraphSearch';
+import { IIIFMetadataSearch, IIIFMetadataIndexRecord } from './iiif';
 import { 
   Comparator, 
   ConditionType, 
+  CustomSentence, 
   DropdownOption,
   Graph,
+  GraphNodeType,
   KnowledgeGraphSettings,
   NestedConditionSentence,
-  ObjectType,
   Sentence, 
   SimpleConditionSentence, 
   SubCondition
@@ -27,11 +28,11 @@ import {
 
 interface GraphSearchConditionBuilderProps {
 
-  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
-  objectType: ObjectType;
+  objectType: GraphNodeType;
 
   sentence: Partial<Sentence>;
 
@@ -63,16 +64,18 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
       { label: 'where', value: 'WHERE' },
       (props.settings.graphMode === 'RELATIONS' ? { label: 'with relationship', value: 'WITH_RELATIONSHIP' } : undefined),
       { label: 'with entity', value: 'WITH_ENTITY' },
-      { label: 'with note', value: 'WITH_NOTE' }
+      { label: 'with note', value: 'WITH_NOTE' },
+      { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
     ].filter(Boolean) : 
     props.objectType === 'ENTITY_TYPE' ? [
       { label: 'with relationship', value: 'WITH_RELATIONSHIP' }
     ] : [
       // props.object type === 'FOLDER'
-      { label: 'where', value: 'WHERE' }
+      { label: 'where', value: 'WHERE' },
+      { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
     ], [props.objectType, props.settings]);
 
-  const showAddSubCondition = sentence.Value && sentence.ConditionType === 'WITH_ENTITY';
+  const showAddSubCondition = sentence.ConditionType === 'WITH_ENTITY' && 'Value' in sentence;
 
   const onAddSubcondition = () => {
     const s = sentence as NestedConditionSentence;
@@ -150,7 +153,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           </SelectContent>
         </Select>
 
-        {sentence.ConditionType === 'WHERE' && (
+        {sentence.ConditionType === 'WHERE' ? (
           <Combobox
             className={selectStyle}
             value={(sentence as SimpleConditionSentence).Attribute}
@@ -159,17 +162,20 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
               Attribute: value,
               Value: undefined 
             })} />
-        )}
-
-        {sentence.ConditionType === 'WITH_NOTE' && (
+        ) : sentence.ConditionType === 'WITH_NOTE' ? (
           <Combobox
             className={selectStyle}
-            value={sentence.Value}
+            value={(sentence as SimpleConditionSentence).Value}
             options={valueOptions} 
             onChange={value => updateSentence({
               Attribute: undefined,
               Value: value
             })} />
+        ) : sentence.ConditionType === 'WITH_IIIF_METADATA' && (
+          <IIIFMetadataSearch 
+            objectType={props.objectType}
+            value={(sentence as CustomSentence).data as IIIFMetadataIndexRecord}
+            onChange={data => updateSentence({ data })} />
         )}
 
         {'Attribute' in sentence && sentence.Attribute && 
@@ -185,7 +191,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
             <Combobox 
               className={selectStyle}
-              value={sentence.Value}
+              value={(sentence as SimpleConditionSentence).Value}
               options={valueOptions} 
               onChange={value => updateSentence({ Value: value })} />
           )

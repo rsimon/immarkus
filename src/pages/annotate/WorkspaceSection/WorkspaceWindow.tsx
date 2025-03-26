@@ -5,10 +5,10 @@ import type { History } from '@annotorious/core';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
 import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
-import { Image, LoadedImage } from '@/model';
+import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
-import { Tool, ToolMode } from '../Tool';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { PaginationWidget } from '../Pagination';
 import { AnnotatableImage } from './AnnotatableImage';
 import { MoreToolsPanel } from './MoreToolsPanel';
@@ -26,13 +26,13 @@ interface WorkspaceWindowProps {
 
   image: LoadedImage;
 
-  mode: ToolMode;
+  mode: AnnotationMode;
 
   tool: Tool;
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
-  onChangeImage(previous: Image, next: Image): void;
+  onChangeImage(previousId: string, nextId: string): void;
 
   onClose(): void;
 
@@ -82,7 +82,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
       className="text-xs"
       title={props.image.name}
       toolbarControls={(
-        <div ref={toolbarRef} className="inline-flex flex-grow justify-end items-center">
+        <div ref={toolbarRef} className="inline-flex grow justify-end items-center">
           {collapsed ? (
             <>
               <button onClick={onZoom(2)}>

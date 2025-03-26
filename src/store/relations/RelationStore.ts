@@ -1,6 +1,7 @@
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { Image } from '@/model';
+import { CanvasInformation, IIIFManifestResource, IIIFResource, Image } from '@/model';
 import { AnnotationStore } from '../Store';
+import { repairRelationships } from '../integrity';
 import { readJSONFile, writeJSONFile } from '../utils';
 
 export type Directionality = 'INBOUND' | 'OUTBOUND';
@@ -11,7 +12,7 @@ export interface RelationStore {
 
   getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
 
-  getRelatedImageAnnotations(imageId: string): Promise<{ [image: string]: string[] }>;
+  getRelatedImageAnnotations(sourceId: string): Promise<{ [image: string]: string[] }>;
 
   getRelationAnnotation(annotationId: string): W3CRelationLinkAnnotation | W3CRelationMetaAnnotation | undefined;
 
@@ -20,6 +21,8 @@ export interface RelationStore {
   hasRelatedAnnotations(annotationId: string): boolean;
 
   listAllRelations(): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
+
+  removeIIIFResource(resource: IIIFResource): Promise<void>;
 
   upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation, imageId?: string): Promise<void>;
 
@@ -34,8 +37,12 @@ export const loadRelationStore = (
   
   const file = await fileHandle.getFile();
 
-  let annotations: (W3CRelationLinkAnnotation | W3CRelationMetaAnnotation)[] = 
+  // For safety, let's assume these relationships may contain integrity issues,
+  // i.e. point to annotations that no longer exist in the store.
+  const unsafe: (W3CRelationLinkAnnotation | W3CRelationMetaAnnotation)[] = 
     await readJSONFile<[]>(file).then(data => (data || [])).catch(() => ([]));
+
+  let annotations = await repairRelationships(unsafe, store);
 
   const save = () => writeJSONFile(fileHandle, annotations);
 
@@ -84,15 +91,18 @@ export const loadRelationStore = (
       const annotationIds = 
         new Set(relations.reduce<string[]>((ids, [link, _]) => [...ids, link.body, link.target], []));
 
+      const getSourceId = (source: Image | CanvasInformation) =>
+        'uri' in source ? `iiif:${source.manifestId}:${source.id}` : source.id;
+
       return Promise.all([...annotationIds].map(annotation => store.findImageForAnnotation(annotation)
-        .then(image => ({ annotation, image }))))
+        .then(source => ({ annotation, source }))))
         .then(result => {
           // From a list tuples annotation/image, aggregate to a map image -> annotations
-          const imageIds = new Set(result.map(t => t.image.id));
+          const sourceIds = new Set(result.map(t => getSourceId(t.source)));
 
-          const entries = [...imageIds].map(imageId => ([
-            imageId, 
-            (result.filter(t => t.image.id === imageId) || []).map(t => t.annotation)
+          const entries = [...sourceIds].map(sourceId => ([
+            sourceId, 
+            (result.filter(t => getSourceId(t.source) === sourceId) || []).map(t => t.annotation)
           ])) as [string, string[]][];
 
           return Object.fromEntries(entries);
@@ -127,6 +137,28 @@ export const loadRelationStore = (
     return save();
   }
 
+  // Not great...
+  const _removeIIIFResource = store.removeIIIFResource;
+
+  const removeIIIFResource = async (resource: IIIFResource) => {
+    const { canvases } = (resource as IIIFManifestResource);
+
+    // Get all relations to/from any of these canvases
+    return canvases
+      .reduce<Promise<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>>((p, canvas) => (
+        p.then(all => {
+          const id = `iiif:${canvas.manifestId}:${canvas.id}`;
+          return getRelations(id).then(relations => ([...all, ...relations]));
+        })
+      ), Promise.resolve([]))
+      .then(toDelete => {
+        const linkIds = new Set<string>(toDelete.map(([link, _]) => link.id));
+        annotations = annotations.filter(a => !(linkIds.has(a.id) || linkIds.has(a.target)));
+        return save();
+      })
+      .then(() => _removeIIIFResource(resource));
+  }
+
   resolve({
     deleteRelation,
     getRelatedAnnotations,
@@ -135,6 +167,7 @@ export const loadRelationStore = (
     getRelations,
     hasRelatedAnnotations,
     listAllRelations,
+    removeIIIFResource,
     upsertRelation
   });
 

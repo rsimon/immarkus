@@ -2,7 +2,7 @@ import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 /** Returns the 'classifying' bodies with the given Entity Type, if any **/
 export const getEntityBodies = (annotation: W3CAnnotation, type?: string) => {
-  if (!annotation.body) return [];
+  if (!annotation?.body) return [];
 
   const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
   return type 

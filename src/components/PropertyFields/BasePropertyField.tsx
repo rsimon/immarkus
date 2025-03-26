@@ -72,17 +72,6 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
         {values.map((value, idx) => (
           <div key={idx} className="flex items-center gap-1">
             {props.render(value, onChange(idx), idx)}
-
-            {/*idx > 0 && (
-              <Button
-                variant="ghost" 
-                size="icon"
-                type="button"
-                className="rounded-full flex-shrink-0 h-8 w-8 text-muted-foreground"
-                onClick={() => onDeleteField(idx)}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            ) */}
           </div>
         ))} 
 

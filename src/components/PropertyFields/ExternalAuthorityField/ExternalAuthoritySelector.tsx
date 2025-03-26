@@ -43,7 +43,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
           onClick={() => onOpen(authorities[0].name)}
           type="button"
           className="text-xs inline-flex items-center hover:bg-slate-200 px-1.5 rounded font-medium
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0">
+            focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0">
           <Search className="h-3.5 w-3.5 mr-1" />
           {authorities[0].name}
         </button>

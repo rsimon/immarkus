@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
-import { Image } from '@/model';
 import { Button } from '@/ui/Button';
 import { ExportSelector } from './export';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
@@ -12,8 +11,9 @@ import {
   Condition, 
   Graph, 
   GraphNode, 
+  GraphNodeType, 
   KnowledgeGraphSettings,
-  ObjectType, 
+  NestedConditionSentence,
   Operator, 
   Sentence
 } from '../Types';
@@ -27,7 +27,7 @@ import {
 
 interface GraphSearchProps {
 
-  annotations: { image: Image, annotations: W3CAnnotation[] }[];
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[];
 
   graph: Graph;
 
@@ -47,15 +47,20 @@ const EMPTY_CONDITION: Condition = { operator: 'AND', sentence: {} };
 
 export const GraphSearch = (props: GraphSearchProps) => {
 
-  const el = useRef(null);
+  const el = useRef<HTMLDivElement>(null);
 
-  const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 0 : 250, y: 0 });
+  const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 10 : 260, y: 10 });
 
   const { objectType, setObjectType, conditions, setConditions } = useSearchState();
 
+  useEffect(() => {
+    // Not sure why this is needed since neodrag v2.3...
+    setTimeout(() => el.current.style.translate = null, 0);
+  }, []);
+
   useDraggable(el, {
     position,
-    onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY }),
+    onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY })
   });
 
   useEffect(() => {
@@ -99,9 +104,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
     if ('Attribute' in sentence && sentence.Attribute) {
       // SimpleConditionSentence
       return Boolean(sentence.Comparator);
+    } else if ('data' in sentence) {
+      return Boolean(sentence.data);
     } else {
       // NestedConditionSentence
-      return Boolean(sentence.Value);
+      return Boolean((sentence as NestedConditionSentence).Value);
     }
   }
   
@@ -122,7 +129,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   }
 
   const onSelectObjectType = (value: string) => {
-    setObjectType(value as ObjectType);
+    setObjectType(value as GraphNodeType);
 
     if (value) {
       setConditions([{...EMPTY_CONDITION}]);
@@ -144,7 +151,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   return createPortal(
     <div 
       ref={el}
-      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-sm border absolute top-6 left-6 rounded shadow-lg z-30">
+      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-xs border absolute top-0 left-0 rounded shadow-lg z-30">
     
       <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
@@ -261,6 +268,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
             {props.query && (
               <ExportSelector 
+                objectType={objectType}
                 graph={props.graph} 
                 query={props.query} />
             )}

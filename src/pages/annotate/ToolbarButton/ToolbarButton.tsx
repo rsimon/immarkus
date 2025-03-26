@@ -16,8 +16,9 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
 
   return (
     <button
+      {...props}
       disabled={props.disabled}
-      className={`${props.className || ''} text-xs rounded-md hover:bg-muted focus-visible:outline-none 
+      className={`${props.className || ''} text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
         focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
         disabled:opacity-25 disabled:hover:bg-transparent`.trim()}
       onClick={props.onClick}>

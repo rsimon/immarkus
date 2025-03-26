@@ -75,10 +75,17 @@
   border-top-right-radius: 0;
   border-top-left-radius: 0;
   box-shadow: none;
+  display: flex;
   overflow: hidden;
-  padding: 16px 0;
+  padding: 0;
   position: relative;
 }
+
+.page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-toolbar div[title] {
+  display: flex;
+  flex-grow: 1;
+  padding-left: 10px;
+} 
 
 .page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-toolbar.draggable:hover {
   background: none;
@@ -87,6 +94,7 @@
 
 .page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-controls {
   align-items: center;
+  flex-grow: 0;
 }
 
 .page.annotate .mosaic.mosaic-blueprint-theme .mosaic-window-body {

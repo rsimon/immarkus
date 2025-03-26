@@ -2,9 +2,9 @@ import { Button } from '@/ui/Button';
 import { ChevronDown, Download, FileBarChart2 } from 'lucide-react';
 import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
-import { Graph, GraphNode } from '../../Types';
-import { exportImages } from './exportImages';
+import { Graph, GraphNode, GraphNodeType } from '../../Types';
 import { getRelationships } from './exportRelationships';
+import { useMetadataExport } from './useMetadataExport';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,9 @@ import {
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
 
-
 interface ExportSelectorProps {
+
+  objectType: GraphNodeType;
 
   graph: Graph;
 
@@ -25,17 +26,41 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const store = useStore();
 
-  const { exportAnnotations, busy: busyAnnotations, progress: progressAnnotations } = useExcelAnnotationExport();
+  const {
+    exportFolders,
+    exportImages,
+    busy: busyMetadata,
+    progress: progressMetadata
+  } = useMetadataExport();
 
-  const { exportRelationships, busy: busyRelations, progress: progressRelations } = useExcelRelationshipExport();
+  const { 
+    exportAnnotations, 
+    busy: busyAnnotations, 
+    progress: progressAnnotations 
+  } = useExcelAnnotationExport();
 
-  const busy = busyAnnotations || busyRelations;
+  const { 
+    exportRelationships, 
+    busy: busyRelations, 
+    progress: progressRelations 
+  } = useExcelRelationshipExport();
 
-  const progress = busyAnnotations ? progressAnnotations : busyRelations ? progressRelations : 0;
+  const busy = busyMetadata || busyAnnotations || busyRelations;
+
+  const progress = 
+    busyMetadata ? progressMetadata :
+    busyAnnotations ? progressAnnotations : 
+    busyRelations ? progressRelations : 0;
 
   const onExportMetadata = () => {
-    const matches = props.graph.nodes.filter(n => props.query!(n));
-    exportImages(store, matches.map(m => m.id));
+    const matches = props.graph.nodes
+      .filter(n => props.query!(n))
+      .map(m => m.id);
+
+    if (props.objectType === 'IMAGE')
+      exportImages(matches);
+    else if (props.objectType === 'FOLDER')
+      exportFolders(matches);
   }
 
   const onExportAnnotations = () => {

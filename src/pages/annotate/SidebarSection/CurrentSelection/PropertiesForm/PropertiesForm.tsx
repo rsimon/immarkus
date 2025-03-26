@@ -171,7 +171,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
         key={`${formKey}`}
         className="grow pt-1 flex flex-col" 
         onSubmit={onSubmit}>
-        <div className="flex-grow">
+        <div className="grow">
           {schemaBodies.length === 1 ? (
             <div>
               <div className="flex justify-between items-center pt-3 pb-4">
@@ -199,7 +199,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                   value={body.id}>
 
                   <div className="flex justify-between items-center">
-                    <div className="flex-grow">
+                    <div className="grow">
                       <AccordionTrigger className="hover:no-underline">
                         <EntityBadge entityType={entityType} />
                       </AccordionTrigger>

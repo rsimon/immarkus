@@ -95,11 +95,11 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
           {schema.name && (!isNameAvailable ? (
             <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
-              <AlertCircle className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
+              <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
             </span>
           ) : ((props.schema && isNameAvailable) || !props.schema) && (
             <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-              <CheckCircle2 className="flex-shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
+              <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
             </span>
           ))}
         </div>

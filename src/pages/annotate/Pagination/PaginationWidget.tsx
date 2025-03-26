@@ -1,7 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
-import { Image, LoadedImage } from '@/model';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { CanvasInformation, FileImage, IIIFManifestResource, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { parseIIIFId } from '@/utils/iiif';
 import { ToolbarButton } from '../ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 import { useClickOutside } from './useClickoutside';
@@ -14,9 +15,9 @@ interface PaginationWidgetProps {
 
   variant?: 'compact';
 
-  onChangeImage(previous: Image, next: Image): void;
+  onChangeImage(previousId: string, nextId: string): void;
 
-  onAddImage(image: Image): void;
+  onAddImage(imageId: string): void;
 
 }
 
@@ -26,9 +27,23 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const el = useRef();
 
-  const { images } = store.getFolderContents(props.image.folder);
+  const images = useMemo(() => {
+    if ('data' in props.image) {
+      // FileImage
+      const contents = store.getFolderContents(props.image.folder);
+      return contents ? contents.images : [];
+    } else {
+      // IIIF 
+      const { canvases } = store.getIIIFResource(props.image.manifestId) as IIIFManifestResource;
+      return canvases;
+    }
+    
+  }, [store, props.image]);
 
-  const currentIndex = images.map(i => i.id).indexOf(props.image.id);
+  const currentIndex = useMemo(() => {
+    const id = props.image.id.startsWith('iiif:') ? parseIIIFId(props.image.id)[1] : props.image.id;
+    return images.map((i: FileImage | CanvasInformation) => i.id).indexOf(id);
+  }, [props.image, images]);
 
   const [showThumbnails, setShowThumbnails] = useState(false);
 
@@ -42,11 +57,28 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const onSkipImage = (inc: number) => {
     const nextIdx = Math.min(Math.max(0, currentIndex + inc), images.length - 1);
-    props.onChangeImage(images[currentIndex], images[nextIdx]);
+    const nextSource = images[nextIdx];
+
+    if ( 'manifestId' in nextSource) {
+      const currentId = `iiif:${nextSource.manifestId}:${images[currentIndex].id}`;
+      const nextId = `iiif:${nextSource.manifestId}:${nextSource.id}`;
+      props.onChangeImage(currentId, nextId);
+    } else {
+      props.onChangeImage(images[currentIndex].id, images[nextIdx].id);
+    }
   }
 
-  const onSetImage = (image: Image) =>
-    props.onChangeImage(images[currentIndex], image);
+  const onSetImage = (imageId: string) => {
+    const currentImage = images[currentIndex];
+
+    if ('manifestId' in currentImage) {
+      const currentId = `iiif:${currentImage.manifestId}:${currentImage.id}`;
+      const nextId = `iiif:${currentImage.manifestId}:${imageId}`;
+      props.onChangeImage(currentId, nextId);
+    } else {
+      props.onChangeImage(currentImage.id, imageId);
+    }
+  }
 
   return (
     <div
@@ -73,7 +105,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
           className="text-muted-foreground hover:text-black disabled:text-muted-foreground/30"
           disabled={props.disabled || images.length < 2}
           onClick={() => setShowThumbnails(show => !show)}>
-          <span className="w-8 inline-block whitespace-nowrap">
+          <span className="min-w-8 inline-block whitespace-nowrap">
             {currentIndex + 1} / {images.length}
           </span>
         </button>
@@ -82,7 +114,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
           disabled={props.disabled || images.length < 2}
           className="py-1 bg-muted disabled:bg-transparent hover:bg-slate-200"
           onClick={() => setShowThumbnails(show => !show)}>
-          <span className="w-12 inline-block px-1.5 whitespace-nowrap">
+          <span className="min-w-12 inline-block px-1.5 whitespace-nowrap">
             {currentIndex + 1} / {images.length}
           </span>
         </ToolbarButton>
@@ -105,7 +137,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
       )}
 
       <ThumbnailStrip 
-        image={props.image} 
+        currentImage={props.image} 
+        images={images}
         open={showThumbnails} 
         onSelect={onSetImage} 
         onAdd={props.onAddImage} />

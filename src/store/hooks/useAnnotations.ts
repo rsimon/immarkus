@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { useStore } from './useStore';
+import { GetAnnotationOpts } from '../Store';
 
 export const useAnnotations = (
   imageId: string,
-  opts: { type: 'image' | 'metadata' | 'both' } = { type: 'both' }
+  opts: GetAnnotationOpts
 ): W3CAnnotation[] => {
   const store = useStore();
 

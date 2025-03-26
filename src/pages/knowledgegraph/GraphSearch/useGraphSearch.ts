@@ -1,12 +1,14 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { Image } from '@/model';
+import { IIIFManifestResource } from '@/model';
+import { IIIFMetadataIndexRecord } from './iiif';
 import { 
+  CustomSentence,
   DropdownOption, 
   Graph,
+  GraphNodeType,
   NestedConditionSentence, 
-  ObjectType, 
   Sentence, 
   SimpleConditionSentence 
 } from '../Types';
@@ -30,9 +32,9 @@ const ComparatorOptions = [
 ];
 
 export const useGraphSearch = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   graph: Graph, 
-  objectType: ObjectType, 
+  objectType: GraphNodeType, 
   initialValue?: Partial<Sentence>
 ) => {
   const store = useStore();
@@ -96,10 +98,10 @@ export const useGraphSearch = (
 
         if (objectType === 'IMAGE') {
           findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
-            setMatches(results.map(image => image.id)));  
+            setMatches(results.map(image => 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id)));  
         } else {
           findFoldersByMetadata(store, propertyName, value, s.Attribute.builtIn).then(results =>
-            setMatches(results.map(folder => folder.id)));
+            setMatches(results.map(folder => 'uri' in folder ? `iiif:${folder.id}` : folder.id)));
         }
       }
     } else if (sentence.ConditionType === 'WITH_ENTITY') {
@@ -113,19 +115,23 @@ export const useGraphSearch = (
         const imageNodes = findImagesByEntityClass(store, graph, s.Value.value);
         setMatches(imageNodes.map(n => n.id));
       } else {
-        const images = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
-        setMatches(images.map(i => i.id));
+        const imageIds = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
+        setMatches(imageIds);
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
-      if (!sentence.Value) {
+      const s = sentence as SimpleConditionSentence;
+
+      if (!s.Value) {
         const notes = listAllNotes(annotations);
         setValueOptions(notes.map(n => ({ label: n, value: n })));
       } else {
-        const imageIds = findImagesByNote(annotations, sentence.Value.value);
+        const imageIds = findImagesByNote(annotations, s.Value.value);
         setMatches(imageIds);
       }
     } else if (sentence.ConditionType === 'WITH_RELATIONSHIP') {
-      if (!sentence.Value) {
+      const s = sentence as SimpleConditionSentence;
+
+      if (!s.Value) {
         const relations = store.listAllRelations();
 
         const distinctRelationships = relations.reduce<string[]>((all, [_, meta]) => {
@@ -136,10 +142,36 @@ export const useGraphSearch = (
         setValueOptions(distinctRelationships);
       } else {
         if (objectType === 'IMAGE') {
-          findImagesByRelationship(store, sentence.Value.value).then(setMatches);
+          findImagesByRelationship(store, s.Value.value).then(setMatches);
         } else if (objectType === 'ENTITY_TYPE') {
-          const entityIds = findEntityTypesByRelationship(graph, sentence.Value.value);
+          const entityIds = findEntityTypesByRelationship(graph, s.Value.value);
           setMatches(entityIds);
+        }
+      }
+    } else if (sentence.ConditionType === 'WITH_IIIF_METADATA') {
+      const data = (sentence as CustomSentence).data as IIIFMetadataIndexRecord;
+      if (data) {
+        // Manifests for which this metadata record matches at the manifest level
+        const manifestIds = (data.manifests || []).map(m => m.id);
+
+        if (objectType === 'IMAGE') {
+          // Canvases for which this record matches at the canvas level
+          const matchingCanvasIds = (data.canvases || []).map(({ manifestId, canvas }) => {
+            const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
+            const canvasId = manifest.canvases.find(info => info.uri === canvas.id)?.id;
+            return `iiif:${manifest.id}:${canvasId}`;
+          });
+
+          // Canvases that are children to manifests where this record matches at the manifest level
+          const inheritedCanvasIds = manifestIds.reduce((ids, manifestId) => {
+            const { canvases } = (store.getIIIFResource(manifestId) as IIIFManifestResource);
+            const canvasIds = canvases.map(c => `iiif:${manifestId}:${c.id}`);
+            return [...ids, ...canvasIds];
+          }, []);
+          
+          setMatches([...matchingCanvasIds, ...inheritedCanvasIds]);
+        } else if (objectType === 'FOLDER') {
+          setMatches(manifestIds.map(id => `iiif:${id}`));
         }
       }
     }

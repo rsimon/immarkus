@@ -32,7 +32,7 @@ export const Legend = () => {
   }, []);
 
   const containerBase =
-    'group border border-white absolute bottom-4 left-4 max-w-[400px] text-sm bg-white/70 backdrop-blur-sm hover:border-inherit';
+    'group border border-white absolute bottom-4 left-4 max-w-[400px] text-sm bg-white/70 backdrop-blur-xs hover:border-inherit';
 
   const containerClass = expanded 
     ? containerBase + ' rounded-lg p-3.5'
@@ -112,7 +112,7 @@ export const Legend = () => {
               {settings.graphMode === 'RELATIONS' && (
                 <li className="flex gap-3 items-start py-2">
                   <div 
-                    className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black" 
+                    className="mt-2 h-0 w-14 shrink-0 border-t-2 border-black" 
                     style={{ borderColor: LINK_COLORS.HAS_RELATED_ANNOTATION_IN }} />
 
                   <div>
@@ -129,7 +129,7 @@ export const Legend = () => {
 
               <li className="flex gap-3 items-start py-2">
                 <div 
-                  className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black border-dashed" 
+                  className="mt-2 h-0 w-14 shrink-0 border-t-2 border-black border-dashed" 
                   style={{ borderColor: LINK_COLORS.IS_PARENT_TYPE_OF }} />
 
                 <div>
@@ -146,7 +146,7 @@ export const Legend = () => {
               {settings.includeFolders && (
                 <li className="flex gap-3 items-start py-2">
                   <div 
-                    className="mt-2 h-0 w-14 flex-shrink-0 border-t-2 border-black border-dashed" 
+                    className="mt-2 h-0 w-14 shrink-0 border-t-2 border-black border-dashed" 
                     style={{ borderColor: LINK_COLORS.FOLDER_CONTAINS_SUBFOLDER }} />
 
                   <div>
@@ -161,7 +161,7 @@ export const Legend = () => {
 
               <li className="flex gap-3 items-start py-2">
                 <div 
-                  className="mt-2 h-0 w-14 flex-shrink-0 border-t-4 border-black" 
+                  className="mt-2 h-0 w-14 shrink-0 border-t-4 border-black" 
                   style={{ borderColor: LINK_COLORS.HAS_ENTITY_ANNOTATION }} />
 
                 <div>

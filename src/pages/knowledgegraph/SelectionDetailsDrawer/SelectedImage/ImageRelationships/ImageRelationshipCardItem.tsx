@@ -1,8 +1,8 @@
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { Image, LoadedImage } from '@/model';
 import { useEffect, useMemo, useState } from 'react';
-import { useStore } from '@/store';
 import { W3CImageAnnotation } from '@annotorious/react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { CanvasInformation, FileImage, LoadedImage } from '@/model';
+import { useImageSnippets, useStore } from '@/store';
 import { RelationshipThumbnail } from '../../RelationshipThumbnail';
 
 interface ImageRelationshipCardItemProps {
@@ -21,9 +21,13 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
 
   const store = useStore();
 
-  const [from, setFrom] = useState<{ annotation: W3CImageAnnotation, image: Image }>(); 
+  const [fromAnnotation, setFromAnnotation] = useState<W3CImageAnnotation |  undefined>();
+  const [fromImage, setFromImage] = useState<FileImage | CanvasInformation | undefined>();
+  const [toAnnotation, setToAnnotation] = useState<W3CImageAnnotation |  undefined>();
 
-  const [to, setTo] = useState<{ annotation: W3CImageAnnotation, image: Image }>(); 
+  const snippets = useImageSnippets(
+    (fromAnnotation && toAnnotation) ? [fromAnnotation, toAnnotation] : undefined
+  );
 
   const directed = useMemo(() => {
     if (!props.meta?.body?.value) return false;
@@ -33,24 +37,27 @@ export const ImageRelationshipCardItem = (props: ImageRelationshipCardItemProps)
   }, [props.meta]);
 
   useEffect(() => {
-    store.findAnnotation(props.link.target).then(([annotation, image]) => 
-      setFrom({ annotation: annotation as W3CImageAnnotation, image }));
+    store.findAnnotation(props.link.target).then(([annotation, image]) => {
+      setFromAnnotation(annotation as W3CImageAnnotation);
+      setFromImage(image);
+    });
 
-    store.findAnnotation(props.link.body).then(([annotation, image]) => 
-      setTo({ annotation: annotation as W3CImageAnnotation, image }));
+    store.findAnnotation(props.link.body).then(([annotation, _]) => 
+      setToAnnotation(annotation as W3CImageAnnotation));
   }, [store, props.link]);
 
   const isOutbound = useMemo(() => {
-    return from?.image.id === props.selectedImage.id;
-  }, [from, to, props.selectedImage]);
+    if (!fromImage) return;
 
-  return (from && to) && (
+    const fromId = 'uri' in fromImage ? `iiif:${fromImage.manifestId}:${fromImage.id}` : fromImage.id;
+    return fromId === props.selectedImage.id;
+  }, [fromImage, props.selectedImage]);
+
+  return snippets && (
     <RelationshipThumbnail 
       directed={directed}
-      fromAnnotation={from.annotation}
-      fromImage={isOutbound ? props.selectedImage : props.otherImage}
-      toAnnotation={to.annotation}
-      toImage={isOutbound ? props.otherImage : props.selectedImage} 
+      fromSnippet={snippets[0]}
+      toSnippet={snippets[1]}
       label={props.meta?.body?.value} 
       outbound={isOutbound} />
   )

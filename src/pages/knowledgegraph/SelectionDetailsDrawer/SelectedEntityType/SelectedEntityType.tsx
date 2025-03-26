@@ -34,22 +34,17 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
   }, [type]);
 
   const entityRelationships = useMemo(() => (
-    graph
-      .getLinks(type.id)
-      .reduce<GraphLinkPrimitive[]>((all, link) => (
-        [...all, ...link.primitives.filter(p => p.type === 'IS_RELATED_VIA_ANNOTATION')]
-      ), [])
+    graph.getEntityToEntityRelationLinks(type.id)
   ), [type]);
 
-  const relatedEntities = useMemo(() => {
+  const relatedEntities = useMemo(() => {    
     const relatedEntityIDs = new Set(entityRelationships.reduce<string[]>((ids, primitive) => {
       return [...ids, primitive.source, primitive.target]
     }, []));
 
     return [...relatedEntityIDs]
       .map(id => entityTypes.find(e => e.id === id))
-      .filter(Boolean)
-      .filter(e => e.id !== type.id); // Don't include self
+      .filter(Boolean);
   }, [entityTypes, entityRelationships]);
 
   return (
@@ -57,10 +52,10 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
       <Tabs 
         value={tab}
         onValueChange={setTab}>
-        <div className="bg-white shadow-sm rounded border">
+        <div className="bg-white shadow-xs rounded border">
           <div className="py-3 px-4">
             <div className="flex justify-between -mr-1.5">
-              <div className="flex gap-1.5 items-center flex-grow">
+              <div className="flex gap-1.5 items-center grow">
                 <div 
                   className="w-6 h-6 flex text-white items-center justify-center rounded-full"
                   style={{ backgroundColor: NODE_COLORS.ENTITY_TYPE }}>
@@ -74,7 +69,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
               </div>
 
               <Button 
-                className="flex-shrink-0 h-8 w-8 -mt-0.5 rounded"
+                className="shrink-0 h-8 w-8 -mt-0.5 rounded-full"
                 size="icon"
                 variant="ghost"
                 onClick={props.onClose}>

@@ -1,4 +1,15 @@
-import { ImageSnippet } from '@/utils/getImageSnippet';
+import { CozyManifest } from 'cozy-iiif';
+import { IIIFManifestResource, MetadataSchema } from '@/model';
+import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
+import { fetchManifest } from '@/utils/iiif';
+
+export const resolveManifests = (manifests: IIIFManifestResource[], onProgress?: () => void) => 
+  manifests.reduce<Promise<{ id: string, manifest: CozyManifest}[]>>((promise, manifest) => promise.then(manifests =>
+    fetchManifest(manifest.uri).then(fetched => {
+      onProgress && onProgress();
+      return [...manifests, { id: manifest.id, manifest: fetched }]
+    })
+  ), Promise.resolve([]));
 
 export const fitColumnWidths = (worksheet: any) => {
   worksheet.columns.forEach(column => {
@@ -10,6 +21,11 @@ export const fitColumnWidths = (worksheet: any) => {
   worksheet.columns[0].width = 30;
 }
 
+// Should never be necessary, unless users hack the file outside IMMARKUS...
+export const deduplicateSchemas = (schemas: MetadataSchema[]) =>
+  schemas.reduce<MetadataSchema[]>((distinct, schema) => 
+    distinct.some(s => s.name === schema.name) ? distinct : [...distinct, schema], []);
+
 export const addImageToCell = (
   workbook: any,
   worksheet: any,
@@ -18,7 +34,7 @@ export const addImageToCell = (
   row: number
 ) => {
   const embeddedImage = workbook.addImage({
-    buffer: snippet.data,
+    buffer: (snippet as FileImageSnippet).data,
     extension: 'jpg',
   });
 

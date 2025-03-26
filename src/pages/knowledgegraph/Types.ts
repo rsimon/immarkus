@@ -2,6 +2,8 @@ import { ComboboxOption } from '@/components/Combobox';
 
 export interface Graph {
 
+  getEntityToEntityRelationLinks(nodeId: string): GraphLinkPrimitive[];
+
   getLinkedNodes(nodeId: string): GraphNode[];
 
   getLinks(nodeId: string): GraphLink[];
@@ -20,13 +22,15 @@ export interface Graph {
 
 }
 
+export type GraphNodeType = 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
+
 export interface GraphNode {
 
   id: string;
 
   label: string;
 
-  type: 'FOLDER' | 'IMAGE' | 'ENTITY_TYPE';
+  type: GraphNodeType;
 
   degree: number;
 
@@ -86,7 +90,7 @@ export interface KnowledgeGraphSettings {
 
   hideAllLabels?: boolean;
 
-  hideNodeTypeLabels?: ('FOLDER' | 'IMAGE' | 'ENTITY_TYPE')[];
+  hideNodeTypeLabels?: GraphNodeType[];
 
   includeFolders?: boolean;
 
@@ -114,9 +118,7 @@ export interface BaseSentence {
 
 }
 
-export type ObjectType = 'ENTITY_TYPE' | 'FOLDER' | 'IMAGE';
-
-export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP';
+export type ConditionType = 'WHERE' | 'WITH_ENTITY' | 'WITH_NOTE' | 'WITH_RELATIONSHIP' | 'WITH_IIIF_METADATA';
 
 export interface SimpleConditionSentence extends BaseSentence {
 
@@ -128,6 +130,12 @@ export interface SimpleConditionSentence extends BaseSentence {
 
 }
 
+export interface CustomSentence extends BaseSentence {
+
+  data: any;
+
+}
+
 export interface NestedConditionSentence extends BaseSentence {
 
   Value: DropdownOption;
@@ -136,7 +144,7 @@ export interface NestedConditionSentence extends BaseSentence {
 
 }
 
-export type Sentence = SimpleConditionSentence | NestedConditionSentence;
+export type Sentence = SimpleConditionSentence | NestedConditionSentence | CustomSentence;
 
 export type Comparator = 'IS' | 'IS_NOT_EMPTY';
 
@@ -164,7 +172,7 @@ export interface SchemaProperty {
 
   builtIn?: boolean;
 
-  type: ObjectType;
+  type: GraphNodeType;
 
   propertyName: string;
 

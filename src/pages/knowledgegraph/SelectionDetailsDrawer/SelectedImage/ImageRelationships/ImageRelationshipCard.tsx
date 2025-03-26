@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import { Image, SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import { LoadedImage } from '@/model';
-import { useStore } from '@/store';
+import { useImages } from '@/store';
 import { Button } from '@/ui/Button';
 import { Link } from 'react-router-dom';
 import { ImageRelationshipCardItem } from './ImageRelationshipCardItem';
@@ -22,39 +21,31 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
 
   const { selectedImage, otherImageId, relationships } = props;
 
-  const store = useStore();
-
   const { ref, inView } = useInView();
 
   // Is this a card for intra-image relations?
   const isIntra = props.selectedImage.id === otherImageId;
 
-  const [loadedImage, setLoadedImage] = useState<LoadedImage>(isIntra ? selectedImage : undefined);
-
-  useEffect(() => {
-    if (!inView || isIntra) return;
-
-    store.loadImage(props.otherImageId).then(setLoadedImage);
-  }, [inView, isIntra, props.otherImageId]);
-
+  const loaded = isIntra ? selectedImage : useImages(inView && props.otherImageId) as LoadedImage;
+  
   return (
     <article 
       ref={ref}
-      className="bg-white border shadow-sm rounded">
-      {loadedImage && (
+      className="bg-white border shadow-xs rounded">
+      {loaded && (
         <>
           <div className="flex justify-between items-center p-1 pl-3">
             <h3 className="flex gap-1.5 pr-1 items-center text-xs whitespace-nowrap overflow-hidden">
               <Image className="h-3.5 w-3.5" />
-              <span className="overflow-hidden text-ellipsis">{loadedImage.name}</span>
+              <span className="overflow-hidden text-ellipsis">{loaded.name}</span>
             </h3>
 
             <Button
               asChild
               size="icon"
               variant="ghost"
-              className="h-8 w-8 flex-shrink-0 rounded-full">
-                <Link to={`/annotate/${loadedImage.id}`}>
+              className="h-8 w-8 shrink-0 rounded-full">
+                <Link to={`/annotate/${loaded.id}`}>
                   <SquareArrowOutUpRight className="h-3.5 w-3.5" />
                 </Link>
             </Button>
@@ -65,7 +56,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
               <li key={link.id}>
                 <ImageRelationshipCardItem 
                   selectedImage={selectedImage}
-                  otherImage={loadedImage}
+                  otherImage={loaded}
                   link={link}
                   meta={meta} />
               </li>

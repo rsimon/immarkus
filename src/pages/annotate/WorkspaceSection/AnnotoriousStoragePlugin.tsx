@@ -47,26 +47,33 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
       relation: [W3CAnnotation, W3CAnnotation], 
       _: W3CAnnotation | [W3CAnnotation | W3CAnnotation]
     ): Promise<void> => store.getAnnotations(imageId)
-          .then(all => {
-            const previous = all
-              .filter(a => isW3CRelationMetaAnnotation(a))
-              .filter(a => a.target === relation[0].id);
+      .then(all => {
+        const previous = all
+          .filter(a => isW3CRelationMetaAnnotation(a))
+          .filter(a => a.target === relation[0].id);
 
-            if (previous.length > 0) {
-              // Delete previous, then insert relation annotations
-              return store.bulkDeleteAnnotations(imageId, previous).then(() => {
-                return store.bulkUpsertAnnotation(imageId, relation);
-              });
-            } else {
-              // No previous tags to delete - just insert
-              return store.bulkUpsertAnnotation(imageId, relation);
-            }
+        if (previous.length > 0) {
+          // Delete previous, then insert relation annotations
+          return store.bulkDeleteAnnotations(imageId, previous).then(() => {
+            return store.bulkUpsertAnnotation(imageId, relation);
           });
+        } else {
+          // No previous tags to delete - just insert
+          
+          return store.bulkUpsertAnnotation(imageId, relation);
+        }
+      });
 
     if (anno && store) {
       store.getAnnotations(imageId).then(annotations => {
-        anno.setAnnotations(annotations);
-        
+        // IIIF? If so, these are all annotations on the resource - filter by canvas
+        if (imageId.startsWith('iiif:')) {
+          const onThisCanvas = annotations.filter(a => !Array.isArray(a.target) && a.target.source === imageId);
+          anno.setAnnotations(onThisCanvas);
+        } else {
+          anno.setAnnotations(annotations);
+        }
+
         anno.on('createAnnotation', annotation =>
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
   

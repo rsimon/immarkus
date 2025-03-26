@@ -6,7 +6,7 @@ For documentation, see the [Wiki](https://github.com/rsimon/immarkus/wiki).
 ## Acknowledgements
 
 IMMARKUS: Image Annotation has been developed by Prof. Dr. Hilde De Weerdt, 
-Dr. Rainer Simon, Dr. Lee Sunkyu, Dr. Iva Stojević, Meret Meister, and Xi 
+Dr. Rainer Simon, Dr. Lee Sunkyu, Dr. Iva Stojević, Dawn Zhuang, Meret Meister, and Xi 
 Wangzhi as part of the Regionalizing Infrastructures in Chinese History
 ([RegInfra](https://www.infrastructurelives.eu/)) project.
 
@@ -22,22 +22,22 @@ the following bibliographic information:
 __Platform__
 
 ```
-Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Meret Meister, 
-and Xi Wangzhi. IMMARKUS: Image Annotation. 2024. https://immarkus.xmarkus.org.
+Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Dawn Zhuang, Meret Meister, 
+and Xi Wangzhi. IMMARKUS: Image Annotation. 2024-. https://immarkus.xmarkus.org.
 ```
 
 __Code__
 
 ```
-Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024. 
+Rainer Simon. IMMARKUS: Image Annotation in X-MARKUS. 2024-. 
 https://github.com/rsimon/immarkus.
 ```
 
 __Wiki__
 
 ```
-Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Image Annotation in
-IMMARKUS Wiki. 2024. https://github.com/rsimon/immarkus/wiki.
+Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Dawn Zhuang. Image Annotation in
+IMMARKUS Wiki. 2024-. https://github.com/rsimon/immarkus/wiki.
 ```
 
 ## Installation

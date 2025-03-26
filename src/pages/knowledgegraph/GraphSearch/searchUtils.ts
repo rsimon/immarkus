@@ -1,14 +1,15 @@
-import { Folder, Image, MetadataSchema, RootFolder } from '@/model';
-import { DataModelStore, Store } from '@/store';
+import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema, RootFolder } from '@/model';
+import { DataModelStore, getManifestMetadata, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
+import { parseIIIFId } from '@/utils/iiif';
 import { 
   Graph, 
   GraphNode, 
   SchemaPropertyValue, 
   SchemaProperty, 
-  ObjectType, 
-  SubCondition 
+  SubCondition, 
+  GraphNodeType
 } from '../Types';
 
 /** Converts a metadata annotation body to a list of SchemaProperties **/
@@ -33,7 +34,7 @@ const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body:
 }
 
 // Converts a metadata annotation to a list of SchemaProperties
-const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation?: W3CAnnotation): SchemaPropertyValue[] => {
+export const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', annotation?: W3CAnnotation): SchemaPropertyValue[] => {
   if (!annotation) return [];
 
   const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
@@ -41,9 +42,10 @@ const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER',
 }
 
 /** Lists the parent sub-folder hierarchy for the given image **/
-export const getParentFolders = (store: Store, imageId: string) => {
-  const image = store.getImage(imageId);
-
+export const getParentFolders = (
+  store: Store, 
+  sourceId: string
+): (RootFolder | Folder | IIIFManifestResource)[] => {
   const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
     if (next.parent) {
       const folder = store.getFolder(next.parent);
@@ -59,21 +61,35 @@ export const getParentFolders = (store: Store, imageId: string) => {
     }
   }
 
-  if (image) {
-    const folder = store.getFolder(image.folder);
+  if (sourceId.startsWith('iiif')) {
+    const [manifestId, _] = parseIIIFId(sourceId);
+    const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
 
+    const folder = store.getFolder(manifest.folder);
     const isRootFolder = !('id' in folder);
     if (isRootFolder) {
-      return [];
+      return [manifest];
     } else {
-      return getParentFoldersRecursive(folder);
+      return [...getParentFoldersRecursive(folder), manifest];
     }
   } else {
-    return [];
+    const image = store.getImage(sourceId);
+    if (image) {
+      const folder = store.getFolder(image.folder);
+
+      const isRootFolder = !('id' in folder);
+      if (isRootFolder) {
+        return [];
+      } else {
+        return getParentFoldersRecursive(folder);
+      }
+    } else {
+      return [];
+    }
   }
 }
 
-const listMetadataProperties = (schemas: { type: ObjectType, schema: MetadataSchema }[]): SchemaProperty[] => {
+const listMetadataProperties = (schemas: { type: GraphNodeType, schema: MetadataSchema }[]): SchemaProperty[] => {
   // Different schemas may include properties with the same name. De-duplicate!
   return schemas.reduce<SchemaProperty[]>((all, { type, schema }) => {
     const properties: SchemaProperty[] = (schema.properties || []).map(p => ({ type, propertyName: p.name }));
@@ -105,8 +121,8 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
 
   const schemas = [
-    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema })), 
-    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as ObjectType, schema }))
+    ...model.folderSchemas.map(schema => ({ type: 'FOLDER' as GraphNodeType, schema })), 
+    ...model.imageSchemas.map(schema => ({ type: 'IMAGE' as GraphNodeType, schema }))
   ];
 
   return sortProperties([
@@ -119,7 +135,7 @@ export const listAllMetadataProperties = (store: Store): SchemaProperty[] => {
 /** List metadata properties from all folder schemas **/
 export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => {
   const model = store.getDataModel();
-  const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as ObjectType, schema }));
+  const schemas = model.folderSchemas.map(schema => ({ type: 'FOLDER' as GraphNodeType, schema }));
   return sortProperties([
     { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
     ...listMetadataProperties(schemas)
@@ -127,14 +143,14 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
 }
 
 const enumerateNotes = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
 ) => {
-  return annotations.reduce<{ image: Image, note: string }[]>((all, { image, annotations }) => {
-    const notesOnThisImage = annotations.reduce<{ image: Image, note: string }[]>((all, annotation) => {
+  return annotations.reduce<{ sourceId: string, note: string }[]>((all, { sourceId, annotations }) => {
+    const notesOnThisImage = annotations.reduce<{ sourceId: string, note: string }[]>((all, annotation) => {
       const notes = 
         (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
           .filter(b => b.purpose === 'commenting' && b.value)
-          .map(b => ({ image, note: b.value! }));
+          .map(b => ({ sourceId, note: b.value! }));
 
       return [...all, ...notes];
     }, []);
@@ -144,19 +160,19 @@ const enumerateNotes = (
 }
 
 export const listAllNotes = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[]
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
 ): string[] => {
   const notes = enumerateNotes(annotations);
   return Array.from(new Set(notes.map(n => n.note))).sort();
 }
 
 export const findImagesByNote = (
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   note: string
 ): string[] => {
   const notes = enumerateNotes(annotations);
   const matches = notes.filter(n => n.note === note);
-  return Array.from(new Set(matches.map(n => n.image.id)));
+  return Array.from(new Set(matches.map(n => n.sourceId)));
 }
 
 export const findImagesByRelationship = (
@@ -175,9 +191,10 @@ export const findImagesByRelationship = (
   // IDs of all images for the given annotations
   return [...annotationIds].reduce<Promise<string[]>>((promise, annotationId) => promise.then(all => {
     return store.findImageForAnnotation(annotationId).then(image => {
-      return [...all, image.id];
+      const id = 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+      return [...all, id];
     });
-  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicat
+  }), Promise.resolve([])).then(ids => [...new Set(ids)]); // De-duplicate
 }
 
 export const findEntityTypesByRelationship = (
@@ -208,9 +225,16 @@ export const listMetadataValues = (
 
   if (builtIn) {
     if (type === 'FOLDER' && propertyName === 'folder name') {
-      return Promise.resolve(store.folders.map(f => f.name));
+      const folderLike = [...store.folders, ...store.iiifResources];
+      return Promise.resolve([...new Set(folderLike.map(f => f.name))]);
     } else if (type === 'IMAGE' && propertyName === 'image filename') {
-      return Promise.resolve(store.images.map(i => i.name));
+      const imageLike = [
+        ...store.images,
+        ...store.iiifResources.reduce<CanvasInformation[]>((all, r) => (
+          [...all, ...(r as IIIFManifestResource).canvases] 
+        ), [])
+      ]
+      return Promise.resolve([...new Set(imageLike.map(i => i.name))]);
     } else {
       console.error('Unsupported built-in property', type, propertyName);
       return Promise.resolve([]);
@@ -244,16 +268,29 @@ export const listMetadataValues = (
       }, []);
 
     if (type === 'FOLDER') {
-      return Promise.all(store.folders.map(f => store.getFolderMetadata(f.id)))
-        // Note that folders have a single metadata annotation
-        .then(annotations => {
-          const bodies = annotations
-            .filter(Boolean)
-            .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
-          return getMetadataObjectOptions(bodies);
-        })
+      const folderLike = [...store.folders, ...store.iiifResources];
+
+      return Promise.all(folderLike.map(f => {
+        if ('uri' in f) {
+          return getManifestMetadata(store, f.id).then(t => t.annotation);
+        } else {
+          return store.getFolderMetadata(f.id);
+        }
+      })).then(annotations => {
+        const bodies = annotations
+          .filter(Boolean)
+          .map(a => Array.isArray(a.body) ? a.body[0] : a.body)
+        return getMetadataObjectOptions(bodies);
+      })
     } else {
-      return Promise.all(store.images.map(i => store.getImageMetadata(i.id)))
+      const imageLike = [
+        ...store.images,
+        ...(store.iiifResources as IIIFManifestResource[]).reduce<CanvasInformation[]>((all, r) => (
+          [...all, ...r.canvases]
+        ), [])
+      ].map(i => 'uri' in i ? `iiif:${i.manifestId}:${i.id}` : i.id);
+
+      return Promise.all(imageLike.map(id => store.getImageMetadata(id)))
         // Note that images have a list of metadata bodies
         .then(bodies => {
           return getMetadataObjectOptions(bodies);
@@ -282,16 +319,23 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
   }
 
   const folders = getParentFolders(store, imageId);
-  
+
   // Go through folders from the top and aggregate metadata values
   const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 
     promise.then(properties => {
-      return store.getFolderMetadata(folder.handle).then(annotation => {
+      const p = 'uri' in folder
+        ? getManifestMetadata(store, folder.id).then(t => t.annotation)
+        : store.getFolderMetadata(folder.handle);
+
+      return p.then(annotation => {
         return mergeProperties(properties, annotationToProperties(model, 'FOLDER', annotation));
       });
     }), Promise.resolve([]));
 
-  const imageMetadata = store.getImageMetadata(imageId).then(body => bodyToProperties(model, 'IMAGE', body));
+  const imageMetadata = store.getImageMetadata(imageId).then(body => { 
+    const props = bodyToProperties(model, 'IMAGE', body);
+    return props;
+  });
 
   return Promise.all([folderMetadata, imageMetadata]).then(res => res.flat());
 }
@@ -316,39 +360,65 @@ export const findImagesByMetadata = (
   propertyName: string, 
   value?: string,
   builtIn?: boolean
-): Promise<Image[]> => {
+): Promise<(Image | CanvasInformation)[]> => {
   const { folders, images } = store;
+  
+  const iiifResources = store.iiifResources as IIIFManifestResource[];
+
+  const folderLike = [...folders, ...iiifResources];
+
+  const imageLike = [
+    ...images,
+    ...iiifResources.reduce<CanvasInformation[]>((all, r) => (
+      [...all, ...r.canvases] 
+    ), [])
+  ];
 
   if (builtIn) {
     if (propertyType === 'FOLDER' && propertyName === 'folder name') {
       if (!value) {
-        // List all images in sub-folders
+        // All images in sub-folders
         const root = store.getFolderContents(store.getRootFolder().handle);
         const imagesInRoot = new Set(root.images.map(i => i.id));
-        return Promise.resolve(images.filter(i => !imagesInRoot.has(i.id)));
+
+        // All canvases
+        const canvases = iiifResources.reduce<CanvasInformation[]>((all, r) => (
+          [...all, ...r.canvases]
+        ), []);
+
+        return Promise.resolve([
+          ...images.filter(i => !imagesInRoot.has(i.id)),
+          ...canvases
+        ]);
       } else {
-        const folder = folders.find(f => f.name === value);
+        const folder = folderLike.find(f => f.name === value);
         if (folder) {
-          return Promise.resolve(store.listImagesInFolder(folder.id));
+          if ('uri' in folder) {
+            return Promise.resolve(folder.canvases);
+          } else {
+            return Promise.resolve(store.listImagesInFolder(folder.id));
+          }
         } else {
           return Promise.resolve([]);
         }
       }
     } else if (propertyType === 'IMAGE' && propertyName === 'image filename') {
       // Trivial case: image filename is never empty;
-      if (!value) return Promise.resolve(images);
-      return Promise.resolve(images.filter(i => i.name === value)); 
+      if (!value) return Promise.resolve(imageLike);
+      return Promise.resolve(imageLike.filter(i => i.name === value)); 
     } else {
       console.error('Unsupported built-in property', propertyType, propertyName);
       return Promise.resolve([]);
     }
   } else {
     // Warning: heavy operation! Resolve aggregated metadata for all images.
-    const promise = images.reduce<Promise<{ image: Image, metadata: SchemaPropertyValue[] }[]>>((promise, image) => promise.then(all => {
-      return getAggregatedMetadata(store, image.id).then(metadata => {
-        return [...all, { image, metadata }]
-      });
-    }), Promise.resolve([]));
+    const promise = imageLike.reduce<Promise<{ image: Image | CanvasInformation, metadata: SchemaPropertyValue[] }[]>>((promise, image) => 
+      promise.then(all => {
+        const id = 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id;
+        return getAggregatedMetadata(store, id).then(metadata => {
+          return [...all, { image, metadata }]
+        });
+      }), Promise.resolve([]));
 
     return promise.then(metadata => {
       return metadata
@@ -366,12 +436,14 @@ export const findFoldersByMetadata = (
   propertyName: string, 
   value?: string,
   builtin?: boolean
-): Promise<Folder[]> => {
-  const { folders } = store;
+): Promise<(Folder | IIIFManifestResource)[]> => {
+  const folderLike = [...store.folders, ...(store.iiifResources as IIIFManifestResource[])];
 
   if (builtin) {
     if (propertyName === 'folder name') {
-      return Promise.resolve(folders.filter(f => f.name === value));
+      return value 
+        ? Promise.resolve(folderLike.filter(f => f.name === value))
+        : Promise.resolve(folderLike);
     } else {
       console.error('Unsupported built-in folder property', propertyName);
       return Promise.resolve([]);
@@ -379,8 +451,12 @@ export const findFoldersByMetadata = (
   } else {
     const model = store.getDataModel();
 
-    const promise = folders.reduce<Promise<{ folder: Folder, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
-      return store.getFolderMetadata(folder.id).then(annotation => {
+    const promise = folderLike.reduce<Promise<{ folder: Folder | IIIFManifestResource, metadata: SchemaPropertyValue[] }[]>>((promise, folder) => promise.then(all => {
+      const p = 'uri' in folder 
+        ? getManifestMetadata(store, folder.id).then(t => t.annotation)
+        : store.getFolderMetadata(folder.id);
+
+      return p.then(annotation => {
         const metadata = annotationToProperties(model, 'FOLDER', annotation);
         return [...all, {  folder, metadata }]
       });
@@ -417,10 +493,10 @@ export const findImagesByEntityClass = (
 
 export const findImagesByEntityConditions = (
   store: Store,
-  annotations: { image: Image, annotations: W3CAnnotation[] }[],
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
   entityId: string, 
   conditions: SubCondition[]
-): Image[] => {
+): string[] => {
   // ID of this entity and all descendant types
   const model = store.getDataModel();
 
@@ -431,7 +507,7 @@ export const findImagesByEntityConditions = (
   const descendants = 
     new Set(model.getDescendants(entityId).map(t => t.id));
   
-  return annotations.reduce<Image[]>((images, { image, annotations }) => {
+  return annotations.reduce<string[]>((all, { sourceId, annotations }) => {
     // Check if this image has *any annotations* that have *any bodies*
     // that match the given query conditions
     const hasMatchingAnnotations = annotations.some(annotation => {
@@ -459,7 +535,7 @@ export const findImagesByEntityConditions = (
       });
     });
 
-    return hasMatchingAnnotations ? [...images, image] : images;
-  }, []);  
+    return hasMatchingAnnotations ? [...all, sourceId] : all;
+  }, []);
 
 }

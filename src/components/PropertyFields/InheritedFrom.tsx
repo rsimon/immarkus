@@ -30,7 +30,7 @@ export const InheritedFrom = (props: InheritedFromProps) => {
       <Tooltip>
         <TooltipTrigger 
           tabIndex={-1}
-          className="rounded-sm w-6 h-6 relative ml-1 -top-[1px] inline-flex justify-center items-center focus-visible:bg-slate-200 focus-visible:outline-none">
+          className="rounded-sm w-6 h-6 relative ml-1 -top-[1px] inline-flex justify-center items-center focus-visible:bg-slate-200 focus-visible:outline-hidden">
           <Replace className={className} />
         </TooltipTrigger>
 

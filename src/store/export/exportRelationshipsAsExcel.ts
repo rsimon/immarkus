@@ -1,10 +1,13 @@
+import murmur from 'murmurhash';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { CanvasInformation, FileImage, LoadedIIIFImage } from '@/model';
 import { Store } from '@/store';
-import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { addImageToCell } from '@/store/export/utils';
 import { getEntityTypes } from '@/utils/annotation';
+import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
+import { fetchManifest } from '@/utils/iiif/fetchManifest';
 
 interface RowData {
 
@@ -50,18 +53,51 @@ const toRowData = (
 
   const relationshipType = relationshipName ? model.getRelationshipType(relationshipName) : undefined;
 
+  const getFolder = (image: FileImage | CanvasInformation) => {
+    if ('uri' in image) {
+      const manifest = store.iiifResources.find(r => r.id === image.manifestId);
+      return manifest.folder;
+    } else {
+      return image.folder;
+    }
+  }
+
+  const getLoadedImage = (source: FileImage | CanvasInformation) => {
+    if ('uri' in source) {
+      const manifest = store.getIIIFResource(source.manifestId);
+
+      return fetchManifest(manifest.uri).then(parsed => {
+        const canvas = parsed.canvases.find(c => c.id === source.uri);
+
+        return {
+          canvas,
+          folder: manifest.folder,
+          id: `iiif:${manifest.id}:${murmur.v3(canvas.id)}`,
+          manifestId: manifest.id,
+          name: canvas.getLabel(),
+          path: manifest.path
+        } as LoadedIIIFImage;
+      });
+    } else {
+      return store.loadImage(source.id);
+    }
+  }
+
   // Keep in mind, W3C has an inverted idea of "source" and "target"!
   return Promise.all([
     store.findAnnotation(link.target), 
     store.findAnnotation(link.body)
-  ]).then(([[sourceAnnotation, sourceImage], [targetAnnotation, targetImage]]) => {
+  ]).then(([sourceTuple, targetTuple]) => {
+    const [sourceAnnotation, sourceImage] = sourceTuple;
+    const [targetAnnotation, targetImage] = targetTuple;
+
     return Promise.all([
-      store.loadImage(sourceImage.id),
-      store.loadImage(targetImage.id)
+      getLoadedImage(sourceImage),
+      getLoadedImage(targetImage)
     ]).then(([sourceLoadedImage, targetLoadedImage]) => {
       return Promise.all([
-        getImageSnippet(sourceLoadedImage, sourceAnnotation as W3CImageAnnotation),
-        getImageSnippet(targetLoadedImage, targetAnnotation as W3CImageAnnotation)
+        getImageSnippet(sourceLoadedImage, sourceAnnotation as W3CImageAnnotation, true),
+        getImageSnippet(targetLoadedImage, targetAnnotation as W3CImageAnnotation, true)
       ]).then(([sourceSnippet, targetSnippet]) => ({
         relationship_name: relationshipName,
         relationship_id: link.id,
@@ -69,12 +105,12 @@ const toRowData = (
         created: link.created,
         source_snippet: sourceSnippet,  
         source_filename: sourceImage.name,
-        source_foldername: store.getFolder(sourceImage.folder)?.name,      
+        source_foldername: getFolder(sourceImage)?.name,      
         source_annotation_id: sourceAnnotation.id,
         source_entity_classes: getEntityTypes(sourceAnnotation).join(','),
         target_snippet: targetSnippet,
         target_filename: targetImage.name,
-        target_foldername: store.getFolder(targetImage.folder)?.name,
+        target_foldername: getFolder(targetImage)?.name,
         target_annotation_id: targetAnnotation.id,
         target_entity_classes: getEntityTypes(targetAnnotation).join(',')
       } as RowData))

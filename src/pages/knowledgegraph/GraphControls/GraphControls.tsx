@@ -31,7 +31,7 @@ export const GraphControls = (props: GraphControlsProps) => {
           variant={props.isFullScreen ? undefined : 'outline'}
           className={props.isFullScreen 
             ? 'rounded-full bg-black'
-            : 'rounded-full bg-white/70 backdrop-blur-sm'}
+            : 'rounded-full bg-white/70 backdrop-blur-xs'}
           tooltip="Toggle fullscreen"
           onClick={props.onToggleFullscreen}>
           <Fullscreen className="h-5 w-5" />
@@ -54,7 +54,7 @@ export const GraphControls = (props: GraphControlsProps) => {
           variant={props.isSearchOpen ? undefined : 'outline'}
           className={props.isSearchOpen 
             ? 'rounded-full bg-black'
-            : 'rounded-full bg-white/70 backdrop-blur-sm'}
+            : 'rounded-full bg-white/70 backdrop-blur-xs'}
           tooltip="Graph search"
           onClick={props.onToggleSearch}>
           <Search className="h-5 w-5" />
@@ -64,7 +64,7 @@ export const GraphControls = (props: GraphControlsProps) => {
           variant={props.isSettingsOpen ? undefined : 'outline'}
           className={props.isSettingsOpen 
             ? 'gap-2 pl-3.5 pr-4 rounded-full border'
-            : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-sm'}
+            : 'gap-2 pl-3.5 pr-4 rounded-full bg-white/70 backdrop-blur-xs'}
           tooltip="Graph settings"
           onClick={props.onToggleSettings}>
           <Settings className="h-5 w-5" /> Settings

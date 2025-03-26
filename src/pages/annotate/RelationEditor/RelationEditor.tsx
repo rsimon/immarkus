@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Spline } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation } from '@annotorious/react';

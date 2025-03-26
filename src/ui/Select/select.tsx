@@ -17,14 +17,14 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex items-center shadow-sm h-9 justify-between rounded-md border border-input bg-muted px-3 py-2 text-sm placeholder:text-muted-foreground outline-black disabled:cursor-not-allowed disabled:opacity-50",
+      "flex items-center shadow-xs h-9 justify-between rounded-md border border-input bg-muted px-3 py-2 text-sm placeholder:text-muted-foreground outline-black disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="flex-shrink-0 h-4 w-4 opacity-50" />
+      <ChevronDown className="shrink-0 h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -116,7 +116,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
       className
     )}
     {...props}
@@ -139,7 +139,7 @@ const UndecoratedSelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative text-muted-foreground flex w-full cursor-default select-none items-center rounded-sm py-1 px-2 text-xs outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative text-muted-foreground flex w-full cursor-default select-none items-center rounded-sm py-1 px-2 text-xs outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50",
       className
     )}
     {...props}

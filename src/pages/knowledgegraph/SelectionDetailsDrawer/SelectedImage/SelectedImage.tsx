@@ -1,21 +1,21 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { Image, LoadedImage } from '@/model';
-import { useStore } from '@/store';
+import { LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
+import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { Skeleton } from '@/ui/Skeleton';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
-import { KnowledgeGraphSettings } from '../../Types';
+import { GraphNode } from '../../Types';
+import { FilePreviewImage, IIIFPreviewImage } from './PreviewImage';
 
 interface SelectedImageProps {
 
-  image: Image;
+  image: GraphNode;
 
   onClose(): void;
 
@@ -27,23 +27,26 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const store = useStore();
 
-  const [loaded, setLoaded] = useState<LoadedImage | undefined>();
+  const loaded = useImages(image.id) as LoadedImage;
 
-  const { onLoad, dimensions } = useImageDimensions();
+  const { onLoad, dimensions: fileImageDimensions } = useImageDimensions();
+
+  const dimensions = useMemo(() => {
+    if (!loaded) return;
+
+    if (fileImageDimensions) return fileImageDimensions;
+
+    if (loaded.id.startsWith('iiif:')) {
+      const { canvas }= (loaded as LoadedIIIFImage);
+      return [canvas.width!, canvas.height!];
+    }
+  }, [loaded, fileImageDimensions])
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
   const [relationships, setRelationships] = useState<[W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]>([]);
 
   const [tab, setTab] = useState<string>('annotations'); 
-
-  useEffect(() => {
-    setLoaded(undefined);
-    
-    setTimeout(() => (
-      store.loadImage(image.id).then(setLoaded)
-    ), 180);
-  }, [image]);
 
   useEffect(() => {
     if (annotations.length === 0) return;
@@ -60,22 +63,25 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
       <Tabs 
         value={tab}
         onValueChange={setTab}>
-        <article className="bg-white shadow-sm rounded border overflow-hidden">
+        <article className="bg-white shadow-xs rounded border overflow-hidden">
           <header>
-            <div className="relative h-48 basis-48 flex-shrink-0 overflow-hidden border-b">
-              {loaded ? (
-                <img 
-                  onLoad={onLoad}
-                  className="object-cover scale-105 object-center h-full w-full" src={URL.createObjectURL(loaded.data)} />
-              ) : (
-                <Skeleton className="" />
+            <div className="relative h-48 basis-48 shrink-0 overflow-hidden border-b">
+              {loaded && (
+                loaded.id.startsWith('iiif:') ? (
+                  <IIIFPreviewImage 
+                    image={loaded as LoadedIIIFImage} />
+                ) : (
+                  <FilePreviewImage 
+                    image={loaded as LoadedFileImage} 
+                    onLoad={onLoad} />
+                )
               )}
 
               <div className="absolute top-2 right-2 bg-white/70 rounded-full">
                 <Button
                   size="icon"
                   variant="ghost"
-                  className="h-8 w-8 rounded"
+                  className="h-8 w-8 rounded-full"
                   onClick={props.onClose}>
                   <X className="h-4 w-4" />
                 </Button>
@@ -86,7 +92,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
           <div className="flex py-2 px-3 pr-2 text-sm items-start justify-between">
             <div className="overflow-hidden py-1 leading-relaxed">
               <h2 className="whitespace-nowrap overflow-hidden text-ellipsis font-medium">
-                {image.name}
+                {image.label}
               </h2>
               
               {dimensions && (
@@ -162,7 +168,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
         <TabsContent value="metadata">
           <Metadata 
-            image={image} />
+            imageId={image.id} />
         </TabsContent>
       </Tabs>
     </div>

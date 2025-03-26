@@ -28,7 +28,7 @@ export const FolderItem = (props: FolderItemProps) => {
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
-            className="w-[190px] h-[190px] transition-all drop-shadow-md" />
+            className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
         </button>
         
         <div className="absolute bottom-3.5 right-2 text-white text-sm pointer-events-auto">

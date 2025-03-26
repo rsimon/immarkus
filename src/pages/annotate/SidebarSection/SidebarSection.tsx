@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
-import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { CurrentSelection } from './CurrentSelection';
@@ -9,14 +8,9 @@ import { ImageMetadata } from './ImageMetadata';
 
 export const SidebarSection = () => {
 
-  const { selected } = useSelection();
-
   const [tab, setTab] = useState('selection');
 
-  useEffect(() => {
-    if (selected.length > 0)
-      setTab('selection');
-  }, [selected]);
+  const onEdit = () => setTab('selection');
 
   return (
     <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
@@ -25,7 +19,7 @@ export const SidebarSection = () => {
         value={tab}
         onValueChange={setTab}>
         <>
-          <section className="toolbar border-b h-[46px] flex items-center flex-shrink-0">
+          <section className="toolbar border-b h-[46px] flex items-center shrink-0">
             <Separator orientation="vertical" className="h-4" />
 
             <Tabs.List className="flex gap-1.5 py-0.5 px-3">
@@ -44,24 +38,24 @@ export const SidebarSection = () => {
           </section>
 
           <section 
-            className="sidebar-contentflex flex-grow border-l overflow-y-auto">
+            className="sidebar-content flex grow border-l overflow-y-auto">
             <Tabs.Content value="selection" asChild>
               <div 
-                className="flex flex-grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
+                className="flex grow h-full text-sm justify-center items-center w-full pt-1 pb-3 px-4">
                 <CurrentSelection />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="annotation-list" asChild>
               <div 
-                className="flex-grow h-full text-sm justify-center items-center w-full">
-                <AnnotationList />
+                className="grow h-full text-sm justify-center items-center w-full">
+                <AnnotationList 
+                  onEdit={onEdit} />
               </div> 
             </Tabs.Content>
 
             <Tabs.Content value="image-notes" asChild>
-              <div 
-                className="w-full h-full pt-1.5">
+              <div className="w-full h-full">
                 <ImageMetadata />
               </div>
             </Tabs.Content>

@@ -48,9 +48,9 @@ export const GraphView = (props: GraphViewProps) => {
 
   const previousPinned = usePrevious<NodeObject<GraphNode>[]>(props.pinned);
 
-  const nodeScale = graph && (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree);
+  const nodeScale = graph && (MAX_NODE_SIZE - MIN_NODE_SIZE) / (graph.maxDegree - graph.minDegree + 0.000001); // Prevent division by zero if max = min!
 
-  const linkScale = graph && (MAX_LINK_WIDTH - MIN_LINK_WIDTH) / (graph.maxLinkWeight - graph.minLinkWeight);
+  const linkScale = graph && (MAX_LINK_WIDTH - MIN_LINK_WIDTH) / (graph.maxLinkWeight - graph.minLinkWeight + 0.000001);
 
   const el = useRef<HTMLDivElement>(null);
 
@@ -199,9 +199,10 @@ export const GraphView = (props: GraphViewProps) => {
 
     // Faded nodes never get labels
     if (!hideLabel) {
+      const label = node.label.length > 53 ? `${node.label.substring(0, 50)}...` : node.label;
       ctx.fillStyle = 'black'; 
       ctx.font = `${11 / scale}px Arial`;
-      ctx.fillText(node.label, node.x + 12 / scale, node.y + 12 / scale); 
+      ctx.fillText(label, node.x + 12 / scale, node.y + 12 / scale); 
     }
 
     ctx.globalAlpha = 1;
