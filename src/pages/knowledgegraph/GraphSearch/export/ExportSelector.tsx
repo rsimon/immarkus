@@ -4,7 +4,7 @@ import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '
 import { ExportProgressDialog } from '@/components/ExportProgressDialog';
 import { Graph, GraphNode, GraphNodeType } from '../../Types';
 import { getRelationships } from './exportRelationships';
-import { exportFolders, exportImages } from './exportMetadata';
+import { useMetadataExport } from './useMetadataExport';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -26,13 +26,31 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const store = useStore();
 
-  const { exportAnnotations, busy: busyAnnotations, progress: progressAnnotations } = useExcelAnnotationExport();
+  const {
+    exportFolders,
+    exportImages,
+    busy: busyMetadata,
+    progress: progressMetadata
+  } = useMetadataExport();
 
-  const { exportRelationships, busy: busyRelations, progress: progressRelations } = useExcelRelationshipExport();
+  const { 
+    exportAnnotations, 
+    busy: busyAnnotations, 
+    progress: progressAnnotations 
+  } = useExcelAnnotationExport();
 
-  const busy = busyAnnotations || busyRelations;
+  const { 
+    exportRelationships, 
+    busy: busyRelations, 
+    progress: progressRelations 
+  } = useExcelRelationshipExport();
 
-  const progress = busyAnnotations ? progressAnnotations : busyRelations ? progressRelations : 0;
+  const busy = busyMetadata || busyAnnotations || busyRelations;
+
+  const progress = 
+    busyMetadata ? progressMetadata :
+    busyAnnotations ? progressAnnotations : 
+    busyRelations ? progressRelations : 0;
 
   const onExportMetadata = () => {
     const matches = props.graph.nodes
@@ -40,9 +58,9 @@ export const ExportSelector = (props: ExportSelectorProps) => {
       .map(m => m.id);
 
     if (props.objectType === 'IMAGE')
-      exportImages(store, matches);
+      exportImages(matches);
     else if (props.objectType === 'FOLDER')
-      exportFolders(store, matches);
+      exportFolders(matches);
   }
 
   const onExportAnnotations = () => {

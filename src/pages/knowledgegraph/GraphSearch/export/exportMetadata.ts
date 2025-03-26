@@ -39,7 +39,7 @@ const serialize = (metadata: SchemaPropertyValue[]) => Object.fromEntries(metada
   return [key, values.join(' ')];
 }));
 
-export const exportFolders = (store: Store, folderIds: string[]) => {
+export const exportFolders = (store: Store, folderIds: string[], onProgress: (progress: number) => void) => {
   const model = store.getDataModel();
 
   const columns = listFolderMetadataProperties(store)
@@ -64,7 +64,18 @@ export const exportFolders = (store: Store, folderIds: string[]) => {
       .filter(m => 'canvases' in m.folder)
       .map(f => f.folder as IIIFManifestResource);
 
-    return resolveManifests(manifests).then(resolved => {
+    // This is where the bottleneck is - start forwarding progress updates
+    const progressIncrement = 100 / (manifests.length + 1);
+    let progress = 0;
+
+    const updateProgress = () => {
+      progress += progressIncrement;
+      onProgress(progress);
+    }
+
+    updateProgress();
+
+    return resolveManifests(manifests, updateProgress).then(resolved => {
       const rows = metadata.map(({ folder, metadata }) => {
         const serialized = serialize(metadata);
 
@@ -77,13 +88,15 @@ export const exportFolders = (store: Store, folderIds: string[]) => {
   
         return { folder: folder.name, ...rows };
       });
+
+      onProgress(100);
   
       return downloadExcel(rows, 'search_results_metadata.xlsx');
     });
   });
 }
 
-export const exportImages = (store: Store, imageIds: string[]) => {
+export const exportImages = (store: Store, imageIds: string[], onProgress: (progress: number) => void) => {
   const columns = listAllMetadataProperties(store)
     .filter(p => !p.builtIn)
     .map(p => `${p.type.toLowerCase()}:${p.propertyName}`);
@@ -105,8 +118,20 @@ export const exportImages = (store: Store, imageIds: string[]) => {
       new Set([...manifestIds, info.manifestId])
     ), new Set([])))];
 
+    // This is where the bottleneck is - start forwarding progress updates
+    const progressIncrement = 100 / (manifestIds.length + 1);
+    let progress = 0;
+
+    const updateProgress = () => {
+      progress += progressIncrement;
+      onProgress(progress);
+    }
+
+    updateProgress();
+
     return resolveManifests(
-      manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource)
+      manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource),
+      updateProgress
     ).then(resolved => {
       const rows = metadata.map(({ image, metadata }) => {
         const serialized = serialize(metadata);
