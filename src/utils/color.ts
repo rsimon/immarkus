@@ -1,5 +1,12 @@
 export const DEFAULT_COLOR = '#c2c2c2';
 
+export const isValidColor = (color?: string) => {
+  if (!color) return false;
+  
+  const hexColorRegex = /^#?([0-9A-Fa-f]{3}){1,2}$/;  
+  return hexColorRegex.test(color);
+}
+
 export const getRandomColor = () => {
   const r = Math.floor(Math.random() * 256);
   const g = Math.floor(Math.random() * 256);
