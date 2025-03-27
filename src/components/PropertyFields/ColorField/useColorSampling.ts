@@ -45,7 +45,10 @@ export const useColorSampling = (onSample: (color: string) => void) => {
         const dt = Date.now() - pointerDownTime;
         if (dt > 300) return;
 
-        const { offsetX: x, offsetY: y } = event;
+        const { offsetX, offsetY } = event;
+
+        const x = offsetX * devicePixelRatio;
+        const y = offsetY * devicePixelRatio;
 
         const pixel = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
         const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
