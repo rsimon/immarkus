@@ -51,7 +51,7 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
   return (
     <div className="mb-8">
       <div className="flex items-end justify-between pr-1 mb-1.5">
-        <div className="flex">
+        <div className="flex items-center gap-0.5">
           <Label
             htmlFor={props.id}
             className="text-sm inline-block ml-0.5 ">

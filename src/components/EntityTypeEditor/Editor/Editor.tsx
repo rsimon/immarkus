@@ -66,12 +66,12 @@ export const Editor = (props: EditorProps) => {
 
   const validate = (): EntityType | undefined => {
     const allPropertiesValid = (entityType.properties || []).every(d => 
+      d.type === 'color' ||
       d.type === 'enum' ||
       d.type === 'external_authority' ||
       d.type === 'geocoordinate' ||
       d.type === 'measurement' ||
       d.type === 'number' ||
-      d.type === 'relation' ||
       d.type === 'text' ||
       d.type === 'uri');
 

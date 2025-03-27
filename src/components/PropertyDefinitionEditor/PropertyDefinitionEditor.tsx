@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
+import { CaseSensitive, Database, Hash, Link2, List, MapPin, Palette, Ruler, Spline } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
@@ -10,7 +10,6 @@ import { Textarea } from '@/ui/Textarea';
 import { PropertyPreview } from './PropertyPreview';
 import { EnumOptions } from './EnumOptions';
 import { ExternalAuthorityOptions } from './ExternalAuthorityOptions';
-import { RelationOptions } from './RelationOptions';
 import { TextOptions } from './TextOptions';
 import {
   Select,
@@ -59,14 +58,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
     const { name, type } = edited;
 
     // Validate
-    if (name && type) {
-      // Should refactor this, so that each relation
-      // can provide its own validity check
-      const isValidIfRelation = type !== 'relation' ||
-        (edited.targetType && edited.labelProperty);
-
-      if (isValidIfRelation && !nameError)
-        props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
+    if (name && type && !nameError) {
+      props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
     } else {
       // TODO error handling
     }
@@ -136,6 +129,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 <SelectItem value="measurement">
                   <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> Measurement
                 </SelectItem>
+                <SelectItem value="color">
+                  <Palette className="inline w-4 h-4 mr-1.5 mb-0.5" /> Color
+                </SelectItem>
                 <SelectItem value="external_authority">
                   <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
                 </SelectItem>
@@ -151,23 +147,17 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <ExternalAuthorityOptions 
               definition={edited} 
               onUpdate={setEdited} />
-          ) : edited.type === 'relation' ? (
-            <RelationOptions
-              definition={edited} 
-              onUpdate={setEdited} />
           ) : edited.type === 'text' && (
             <TextOptions
               definition={edited}
               onUpdate={setEdited} />
           )}
 
-          {edited.type !== 'relation' && (
-            <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
-              <Switch 
-                checked={Boolean(edited.multiple)}
-                onCheckedChange={onCheckMultiple}/> Allow multiple values
-            </div>
-          )}
+          <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
+            <Switch 
+              checked={Boolean(edited.multiple)}
+              onCheckedChange={onCheckMultiple}/> Allow multiple values
+          </div>
 
           <div className="mt-3">
             <Label 

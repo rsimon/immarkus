@@ -9,15 +9,14 @@ import { EntityTypeActions } from './EntityTypeActions';
 import { 
   CaseSensitive, 
   ChevronRight, 
-  Copy, 
   CopyPlus, 
   Database, 
   Hash, 
   Link2, 
   List, 
   MapPin, 
-  Ruler, 
-  Spline 
+  Palette, 
+  Ruler
 } from 'lucide-react';
 
 import './EntityTypesTable.css';
@@ -90,7 +89,9 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
         <span key={property.name}
           className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs whitespace-nowrap
             mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
-          {property.type === 'enum' ? (
+          {property.type === 'color' ? (
+            <Palette className="w-3 h-3 mr-1" />
+          ) : property.type === 'enum' ? (
             <List className="w-3 h-3 mr-0.5" />
           ): property.type === 'external_authority' ? (
             <Database className="w-3 h-3 mr-1" />
@@ -100,8 +101,6 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
             <Ruler className="w-3 h-3 mr-1" />
           ) : property.type === 'number' ? (
             <Hash className="w-3 h-3 mr-0.5" />
-          ) : property.type === 'relation' ? (
-            <Spline className="w-3 h-3 mr-0.5" />
           ) : property.type === 'text' ? (
             <CaseSensitive className="w-4 h-4 mr-0.5" />
           ) : property.type === 'uri' ? (

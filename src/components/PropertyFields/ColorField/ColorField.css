@@ -1,0 +1,3 @@
+.color-picker * {
+  cursor: url("/images/picker.svg") 4 16, auto !important;
+}
