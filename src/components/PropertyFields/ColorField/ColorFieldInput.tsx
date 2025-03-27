@@ -12,7 +12,7 @@ interface ColorFieldInputProps {
 
   className?: string;
 
-  value: string;
+  value?: string;
 
   onChange(value?: string): void;
 
@@ -21,8 +21,6 @@ interface ColorFieldInputProps {
 }
 
 export const ColorFieldInput = (props: ColorFieldInputProps) => {
-
-  const className = cn(props.className, 'text-center');
 
   const value = props.onChange ? props.value || '' : props.value;
 
@@ -41,6 +39,10 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
   }, [value]);
 
   useEffect(() => props.onSample(isSampling), [isSampling]);
+
+  const isValid = !value || isValidColor(value);
+
+  const className = cn(props.className, 'text-center', !isValid && 'outline-red-500 border-red-500');
 
   const onToggle = (pressed: boolean) => {
     if (pressed)

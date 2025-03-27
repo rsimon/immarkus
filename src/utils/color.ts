@@ -1,3 +1,5 @@
+import chroma from 'chroma-js';
+
 export const DEFAULT_COLOR = '#c2c2c2';
 
 export const isValidColor = (color?: string) => {
@@ -16,7 +18,9 @@ export const getRandomColor = () => {
 }
 
 export const getBrightness = (color: string) => {
-  const hexColor = color.replace(/^#/, '');
+  if (!isValidColor(color)) return 1;
+
+  const hexColor = chroma(color).hex().replace(/^#/, '');
 
   const r = parseInt(hexColor.slice(0, 2), 16) / 255;
   const g = parseInt(hexColor.slice(2, 4), 16) / 255;
