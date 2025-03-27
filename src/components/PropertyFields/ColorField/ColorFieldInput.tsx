@@ -1,13 +1,12 @@
-import { CSSProperties, useMemo } from 'react';
+import { CSSProperties, useEffect, useMemo } from 'react';
 import chroma from 'chroma-js';
-import { cn } from '@/ui/utils';
+import { X } from 'lucide-react';
+import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
+import { cn } from '@/ui/utils';
 import { getBrightness, isValidColor } from '@/utils/color';
 import { useColorSampling } from './useColorSampling';
 import { ColorFieldInputToggle } from './ColorFieldInputToggle';
-import { PickerCursor } from './PickerCursor';
-import { Button } from '@/ui/Button';
-import { X } from 'lucide-react';
 
 interface ColorFieldInputProps {
 
@@ -16,6 +15,8 @@ interface ColorFieldInputProps {
   value: string;
 
   onChange(value?: string): void;
+
+  onSample(isSampling: boolean): void;
 
 }
 
@@ -39,10 +40,12 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
     return { backgroundColor, borderColor, color };
   }, [value]);
 
+  useEffect(() => props.onSample(isSampling), [isSampling]);
+
   const onToggle = (pressed: boolean) => {
     if (pressed)
       startSampling();
-    else 
+    else
       stopSampling();
   }
 
@@ -86,10 +89,6 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
             <X className="size-4" />
           </Button>
         </div>
-      )}
-
-      {isSampling && (
-        <PickerCursor />
       )}
     </div>
   )
