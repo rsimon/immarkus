@@ -45,7 +45,7 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
   return (
     <div className="relative w-full">
       <div className="relative">
-        {false ? (
+        {isSampling ? (
           <div 
             className="h-9 bg-transparent text-muted-foreground rounded-md items-center text-sm flex justify-center border border-input border-dashed"
             style={{ backgroundColor: value }}>
@@ -66,10 +66,6 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
           pressed={isSampling}
           onPressedChange={onToggle} />
       </div>
-
-      {isSampling && (
-        <PickerCursor />
-      )}
     </div>
   )
 

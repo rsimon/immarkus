@@ -35,7 +35,16 @@ export const useColorSampling = (onSample: (color: string) => void) => {
     const addClickHandler = (viewer: OpenSeadragon.Viewer) => {
       const canvas = viewer.drawer.canvas as HTMLCanvasElement;
 
-      const onClick = (event: PointerEvent) => { 
+      let pointerDownTime = 0;
+
+      const onPointerDown = (event: PointerEvent) => { 
+        pointerDownTime = Date.now();
+      }
+
+      const onPointerUp = (event: PointerEvent) => {
+        const dt = Date.now() - pointerDownTime;
+        if (dt > 300) return;
+
         const { offsetX: x, offsetY: y } = event;
 
         const pixel = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
@@ -46,10 +55,12 @@ export const useColorSampling = (onSample: (color: string) => void) => {
         onSample(hex);
       }
 
-      viewer.element.addEventListener('click', onClick);
+      viewer.element.addEventListener('pointerdown', onPointerDown);
+      viewer.element.addEventListener('pointerup', onPointerUp);
 
       return () => {
-        viewer?.element && viewer.element.removeEventListener('click', onClick);
+        viewer?.element && viewer.element.removeEventListener('pointerdown', onPointerDown);
+        viewer?.element && viewer.element.removeEventListener('pointerup', onPointerUp);
       }
     }
 
