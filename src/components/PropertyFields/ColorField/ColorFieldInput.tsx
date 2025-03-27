@@ -6,6 +6,8 @@ import { getBrightness, isValidColor } from '@/utils/color';
 import { useColorSampling } from './useColorSampling';
 import { ColorFieldInputToggle } from './ColorFieldInputToggle';
 import { PickerCursor } from './PickerCursor';
+import { Button } from '@/ui/Button';
+import { X } from 'lucide-react';
 
 interface ColorFieldInputProps {
 
@@ -22,6 +24,8 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
   const className = cn(props.className, 'text-center');
 
   const value = props.onChange ? props.value || '' : props.value;
+
+  const brightness = useMemo(() => value ? getBrightness(value) : 1, [value]);
 
   const { startSampling, stopSampling, isSampling } = useColorSampling(props.onChange);
 
@@ -42,6 +46,10 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
       stopSampling();
   }
 
+  const onClear = () => {
+    props.onChange && props.onChange(undefined);
+  }
+
   return (
     <div className="relative w-full">
       <div className="relative">
@@ -60,12 +68,24 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
         )}
       </div>
 
-      <div className="absolute right-1 top-0 h-full flex items-center"> 
+      <div className="absolute left-1 top-0 h-full flex items-center"> 
         <ColorFieldInputToggle
           colorValue={value}
           pressed={isSampling}
           onPressedChange={onToggle} />
       </div>
+
+      {Boolean(value) && (
+        <div className="absolute right-1 top-0 h-full flex items-center"> 
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(brightness < 0.5 && 'text-white', 'rounded p-1.5 h-auto w-auto')}
+            onClick={onClear}>
+            <X className="size-4" />
+          </Button>
+        </div>
+      )}
     </div>
   )
 
