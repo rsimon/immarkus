@@ -47,6 +47,7 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
   }
 
   const onClear = () => {
+    stopSampling();
     props.onChange && props.onChange(undefined);
   }
 
@@ -68,7 +69,7 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
         )}
       </div>
 
-      <div className="absolute left-1 top-0 h-full flex items-center"> 
+      <div className="absolute left-1 top-0 h-full flex items-center cursor-pointer!"> 
         <ColorFieldInputToggle
           colorValue={value}
           pressed={isSampling}
@@ -80,11 +81,15 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className={cn(brightness < 0.5 && 'text-white', 'rounded p-1.5 h-auto w-auto')}
+            className={cn(brightness < 0.5 && 'text-white', 'cursor-pointer! rounded p-1.5 h-auto w-auto')}
             onClick={onClear}>
             <X className="size-4" />
           </Button>
         </div>
+      )}
+
+      {isSampling && (
+        <PickerCursor />
       )}
     </div>
   )

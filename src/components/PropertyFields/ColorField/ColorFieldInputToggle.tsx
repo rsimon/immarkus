@@ -21,7 +21,7 @@ export const ColorFieldInputToggle = (props: ColorFieldInputToggleProps) => {
     return getBrightness(props.colorValue);
   }, [props.colorValue]);
 
-  const className = cn('h-7 px-2 rounded hover:text-black', brightness < 0.5 && 'text-white');
+  const className = cn('h-7 px-2 rounded hover:text-black cursor-pointer!', brightness < 0.5 && 'text-white');
 
   return (
     <Toggle

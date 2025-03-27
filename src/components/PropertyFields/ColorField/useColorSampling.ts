@@ -9,10 +9,10 @@ export const useColorSampling = (onSample: (color: string) => void) => {
 
   const viewerMap = useViewers();
 
-  const viewers = useMemo(() => Array.from(viewerMap.values()), [viewerMap]);
+  const viewers = useMemo(() => viewerMap ? Array.from(viewerMap.values()) : [], [viewerMap]);
 
   const manifold = useAnnotoriousManifold();
-
+  
   const [_, setUnsubscribe] = useState<Array<() => void>>([]);
 
   const [isSampling, setIsSampling] = useState(false); 
@@ -23,6 +23,8 @@ export const useColorSampling = (onSample: (color: string) => void) => {
   });
 
   const stopSampling = useCallback(() => {
+    if (!manifold) return;
+    
     setIsSampling(false);
 
     manifold.annotators.forEach(anno => 
@@ -71,6 +73,8 @@ export const useColorSampling = (onSample: (color: string) => void) => {
   }, [viewers, onSample]);
 
   const startSampling = useCallback(() => {
+    if (!manifold) return;
+
     setIsSampling(true);
 
     manifold.annotators.forEach(anno => 
