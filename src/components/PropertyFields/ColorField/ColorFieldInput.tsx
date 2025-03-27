@@ -1,11 +1,11 @@
+import { CSSProperties, useMemo } from 'react';
 import chroma from 'chroma-js';
-import { Pipette } from 'lucide-react';
 import { cn } from '@/ui/utils';
 import { Input } from '@/ui/Input';
-import { useColorSampling } from './useColorSampling';
 import { getBrightness, isValidColor } from '@/utils/color';
-import { CSSProperties, useMemo } from 'react';
-import { Toggle } from '@/ui/Toggle';
+import { useColorSampling } from './useColorSampling';
+import { ColorFieldInputToggle } from './ColorFieldInputToggle';
+import { PickerCursor } from './PickerCursor';
 
 interface ColorFieldInputProps {
 
@@ -19,11 +19,11 @@ interface ColorFieldInputProps {
 
 export const ColorFieldInput = (props: ColorFieldInputProps) => {
 
-  const className = cn(props.className, 'mt-0.5 text-center');
+  const className = cn(props.className, 'text-center');
 
   const value = props.onChange ? props.value || '' : props.value;
 
-  const { toggleSampling, isSampling } = useColorSampling(props.onChange);
+  const { startSampling, stopSampling, isSampling } = useColorSampling(props.onChange);
 
   const style: CSSProperties = useMemo(() => {
     if (!isValidColor(value)) return;
@@ -35,10 +35,17 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
     return { backgroundColor, borderColor, color };
   }, [value]);
 
+  const onToggle = (pressed: boolean) => {
+    if (pressed)
+      startSampling();
+    else 
+      stopSampling();
+  }
+
   return (
     <div className="relative w-full">
       <div className="relative">
-        {isSampling ? (
+        {false ? (
           <div 
             className="h-9 bg-transparent text-muted-foreground rounded-md items-center text-sm flex justify-center border border-input border-dashed"
             style={{ backgroundColor: value }}>
@@ -53,22 +60,16 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
         )}
       </div>
 
-      <div className="absolute right-1 top-0.5 bottom-0 flex items-center"> 
-        <Toggle
-          type="button"
-          className={cn('h-auto w-auto p-1 rounded hover:bg-black/10')}
-          style={{
-            backgroundColor: (isSampling && value)
-              ? chroma(value).darken(2).hex() : undefined
-          }}
-          onClick={toggleSampling}>
-          <Pipette
-            style={{
-              color: (isSampling && value) ? '#fff' : style.color
-            }}
-            className={cn('w-5.5 h-5.5 p-1', !isSampling && 'hover:text-black')} />
-        </Toggle>
+      <div className="absolute right-1 top-0 h-full flex items-center"> 
+        <ColorFieldInputToggle
+          colorValue={value}
+          pressed={isSampling}
+          onPressedChange={onToggle} />
       </div>
+
+      {isSampling && (
+        <PickerCursor />
+      )}
     </div>
   )
 

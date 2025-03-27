@@ -2,6 +2,7 @@ import { PropertyDefinition } from '@/model';
 import { BasePropertyField } from '../BasePropertyField';
 import { removeEmpty } from '../removeEmpty';
 import { ColorFieldInput } from './ColorFieldInput';
+import { useState } from 'react';
 
 interface ColorFieldProps {
 
