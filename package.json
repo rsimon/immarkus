@@ -28,7 +28,7 @@
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.2.0",
     "@annotorious/plugin-connectors-react": "^0.3.0",
-    "@annotorious/plugin-segment-anything": "file:../../annotorious/plugin-segment-anything",
+    "@annotorious/plugin-segment-anything": "^0.2.1",
     "@annotorious/plugin-tools": "^1.0.2",
     "@annotorious/react": "^3.3.3",
     "@annotorious/react-manifold": "^3.3.3",
