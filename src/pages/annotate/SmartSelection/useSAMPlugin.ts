@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { usePluginManifold } from '@annotorious/react-manifold';
 import { DownloadProgress, mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 
+/*
 const purgeModel = async () => {
   const root = await navigator.storage.getDirectory();
 
@@ -12,6 +13,7 @@ const purgeModel = async () => {
     console.log('done');
   });
 }
+*/
 
 export const useSAMPlugin = () => {
 
