@@ -4,6 +4,7 @@ import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X }
 import { Button } from '@/ui/Button';
 import { AnnotationMode } from '../AnnotationMode';
 import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
+import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
 import {
   Accordion,
@@ -11,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+
 
 interface SmartSelectionProps {
 
@@ -28,12 +30,28 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const { plugin, busy, error } = useSAMPlugin();
+  const [tab, setTab] = useState('click-and-refine');
+
+  const { 
+    plugin, 
+    initialized, 
+    downloading,
+    downloadProgress,
+    busy, 
+    error 
+  } = useSAMPlugin();
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
     setTimeout(() => el.current.style.translate = null, 0);
   }, []);
+
+  useEffect(() => {
+    if (!plugin) return;
+
+    if (tab !== 'click-and-refine')
+      plugin.stop();
+  }, [plugin, tab]);
 
   useEffect(() => {
     if (!plugin?.destroy) return;
@@ -75,6 +93,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       {('gpu' in navigator && !error) ? (
         <Accordion 
           type="single"
+          value={tab}
+          onValueChange={setTab}
           defaultValue="click-and-refine">
           <AccordionItem value="click-and-refine" defaultChecked={true}>
             <AccordionTrigger 
@@ -85,11 +105,18 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </AccordionTrigger>
 
             <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
-              <ClickAndRefineSection 
-                plugin={plugin}
-                busy={busy}
-                enabled={props.mode === 'smart'} 
-                onSetEnabled={onSetEnabled} />
+              {initialized ? (
+                <ClickAndRefineSection 
+                  plugin={plugin}
+                  busy={busy}
+                  enabled={props.mode === 'smart'} 
+                  onSetEnabled={onSetEnabled} />
+              ) : (
+                <SAMInitializing
+                  plugin={plugin}
+                  downloading={downloading}
+                  progress={downloadProgress} />
+              )}
             </AccordionContent>
           </AccordionItem>
 
