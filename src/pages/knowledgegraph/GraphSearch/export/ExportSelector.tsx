@@ -65,7 +65,9 @@ export const ExportSelector = (props: ExportSelectorProps) => {
 
   const onExportAnnotations = () => {
     const matches = props.graph.nodes.filter(n => props.query!(n));
-    const images = matches.filter(n => n.type === 'IMAGE').map(n => store.getImage(n.id));
+    const images = matches.filter(n => n.type === 'IMAGE').map(n => 
+      n.id.startsWith('iiif:') ? store.getCanvas(n.id) : store.getImage(n.id));
+
     exportAnnotations(images, 'search_results_annotations.xlsx');
   }
 
