@@ -50,6 +50,11 @@ export const exportFolders = (store: Store, folderIds: string[], onProgress: (pr
     const folder : Folder | IIIFManifestResource = 
       id.startsWith('iiif:') ? store.getIIIFResource(id.substring(5)) as IIIFManifestResource : store.getFolder(id) as Folder;
 
+    if (!folder) {
+      console.warn(`Missing folder: ${id}`);
+      return Promise.resolve(rows);
+    } 
+
     const meta = 'uri' in folder
       ? getManifestMetadata(store, folder.id).then(t => t.annotation)
       : store.getFolderMetadata(folder.handle);
