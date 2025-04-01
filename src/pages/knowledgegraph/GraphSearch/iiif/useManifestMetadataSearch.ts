@@ -35,7 +35,7 @@ const buildManifestIndexRecords = (manifests: { id: string, manifest: CozyManife
       const existing = distinct.find(record => record.stringified === stringified);
       if (existing) {
         return distinct.map(record => record === existing
-          ? { ...record, manifest: [...record.manifests, t ]}
+          ? { ...record, manifests: [...record.manifests, t ]}
           : record);
       } else {
         return [
