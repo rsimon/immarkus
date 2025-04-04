@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertCircle, Check, XCircle } from 'lucide-react';
-import { EntityType, MetadataSchema } from '@/model';
+import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { Alert, AlertDescription, AlertTitle } from '@/ui/Alert';
 import { Dialog, DialogContent, DialogTrigger } from '@/ui/Dialog';
@@ -27,7 +27,7 @@ interface DataModelImportProps {
 
   children?: ReactNode;
 
-  type: 'ENTITY_TYPES' | 'FOLDER_SCHEMAS' | 'IMAGE_SCHEMAS';
+  type: 'ENTITY_TYPES' | 'RELATIONSHIP_TYPES' | 'FOLDER_SCHEMAS' | 'IMAGE_SCHEMAS';
 
   open?: boolean;
 
@@ -55,6 +55,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
   const { 
     importEntityTypes, 
+    importRelationshipTypes,
     importFolderSchemas, 
     importImageSchemas 
   } = useDataModelImport();
@@ -70,11 +71,16 @@ export const DataModelImport = (props: DataModelImportProps) => {
       props.onOpenChange(open);
   }
 
-  const importToModel = (items: EntityType[] | MetadataSchema[]) => {
+  const importToModel = (items: EntityType[] | RelationshipType[] | MetadataSchema[]) => {
     setOpen(false);
 
-    const importItems = 
+    const importItems: (
+      items: EntityType[] | RelationshipType[] | MetadataSchema[], 
+      replace: boolean,
+      mergePolicyKeep?: boolean
+    ) => Promise<void> = 
       props.type === 'ENTITY_TYPES' ? importEntityTypes :
+      props.type === 'RELATIONSHIP_TYPES' ? importRelationshipTypes :
       props.type === 'FOLDER_SCHEMAS' ? importFolderSchemas :
       props.type === 'IMAGE_SCHEMAS' ? importImageSchemas :
       undefined;
@@ -83,7 +89,6 @@ export const DataModelImport = (props: DataModelImportProps) => {
       // Should never happen;
       return;
 
-    // @ts-ignore
     importItems(items, replace, keepExisting === 'keep')
       .then(() => {
         toast({
@@ -137,7 +142,8 @@ export const DataModelImport = (props: DataModelImportProps) => {
           <h2 className="mb-2 font-semibold">
             Import {props.type === 'ENTITY_TYPES' 
               ? 'Entity Classes' : props.type === 'FOLDER_SCHEMAS' 
-              ? 'Folder Schemas' : 'Image Schemas'}
+              ? 'Folder Schemas' : props.type === 'IMAGE_SCHEMAS'
+              ? 'Image Schemas' : 'Relationship Types'}
           </h2>
 
           <div className="py-4">

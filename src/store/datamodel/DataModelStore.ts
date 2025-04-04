@@ -24,7 +24,9 @@ export interface DataModelStore extends DataModel, EntityTypeTree {
 
   upsertRelationshipType(type: RelationshipType): Promise<void>;
 
-  removeRelationShipType(name: string): Promise<void>;
+  removeRelationshipType(name: string): Promise<void>;
+
+  setRelationshipTypes(types: RelationshipType[]): Promise<void>;
 
   // Folder metadata schemas
   addFolderSchema(schema: MetadataSchema): Promise<void>;
@@ -198,7 +200,7 @@ export const loadDataModel = (
     return save();
   }
 
-  const removeRelationShipType = (name: string) => {
+  const removeRelationshipType = (name: string) => {
     relationshipTypes = relationshipTypes.filter(t => t.name !== name);
     return save();
   }
@@ -255,6 +257,11 @@ export const loadDataModel = (
     return save();
   }
 
+  const setRelationshipTypes = (types: RelationshipType[]) => {
+    relationshipTypes = [...types];
+    return save();
+  }
+
   resolve({
     ...tree, 
     get entityTypes() { return entityTypes },
@@ -274,10 +281,11 @@ export const loadDataModel = (
     removeEntityType,
     removeFolderSchema,
     removeImageSchema,
-    removeRelationShipType,
+    removeRelationshipType,
     setEntityTypes,
     setFolderSchemas,
     setImageSchemas,
+    setRelationshipTypes,
     updateEntityType,
     updateFolderSchema,
     updateImageSchema,
