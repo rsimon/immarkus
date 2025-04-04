@@ -1,5 +1,5 @@
 import AJV, { ValidateFunction } from 'ajv';
-import { EntityType, MetadataSchema } from '@/model';
+import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 
 const ajv = new AJV();
@@ -77,6 +77,23 @@ export const useDataModelImport = () => {
     }
   }
 
+  const importRelationshipTypes = (types: RelationshipType[], replace: boolean, mergePolicyKeep?: boolean) => {
+    if (replace) {
+      return model.setRelationshipTypes(types);
+    } else {
+      const toAdd = types.filter(t => !model.getRelationshipType(t.name));
+
+      const next = mergePolicyKeep
+        // Keep existing
+        ? model.relationshipTypes
+        // Replace existing
+        : model.relationshipTypes.map(existing => types.find(t => t.name === existing.name) || existing)
+      
+      const merged = [...next, ...toAdd];
+      return model.setRelationshipTypes(merged);
+    }
+  }
+
   const mergeSchemas = (current: MetadataSchema[], toMerge: MetadataSchema[], mergePolicyKeep?: boolean) => {
     const toAdd = toMerge.filter(schema => !current.some(s => s.name === schema.name));
 
@@ -101,8 +118,9 @@ export const useDataModelImport = () => {
 
   return { 
     importEntityTypes,
+    importRelationshipTypes,
     importFolderSchemas,
-    importImageSchemas 
+    importImageSchemas
   };
   
 }

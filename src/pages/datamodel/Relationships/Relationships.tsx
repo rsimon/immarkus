@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { ArrowDownToDot, ArrowUpFromDot, Check, Spline } from 'lucide-react';
+import { ArrowDownToDot, ArrowUpFromDot, Check, Import, Spline } from 'lucide-react';
+import { DataModelImport } from '@/components/DataModelImport';
 import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
@@ -19,12 +20,12 @@ export const Relationships = () => {
 
   const model = useDataModel();
 
-  const { relationshipTypes, removeRelationShipType } = model;
+  const { relationshipTypes, removeRelationshipType } = model;
 
   const [edited, setEdited] = useState<RelationshipType | undefined>();
 
   const onDelete = (name: string) => {
-    removeRelationShipType(name).catch(error => {
+    removeRelationshipType(name).catch(error => {
       console.error(error);
     });
   }
@@ -124,6 +125,12 @@ export const Relationships = () => {
               <Spline size={16} className="mr-2" /> Add Relationship Type
             </Button>
           </RelationshipTypeEditor>
+
+          <DataModelImport type="RELATIONSHIP_TYPES">
+            <Button variant="outline">
+              <Import className="h-4 w-4 mr-2" /> Import Model
+            </Button>
+          </DataModelImport>
         </div>
       </div>
 

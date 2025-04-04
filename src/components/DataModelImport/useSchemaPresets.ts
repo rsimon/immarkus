@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { ModelPreset, useRuntimeConfig } from '@/RuntimeConfig';
 import { MetadataSchema } from '@/model';
 
-export const useSchemaPresets = (type: 'ENTITY_TYPES' | 'FOLDER_SCHEMAS' | 'IMAGE_SCHEMAS') => {
+export const useSchemaPresets = (
+  type: 'ENTITY_TYPES' | 'FOLDER_SCHEMAS' | 'IMAGE_SCHEMAS' | 'RELATIONSHIP_TYPES'
+) => {
 
   const config = useRuntimeConfig();
 
