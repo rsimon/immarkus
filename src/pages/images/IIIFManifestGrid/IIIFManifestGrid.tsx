@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate } from 'react-router-dom';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
-import { CozyCanvas } from 'cozy-iiif';
+import { CozyCanvas, CozyTOCNode } from 'cozy-iiif';
 import { useManifestAnnotations } from '@/store/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { CanvasGridItem, GridItem } from '../Types';
@@ -28,6 +28,23 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
   const navigate = useNavigate();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
+
+  useEffect(() => {
+    if (!parsedManifest) return;
+
+    const toc = parsedManifest.getTableOfContents();
+
+    const logRecursive = (node: CozyTOCNode) => {
+      const indent = ' '.repeat(node.level);
+      const isFolder = node.children.length > 1;
+      console.log(`${indent}- ${node.getLabel()}${isFolder ? '[FOLDER]' : ''}`);
+
+      const { children } = node;
+      children.filter(c => c.type === 'range').forEach(logRecursive);
+    }
+    
+    toc.forEach(logRecursive);
+  }, [parsedManifest]);
 
   const annotations = useManifestAnnotations(props.manifest.id, { 
     type: 'image',
