@@ -26,10 +26,14 @@ export const Images = () => {
   const currentFolder: Folder | RootFolder | IIIFManifestResource = useMemo(() => {
     if (!folderId) return store.getRootFolder();
 
+    // File system folder
     const folder = store.getFolder(folderId);
     if (folder) return folder;
 
-    const manifest = store.getIIIFResource(folderId);
+    // IIIF manifest - may contain a range ID after the @
+    const [manifestId, _] = folderId.split('@');
+
+    const manifest = store.getIIIFResource(manifestId);
     if (manifest?.type === 'PRESENTATION_MANIFEST') return manifest;
   }, [folderId, store]);
  

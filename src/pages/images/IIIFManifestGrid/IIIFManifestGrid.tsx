@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import murmur from 'murmurhash';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
-import { CozyCanvas, CozyTOCNode } from 'cozy-iiif';
+import { CozyCanvas } from 'cozy-iiif';
 import { useManifestAnnotations } from '@/store/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { CanvasGridItem, GridItem } from '../Types';
@@ -24,27 +24,14 @@ interface IIIFManifestGridProps {
 }
 
 export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
+
+  const { folder: folderId } = useParams();
+
+  const [_, rangeId] = useMemo(() => folderId.split('@'), [folderId]);
   
   const navigate = useNavigate();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
-
-  useEffect(() => {
-    if (!parsedManifest) return;
-
-    const toc = parsedManifest.getTableOfContents();
-
-    const logRecursive = (node: CozyTOCNode) => {
-      const indent = ' '.repeat(node.level);
-      const isFolder = node.children.length > 1;
-      console.log(`${indent}- ${node.getLabel()}${isFolder ? '[FOLDER]' : ''}`);
-
-      const { children } = node;
-      children.filter(c => c.type === 'range').forEach(logRecursive);
-    }
-    
-    toc.forEach(logRecursive);
-  }, [parsedManifest]);
 
   const annotations = useManifestAnnotations(props.manifest.id, { 
     type: 'image',
@@ -87,11 +74,59 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
       );
   }
 
-  const filtered: CanvasInformation[] = useMemo(() => {
-    if (!props.hideUnannotated) return props.manifest.canvases;
+  // For testing: 3370436377 ("Binding")
+  const gridItems = useMemo(() => {
+    if (!parsedManifest) return [];
 
-    return props.manifest.canvases.filter(c => annotationsByCanvas[c.id] > 0);
-  }, [props.manifest, props.hideUnannotated, annotationsByCanvas]);
+    const toc = parsedManifest.getTableOfContents();
+
+    // ToC viewing mode unless all ToC nodes are leaf nodes
+    const renderAsToC = !toc.every(node => {
+      // A true leaf node, with no children
+      const isLeafNode = node.children.length === 0;
+
+      // A defacto leaf, with only a single child that's a canvas.
+      const isLeafRange = node.children.length === 1 && node.children[0].type === 'canvas';
+
+      return isLeafNode || isLeafRange;
+    });
+
+    console.log('render as ToC', renderAsToC);
+
+    if (renderAsToC) {
+      // Current 'folder root' range, if any
+      const currentRange = rangeId ? parsedManifest.structure.find(range => {
+        const hash = murmur.v3(range.id);
+        return rangeId === hash.toString();
+      }) : undefined;
+
+      console.log('current range:', currentRange.getLabel());
+
+      if (currentRange) {
+        // We'll flatten child ranges that have 
+        // - only a single canvas child 
+        // - and no nested child ranges
+        const flattenedCanvases = currentRange.ranges.reduce<CozyCanvas[]>((agg, range) => {
+          const shouldFlatten = range.canvases.length === 1 && range.ranges.length === 0;
+          return shouldFlatten ? [...agg, ...range.canvases] : agg;
+        }, currentRange.canvases);
+
+        const canvasesInThisRange = new Set(flattenedCanvases.map(c => c.id));
+        return props.manifest.canvases.filter(info => canvasesInThisRange.has(info.uri));
+      } else {
+        return [];
+      }
+    } else {
+      // No ToC - render all canvases flat
+      return props.manifest.canvases;
+    }
+  }, [rangeId, props.manifest, parsedManifest])
+
+  const filtered: CanvasInformation[] = useMemo(() => {
+    if (!props.hideUnannotated) return gridItems;
+
+    return gridItems.filter(c => annotationsByCanvas[c.id] > 0);
+  }, [gridItems, props.hideUnannotated, annotationsByCanvas]);
 
   return (
     <div className="item-grid">
