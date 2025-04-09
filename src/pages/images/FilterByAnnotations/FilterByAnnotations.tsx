@@ -1,5 +1,5 @@
-import { MessageCircle, MessageCircleOff } from 'lucide-react';
 import clsx from 'clsx';
+import { MessageCircle, MessageCircleOff } from 'lucide-react';
 import { Toggle } from '@/ui/Toggle';
 
 interface FilterByAnnotationsProps {
