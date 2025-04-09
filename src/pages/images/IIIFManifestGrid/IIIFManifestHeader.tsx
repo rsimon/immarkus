@@ -30,7 +30,7 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
 
   const store = useStore();
 
-  const title = props.breadcrumbs.length > 0 
+  const title = (breadcrumbs && breadcrumbs.length) > 1 
     ? breadcrumbs[breadcrumbs.length - 1].getLabel()
     : manifest.name;
 
@@ -40,8 +40,10 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
   // - the manifest + breadcrumbs
   const path = [
     ...manifest.path.map(id => ({ id, label: store.getFolder(id).name })),
-    ...breadcrumbs.length > 0 ? [{ id: manifest.id, label: manifest.name }] : [], 
-    ...breadcrumbs.slice(0, -1).map(b => ({ id: `${manifest.id}@${murmur.v3(b.id)}`, label: b.getLabel() }))
+    ...(breadcrumbs && breadcrumbs.length) > 0 
+        ? [{ id: manifest.id, label: manifest.name }] : [], 
+    ...(breadcrumbs 
+        ? breadcrumbs.slice(0, -1).map(b => ({ id: `${manifest.id}@${murmur.v3(b.id)}`, label: b.getLabel() })) : [])
   ];
 
   return (
