@@ -7,7 +7,6 @@ import { ItemGrid } from './ItemGrid';
 import { MetadataDrawer } from './MetadataDrawer';
 import { GridItem, isPresentationManifest } from './Types';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
-import { PageHeader } from './PageHeader';
 
 export const Images = () => {
 
@@ -20,8 +19,6 @@ export const Images = () => {
   const navigate = useNavigate();
 
   const [hideUnannotated, setHideUnannotated] = useState(false);
-
-  const [filterQuery, setFilterQuery] = useState('');
 
   const currentFolder: Folder | RootFolder | IIIFManifestResource = useMemo(() => {
     if (!folderId) return store.getRootFolder();
@@ -53,27 +50,21 @@ export const Images = () => {
 
       <main className="page images flex flex-row p-0 overflow-x-hidden">
         <div className="grow px-12 py-6 overflow-y-auto">
-          <PageHeader 
-            folder={currentFolder} 
-            filterQuery={filterQuery}
-            hideUnannotated={hideUnannotated}
-            onShowMetadata={onShowFolderMetadata} 
-            onChangeFilterQuery={setFilterQuery} 
-            onChangeHideUnannotated={setHideUnannotated} />
-
           {isPresentationManifest(currentFolder) ? (
             <IIIFManifestGrid 
               manifest={currentFolder} 
-              filterQuery={filterQuery}
               hideUnannotated={hideUnannotated}
               selected={selected}
+              onShowMetadata={onShowFolderMetadata}
+              onChangeHideUnannotated={setHideUnannotated}
               onSelect={setSelected} />
-          ) : (
+          ) : (            
             <ItemGrid 
               folder={currentFolder}
-              filterQuery={filterQuery}
               hideUnannotated={hideUnannotated}
               selected={selected}
+              onShowMetadata={onShowFolderMetadata} 
+              onChangeHideUnannotated={setHideUnannotated}
               onSelect={setSelected} />
           )}
         </div>

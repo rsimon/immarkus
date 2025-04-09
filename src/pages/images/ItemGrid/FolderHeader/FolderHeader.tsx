@@ -1,43 +1,33 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, NotebookPen } from 'lucide-react';
-import { IIIFIcon } from '@/components/IIIFIcon';
-import { Folder, IIIFManifestResource, RootFolder } from '@/model';
+import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { isPresentationManifest, isRootFolder } from '../Types';
-import { IIIFImporter } from '../IIIFImporter';
-import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
-import { FilterByAnnotations } from './FilterByAnnotations';
+import { isRootFolder } from '../../Types';
+import { IIIFImporter } from '../../IIIFImporter';
+import { FilterByAnnotations } from '../../FilterByAnnotations';
 
-interface PageHeaderProps {
+interface FolderHeaderProps {
 
-  folder: Folder | RootFolder | IIIFManifestResource;
-
-  filterQuery: string;
+  folder: Folder | RootFolder;
 
   hideUnannotated: boolean;
 
   onShowMetadata(): void;
 
-  onChangeFilterQuery(query: string): void;
-
   onChangeHideUnannotated(hide: boolean): void;
 
 }
 
-export const PageHeader = (props: PageHeaderProps) => {
+export const FolderHeader = (props: FolderHeaderProps) => {
 
   const { folder } = props;
 
   const store = useStore();
 
   const images = useMemo(() => {
-    if (isPresentationManifest(folder)) {
-      return folder.canvases.length;
-    } else {
-      return store.getFolderContents(folder.handle)?.images.length || 0;
-    }
+    return store.getFolderContents(folder.handle)?.images.length || 0;
   }, [folder, store]);
 
   return (
@@ -54,7 +44,7 @@ export const PageHeader = (props: PageHeaderProps) => {
 
               <ChevronRight className="h-4 w-4" />
 
-              {folder.path.map((id, idx) => (
+              {(folder as Folder).path.map((id, idx) => (
                 <Fragment key={`${idx}-${id}`}>
                   <li key={`${idx}-${id}`}> 
                     <Link className="hover:underline" to={`/images/${id}`}>{store.getFolder(id).name}</Link>
@@ -73,14 +63,6 @@ export const PageHeader = (props: PageHeaderProps) => {
       </h2>
 
       <p className="text-sm text-muted-foreground flex gap-2 pt-1 items-center">
-        {isPresentationManifest(folder) && (
-          <>
-            <IIIFIcon
-              color
-              className="size-5 -translate-y-0.5" />
-            <span>·</span> 
-          </>
-        )}
         <span>{images} images</span>
         <span>·</span> 
         <Button 
@@ -90,18 +72,9 @@ export const PageHeader = (props: PageHeaderProps) => {
           <NotebookPen className="size-4" /> Metadata
         </Button>
 
-        {isPresentationManifest(folder) ? (
-          <>
-            <span>·</span> 
-            <IIIFOpenOtherViewer manifest={folder} />
-          </>
-        ) : (
-          <>
-            <span>·</span> 
-            <IIIFImporter 
-              folderId={'id' in folder ? folder.id : undefined} />
-          </>
-        )}
+        <span>·</span> 
+        <IIIFImporter 
+          folderId={'id' in folder ? folder.id : undefined} />
 
         <span>·</span>
         <FilterByAnnotations 

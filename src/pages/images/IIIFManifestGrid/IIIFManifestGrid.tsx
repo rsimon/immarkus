@@ -9,16 +9,19 @@ import { useManifestAnnotations } from '@/store/hooks';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { CanvasGridItem, GridItem } from '../Types';
 import { IIIFRangeItem } from './IIIFRangeItem';
+import { IIIFManifestHeader } from './IIIFManifestHeader';
 
 interface IIIFManifestGridProps {
 
   manifest: IIIFManifestResource;
 
-  filterQuery: string;
-
   hideUnannotated: boolean;
 
   selected?: GridItem;
+
+  onChangeHideUnannotated(hide: boolean): void;
+
+  onShowMetadata(): void;
 
   onSelect(item: CanvasGridItem): void;
 
@@ -61,8 +64,8 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     navigate(`/images/${props.manifest.id}@${id}`);
   }
 
-  const { folders, canvases } = useMemo(() => {
-    if (!parsedManifest) return { folders: [], canvases: [] };
+  const { folders, canvases, breadcrumbs } = useMemo(() => {
+    if (!parsedManifest) return { folders: [], canvases: [], breadcrumbs: [] };
 
     const toc = parsedManifest.getTableOfContents();
 
@@ -76,19 +79,24 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
       if (thisRange) {
         const thisNode = toc.getNode(thisRange.id);
+        
+        // Breadcrumbs start with the document itself, then all sub-foldders
+        const breadcrumbs = [
+
+          thisNode, ...toc.getBreadcrumbs(thisRange.id)];
+
         const { navItems, navSections: folders } = thisNode;
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases };
+        return { folders, canvases, breadcrumbs };
       } else if (!rangeId) {
-        // Root 
-        const { root } = toc;
+        const { root } = toc; // Root 
 
         const folders = root.filter(n => (n.navItems.length + n.navSections.length) > 0).map(n => n.source) as CozyRange[];
         const navItems = root.filter(n => (n.navItems.length + n.navSections.length) === 0);
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases };
+        return { folders, canvases, breadcrumbs: [] };
       } else {
         // Invalid range ID!
         return { folders: [], canvases: [] };
@@ -125,37 +133,45 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
   }
 
   return (
-    <div className="item-grid">
-      {parsedManifest ? (
-        <>
-          {folders.length > 0 && (
+    <div>
+      <IIIFManifestHeader
+        manifest={props.manifest} 
+        hideUnannotated={props.hideUnannotated} 
+        onChangeHideUnannotated={props.onChangeHideUnannotated}
+        onShowMetadata={props.onShowMetadata} />
+
+      <div className="item-grid">
+        {parsedManifest ? (
+          <>
+            {folders.length > 0 && (
+              <ul>
+                {folders.map((folder, idx) => (
+                  <li key={`${folder.id}:${idx}`}>
+                    <IIIFRangeItem 
+                      range={folder} 
+                      onOpen={() => onOpenRange(folder)} />
+                  </li>
+                ))}
+              </ul>
+            )}
             <ul>
-              {folders.map((folder, idx) => (
-                <li key={`${folder.id}:${idx}`}>
-                  <IIIFRangeItem 
-                    range={folder} 
-                    onOpen={() => onOpenRange(folder)} />
+              {filtered.map((canvas, idx) => (
+                <li key={`${canvas.id}:${idx}`}>
+                  {renderCanvasItem(canvas, parsedManifest.canvases.find(c => c.id === canvas.uri))}
                 </li>
               ))}
             </ul>
-          )}
+          </>
+        ) : (
           <ul>
-            {filtered.map((canvas, idx) => (
-              <li key={`${canvas.id}:${idx}`}>
-                {renderCanvasItem(canvas, parsedManifest.canvases.find(c => c.id === canvas.uri))}
+            {filtered.slice(0, 20).map(canvas => (
+              <li key={canvas.id}>
+                <Skeleton className="size-[178px] rounded-md shadow-sm" />
               </li>
             ))}
           </ul>
-        </>
-      ) : (
-        <ul>
-          {filtered.slice(0, 20).map(canvas => (
-            <li key={canvas.id}>
-              <Skeleton className="size-[178px] rounded-md shadow-sm" />
-            </li>
-          ))}
-        </ul>
-      )}
+        )}
+      </div>
     </div>
   )
 

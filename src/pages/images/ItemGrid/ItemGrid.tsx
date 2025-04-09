@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useImages, useStore } from '@/store';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
 import { isSingleImageManifest } from '@/utils/iiif';
+import { FolderHeader } from './FolderHeader';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
@@ -14,13 +15,15 @@ interface ItemGridProps {
 
   folder: Folder | RootFolder; 
 
-  filterQuery: string;
-
   hideUnannotated: boolean;
 
   selected?: GridItem;
 
+  onChangeHideUnannotated(hide: boolean): void;
+
   onSelect(item: GridItem): void;
+
+  onShowMetadata(): void;
 
 }
 
@@ -95,39 +98,47 @@ export const ItemGrid = (props: ItemGridProps) => {
   }, [props.hideUnannotated, loadedImages, annotationCounts]);
 
   return (
-    <div className="item-grid">
-      <ul>
-        {folders.map(folder => (
-          <li key={folder.id}>
-            <FolderItem
-              folder={folder} 
-              onOpen={() => onOpenFolder(folder)} 
-              onSelect={() => onSelectFolder(folder)}/>
-          </li>
-        ))}
+    <div>
+      <FolderHeader 
+        folder={props.folder} 
+        hideUnannotated={props.hideUnannotated}
+        onShowMetadata={props.onShowMetadata} 
+        onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
-        {filteredIIIFResources.map(resource => (
-          <li key={resource.id}>
-            {resource.type === 'PRESENTATION_MANIFEST' ? (
-              <IIIFManifestItem
-                resource={resource} 
-                onOpen={() => onOpenFolder(resource)} 
-                onSelect={onSelectManifest}/>
-            ) : null}
-          </li>
-        ))}
+      <div className="item-grid">
+        <ul>
+          {folders.map(folder => (
+            <li key={folder.id}>
+              <FolderItem
+                folder={folder} 
+                onOpen={() => onOpenFolder(folder)} 
+                onSelect={() => onSelectFolder(folder)}/>
+            </li>
+          ))}
 
-        {filteredImages.map(image => (
-          <li key={image.id}>
-            <ImageItem 
-              image={image} 
-              annotationCount={annotationCounts[image.id] || 0}
-              selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
-              onOpen={() => onOpenImage(image)} 
-              onSelect={() => onSelectImage(image)}/>
-          </li>
-        ))}
-      </ul>
+          {filteredIIIFResources.map(resource => (
+            <li key={resource.id}>
+              {resource.type === 'PRESENTATION_MANIFEST' ? (
+                <IIIFManifestItem
+                  resource={resource} 
+                  onOpen={() => onOpenFolder(resource)} 
+                  onSelect={onSelectManifest}/>
+              ) : null}
+            </li>
+          ))}
+
+          {filteredImages.map(image => (
+            <li key={image.id}>
+              <ImageItem 
+                image={image} 
+                annotationCount={annotationCounts[image.id] || 0}
+                selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
+                onOpen={() => onOpenImage(image)} 
+                onSelect={() => onSelectImage(image)}/>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
