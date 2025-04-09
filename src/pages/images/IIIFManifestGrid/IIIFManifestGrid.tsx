@@ -31,7 +31,7 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
   const { folder: folderId } = useParams();
 
-  const [canvasId, rangeId] = useMemo(() => folderId.split('@'), [folderId]);
+  const [_, rangeId] = useMemo(() => folderId.split('@'), [folderId]);
   
   const navigate = useNavigate();
 
@@ -72,23 +72,21 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     // ToC viewing mode unless all ToC nodes are leaf nodes
     const renderAsToC = !toc.root.every(node => node.navSections.length === 0);
     if (renderAsToC) {
-      const thisRange = rangeId ? parsedManifest.structure.find(range => {
+      const currentRange = rangeId ? parsedManifest.structure.find(range => {
         const hash = murmur.v3(range.id);
         return rangeId === hash.toString();
       }) : undefined;
 
-      if (thisRange) {
-        const thisNode = toc.getNode(thisRange.id);
+      if (currentRange) {
+        const thisNode = toc.getNode(currentRange.id);
         
         // Breadcrumbs start with the document itself, then all sub-foldders
-        const breadcrumbs = [
-
-          thisNode, ...toc.getBreadcrumbs(thisRange.id)];
+        const breadcrumbs = [...toc.getBreadcrumbs(currentRange.id)];
 
         const { navItems, navSections: folders } = thisNode;
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases, breadcrumbs };
+        return { folders, canvases, breadcrumbs, currentRange };
       } else if (!rangeId) {
         const { root } = toc; // Root 
 
@@ -136,6 +134,7 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
     <div>
       <IIIFManifestHeader
         manifest={props.manifest} 
+        breadcrumbs={breadcrumbs}
         hideUnannotated={props.hideUnannotated} 
         onChangeHideUnannotated={props.onChangeHideUnannotated}
         onShowMetadata={props.onShowMetadata} />
@@ -164,8 +163,8 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
           </>
         ) : (
           <ul>
-            {filtered.slice(0, 20).map(canvas => (
-              <li key={canvas.id}>
+            {Array.from({ length: Math.max(20, props.manifest.canvases.length) }).map((_, idx) => (
+              <li key={idx}>
                 <Skeleton className="size-[178px] rounded-md shadow-sm" />
               </li>
             ))}

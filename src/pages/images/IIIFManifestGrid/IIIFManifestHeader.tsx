@@ -1,5 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import murmur from 'murmurhash';
+import { CozyTOCNode } from 'cozy-iiif';
 import { ChevronRight, NotebookPen } from 'lucide-react';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource } from '@/model';
@@ -9,6 +11,8 @@ import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
 import { FilterByAnnotations } from '../FilterByAnnotations';
 
 interface IIIFManifestHeaderProps {
+  
+  breadcrumbs: CozyTOCNode[];
 
   manifest: IIIFManifestResource;
 
@@ -22,9 +26,23 @@ interface IIIFManifestHeaderProps {
 
 export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
 
-  const { manifest } = props;
+  const { manifest, breadcrumbs } = props;
 
   const store = useStore();
+
+  const title = props.breadcrumbs.length > 0 
+    ? breadcrumbs[breadcrumbs.length - 1].getLabel()
+    : manifest.name;
+
+  // The path is:
+  // - the actual path on the file system 
+  // - if there are breadcrumbs: 
+  // - the manifest + breadcrumbs
+  const path = [
+    ...manifest.path.map(id => ({ id, label: store.getFolder(id).name })),
+    ...breadcrumbs.length > 0 ? [{ id: manifest.id, label: manifest.name }] : [], 
+    ...breadcrumbs.slice(0, -1).map(b => ({ id: `${manifest.id}@${murmur.v3(b.id)}`, label: b.getLabel() }))
+  ];
 
   return (
     <div className="space-y-1 grow">
@@ -37,10 +55,12 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
 
             <ChevronRight className="h-4 w-4" />
 
-            {manifest.path.map((id, idx) => (
+            {path.map(({ id, label }, idx) => (
               <Fragment key={`${idx}-${id}`}>
-                <li key={`${idx}-${id}`}> 
-                  <Link className="hover:underline" to={`/images/${id}`}>{store.getFolder(id).name}</Link>
+                <li 
+                  key={`${idx}-${id}`}
+                  className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[20ch]">
+                  <Link className="hover:underline" to={`/images/${id}`}>{label}</Link>
                 </li>
 
                 <ChevronRight className="h-4 w-4" />
@@ -51,7 +71,7 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
       </h1>
 
       <h2 className="text-3xl font-semibold leading-snug tracking-tight -ml-0.5">
-        {manifest.name}
+        {title}
       </h2>
 
       <p className="text-sm text-muted-foreground flex gap-2 pt-1 items-center">
