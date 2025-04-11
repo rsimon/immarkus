@@ -4,6 +4,7 @@ import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
+import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { ConnectorPopup } from '../ConnectorPopup';
@@ -129,6 +130,9 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
+
+        <AnnotoriousPlugin
+          plugin={MagneticOutlinePlugin} />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 

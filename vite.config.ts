@@ -14,6 +14,10 @@ export default defineConfig({
         {
           src: 'node_modules/@annotorious/plugin-segment-anything/dist/assets/*',
           dest: 'assets'
+        },
+        {
+          src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
+          dest: 'assets'
         }
       ]
     }),

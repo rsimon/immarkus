@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
-import { AnnotationMode } from '../AnnotationMode';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import { ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
@@ -19,6 +19,8 @@ interface SmartSelectionProps {
   mode: AnnotationMode;
 
   onChangeMode(mode: AnnotationMode): void;
+
+  onChangeTool(tool: Tool): void;
 
   onClosePanel(): void;
 
@@ -129,7 +131,9 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </AccordionTrigger>
 
             <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <MagneticOutlineSection />
+              <MagneticOutlineSection 
+                onChangeMode={props.onChangeMode}
+                onChangeTool={props.onChangeTool} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

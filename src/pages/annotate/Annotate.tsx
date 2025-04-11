@@ -112,6 +112,7 @@ export const Annotate = () => {
                     <SmartSelectionPanel 
                       mode={mode} 
                       onChangeMode={setMode} 
+                      onChangeTool={setTool}
                       onClosePanel={onCloseSmartPanel} />
                   )}
                 </main>
