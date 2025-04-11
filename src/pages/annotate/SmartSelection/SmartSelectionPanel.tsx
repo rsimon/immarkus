@@ -3,7 +3,7 @@ import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { AnnotationMode } from '../AnnotationMode';
-import { BoxSection, ClickAndRefineSection, MagneticOutlineSection } from './sections';
+import { ClickAndRefineSection, MagneticOutlineSection } from './sections';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
 import {
@@ -117,19 +117,6 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
                   downloading={downloading}
                   progress={downloadProgress} />
               )}
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="box">
-            <AccordionTrigger 
-              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
-              <span className="flex grow items-center gap-2 justify-start">
-                <SquareSquare className="size-4"/> Box
-              </span>
-            </AccordionTrigger>
-
-            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <BoxSection />
             </AccordionContent>
           </AccordionItem>
 
