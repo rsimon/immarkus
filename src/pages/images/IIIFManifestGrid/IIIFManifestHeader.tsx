@@ -30,7 +30,7 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
 
   const store = useStore();
 
-  const title = (breadcrumbs && breadcrumbs.length) > 1 
+  const title = (breadcrumbs && breadcrumbs.length) > 0 
     ? breadcrumbs[breadcrumbs.length - 1].getLabel()
     : manifest.name;
 
