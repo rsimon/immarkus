@@ -8,15 +8,19 @@ import { DataModelStore } from '../datamodel';
 export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModelStore): W3CAnnotation[] => {
   const ids = new Set(model.entityTypes.map(e => e.id));
 
-  return annotations.map(annotation => {
-    if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {
-      const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
-      return ({
-        ...annotation,
-        body: bodies.filter(b => !b.source || ids.has(b.source))
-      });
-    } else {
-      return annotation;
-    }
-  });
+  return annotations
+    .filter(a => {
+      return (a.target as any).selector.type !== 'MULTIPOLYGON';
+    })
+    .map(annotation => {
+      if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {
+        const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
+        return ({
+          ...annotation,
+          body: bodies.filter(b => !b.source || ids.has(b.source))
+        });
+      } else {
+        return annotation;
+      }
+    });
 }
