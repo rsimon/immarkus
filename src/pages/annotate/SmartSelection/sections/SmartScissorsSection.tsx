@@ -16,10 +16,6 @@ export const SmartScissorsSection = (props: SmartScissorsSectionProps) => {
   useEffect(() => {
     props.onChangeTool('intelligent-scissors');
     props.onChangeMode('draw');
-
-    return () => {
-      props.onChangeMode('move');
-    }
   }, []);
 
   return (

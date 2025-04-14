@@ -15,10 +15,6 @@ export const MagneticCursorSection = (props: MagneticCursorSectionProps) => {
   useEffect(() => {
     props.onChangeTool('magnetic-cursor');
     props.onChangeMode('draw');
-
-    return () => {
-      props.onChangeMode('move');
-    }
   }, []);
 
   return (
