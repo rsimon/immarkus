@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, SquareDashedMousePointer, SquareSquare, X } from 'lucide-react';
+import { FlaskConical, Grip, Magnet, Scissors, SquareDashedMousePointer, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
-import { ClickAndRefineSection, MagneticOutlineSection } from './sections';
+import { DetectObjectsSection, MagneticCursorSection, SmartScissorsSection } from './sections';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
 import {
@@ -32,7 +32,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const [tab, setTab] = useState('click-and-refine');
+  const [tab, setTab] = useState('magnetic-cursor');
 
   const { 
     plugin, 
@@ -76,7 +76,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   return (
     <div
       ref={el}
-      className="bg-white absolute w-64 top-14 -right-24 rounded border shadow-lg z-30">
+      className="bg-white absolute w-64 top-14 -right-24 border rounded overflow-hidden shadow-lg z-30">
 
       <div className="flex items-center justify-between gap-1.5 text-xs font-semibold py-1 px-2 border-b border-stone-200 cursor-grab drag-handle">
         <div className="flex items-center gap-1.5">
@@ -96,11 +96,40 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
         <Accordion 
           type="single"
           value={tab}
-          onValueChange={setTab}
-          defaultValue="click-and-refine">
-          <AccordionItem value="click-and-refine" defaultChecked={true}>
+          onValueChange={setTab}>
+          <AccordionItem value="magnetic-cursor" className="border-b-0">
             <AccordionTrigger 
-              className="text-xs font-normal hover:no-underline overflow-hidden p-2">
+              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              <span className="flex grow items-center gap-2 justify-start">
+                <Magnet className="size-4" /> Magnetic Cursor
+              </span>
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
+              <MagneticCursorSection 
+                onChangeMode={props.onChangeMode}
+                onChangeTool={props.onChangeTool} />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="smart-scissors" className="border-b-0">
+            <AccordionTrigger 
+              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              <span className="flex grow items-center gap-2 justify-start">
+                <Scissors className="size-4" /> Smart Scissors
+              </span>
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
+              <SmartScissorsSection 
+                onChangeMode={props.onChangeMode}
+                onChangeTool={props.onChangeTool} />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="detect-objects" className="border-b-0">
+            <AccordionTrigger 
+              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
                 <SquareDashedMousePointer className="size-4" /> Click and Refine
               </span>
@@ -108,7 +137,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
             <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
               {initialized ? (
-                <ClickAndRefineSection 
+                <DetectObjectsSection 
                   plugin={plugin}
                   busy={busy}
                   enabled={props.mode === 'smart'} 
@@ -119,21 +148,6 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
                   downloading={downloading}
                   progress={downloadProgress} />
               )}
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="magnetic-outline" className="border-b-0">
-            <AccordionTrigger 
-              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
-              <span className="flex grow items-center gap-2 justify-start">
-                <Magnet className="size-4" /> Magnetic Outline
-              </span>
-            </AccordionTrigger>
-
-            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <MagneticOutlineSection 
-                onChangeMode={props.onChangeMode}
-                onChangeTool={props.onChangeTool} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

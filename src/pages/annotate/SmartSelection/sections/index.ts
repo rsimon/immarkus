@@ -1,2 +1,3 @@
-export * from './ClickAndRefineSection';
-export * from './MagneticOutlineSection';
+export * from './DetectObjectsSection';
+export * from './MagneticCursorSection';
+export * from './SmartScissorsSection';
