@@ -14,6 +14,10 @@ export default defineConfig({
         {
           src: 'node_modules/@annotorious/plugin-segment-anything/dist/assets/*',
           dest: 'assets'
+        },
+        {
+          src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
+          dest: 'assets'
         }
       ]
     }),
@@ -42,7 +46,8 @@ export default defineConfig({
           'dep-annotorious': ['@annotorious/react'],
           'dep-exceljs': ['exceljs/dist/exceljs.min.js'],
           'dep-primereact': ['primereact/treetable'],
-          'dep-sam': ['@annotorious/plugin-segment-anything']
+          'dep-sam': ['@annotorious/plugin-segment-anything'],
+          'dep-opencv': ['@annotorious/plugin-magnetic-outline']
         }
       }
     }

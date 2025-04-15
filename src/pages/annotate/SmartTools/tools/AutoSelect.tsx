@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Minus, TriangleAlert, WandSparkles } from 'lucide-react';
+import { Minus, WandSparkles } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, PluginManifoldProxy } from '@annotorious/react-manifold';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
-import { PluginManifoldProxy } from 'node_modules/@annotorious/react-manifold/dist/plugins/PluginManifoldInstance';
 
-interface ClickAndRefinePanelProps {
+interface AutoSelectProps {
 
   plugin: PluginManifoldProxy<ReturnType<typeof mountOpenSeadragonPlugin>>;
   
@@ -19,7 +18,7 @@ interface ClickAndRefinePanelProps {
 
 }
 
-export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
+export const AutoSelect = (props: AutoSelectProps) => {
 
   const { busy, enabled, plugin } = props;
 
@@ -86,15 +85,15 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
   }
 
   return (
-    <div className="px-4">
-      <p className="pt-3 pb-2 font-light leading-relaxed">
-        Hover over the image to preview selection. Click to confirm. Add or remove points to refine.
+    <div className="px-3">
+      <p className="pt-4 font-medium text-center leading-relaxed">
+        Hover to preview a selection. Click to confirm. Add or remove points to refine.
       </p>
 
       <ToggleGroup
         type="single"
         value={mode}
-        className="flex pt-6 justify-around"
+        className="flex pt-5 justify-around"
         onValueChange={onChangeMode}>
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
@@ -119,7 +118,7 @@ export const ClickAndRefineSection = (props: ClickAndRefinePanelProps) => {
         </div>
       </ToggleGroup>
 
-      <div className="flex justify-around pt-8 pb-4">
+      <div className="flex justify-around pt-8 pb-3">
         <div className="text-white flex">
           <button
             disabled={!enabled || !currentAnnotationId}

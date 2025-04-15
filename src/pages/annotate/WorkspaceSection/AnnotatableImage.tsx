@@ -4,6 +4,7 @@ import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
+import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { ConnectorPopup } from '../ConnectorPopup';
@@ -24,6 +25,7 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+import '@annotorious/plugin-magnetic-outline/plugin-magnetic-polyline.css';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -38,7 +40,7 @@ interface AnnotatableImageProps {
 
   windowId?: string;
   
-  mode: AnnotationMode;
+  mode?: AnnotationMode;
 
   tool: Tool;
 
@@ -115,7 +117,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         initialHistory={props.initialHistory}
-        userSelectAction={(props.mode === 'relation' || props.mode === 'smart') ? UserSelectAction.NONE : undefined}
+        userSelectAction={(props.mode === 'relation' || !props.mode) ? UserSelectAction.NONE : undefined}
         style={style}
         tool={props.tool}>
 
@@ -129,6 +131,9 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
         <AnnotoriousPlugin
           plugin={SelectorPack} />
+
+        <AnnotoriousPlugin
+          plugin={MagneticOutlinePlugin} />
 
         {ENABLE_CONNECTOR_PLUGIN ? (
           <OSDConnectorPlugin 

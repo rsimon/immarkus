@@ -2,19 +2,6 @@ import { useEffect, useState } from 'react';
 import { usePluginManifold } from '@annotorious/react-manifold';
 import { DownloadProgress, mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 
-/*
-const purgeModel = async () => {
-  const root = await navigator.storage.getDirectory();
-
-  return Promise.all([
-    root.removeEntry('sam2_hiera_tiny_encoder.with_runtime_opt.ort'),
-    root.removeEntry('sam2_hiera_tiny_decoder_pr1.onnx')
-  ]).then(() => {
-    console.log('done');
-  });
-}
-*/
-
 export const useSAMPlugin = () => {
 
   const plugin = usePluginManifold<ReturnType<typeof mountOpenSeadragonPlugin>>('smart-selection');
@@ -39,9 +26,6 @@ export const useSAMPlugin = () => {
 
   useEffect(() => {
     if (!plugin?.on) return;
-
-    // purgeModel();
-
     clear();
 
     const onDownloadProgress = (progress: DownloadProgress) => {

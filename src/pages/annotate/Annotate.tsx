@@ -10,7 +10,7 @@ import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
-import { SmartSelectionPanel } from './SmartSelection';
+import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -35,10 +35,6 @@ export const Annotate = () => {
   const [tool, setTool] = useState<Tool>('rectangle');
 
   const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
-
-  useEffect(() => {
-    if (mode === 'smart' && !isSmartPanelOpen) setIsSmartPanelOpen(true);
-  }, [mode]);
 
   const onCloseSmartPanel = useCallback(() => {
     setMode('move');
@@ -87,12 +83,14 @@ export const Annotate = () => {
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection
                     images={images} 
+                    isSmartPanelOpen={isSmartPanelOpen}
                     mode={mode}
                     tool={tool}
                     onAddImage={onAddImage} 
                     onChangeImage={onChangeImage}
                     onChangeMode={setMode}
-                    onChangeTool={setTool} />
+                    onChangeTool={setTool} 
+                    onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
 
                   {images.length > 0 ? ( 
                     <WorkspaceSection 
@@ -109,9 +107,11 @@ export const Annotate = () => {
                   )}
 
                   {isSmartPanelOpen && (
-                    <SmartSelectionPanel 
+                    <SmartToolsPanel 
                       mode={mode} 
+                      tool={tool}
                       onChangeMode={setMode} 
+                      onChangeTool={setTool}
                       onClosePanel={onCloseSmartPanel} />
                   )}
                 </main>

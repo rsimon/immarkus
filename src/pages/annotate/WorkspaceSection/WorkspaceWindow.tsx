@@ -26,7 +26,7 @@ interface WorkspaceWindowProps {
 
   image: LoadedImage;
 
-  mode: AnnotationMode;
+  mode?: AnnotationMode;
 
   tool: Tool;
 

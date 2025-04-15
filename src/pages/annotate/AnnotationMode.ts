@@ -1,4 +1,4 @@
-export type AnnotationMode = 'move' | 'draw' | 'smart' | 'relation';
+export type AnnotationMode = 'move' | 'draw' | 'relation';
 
-export type Tool = 'rectangle' | 'polygon' | 'ellipse';
+export type Tool = 'rectangle' | 'polygon' | 'ellipse' | 'magnetic-cursor' | 'intelligent-scissors';
 
