@@ -1,7 +1,7 @@
 import { Toggle } from '@/ui/Toggle';
-import { Magnet, TriangleRight } from 'lucide-react';
+import { ScissorsLineDashed } from 'lucide-react';
 
-interface MagneticCursorSectionProps {
+interface SmartScissorsProps {
 
   enabled: boolean;
 
@@ -9,7 +9,7 @@ interface MagneticCursorSectionProps {
 
 }
 
-export const MagneticCursorSection = (props: MagneticCursorSectionProps) => {
+export const SmartScissors = (props: SmartScissorsProps) => {
 
   return (
     <div className="px-4">
@@ -19,18 +19,17 @@ export const MagneticCursorSection = (props: MagneticCursorSectionProps) => {
             pressed={props.enabled}
             onPressedChange={props.onSetEnabled}
             className="!rounded-md aspect-square h-12 hover:border-orange-400 hover:[&+*]:text-orange-400 border border-orange-500/40 text-orange-400/60 hover:text-orange-400 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
-            <Magnet className="size-6" strokeWidth={1.5}/> 
+            <ScissorsLineDashed className="size-6" strokeWidth={1.5}/> 
           </Toggle>
         </div>
 
         <p className="font-medium">
-          Snaps your cursor to nearby edges for precise tracing.
+          Click to start, move to trace edges. Click again to place points.
         </p>
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Use this tool for tracing along clear lines and corners—especially 
-        in high-contrast images.
+        Use this tool to quickly outline irregular shapes with clear edges.
       </p>
     </div>
   )

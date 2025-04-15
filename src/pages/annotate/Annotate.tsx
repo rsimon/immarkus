@@ -10,7 +10,7 @@ import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
 import { SidebarSection } from './SidebarSection';
-import { SmartSelectionPanel } from './SmartSelection';
+import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
 
@@ -107,7 +107,7 @@ export const Annotate = () => {
                   )}
 
                   {isSmartPanelOpen && (
-                    <SmartSelectionPanel 
+                    <SmartToolsPanel 
                       mode={mode} 
                       tool={tool}
                       onChangeMode={setMode} 

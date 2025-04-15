@@ -3,7 +3,7 @@ import { useDraggable } from '@neodrag/react';
 import { FlaskConical, Grip, Magnet, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
-import { DetectObjectsSection, MagneticCursorSection, SmartScissorsSection } from './sections';
+import { AutoSelect, EdgeSnap, SmartScissors } from './tools';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
 import {
@@ -13,8 +13,7 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
-
-interface SmartSelectionProps {
+interface SmartToolsPanelProps {
 
   mode?: AnnotationMode;
 
@@ -28,7 +27,9 @@ interface SmartSelectionProps {
 
 }
 
-export const SmartSelectionPanel = (props: SmartSelectionProps) => {
+type SmartTool = 'auto-select' | 'edge-snap' | 'smart-scissors'; 
+
+export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
   const el = useRef(null);
 
@@ -36,7 +37,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const [tab, setTab] = useState('magnetic-cursor');
+  const [tab, setTab] = useState<SmartTool>('edge-snap');
 
   const { 
     plugin, 
@@ -62,7 +63,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       }
     }
 
-    if (tab === 'magnetic-cursor') {
+    if (tab === 'edge-snap') {
       stopPluginIfRunning();
       props.onChangeTool('magnetic-cursor');
       props.onChangeMode('draw');
@@ -124,8 +125,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
         <Accordion 
           type="single"
           value={tab}
-          onValueChange={setTab}>
-          <AccordionItem value="magnetic-cursor" className="border-b-0">
+          onValueChange={tab => setTab(tab as SmartTool)}>
+          <AccordionItem value="edge-snap" className="border-b-0">
             <AccordionTrigger 
               className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
@@ -134,7 +135,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </AccordionTrigger>
 
             <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <MagneticCursorSection 
+              <EdgeSnap 
                 enabled={props.mode === 'draw' && props.tool === 'magnetic-cursor'}
                 onSetEnabled={enabled => onSetToolEnabled('magnetic-cursor', enabled)} />
             </AccordionContent>
@@ -149,13 +150,13 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             </AccordionTrigger>
 
             <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <SmartScissorsSection 
+              <SmartScissors 
                 enabled={props.mode === 'draw' && props.tool === 'intelligent-scissors'} 
                 onSetEnabled={enabled => onSetToolEnabled('intelligent-scissors', enabled)} />
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="detect-objects" className="border-b-0">
+          <AccordionItem value="auto-select" className="border-b-0">
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
@@ -165,7 +166,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
             <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
               {initialized ? (
-                <DetectObjectsSection 
+                <AutoSelect 
                   plugin={plugin}
                   busy={busy}
                   enabled={!props.mode} 

@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Minus, WandSparkles } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, PluginManifoldProxy } from '@annotorious/react-manifold';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { Spinner } from '@/components/Spinner';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
-import { PluginManifoldProxy } from 'node_modules/@annotorious/react-manifold/dist/plugins/PluginManifoldInstance';
 
-interface DetectObjectsSectionProps {
+interface AutoSelectProps {
 
   plugin: PluginManifoldProxy<ReturnType<typeof mountOpenSeadragonPlugin>>;
   
@@ -19,7 +18,7 @@ interface DetectObjectsSectionProps {
 
 }
 
-export const DetectObjectsSection = (props: DetectObjectsSectionProps) => {
+export const AutoSelect = (props: AutoSelectProps) => {
 
   const { busy, enabled, plugin } = props;
 
