@@ -28,7 +28,7 @@
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.2.1",
     "@annotorious/plugin-connectors-react": "^0.4.0",
-    "@annotorious/plugin-magnetic-outline": "^0.1.0",
+    "@annotorious/plugin-magnetic-outline": "^0.1.1",
     "@annotorious/plugin-segment-anything": "^0.2.3",
     "@annotorious/plugin-tools": "^1.0.2",
     "@annotorious/react": "^3.3.3",
