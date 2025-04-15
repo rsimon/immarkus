@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, Scissors, SquareDashedMousePointer, X } from 'lucide-react';
+import { FlaskConical, Grip, Magnet, Scissors, Sparkles, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { DetectObjectsSection, MagneticCursorSection, SmartScissorsSection } from './sections';
@@ -70,7 +70,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       props.onChangeTool('intelligent-scissors');
       props.onChangeMode('draw');
     } else {
-      stopPluginIfRunning();
+      props.onChangeMode(undefined);
     }
   }, [plugin, tab]);
 
@@ -159,7 +159,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
-                <SquareDashedMousePointer className="size-4" /> Click and Refine
+                <Sparkles className="size-4" /> Detect Objects
               </span>
             </AccordionTrigger>
 
