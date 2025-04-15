@@ -86,15 +86,15 @@ export const DetectObjectsSection = (props: DetectObjectsSectionProps) => {
   }
 
   return (
-    <div className="px-4">
-      <p className="pt-3 pb-2 font-light leading-relaxed">
-        Hover over the image to preview selection. Click to confirm. Add or remove points to refine.
+    <div className="px-3">
+      <p className="pt-4 font-medium text-center leading-relaxed">
+        Hover to preview a selection. Click to confirm. Add or remove points to refine.
       </p>
 
       <ToggleGroup
         type="single"
         value={mode}
-        className="flex pt-6 justify-around"
+        className="flex pt-5 justify-around"
         onValueChange={onChangeMode}>
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
@@ -119,7 +119,7 @@ export const DetectObjectsSection = (props: DetectObjectsSectionProps) => {
         </div>
       </ToggleGroup>
 
-      <div className="flex justify-around pt-8 pb-4">
+      <div className="flex justify-around pt-8 pb-3">
         <div className="text-white flex">
           <button
             disabled={!enabled || !currentAnnotationId}

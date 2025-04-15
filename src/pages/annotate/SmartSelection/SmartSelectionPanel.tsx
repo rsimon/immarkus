@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, Scissors, Sparkles, X } from 'lucide-react';
+import { FlaskConical, Grip, Magnet, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { DetectObjectsSection, MagneticCursorSection, SmartScissorsSection } from './sections';
@@ -109,7 +109,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
       <div className="flex items-center justify-between gap-1.5 text-xs font-semibold py-1 px-2 border-b border-stone-200 cursor-grab drag-handle">
         <div className="flex items-center gap-1.5">
           <Grip className="size-4" />
-          <span>Smart Selection</span>
+          <span>Smart Tools</span>
         </div>
 
         <Button
@@ -129,7 +129,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             <AccordionTrigger 
               className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <Magnet className="size-4" /> Magnetic Cursor
+                <Magnet className="size-4" /> Edge Snap
               </span>
             </AccordionTrigger>
 
@@ -144,7 +144,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <Scissors className="size-4" /> Smart Scissors
+                <ScissorsLineDashed className="size-4" /> Smart Scissors
               </span>
             </AccordionTrigger>
 
@@ -159,7 +159,7 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
-                <Sparkles className="size-4" /> Detect Objects
+                <Sparkles className="size-4" /> Auto Select
               </span>
             </AccordionTrigger>
 
