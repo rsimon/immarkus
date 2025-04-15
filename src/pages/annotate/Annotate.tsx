@@ -36,10 +36,6 @@ export const Annotate = () => {
 
   const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
 
-  useEffect(() => {
-    if (mode === 'smart' && !isSmartPanelOpen) setIsSmartPanelOpen(true);
-  }, [mode]);
-
   const onCloseSmartPanel = useCallback(() => {
     setMode('move');
     setIsSmartPanelOpen(false);
@@ -87,12 +83,14 @@ export const Annotate = () => {
                 <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
                   <HeaderSection
                     images={images} 
+                    isSmartPanelOpen={isSmartPanelOpen}
                     mode={mode}
                     tool={tool}
                     onAddImage={onAddImage} 
                     onChangeImage={onChangeImage}
                     onChangeMode={setMode}
-                    onChangeTool={setTool} />
+                    onChangeTool={setTool} 
+                    onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
 
                   {images.length > 0 ? ( 
                     <WorkspaceSection 
@@ -111,6 +109,7 @@ export const Annotate = () => {
                   {isSmartPanelOpen && (
                     <SmartSelectionPanel 
                       mode={mode} 
+                      tool={tool}
                       onChangeMode={setMode} 
                       onChangeTool={setTool}
                       onClosePanel={onCloseSmartPanel} />

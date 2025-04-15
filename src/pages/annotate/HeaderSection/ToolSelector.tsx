@@ -1,5 +1,6 @@
-import { Circle, Square, TriangleRight, Wand } from 'lucide-react';
-import { Tool } from '../AnnotationMode';
+import { useMemo } from 'react';
+import { Circle, Square, TriangleRight } from 'lucide-react';
+import { AnnotationMode, Tool } from '../AnnotationMode';
 import {
   Select,
   SelectContent,
@@ -10,28 +11,45 @@ import {
 
 interface ToolSelectorProps {
 
-  active: boolean;
+  mode: AnnotationMode;
 
   tool: Tool;
-
-  onClick(): void;
 
   onToolChange(tool: Tool): void;
 
 }
 
+const TOOLS = new Set(['rectangle', 'polygon', 'ellipse']);
+
 export const ToolSelector = (props: ToolSelectorProps) => {
 
+  const tool = useMemo(() => {
+    return (TOOLS.has(props.tool)) ? props.tool : 'rectangle';
+  }, [props.tool]);
+
+  const active = useMemo(() => {
+    if (props.mode !== 'draw') return false;
+    return TOOLS.has(props.tool);
+  }, [props.tool, props.mode]);
+
+  const onClick = () => {
+    if (TOOLS.has(tool)) {
+      props.onToolChange(tool);
+    } else {
+      props.onToolChange('rectangle');
+    }
+  }
+
   return (
-    <Select value={props.tool} onValueChange={props.onToolChange}>
+    <Select value={tool} onValueChange={props.onToolChange}>
       <div 
         role="button"
-        data-state={props.active ? 'active' : undefined}
-        aria-selected={props.active}
+        data-state={active ? 'active' : undefined}
+        aria-selected={active}
         className="flex items-center text-xs rounded-md hover:bg-muted">
         
         <button 
-          onClick={props.onClick}
+          onClick={onClick}
           className="pl-2 h-auto py-1.5 pr-[5px] hover:bg-slate-200/70 rounded-l-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <SelectValue className="pr-0" />
         </button>        

@@ -4,7 +4,7 @@ export const useCollapsibleToolbar = () => {
 
   const ref = useRef<HTMLElement>(null);
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(Infinity);
 
   const [breakpoint, setBreakpoint] = useState(0);
 
@@ -14,6 +14,8 @@ export const useCollapsibleToolbar = () => {
     const onResize = () => setWindowWidth(window.innerWidth);
 
     window.addEventListener('resize', onResize);
+    
+    setTimeout(() => onResize(), 1);
 
     return () => {
       window.removeEventListener('resize', onResize);

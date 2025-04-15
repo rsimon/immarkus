@@ -16,9 +16,11 @@ import {
 
 interface SmartSelectionProps {
 
-  mode: AnnotationMode;
+  mode?: AnnotationMode;
 
-  onChangeMode(mode: AnnotationMode): void;
+  tool: Tool;
+
+  onChangeMode(mode?: AnnotationMode): void;
 
   onChangeTool(tool: Tool): void;
 
@@ -29,6 +31,8 @@ interface SmartSelectionProps {
 export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
   const el = useRef(null);
+
+  const pluginRunning = useRef(false);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -51,8 +55,23 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
   useEffect(() => {
     if (!plugin) return;
 
-    if (tab !== 'click-and-refine')
-      plugin.stop();
+    const stopPluginIfRunning = () => {
+      if (pluginRunning.current) {
+        plugin.stop();
+        pluginRunning.current = false;
+      }
+    }
+
+    if (tab === 'magnetic-cursor') {
+      stopPluginIfRunning();
+      props.onChangeTool('magnetic-cursor');
+      props.onChangeMode('draw');
+    } else if (tab === 'smart-scissors') {
+      props.onChangeTool('intelligent-scissors');
+      props.onChangeMode('draw');
+    } else {
+      stopPluginIfRunning();
+    }
   }, [plugin, tab]);
 
   useEffect(() => {
@@ -69,8 +88,17 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY })
   });
 
-  const onSetEnabled = useCallback((enabled: boolean) => {
-    props.onChangeMode(enabled ? 'smart' : 'move');
+  const onSetSAMEnabled = useCallback((enabled: boolean) => {
+    props.onChangeMode(enabled ? undefined : 'move');
+  }, []);
+
+  const onSetToolEnabled = useCallback((tool: Tool, enabled: boolean) => {
+    if (enabled) {
+      props.onChangeMode('draw');
+      props.onChangeTool(tool);
+    } else {
+      props.onChangeMode('move');
+    }
   }, []);
 
   return (
@@ -107,8 +135,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
             <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
               <MagneticCursorSection 
-                onChangeMode={props.onChangeMode}
-                onChangeTool={props.onChangeTool} />
+                enabled={props.mode === 'draw' && props.tool === 'magnetic-cursor'}
+                onSetEnabled={enabled => onSetToolEnabled('magnetic-cursor', enabled)} />
             </AccordionContent>
           </AccordionItem>
 
@@ -122,8 +150,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
 
             <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
               <SmartScissorsSection 
-                onChangeMode={props.onChangeMode}
-                onChangeTool={props.onChangeTool} />
+                enabled={props.mode === 'draw' && props.tool === 'intelligent-scissors'} 
+                onSetEnabled={enabled => onSetToolEnabled('intelligent-scissors', enabled)} />
             </AccordionContent>
           </AccordionItem>
 
@@ -140,8 +168,8 @@ export const SmartSelectionPanel = (props: SmartSelectionProps) => {
                 <DetectObjectsSection 
                   plugin={plugin}
                   busy={busy}
-                  enabled={props.mode === 'smart'} 
-                  onSetEnabled={onSetEnabled} />
+                  enabled={!props.mode} 
+                  onSetEnabled={onSetSAMEnabled} />
               ) : (
                 <SAMInitializing
                   plugin={plugin}

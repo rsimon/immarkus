@@ -33,7 +33,11 @@ interface HeaderSectionProps {
 
   images: LoadedImage[];
 
-  mode: AnnotationMode;
+  isSmartPanelOpen: boolean;
+
+  onToggleSmartPanel(): void;
+
+  mode?: AnnotationMode;
 
   tool: Tool;
 
@@ -43,7 +47,7 @@ interface HeaderSectionProps {
 
   onChangeTool(tool: Tool): void;
 
-  onChangeMode(mode: AnnotationMode): void;
+  onChangeMode(mode?: AnnotationMode): void;
 
 }
 
@@ -255,13 +259,12 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <ToolSelector 
           tool={props.tool} 
-          active={props.mode === 'draw'}
-          onClick={() => onEnableDrawing()}
+          mode={props.mode}
           onToolChange={onEnableDrawing} />
 
         <ToolbarButton
-          onClick={() => props.onChangeMode('smart')}
-          data-state={props.mode === 'smart' ? 'active' : undefined}
+          onClick={props.onToggleSmartPanel}
+          data-state={props.isSmartPanelOpen ? 'active' : undefined}
           className="text-orange-400 mr-1 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
           <WandSparkles className="size-4 h-8 w-8 p-2" />
         </ToolbarButton>

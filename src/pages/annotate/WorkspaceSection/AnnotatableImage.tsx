@@ -40,7 +40,7 @@ interface AnnotatableImageProps {
 
   windowId?: string;
   
-  mode: AnnotationMode;
+  mode?: AnnotationMode;
 
   tool: Tool;
 
@@ -117,7 +117,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}
         initialHistory={props.initialHistory}
-        userSelectAction={(props.mode === 'relation' || props.mode === 'smart') ? UserSelectAction.NONE : undefined}
+        userSelectAction={(props.mode === 'relation' || !props.mode) ? UserSelectAction.NONE : undefined}
         style={style}
         tool={props.tool}>
 

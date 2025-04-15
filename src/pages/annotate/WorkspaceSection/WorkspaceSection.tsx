@@ -14,7 +14,7 @@ interface WorkspaceSectionProps {
 
   images: LoadedImage[];
 
-  mode: AnnotationMode;
+  mode?: AnnotationMode;
 
   tool: Tool;
 
