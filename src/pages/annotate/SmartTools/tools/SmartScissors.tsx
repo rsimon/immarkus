@@ -24,12 +24,12 @@ export const SmartScissors = (props: SmartScissorsProps) => {
         </div>
 
         <p className="font-medium">
-          Click to start, move to trace edges. Click again to place points.
+          Click to start, move to follow edges. Click again to place points.
         </p>
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Use this tool to quickly outline irregular shapes with clear edges.
+        Use this tool to quickly trace irregular shapes with clear edges.
       </p>
     </div>
   )

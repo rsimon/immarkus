@@ -13,7 +13,7 @@ export const EdgeSnap = (props: EdgeSnapProps) => {
 
   return (
     <div className="px-4">
-      <div className="pt-6 pb-1 flex gap-3 items-center">
+      <div className="pt-6 pb-1 flex gap-3 items-start">
         <div className="flex justify-center">
           <Toggle
             pressed={props.enabled}
@@ -24,12 +24,12 @@ export const EdgeSnap = (props: EdgeSnapProps) => {
         </div>
 
         <p className="font-medium">
-          Snaps your cursor to nearby edges for precise tracing.
+          Snaps your cursor to nearby edges.
         </p>
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Use this tool for tracing along clear lines and corners—especially 
+        Use this tool for precise tracing of clear lines and corners—especially 
         in high-contrast images.
       </p>
     </div>
