@@ -46,7 +46,8 @@ export default defineConfig({
           'dep-annotorious': ['@annotorious/react'],
           'dep-exceljs': ['exceljs/dist/exceljs.min.js'],
           'dep-primereact': ['primereact/treetable'],
-          'dep-sam': ['@annotorious/plugin-segment-anything']
+          'dep-sam': ['@annotorious/plugin-segment-anything'],
+          'dep-opencv': ['@annotorious/plugin-magnetic-outline']
         }
       }
     }
