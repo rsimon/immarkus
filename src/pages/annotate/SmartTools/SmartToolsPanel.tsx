@@ -37,7 +37,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const [tab, setTab] = useState<SmartTool>('edge-snap');
+  const [tab, setTab] = useState<SmartTool>('smart-scissors');
 
   const { 
     plugin, 
@@ -126,24 +126,9 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
           type="single"
           value={tab}
           onValueChange={tab => setTab(tab as SmartTool)}>
-          <AccordionItem value="edge-snap" className="border-b-0">
-            <AccordionTrigger 
-              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
-              <span className="flex grow items-center gap-2 justify-start">
-                <Magnet className="size-4" /> Edge Snap
-              </span>
-            </AccordionTrigger>
-
-            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
-              <EdgeSnap 
-                enabled={props.mode === 'draw' && props.tool === 'magnetic-cursor'}
-                onSetEnabled={enabled => onSetToolEnabled('magnetic-cursor', enabled)} />
-            </AccordionContent>
-          </AccordionItem>
-
           <AccordionItem value="smart-scissors" className="border-b-0">
             <AccordionTrigger 
-              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
                 <ScissorsLineDashed className="size-4" /> Smart Scissors
               </span>
@@ -153,6 +138,21 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               <SmartScissors 
                 enabled={props.mode === 'draw' && props.tool === 'intelligent-scissors'} 
                 onSetEnabled={enabled => onSetToolEnabled('intelligent-scissors', enabled)} />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="edge-snap" className="border-b-0">
+            <AccordionTrigger 
+              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
+              <span className="flex grow items-center gap-2 justify-start">
+                <Magnet className="size-4" /> Edge Snap
+              </span>
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-stone-700/5 border-t border-stone-200 text-xs pt-0" >
+              <EdgeSnap 
+                enabled={props.mode === 'draw' && props.tool === 'magnetic-cursor'}
+                onSetEnabled={enabled => onSetToolEnabled('magnetic-cursor', enabled)} />
             </AccordionContent>
           </AccordionItem>
 
