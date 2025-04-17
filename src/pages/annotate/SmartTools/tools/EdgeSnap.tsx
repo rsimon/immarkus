@@ -29,7 +29,7 @@ export const EdgeSnap = (props: EdgeSnapProps) => {
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Use this tool for precise tracing of clear lines and corners—especially 
+        Ideal for for tracing object with clear, straight lines—especially 
         in high-contrast images.
       </p>
     </div>

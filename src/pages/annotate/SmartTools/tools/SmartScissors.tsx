@@ -29,7 +29,7 @@ export const SmartScissors = (props: SmartScissorsProps) => {
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Use this tool to quickly trace irregular shapes with clear edges.
+        Ideal for quickly tracing complex shapes and curved edges.
       </p>
     </div>
   )
