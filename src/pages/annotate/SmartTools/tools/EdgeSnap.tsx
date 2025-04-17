@@ -29,7 +29,7 @@ export const EdgeSnap = (props: EdgeSnapProps) => {
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Ideal for for tracing object with clear, straight lines—especially 
+        Ideal for tracing objects with clear, straight outlines—especially 
         in high-contrast images.
       </p>
     </div>
