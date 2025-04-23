@@ -10,7 +10,7 @@ export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModel
 
   return annotations
     .filter(a => {
-      return (a.target as any).selector.type !== 'MULTIPOLYGON';
+      return (a.target as any).selector?.type !== 'MULTIPOLYGON';
     })
     .map(annotation => {
       if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {

@@ -302,7 +302,8 @@ export const loadStore = (
               cachedAnnotations.set(normalizedId, annotations);
               return filterByOpts(annotations);
             })
-            .catch(() => {
+            .catch(error => {
+              console.error(error);
               cachedAnnotations.set(normalizedId, []);
               return [];
             }));
@@ -360,7 +361,7 @@ export const loadStore = (
   const getCanvasAnnotations = (
     id: string,
     opts: GetAnnotationOpts
-  ) => {
+  ) => {    
     const [manifestId, canvasId] = parseIIIFId(id);
     return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
       return canvasId 
