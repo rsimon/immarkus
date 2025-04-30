@@ -1,4 +1,4 @@
-import { W3CAnnotation } from '@annotorious/react';
+import { MultiPolygon, serializeSVGSelector, W3CAnnotation } from '@annotorious/react';
 import { DataModelStore } from '../datamodel';
 
 /** 
@@ -9,8 +9,22 @@ export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModel
   const ids = new Set(model.entityTypes.map(e => e.id));
 
   return annotations
-    .filter(a => {
-      return (a.target as any).selector?.type !== 'MULTIPOLYGON';
+    .map(a => {
+      const isCorrect = (a.target as any).selector?.type !== 'MULTIPOLYGON';
+      if (isCorrect) {
+        return a;
+      } else {
+        const geom = (a.target as any).selector as MultiPolygon;
+        const fixed = serializeSVGSelector(geom);
+
+        return {
+          ...a,
+          target: {
+            ...a.target,
+            selector: fixed
+          }
+        } as W3CAnnotation;
+      }
     })
     .map(annotation => {
       if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {
