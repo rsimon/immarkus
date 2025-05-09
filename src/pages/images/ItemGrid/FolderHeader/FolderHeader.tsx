@@ -6,7 +6,7 @@ import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { isRootFolder } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
-import { FilterByAnnotations } from '../../HeaderControls';
+import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
 
 interface FolderHeaderProps {
 
@@ -82,22 +82,7 @@ export const FolderHeader = (props: FolderHeaderProps) => {
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
         <span>·</span>
-        <LayoutGrid className="size-4.5" /> 
-        <Button 
-          variant="link"
-          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-          Show as grid 
-        </Button>
-        <ChevronDown className="size-3.5" />
-
-        <span>·</span>
-        <ArrowDownUp className="size-4" />
-        <Button 
-          variant="link"
-          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-          Sort 
-        </Button>
-        <ChevronDown className="size-3.5" />
+        <ToggleLayout />
       </p>
     </div>
   )
