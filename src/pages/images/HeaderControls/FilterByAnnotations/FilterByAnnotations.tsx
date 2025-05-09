@@ -21,11 +21,11 @@ export const FilterByAnnotations = (props: FilterByAnnotationsProps) => {
 
       {hideUnannotated ? (
         <>
-          <MessageCircle className="size-4" /> Show Unannotated
+          <MessageCircle className="size-4" /> Show unannotated
         </>
       ) : (
         <>
-          <MessageCircleOff className="size-4" /> Hide Unannotated
+          <MessageCircleOff className="size-4" /> Hide unannotated
         </>
       )}
     </Toggle> 

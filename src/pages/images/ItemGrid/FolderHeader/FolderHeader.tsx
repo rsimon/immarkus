@@ -1,12 +1,12 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, NotebookPen } from 'lucide-react';
+import { ArrowDownUp, ChevronDown, ChevronRight, LayoutGrid, NotebookPen } from 'lucide-react';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { isRootFolder } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
-import { FilterByAnnotations } from '../../FilterByAnnotations';
+import { FilterByAnnotations } from '../../HeaderControls';
 
 interface FolderHeaderProps {
 
@@ -80,6 +80,24 @@ export const FolderHeader = (props: FolderHeaderProps) => {
         <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
+
+        <span>·</span>
+        <LayoutGrid className="size-4.5" /> 
+        <Button 
+          variant="link"
+          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
+          Show as grid 
+        </Button>
+        <ChevronDown className="size-3.5" />
+
+        <span>·</span>
+        <ArrowDownUp className="size-4" />
+        <Button 
+          variant="link"
+          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
+          Sort 
+        </Button>
+        <ChevronDown className="size-3.5" />
       </p>
     </div>
   )

@@ -8,7 +8,7 @@ import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
-import { FilterByAnnotations } from '../FilterByAnnotations';
+import { FilterByAnnotations } from '../HeaderControls';
 
 interface IIIFManifestHeaderProps {
   
