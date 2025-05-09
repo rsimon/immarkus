@@ -20,6 +20,8 @@ interface MultiSelectionOptionsProps {
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
   const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
+
+  const canSubtract = plugin.canSubtractSelected().some(Boolean);
   
   return (
     <div className="p-2 flex flex-col gap-12">
@@ -54,6 +56,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
       <div className="flex flex-col">
         <Button 
+          disabled={!canSubtract}
           className="flex gap-2"
           variant="outline"
           onClick={() => plugin.subtractSelected()}>
