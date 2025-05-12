@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { MessagesSquare } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { cn } from '@/ui/utils';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
@@ -11,6 +13,7 @@ import { ItemTableRowActions } from './ItemTableRowActions';
 import './ItemTable.css';
 
 interface ItemTableRow {
+
   data: any;
 
   type: 'folder' | 'manifest' | 'image';
@@ -18,28 +21,37 @@ interface ItemTableRow {
   name: string;
 
   dimensions?: [number, number];
+
+  annotations?: number;
+
+  lastEdit?: Date;
+
 }
 
-const folderToRow = (folder: Folder): ItemTableRow => ({
-  data: folder,
-  type: 'folder',
-  name: folder.name,
-});
-
-const manifestToRow = (manifest: IIIFManifestResource): ItemTableRow => ({
-  data: manifest,
-  type: 'manifest',
-  name: manifest.name,
-});
-
-const imageToRow = (image: Image): ItemTableRow => ({
-  data: image,
-  type: 'image',
-  name: image.name,
-});
+const headerClass = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
 export const ItemTable = (props: ItemOverviewLayoutProps) => {
+
   const [rows, setRows] = useState<ItemTableRow[]>([]);
+
+  const folderToRow = (folder: Folder): ItemTableRow => ({
+    data: folder,
+    type: 'folder',
+    name: folder.name,
+  });
+
+  const manifestToRow = (manifest: IIIFManifestResource): ItemTableRow => ({
+    data: manifest,
+    type: 'manifest',
+    name: manifest.name,
+  });
+
+  const imageToRow = (image: Image): ItemTableRow => ({
+    data: image,
+    type: 'image',
+    name: image.name,
+    annotations: props.annotationCounts[image.id] || 0
+  });
 
   useEffect(() => {
     setRows([
@@ -79,10 +91,23 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   const dimensionsTemplate = (row: ItemTableRow) =>
     row.dimensions ? (
-      <span>
+      <span className="text-muted-foreground">
         {row.dimensions[0].toLocaleString()} x{" "}
         {row.dimensions[1].toLocaleString()}
       </span>
+    ) : null;
+
+  const annotationsTemplate = (row: ItemTableRow) => 
+    row.type === 'image' ? (
+      <div className="text-muted-foreground flex justify-around">
+        <div>
+          <MessagesSquare 
+            size={16} 
+            className="inline align-text-bottom mr-1.5" 
+            strokeWidth={1.8}/> 
+          {(row.annotations || 0).toLocaleString()}
+        </div>
+      </div>
     ) : null;
 
   const actionsTemplate = (row: ItemTableRow) => (
@@ -92,32 +117,46 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       onSelectFolder={props.onSelectFolder} 
       onSelectImage={props.onSelectImage}
       onSelectManifest={props.onSelectManifest} />
-  )
+  );
 
   return (
-    <div className="pt-8">
-      <DataTable value={rows} stripedRows>
+    <div className="mt-12 rounded-md border">
+      <DataTable value={rows} sortMode="multiple">
         <Column 
           field="type" 
           header="Type" 
+          headerClassName={headerClass}
           body={typeTemplate} />
 
         <Column 
+          sortable
           field="name" 
-          header="Name" />
+          header="Name" 
+          headerClassName={headerClass} />
 
         <Column
           field="dimensions"
           header="Dimensions"
+          headerClassName={cn(headerClass)}
           body={dimensionsTemplate} />
 
         <Column 
           field="contains" 
-          header="Contains" />
+          header="Contains" 
+          headerClassName={headerClass} />
 
-        <Column 
+        <Column
+          sortable
+          field="lastEdit" 
+          header="Last Edit" 
+          headerClassName={headerClass} />
+
+        <Column
+          sortable
           field="annotations" 
-          header="Annotations" />
+          header="Annotations" 
+          headerClassName={headerClass} 
+          body={annotationsTemplate} />
 
         <Column 
           field="actions" 

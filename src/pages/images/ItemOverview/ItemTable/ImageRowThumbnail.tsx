@@ -24,7 +24,7 @@ export const ImageRowThumbnail = (props: ImageRowThumbnailProps) => {
       loading="lazy"
       src={URL.createObjectURL(props.image.data)}
       alt={props.image.name}
-      className="size-10 object-cover object-center aspect-square rounded-[2px] shadow"
+      className="size-10 bg-muted object-cover object-center aspect-square rounded-[2px] shadow"
     />
   )
   
