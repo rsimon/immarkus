@@ -61,7 +61,7 @@ export const useImages = (
       setTimeout(() => load(), delay);
     else
       load();
-  }, [(imageIds || []).join(','), store]);
+  }, [(imageIds || []).join(',')]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
