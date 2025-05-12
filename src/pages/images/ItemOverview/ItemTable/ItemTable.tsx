@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
-import { DataTable, DataTableCellClickEvent, DataTableRowClickEvent } from 'primereact/datatable';
+import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { cn } from '@/ui/utils';
 import { FolderIcon } from '@/components/FolderIcon';
