@@ -4,7 +4,7 @@ import { ArrowDownUp, ChevronDown, ChevronRight, LayoutGrid, NotebookPen } from 
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { isRootFolder } from '../../Types';
+import { isRootFolder, ItemLayout } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
 import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
 
@@ -13,6 +13,10 @@ interface FolderHeaderProps {
   folder: Folder | RootFolder;
 
   hideUnannotated: boolean;
+
+  layout: ItemLayout;
+
+  onSetLayout(layout: ItemLayout): void;
 
   onShowMetadata(): void;
 
@@ -82,7 +86,9 @@ export const FolderHeader = (props: FolderHeaderProps) => {
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
         <span>·</span>
-        <ToggleLayout />
+        <ToggleLayout 
+          layout={props.layout} 
+          onSetLayout={props.onSetLayout} />
       </p>
     </div>
   )

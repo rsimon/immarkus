@@ -1,6 +1,8 @@
 import { CanvasInformation, Folder, IIIFManifestResource, IIIFResource, Image, RootFolder } from '@/model';
 import { CozyCanvas } from 'cozy-iiif';
 
+export type ItemLayout = 'grid' | 'table';
+
 export type FolderGridItem = (Folder | RootFolder) & {
 
   type: 'folder';

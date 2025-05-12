@@ -3,7 +3,7 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Folder, IIIFManifestResource, RootFolder } from '@/model';
 import { useStore } from '@/store';
-import { ItemGrid } from './ItemGrid';
+import { ItemOverview } from './ItemOverview';
 import { MetadataDrawer } from './MetadataDrawer';
 import { GridItem, isPresentationManifest } from './Types';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
@@ -59,7 +59,7 @@ export const Images = () => {
               onChangeHideUnannotated={setHideUnannotated}
               onSelect={setSelected} />
           ) : (            
-            <ItemGrid 
+            <ItemOverview 
               folder={currentFolder}
               hideUnannotated={hideUnannotated}
               selected={selected}

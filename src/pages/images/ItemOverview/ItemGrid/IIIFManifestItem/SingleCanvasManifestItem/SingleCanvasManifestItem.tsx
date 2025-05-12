@@ -8,7 +8,7 @@ import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
-import { GridItem } from '../../../Types';
+import { GridItem } from '../../../../Types';
 
 interface SingleCanvasManifestItemProps {
 

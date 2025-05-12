@@ -4,14 +4,11 @@ import { useImages, useStore } from '@/store';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { FolderHeader } from './FolderHeader';
-import { FolderItem } from './FolderItem';
-import { IIIFManifestItem } from './IIIFManifestItem';
-import { ImageItem } from './ImageItem';
-import { GridItem } from '../Types';
+import { ItemGrid } from './ItemGrid';
+import { GridItem, ItemLayout } from '../Types';
+import { usePersistentState } from '@/utils/usePersistentState';
 
-import './ItemGrid.css';
-
-interface ItemGridProps {
+interface ItemOverviewProps {
 
   folder: Folder | RootFolder; 
 
@@ -27,9 +24,11 @@ interface ItemGridProps {
 
 }
 
-export const ItemGrid = (props: ItemGridProps) => {
+export const ItemOverview = (props: ItemOverviewProps) => {
 
   const store = useStore();
+
+  const [layout, setLayout] = usePersistentState<ItemLayout>('immarkus:images:layout', 'grid');
   
   const { folders, iiifResources, images } = useMemo(() => {
     return store.getFolderContents(props.folder.handle)
@@ -55,7 +54,7 @@ export const ItemGrid = (props: ItemGridProps) => {
         ), Promise.resolve({}));
 
     Promise.all([imageCounts, manifestCounts]).then(([a, b]) => {
-      setAnnotationCounts({...a, ...b});   
+      setAnnotationCounts({...a, ...b});    
     });
   }, [store, loadedImages]);
 
@@ -102,43 +101,22 @@ export const ItemGrid = (props: ItemGridProps) => {
       <FolderHeader 
         folder={props.folder} 
         hideUnannotated={props.hideUnannotated}
+        layout={layout}
+        onSetLayout={setLayout}
         onShowMetadata={props.onShowMetadata} 
         onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
-      <div className="item-grid">
-        <ul>
-          {folders.map(folder => (
-            <li key={folder.id}>
-              <FolderItem
-                folder={folder} 
-                onOpen={() => onOpenFolder(folder)} 
-                onSelect={() => onSelectFolder(folder)}/>
-            </li>
-          ))}
-
-          {filteredIIIFResources.map(resource => (
-            <li key={resource.id}>
-              {resource.type === 'PRESENTATION_MANIFEST' ? (
-                <IIIFManifestItem
-                  resource={resource} 
-                  onOpen={() => onOpenFolder(resource)} 
-                  onSelect={onSelectManifest}/>
-              ) : null}
-            </li>
-          ))}
-
-          {filteredImages.map(image => (
-            <li key={image.id}>
-              <ImageItem 
-                image={image} 
-                annotationCount={annotationCounts[image.id] || 0}
-                selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
-                onOpen={() => onOpenImage(image)} 
-                onSelect={() => onSelectImage(image)}/>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ItemGrid
+        annotationCounts={annotationCounts}
+        folders={folders} 
+        iiifResources={filteredIIIFResources}
+        images={filteredImages} 
+        selected={props.selected}
+        onOpenFolder={onOpenFolder} 
+        onOpenImage={onOpenImage} 
+        onSelectFolder={onSelectFolder} 
+        onSelectImage={onSelectImage} 
+        onSelectManifest={onSelectManifest} />
     </div>
   );
 }

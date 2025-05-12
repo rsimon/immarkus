@@ -5,7 +5,7 @@ import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
-import { GridItem } from '../../Types';
+import { GridItem } from '../../../Types';
 
 import './IIIFManifestItem.css';
 
