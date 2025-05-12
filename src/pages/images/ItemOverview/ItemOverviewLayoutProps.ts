@@ -1,9 +1,9 @@
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage } from '@/model';
-import { GridItem } from '../Types';
+import { AnnotationMap, GridItem } from '../Types';
 
 export interface ItemOverviewLayoutProps {
 
-  annotationCounts: Record<string, number>;
+  annotations: AnnotationMap;
 
   folders: Folder[];
 

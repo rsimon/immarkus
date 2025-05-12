@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
+import Moment from 'react-moment';
+import { W3CAnnotation } from '@annotorious/react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Store, useStore } from '@/store';
 import { cn } from '@/ui/utils';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
+import { AnnotationMap } from '../../Types';
 import { ImageRowThumbnail } from './ImageRowThumbnail';
 import { ItemTableRowActions } from './ItemTableRowActions';
 
@@ -27,58 +29,63 @@ interface ItemTableRow {
 
   lastEdit?: Date;
 
-  contains?: {
-
-    canvases?: number;
-    
-    images?: number;
-    
-    subfolders?: number;
-
-  }
-
 }
 
 const headerClass = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
-const folderToRow = (folder: Folder, store: Store): ItemTableRow => {
-  const { images, folders } = store.getFolderContents(folder.handle);
-
+const folderToRow = (folder: Folder): ItemTableRow => {
   return {
     data: folder,
     type: 'folder',
-    name: folder.name,
-    contains: {
-      images: images.length,
-      subfolders: folders.length
-    }
+    name: folder.name
   }
 }
 
 const manifestToRow = (manifest: IIIFManifestResource): ItemTableRow => ({
   data: manifest,
   type: 'manifest',
-  name: manifest.name,
-  contains: {
-    canvases: manifest.canvases.length
-  }
+  name: manifest.name
 });
 
 const imageToRow = (
   image: Image, 
-  annotationCounts: Record<string, number>,
+  annotations: AnnotationMap,
   dimensions: Record<string, [number, number]>
 ): ItemTableRow => ({
   data: image,
   type: 'image',
   name: image.name,
   dimensions: dimensions[image.id],
-  annotations: annotationCounts[image.id] || 0
+  lastEdit: getLastEdit((annotations.images[image.id] || [])),
+  annotations: (annotations.images[image.id] || []).length
 });
 
-export const ItemTable = (props: ItemOverviewLayoutProps) => {
+export const getLastEdit = (annotations: W3CAnnotation[]): Date | undefined => {
+  // Helper
+  const getLatestTimestamp = (annotation: W3CAnnotation): Date | undefined => {
+    const timestamps: Date[] = [];
 
-  const store = useStore();
+    if (annotation.created) timestamps.push(new Date(annotation.created));
+    if (annotation.modified) timestamps.push(new Date(annotation.modified));
+
+    const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
+    bodies.forEach(body => {
+      if (body.created) timestamps.push(new Date(body.created));
+      if (body.modified) timestamps.push(new Date(body.modified));
+    });
+
+    return timestamps.length > 0 
+      ? new Date(Math.max(...timestamps.map(t => t.getTime())))
+      : undefined
+  };
+
+  const timestamps = annotations.map(a => getLatestTimestamp(a)).filter(Boolean);
+  return timestamps.length > 0 
+      ? new Date(Math.max(...timestamps.map(t => t.getTime())))
+      : undefined
+}
+
+export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
 
@@ -86,11 +93,11 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   useEffect(() => {
     setRows([
-      ...props.folders.map(f => folderToRow(f, store)),
+      ...props.folders.map(f => folderToRow(f)),
       ...props.iiifResources.map(manifestToRow),
-      ...props.images.map(i => imageToRow(i, props.annotationCounts, dimensions)),
+      ...props.images.map(i => imageToRow(i, props.annotations, dimensions)),
     ]);
-  }, [props.folders, props.iiifResources, props.images, props.annotationCounts, dimensions]);
+  }, [props.folders, props.iiifResources, props.images, props.annotations, dimensions]);
 
   const onLoadDimensions = (image: Image, dimensions: [number, number]) =>
     setDimensions(current => ({...current, [image.id]: dimensions }));
@@ -126,31 +133,12 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       </span>
     ) : null;
 
-  const containsTemplate = (row: ItemTableRow) => {
-    if (!row.contains) return null;
-
-    const { images, subfolders, canvases } = row.contains;
-    if (!isNaN(canvases)) {
-      return (
-        <span className="text-muted-foreground">
-          {`${canvases.toLocaleString()} Canvas${canvases === 1 ? '' : 'es'}`}
-        </span>
-      )
-    } else {
-      return (
-        <span className="text-muted-foreground">
-          {images === 0 && subfolders === 0 ? 
-            'Empty' : 
-            images > 0 && subfolders > 0 ?
-              `${images} Image${images > 1 ? 's' : ''} · ${subfolders} Subfolder${subfolders > 1 ? 's' : ''}` :
-            images > 0 ?
-              `${images} Image${images > 1 ? 's' : ''}` :
-              `${subfolders} Subfolder${subfolders > 1 ? 's' : ''}`
-          }
-        </span>
-      )
-    }
-  }
+  const lastEditTemplate = (row: ItemTableRow) => 
+    row.lastEdit ? (
+      <Moment fromNow className="text-muted-foreground">
+        {row.lastEdit.toISOString()}
+      </Moment>
+    ) : null
 
   const annotationsTemplate = (row: ItemTableRow) => 
     row.type === 'image' ? (
@@ -206,16 +194,12 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           headerClassName={cn(headerClass)}
           body={dimensionsTemplate} />
 
-        <Column 
-          field="contains" 
-          header="Contains" 
-          headerClassName={headerClass} 
-          body={containsTemplate} />
-
         <Column
+          sortable
           field="lastEdit" 
           header="Last Edit" 
-          headerClassName={headerClass} />
+          headerClassName={headerClass}
+          body={lastEditTemplate} />
 
         <Column
           sortable

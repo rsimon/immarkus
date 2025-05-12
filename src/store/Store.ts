@@ -340,13 +340,34 @@ export const loadStore = (
   }
 
   const getAnnotationsRecursive = (
-    sourceId: string,
+    folderId: string,
     opts: GetAnnotationOpts = { type: 'both' }
   ) => {
-    if (sourceId.startsWith('iiif:')) {
-      return undefined;
+    if (folderId.startsWith('iiif:')) {
+      // No need for recursive fetching
+      return getAnnotations(folderId, opts);
     } else {
-      return undefined;
+      const start = getFolder(folderId) as Folder;
+      
+      const fetchOneFolder = (folder: Folder, annotations: W3CAnnotation[] = []): Promise<W3CAnnotation[]> => {
+        const { folders, images, iiifResources } = getFolderContents(folder.handle);
+
+        const ids = [
+          ...images.map(i => i.id),
+          ...iiifResources.map(r => `iiif:${r.id}`)
+        ];
+
+        // Annotations on images and IIIF resources in this folder
+        return Promise.all(ids.map(id => getAnnotations(id, opts)))
+          .then(r => {
+            // return r.flat();
+            return folders.reduce<Promise<W3CAnnotation[]>>((promise, folder) => promise.then(flat => {
+              return fetchOneFolder(folder, flat);
+            }), Promise.resolve([...annotations, ...r.flat()]));
+          });
+      }
+
+      return fetchOneFolder(start);
     }
   }
 

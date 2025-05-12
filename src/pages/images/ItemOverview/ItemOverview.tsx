@@ -5,9 +5,10 @@ import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, Roo
 import { isSingleImageManifest } from '@/utils/iiif';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
-import { GridItem, ItemLayout } from '../Types';
+import { AnnotationMap, GridItem, ItemLayout } from '../Types';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemTable } from './ItemTable';
+import { W3CAnnotation } from '@annotorious/react';
 
 interface ItemOverviewProps {
 
@@ -37,27 +38,29 @@ export const ItemOverview = (props: ItemOverviewProps) => {
 
   const loadedImages = useImages(images.map(i => i.id)) as LoadedFileImage[];
 
-  const [annotationCounts, setAnnotationCounts] = useState<Record<string, number>>({});
+  const [annotations, setAnnotations] = useState<AnnotationMap>({
+    images: {}, folders: {}
+  });
 
   useEffect(() => {
-    const imageCounts = loadedImages
-      .reduce<Promise<Record<string, number>>>((promise, image) => 
-        promise.then(counts =>
-          store.countAnnotations(image.id).then(count => ({...counts, [image.id]: count }))
+    const imageAnnotations = images
+      .reduce<Promise<Record<string, W3CAnnotation[]>>>((promise, image) => 
+        promise.then(agg =>
+          store.getAnnotations(image.id, { type: 'image' }).then(a => ({ ...agg, [image.id]: a }))
         ), Promise.resolve({}));
 
-    const manifestCounts = iiifResources
-      .reduce<Promise<Record<string, number>>>((promise, manifest) =>
-        promise.then(counts =>
-          store.getManifestAnnotations(manifest.id).then(annotations => (
-            {...counts, [`iiif:${manifest.id}`]: annotations.length }
-          ))
-        ), Promise.resolve({}));
+    imageAnnotations.then(a => setAnnotations(current => ({...current, images: a })));
 
-    Promise.all([imageCounts, manifestCounts]).then(([a, b]) => {
-      setAnnotationCounts({...a, ...b});    
-    });
-  }, [store, loadedImages]);
+    const folderAnnotations = [
+      ...folders.map(f => f.id),
+      ...iiifResources.map(r => `iiif:${r.id}`)
+    ].reduce<Promise<Record<string, W3CAnnotation[]>>>((promise, sourceId) =>
+      promise.then(agg =>
+        store.getAnnotationsRecursive(sourceId, { type: 'image'}).then(a => ({...agg, [sourceId]: a }))
+      ), Promise.resolve({}));
+
+    folderAnnotations.then(a => setAnnotations(current => ({...current, folders: a })));
+  }, [folders, iiifResources, images]);
 
   const navigate = useNavigate();
 
@@ -82,7 +85,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
         const canvas = item.canvases[0];
         if (!canvas) return true; // Should never happen
 
-        return annotationCounts[`iiif:${item.id}`] > 0;
+        return (annotations.images[`iiif:${item.id}`] || []).length > 0;
       } else {
         // Manifests with multiple images (= folder) should always be shown
         return true;
@@ -90,12 +93,14 @@ export const ItemOverview = (props: ItemOverviewProps) => {
     }
 
     return props.hideUnannotated ? iiifResources.filter(dontHide) : iiifResources;
-  }, [props.hideUnannotated, iiifResources, annotationCounts]);
+  }, [props.hideUnannotated, iiifResources, annotations]);
 
   const filteredImages = useMemo(() => {
-    const hasAnnotations = (item: LoadedFileImage) => annotationCounts[item.id] > 0;
+    const hasAnnotations = (item: LoadedFileImage) => 
+        (annotations.images[item.id] || []).length > 0;
+
     return props.hideUnannotated ? loadedImages.filter(hasAnnotations) : loadedImages
-  }, [props.hideUnannotated, loadedImages, annotationCounts]);
+  }, [props.hideUnannotated, loadedImages, annotations]);
 
   return (
     <div>
@@ -109,7 +114,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
 
       {layout === 'grid' ? (
         <ItemGrid
-          annotationCounts={annotationCounts}
+          annotations={annotations}
           folders={folders} 
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
@@ -121,7 +126,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           onSelectManifest={onSelectManifest} />
       ) : (
         <ItemTable
-        annotationCounts={annotationCounts}
+          annotations={annotations}
           folders={folders} 
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
