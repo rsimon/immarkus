@@ -39,6 +39,8 @@ export interface AnnotationStore {
 
   getAnnotations(imageId: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
 
+  getAnnotationsRecursive(sourceId: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>; 
+
   getCanvas(id: string): CanvasInformation | undefined;
 
   getCanvasAnnotations(id: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
@@ -337,6 +339,17 @@ export const loadStore = (
     }
   }
 
+  const getAnnotationsRecursive = (
+    sourceId: string,
+    opts: GetAnnotationOpts = { type: 'both' }
+  ) => {
+    if (sourceId.startsWith('iiif:')) {
+      return undefined;
+    } else {
+      return undefined;
+    }
+  }
+
   const getManifestAnnotations = (
     manifestId: string,
     opts: GetManifestAnnotationOpts = { type: 'both', includeCanvases: true }
@@ -629,6 +642,7 @@ export const loadStore = (
     findAnnotation,
     findImageForAnnotation,
     getAnnotations,
+    getAnnotationsRecursive,
     getCanvas,
     getCanvasAnnotations,
     getManifestAnnotations,
