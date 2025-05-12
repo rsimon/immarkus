@@ -7,6 +7,7 @@ import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { GridItem, ItemLayout } from '../Types';
 import { usePersistentState } from '@/utils/usePersistentState';
+import { ItemTable } from './ItemTable';
 
 interface ItemOverviewProps {
 
@@ -106,17 +107,31 @@ export const ItemOverview = (props: ItemOverviewProps) => {
         onShowMetadata={props.onShowMetadata} 
         onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
-      <ItemGrid
+      {layout === 'grid' ? (
+        <ItemGrid
+          annotationCounts={annotationCounts}
+          folders={folders} 
+          iiifResources={filteredIIIFResources}
+          images={filteredImages} 
+          selected={props.selected}
+          onOpenFolder={onOpenFolder} 
+          onOpenImage={onOpenImage} 
+          onSelectFolder={onSelectFolder} 
+          onSelectImage={onSelectImage} 
+          onSelectManifest={onSelectManifest} />
+      ) : (
+        <ItemTable
         annotationCounts={annotationCounts}
-        folders={folders} 
-        iiifResources={filteredIIIFResources}
-        images={filteredImages} 
-        selected={props.selected}
-        onOpenFolder={onOpenFolder} 
-        onOpenImage={onOpenImage} 
-        onSelectFolder={onSelectFolder} 
-        onSelectImage={onSelectImage} 
-        onSelectManifest={onSelectManifest} />
+          folders={folders} 
+          iiifResources={filteredIIIFResources}
+          images={filteredImages} 
+          selected={props.selected}
+          onOpenFolder={onOpenFolder} 
+          onOpenImage={onOpenImage} 
+          onSelectFolder={onSelectFolder} 
+          onSelectImage={onSelectImage} 
+          onSelectManifest={onSelectManifest} />
+      )}
     </div>
   );
 }

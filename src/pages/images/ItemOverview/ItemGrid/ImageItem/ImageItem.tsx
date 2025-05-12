@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { LoadedFileImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
-import { useStore } from '@/store';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 
 interface ImageItemProps {
@@ -22,8 +20,6 @@ interface ImageItemProps {
 export const ImageItem = (props: ImageItemProps) => {
 
   const { image } = props;
-
-  const store = useStore();
 
   const { onLoad, dimensions } = useImageDimensions();
 

@@ -1,36 +1,11 @@
-import { Folder, IIIFResource, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
-import { GridItem } from '../../Types';
+import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 
 import './ItemGrid.css';
 
-interface ItemGridProps {
-
-  annotationCounts: Record<string, number>;
-
-  folders: Folder[];
-
-  iiifResources: IIIFResource[];
-
-  images: LoadedFileImage[];
-
-  selected: GridItem
-
-  onOpenFolder(folder: Folder | IIIFManifestResource): void;
-
-  onOpenImage(image: Image): void;
-
-  onSelectFolder(folder: Folder): void;
-
-  onSelectImage(image: Image): void;
-
-  onSelectManifest(manifest: IIIFManifestResource): void;
-
-}
-
-export const ItemGrid = (props: ItemGridProps) => {
+export const ItemGrid = (props: ItemOverviewLayoutProps) => {
 
   return (
     <div className="item-grid">
