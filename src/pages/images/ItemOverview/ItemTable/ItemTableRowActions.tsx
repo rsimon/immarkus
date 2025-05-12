@@ -68,7 +68,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
         <DropdownMenuContent 
           align="start"
           sideOffset={0}
-          collisionPadding={10}>
+          collisionPadding={10}
+          onClick={evt => evt.stopPropagation()}>
           <DropdownMenuItem onSelect={onSelect}>
             <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
           </DropdownMenuItem>

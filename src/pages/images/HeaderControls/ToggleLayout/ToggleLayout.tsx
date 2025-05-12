@@ -35,6 +35,6 @@ export const ToggleLayout = (props: ToggleLayoutProps) => {
         <SelectItem value="table">Table view</SelectItem>
       </SelectContent>
     </Select>
-  )
+  );
 
 }

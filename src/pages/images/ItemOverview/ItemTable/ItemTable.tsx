@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableCellClickEvent, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { cn } from '@/ui/utils';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -119,10 +119,21 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       onSelectManifest={props.onSelectManifest} />
   );
 
+  const onRowClick = (evt: DataTableRowClickEvent) => {
+    const { type, data } = evt.data as ItemTableRow;
+    if (type === 'folder' || type === 'manifest')
+      props.onOpenFolder(data);
+    else if (type === 'image')
+      props.onOpenImage(data);
+  }
+
   return (
-    <div className="mt-12 rounded-md border">
-      <DataTable value={rows} sortMode="multiple">
-        <Column 
+    <div className="mt-12 rounded-md border cursor-pointer">
+      <DataTable 
+        value={rows} 
+        sortMode="multiple"
+        onRowClick={onRowClick}>
+        <Column
           field="type" 
           header="Type" 
           headerClassName={headerClass}
@@ -146,7 +157,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           headerClassName={headerClass} />
 
         <Column
-          sortable
           field="lastEdit" 
           header="Last Edit" 
           headerClassName={headerClass} />

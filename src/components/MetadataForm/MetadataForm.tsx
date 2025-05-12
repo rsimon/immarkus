@@ -99,7 +99,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
     </div>
   ) : metadata && (
     <div>
-      {schemas.length > 1 && (
+      {(schemas.length > 1 && selectedSchema?.name) && (
         <>
           <div className="flex gap-4 items-center">
             <span className="font-medium">Schema</span>
