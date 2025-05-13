@@ -12,6 +12,22 @@ export interface AnnotationMap {
 
 }
 
+export interface ItemTableRow {
+
+  data: any;
+
+  type: 'folder' | 'manifest' | 'image';
+
+  name: string;
+
+  dimensions?: [number, number];
+
+  annotations?: number;
+
+  lastEdit?: Date;
+
+}
+
 export type FolderItem = (Folder | RootFolder) & {
 
   type: 'folder';

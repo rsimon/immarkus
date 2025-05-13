@@ -10,6 +10,8 @@ import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemTable } from './ItemTable';
 import { W3CAnnotation } from '@annotorious/react';
 
+import './ItemOverview.css';
+
 interface ItemOverviewProps {
 
   folder: Folder | RootFolder; 

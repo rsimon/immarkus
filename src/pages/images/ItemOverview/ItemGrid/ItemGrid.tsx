@@ -3,8 +3,6 @@ import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 
-import './ItemGrid.css';
-
 export const ItemGrid = (props: ItemOverviewLayoutProps) => {
 
   return (

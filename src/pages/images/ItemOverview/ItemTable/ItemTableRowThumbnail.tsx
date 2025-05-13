@@ -2,7 +2,7 @@ import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { useEffect } from 'react';
 
-interface ImageRowThumbnailProps {
+interface ItemTableRowThumbnailProps {
 
   image: LoadedFileImage;
 
@@ -10,7 +10,7 @@ interface ImageRowThumbnailProps {
 
 }
 
-export const ImageRowThumbnail = (props: ImageRowThumbnailProps) => {
+export const ItemTableRowThumbnail = (props: ItemTableRowThumbnailProps) => {
 
   const { onLoad, dimensions } = useImageDimensions();
 

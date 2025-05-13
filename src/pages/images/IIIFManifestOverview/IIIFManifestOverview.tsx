@@ -9,6 +9,7 @@ import { useManifestAnnotations } from '@/store/hooks';
 import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
+import { IIIFManifestTable } from './IIIFManifestTable';
 
 interface IIIFManifestOverviewProps {
 
@@ -123,7 +124,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         onSetLayout={setLayout}
         onShowMetadata={props.onShowMetadata} />
 
-      {layout === 'grid' && (
+      {layout === 'grid' ? (
         <IIIFManifestGrid
           annotationsByCanvas={annotationsByCanvas}
           canvases={filtered}
@@ -134,19 +135,18 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           onOpenCanvas={onOpenCanvas}
           onOpenRange={onOpenRange}
           onSelect={props.onSelect} />
-      )} {/*  : (
+      ) : (
         <IIIFManifestTable
-          annotations={annotations}
-          folders={folders} 
-          iiifResources={filteredIIIFResources}
-          images={filteredImages} 
-          selected={props.selected}
-          onOpenFolder={onOpenFolder} 
-          onOpenImage={onOpenImage} 
-          onSelectFolder={onSelectFolder} 
-          onSelectImage={onSelectImage} 
-          onSelectManifest={onSelectManifest} />
-      ) */}
+          annotationsByCanvas={annotationsByCanvas}
+          canvases={filtered} 
+          folders={folders}
+          hideUnannotated={props.hideUnannotated} 
+          manifest={props.manifest}
+          selected={props.selected} 
+          onOpenCanvas={onOpenCanvas} 
+          onOpenRange={onOpenRange} 
+          onSelect={props.onSelect} />
+      )}
     </div>
   )
 
