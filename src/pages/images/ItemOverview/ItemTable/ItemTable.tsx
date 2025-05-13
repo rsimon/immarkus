@@ -3,7 +3,7 @@ import { MessagesSquare } from 'lucide-react';
 import Moment from 'react-moment';
 import { W3CAnnotation } from '@annotorious/react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { Column, ColumnSortEvent } from 'primereact/column';
 import { cn } from '@/ui/utils';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
@@ -170,11 +170,33 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       props.onOpenImage(data);
   }
 
+  // Generic sort helper that applies by-type sorting first, and the provided sort fn second.
+  const sort = (evt: ColumnSortEvent, sortFn: (a: ItemTableRow, b: ItemTableRow) => number) => {
+    const data = evt.data as ItemTableRow[];
+
+    return [...data].sort((a, b) => {
+      const isFolderLike = (row: ItemTableRow) => row.type === 'folder' || row.type === 'manifest';
+
+      if (isFolderLike(a) !== isFolderLike(b))
+        return isFolderLike(a) ? -1 : 1;
+      
+      return evt.order * sortFn(a, b);
+    })
+  }
+
+  const sortByName = (evt: ColumnSortEvent) =>
+    sort(evt, (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
+  const sortByLastEdit = (evt: ColumnSortEvent) =>
+    sort(evt, (a, b) => a.lastEdit > b.lastEdit ? -1 : 1);
+
+  const sortByAnnotations = (evt: ColumnSortEvent) =>
+    sort(evt, (a, b) => a.annotations - b.annotations);
+
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
         value={rows} 
-        sortMode="multiple"
         onRowClick={onRowClick}>
         <Column
           field="type" 
@@ -184,6 +206,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
         <Column 
           sortable
+          sortFunction={sortByName}
           field="name" 
           header="Name" 
           headerClassName={headerClass} />
@@ -196,6 +219,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
         <Column
           sortable
+          sortFunction={sortByLastEdit}
           field="lastEdit" 
           header="Last Edit" 
           headerClassName={headerClass}
@@ -203,6 +227,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
         <Column
           sortable
+          sortFunction={sortByAnnotations}
           field="annotations" 
           header="Annotations" 
           headerClassName={headerClass} 
