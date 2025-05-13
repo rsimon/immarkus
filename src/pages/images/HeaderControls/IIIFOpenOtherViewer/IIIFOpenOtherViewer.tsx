@@ -22,7 +22,7 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
         <Button 
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-          <Share2 className="size-4" strokeWidth={2.2}/> Other IIIF Viewers <ChevronDown className="size-3.5" />
+          <Share2 className="size-4" strokeWidth={2.2}/> Other IIIF Viewers <ChevronDown className="size-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
 

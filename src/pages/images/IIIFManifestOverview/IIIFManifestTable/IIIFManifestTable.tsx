@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import murmur from 'murmurhash';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -79,11 +79,15 @@ const canvasToRow = (
 
 export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
 
-  const { annotations, canvases, folders } = props;
+  const { annotations, canvases, folders, hideUnannotated } = props;
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
+
+  const filteredRows = useMemo(() => (
+    hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
+  ), [rows, hideUnannotated]);
 
   useEffect(() => {
     if (!parsedManifest) return;
@@ -132,51 +136,51 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
 
   return parsedManifest &&  (
     <div className="mt-12 rounded-md border cursor-pointer">
-        <DataTable 
-          removableSort
-          value={rows} 
-          onRowClick={onRowClick}
-          sortIcon={sortIcon}>
-          <Column
-            field="type" 
-            header="Type" 
-            headerClassName={TABLE_HEADER_CLASS}
-            body={typeTemplate} />
+      <DataTable 
+        removableSort
+        value={filteredRows} 
+        onRowClick={onRowClick}
+        sortIcon={sortIcon}>
+        <Column
+          field="type" 
+          header="Type" 
+          headerClassName={TABLE_HEADER_CLASS}
+          body={typeTemplate} />
 
-          <Column 
-            sortable
-            sortFunction={sortByName}
-            field="name" 
-            header="Name" 
-            headerClassName={TABLE_HEADER_CLASS} 
-            body={NAME_COLUMN_TEMPLATE} />
+        <Column 
+          sortable
+          sortFunction={sortByName}
+          field="name" 
+          header="Name" 
+          headerClassName={TABLE_HEADER_CLASS} 
+          body={NAME_COLUMN_TEMPLATE} />
 
-          <Column
-            field="dimensions"
-            header="Dimensions"
-            headerClassName={TABLE_HEADER_CLASS}
-            body={DIMENSIONS_COLUMN_TEMPLATE} />
+        <Column
+          field="dimensions"
+          header="Dimensions"
+          headerClassName={TABLE_HEADER_CLASS}
+          body={DIMENSIONS_COLUMN_TEMPLATE} />
 
-          <Column
-            sortable
-            sortFunction={sortByLastEdit}
-            field="lastEdit" 
-            header="Last Edit" 
-            headerClassName={TABLE_HEADER_CLASS}
-            body={LAST_EDIT_COLUMN_TEMPLATE} />
+        <Column
+          sortable
+          sortFunction={sortByLastEdit}
+          field="lastEdit" 
+          header="Last Edit" 
+          headerClassName={TABLE_HEADER_CLASS}
+          body={LAST_EDIT_COLUMN_TEMPLATE} />
 
-          <Column
-            sortable
-            sortFunction={sortByAnnotations}
-            field="annotations" 
-            header="Annotations" 
-            headerClassName={TABLE_HEADER_CLASS} 
-            body={ANNOTATIONS_COLUMN_TEMPLATE} />
+        <Column
+          sortable
+          sortFunction={sortByAnnotations}
+          field="annotations" 
+          header="Annotations" 
+          headerClassName={TABLE_HEADER_CLASS} 
+          body={ANNOTATIONS_COLUMN_TEMPLATE} />
 
-          <Column 
-            field="actions" 
-            body={actionsTemplate} />
-        </DataTable>
+        <Column 
+          field="actions" 
+          body={actionsTemplate} />
+      </DataTable>
     </div>
   )
 

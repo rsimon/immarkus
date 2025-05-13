@@ -87,7 +87,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         const { navItems, navSections: folders } = thisNode;
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases, breadcrumbs, currentRange };
+        return { folders, canvases, breadcrumbs };
       } else if (!rangeId) {
         const { root } = toc; // Root 
 
@@ -98,19 +98,13 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         return { folders, canvases, breadcrumbs: [] };
       } else {
         // Invalid range ID!
-        return { folders: [], canvases: [] };
+        return { folders: [], canvases: [] , breadcrumbs: []};
       }
     } else {
       // No ToC - render all canvases flat
-      return { folders: [], canvases: props.manifest.canvases };
+      return { folders: [], canvases: props.manifest.canvases, breadcrumbs: [] };
     }
   }, [rangeId, props.manifest, parsedManifest])
-
-  const filtered: CanvasInformation[] = useMemo(() => {
-    if (!props.hideUnannotated) return canvases;
-
-    return canvases.filter(c => (annotationsByCanvas[c.id] || []).length > 0);
-  }, [canvases, props.hideUnannotated, annotationsByCanvas]);
 
   return (
     <div>
@@ -126,7 +120,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
       {layout === 'grid' ? (
         <IIIFManifestGrid
           annotations={annotationsByCanvas}
-          canvases={filtered}
+          canvases={canvases}
           folders={folders}
           hideUnannotated={props.hideUnannotated}
           manifest={props.manifest}
@@ -137,7 +131,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
       ) : (
         <IIIFManifestTable
           annotations={annotationsByCanvas}
-          canvases={filtered} 
+          canvases={canvases} 
           folders={folders}
           hideUnannotated={props.hideUnannotated} 
           manifest={props.manifest}
