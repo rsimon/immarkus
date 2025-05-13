@@ -2,7 +2,7 @@ import { CanvasInformation, Folder, IIIFManifestResource, IIIFResource, Image, R
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyCanvas } from 'cozy-iiif';
 
-export type ItemLayout = 'grid' | 'table';
+export type OverviewLayout = 'grid' | 'table';
 
 export interface AnnotationMap {
 

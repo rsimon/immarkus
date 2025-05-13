@@ -6,7 +6,7 @@ import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { useManifestAnnotations } from '@/store/hooks';
-import { CanvasItem, OverviewItem, ItemLayout } from '../Types';
+import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
 
@@ -30,7 +30,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
 
   const { folder: folderId } = useParams();
 
-  const [layout, setLayout] = usePersistentState<ItemLayout>('immarkus:images:layout', 'grid');
+  const [layout, setLayout] = usePersistentState<OverviewLayout>('immarkus:images:layout', 'grid');
 
   const [_, rangeId] = useMemo(() => folderId.split('@'), [folderId]);
   
@@ -115,10 +115,12 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   return (
     <div>
       <IIIFManifestHeader
+        layout={layout}
         manifest={props.manifest} 
         breadcrumbs={breadcrumbs}
         hideUnannotated={props.hideUnannotated} 
         onChangeHideUnannotated={props.onChangeHideUnannotated}
+        onSetLayout={setLayout}
         onShowMetadata={props.onShowMetadata} />
 
       {layout === 'grid' && (

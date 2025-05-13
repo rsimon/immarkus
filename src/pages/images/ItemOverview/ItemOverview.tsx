@@ -5,7 +5,7 @@ import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, Roo
 import { isSingleImageManifest } from '@/utils/iiif';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
-import { AnnotationMap, OverviewItem, ItemLayout } from '../Types';
+import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemTable } from './ItemTable';
 import { W3CAnnotation } from '@annotorious/react';
@@ -30,7 +30,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
 
   const store = useStore();
 
-  const [layout, setLayout] = usePersistentState<ItemLayout>('immarkus:images:layout', 'grid');
+  const [layout, setLayout] = usePersistentState<OverviewLayout>('immarkus:images:layout', 'grid');
   
   const { folders, iiifResources, images } = useMemo(() => {
     return store.getFolderContents(props.folder.handle)

@@ -7,17 +7,22 @@ import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { FilterByAnnotations, IIIFOpenOtherViewer } from '../HeaderControls';
+import { FilterByAnnotations, IIIFOpenOtherViewer, ToggleLayout } from '../HeaderControls';
+import { OverviewLayout } from '../Types';
 
 interface IIIFManifestHeaderProps {
   
   breadcrumbs: CozyTOCNode[];
 
-  manifest: IIIFManifestResource;
-
   hideUnannotated: boolean;
+  
+  layout: OverviewLayout;
 
+  manifest: IIIFManifestResource;
+  
   onChangeHideUnannotated(hide: boolean): void;
+
+  onSetLayout(layout: OverviewLayout): void;
 
   onShowMetadata(): void;
   
@@ -97,6 +102,11 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
         <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
+
+        <span>·</span>
+        <ToggleLayout 
+          layout={props.layout} 
+          onSetLayout={props.onSetLayout} />
       </p>
     </div>
   )

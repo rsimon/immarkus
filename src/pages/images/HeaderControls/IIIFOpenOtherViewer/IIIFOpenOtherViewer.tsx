@@ -1,4 +1,4 @@
-import { Share2 } from 'lucide-react';
+import { ChevronDown, Share2 } from 'lucide-react';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
 import { 
@@ -22,7 +22,7 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
         <Button 
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-          <Share2 className="size-4" strokeWidth={2.2}/> Open Manifest in Other Viewers
+          <Share2 className="size-4" strokeWidth={2.2}/> Other IIIF Viewers <ChevronDown className="size-3.5" />
         </Button>
       </DropdownMenuTrigger>
 

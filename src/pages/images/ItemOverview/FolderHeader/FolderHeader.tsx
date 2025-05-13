@@ -1,10 +1,10 @@
 import { Fragment, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDownUp, ChevronDown, ChevronRight, LayoutGrid, NotebookPen } from 'lucide-react';
+import { ChevronRight, NotebookPen } from 'lucide-react';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { isRootFolder, ItemLayout } from '../../Types';
+import { isRootFolder, OverviewLayout } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
 import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
 
@@ -14,9 +14,9 @@ interface FolderHeaderProps {
 
   hideUnannotated: boolean;
 
-  layout: ItemLayout;
+  layout: OverviewLayout;
 
-  onSetLayout(layout: ItemLayout): void;
+  onSetLayout(layout: OverviewLayout): void;
 
   onShowMetadata(): void;
 
