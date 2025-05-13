@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MessagesSquare } from 'lucide-react';
+import { AArrowDown, ArrowDownNarrowWide, ArrowDownWideNarrow, ArrowUpDown, MessagesSquare } from 'lucide-react';
 import Moment from 'react-moment';
 import { W3CAnnotation } from '@annotorious/react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
@@ -125,6 +125,10 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     );
   };
 
+  const nameTemplate = (row: ItemTableRow) => (
+    <div>{row.name}</div>
+  )
+
   const dimensionsTemplate = (row: ItemTableRow) =>
     row.dimensions ? (
       <span className="text-muted-foreground">
@@ -138,7 +142,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       <Moment fromNow className="text-muted-foreground">
         {row.lastEdit.toISOString()}
       </Moment>
-    ) : null
+    ) : null;
 
   const annotationsTemplate = (row: ItemTableRow) => 
     row.type === 'image' ? (
@@ -193,11 +197,22 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
   const sortByAnnotations = (evt: ColumnSortEvent) =>
     sort(evt, (a, b) => a.annotations - b.annotations);
 
+  const sortIcon = (evt: any) => {
+    if (!evt.sorted)
+      return (<ArrowUpDown className="size-3.5" />)
+    else if (evt.sortOrder === 1)
+      return (<ArrowDownNarrowWide className="size-3.5" />)
+    else 
+      return (<ArrowDownWideNarrow className="size-3.5" />)
+  }
+
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
+        removableSort
         value={rows} 
-        onRowClick={onRowClick}>
+        onRowClick={onRowClick}
+        sortIcon={sortIcon}>
         <Column
           field="type" 
           header="Type" 
@@ -209,7 +224,8 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           sortFunction={sortByName}
           field="name" 
           header="Name" 
-          headerClassName={headerClass} />
+          headerClassName={headerClass} 
+          body={nameTemplate} />
 
         <Column
           field="dimensions"
