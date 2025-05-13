@@ -4,10 +4,12 @@ import { Column } from 'primereact/column';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
+import { isSingleImageManifest } from '@/utils/iiif';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 import { AnnotationMap, ItemTableRow } from '../../Types';
-import { ItemTableRowThumbnail } from './ItemTableRowThumbnail';
+import { ItemTableRowImageThumbnail } from './ItemTableRowImageThumbnail';
 import { ItemTableRowActions } from './ItemTableRowActions';
+import { ItemTableRowCanvasThumbnail } from './ItemTableRowCanvasThumbnail';
 import { 
   ANNOTATIONS_COLUMN_TEMPLATE,
   DIMENSIONS_COLUMN_TEMPLATE,
@@ -84,9 +86,12 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
   const typeTemplate = (row: ItemTableRow) => {
     return (
       <div className="pl-2">
-        {row.type === "folder" ? (
+        {row.type === 'folder' ? (
           <FolderIcon className="size-10" />
-        ) : row.type === "manifest" ? (
+        ) : row.type === 'manifest' && isSingleImageManifest(row.data) ? (
+          <ItemTableRowCanvasThumbnail 
+            manifest={row.data} />
+        ) : row.type === 'manifest' ? (
           <div className="relative">
             <FolderIcon className="size-10" />
             <IIIFIcon
@@ -95,10 +100,9 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
             />
           </div>
         ) : (
-          <ItemTableRowThumbnail
+          <ItemTableRowImageThumbnail
             image={row.data as LoadedFileImage}
-            onLoadDimensions={dim => onLoadDimensions(row.data, dim)}
-          />
+            onLoadDimensions={dim => onLoadDimensions(row.data, dim)} />
         )}
       </div>
     );

@@ -1,5 +1,5 @@
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage } from '@/model';
-import { AnnotationMap, GridItem } from '../Types';
+import { AnnotationMap, OverviewItem } from '../Types';
 
 export interface ItemOverviewLayoutProps {
 
@@ -11,7 +11,7 @@ export interface ItemOverviewLayoutProps {
 
   images: LoadedFileImage[];
 
-  selected: GridItem;
+  selected: OverviewItem;
 
   onOpenFolder(folder: Folder | IIIFManifestResource): void;
 

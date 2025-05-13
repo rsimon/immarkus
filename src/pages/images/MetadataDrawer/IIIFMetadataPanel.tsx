@@ -11,7 +11,7 @@ import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { CozyMetadata } from 'cozy-iiif';
 import { useIIIFResource } from '@/utils/iiif/hooks';
-import { CanvasGridItem } from '../Types';
+import { CanvasItem } from '../Types';
 
 interface MetadataListProps {
 
@@ -138,7 +138,7 @@ export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource
   
 }
 
-export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasGridItem }) => {
+export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasItem }) => {
 
   const id = `iiif:${item.info.manifestId}:${item.info.id}`;
 

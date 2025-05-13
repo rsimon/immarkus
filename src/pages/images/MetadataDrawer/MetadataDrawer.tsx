@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { animated, easings, useTransition } from '@react-spring/web';
 import { Button } from '@/ui/Button';
-import { FolderGridItem, GridItem, ImageGridItem } from '../Types';
+import { FolderItem, OverviewItem, ImageItem } from '../Types';
 import { FolderMetadataPanel } from './FolderMetadataPanel';
 import { ImageMetadataPanel } from './ImageMetadataPanel';
 import { IIIFManifestMetadataPanel, IIIFCanvasMetadataPanel } from './IIIFMetadataPanel';
 
 interface MetadataDrawerProps {
 
-  item?: GridItem;
+  item?: OverviewItem;
 
   onClose(): void;
 
@@ -17,7 +17,7 @@ interface MetadataDrawerProps {
 
 export const MetadataDrawer = (props: MetadataDrawerProps) => {
 
-  const previous = useRef<GridItem | undefined>();
+  const previous = useRef<OverviewItem | undefined>();
 
   const isInitial = useRef(true);
 
@@ -56,10 +56,10 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
 
         {item.type === 'folder' ? (
           <FolderMetadataPanel 
-            folder={item as FolderGridItem} />
+            folder={item as FolderItem} />
         ) : item.type === 'image' ? (
           <ImageMetadataPanel 
-            image={item as ImageGridItem} />
+            image={item as ImageItem} />
         ) : item.type === 'PRESENTATION_MANIFEST' ? (
           <IIIFManifestMetadataPanel item={item} />
         ) : item.type === 'canvas' ? (

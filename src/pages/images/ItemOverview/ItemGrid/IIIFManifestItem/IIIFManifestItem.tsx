@@ -5,7 +5,7 @@ import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
-import { GridItem } from '../../../Types';
+import { OverviewItem } from '../../../Types';
 
 import './IIIFManifestItem.css';
 
@@ -15,7 +15,7 @@ interface IIIFManifestItemProps {
 
   onOpen(): void;
 
-  onSelect(item: GridItem): void;
+  onSelect(item: OverviewItem): void;
 
 }
 
@@ -27,7 +27,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
 
   const onDeleteManifest = () => store.removeIIIFResource(resource);
 
-  return  isSingleImageManifest(props.resource) ? (
+  return isSingleImageManifest(props.resource) ? (
     <SingleCanvasManifestItem
       resource={props.resource as IIIFManifestResource}
       onDelete={onDeleteManifest}

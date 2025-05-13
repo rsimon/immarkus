@@ -4,11 +4,11 @@ import { useFolderMetadata } from '@/store';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
 import { FolderMetadataForm, hasChanges } from '@/components/MetadataForm';
-import { FolderGridItem } from '../Types';
+import { FolderItem } from '../Types';
 
 interface FolderMetadataPanelProps {
 
-  folder: FolderGridItem;
+  folder: FolderItem;
 
 }
 
