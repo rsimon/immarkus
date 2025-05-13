@@ -29,19 +29,6 @@ export const IIIFRangeItem = (props: IIIFRangeItemProps) => {
           className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
           {props.range.getLabel()}
         </h3>
-
-        <p className="pt-1 text-xs text-muted-foreground">
-          {/*
-          {images.length === 0 && folders.length === 0 ? 
-              'Empty' : 
-            images.length > 0 && folders.length > 0 ?
-              `${images.length} Image${images.length > 1 ? 's' : ''} · ${folders.length} Subfolder${folders.length > 1 ? 's' : ''}` :
-            images.length > 0 ?
-              `${images.length} Image${images.length > 1 ? 's' : ''}` :
-              `${folders.length} Subfolder${folders.length > 1 ? 's' : ''}`
-          }
-          */}
-        </p>
       </div>
     </div>
   );
