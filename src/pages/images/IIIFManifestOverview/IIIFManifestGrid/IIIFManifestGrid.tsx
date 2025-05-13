@@ -22,7 +22,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
     const id = murmur.v3(canvas.id);
 
-    const annotationCount = (props.annotationsByCanvas[id] || []).length;
+    const annotationCount = (props.annotations[id] || []).length;
 
     return (
       <IIIFCanvasItem

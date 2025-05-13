@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import Moment from 'react-moment';
-import { MessagesSquare } from 'lucide-react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -11,7 +9,11 @@ import { AnnotationMap, ItemTableRow } from '../../Types';
 import { ItemTableRowThumbnail } from './ItemTableRowThumbnail';
 import { ItemTableRowActions } from './ItemTableRowActions';
 import { 
+  ANNOTATIONS_COLUMN_TEMPLATE,
+  DIMENSIONS_COLUMN_TEMPLATE,
   getLastEdit, 
+  LAST_EDIT_COLUMN_TEMPLATE, 
+  NAME_COLUMN_TEMPLATE, 
   sortByAnnotations, 
   sortByLastEdit, 
   sortByName, 
@@ -86,38 +88,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     );
   };
 
-  const nameTemplate = (row: ItemTableRow) => (
-    <div>{row.name}</div>
-  )
-
-  const dimensionsTemplate = (row: ItemTableRow) =>
-    row.dimensions ? (
-      <span className="text-muted-foreground">
-        {row.dimensions[0].toLocaleString()} x{" "}
-        {row.dimensions[1].toLocaleString()}
-      </span>
-    ) : null;
-
-  const lastEditTemplate = (row: ItemTableRow) => 
-    row.lastEdit ? (
-      <Moment fromNow className="text-muted-foreground">
-        {row.lastEdit.toISOString()}
-      </Moment>
-    ) : null;
-
-  const annotationsTemplate = (row: ItemTableRow) => 
-    row.type === 'image' ? (
-      <div className="text-muted-foreground flex justify-around">
-        <div>
-          <MessagesSquare 
-            size={16} 
-            className="inline align-text-bottom mr-1.5" 
-            strokeWidth={1.8}/> 
-          {(row.annotations || 0).toLocaleString()}
-        </div>
-      </div>
-    ) : null;
-
   const actionsTemplate = (row: ItemTableRow) => (
     <ItemTableRowActions 
       data={row.data} 
@@ -154,13 +124,13 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           field="name" 
           header="Name" 
           headerClassName={TABLE_HEADER_CLASS} 
-          body={nameTemplate} />
+          body={NAME_COLUMN_TEMPLATE} />
 
         <Column
           field="dimensions"
           header="Dimensions"
           headerClassName={TABLE_HEADER_CLASS}
-          body={dimensionsTemplate} />
+          body={DIMENSIONS_COLUMN_TEMPLATE} />
 
         <Column
           sortable
@@ -168,7 +138,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           field="lastEdit" 
           header="Last Edit" 
           headerClassName={TABLE_HEADER_CLASS}
-          body={lastEditTemplate} />
+          body={LAST_EDIT_COLUMN_TEMPLATE} />
 
         <Column
           sortable
@@ -176,7 +146,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           field="annotations" 
           header="Annotations" 
           headerClassName={TABLE_HEADER_CLASS} 
-          body={annotationsTemplate} />
+          body={ANNOTATIONS_COLUMN_TEMPLATE} />
 
         <Column 
           field="actions" 

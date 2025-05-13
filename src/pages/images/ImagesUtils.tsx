@@ -1,7 +1,8 @@
-import { ArrowDownNarrowWide, ArrowDownWideNarrow, ArrowUpDown } from 'lucide-react';
+import { ArrowDownNarrowWide, ArrowDownWideNarrow, ArrowUpDown, MessagesSquare } from 'lucide-react';
+import Moment from 'react-moment';
+import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
 import { ItemTableRow } from './Types';
-import { W3CAnnotation } from '@annotorious/react';
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
@@ -61,3 +62,34 @@ export const getLastEdit = (annotations: W3CAnnotation[]): Date | undefined => {
       ? new Date(Math.max(...timestamps.map(t => t.getTime())))
       : undefined
 }
+
+export const NAME_COLUMN_TEMPLATE = (row: ItemTableRow) => (
+  <div>{row.name}</div>
+);
+
+export const DIMENSIONS_COLUMN_TEMPLATE = (row: ItemTableRow) =>
+  row.dimensions ? (
+    <span className="text-muted-foreground">
+      {row.dimensions[0].toLocaleString()} x{" "}
+      {row.dimensions[1].toLocaleString()}
+    </span>
+  ) : null;
+
+export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) => 
+  row.lastEdit ? (
+    <Moment fromNow className="text-muted-foreground">
+      {row.lastEdit.toISOString()}
+    </Moment>
+  ) : null;
+
+export const ANNOTATIONS_COLUMN_TEMPLATE = (row: ItemTableRow) => (
+  <div className="text-muted-foreground flex justify-around">
+    <div>
+      <MessagesSquare 
+        size={16} 
+        className="inline align-text-bottom mr-1.5" 
+        strokeWidth={1.8}/> 
+      {(row.annotations || 0).toLocaleString()}
+    </div>
+  </div>
+)

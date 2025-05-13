@@ -45,15 +45,14 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   });
 
   const annotationsByCanvas = useMemo(() => {
-    const getAnnotations = (canvas: CanvasInformation) => {
+    const getAnnotationsOnCanvas = (canvas: CanvasInformation) => {
       const sourceId = `iiif:${props.manifest.id}:${canvas.id}`;
       return annotations.filter(a => 
         !Array.isArray(a.target) && a.target.source === sourceId);
     }
 
-    const { canvases } = props.manifest;
-
-    return Object.fromEntries(canvases.map(canvas => ([canvas.id, getAnnotations(canvas)])));
+   return Object.fromEntries(props.manifest.canvases.map(canvas => 
+      ([ canvas.id, getAnnotationsOnCanvas(canvas)])));
   }, [annotations, props.manifest]);
 
   const onOpenCanvas = (canvas: CozyCanvas) => {
@@ -126,7 +125,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
 
       {layout === 'grid' ? (
         <IIIFManifestGrid
-          annotationsByCanvas={annotationsByCanvas}
+          annotations={annotationsByCanvas}
           canvases={filtered}
           folders={folders}
           hideUnannotated={props.hideUnannotated}
@@ -137,7 +136,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           onSelect={props.onSelect} />
       ) : (
         <IIIFManifestTable
-          annotationsByCanvas={annotationsByCanvas}
+          annotations={annotationsByCanvas}
           canvases={filtered} 
           folders={folders}
           hideUnannotated={props.hideUnannotated} 

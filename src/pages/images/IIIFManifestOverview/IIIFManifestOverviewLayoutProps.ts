@@ -5,7 +5,7 @@ import { CanvasItem, OverviewItem } from '../Types';
 
 export interface IIIFManifestOverviewLayoutProps {
 
-  annotationsByCanvas: Record<string, W3CAnnotation[]>;
+  annotations: Record<string, W3CAnnotation[]>;
 
   canvases: CanvasInformation[];
 
