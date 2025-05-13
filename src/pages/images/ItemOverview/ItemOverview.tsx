@@ -69,8 +69,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (image: Image) =>
-    navigate(`/annotate/${image.id}`);
+  const onOpenImage = (imageId: string) =>
+    navigate(`/annotate/${imageId}`);
   
   const onSelectFolder = (folder: Folder) =>
     props.onSelect({ type: 'folder', ...folder });

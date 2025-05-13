@@ -4,6 +4,7 @@ import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen, Trash2 } fr
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Folder, IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
+import { isSingleImageManifest } from '@/utils/iiif';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +27,12 @@ interface ItemTableRowActions {
 
 }
 
+// Shorthand
+const getSingleCanvasURL = (manifest: IIIFManifestResource) => {
+  const info = manifest.canvases[0];
+  return `/annotate/iiif:${info.manifestId}:${info.id}`;
+}
+
 export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
   const store = useStore();
@@ -43,12 +50,13 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
   }, [props.data]);
 
   const onSelect = () => {
-    if (isManifest)
+    if (isManifest) {
       props.onSelectManifest(props.data as IIIFManifestResource);
-    else if (isImage)
+    } else if (isImage) {
       props.onSelectImage(props.data as Image);
-    else
+    } else {
       props.onSelectFolder(props.data as Folder);
+    }
   }
 
   const onDeleteManifest = () => store.removeIIIFResource(props.data as IIIFManifestResource);
@@ -77,16 +85,22 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           {isImage ? (
             <DropdownMenuItem asChild>
               <Link to={`/annotate/${props.data.id}`}>
-                <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
+                <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open Image
               </Link>
             </DropdownMenuItem>
           ) : isFolder ? (
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
-                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
+                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open Folder
               </Link>
             </DropdownMenuItem>
-          ) : (
+          ) : isSingleImageManifest(props.data as IIIFManifestResource) ? (
+            <DropdownMenuItem asChild>
+              <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
+                <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
+              </Link>
+            </DropdownMenuItem>
+          ) :(
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
                 <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest

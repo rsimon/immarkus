@@ -119,10 +119,18 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   const onRowClick = (evt: DataTableRowClickEvent) => {
     const { type, data } = evt.data as ItemTableRow;
-    if (type === 'folder' || type === 'manifest')
+    if (type === 'folder') {
       props.onOpenFolder(data);
-    else if (type === 'image')
+    } else if (type === 'manifest') {
+      if (isSingleImageManifest(data)) {
+        const info = data.canvases[0];
+        props.onOpenImage(`iiif:${info.manifestId}:${info.id}`);
+      } else {
+        props.onOpenFolder(data);
+      }
+    } else if (type === 'image') {
       props.onOpenImage(data);
+    }
   }
 
   return (

@@ -34,7 +34,7 @@ export const ItemGrid = (props: ItemOverviewLayoutProps) => {
               image={image} 
               annotationCount={(props.annotations.images[image.id] || []).length}
               selected={props.selected && 'id' in props.selected && props.selected?.id === image.id}
-              onOpen={() => props.onOpenImage(image)} 
+              onOpen={() => props.onOpenImage(image.id)} 
               onSelect={() => props.onSelectImage(image)}/>
           </li>
         ))}

@@ -15,7 +15,7 @@ export interface ItemOverviewLayoutProps {
 
   onOpenFolder(folder: Folder | IIIFManifestResource): void;
 
-  onOpenImage(image: Image): void;
+  onOpenImage(imageId: string): void;
 
   onSelectFolder(folder: Folder): void;
 
