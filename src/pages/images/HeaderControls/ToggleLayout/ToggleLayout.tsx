@@ -24,15 +24,15 @@ export const ToggleLayout = (props: ToggleLayoutProps) => {
       <SelectTrigger
         className="text-muted-foreground bg-transparent border-0 shadow-none flex items-center gap-1.5 p-0 h-auto font-normal">
         {props.layout === 'grid' ? (
-          <><LayoutGrid className="size-4" /> Grid view</>
+          <><LayoutGrid className="size-4" /> Grid</>
         ) : (
-          <><Rows3 className="size-4" /> Table view</>
+          <><Rows3 className="size-4" /> Table</>
         )}
       </SelectTrigger>
       
       <SelectContent>
-        <SelectItem value="grid">Grid view</SelectItem>
-        <SelectItem value="table">Table view</SelectItem>
+        <SelectItem value="grid">Grid</SelectItem>
+        <SelectItem value="table">Table</SelectItem>
       </SelectContent>
     </Select>
   );
