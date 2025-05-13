@@ -12,19 +12,19 @@ export interface AnnotationMap {
 
 }
 
-export type FolderGridItem = (Folder | RootFolder) & {
+export type FolderItem = (Folder | RootFolder) & {
 
   type: 'folder';
 
 }
 
-export type ImageGridItem = Image & {
+export type ImageItem = Image & {
 
   type: 'image'
 
 }
 
-export type CanvasGridItem = {
+export type CanvasItem = {
 
   type: 'canvas';
 
@@ -34,7 +34,7 @@ export type CanvasGridItem = {
 
 }
 
-export type GridItem = FolderGridItem | ImageGridItem | IIIFResource | CanvasGridItem;
+export type OverviewItem = FolderItem | ImageItem | IIIFResource | CanvasItem;
 
 export const isPresentationManifest = (f: Folder | RootFolder | IIIFManifestResource): f is IIIFManifestResource =>
   (f as IIIFManifestResource).uri !== undefined;

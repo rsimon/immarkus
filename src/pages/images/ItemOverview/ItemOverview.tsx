@@ -5,7 +5,7 @@ import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, Roo
 import { isSingleImageManifest } from '@/utils/iiif';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
-import { AnnotationMap, GridItem, ItemLayout } from '../Types';
+import { AnnotationMap, OverviewItem, ItemLayout } from '../Types';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemTable } from './ItemTable';
 import { W3CAnnotation } from '@annotorious/react';
@@ -16,11 +16,11 @@ interface ItemOverviewProps {
 
   hideUnannotated: boolean;
 
-  selected?: GridItem;
+  selected?: OverviewItem;
 
   onChangeHideUnannotated(hide: boolean): void;
 
-  onSelect(item: GridItem): void;
+  onSelect(item: OverviewItem): void;
 
   onShowMetadata(): void;
 

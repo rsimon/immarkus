@@ -5,8 +5,8 @@ import { Folder, IIIFManifestResource, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { ItemOverview } from './ItemOverview';
 import { MetadataDrawer } from './MetadataDrawer';
-import { GridItem, isPresentationManifest } from './Types';
-import { IIIFManifestGrid } from './IIIFManifestGrid';
+import { OverviewItem, isPresentationManifest } from './Types';
+import { IIIFManifestOverview } from './IIIFManifestOverview';
 
 export const Images = () => {
 
@@ -14,7 +14,7 @@ export const Images = () => {
 
   const { folder: folderId } = useParams();
 
-  const [selected, setSelected] = useState<GridItem | undefined>();
+  const [selected, setSelected] = useState<OverviewItem | undefined>();
 
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ export const Images = () => {
       <main className="page images flex flex-row p-0 overflow-x-hidden">
         <div className="grow px-12 py-6 overflow-y-auto">
           {isPresentationManifest(currentFolder) ? (
-            <IIIFManifestGrid 
+            <IIIFManifestOverview 
               manifest={currentFolder} 
               hideUnannotated={hideUnannotated}
               selected={selected}

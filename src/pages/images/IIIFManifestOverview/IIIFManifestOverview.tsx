@@ -3,33 +3,34 @@ import murmur from 'murmurhash';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CozyCanvas, CozyRange } from 'cozy-iiif';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
-import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { usePersistentState } from '@/utils/usePersistentState';
 import { useManifestAnnotations } from '@/store/hooks';
-import { IIIFCanvasItem } from './IIIFCanvasItem';
-import { CanvasGridItem, GridItem } from '../Types';
-import { IIIFRangeItem } from './IIIFRangeItem';
+import { CanvasItem, OverviewItem, ItemLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
+import { IIIFManifestGrid } from './IIIFManifestGrid';
 
-interface IIIFManifestGridProps {
+interface IIIFManifestOverviewProps {
 
   manifest: IIIFManifestResource;
 
   hideUnannotated: boolean;
 
-  selected?: GridItem;
+  selected?: OverviewItem;
 
   onChangeHideUnannotated(hide: boolean): void;
 
   onShowMetadata(): void;
 
-  onSelect(item: CanvasGridItem): void;
+  onSelect(item: CanvasItem): void;
 
 }
 
-export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
+export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
 
   const { folder: folderId } = useParams();
+
+  const [layout, setLayout] = usePersistentState<ItemLayout>('immarkus:images:layout', 'grid');
 
   const [_, rangeId] = useMemo(() => folderId.split('@'), [folderId]);
   
@@ -43,15 +44,15 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
   });
 
   const annotationsByCanvas = useMemo(() => {
-    const countAnnotations = (canvas: CanvasInformation) => {
+    const getAnnotations = (canvas: CanvasInformation) => {
       const sourceId = `iiif:${props.manifest.id}:${canvas.id}`;
       return annotations.filter(a => 
-        !Array.isArray(a.target) && a.target.source === sourceId).length;
+        !Array.isArray(a.target) && a.target.source === sourceId);
     }
 
     const { canvases } = props.manifest;
 
-    return Object.fromEntries(canvases.map(canvas => ([canvas.id, countAnnotations(canvas)])));
+    return Object.fromEntries(canvases.map(canvas => ([canvas.id, getAnnotations(canvas)])));
   }, [annotations, props.manifest]);
 
   const onOpenCanvas = (canvas: CozyCanvas) => {
@@ -108,27 +109,8 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
   const filtered: CanvasInformation[] = useMemo(() => {
     if (!props.hideUnannotated) return canvases;
 
-    return canvases.filter(c => annotationsByCanvas[c.id] > 0);
+    return canvases.filter(c => (annotationsByCanvas[c.id] || []).length > 0);
   }, [canvases, props.hideUnannotated, annotationsByCanvas]);
-
-  const renderCanvasItem = (info: CanvasInformation, canvas: CozyCanvas) => {
-    const item: CanvasGridItem = ({ type: 'canvas', canvas, info });
-
-    const isSelected = props.selected?.type === 'canvas' ?
-      props.selected.info.uri === canvas.id : false;
-
-    const id = murmur.v3(canvas.id);
-
-    return (
-      <IIIFCanvasItem
-        selected={isSelected}
-        canvas={canvas} 
-        canvasInfo={info}
-        annotationCount={annotationsByCanvas[id]}
-        onOpen={() => onOpenCanvas(canvas)} 
-        onSelect={() => props.onSelect(item)} />
-    );
-  }
 
   return (
     <div>
@@ -139,38 +121,30 @@ export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
         onChangeHideUnannotated={props.onChangeHideUnannotated}
         onShowMetadata={props.onShowMetadata} />
 
-      <div className="item-grid">
-        {parsedManifest ? (
-          <>
-            {folders.length > 0 && (
-              <ul>
-                {folders.map((folder, idx) => (
-                  <li key={`${folder.id}:${idx}`}>
-                    <IIIFRangeItem 
-                      range={folder} 
-                      onOpen={() => onOpenRange(folder)} />
-                  </li>
-                ))}
-              </ul>
-            )}
-            <ul>
-              {filtered.map((canvas, idx) => (
-                <li key={`${canvas.id}:${idx}`}>
-                  {renderCanvasItem(canvas, parsedManifest.canvases.find(c => c.id === canvas.uri))}
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <ul>
-            {Array.from({ length: Math.max(20, props.manifest.canvases.length) }).map((_, idx) => (
-              <li key={idx}>
-                <Skeleton className="size-[178px] rounded-md shadow-sm" />
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {layout === 'grid' && (
+        <IIIFManifestGrid
+          annotationsByCanvas={annotationsByCanvas}
+          canvases={filtered}
+          folders={folders}
+          hideUnannotated={props.hideUnannotated}
+          manifest={props.manifest}
+          selected={props.selected}
+          onOpenCanvas={onOpenCanvas}
+          onOpenRange={onOpenRange}
+          onSelect={props.onSelect} />
+      )} {/*  : (
+        <IIIFManifestTable
+          annotations={annotations}
+          folders={folders} 
+          iiifResources={filteredIIIFResources}
+          images={filteredImages} 
+          selected={props.selected}
+          onOpenFolder={onOpenFolder} 
+          onOpenImage={onOpenImage} 
+          onSelectFolder={onSelectFolder} 
+          onSelectImage={onSelectImage} 
+          onSelectManifest={onSelectManifest} />
+      ) */}
     </div>
   )
 
