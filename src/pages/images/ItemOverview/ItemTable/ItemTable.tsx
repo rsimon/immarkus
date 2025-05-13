@@ -21,19 +21,35 @@ import {
   TABLE_HEADER_CLASS 
 } from '../../ImagesUtils';
 
-const folderToRow = (folder: Folder): ItemTableRow => {
+const folderToRow = (
+  folder: Folder, 
+  annotations: AnnotationMap
+): ItemTableRow => {
+  const annotationsInFolder = annotations.folders[folder.id] || [];
+
   return {
     data: folder,
     type: 'folder',
-    name: folder.name
+    name: folder.name,
+    lastEdit: getLastEdit(annotationsInFolder),
+    annotations: annotationsInFolder.length
   }
 }
 
-const manifestToRow = (manifest: IIIFManifestResource): ItemTableRow => ({
-  data: manifest,
-  type: 'manifest',
-  name: manifest.name
-});
+const manifestToRow = (
+  manifest: IIIFManifestResource, 
+  annotations: AnnotationMap
+): ItemTableRow => {
+  const annotationsInFolder = annotations.folders[`iiif:${manifest.id}`] || [];
+
+  return {
+    data: manifest,
+    type: 'manifest',
+    name: manifest.name,
+    lastEdit: getLastEdit(annotationsInFolder),
+    annotations: annotationsInFolder.length
+  }
+}
 
 const imageToRow = (
   image: Image, 
@@ -56,8 +72,8 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   useEffect(() => {
     setRows([
-      ...props.folders.map(f => folderToRow(f)),
-      ...props.iiifResources.map(manifestToRow),
+      ...props.folders.map(f => folderToRow(f, props.annotations)),
+      ...props.iiifResources.map(r => manifestToRow(r as IIIFManifestResource, props.annotations)),
       ...props.images.map(i => imageToRow(i, props.annotations, dimensions))
     ]);
   }, [props.folders, props.iiifResources, props.images, props.annotations, dimensions]);
