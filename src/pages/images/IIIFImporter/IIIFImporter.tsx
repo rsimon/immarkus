@@ -114,7 +114,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
       <DialogTrigger asChild>
         <Button
           variant="link"
-          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
+          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded">
           <CloudDownload className="size-[18px] pt-[1px]" /> Import IIIF
         </Button>
       </DialogTrigger>

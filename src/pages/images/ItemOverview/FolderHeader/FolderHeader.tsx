@@ -66,24 +66,21 @@ export const FolderHeader = (props: FolderHeaderProps) => {
         {folder.name}
       </h2>
 
-      <p className="text-sm text-muted-foreground flex gap-2 pt-1 items-center">
+      <p className="text-sm text-muted-foreground flex gap-5 pt-1 items-center">
         <Button 
           variant="link"
-          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"
+          className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded"
           onClick={props.onShowMetadata}>
           <NotebookPen className="size-4" /> Metadata
         </Button>
 
-        <span>·</span> 
         <IIIFImporter 
           folderId={'id' in folder ? folder.id : undefined} />
 
-        <span>·</span>
         <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
 
-        <span>·</span>
         <ToggleLayout 
           layout={props.layout} 
           onSetLayout={props.onSetLayout} />
