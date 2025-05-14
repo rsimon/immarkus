@@ -8,7 +8,7 @@ import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
-import { GridItem } from '../../../Types';
+import { OverviewItem } from '../../../../Types';
 
 interface SingleCanvasManifestItemProps {
 
@@ -16,7 +16,7 @@ interface SingleCanvasManifestItemProps {
 
   onDelete(): void;
 
-  onSelect(item: GridItem): void;
+  onSelect(item: OverviewItem): void;
 
 }
 

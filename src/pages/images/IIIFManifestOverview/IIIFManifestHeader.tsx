@@ -7,18 +7,22 @@ import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { IIIFOpenOtherViewer } from '../IIIFOpenOtherViewer';
-import { FilterByAnnotations } from '../FilterByAnnotations';
+import { FilterByAnnotations, IIIFOpenOtherViewer, ToggleLayout } from '../HeaderControls';
+import { OverviewLayout } from '../Types';
 
 interface IIIFManifestHeaderProps {
   
   breadcrumbs: CozyTOCNode[];
 
-  manifest: IIIFManifestResource;
-
   hideUnannotated: boolean;
+  
+  layout: OverviewLayout;
 
+  manifest: IIIFManifestResource;
+  
   onChangeHideUnannotated(hide: boolean): void;
+
+  onSetLayout(layout: OverviewLayout): void;
 
   onShowMetadata(): void;
   
@@ -38,10 +42,10 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
   // - the actual path on the file system 
   // - if there are breadcrumbs: 
   // - the manifest + breadcrumbs
-  const path = [
+  const path: { id: string, label: string, type?: string }[ ]= [
     ...manifest.path.map(id => ({ id, label: store.getFolder(id).name })),
     ...(breadcrumbs && breadcrumbs.length) > 0 
-        ? [{ id: manifest.id, label: manifest.name }] : [], 
+        ? [{ id: manifest.id, label: manifest.name, type: 'manifest' }] : [], 
     ...(breadcrumbs 
         ? breadcrumbs.slice(0, -1).map(b => ({ id: `${manifest.id}@${murmur.v3(b.id)}`, label: b.getLabel() })) : [])
   ];
@@ -57,17 +61,23 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
 
             <ChevronRight className="h-4 w-4" />
 
-            {path.map(({ id, label }, idx) => (
+            {path.map(({ id, label, type }, idx) => (
               <Fragment key={`${idx}-${id}`}>
                 <li 
                   key={`${idx}-${id}`}
-                  className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[20ch]">
-                  <Link className="hover:underline" to={`/images/${id}`}>{label}</Link>
+                  className="whitespace-nowrap flex items-center gap-1">
+                  {type === 'manifest' && (
+                    <IIIFIcon color className="size-4.5 mb-0.5" />
+                  )}
+                  <Link className="hover:underline overflow-hidden text-ellipsis max-w-[20ch]" to={`/images/${id}`}>{label}</Link>
                 </li>
 
                 <ChevronRight className="h-4 w-4" />
               </Fragment>
-            ))}
+            ))} 
+            {(breadcrumbs || []).length === 0 && (
+              <IIIFIcon color className="size-4.5 mb-0.5" />
+            )}
           </ol>
         </nav>
       </h1>
@@ -77,13 +87,6 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
       </h2>
 
       <p className="text-sm text-muted-foreground flex gap-2 pt-1 items-center">
-        <IIIFIcon
-          color
-          className="size-5 -translate-y-0.5" />
-        <span>·</span> 
-
-        <span>{manifest.canvases.length} images</span>
-        <span>·</span> 
         <Button 
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"
@@ -98,6 +101,11 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
         <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
+
+        <span>·</span>
+        <ToggleLayout 
+          layout={props.layout} 
+          onSetLayout={props.onSetLayout} />
       </p>
     </div>
   )

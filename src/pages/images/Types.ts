@@ -1,19 +1,46 @@
 import { CanvasInformation, Folder, IIIFManifestResource, IIIFResource, Image, RootFolder } from '@/model';
+import { W3CAnnotation } from '@annotorious/react';
 import { CozyCanvas } from 'cozy-iiif';
 
-export type FolderGridItem = (Folder | RootFolder) & {
+export type OverviewLayout = 'grid' | 'table';
+
+export interface AnnotationMap {
+
+  images: Record<string, W3CAnnotation[]>;
+
+  folders: Record<string, W3CAnnotation[]>;
+
+}
+
+export interface ItemTableRow {
+
+  data: any;
+
+  type: 'folder' | 'manifest' | 'image';
+
+  name: string;
+
+  dimensions?: [number, number];
+
+  annotations?: number;
+
+  lastEdit?: Date;
+
+}
+
+export type FolderItem = (Folder | RootFolder) & {
 
   type: 'folder';
 
 }
 
-export type ImageGridItem = Image & {
+export type ImageItem = Image & {
 
   type: 'image'
 
 }
 
-export type CanvasGridItem = {
+export type CanvasItem = {
 
   type: 'canvas';
 
@@ -23,7 +50,7 @@ export type CanvasGridItem = {
 
 }
 
-export type GridItem = FolderGridItem | ImageGridItem | IIIFResource | CanvasGridItem;
+export type OverviewItem = FolderItem | ImageItem | IIIFResource | CanvasItem;
 
 export const isPresentationManifest = (f: Folder | RootFolder | IIIFManifestResource): f is IIIFManifestResource =>
   (f as IIIFManifestResource).uri !== undefined;

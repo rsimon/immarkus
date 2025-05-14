@@ -1,0 +1,133 @@
+.item-grid ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 200px);
+  grid-gap: 30px;
+  list-style: none;
+  padding: 40px 0 20px 0;
+}
+
+.item-grid li {
+  display: inline-block;
+}
+
+.item-grid li:hover img,
+.item-grid li:hover .scale {
+  transform: scale(1.05);
+}
+
+.item-grid li div.image-item {
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.item-grid div.image-item .image-wrapper {
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+  pointer-events: none;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5), 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.item-grid div.image-item svg {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 6px rgba(0, 0, 0, 0.35));
+}
+
+.item-grid img {
+  max-width: 200px;
+}
+
+.item-grid .item-actions-trigger {
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.item-grid .item-actions-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+table.p-datatable-table {
+  overflow: hidden;
+  width: 100%;
+}
+
+.p-datatable-table tr {
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.p-datatable-table tr:hover {
+  background-color: rgba(241, 245, 249, 0.5);
+}
+
+.p-datatable-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.p-datatable-table th {
+  height: 3rem;
+  font-weight: 500;
+  overflow: hidden;
+  padding: 0 0.5rem;
+}
+
+.p-datatable-table th .p-column-header-content {
+  gap: 6px;
+}
+
+.p-datatable-table td {
+  overflow: hidden;
+  padding: 0.5rem 0.5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 140px;
+}
+
+.p-datatable-table td:first-child {
+  padding-left: 0;
+}
+
+.p-datatable-table th:nth-child(1),
+.p-datatable-table td:nth-child(1) {
+  width: 80px;
+  min-width: 80px;
+}
+
+.p-datatable-table th:nth-child(2),
+.p-datatable-table td:nth-child(2) {
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  width: 60%;
+}
+
+.p-datatable-table td:nth-child(2) div {
+  height: 100%;
+  left: 0;
+  min-width: 150px;  
+  overflow: hidden;
+  position: absolute;
+  line-height: 100%;
+  text-overflow: ellipsis;
+  top: calc(50% - 0.5rem);
+  width: 100%;
+}
+
+.p-datatable-table th:nth-child(3),
+.p-datatable-table td:nth-child(3) {
+  text-align: center;
+}
+
+.p-datatable-table th:nth-child(4),
+.p-datatable-table td:nth-child(4) {
+  text-align: center;
+}
+
+.p-datatable-table th:nth-child(3) .p-column-header-content,
+.p-datatable-table th:nth-child(4) .p-column-header-content,
+.p-datatable-table th:nth-child(5) .p-column-header-content {
+  justify-content: center;
+}
+
+.p-datatable-table th:last-child,
+.p-datatable-table td:last-child {
+  text-align: right;
+  width: 60px;
+  min-width: 60px;
+}

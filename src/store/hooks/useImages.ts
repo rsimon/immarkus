@@ -18,6 +18,8 @@ export const useImages = (
   useEffect(() => {
     if (!store || !imageIds) return;
 
+    setImages([]);
+
     const findCanvas = (canvases: CozyCanvas[], canvasHash: string) =>
       canvases.find(c => {
         const hash = murmur.v3(c.id).toString();
@@ -59,7 +61,7 @@ export const useImages = (
       setTimeout(() => load(), delay);
     else
       load();
-  }, [(imageIds || []).join(','), store]);
+  }, [(imageIds || []).join(',')]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }

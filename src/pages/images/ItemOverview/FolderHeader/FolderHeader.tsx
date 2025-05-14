@@ -4,15 +4,19 @@ import { ChevronRight, NotebookPen } from 'lucide-react';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { isRootFolder } from '../../Types';
+import { isRootFolder, OverviewLayout } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
-import { FilterByAnnotations } from '../../FilterByAnnotations';
+import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
 
 interface FolderHeaderProps {
 
   folder: Folder | RootFolder;
 
   hideUnannotated: boolean;
+
+  layout: OverviewLayout;
+
+  onSetLayout(layout: OverviewLayout): void;
 
   onShowMetadata(): void;
 
@@ -80,6 +84,11 @@ export const FolderHeader = (props: FolderHeaderProps) => {
         <FilterByAnnotations 
           hideUnannotated={props.hideUnannotated} 
           onChangeHideUnannotated={props.onChangeHideUnannotated} />
+
+        <span>·</span>
+        <ToggleLayout 
+          layout={props.layout} 
+          onSetLayout={props.onSetLayout} />
       </p>
     </div>
   )

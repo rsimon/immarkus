@@ -39,6 +39,8 @@ export interface AnnotationStore {
 
   getAnnotations(imageId: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
 
+  getAnnotationsRecursive(sourceId: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>; 
+
   getCanvas(id: string): CanvasInformation | undefined;
 
   getCanvasAnnotations(id: string, opts?: GetAnnotationOpts): Promise<W3CAnnotation[]>;
@@ -337,6 +339,38 @@ export const loadStore = (
     }
   }
 
+  const getAnnotationsRecursive = (
+    folderId: string,
+    opts: GetAnnotationOpts = { type: 'both' }
+  ) => {
+    if (folderId.startsWith('iiif:')) {
+      // No need for recursive fetching
+      return getAnnotations(folderId, opts);
+    } else {
+      const start = getFolder(folderId) as Folder;
+      
+      const fetchOneFolder = (folder: Folder, annotations: W3CAnnotation[] = []): Promise<W3CAnnotation[]> => {
+        const { folders, images, iiifResources } = getFolderContents(folder.handle);
+
+        const ids = [
+          ...images.map(i => i.id),
+          ...iiifResources.map(r => `iiif:${r.id}`)
+        ];
+
+        // Annotations on images and IIIF resources in this folder
+        return Promise.all(ids.map(id => getAnnotations(id, opts)))
+          .then(r => {
+            // return r.flat();
+            return folders.reduce<Promise<W3CAnnotation[]>>((promise, folder) => promise.then(flat => {
+              return fetchOneFolder(folder, flat);
+            }), Promise.resolve([...annotations, ...r.flat()]));
+          });
+      }
+
+      return fetchOneFolder(start);
+    }
+  }
+
   const getManifestAnnotations = (
     manifestId: string,
     opts: GetManifestAnnotationOpts = { type: 'both', includeCanvases: true }
@@ -629,6 +663,7 @@ export const loadStore = (
     findAnnotation,
     findImageForAnnotation,
     getAnnotations,
+    getAnnotationsRecursive,
     getCanvas,
     getCanvasAnnotations,
     getManifestAnnotations,
