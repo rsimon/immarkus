@@ -43,7 +43,7 @@ export const ImageItem = (props: ImageItemProps) => {
               <MessagesSquare 
                 size={18} 
                 className="inline align-text-bottom mr-1" /> 
-                {props.annotationCount}
+                {props.annotationCount.toLocaleString()}
             </div>
 
             <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">

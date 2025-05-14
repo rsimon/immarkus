@@ -11,6 +11,7 @@ export const ItemGrid = (props: ItemOverviewLayoutProps) => {
         {props.folders.map(folder => (
           <li key={folder.id}>
             <FolderItem
+              annotationCount={(props.annotations.folders[folder.id] || []).length}
               folder={folder} 
               onOpen={() => props.onOpenFolder(folder)} 
               onSelect={() => props.onSelectFolder(folder)}/>
@@ -21,6 +22,7 @@ export const ItemGrid = (props: ItemOverviewLayoutProps) => {
           <li key={resource.id}>
             {resource.type === 'PRESENTATION_MANIFEST' ? (
               <IIIFManifestItem
+                annotationCount={(props.annotations.folders[`iiif:${resource.id}`] || []).length}
                 resource={resource} 
                 onOpen={() => props.onOpenFolder(resource)} 
                 onSelect={props.onSelectItem}/>

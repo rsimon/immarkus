@@ -8,6 +8,8 @@ import { MetadataDrawer } from './MetadataDrawer';
 import { OverviewItem, isPresentationManifest } from './Types';
 import { IIIFManifestOverview } from './IIIFManifestOverview';
 
+import './Images.css';
+
 export const Images = () => {
 
   const store = useStore();

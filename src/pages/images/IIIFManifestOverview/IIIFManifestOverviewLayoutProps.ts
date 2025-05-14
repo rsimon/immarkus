@@ -13,6 +13,8 @@ export interface IIIFManifestOverviewLayoutProps {
 
   hideUnannotated: boolean;
 
+  loading: boolean;
+
   manifest: IIIFManifestResource;
 
   selected?: OverviewItem;

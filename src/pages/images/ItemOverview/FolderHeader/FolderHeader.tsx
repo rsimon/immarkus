@@ -67,8 +67,6 @@ export const FolderHeader = (props: FolderHeaderProps) => {
       </h2>
 
       <p className="text-sm text-muted-foreground flex gap-2 pt-1 items-center">
-        <span>{images} images</span>
-        <span>·</span> 
         <Button 
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal"

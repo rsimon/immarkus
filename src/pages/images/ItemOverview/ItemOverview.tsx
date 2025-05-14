@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useImages, useStore } from '@/store';
+import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
-import { isSingleImageManifest } from '@/utils/iiif';
+import { useImages, useStore } from '@/store';
+import { usePersistentState } from '@/utils/usePersistentState';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
-import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
-import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemTable } from './ItemTable';
-import { W3CAnnotation } from '@annotorious/react';
-
-import './ItemOverview.css';
+import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
 
 interface ItemOverviewProps {
 
@@ -29,6 +26,8 @@ interface ItemOverviewProps {
 }
 
 export const ItemOverview = (props: ItemOverviewProps) => {
+
+  const { hideUnannotated } = props;
 
   const store = useStore();
 
@@ -81,28 +80,26 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const onSelectItem = (item: OverviewItem) =>
     props.onSelect(item);
 
+  const filteredFolders = useMemo(() => {
+    const hasAnnotations = (folder: Folder) =>
+      (annotations.folders[folder.id] || []).length > 0;
+
+    return hideUnannotated ? folders.filter(hasAnnotations) : folders;
+  }, [hideUnannotated, folders, annotations]);
+
   const filteredIIIFResources = useMemo(() => {
-    const dontHide = (item: IIIFResource) => {
-      if (isSingleImageManifest(item) && 'canvases' in item) {
-        const canvas = item.canvases[0];
-        if (!canvas) return true; // Should never happen
+    const hasAnnotations = (resource: IIIFResource) =>
+      (annotations.folders[`iiif:${resource.id}`] || []).length > 0;
 
-        return (annotations.images[`iiif:${item.id}`] || []).length > 0;
-      } else {
-        // Manifests with multiple images (= folder) should always be shown
-        return true;
-      }
-    }
-
-    return props.hideUnannotated ? iiifResources.filter(dontHide) : iiifResources;
-  }, [props.hideUnannotated, iiifResources, annotations]);
+    return hideUnannotated ? iiifResources.filter(hasAnnotations) : iiifResources;
+  }, [hideUnannotated, iiifResources, annotations]);
 
   const filteredImages = useMemo(() => {
     const hasAnnotations = (item: LoadedFileImage) => 
         (annotations.images[item.id] || []).length > 0;
 
-    return props.hideUnannotated ? loadedImages.filter(hasAnnotations) : loadedImages
-  }, [props.hideUnannotated, loadedImages, annotations]);
+    return hideUnannotated ? loadedImages.filter(hasAnnotations) : loadedImages
+  }, [hideUnannotated, loadedImages, annotations]);
 
   return (
     <div>
@@ -117,7 +114,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
       {layout === 'grid' ? (
         <ItemGrid
           annotations={annotations}
-          folders={folders} 
+          folders={filteredFolders} 
           hideUnannotated={props.hideUnannotated}
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
@@ -130,7 +127,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
       ) : (
         <ItemTable
           annotations={annotations}
-          folders={folders} 
+          folders={filteredFolders} 
           hideUnannotated={props.hideUnannotated}
           iiifResources={filteredIIIFResources}
           images={filteredImages} 

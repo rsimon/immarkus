@@ -1,10 +1,31 @@
-import { ArrowDownNarrowWide, ArrowDownWideNarrow, ArrowUpDown, MessagesSquare } from 'lucide-react';
 import Moment from 'react-moment';
+import murmur from 'murmurhash';
+import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
+import { Skeleton } from '@/ui/Skeleton';
 import { ItemTableRow } from './Types';
+import { 
+  ArrowDownNarrowWide, 
+  ArrowDownWideNarrow, 
+  ArrowUpDown, 
+  MessagesSquare 
+} from 'lucide-react';
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+
+export const TABLE_EMPTY_MESSAGE = (
+  <div className="flex justify-center p-5 text-muted-foreground/60">
+    No data
+  </div>
+);
+
+export const TABLE_SKELETON = (
+  <div className="space-y-3 p-2">
+    <Skeleton className="h-1.5 w-96" />
+    <Skeleton className="h-1.5 w-80" />
+  </div>
+)
 
 export const sortIcon = (evt: any) => {
   if (!evt.sorted)
@@ -93,3 +114,18 @@ export const ANNOTATIONS_COLUMN_TEMPLATE = (row: ItemTableRow) => (
     </div>
   </div>
 )
+
+export const getAnnotationsInRange = (range: CozyRange, annotations: Record<string, W3CAnnotation[]>): W3CAnnotation[] => {
+  // Canvases directly contained in this range
+  const annotationsOnCanvases = range.canvases.reduce<W3CAnnotation[]>((agg, canvas) => {
+    const id = murmur.v3(canvas.id);
+    return [...agg, ...(annotations[id] || [])];
+  }, []);
+
+  // Subranges
+  const annotationsOnSubRanges = range.ranges.reduce<W3CAnnotation[]>((agg, range) => {
+    return [...agg, ...getAnnotationsInRange(range, annotations)]
+  }, []);
+
+  return [...annotationsOnCanvases, ...annotationsOnSubRanges];
+}
