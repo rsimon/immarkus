@@ -8,42 +8,19 @@ import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { GraphNode } from '../../../Types';
 import { AnnotationThumbnail } from '../../AnnotationThumbnail';
+import { Skeleton } from '@/ui/Skeleton';
 
-interface AnnotatedImageProps {
+interface LazyAnnotatedImageProps extends AnnotatedImageProps {
 
-  entityType: EntityType;
-
-  node: GraphNode;
-
-  onLoadAnnotations(count: number): void;
+  annotations: W3CImageAnnotation[];
 
 }
 
-const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
+const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
 
-  const { node, entityType } = props;
-
-  const store = useStore();
+  const { node } = props;
 
   const loadedImage = useImages(node.id) as LoadedImage;
-
-  const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
-
-  const setForThisType = (annotations: W3CAnnotation[]) => {
-    const forThisType = annotations.filter(a => {
-      const bodies = Array.isArray(a.body) ? a.body : [a.body];
-      return bodies.some(b => b.source === entityType.id);
-    }) as W3CImageAnnotation[];
-
-    setAnnotations(forThisType);
-
-    setTimeout(() => 
-      props.onLoadAnnotations(forThisType.length), 1);
-  }
-
-  useEffect(() => {
-    store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
-  }, [node, entityType]);
 
   const getEntityBodies = (annotation: W3CImageAnnotation) => {
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
@@ -68,7 +45,7 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
       </div>      
 
       <ul>
-        {annotations.map(annotation => (
+        {props.annotations.map(annotation => (
           <li
             key={annotation.id}
             className="border-t p-2.5">
@@ -94,16 +71,51 @@ const LazyLoadingAnnotatedImage = (props: AnnotatedImageProps) => {
 
 }
 
+interface AnnotatedImageProps {
+
+  entityType: EntityType;
+
+  node: GraphNode;
+
+  onLoadAnnotations(count: number): void;
+
+}
 
 export const AnnotatedImage = (props: AnnotatedImageProps) => {
+  
+  const { node, entityType } = props;
+
+  const store = useStore();
+
+  const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
   const { ref, inView } = useInView();
+
+  const setForThisType = (annotations: W3CAnnotation[]) => {
+    const forThisType = annotations.filter(a => {
+      const bodies = Array.isArray(a.body) ? a.body : [a.body];
+      return bodies.some(b => b.source === entityType.id);
+    }) as W3CImageAnnotation[];
+
+    setAnnotations(forThisType);
+
+    setTimeout(() => 
+      props.onLoadAnnotations(forThisType.length), 1);
+  }
+
+  useEffect(() => {
+    store.getAnnotations(node.id, { type: 'image' }).then(setForThisType);
+  }, [node, entityType]);
 
   return (
     <div ref={ref}>
       {inView ? (
-        <LazyLoadingAnnotatedImage {...props} />
-      ) : null}
+        <LazyLoadingAnnotatedImage 
+          {...props} 
+          annotations={annotations} />
+      ) : (
+        <Skeleton className="h-20 w-full" />
+      )}
     </div>
   )
 

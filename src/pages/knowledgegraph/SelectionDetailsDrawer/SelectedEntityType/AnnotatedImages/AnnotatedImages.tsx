@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { EntityType } from '@/model';
-import { Graph } from '../../../Types';
+import { Graph, GraphNode } from '../../../Types';
 import { AnnotatedImage } from './AnnotatedImage';
 
 interface AnnotatedImagesProps {
@@ -22,13 +22,20 @@ export const AnnotatedImages = (props: AnnotatedImagesProps) => {
       .sort((a, b) => a.label.localeCompare(b.label))
   ), [type]);
 
-  const [annotations, setAnnotations] = useState(0);
+  const [annotations, setAnnotations] = useState<Record<string, number>>({});
 
-  useEffect(() => setAnnotations(0), [type]);
+  useEffect(() => setAnnotations({}), [type]);
 
-  const onLoadAnnotations = (count: number) => setAnnotations(c => c + count);
+  const onLoadAnnotations = (image: GraphNode, count: number) => {
+    if (annotations[image.id] !== count) {
+      setAnnotations(current => ({...current, [image.id]: count }));
+    }
+  }
 
-  useEffect(() => props.onLoadAnnotations(annotations), [annotations])
+  useEffect(() => {
+    const total = Object.values(annotations).reduce((total, c) => total + c, 0);
+    props.onLoadAnnotations(total);
+  }, [annotations])
 
   return (
     <div>
@@ -37,7 +44,7 @@ export const AnnotatedImages = (props: AnnotatedImagesProps) => {
           key={image.id}
           node={image}
           entityType={type} 
-          onLoadAnnotations={onLoadAnnotations} />
+          onLoadAnnotations={count => onLoadAnnotations(image, count)} />
       ))}
     </div>
   )

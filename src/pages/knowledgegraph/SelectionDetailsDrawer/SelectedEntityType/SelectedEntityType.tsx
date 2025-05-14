@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Cuboid, Image, MessagesSquare, Spline, X} from 'lucide-react';
+import { Cuboid, MessagesSquare, Spline, X} from 'lucide-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { AnnotatedImages } from './AnnotatedImages';
 import { EntityRelationships } from './EntityRelationships';
 import { NODE_COLORS } from '../../Styles';
-import { Graph, GraphLinkPrimitive, KnowledgeGraphSettings } from '../../Types';
+import { Graph } from '../../Types';
 import { useDataModel } from '@/store';
 
 interface SelectedEntityTypeProps {
