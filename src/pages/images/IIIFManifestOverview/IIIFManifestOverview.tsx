@@ -104,7 +104,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
       // No ToC - render all canvases flat
       return { folders: [], canvases: props.manifest.canvases, breadcrumbs: [] };
     }
-  }, [rangeId, props.manifest, parsedManifest])
+  }, [rangeId, props.manifest, parsedManifest]);
 
   return (
     <div>

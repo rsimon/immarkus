@@ -3,7 +3,7 @@ import murmur from 'murmurhash';
 import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
-import { AnnotationMap, ItemTableRow } from './Types';
+import { ItemTableRow } from './Types';
 import { 
   ArrowDownNarrowWide, 
   ArrowDownWideNarrow, 
@@ -12,6 +12,12 @@ import {
 } from 'lucide-react';
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+
+export const TABLE_EMPTY_MESSAGE = (
+  <div className="flex justify-center p-5 text-muted-foreground/60">
+    No data
+  </div>
+)
 
 export const sortIcon = (evt: any) => {
   if (!evt.sorted)

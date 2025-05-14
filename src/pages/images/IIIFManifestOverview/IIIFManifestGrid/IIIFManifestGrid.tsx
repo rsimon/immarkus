@@ -12,22 +12,29 @@ import { getAnnotationsInRange } from '../../ImagesUtils';
 
 export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
-  const { canvases, folders, hideUnannotated } = props;
+  const { annotations, canvases, folders, hideUnannotated } = props;
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const annotationsPerFolder: Record<string, number> = useMemo(() => {
     return Object.fromEntries(folders.map(folder => { 
-      const count = getAnnotationsInRange(folder, props.annotations).length;
+      const count = getAnnotationsInRange(folder, annotations).length;
       return [folder.id, count];
     }));
-  }, [folders, props.annotations]);
+  }, [folders, annotations]);
 
   const filteredFolders = useMemo(() => (
     hideUnannotated ? folders.filter(f => annotationsPerFolder[f.id] > 0) : folders
   ), [hideUnannotated, folders, annotationsPerFolder]);
 
-  console.log(filteredFolders);
+  const filteredCanvases = useMemo(() => {
+    const hasAnnotation = (canvas: CanvasInformation) => {
+      const id = murmur.v3(canvas.id);
+      return (annotations[id] || []).length > 0;
+    }
+
+    return hideUnannotated ? canvases.filter(hasAnnotation) : canvases;
+  }, [hideUnannotated, canvases, annotations])
 
   const renderCanvasItem = (info: CanvasInformation, canvas: CozyCanvas) => {
     const item: CanvasItem = ({ type: 'canvas', canvas, info });
@@ -37,7 +44,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
     const id = murmur.v3(canvas.id);
 
-    const annotationCount = (props.annotations[id] || []).length;
+    const annotationCount = (annotations[id] || []).length;
 
     return (
       <IIIFCanvasItem
@@ -67,7 +74,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
             </ul>
           )}
           <ul>
-            {canvases.map((canvas, idx) => (
+            {filteredCanvases.map((canvas, idx) => (
               <li key={`${canvas.id}:${idx}`}>
                 {renderCanvasItem(canvas, parsedManifest.canvases.find(c => c.id === canvas.uri))}
               </li>

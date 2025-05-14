@@ -83,8 +83,7 @@ table.p-datatable-table {
   white-space: nowrap;
   min-width: 140px;
 }
-
-.p-datatable-table td:first-child {
+.p-datatable-table tr:not(.p-datatable-emptymessage) td:first-child {
   padding-left: 0;
 }
 

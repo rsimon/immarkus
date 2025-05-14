@@ -9,8 +9,6 @@ import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
 
-import './ItemOverview.css';
-
 interface ItemOverviewProps {
 
   folder: Folder | RootFolder; 

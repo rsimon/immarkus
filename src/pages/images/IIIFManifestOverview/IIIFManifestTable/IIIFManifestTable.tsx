@@ -22,6 +22,7 @@ import {
   sortByLastEdit, 
   sortByName, 
   sortIcon, 
+  TABLE_EMPTY_MESSAGE, 
   TABLE_HEADER_CLASS 
 } from '../../ImagesUtils';
 
@@ -124,7 +125,8 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
         removableSort
         value={filteredRows} 
         onRowClick={onRowClick}
-        sortIcon={sortIcon}>
+        sortIcon={sortIcon}
+        emptyMessage={TABLE_EMPTY_MESSAGE}>
         <Column
           field="type" 
           header="Type" 
