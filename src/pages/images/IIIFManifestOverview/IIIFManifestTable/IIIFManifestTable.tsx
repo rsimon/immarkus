@@ -124,7 +124,6 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
-        removableSort
         value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}

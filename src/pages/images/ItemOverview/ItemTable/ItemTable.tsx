@@ -140,7 +140,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
-        removableSort
         value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}>

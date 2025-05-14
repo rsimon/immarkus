@@ -54,7 +54,12 @@ export const sortByName = (evt: ColumnSortEvent) =>
   sort(evt, (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
 
 export const sortByLastEdit = (evt: ColumnSortEvent) =>
-  sort(evt, (a, b) => a.lastEdit > b.lastEdit ? -1 : 1);
+  sort(evt, (a, b) => {
+    if (a.lastEdit && b.lastEdit)
+      return a.lastEdit > b.lastEdit ? -1 : 1;
+    else 
+      return a.lastEdit ? -1 : 1;
+  });
 
 export const sortByAnnotations = (evt: ColumnSortEvent) =>
   sort(evt, (a, b) => a.annotations - b.annotations);
