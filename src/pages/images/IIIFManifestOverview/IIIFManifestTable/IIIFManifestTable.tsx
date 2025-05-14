@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import murmur from 'murmurhash';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { W3CAnnotation } from '@annotorious/react';
@@ -15,6 +14,7 @@ import { IIIFManifestTableRowActions } from './IIIFManifestTableRowActions';
 import { 
   ANNOTATIONS_COLUMN_TEMPLATE, 
   DIMENSIONS_COLUMN_TEMPLATE, 
+  getAnnotationsInRange, 
   getLastEdit, 
   LAST_EDIT_COLUMN_TEMPLATE, 
   NAME_COLUMN_TEMPLATE, 
@@ -26,23 +26,7 @@ import {
 } from '../../ImagesUtils';
 
 const folderToRow = (range: CozyRange, annotations: Record<string, W3CAnnotation[]>): ItemTableRow => {
-
-  const getAnnotationsRecursive = (range: CozyRange): W3CAnnotation[] => {
-    // Canvases directly contained in this range
-    const annotationsOnCanvases = range.canvases.reduce<W3CAnnotation[]>((agg, canvas) => {
-      const id = murmur.v3(canvas.id);
-      return [...agg, ...(annotations[id] || [])];
-    }, []);
-
-    // Subranges
-    const annotationsOnSubRanges = range.ranges.reduce<W3CAnnotation[]>((agg, range) => {
-      return [...agg, ...getAnnotationsRecursive(range)]
-    }, []);
-
-    return [...annotationsOnCanvases, ...annotationsOnSubRanges];
-  }
-
-  const annotationsInRange = getAnnotationsRecursive(range);
+  const annotationsInRange = getAnnotationsInRange(range, annotations);
 
   return {
     data: range,

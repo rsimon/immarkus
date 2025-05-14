@@ -7,6 +7,7 @@ import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { IIIFRangeItem } from './IIIFRangeItem';
 import { CanvasItem } from '../../Types';
 import { IIIFManifestOverviewLayoutProps } from '../IIIFManifestOverviewLayoutProps';
+import { getAnnotationsInRange } from '../../ImagesUtils';
 
 export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
@@ -44,7 +45,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
               {folders.map((folder, idx) => (
                 <li key={`${folder.id}:${idx}`}>
                   <IIIFRangeItem 
-                    annotationCount={0}
+                    annotationCount={getAnnotationsInRange(folder, props.annotations).length}
                     range={folder} 
                     onOpen={() => props.onOpenRange(folder)} />
                 </li>

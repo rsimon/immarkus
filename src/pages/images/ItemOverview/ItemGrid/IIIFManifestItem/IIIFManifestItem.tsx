@@ -45,7 +45,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
             className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
 
           <IIIFIcon
-            className="iiif-logo text-white transition-all absolute top-5 left-4 size-6" />
+            className="iiif-logo text-white transition-all absolute top-5 left-4 size-5" />
         </button>
         
         <div className="absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-auto">
