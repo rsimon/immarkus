@@ -12,6 +12,8 @@ import { OverviewItem } from '../../../../Types';
 
 interface SingleCanvasManifestItemProps {
 
+  annotationCount: number;
+
   resource: IIIFManifestResource;
 
   onDelete(): void;
