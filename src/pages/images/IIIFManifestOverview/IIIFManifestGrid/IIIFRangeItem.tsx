@@ -1,7 +1,11 @@
+import { MessagesSquare } from 'lucide-react';
 import { CozyRange } from 'cozy-iiif';
 import { FolderIcon } from '@/components/FolderIcon';
+import { IIIFIcon } from '@/components/IIIFIcon';
 
 interface IIIFRangeItemProps {
+
+  annotationCount: number;
 
   range: CozyRange;
 
@@ -21,7 +25,17 @@ export const IIIFRangeItem = (props: IIIFRangeItemProps) => {
           onClick={props.onOpen}>
           <FolderIcon 
             className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
+
+          <IIIFIcon
+            className="iiif-logo text-white transition-all absolute top-5 left-4 size-6" />
         </button>
+
+        <div className="absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-auto text-white text-sm">
+          <MessagesSquare 
+            size={18} 
+            className="inline align-text-bottom mr-1" /> 
+          {props.annotationCount.toLocaleString()}
+        </div>
       </div>
 
       <div className="ml-2">

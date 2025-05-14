@@ -8,9 +8,6 @@ import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
 import { OverviewItem } from '../../../Types';
 
-import './IIIFManifestItem.css';
-
-
 interface IIIFManifestItemProps {
 
   annotationCount: number;

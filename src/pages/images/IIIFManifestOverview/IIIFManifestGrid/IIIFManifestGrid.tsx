@@ -44,6 +44,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
               {folders.map((folder, idx) => (
                 <li key={`${folder.id}:${idx}`}>
                   <IIIFRangeItem 
+                    annotationCount={0}
                     range={folder} 
                     onOpen={() => props.onOpenRange(folder)} />
                 </li>

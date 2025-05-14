@@ -42,6 +42,11 @@
   background-color: rgba(255, 255, 255, 0.3);
 }
 
+.item-grid li:hover .manifest-item svg.iiif-logo,
+.item-grid li:hover .folder-item svg.iiif-logo {
+  transform: scale(1.05) translate(-4px, -4px);
+}
+
 table.p-datatable-table {
   overflow: hidden;
   width: 100%;
