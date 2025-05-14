@@ -21,9 +21,9 @@ export const TABLE_EMPTY_MESSAGE = (
 );
 
 export const TABLE_SKELETON = (
-  <div className="space-y-3 p-2">
-    <Skeleton className="h-1.5 w-96" />
-    <Skeleton className="h-1.5 w-80" />
+  <div className="flex gap-8 items-center">
+    <Skeleton className="size-10 rounded" />
+    <Skeleton className="h-2 w-72" />
   </div>
 )
 
