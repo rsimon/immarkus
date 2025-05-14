@@ -123,7 +123,12 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             return properties;
         }, {});
   
-        return { annotation: props.annotation.id, ...body, properties } as unknown as AnnotationBody;
+        return { 
+          annotation: props.annotation.id, 
+          ...body, 
+          updated: new Date(),
+          properties,
+        } as unknown as AnnotationBody;
       });
   
       const noteBody: AnnotationBody = formState[noteKey] && createBody(annotation, {
