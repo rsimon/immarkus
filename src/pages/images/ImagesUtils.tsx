@@ -10,12 +10,20 @@ import {
   ArrowUpDown, 
   MessagesSquare 
 } from 'lucide-react';
+import { Skeleton } from '@/ui/Skeleton';
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
 export const TABLE_EMPTY_MESSAGE = (
   <div className="flex justify-center p-5 text-muted-foreground/60">
     No data
+  </div>
+);
+
+export const TABLE_SKELETON = (
+  <div className="space-y-3 p-2">
+    <Skeleton className="h-1.5 w-96" />
+    <Skeleton className="h-1.5 w-80" />
   </div>
 )
 

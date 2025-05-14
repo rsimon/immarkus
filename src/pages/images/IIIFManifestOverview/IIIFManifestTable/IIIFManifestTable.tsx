@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { W3CAnnotation } from '@annotorious/react';
@@ -23,7 +23,8 @@ import {
   sortByName, 
   sortIcon, 
   TABLE_EMPTY_MESSAGE, 
-  TABLE_HEADER_CLASS 
+  TABLE_HEADER_CLASS, 
+  TABLE_SKELETON
 } from '../../ImagesUtils';
 
 const folderToRow = (range: CozyRange, annotations: Record<string, W3CAnnotation[]>): ItemTableRow => {
@@ -61,8 +62,7 @@ const canvasToRow = (
   };
 }
 
-
-export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
+export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) => {
 
   const { annotations, canvases, folders, hideUnannotated } = props;
 
@@ -70,11 +70,9 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
 
-  const filteredRows = useMemo(() => (
-    hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
-  ), [rows, hideUnannotated]);
-
   useEffect(() => {
+    if ((folders.length + canvases.length) === 0) return;
+
     if (!parsedManifest) return;
 
     setRows([
@@ -82,6 +80,10 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
       ...canvases.map(c => canvasToRow(c, annotations[c.id] || [], parsedManifest))
     ]);
   }, [folders, canvases, parsedManifest, annotations]);
+
+  const filteredRows = useMemo(() => (
+    hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
+  ), [rows, hideUnannotated]);
 
   const typeTemplate = (row: ItemTableRow) => {
     const item = row.data as CanvasItem;
@@ -119,14 +121,14 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
       props.onOpenCanvas(data.canvas);
   }
 
-  return parsedManifest &&  (
+  return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
         removableSort
         value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}
-        emptyMessage={TABLE_EMPTY_MESSAGE}>
+        emptyMessage={props.loading ? TABLE_SKELETON : TABLE_EMPTY_MESSAGE}>
         <Column
           field="type" 
           header="Type" 
@@ -170,4 +172,4 @@ export const IIIFManifestTable = (props: IIIFManifestOverviewLayoutProps) => {
     </div>
   )
 
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CozyCanvas, CozyRange } from 'cozy-iiif';
@@ -55,18 +55,18 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
       ([ canvas.id, getAnnotationsOnCanvas(canvas)])));
   }, [annotations, props.manifest]);
 
-  const onOpenCanvas = (canvas: CozyCanvas) => {
+  const onOpenCanvas = useCallback((canvas: CozyCanvas) => {
     const id = murmur.v3(canvas.id);
     navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
-  }
+  }, []);
 
-  const onOpenRange = (range: CozyRange) => {
+  const onOpenRange = useCallback((range: CozyRange) => {
     const id = murmur.v3(range.id);
     navigate(`/images/${props.manifest.id}@${id}`);
-  }
+  },  []);
 
-  const { folders, canvases, breadcrumbs } = useMemo(() => {
-    if (!parsedManifest) return { folders: [], canvases: [], breadcrumbs: [] };
+  const { loading, folders, canvases, breadcrumbs } = useMemo(() => {
+    if (!parsedManifest) return { loading: true, folders: [], canvases: [], breadcrumbs: [] };
 
     const toc = parsedManifest.getTableOfContents();
 
@@ -87,7 +87,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         const { navItems, navSections: folders } = thisNode;
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases, breadcrumbs };
+        return { loading: false, folders, canvases, breadcrumbs };
       } else if (!rangeId) {
         const { root } = toc; // Root 
 
@@ -95,14 +95,14 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         const navItems = root.filter(n => (n.navItems.length + n.navSections.length) === 0);
 
         const canvases = navItems.map(i => props.manifest.canvases.find(c => c.uri === i.id));
-        return { folders, canvases, breadcrumbs: [] };
+        return { loading: false, folders, canvases, breadcrumbs: [] };
       } else {
         // Invalid range ID!
-        return { folders: [], canvases: [] , breadcrumbs: []};
+        return { loading: false, folders: [], canvases: [] , breadcrumbs: []};
       }
     } else {
       // No ToC - render all canvases flat
-      return { folders: [], canvases: props.manifest.canvases, breadcrumbs: [] };
+      return { loading: false, folders: [], canvases: props.manifest.canvases, breadcrumbs: [] };
     }
   }, [rangeId, props.manifest, parsedManifest]);
 
@@ -123,6 +123,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           canvases={canvases}
           folders={folders}
           hideUnannotated={props.hideUnannotated}
+          loading={loading}
           manifest={props.manifest}
           selected={props.selected}
           onOpenCanvas={onOpenCanvas}
@@ -134,6 +135,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           canvases={canvases} 
           folders={folders}
           hideUnannotated={props.hideUnannotated} 
+          loading={loading}
           manifest={props.manifest}
           selected={props.selected} 
           onOpenCanvas={onOpenCanvas} 
