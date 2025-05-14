@@ -129,7 +129,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
         props.onOpenFolder(data);
       }
     } else if (type === 'image') {
-      props.onOpenImage(data);
+      props.onOpenImage(data.id);
     }
   }
 
