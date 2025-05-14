@@ -3,6 +3,7 @@ import murmur from 'murmurhash';
 import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
+import { Skeleton } from '@/ui/Skeleton';
 import { ItemTableRow } from './Types';
 import { 
   ArrowDownNarrowWide, 
@@ -10,7 +11,6 @@ import {
   ArrowUpDown, 
   MessagesSquare 
 } from 'lucide-react';
-import { Skeleton } from '@/ui/Skeleton';
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
