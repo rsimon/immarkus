@@ -1,9 +1,12 @@
+import { MessagesSquare } from 'lucide-react';
 import { Folder } from '@/model';
 import { useStore } from '@/store';
 import { FolderIcon } from '@/components/FolderIcon';
 import { FolderItemActions } from './FolderItemActions';
 
 interface FolderItemProps {
+
+  annotationCount: number;
 
   folder: Folder;
 
@@ -31,10 +34,19 @@ export const FolderItem = (props: FolderItemProps) => {
             className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
         </button>
         
-        <div className="absolute bottom-3.5 right-2 text-white text-sm pointer-events-auto">
-          <FolderItemActions 
-            folder={props.folder} 
-            onSelect={props.onSelect} />
+        <div className="image-wrapper absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-auto">
+          <div className="text-white text-sm">
+            <MessagesSquare 
+              size={18} 
+              className="inline align-text-bottom mr-1" /> 
+              {props.annotationCount.toLocaleString()}
+          </div>
+
+          <div className="absolute bottom-0.5 right-3 text-white text-sm pointer-events-auto">
+            <FolderItemActions 
+              folder={props.folder} 
+              onSelect={props.onSelect} />
+          </div>
         </div>
       </div>
 

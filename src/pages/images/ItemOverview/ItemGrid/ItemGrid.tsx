@@ -11,6 +11,7 @@ export const ItemGrid = (props: ItemOverviewLayoutProps) => {
         {props.folders.map(folder => (
           <li key={folder.id}>
             <FolderItem
+              annotationCount={(props.annotations.folders[folder.id] || []).length}
               folder={folder} 
               onOpen={() => props.onOpenFolder(folder)} 
               onSelect={() => props.onSelectFolder(folder)}/>
