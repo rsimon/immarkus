@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -72,6 +72,10 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   const [dimensions, setDimensions] = useState<Record<string, [number, number]>>({});
 
+  const filteredRows = useMemo(() => (
+    props.hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
+  ), [rows, props.hideUnannotated]);
+
   useEffect(() => {
     setRows([
       ...props.folders.map(f => folderToRow(f, props.annotations)),
@@ -137,7 +141,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
         removableSort
-        value={rows} 
+        value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}>
         <Column

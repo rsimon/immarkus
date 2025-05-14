@@ -7,6 +7,8 @@ export interface ItemOverviewLayoutProps {
 
   folders: Folder[];
 
+  hideUnannotated: boolean;
+
   iiifResources: IIIFResource[];
 
   images: LoadedFileImage[];

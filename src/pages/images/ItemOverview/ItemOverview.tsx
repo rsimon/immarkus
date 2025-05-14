@@ -118,6 +118,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
         <ItemGrid
           annotations={annotations}
           folders={folders} 
+          hideUnannotated={props.hideUnannotated}
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
           selected={props.selected}
@@ -130,6 +131,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
         <ItemTable
           annotations={annotations}
           folders={folders} 
+          hideUnannotated={props.hideUnannotated}
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
           selected={props.selected}
