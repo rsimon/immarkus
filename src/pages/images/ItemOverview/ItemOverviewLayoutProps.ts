@@ -21,6 +21,6 @@ export interface ItemOverviewLayoutProps {
 
   onSelectImage(image: Image): void;
 
-  onSelectManifest(manifest: IIIFManifestResource): void;
+  onSelectItem(item: OverviewItem): void;
 
 }

@@ -78,8 +78,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const onSelectImage = (image: Image) =>
     props.onSelect({ type: 'image', ...image });
 
-  const onSelectManifest = (manifest: IIIFManifestResource) =>
-    props.onSelect(manifest);
+  const onSelectItem = (item: OverviewItem) =>
+    props.onSelect(item);
 
   const filteredIIIFResources = useMemo(() => {
     const dontHide = (item: IIIFResource) => {
@@ -125,7 +125,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           onOpenImage={onOpenImage} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
-          onSelectManifest={onSelectManifest} />
+          onSelectItem={onSelectItem} />
       ) : (
         <ItemTable
           annotations={annotations}
@@ -137,7 +137,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           onOpenImage={onOpenImage} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
-          onSelectManifest={onSelectManifest} />
+          onSelectItem={onSelectItem} />
       )}
     </div>
   );

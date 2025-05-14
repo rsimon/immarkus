@@ -114,7 +114,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       onOpenFolder={props.onOpenFolder}
       onSelectFolder={props.onSelectFolder} 
       onSelectImage={props.onSelectImage}
-      onSelectManifest={props.onSelectManifest} />
+      onSelectItem={props.onSelectItem} />
   );
 
   const onRowClick = (evt: DataTableRowClickEvent) => {

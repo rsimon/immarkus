@@ -1,17 +1,22 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen, Trash2 } from 'lucide-react';
+import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Folder, IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
+import { useCanvas } from '@/utils/iiif/hooks';
+import { OverviewItem } from '../../Types';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
-import { Button } from '@/ui/Button';
 
 interface ItemTableRowActions {
 
@@ -23,7 +28,7 @@ interface ItemTableRowActions {
 
   onSelectImage(image: Image): void;
 
-  onSelectManifest(manifest: IIIFManifestResource): void;
+  onSelectItem(item: OverviewItem): void;
 
 }
 
@@ -31,6 +36,42 @@ interface ItemTableRowActions {
 const getSingleCanvasURL = (manifest: IIIFManifestResource) => {
   const info = manifest.canvases[0];
   return `/annotate/iiif:${info.manifestId}:${info.id}`;
+}
+
+const SingleCanvasMetadataMenu = (props: ItemTableRowActions) => {
+
+  const info = (props.data as IIIFManifestResource).canvases[0];
+
+  const id = `iiif:${info.manifestId}:${info.id}`;
+
+  const canvas = useCanvas(id);
+
+  const onSelectManifest = () =>
+    props.onSelectItem(props.data as IIIFManifestResource);
+
+  const onSelectCanvas = () =>
+    props.onSelectItem({ type: 'canvas', info, canvas });
+
+  return (
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger>
+        <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+      </DropdownMenuSubTrigger>
+
+      <DropdownMenuSubContent>
+        <DropdownMenuItem onSelect={onSelectManifest}>
+          <Images className="size-4 text-muted-foreground mr-2" /> Manifest Metadata
+        </DropdownMenuItem>
+
+        {canvas && (
+          <DropdownMenuItem onSelect={onSelectCanvas}>
+            <ImageIcon className="size-4 text-muted-foreground mr-2" /> Canvas Metadata
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuSubContent>
+    </DropdownMenuSub>
+  )
+
 }
 
 export const ItemTableRowActions = (props: ItemTableRowActions) => {
@@ -49,9 +90,13 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     }
   }, [props.data]);
 
+  const isSingleCanvas = useMemo(() => (
+    isManifest && isSingleImageManifest(props.data as IIIFManifestResource)
+  ), [isManifest, props.data]);
+
   const onSelect = () => {
     if (isManifest) {
-      props.onSelectManifest(props.data as IIIFManifestResource);
+      props.onSelectItem(props.data as IIIFManifestResource);
     } else if (isImage) {
       props.onSelectImage(props.data as Image);
     } else {
@@ -78,9 +123,13 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           sideOffset={0}
           collisionPadding={10}
           onClick={evt => evt.stopPropagation()}>
-          <DropdownMenuItem onSelect={onSelect}>
-            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
-          </DropdownMenuItem>
+          {isSingleCanvas ? (
+            <SingleCanvasMetadataMenu {...props} />
+          ) : (
+            <DropdownMenuItem onSelect={onSelect}>
+              <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+            </DropdownMenuItem>
+          )}
 
           {isImage ? (
             <DropdownMenuItem asChild>
@@ -94,13 +143,13 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
                 <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open Folder
               </Link>
             </DropdownMenuItem>
-          ) : isSingleImageManifest(props.data as IIIFManifestResource) ? (
+          ) : isSingleCanvas ? (
             <DropdownMenuItem asChild>
               <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
                 <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
               </Link>
             </DropdownMenuItem>
-          ) :(
+          ) : (
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
                 <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
