@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
-import Moment from 'react-moment';
+import { format } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
 import { DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
@@ -123,9 +123,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         <div className="bg-slate-50 border-t py-0.5 pl-2.5 pr-1 flex justify-between items-center text-[11px]">
           {lastEdit ? (
             <div className="text-gray-400">
-              <Moment format="LT MMM DD">
-                {lastEdit}
-              </Moment>
+              {format(lastEdit, 'H:mm MMM dd')}
             </div>
           ) : (
             <div />

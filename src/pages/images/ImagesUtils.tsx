@@ -1,5 +1,5 @@
-import Moment from 'react-moment';
 import murmur from 'murmurhash';
+import { formatDistanceToNow } from 'date-fns';
 import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
@@ -103,9 +103,9 @@ export const DIMENSIONS_COLUMN_TEMPLATE = (row: ItemTableRow) =>
 
 export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) => 
   row.lastEdit ? (
-    <Moment fromNow className="text-muted-foreground">
-      {row.lastEdit.toISOString()}
-    </Moment>
+    <div className="text-muted-foreground">
+      {formatDistanceToNow(row.lastEdit, { addSuffix: true })}
+    </div>
   ) : null;
 
 export const ANNOTATIONS_COLUMN_TEMPLATE = (row: ItemTableRow) => (

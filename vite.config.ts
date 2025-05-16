@@ -27,8 +27,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
-    },
-    mainFields: [] // react-moment fails without this!
+    }
   },
   define: {
     'process.env': {
