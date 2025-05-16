@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.1.6",
+    "@tailwindcss/vite": "^4.1.7",
     "@types/chroma-js": "^3.1.1",
     "@types/node": "^22.15.18",
     "@types/openseadragon": "^4.1.0",
@@ -18,7 +18,7 @@
     "@types/uuid": "^10.0.0",
     "@types/wicg-file-system-access": "^2023.10.6",
     "@vitejs/plugin-react": "^4.4.1",
-    "tailwindcss": "^4.1.6",
+    "tailwindcss": "^4.1.7",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-babel-macros": "^1.0.6",
@@ -55,7 +55,7 @@
     "@radix-ui/react-toggle": "^1.1.8",
     "@radix-ui/react-toggle-group": "^1.1.9",
     "@radix-ui/react-tooltip": "^1.2.6",
-    "@react-spring/web": "^9.7.5",
+    "@react-spring/web": "^10.0.0",
     "ajv": "^8.17.1",
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
