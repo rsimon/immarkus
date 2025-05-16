@@ -99,12 +99,12 @@ export const MetadataForm = (props: MetadataFormProps) => {
     </div>
   ) : metadata && (
     <div>
-      {(schemas.length > 1 && selectedSchema?.name) && (
+      {(schemas.length > 1) && (
         <>
           <div className="flex gap-4 items-center">
             <span className="font-medium">Schema</span>
     
-            <Select value={selectedSchema?.name} onValueChange={onChangeSchema}>
+            <Select value={selectedSchema?.name || ''} onValueChange={onChangeSchema}>
               <SelectTrigger className="grow whitespace-nowrap overflow-hidden">
                 <span className="overflow-hidden text-ellipsis">
                   <SelectValue />
