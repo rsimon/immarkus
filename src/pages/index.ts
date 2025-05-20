@@ -6,3 +6,6 @@ export * from './knowledgegraph';
 export * from './images';
 export * from './markus';
 export * from './start';
+
+console.log('foo');
+document.domain = 'localhost';

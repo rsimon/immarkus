@@ -44,6 +44,25 @@ export const Images = () => {
     setSelected(undefined);
   }, [folderId]);
 
+  useEffect(() => {
+    if (!store) return;
+    const root = store.getRootFolder().handle;
+
+    setTimeout(() => {
+      console.log('root handle', root);
+
+      const iframe = document.getElementById('proxy');
+
+      const proxy = (iframe as HTMLIFrameElement)?.contentWindow;
+      proxy.localStorage.setItem('foobar', 'ads');
+      if (proxy) {
+        console.log('sending message')
+        proxy.postMessage(root, 'http://localhost:5173');
+      }
+    }, 4000);
+
+  }, [store]);
+
   const onShowFolderMetadata = () => setSelected({ type: 'folder', ...currentFolder });
 
   return store && (
@@ -75,6 +94,9 @@ export const Images = () => {
           item={selected}
           onClose={() => setSelected(undefined)}/>
       </main>
+
+      <iframe id="proxy" className="absolute top-2 left-2 border border-red-500" height={200} width={200} src="http://localhost:5173"></iframe>
+
     </div>
   )
 

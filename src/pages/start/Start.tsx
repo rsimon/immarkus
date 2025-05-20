@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
@@ -52,6 +52,20 @@ export const Start = (props: StartProps) => {
   const buildDate = 
     new Intl.DateTimeFormat('de', { day: '2-digit', month: '2-digit', year: 'numeric' })
       .format(new Date(process.env.BUILD_DATE));
+
+  useEffect(() => {
+    console.log('setting up message handler');
+    
+    const onMessage = (evt: MessageEvent) => {
+      console.log('received', evt);
+    }
+
+    window.addEventListener('message', onMessage);
+
+    return () => {
+      window.removeEventListener('message', onMessage);
+    }
+  }, []);
 
   return ( 
     <div className="page-root">
