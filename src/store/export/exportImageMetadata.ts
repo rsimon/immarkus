@@ -46,7 +46,7 @@ const aggregateIIIFMetadataLabels = (manifests: CozyManifest[]) => {
   ];  
 }
 
-const getCanvasMetadata = (info: CanvasInformation, field: string, manifests: { id: string, manifest: CozyManifest}[]) => {
+const getCanvasMetadata = (info: CanvasInformation, field: string, manifests: { id: string, manifest: CozyManifest }[]) => {
   const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
   const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
   
@@ -56,6 +56,17 @@ const getCanvasMetadata = (info: CanvasInformation, field: string, manifests: { 
   ];
 
   return metadata.find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
+}
+
+const getCanvasToCPath = (info: CanvasInformation, manifests: { id: string, manifest: CozyManifest }[]) => {
+  const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
+  const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
+
+  const toc = cozyManifest.getTableOfContents();
+
+  // Keep only ranges, not the canvas itself
+  const breadcrumbs = toc.getBreadcrumbs(cozyCanvas.id).filter(n => n.type === 'range');
+  return breadcrumbs.map(node => node.getLabel());
 }
 
 export const exportImageMetadataCSV = async (
@@ -82,8 +93,6 @@ export const exportImageMetadataCSV = async (
 
   return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
     const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
-
-
 
     return Promise.all(
       [...images, ...iiifResources].map(source => getMetadata(store, source))
@@ -150,7 +159,8 @@ const createSchemaWorksheet = (
         const manifest = store.getIIIFResource(source.manifestId);
         return [
           ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
-          manifest?.name
+          manifest?.name,
+          ...getCanvasToCPath(source, resolved)
         ].filter(Boolean);
       }
     }
@@ -167,9 +177,10 @@ const createSchemaWorksheet = (
       schemaProps.forEach(d => 
         row[`@property_${d.name}`] = serializePropertyValue(d, properties[d.name]).join('; '));
 
-      if ('manifestId' in source)
+      if ('manifestId' in source) {
         iiifMetadataLabels.forEach(label => 
           row[`@iiif_property_${label}`] = getCanvasMetadata(source, label, resolved));
+      }
 
       // Only include this row if there is actual metadata,
       if (Object.keys(row).length > 3)
@@ -210,6 +221,7 @@ export const exportImageMetadataExcel = async (store: Store, onProgress: (progre
       workbook.created = new Date();
       workbook.modified = new Date();
     
+      // Create a worksheet for each schema, plus one for schema-less images
       return [...imageSchemas, undefined].reduce<Promise<void>>((promise, schema) => promise.then(() => {
         updateProgress();
         return createSchemaWorksheet(workbook, schema, result, store);
