@@ -104,9 +104,23 @@ export const exportImageMetadataCSV = async (
         .map(({ source, metadata }) => {
           const entries = zipMetadata(customColumns, metadata);
 
+          const getPath = (source: FileImage | CanvasInformation) => {
+            if ('path' in source) { 
+              return source.path.map(id => store.getFolder(id)?.name).filter(Boolean);
+            } else {
+              const manifest = store.getIIIFResource(source.manifestId);
+              return [
+                ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
+                manifest?.name,
+                ...getCanvasToCPath(source, manifests)
+              ].filter(Boolean);
+            }
+          }
+
           return Object.fromEntries([
             ['image', source.name], 
             ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
+            ['path', getPath(source).join('/')],
             ...entries,
             ...iiifColumns.map(label => [
               label,
