@@ -1,7 +1,8 @@
 import { CozyManifest } from 'cozy-iiif';
-import { IIIFManifestResource, MetadataSchema } from '@/model';
+import { CanvasInformation, IIIFManifestResource, Image, MetadataSchema } from '@/model';
 import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { fetchManifest } from '@/utils/iiif';
+import { Store } from '../Store';
 
 export const resolveManifests = (manifests: IIIFManifestResource[], onProgress?: () => void) => 
   manifests.reduce<Promise<{ id: string, manifest: CozyManifest}[]>>((promise, manifest) => promise.then(manifests =>
@@ -58,4 +59,28 @@ export const addImageToCell = (
   });
 
   worksheet.lastRow.height = 100;
+}
+
+export const getFullPath = (source: Image | CanvasInformation, store: Store, manifests: { id: string, manifest: CozyManifest }[]) => {
+  const getCanvasToCPath = (info: CanvasInformation, manifests: { id: string, manifest: CozyManifest }[]) => {
+    const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
+    const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
+
+    const toc = cozyManifest.getTableOfContents();
+
+    // Keep only ranges, not the canvas itself
+    const breadcrumbs = toc.getBreadcrumbs(cozyCanvas.id).filter(n => n.type === 'range');
+    return breadcrumbs.map(node => node.getLabel());
+  }
+
+  if ('path' in source) { 
+    return source.path.map(id => store.getFolder(id)?.name).filter(Boolean);
+  } else {
+    const manifest = store.getIIIFResource(source.manifestId);
+    return [
+      ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
+      manifest?.name,
+      ...getCanvasToCPath(source, manifests)
+    ].filter(Boolean);
+  }
 }

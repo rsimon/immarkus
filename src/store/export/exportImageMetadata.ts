@@ -6,7 +6,7 @@ import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
-import { deduplicateSchemas, fitColumnWidths, resolveManifests } from './utils';
+import { deduplicateSchemas, fitColumnWidths, getFullPath, resolveManifests } from './utils';
 
 interface SourceMetadata {
 
@@ -58,17 +58,6 @@ const getCanvasMetadata = (info: CanvasInformation, field: string, manifests: { 
   return metadata.find(m => m.label.toLowerCase() === field.toLowerCase())?.value;
 }
 
-const getCanvasToCPath = (info: CanvasInformation, manifests: { id: string, manifest: CozyManifest }[]) => {
-  const { manifest: cozyManifest } = manifests.find(c => c.id === info.manifestId);
-  const cozyCanvas = cozyManifest.canvases.find(c => c.id === info.uri);
-
-  const toc = cozyManifest.getTableOfContents();
-
-  // Keep only ranges, not the canvas itself
-  const breadcrumbs = toc.getBreadcrumbs(cozyCanvas.id).filter(n => n.type === 'range');
-  return breadcrumbs.map(node => node.getLabel());
-}
-
 export const exportImageMetadataCSV = async (
   store: Store,
   onProgress: ((progress: number) => void)
@@ -104,23 +93,10 @@ export const exportImageMetadataCSV = async (
         .map(({ source, metadata }) => {
           const entries = zipMetadata(customColumns, metadata);
 
-          const getPath = (source: FileImage | CanvasInformation) => {
-            if ('path' in source) { 
-              return source.path.map(id => store.getFolder(id)?.name).filter(Boolean);
-            } else {
-              const manifest = store.getIIIFResource(source.manifestId);
-              return [
-                ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
-                manifest?.name,
-                ...getCanvasToCPath(source, manifests)
-              ].filter(Boolean);
-            }
-          }
-
           return Object.fromEntries([
             ['image', source.name], 
             ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
-            ['path', getPath(source).join('/')],
+            ['path', getFullPath(source, store, manifests).join('/')],
             ...entries,
             ...iiifColumns.map(label => [
               label,
@@ -166,24 +142,11 @@ const createSchemaWorksheet = (
       }))
     ];
   
-    const getPath = (source: FileImage | CanvasInformation) => {
-      if ('path' in source) { 
-        return source.path.map(id => store.getFolder(id)?.name).filter(Boolean);
-      } else {
-        const manifest = store.getIIIFResource(source.manifestId);
-        return [
-          ...manifest?.path.map(id => store.getFolder(id)?.name).filter(Boolean) || [],
-          manifest?.name,
-          ...getCanvasToCPath(source, resolved)
-        ].filter(Boolean);
-      }
-    }
-  
     withThisSchema.forEach(({ source, metadata }) => {
       const row = {
         filename: source.name,
         type: 'uri' in source ? 'IIIF Canvas' : 'Local File',
-        path: getPath(source).join('/')
+        path: getFullPath(source, store, resolved).join('/')
       };
 
       const properties = (metadata && 'properties' in metadata) ? metadata.properties : {};

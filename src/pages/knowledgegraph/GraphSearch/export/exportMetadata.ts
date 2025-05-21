@@ -1,6 +1,6 @@
 import { CanvasInformation, Folder, IIIFManifestResource, Image } from '@/model';
 import { getManifestMetadata, Store } from '@/store';
-import { resolveManifests } from '@/store/export/utils';
+import { getFullPath, resolveManifests } from '@/store/export/utils';
 import { serializePropertyValue } from '@/utils/serialize';
 import { downloadExcel } from '@/utils/download';
 import { SchemaPropertyValue } from '../../Types';
@@ -139,6 +139,8 @@ export const exportImages = (store: Store, imageIds: string[], onProgress: (prog
       updateProgress
     ).then(resolved => {
       const rows = metadata.map(({ image, metadata }) => {
+        const path = getFullPath(image, store, resolved);
+
         const serialized = serialize(metadata);
 
         const manifest = ('uri' in image) 
@@ -156,7 +158,7 @@ export const exportImages = (store: Store, imageIds: string[], onProgress: (prog
           ...canvasMetadata.map(m => ([m.label, m.value]))
         ]);
   
-        return { image: image.name, ...rows };
+        return { image: image.name, path: path.join('/'), ...rows };
       });
   
       return downloadExcel(rows, 'search_results_metadata.xlsx');
