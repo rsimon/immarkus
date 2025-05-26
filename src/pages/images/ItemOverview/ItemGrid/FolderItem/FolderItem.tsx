@@ -34,7 +34,7 @@ export const FolderItem = (props: FolderItemProps) => {
             className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
         </button>
         
-        <div className="absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-auto">
+        <div className="absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-none">
           <div className="text-white text-sm">
             <MessagesSquare 
               size={18} 
