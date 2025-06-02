@@ -1,9 +1,11 @@
+import murmur from 'murmurhash';
 import { W3CAnnotation } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
-import { EntityType, Folder, IIIFManifestResource, IIIFResource, Image } from '@/model';
+import { EntityType, Folder, IIIFManifestResource, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { GraphLink, GraphLinkPrimitive, GraphNode } from '../Types';
 import { getEntityTypes } from '@/utils/annotation';
+import { CozyManifest, CozyTOCNode } from 'cozy-iiif';
 
 export const toFolderNode = (folder: Folder, metadata: Map<string, W3CAnnotation>): GraphNode => ({
   id: folder.id,
@@ -19,11 +21,37 @@ export const toImageNode = (image: Image, metadata: Map<string, W3CAnnotation>):
   properties: (metadata.get(image.id)?.body as any)?.properties 
 } as GraphNode);
 
-export const toManifestNode = (r: IIIFResource): GraphNode => ({
-  id: `iiif:${r.id}`,
-  label: r.name,
-  type: 'FOLDER'
-} as GraphNode)
+export const toManifestNodes = ({ id, manifest }: { id: string, manifest: CozyManifest}): GraphNode[] => {
+  const manifestNode = {
+    id: `iiif:${id}`,
+    label: manifest.getLabel(),
+    type: 'FOLDER'
+  } as GraphNode;
+
+  const toc = manifest.getTableOfContents();
+  if (toc.root.length > 0) {
+    const nodes = toc.enumerateNodes('range');
+    return [
+      manifestNode,
+      ...nodes
+        .filter(node =>
+          // Don't include empty ToC nodes, or those with a single canvas
+          node.navItems.length > 1 || node.navSections.length > 0)
+        .map(node => ({
+          id: `iiif:${id}@${murmur.v3(node.id)}`,
+          label: node.getLabel(),
+          type: 'FOLDER',
+          properties: {
+            navItems: node.navItems,
+            navSections: node.navSections
+          }
+        } as unknown as GraphNode))
+    ]
+  } else {
+    // Manifest without ToC
+    return [manifestNode];
+  }
+}
 
 export const toCanvasNodes = (manifest: IIIFManifestResource): GraphNode[] => 
   manifest.canvases.map(canvas => ({
@@ -70,16 +98,49 @@ export const getImageFolderPrimitives = (store: Store) =>
     }
   }, []);
 
-export const getCanvasManifestPrimitives = (iiifResources: IIIFResource[]) =>
-  iiifResources.reduce<GraphLinkPrimitive[]>((all, resource) => {
-    const manifest = resource as IIIFManifestResource;
-    return [...all, ...manifest.canvases.map(canvas => ({
-      source: `iiif:${manifest.id}`,
-      target: `iiif:${manifest.id}:${canvas.id}`,
+export const getManifestStructurePrimitives = ({ id, manifest }: { id: string, manifest: CozyManifest }): GraphLinkPrimitive[] => {
+  const toc = manifest.getTableOfContents();
+  if (toc.root.length > 0) {
+    const nodes = toc.enumerateNodes('range');
+
+    const getId = (node: CozyTOCNode) => `iiif:${id}@${murmur.v3(node.id)}`;
+
+    return nodes
+      .filter(node => node.navItems.length > 1 || node.navSections.length > 0)
+      .map(node => ({
+        source: node.parent ? getId(node.parent) : `iiif:${id}`,
+        target: getId(node),
+        type: 'FOLDER_CONTAINS_SUBFOLDER'
+      }))
+  } else {
+    // No ToC structure
+    return [];
+  }
+}
+
+export const getCanvasManifestPrimitives = ({ id, manifest }: { id: string, manifest: CozyManifest }): GraphLinkPrimitive[] => {
+  const toc = manifest.getTableOfContents();
+
+  const getId = (node: CozyTOCNode) => `iiif:${id}@${murmur.v3(node.id)}`;
+
+  return manifest.canvases.map(canvas => {
+    // Find the ToC node that this canvas belongs to
+    const tocNode = toc.getNode(canvas.id);
+
+    const source = 
+      tocNode.parent?.navItems.length > 1 ? getId(tocNode.parent) :
+      tocNode.parent?.parent ? getId(tocNode.parent.parent) :
+      `iiif:${id}`; // Link to manifest directly
+
+    const target = `iiif:${id}:${murmur.v3(canvas.id)}`;
+
+    return {
+      source,
+      target,
       type: 'FOLDER_CONTAINS_IMAGE'
-    } as GraphLinkPrimitive))]
-    return all;
-  }, [])
+    } as GraphLinkPrimitive;
+  });
+}
 
 export const getEntityHierarchyPrimitives = (model: DataModelStore) =>
   model.entityTypes.reduce<GraphLinkPrimitive[]>((all, type) => {

@@ -5,8 +5,9 @@ import { getManifestMetadata, Store } from '@/store';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { downloadCSV } from '@/utils/download';
 import { Folder, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
+import { resolveManifestsWithId } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
-import { deduplicateSchemas, fitColumnWidths, resolveManifests } from './utils';
+import { deduplicateSchemas, fitColumnWidths } from './utils';
 
 const getMetadata = (store: Store, source: Folder | IIIFResource): Promise<{
   source: IIIFResource | Folder;
@@ -43,7 +44,7 @@ export const exportFolderMetadataCSV = async (
 
   const customColumns = aggregateSchemaFields(folderSchemas);
 
-  return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
+  return resolveManifestsWithId(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
     const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(m => m.manifest));
 
     const getResourceMetadata = (resource: IIIFManifestResource, field: string) => {
@@ -90,7 +91,7 @@ const createSchemaWorksheet = (
   const withThisSchema = result.filter(({ metadata }) => metadata?.source === schema?.name);
 
   // Filter for IIIF manifests and resolve them
-  return resolveManifests(
+  return resolveManifestsWithId(
     withThisSchema.map(t => t.source).filter(s => 'canvases' in s),
     onProgress
   ).then(resolved => {

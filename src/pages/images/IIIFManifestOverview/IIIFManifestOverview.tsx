@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import murmur from 'murmurhash';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CozyCanvas, CozyRange } from 'cozy-iiif';

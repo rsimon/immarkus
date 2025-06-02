@@ -88,7 +88,7 @@ export const useGraphSearch = (
       } else if (!s.Value && s.Comparator === 'IS') {
         // Resolve attribute
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        listMetadataValues(store, type, propertyName, s.Attribute.builtIn).then(propertyValues => {
+        listMetadataValues(store, graph, type, propertyName, s.Attribute.builtIn).then(propertyValues => {
           const options = propertyValues.map(label => ({ label, value: label }));
           setValueOptions(options);
         });
@@ -100,8 +100,8 @@ export const useGraphSearch = (
           findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
             setMatches(results.map(image => 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id)));  
         } else {
-          findFoldersByMetadata(store, propertyName, value, s.Attribute.builtIn).then(results =>
-            setMatches(results.map(folder => 'uri' in folder ? `iiif:${folder.id}` : folder.id)));
+          findFoldersByMetadata(store, graph, propertyName, value, s.Attribute.builtIn)
+            .then(setMatches);
         }
       }
     } else if (sentence.ConditionType === 'WITH_ENTITY') {

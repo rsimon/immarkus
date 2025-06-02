@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
+import { Spinner } from '@/components/Spinner';
 import { GraphView } from './GraphView';
 import { Legend } from './Legend';
 import { GraphNode } from './Types';
@@ -48,7 +49,7 @@ export const KnowledgeGraph = () => {
       duration: 250,
       easing: easings.easeInOutCubic
     },
-    onChange: ({ value }) => setTransitionProgress(value.maxWidth)
+    onChange: ({ value }) => setTransitionProgress(value.maxWidth as number)
   });
 
   useEffect(() => setIsFirstRender(false), []);
@@ -95,17 +96,23 @@ export const KnowledgeGraph = () => {
           </animated.div>
         ))}
 
-        <GraphView 
-          graph={graph}
-          transitionProgress={transitionProgress}
-          isFullscreen={isFullscreen}
-          settings={settings}
-          selected={selectedNodes}
-          pinned={pinnedNodes}
-          query={query}
-          onBackgroundClick={() => setShowSettingsPanel(false)}
-          onPin={node => setPinnedNodes(n => ([...n, node]))}
-          onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
+        {graph ? (
+          <GraphView 
+            graph={graph}
+            transitionProgress={transitionProgress}
+            isFullscreen={isFullscreen}
+            settings={settings}
+            selected={selectedNodes}
+            pinned={pinnedNodes}
+            query={query}
+            onBackgroundClick={() => setShowSettingsPanel(false)}
+            onPin={node => setPinnedNodes(n => ([...n, node]))}
+            onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Spinner className="w-6 h-6 text-muted-foreground/60" />
+            </div>
+          )}
 
         <Legend />
 

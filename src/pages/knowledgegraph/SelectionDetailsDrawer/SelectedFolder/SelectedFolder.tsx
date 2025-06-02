@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import murmur from 'murmurhash';
 import { Link } from 'react-router-dom';
 import { Braces, FolderIcon, FolderOpen, ImageIcon, NotebookPen, X } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
@@ -11,6 +12,8 @@ import { Button } from '@/ui/Button';
 import { GraphNode } from '../../Types';
 import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { fetchManifest } from '@/utils/iiif';
+import { CozyRange } from 'cozy-iiif';
 
 interface SelectedFolderProps {
 
@@ -77,7 +80,7 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
 
 }
 
-export const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource }) => {
+const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource }) => {
 
   const cozyManifest = useIIIFResource(manifest.id);
 
@@ -121,17 +124,46 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
 
   const store = useStore();
 
-  const folder = useMemo(() => {
-    if (props.folder.id.startsWith('iiif:')) {
-      const id = props.folder.id.substring('iiif:'.length);
-      return store.getIIIFResource(id) as IIIFManifestResource;
+  const [folder, setFolder] = useState<IIIFManifestResource | Folder | CozyRange | undefined>();
+
+  useEffect(() => {
+    const { id } = props.folder;
+
+    if (id.startsWith('iiif:')) {
+      if (id.includes('@')) {
+        // Manifest Range ID
+        const [manifestId, rangeId] = id.substring('iiif:'.length).split('@');
+
+        const manifest =  store.getIIIFResource(manifestId) as IIIFManifestResource;
+        fetchManifest(manifest.uri).then(parsed => {
+          const range = parsed.structure.find(range => {
+            const hash = murmur.v3(range.id);
+            return rangeId === hash.toString();
+          });
+
+          if (!range) {
+            console.error('Range not found', manifestId, rangeId);
+          } else {
+            setFolder(range);
+          }
+        });
+      } else {
+        // Manifest ID
+        const manifestId = id.substring('iiif:'.length);
+        setFolder(store.getIIIFResource(manifestId) as IIIFManifestResource);
+      }
     } else {
-      return store.getFolder(props.folder.id) as Folder;
+      setFolder(store.getFolder(props.folder.id) as Folder);
     }
   }, [props.folder]);
 
   const [imageCount, folderCount] = useMemo(() => {
-    if ('canvases' in folder) {
+    if (!folder) return [0, 0];
+
+    if ('items' in folder) {
+      const { navItems, navSections } = (props.folder.properties || {});
+      return [(navItems || []).length, (navSections || []).length];
+    } else if ('canvases' in folder) {
       return [folder.canvases.length, 0];
     } else {
       const items = store.getFolderContents(folder.handle);
@@ -139,14 +171,18 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
     }
   }, [folder, store]);
 
-  return (
+  const folderName = folder && ('name' in folder ? folder.name : folder.getLabel());
+
+  const folderId = folder && ('items' in folder ? props.folder.id.substring(5) : folder.id);
+
+  return folder && (
     <div className="p-2">
       <article className="flex flex-col">
         <div className="bg-white rounded border shadow-xs">
           <div className="px-3 py-2 pr-2 flex justify-between items-center overflow-hidden gap-2">
             <h2 className="flex gap-1.5 items-center whitespace-nowrap overflow-hidden text-sm">
               <FolderOpen className="h-4 w-4" /> 
-              <div className="overflow-hidden text-ellipsis">{folder.name}</div>
+              <div className="overflow-hidden text-ellipsis">{folderName}</div>
             </h2>
 
             <Button 
@@ -174,18 +210,18 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             </div>
 
             <Link 
-              to={`/images/${folder.id}`}
+              to={`/images/${folderId}`}
               className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 py-1.5">
               Open
             </Link>
           </div>
         </div>
 
-        {('canvases' in folder) ? (
+        {('type' in folder && folder.type === 'PRESENTATION_MANIFEST') ? (
           <SelectedManifestMetadata manifest={folder} />
-        ) : (
+        ) : !('canvases' in folder) ? (
           <SelectedFolderMetadata folder={folder} />
-        )}
+        ) : null}
       </article>
     </div>
   )

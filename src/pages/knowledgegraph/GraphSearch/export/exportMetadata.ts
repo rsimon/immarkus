@@ -1,6 +1,7 @@
 import { CanvasInformation, Folder, IIIFManifestResource, Image } from '@/model';
 import { getManifestMetadata, Store } from '@/store';
-import { getFullPath, resolveManifests } from '@/store/export/utils';
+import { getFullPath } from '@/store/export/utils';
+import { resolveManifestsWithId } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
 import { downloadExcel } from '@/utils/download';
 import { SchemaPropertyValue } from '../../Types';
@@ -80,7 +81,7 @@ export const exportFolders = (store: Store, folderIds: string[], onProgress: (pr
 
     updateProgress();
 
-    return resolveManifests(manifests, updateProgress).then(resolved => {
+    return resolveManifestsWithId(manifests, updateProgress).then(resolved => {
       const rows = metadata.map(({ folder, metadata }) => {
         const serialized = serialize(metadata);
 
@@ -134,7 +135,7 @@ export const exportImages = (store: Store, imageIds: string[], onProgress: (prog
 
     updateProgress();
 
-    return resolveManifests(
+    return resolveManifestsWithId(
       manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource),
       updateProgress
     ).then(resolved => {
