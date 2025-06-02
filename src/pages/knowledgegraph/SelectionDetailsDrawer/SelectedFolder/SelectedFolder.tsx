@@ -128,6 +128,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
 
   useEffect(() => {
     const { id } = props.folder;
+
     if (id.startsWith('iiif:')) {
       if (id.includes('@')) {
         // Manifest Range ID
@@ -159,7 +160,9 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
   const [imageCount, folderCount] = useMemo(() => {
     if (!folder) return [0, 0];
 
-    if ('canvases' in folder) {
+    if ('items' in folder) {
+      return [0, 0];
+    } else if ('canvases' in folder) {
       return [folder.canvases.length, 0];
     } else {
       const items = store.getFolderContents(folder.handle);
@@ -168,6 +171,8 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
   }, [folder, store]);
 
   const folderName = folder && ('name' in folder ? folder.name : folder.getLabel());
+
+  const folderId = folder && ('items' in folder ? props.folder.id.substring(5) : folder.id);
 
   return folder && (
     <div className="p-2">
@@ -204,7 +209,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             </div>
 
             <Link 
-              to={`/images/${folder.id}`}
+              to={`/images/${folderId}`}
               className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 py-1.5">
               Open
             </Link>

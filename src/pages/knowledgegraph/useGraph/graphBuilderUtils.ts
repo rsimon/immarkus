@@ -114,19 +114,6 @@ export const getManifestStructurePrimitives = ({ id, manifest }: { id: string, m
   }
 }
 
-/*
-export const getCanvasManifestPrimitives = (iiifResources: IIIFResource[]) =>
-  iiifResources.reduce<GraphLinkPrimitive[]>((all, resource) => {
-    const manifest = resource as IIIFManifestResource;
-    return [...all, ...manifest.canvases.map(canvas => ({
-      source: `iiif:${manifest.id}`,
-      target: `iiif:${manifest.id}:${canvas.id}`,
-      type: 'FOLDER_CONTAINS_IMAGE'
-    } as GraphLinkPrimitive))]
-    return all;
-  }, []);
-*/
-
 export const getCanvasManifestPrimitives = ({ id, manifest }: { id: string, manifest: CozyManifest }): GraphLinkPrimitive[] => {
   const toc = manifest.getTableOfContents();
 

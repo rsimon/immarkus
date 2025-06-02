@@ -217,6 +217,7 @@ export const findEntityTypesByRelationship = (
 /** Lists all metadata values used on the given FOLDER/IMAGE metadata property **/
 export const listMetadataValues = (
   store: Store, 
+  graph: Graph,
   type: 'FOLDER' | 'IMAGE', 
   propertyName: string, 
   builtIn?: boolean
@@ -225,7 +226,14 @@ export const listMetadataValues = (
 
   if (builtIn) {
     if (type === 'FOLDER' && propertyName === 'folder name') {
-      const folderLike = [...store.folders, ...store.iiifResources];
+      const folderLike = [
+        ...store.folders,
+        ...store.iiifResources,
+        ...graph.nodes
+          .filter(n => n.type === 'FOLDER' && n.id.includes('@'))
+          .map(n => ({ name: n.label }))
+      ];
+
       return Promise.resolve([...new Set(folderLike.map(f => f.name))]);
     } else if (type === 'IMAGE' && propertyName === 'image filename') {
       const imageLike = [
@@ -433,17 +441,32 @@ export const findImagesByMetadata = (
 
 export const findFoldersByMetadata = (
   store: Store, 
+  graph: Graph,
   propertyName: string, 
   value?: string,
   builtin?: boolean
-): Promise<(Folder | IIIFManifestResource)[]> => {
-  const folderLike = [...store.folders, ...(store.iiifResources as IIIFManifestResource[])];
+): Promise<string[]> => {
+  const folderLike = [
+    ...store.folders, 
+    ...(store.iiifResources as IIIFManifestResource[])
+  ];
 
   if (builtin) {
+    const items = [
+      // Folders
+      ...store.folders.map(f => ({ id: f.id, name: f.name })),
+      // Manifests
+      ...store.iiifResources.map(f => ({ id: `iiif:${f.id}`, name: f.name })),
+      // Manifest ToC nodes
+      ...graph.nodes
+        .filter(n => n.type === 'FOLDER' && n.id.includes('@'))
+        .map(n => ({ id: n.id, name: n.label }))
+    ];
+
     if (propertyName === 'folder name') {
       return value 
-        ? Promise.resolve(folderLike.filter(f => f.name === value))
-        : Promise.resolve(folderLike);
+        ? Promise.resolve(items.filter(f => f.name === value).map(i => i.id))
+        : Promise.resolve(items.map(i => i.id));
     } else {
       console.error('Unsupported built-in folder property', propertyName);
       return Promise.resolve([]);
@@ -467,7 +490,7 @@ export const findFoldersByMetadata = (
         .filter(({ metadata }) =>
           metadata.find(m => 
             m.propertyName === propertyName && hasMatchingValue(m, value)))
-        .map(({ folder }) => folder);
+        .map(({ folder }) => folder.id);
     });
   }
 }
