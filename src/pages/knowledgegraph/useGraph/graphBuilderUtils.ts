@@ -40,8 +40,12 @@ export const toManifestNodes = ({ id, manifest }: { id: string, manifest: CozyMa
         .map(node => ({
           id: `iiif:${id}@${murmur.v3(node.id)}`,
           label: node.getLabel(),
-          type: 'FOLDER'
-        } as GraphNode))
+          type: 'FOLDER',
+          properties: {
+            navItems: node.navItems,
+            navSections: node.navSections
+          }
+        } as unknown as GraphNode))
     ]
   } else {
     // Manifest without ToC

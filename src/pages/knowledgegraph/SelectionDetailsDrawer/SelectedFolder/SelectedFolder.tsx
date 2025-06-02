@@ -161,7 +161,8 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
     if (!folder) return [0, 0];
 
     if ('items' in folder) {
-      return [0, 0];
+      const { navItems, navSections } = (props.folder.properties || {});
+      return [(navItems || []).length, (navSections || []).length];
     } else if ('canvases' in folder) {
       return [folder.canvases.length, 0];
     } else {
