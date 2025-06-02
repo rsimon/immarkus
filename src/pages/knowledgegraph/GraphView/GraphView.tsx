@@ -54,7 +54,7 @@ export const GraphView = (props: GraphViewProps) => {
 
   const el = useRef<HTMLDivElement>(null);
 
-  const fg = useRef<ForceGraphMethods>();
+  const fg = useRef<ForceGraphMethods>(null);
 
   const [dimensions, setDimensions] = useState<[number, number] | undefined>();
 

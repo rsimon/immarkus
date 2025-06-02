@@ -32,13 +32,15 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const [annotations, setAnnotations] = useState<{ sourceId: string, annotations: W3CAnnotation[] }[]>([]);
 
-  const [graph, setGraph] = useState<Graph>();
+  const [graph, setGraph] = useState<Graph | undefined>();
 
   const { images, iiifResources, folders } = store;
 
   const { includeFolders, graphMode } = settings;
   
   useEffect(() => {
+    setGraph(undefined);
+
     // Store node ID -> graph links lookup table for performance
     const linkMap = new Map<string, GraphLink[]>();
 
