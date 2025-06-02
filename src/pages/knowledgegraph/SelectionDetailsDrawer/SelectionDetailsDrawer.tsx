@@ -5,7 +5,6 @@ import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { SelectedEntityType } from './SelectedEntityType';
 import { SelectedImage } from './SelectedImage';
 import { SelectedFolder } from './SelectedFolder';
-import { Folder } from '@/model';
 
 interface SelectionDetailsDrawerProps {
 

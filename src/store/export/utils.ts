@@ -1,16 +1,7 @@
 import { CozyManifest } from 'cozy-iiif';
-import { CanvasInformation, IIIFManifestResource, Image, MetadataSchema } from '@/model';
+import { CanvasInformation, Image, MetadataSchema } from '@/model';
 import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
-import { fetchManifest } from '@/utils/iiif';
 import { Store } from '../Store';
-
-export const resolveManifests = (manifests: IIIFManifestResource[], onProgress?: () => void) => 
-  manifests.reduce<Promise<{ id: string, manifest: CozyManifest}[]>>((promise, manifest) => promise.then(manifests =>
-    fetchManifest(manifest.uri).then(fetched => {
-      onProgress && onProgress();
-      return [...manifests, { id: manifest.id, manifest: fetched }]
-    })
-  ), Promise.resolve([]));
 
 export const fitColumnWidths = (worksheet: any) => {
   worksheet.columns.forEach(column => {

@@ -1,5 +1,6 @@
 import pThrottle from 'p-throttle';
 import { type CozyManifest, Cozy } from 'cozy-iiif';
+import { IIIFManifestResource } from '@/model';
 
 const cache = new Map<string, CozyManifest>();
 
@@ -32,3 +33,11 @@ export const fetchManifests = (uris: string[]): Promise<CozyManifest[]> =>
   uris.reduce<Promise<CozyManifest[]>>((promise, uri) => promise.then(all => (
     fetchManifest(uri).then(manifest => ([...all, manifest]))
   )), Promise.resolve([]));
+
+export const resolveManifestsWithId = (manifests: IIIFManifestResource[], onProgress?: () => void) => 
+  manifests.reduce<Promise<{ id: string, manifest: CozyManifest}[]>>((promise, manifest) => promise.then(manifests =>
+    fetchManifest(manifest.uri).then(fetched => {
+      onProgress && onProgress();
+      return [...manifests, { id: manifest.id, manifest: fetched }]
+    })
+  ), Promise.resolve([]));

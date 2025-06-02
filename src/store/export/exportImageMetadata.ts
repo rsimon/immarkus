@@ -1,12 +1,13 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
-import { CozyManifest, CozyMetadata } from 'cozy-iiif';
+import { CozyManifest } from 'cozy-iiif';
+import { W3CAnnotationBody } from '@annotorious/react';
 import { getImageMetadata, Store } from '@/store';
 import { downloadCSV } from '@/utils/download';
 import { aggregateSchemaFields, zipMetadata } from '@/utils/metadata';
 import { CanvasInformation, FileImage, IIIFManifestResource, IIIFResource, MetadataSchema } from '@/model';
-import { W3CAnnotationBody } from '@annotorious/react';
+import { resolveManifestsWithId } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
-import { deduplicateSchemas, fitColumnWidths, getFullPath, resolveManifests } from './utils';
+import { deduplicateSchemas, fitColumnWidths, getFullPath } from './utils';
 
 interface SourceMetadata {
 
@@ -80,7 +81,7 @@ export const exportImageMetadataCSV = async (
 
   const customColumns = aggregateSchemaFields(imageSchemas);  
 
-  return resolveManifests(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
+  return resolveManifestsWithId(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
     const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
 
     return Promise.all(
@@ -125,7 +126,7 @@ const createSchemaWorksheet = (
     'manifestId' in source ? [...manifestIds, source.manifestId] : manifestIds
   ), []))];
 
-  return resolveManifests(
+  return resolveManifestsWithId(
     manifestIds.map(id => store.getIIIFResource(id) as IIIFManifestResource)
   ).then(resolved => {
     const iiifMetadataLabels = aggregateIIIFMetadataLabels(resolved.map(r => r.manifest));
