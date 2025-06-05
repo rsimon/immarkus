@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { Braces, NotebookPen } from 'lucide-react';
+import { NotebookPen } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { CanvasInformation, Image } from '@/model';
 import { useImageMetadata } from '@/store';
@@ -8,11 +8,52 @@ import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
-import { useCanvas } from '@/utils/iiif/hooks';
+import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
+import { IIIFIcon } from '@/components/IIIFIcon';
 
 interface ImageMetadataSectionProps {
 
   image: Image | CanvasInformation;
+
+}
+
+const IIIFManifestMetadataTab = (props: ImageMetadataSectionProps) => {
+
+  const { manifestId } = props.image as CanvasInformation;
+
+  const manifest = useIIIFResource(manifestId);
+
+  const metadata = useMemo(() => {
+    if (!manifest) return;
+    return manifest.getMetadata();
+  }, [manifest]);
+
+  return metadata ? (
+    <IIIFMetadataList 
+      metadata={metadata} 
+      emptyMessage="No Manifest Metadata" />
+  ) : null;
+
+}
+
+const IIIFCanvasMetadataTab = (props: ImageMetadataSectionProps) => {
+
+  const { manifestId, id: canvasId } = props.image as CanvasInformation;
+
+  const id = `iiif:${manifestId}:${canvasId}`;
+
+  const canvas = useCanvas(id);
+
+  const metadata = useMemo(() => {
+    if (!canvas) return;
+    return canvas.getMetadata();
+  }, [canvas]);
+
+  return metadata ? (
+    <IIIFMetadataList 
+      metadata={metadata} 
+      emptyMessage="No Canvas Metadata" />
+  ) : null;
 
 }
 
@@ -59,56 +100,48 @@ const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
 
 }
 
-const IIIFMetadataTab = (props: ImageMetadataSectionProps) => {
-
-  const { manifestId, id: canvasId } = props.image as CanvasInformation;
-
-  const id = `iiif:${manifestId}:${canvasId}`;
-
-  const canvas = useCanvas(id);
-
-  const metadata = useMemo(() => {
-    if (!canvas) return;
-    return canvas.getMetadata();
-  }, [canvas]);
-
-  return metadata ? (
-    <IIIFMetadataList metadata={metadata} />
-  ) : null;
-
-}
-
 export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
 
   const { image } = props;
 
   return 'uri' in image ? (
     <Tabs 
-      defaultValue="iiif" 
+      defaultValue="iiif-manifest" 
       className="w-full grow flex flex-col">
-      <TabsList className="grid grid-cols-2 w-auto p-1 h-auto">
+      <TabsList className="grid grid-cols-3 w-auto p-1 h-auto">
         <TabsTrigger 
-          value="iiif"
-          className="text-xs py-1 flex gap-1.5">
-          <Braces className="size-3.5" /> IIIF Metadata
+          value="iiif-manifest"
+          className="text-xs py-1 flex gap-1 items-center">
+          <IIIFIcon light className="size-3.5 mb-0.5" /> Manifest
+        </TabsTrigger>
+
+        <TabsTrigger 
+          value="iiif-canvas"
+          className="text-xs py-1 flex gap-1 items-center">
+          <IIIFIcon light className="size-3.5 mb-0.5" /> Canvas
         </TabsTrigger>
 
         <TabsTrigger 
           value="my"
-          className="text-xs py-1 px-2 flex gap-1.5">
-          <NotebookPen className="size-3.5" /> My Metadata
+          className="text-xs py-1 px-2 flex gap-1">
+          <NotebookPen className="size-3.5" /> My
         </TabsTrigger>
       </TabsList>
+      
+      <TabsContent value="iiif-manifest"
+        className="grow">
+        <IIIFManifestMetadataTab {...props} />
+      </TabsContent>
+
+      <TabsContent value="iiif-canvas"
+        className="grow">
+        <IIIFCanvasMetadataTab {...props} />
+      </TabsContent>
 
       <TabsContent 
         value="my"
         className="data-[state=active]:grow data-[state=active]:flex">
         <MyImageMetadataTab {...props} />
-      </TabsContent>
-
-      <TabsContent value="iiif"
-        className="grow">
-        <IIIFMetadataTab {...props} />
       </TabsContent>
     </Tabs>
   ) : (

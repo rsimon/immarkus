@@ -17,7 +17,7 @@ interface MetadataDrawerProps {
 
 export const MetadataDrawer = (props: MetadataDrawerProps) => {
 
-  const previous = useRef<OverviewItem | undefined>();
+  const previous = useRef<OverviewItem | undefined>(null);
 
   const isInitial = useRef(true);
 
