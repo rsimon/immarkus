@@ -1,5 +1,5 @@
 import { MetadataSchema } from '@/model';
-import { EnumField, ExternalAuthorityField, GeoCoordinatesField, MeasurementField, NumberField, PropertyValidation, TextField, URIField } from '../PropertyFields';
+import { EnumField, ExternalAuthorityField, GeoCoordinatesField, MeasurementField, NumberField, PropertyValidation, RangeField, TextField, URIField } from '../PropertyFields';
 
 interface MetadataSchemaPreviewProps {
 
@@ -45,6 +45,11 @@ export const MetadataSchemaPreview = (props: MetadataSchemaPreviewProps) => {
                   definition={definition} />
               ) : definition.type === 'number' ? (
                 <NumberField
+                  id={definition.name}
+                  className="bg-white"
+                  definition={definition} />
+              ) : definition.type === 'range' ? (
+                <RangeField
                   id={definition.name}
                   className="bg-white"
                   definition={definition} />

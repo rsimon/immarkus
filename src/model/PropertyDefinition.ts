@@ -18,6 +18,7 @@ export type PrimitivePropertyDefinition = BasePropertyDefinition & {
     | 'geocoordinate' 
     | 'measurement'
     | 'number'
+    | 'range'
     | 'uri'
 
 }

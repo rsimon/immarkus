@@ -8,6 +8,7 @@ import {
   MeasurementField,
   NumberField, 
   PropertyValidation, 
+  RangeField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -72,6 +73,11 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
                 id={preview.name}
                 className="bg-white"
                 definition={preview} />   
+            ) : preview.type === 'range' ? (
+              <RangeField
+                id={preview.name}
+                className="bg-white"
+                definition={preview} />
             ) : preview.type === 'text' ? (
               <TextField 
                 id={preview.name}
