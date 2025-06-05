@@ -4,12 +4,12 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { CanvasInformation, Image } from '@/model';
 import { useImageMetadata } from '@/store';
 import { Button } from '@/ui/Button';
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
 import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
-import { IIIFIcon } from '@/components/IIIFIcon';
 
 interface ImageMetadataSectionProps {
 
