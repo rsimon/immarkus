@@ -4,6 +4,8 @@ interface IIIFMetadataListProps {
 
   metadata: CozyMetadata[];
 
+  emptyMessage?: string;
+
 }
 
 export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
@@ -25,7 +27,7 @@ export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
     </ul>
   ) : (
     <div className="flex items-center justify-center h-full min-h-16 text-muted-foreground text-sm">
-      No IIIF Metadata
+      {props.emptyMessage || 'No IIIF Metadata'}
     </div>
   )
 
