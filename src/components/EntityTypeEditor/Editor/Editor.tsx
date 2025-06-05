@@ -72,6 +72,7 @@ export const Editor = (props: EditorProps) => {
       d.type === 'geocoordinate' ||
       d.type === 'measurement' ||
       d.type === 'number' ||
+      d.type === 'range' ||
       d.type === 'text' ||
       d.type === 'uri');
 
@@ -82,7 +83,6 @@ export const Editor = (props: EditorProps) => {
 
   const onSave = () => {
     const valid = validate();
-
     if (valid) {
       if (props.entityType) { // Update existing
         model.updateEntityType(valid)

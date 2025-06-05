@@ -12,6 +12,7 @@ import {
   MeasurementField, 
   NumberField, 
   PropertyValidation, 
+  RangeField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -114,6 +115,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
                   id={property.name}
                   className="bg-white" 
                   definition={property} />  
+              ) : property.type === 'range' ? (
+                <RangeField 
+                  id={property.name} 
+                  className="bg-white" 
+                  definition={property} />
               ) : property.type === 'text' ? (
                 <TextField 
                   id={property.name}

@@ -10,6 +10,7 @@ import {
   GeoCoordinatesField, 
   MeasurementField, 
   NumberField, 
+  RangeField, 
   TextField, 
   URIField 
 } from '@/components/PropertyFields';
@@ -154,6 +155,12 @@ export const MetadataForm = (props: MetadataFormProps) => {
               <NumberField
                 id={definition.name}
                 definition={definition} 
+                value={getValue(definition)}
+                onChange={value => onChangeValue(definition, value)} />
+            ) : definition.type === 'range' ? (
+              <RangeField
+                id={definition.name}
+                definition={definition}
                 value={getValue(definition)}
                 onChange={value => onChangeValue(definition, value)} />
             ) : definition.type === 'text' ? (

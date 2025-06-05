@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Palette, Ruler, Spline } from 'lucide-react';
+import { CaseSensitive, ChevronsLeftRightEllipsis, Database, Hash, Link2, List, MapPin, Palette, Ruler, Spline } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
@@ -119,6 +119,9 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
                 </SelectItem>
                 <SelectItem value="enum">
                   <List className="inline w-4 h-4 mr-1.5 mb-0.5" /> Options
+                </SelectItem>
+                <SelectItem value="range">
+                  <ChevronsLeftRightEllipsis className="inline w-4 h-4 mr-1.5 mb-0.5" /> Number Range
                 </SelectItem>
                 <SelectItem value="uri">
                   <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" /> URI
