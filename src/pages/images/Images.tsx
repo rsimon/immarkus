@@ -9,6 +9,7 @@ import { OverviewItem, isPresentationManifest } from './Types';
 import { IIIFManifestOverview } from './IIIFManifestOverview';
 
 import './Images.css';
+import { usePersistentState } from '@/utils/usePersistentState';
 
 export const Images = () => {
 
@@ -20,7 +21,7 @@ export const Images = () => {
 
   const navigate = useNavigate();
 
-  const [hideUnannotated, setHideUnannotated] = useState(false);
+  const [hideUnannotated, setHideUnannotated] = usePersistentState('immarkus:images:hide-unannotated', false);
 
   const currentFolder: Folder | RootFolder | IIIFManifestResource = useMemo(() => {
     if (!folderId) return store.getRootFolder();
