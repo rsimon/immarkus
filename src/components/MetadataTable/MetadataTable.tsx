@@ -1,4 +1,4 @@
-import { CaseSensitive, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
+import { CaseSensitive, ChevronsLeftRightEllipsis, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
 import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { MetadataTableActions } from './MetadataTableActions';
@@ -60,19 +60,21 @@ export const MetadataTable = (props: MetadataTableProps) => {
                       className="align-middle inline-flex bg-muted-foreground/40 text-dark text-xs whitespace-nowrap
                         mx-0.5 mb-1 py-0.5 px-1.5 rounded-full items-center" style={{ fontSize: '0.65rem'}}>
                       {property.type === 'enum' ? (
-                        <List className="w-3 h-3 mr-0.5" />
+                        <List className="size-3 mr-0.5" />
                       ): property.type === 'external_authority' ? (
-                        <Database className="w-3 h-3 mr-1" />
+                        <Database className="size-3 mr-1" />
                       ) : property.type === 'geocoordinate' ? (
-                        <MapPin className="w-3 h-3 mr-0.5" />
+                        <MapPin className="size-3 mr-0.5" />
                       ) : property.type === 'measurement' ? (
-                        <Ruler className="w-3 h-3 mr-1" />
+                        <Ruler className="size-3 mr-1" />
                       ) : property.type === 'number' ? (
-                        <Hash className="w-3 h-3 mr-0.5" />
+                        <Hash className="size-3 mr-0.5" />
+                      ) : property.type === 'range' ? (
+                        <ChevronsLeftRightEllipsis className="size-3.5 mr-0.5" />
                       ) : property.type === 'text' ? (
-                        <CaseSensitive className="w-4 h-4 mr-0.5" />
+                        <CaseSensitive className="size-4 mr-0.5" />
                       ) : property.type === 'uri' ? (
-                        <Link2 className="w-3 h-3 mr-0.5" />
+                        <Link2 className="size-3 mr-0.5" />
                       ) : null}
                       {property.name}
                     </span>    

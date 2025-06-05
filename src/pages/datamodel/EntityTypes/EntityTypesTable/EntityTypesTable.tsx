@@ -103,7 +103,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           ) : property.type === 'number' ? (
             <Hash className="w-3 h-3 mr-0.5" />
           ) : property.type === 'range' ? (
-            <ChevronsLeftRightEllipsis className="w-3 h-3 mr-0.5" />
+            <ChevronsLeftRightEllipsis className="size-3.5 mr-0.5" />
           ) : property.type === 'text' ? (
             <CaseSensitive className="w-4 h-4 mr-0.5" />
           ) : property.type === 'uri' ? (
