@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { OpenSeadragonAnnotator, OpenSeadragonViewer, UserSelectAction } from '@annotorious/react';
+import { DrawingStyle, OpenSeadragonAnnotator, OpenSeadragonViewer, UserSelectAction } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 
@@ -28,10 +28,12 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
     maxZoomLevel: 100
   }), [image.id]);
 
-  const style = useMemo(() => {
-    // TOOD
-    return undefined;
-  }, []);
+  const style: DrawingStyle = useMemo(() => ({
+    fill: '#FF1493',
+    fillOpacity: 0.18,
+    stroke: '#FF1493',
+    strokeOpacity: 0.45
+  }), []);
 
   return (
     <OpenSeadragonAnnotator
