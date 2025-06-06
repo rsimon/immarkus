@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Annotorious, OpenSeadragonAnnotator, OpenSeadragonViewer, UserSelectAction } from '@annotorious/react';
+import { OpenSeadragonAnnotator, OpenSeadragonViewer, UserSelectAction } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 
@@ -34,15 +34,13 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   }, []);
 
   return (
-    <Annotorious>
-      <OpenSeadragonAnnotator
-        userSelectAction={UserSelectAction.NONE}
-        style={style}>
-        <OpenSeadragonViewer
-          className="transcription-preview h-full w-full"
-          options={options} />
-      </OpenSeadragonAnnotator>
-    </Annotorious>
+    <OpenSeadragonAnnotator
+      userSelectAction={UserSelectAction.NONE}
+      style={style}>
+      <OpenSeadragonViewer
+        className="h-full w-full"
+        options={options} />
+    </OpenSeadragonAnnotator>
   )
 
 }

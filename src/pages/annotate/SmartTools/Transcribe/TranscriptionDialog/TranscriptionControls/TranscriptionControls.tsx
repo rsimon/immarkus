@@ -1,14 +1,16 @@
 import { Button } from '@/ui/Button';
 
-export const TranscriptionControls = () => {
+interface TranscriptionControlsProps {
 
-  const onSubmit = () => {
+  onSubmitImage(): void;
 
-  }
+}
+
+export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   return (
     <div>
-      <Button onClick={onSubmit}>Submit Image</Button>
+      <Button onClick={props.onSubmitImage}>Submit Image</Button>
     </div>
   )
 

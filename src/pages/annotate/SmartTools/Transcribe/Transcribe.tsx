@@ -1,3 +1,4 @@
+import { Annotorious } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { TranscriptionDialog } from './TranscriptionDialog';
 
@@ -20,8 +21,10 @@ export const Transcribe = (props: TranscribeProps) => {
         </p>
       </div>
 
-      <TranscriptionDialog 
-        image={props.images[0]} />
+      <Annotorious>
+        <TranscriptionDialog 
+          image={props.images[0]} />
+      </Annotorious>
     </div>
   )
 
