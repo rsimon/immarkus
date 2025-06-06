@@ -1,5 +1,15 @@
+import { Button } from '@/ui/Button';
+
 export const TranscriptionControls = () => {
 
-  return null;
+  const onSubmit = () => {
+
+  }
+
+  return (
+    <div>
+      <Button onClick={onSubmit}>Submit Image</Button>
+    </div>
+  )
 
 }
