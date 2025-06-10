@@ -26,7 +26,7 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
       ) : null}
     </div>
   ) : isSuccess ? (
-    <div className="w-full bg-green-400 h-10 text-green-900 rounded-md flex items-center justify-center gap-2 text-sm">
+    <div className="w-full bg-green-600 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
       <CloudCheck className="size-5 mb-[1px]" /> Success
     </div>
   ) : (

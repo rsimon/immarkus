@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
-import { AnnotoriousOpenSeadragonAnnotator, useAnnotator } from '@annotorious/react';
+import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { LoadedImage } from '@/model';
 import { ProcessingState } from '../ProcessingState';
@@ -34,7 +34,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
+  const [annotations, setAnnotations] = useState<ImageAnnotation[] | undefined>();
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
@@ -46,7 +46,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onSubmitImage = (language: string) => {    
-    if (!anno) return;
+    setAnnotations(undefined);
 
     const formData  = new FormData();
     formData.append('apikey', VITE_OCR_SPACE_KEY);
@@ -82,7 +82,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
               setProcessingState('success');
 
               const annotations = parseOCRSpaceResponse(data, kx, ky);
-              anno.setAnnotations(annotations);
+              setAnnotations(annotations);
             }).catch(error => {
               console.error(error);
               setProcessingState('ocr_failed');
@@ -117,7 +117,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             setProcessingState('success');
 
             const annotations = parseOCRSpaceResponse(data, kx, ky);
-            anno.setAnnotations(annotations);
+            setAnnotations(annotations);
           }).catch(error => {
             console.error(error);
             setProcessingState('ocr_failed');
@@ -150,8 +150,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         </DialogDescription>
         
         <div className="flex h-full gap-4">
-          <div className="flex-[2] min-w-0 rounded overflow-hidden bg-muted border">
+          <div className="flex-[2] min-w-0 rounded bg-muted border">
             <TranscriptionPreview 
+              annotations={annotations}
               image={props.image} />
           </div>
 
