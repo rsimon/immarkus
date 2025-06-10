@@ -26,6 +26,8 @@ const getImageDimensions = (blob: Blob) => createImageBitmap(blob)
 
 interface TranscriptionDialogProps {
 
+  disabled?: boolean;
+
   image: LoadedImage;
 
   onImport(annotations: ImageAnnotation[]): void;
@@ -147,7 +149,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       onOpenChange={onOpenChange}>
 
       <DialogTrigger asChild>
-        <Button className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3">
+        <Button 
+          disabled={props.disabled}
+          className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3">
           Configure
         </Button>
       </DialogTrigger>

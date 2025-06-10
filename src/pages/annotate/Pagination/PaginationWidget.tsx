@@ -25,9 +25,11 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
   const store = useStore();
 
-  const el = useRef();
+  const el = useRef(null);
 
   const images = useMemo(() => {
+    if (!props.image) return [];
+
     if ('data' in props.image) {
       // FileImage
       const contents = store.getFolderContents(props.image.folder);
