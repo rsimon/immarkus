@@ -19,6 +19,8 @@ interface TranscriptionPreviewProps {
 
   image: LoadedImage;
 
+  onClearAnnotation(): void;
+
   onImportAnnotations(): void;
 
 }
@@ -52,8 +54,12 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   }), []);
 
   useEffect(() => {
-    if (!props.annotations || !anno) return;
-    anno.setAnnotations(props.annotations);
+    if (!anno) return;
+
+    if (props.annotations)
+      anno.setAnnotations(props.annotations);
+    else 
+      anno.clearAnnotations();
   }, [props.annotations, anno]);
 
   return (
@@ -61,6 +67,7 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
       {props.annotations && ( 
         <ResultBadge 
           count={props.annotations.length} 
+          onClear={props.onClearAnnotation}
           onImport={props.onImportAnnotations} />
       )}
 

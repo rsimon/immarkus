@@ -47,6 +47,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       setProcessingState(undefined);
   }
 
+  const onClearAnnotations = () => {
+    setAnnotations(undefined);
+    setProcessingState(undefined);
+  }
+
   const onImportAnnotations = () => {
     if (!annotations) return;
       
@@ -163,6 +168,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             <TranscriptionPreview 
               annotations={annotations}
               image={props.image} 
+              onClearAnnotation={onClearAnnotations}
               onImportAnnotations={onImportAnnotations} />
           </div>
 
