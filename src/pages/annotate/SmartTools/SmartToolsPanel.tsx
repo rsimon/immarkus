@@ -17,6 +17,8 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
+const { VITE_OCR_SPACE_KEY } = import.meta.env;
+
 interface SmartToolsPanelProps {
 
   images: LoadedImage[];
@@ -190,19 +192,21 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="transcribe" className="border-b-0">
-            <AccordionTrigger 
-              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
-              <span className="flex grow items-center gap-2 justify-start">
-                <ScanText className="size-4" /> Auto Transcribe
-              </span>
-            </AccordionTrigger>
+          {VITE_OCR_SPACE_KEY && (
+            <AccordionItem value="transcribe" className="border-b-0">
+              <AccordionTrigger 
+                className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
+                <span className="flex grow items-center gap-2 justify-start">
+                  <ScanText className="size-4" /> Auto Transcribe
+                </span>
+              </AccordionTrigger>
 
-            <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
-              <Transcribe 
-                images={props.images} />
-            </AccordionContent>
-          </AccordionItem>
+              <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
+                <Transcribe 
+                  images={props.images} />
+              </AccordionContent>
+            </AccordionItem>
+          )}
         </Accordion>
       ) : (
         <div className="p-5">
