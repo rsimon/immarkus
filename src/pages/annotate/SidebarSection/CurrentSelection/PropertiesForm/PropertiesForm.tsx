@@ -196,7 +196,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
               <Separator />
             </div>
-          ) : (
+          ) : schemaBodies.length > 1 ? (
             <Accordion type="multiple" defaultValue={schemaBodies.map(({ body }) => body.id)}>
               {schemaBodies.map(({ body, entityType }) => hasSchemaFields(body) ? (
                 <AccordionItem 
@@ -237,7 +237,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
                 </div>
               ))}
             </Accordion>
-          )}
+          ) : null}
 
           {ENABLE_CONNECTOR_PLUGIN ? (
             <PluginConnectionsList 
@@ -248,8 +248,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               onUpdateRelationship={onChangeRelationship} />
           )} 
 
-          {hasNote && (
+          {(hasNote || schemaBodies.length === 0) && (
             <Note
+              autoFocus={schemaBodies.length === 0}
               id={noteKey}
               value={formState[noteKey]}
               onChange={value => onChangeFormValue(noteKey, value)} />

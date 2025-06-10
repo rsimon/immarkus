@@ -1,7 +1,8 @@
-import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
 
 interface NoteProps {
+
+  autoFocus?: boolean;
 
   id: string;
 
@@ -16,6 +17,7 @@ export const Note = (props: NoteProps) => {
   return (
     <div className="mt-4">
       <Textarea 
+        autoFocus={props.autoFocus}
         id={props.id}
         rows={4}
         value={props.value || ''} 

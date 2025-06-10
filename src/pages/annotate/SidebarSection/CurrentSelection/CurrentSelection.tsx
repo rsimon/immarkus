@@ -30,7 +30,7 @@ export const CurrentSelection = () => {
     )
   , [selection]);
 
-  const ref = useRef<HTMLButtonElement>();
+  const ref = useRef<HTMLButtonElement>(null);
 
   const [showSearchDialog, setShowSearchDialog] = useState(false);
 
@@ -60,7 +60,7 @@ export const CurrentSelection = () => {
     } else {
       setShowAsEmpty(true);
     }
-  }, [selected, isEmptyAnnotationSelected, store]);
+  }, [selected.map(s => s.id).join('-'), isEmptyAnnotationSelected, store]);
 
   const onDelete = (annotation: ImageAnnotation) => 
     anno.deleteAnnotation(annotation.id);
@@ -100,7 +100,9 @@ export const CurrentSelection = () => {
           No annotation selected
         </div> 
       ) : selected.length === 1 ? (
-        <div key={selected[0].id} className="flex flex-col grow h-full max-w-full">
+        <div 
+          key={selected[0].id}
+          className="flex flex-col grow h-full max-w-full">
           {showAsEmpty ? (
             <div className="flex grow justify-center items-center">
               <div>
