@@ -36,13 +36,19 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   }), []);
 
   return (
-    <OpenSeadragonAnnotator
-      userSelectAction={UserSelectAction.NONE}
-      style={style}>
-      <OpenSeadragonViewer
-        className="h-full w-full"
-        options={options} />
-    </OpenSeadragonAnnotator>
+    <div className="relative h-full w-full">
+      <h2 className="absolute top-2 left-2 z-10 bg-black text-white text-sm rounded px-3 py-1.5">
+        Preview
+      </h2>
+
+      <OpenSeadragonAnnotator
+        userSelectAction={UserSelectAction.NONE}
+        style={style}>
+        <OpenSeadragonViewer
+          className="h-full w-full"
+          options={options} />
+      </OpenSeadragonAnnotator>
+    </div>
   )
 
 }

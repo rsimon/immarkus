@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import type { ProcessingState } from '../../ProcessingState';
+import { ProcessingStateBadge } from './ProcessingStateBadge';
 import {
   Select,
   SelectContent,
@@ -8,6 +10,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+
+interface TranscriptionControlsProps {
+
+  processingState?: ProcessingState;
+
+  onCancel(): void;
+
+  onSubmitImage(language: string): void;
+
+}
 
 const ENGINES = [{
   name: 'OCR.space',
@@ -44,17 +56,9 @@ const LANGUAGES = {
   vnm: 'Vietnamese'
 };
 
-interface TranscriptionControlsProps {
-
-  onCancel(): void;
-
-  onSubmitImage(): void;
-
-}
-
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
-  const [engine, setEngine] = useState(ENGINES[0]);
+  const [engine, _] = useState(ENGINES[0]);
 
   const [language, setLanguage] = useState<keyof typeof LANGUAGES | ''>('');
 
@@ -123,12 +127,17 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       </div>
 
       <div className="space-y-2">
-        <Button 
-          className="w-full"
-          onClick={props.onSubmitImage}
-          disabled={!language}>
-          Start OCR Processing
-        </Button>
+        {props.processingState ? (
+          <ProcessingStateBadge
+            processingState={props.processingState} />
+        ) : (
+          <Button 
+            className="w-full"
+            onClick={() => props.onSubmitImage(language)}
+            disabled={!language}>
+            Start OCR Processing
+          </Button>
+        )}
 
         <Button
           variant="outline"

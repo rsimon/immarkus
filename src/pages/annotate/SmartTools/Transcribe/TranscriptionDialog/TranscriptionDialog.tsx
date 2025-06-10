@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { AnnotoriousOpenSeadragonAnnotator, useAnnotator } from '@annotorious/react';
+import { Button } from '@/ui/Button';
 import { LoadedImage } from '@/model';
+import { ProcessingState } from '../ProcessingState';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
 import { parseOCRSpaceResponse } from '../crosswalks';
@@ -12,7 +14,6 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
-import { Button } from '@/ui/Button';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -35,59 +36,61 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
+  const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
+
   const onOpenChange = (open: boolean) => {
-    // TODO
     setOpen(open);
+
+    if (!open)
+      setProcessingState(undefined);
   }
 
-  const onSubmitImage = () => {    
+  const onSubmitImage = (language: string) => {    
     if (!anno) return;
 
     const formData  = new FormData();
     formData.append('apikey', VITE_OCR_SPACE_KEY);
-    // formData.append('language', 'cht');
-    // formData.append('language', 'eng');
-    formData.append('language', 'fre');
+    formData.append('language', language);
     formData.append('isOverlayRequired', 'true');
     formData.append('detectOrientation', 'true');
 
     if ('file' in props.image) {
       const { file, data } = props.image;
+
       // Local image
-      // Step 1: get image dimensions before compression
-      console.log('file image');
       getImageDimensions(data).then(originalDimensions => {
         const compressionOpts = {
           maxSizeMB: 0.98,
           useWebWorker: true
         };
 
-        console.log('compressing');
+        setProcessingState('compressing');
 
         imageCompression(file, compressionOpts).then(compressed => {
           formData.append('file', compressed, props.image.name);
           
-          console.log('done');
-
           getImageDimensions(compressed).then(compressedDimensions => {
             const kx = originalDimensions.width / compressedDimensions.width;
             const ky = originalDimensions.height / compressedDimensions.height;
 
-            console.log('Posting file image');
+            setProcessingState('pending');
 
             fetch('https://api.ocr.space/parse/image', {
               method: 'POST',
               body: formData
             }).then(res => res.json()).then(data => {
-              console.log(data);
+              setProcessingState('success');
+
               const annotations = parseOCRSpaceResponse(data, kx, ky);
               anno.setAnnotations(annotations);
             }).catch(error => {
               console.error(error);
+              setProcessingState('ocr_failed');
             })
           });
         }).catch(error => {
           console.error(error);
+          setProcessingState('compressing_failed');
         })
       });
     } else {
@@ -97,21 +100,27 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       const url = canvas.getImageURL(1200);
       formData.append('url', url);
 
+      setProcessingState('fetching_iiif');
+
       // We need to resolve this image to be sure about it's dimensions
       fetch(url).then(res => res.blob()).then(blob => {
         getImageDimensions(blob).then(({ width, height }) => {
           const kx = canvas.width / width;
           const ky = canvas.height / height;
 
+          setProcessingState('pending');
+
           fetch('https://api.ocr.space/parse/image', {
             method: 'POST',
             body: formData
           }).then(res => res.json()).then(data => {
-            console.log(data);
+            setProcessingState('success');
+
             const annotations = parseOCRSpaceResponse(data, kx, ky);
             anno.setAnnotations(annotations);
           }).catch(error => {
             console.error(error);
+            setProcessingState('ocr_failed');
           })
         })
       });
@@ -147,8 +156,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           </div>
 
           <div className="flex-[1] min-w-0">
-            <TranscriptionControls 
-              onCancel={() => setOpen(false)}
+            <TranscriptionControls
+              processingState={processingState}
+              onCancel={() => onOpenChange(false)}
               onSubmitImage={onSubmitImage} />
           </div>
         </div>
