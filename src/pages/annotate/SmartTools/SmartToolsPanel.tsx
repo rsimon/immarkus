@@ -78,7 +78,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
       props.onChangeMode('draw');
     } else if (tab === 'transcribe') {
       stopPluginIfRunning();
-      props.onChangeMode(undefined);
+      props.onChangeMode('move');
     } else {
       pluginRunning.current = true;
       props.onChangeMode(undefined);
