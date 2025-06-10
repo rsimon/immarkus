@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
+import { FlaskConical, Grip, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
+import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
-import { AutoSelect, EdgeSnap, SmartScissors } from './tools';
+import { AutoSelect } from './AutoSelect';
+import { EdgeSnap } from './EdgeSnap';
+import { SmartScissors } from './SmartScissors';
+import { Transcribe } from './Transcribe';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
 import {
@@ -13,7 +17,11 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
+const { VITE_OCR_SPACE_KEY } = import.meta.env;
+
 interface SmartToolsPanelProps {
+
+  images: LoadedImage[];
 
   mode?: AnnotationMode;
 
@@ -27,7 +35,7 @@ interface SmartToolsPanelProps {
 
 }
 
-type SmartTool = 'auto-select' | 'edge-snap' | 'smart-scissors'; 
+type SmartTool = 'auto-select' | 'edge-snap' | 'smart-scissors' | 'transcribe'; 
 
 export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
@@ -70,7 +78,11 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
     } else if (tab === 'smart-scissors') {
       props.onChangeTool('intelligent-scissors');
       props.onChangeMode('draw');
+    } else if (tab === 'transcribe') {
+      stopPluginIfRunning();
+      props.onChangeMode('move');
     } else {
+      pluginRunning.current = true;
       props.onChangeMode(undefined);
     }
   }, [plugin, tab]);
@@ -179,6 +191,22 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               )}
             </AccordionContent>
           </AccordionItem>
+
+          {VITE_OCR_SPACE_KEY && (
+            <AccordionItem value="transcribe" className="border-b-0">
+              <AccordionTrigger 
+                className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
+                <span className="flex grow items-center gap-2 justify-start">
+                  <ScanText className="size-4" /> Auto Transcribe
+                </span>
+              </AccordionTrigger>
+
+              <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
+                <Transcribe 
+                  images={props.images} />
+              </AccordionContent>
+            </AccordionItem>
+          )}
         </Accordion>
       ) : (
         <div className="p-5">

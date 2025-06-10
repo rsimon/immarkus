@@ -18,7 +18,7 @@ export interface FileImage extends Image {
 
 }
 
-export interface LoadedFileImage extends Image {
+export interface LoadedFileImage extends FileImage {
 
   data: Blob;
 

@@ -31,7 +31,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
 
-  const windowRefs = useRef<Map<string, WorkspaceWindowRef>>();
+  const windowRefs = useRef<Map<string, WorkspaceWindowRef>>(null);
 
   // Image undo histories 
   const { onUnmountAnnotator, getPersistedHistory } = usePersistentHistory(props.images);

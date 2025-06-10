@@ -108,6 +108,7 @@ export const Annotate = () => {
 
                   {isSmartPanelOpen && (
                     <SmartToolsPanel 
+                      images={images}
                       mode={mode} 
                       tool={tool}
                       onChangeMode={setMode} 
