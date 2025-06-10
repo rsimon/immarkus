@@ -1,5 +1,5 @@
-import { ImageAnnotation } from "@annotorious/react"
-import { useMemo } from "react";
+import { useMemo } from 'react';
+import { ImageAnnotation } from '@annotorious/react';
 
 interface HoverTooltipProps {
 

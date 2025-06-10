@@ -1,6 +1,6 @@
+import { CloudAlert, CloudCheck } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { ProcessingState } from '../../ProcessingState';
-import { CloudAlert, CloudCheck } from 'lucide-react';
 
 interface ProcessingStateBadgeProps {
 

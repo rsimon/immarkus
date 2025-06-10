@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
+import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
 import { 
   DrawingStyle, 
@@ -11,13 +12,14 @@ import {
   useAnnotator, 
   UserSelectAction 
 } from '@annotorious/react';
-import { HoverTooltip } from './HoverTooltip';
 
 interface TranscriptionPreviewProps {
 
   annotations?: ImageAnnotation[];
 
   image: LoadedImage;
+
+  onImportAnnotations(): void;
 
 }
 
@@ -57,7 +59,9 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   return (
     <div className="relative h-full w-full">
       {props.annotations && ( 
-        <ResultBadge count={props.annotations.length} />
+        <ResultBadge 
+          count={props.annotations.length} 
+          onImport={props.onImportAnnotations} />
       )}
 
       <OpenSeadragonAnnotator

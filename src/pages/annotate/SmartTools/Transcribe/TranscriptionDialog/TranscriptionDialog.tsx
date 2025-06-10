@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import imageCompression from 'browser-image-compression';
-import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from '@annotorious/react';
+import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { LoadedImage } from '@/model';
 import { ProcessingState } from '../ProcessingState';
@@ -28,6 +28,8 @@ interface TranscriptionDialogProps {
 
   image: LoadedImage;
 
+  onImport(annotations: ImageAnnotation[]): void;
+
 }
 
 export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
@@ -43,6 +45,13 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
     if (!open)
       setProcessingState(undefined);
+  }
+
+  const onImportAnnotations = () => {
+    if (!annotations) return;
+      
+    props.onImport(annotations);
+    setOpen(false);
   }
 
   const onSubmitImage = (language: string) => {    
@@ -153,7 +162,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           <div className="flex-[2] min-w-0 rounded bg-muted border">
             <TranscriptionPreview 
               annotations={annotations}
-              image={props.image} />
+              image={props.image} 
+              onImportAnnotations={onImportAnnotations} />
           </div>
 
           <div className="flex-[1] min-w-0">

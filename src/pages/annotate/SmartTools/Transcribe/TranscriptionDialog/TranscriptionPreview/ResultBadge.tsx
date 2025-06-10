@@ -5,17 +5,13 @@ interface ResultBadgeProps {
 
   count: number;
 
+  onImport(): void;
+
 }
 
 export const ResultBadge = (props: ResultBadgeProps) => {
 
-  const isEmpty = false; // TOOD
-
-  return isEmpty ? (
-    <div>
-
-    </div>
-  ) : (
+  return (
     <div 
       className="absolute bottom-2 left-2 z-10 bg-black text-white py-2 pl-3 pr-2 rounded-md shadow-md flex gap-5">
       <div className="flex gap-2 text-sm items-center font-light">
@@ -24,7 +20,8 @@ export const ResultBadge = (props: ResultBadgeProps) => {
       </div>
 
       <Button
-        className="h-8 rounded-sm bg-green-600">
+        className="h-8 rounded-sm bg-green-600"
+        onClick={props.onImport}>
         Import to IMMARKUS
       </Button>
     </div>
