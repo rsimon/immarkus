@@ -94,11 +94,14 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             fetch('https://api.ocr.space/parse/image', {
               method: 'POST',
               body: formData
-            }).then(res => res.json()).then(data => {
-              setProcessingState('success');
-
+            }).then(res => res.json()).then(data => {              
               const annotations = parseOCRSpaceResponse(data, kx, ky);
               setAnnotations(annotations);
+
+              if (annotations.length > 0)
+                setProcessingState('success')
+              else 
+                setProcessingState('success_empty');
             }).catch(error => {
               console.error(error);
               setProcessingState('ocr_failed');
@@ -130,10 +133,13 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             method: 'POST',
             body: formData
           }).then(res => res.json()).then(data => {
-            setProcessingState('success');
-
             const annotations = parseOCRSpaceResponse(data, kx, ky);
             setAnnotations(annotations);
+
+            if (annotations.length > 0)
+              setProcessingState('success');
+            else 
+              setProcessingState('success_empty');
           }).catch(error => {
             console.error(error);
             setProcessingState('ocr_failed');

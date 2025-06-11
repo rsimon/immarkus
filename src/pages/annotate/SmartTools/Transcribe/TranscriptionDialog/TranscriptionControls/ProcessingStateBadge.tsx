@@ -12,8 +12,6 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
 
   const state = props.processingState;
 
-  const isSuccess = state === 'success';
-
   const isError = state === 'compressing_failed' || state === 'ocr_failed';
 
   return isError ? (
@@ -25,7 +23,11 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
         <span>OCR Service Error</span>
       ) : null}
     </div>
-  ) : isSuccess ? (
+  ) : state === 'success_empty' ? (
+    <div className="w-full bg-orange-400 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
+      <CloudAlert className="size-5 mb-[1px]" /> No Results
+    </div>
+  ) : state === 'success' ? (
     <div className="w-full bg-green-600 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
       <CloudCheck className="size-5 mb-[1px]" /> Success
     </div>

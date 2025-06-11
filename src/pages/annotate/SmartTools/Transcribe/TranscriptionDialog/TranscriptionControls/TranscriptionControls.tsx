@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import type { ProcessingState } from '../../ProcessingState';
@@ -61,6 +61,18 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   const [engine, _] = useState(ENGINES[0]);
 
   const [language, setLanguage] = useState<keyof typeof LANGUAGES | ''>('');
+
+  const [showProcessingState, setShowProcessingState] = useState(false);
+
+  useEffect(() => {
+    // Re-enable submit button if user changes language setting
+    setShowProcessingState(false);
+  }, [language]);
+
+  useEffect(() => {
+    // Show processing state instead of submit button
+    if (props.processingState) setShowProcessingState(true);
+  }, [props.processingState]);
 
   return (
     <div className="px-2 pt-1 flex flex-col h-full justify-between">
@@ -127,7 +139,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       </div>
 
       <div className="space-y-2">
-        {props.processingState ? (
+        {showProcessingState ? (
           <ProcessingStateBadge
             processingState={props.processingState} />
         ) : (
