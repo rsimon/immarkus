@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import murmur from 'murmurhash';
 import { CozyCanvas } from 'cozy-iiif';
 import { CanvasInformation } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
@@ -28,10 +27,8 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
   ), [hideUnannotated, folders, annotationsPerFolder]);
 
   const filteredCanvases = useMemo(() => {
-    const hasAnnotation = (canvas: CanvasInformation) => {
-      const id = murmur.v3(canvas.id);
-      return (annotations[id] || []).length > 0;
-    }
+    const hasAnnotation = (canvas: CanvasInformation) =>
+      (annotations[canvas.id] || []).length > 0;
 
     return hideUnannotated ? canvases.filter(hasAnnotation) : canvases;
   }, [hideUnannotated, canvases, annotations])
@@ -42,9 +39,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
     const isSelected = props.selected?.type === 'canvas' ?
       props.selected.info.uri === canvas.id : false;
 
-    const id = murmur.v3(canvas.id);
-
-    const annotationCount = (annotations[id] || []).length;
+    const annotationCount = (annotations[info.id] || []).length;
 
     return (
       <IIIFCanvasItem
@@ -73,6 +68,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
               ))}
             </ul>
           )}
+
           <ul>
             {filteredCanvases.map((canvas, idx) => (
               <li key={`${canvas.id}:${idx}`}>
