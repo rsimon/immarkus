@@ -71,7 +71,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   useEffect(() => {
     // Show processing state instead of submit button
-    if (props.processingState) setShowProcessingState(true);
+    setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
   return (
