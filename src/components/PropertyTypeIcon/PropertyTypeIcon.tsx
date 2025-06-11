@@ -1,6 +1,16 @@
 import { PropertyDefinition } from '@/model';
-import { CaseSensitive, ChevronsLeftRightEllipsis, Database, Hash, Link2, List, MapPin, Ruler, Spline } from 'lucide-react';
 import { cn } from '@/ui/utils';
+import { 
+  CaseSensitive, 
+  ChevronsLeftRightEllipsis, 
+  Database, 
+  Hash, 
+  Link2, 
+  List, 
+  MapPin, 
+  Palette, 
+  Ruler
+} from 'lucide-react';
 
 interface PropertyTypeIconProps {
 
@@ -18,7 +28,10 @@ export const PropertyTypeIcon = (props: PropertyTypeIconProps) => {
 
   return ( 
     <div className="inline">
-      {type === 'enum' ? (
+      {type === 'color' ? (
+        <Palette 
+          className={cn('w-4.5 h-3.5 px-0.5', className)} />
+      ) : type === 'enum' ? (
         <List 
           className={cn('w-4.5 h-3.5 px-0.5', className)} />
       ) : type === 'external_authority' ? (
