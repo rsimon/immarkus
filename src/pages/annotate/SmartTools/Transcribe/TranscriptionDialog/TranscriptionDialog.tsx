@@ -114,37 +114,47 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       });
     } else {
       // IIIF Image
-      const { canvas } = props.image;
+      const image = props.image.canvas.images[0];
 
-      const url = canvas.getImageURL(1200);
-      formData.append('url', url);
+      // Should never happen
+      if (!image) throw new Error('Canvas has no image');
 
-      setProcessingState('fetching_iiif');
+      // Determine the actual full-resolution pixel size of the
+      // first canvas image. Note that this can **differ** from 
+      // canvas.width/canvas.height!
+      image.getPixelSize().then(originalSize => {
+        
+        // Fetch a (possibly reduced-size) IIIF image for OCR
+        const imageURL = image.getImageURL(1200);
+        formData.append('url', imageURL);
 
-      // We need to resolve this image to be sure about it's dimensions
-      fetch(url).then(res => res.blob()).then(blob => {
-        getImageDimensions(blob).then(({ width, height }) => {
-          const kx = canvas.width / width;
-          const ky = canvas.height / height;
+        setProcessingState('fetching_iiif');
+        
+        // We need to resolve the reduced image to know it's dimensions
+        fetch(imageURL).then(res => res.blob()).then(blob => {
+          getImageDimensions(blob).then(({ width, height }) => {
+            const kx = originalSize.width / width;
+            const ky = originalSize.height / height;
 
-          setProcessingState('pending');
+            setProcessingState('pending');
 
-          fetch('https://api.ocr.space/parse/image', {
-            method: 'POST',
-            body: formData
-          }).then(res => res.json()).then(data => {
-            const annotations = parseOCRSpaceResponse(data, kx, ky);
-            setAnnotations(annotations);
+            fetch('https://api.ocr.space/parse/image', {
+              method: 'POST',
+              body: formData
+            }).then(res => res.json()).then(data => {
+              const annotations = parseOCRSpaceResponse(data, kx, ky);
+              setAnnotations(annotations);
 
-            if (annotations.length > 0)
-              setProcessingState('success');
-            else 
-              setProcessingState('success_empty');
-          }).catch(error => {
-            console.error(error);
-            setProcessingState('ocr_failed');
+              if (annotations.length > 0)
+                setProcessingState('success');
+              else 
+                setProcessingState('success_empty');
+            }).catch(error => {
+              console.error(error);
+              setProcessingState('ocr_failed');
+            });
           })
-        })
+        });
       });
     }
   }
