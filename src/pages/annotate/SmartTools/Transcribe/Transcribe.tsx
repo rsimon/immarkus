@@ -35,11 +35,11 @@ export const Transcribe = (props: TranscribeProps) => {
   }
 
   return (
-    <div className="px-4 pb-1">
+    <div className="px-4 pb-2">
       <div className="pt-6 pb-1 flex gap-3 items-start leading-relaxed">
         {props.images.length === 1 ? (
           <p className="font-medium">
-            Submit this image to on OCR service for automatic
+            Submit this image to an OCR service for automatic
             transcription.
           </p>
         ) : (
