@@ -3,6 +3,7 @@ import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
+import { SelectRegion } from './SelectRegion';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -77,6 +78,8 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
         <OpenSeadragonViewer
           className="h-full w-full"
           options={options} />
+
+        <SelectRegion />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (
