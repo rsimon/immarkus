@@ -1,5 +1,5 @@
 import { Button } from '@/ui/Button';
-import { ImageAnnotation } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { usePluginManifold } from '@annotorious/react-manifold';
 import { Combine, Subtract } from './Icons';
 import { mountPlugin } from '@annotorious/plugin-boolean-operations';
@@ -14,7 +14,6 @@ interface MultiSelectionOptionsProps {
   onDeleteSelected(): void;
 
   onKeyDown(evt: React.KeyboardEvent): void;
-
 }
 
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
@@ -22,6 +21,42 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
   const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
 
   const canSubtract = plugin.canSubtractSelected().some(Boolean);
+
+  const onMergeSelected = () => {
+    const mergeBodies = (selected: ImageAnnotation[]) => 
+      selected.reduce<AnnotationBody[]>((all, annotation) => {
+        const comments = annotation.bodies.filter(b => (!b.purpose || b.purpose === 'commenting') && b.value);
+        const other = annotation.bodies.filter(b => b.purpose && b.purpose !== 'commenting');
+
+        if (comments.length > 0) {
+          const value = comments.map(b => b.value!).join(' ');
+
+          // Merge comments
+          const currentMerged = all.find(b => b.purpose === 'commenting' && b.value);
+          if (currentMerged) {
+            // Merge with existing merged comment 
+            return [
+              ...all.map(b => b.purpose === 'commenting' ? {
+                ...b,
+                value: `${b.value || ''} ${value}`
+              } : b),
+              ...other
+            ]
+          } else {
+            // Append value as new comment body
+            return [...all, ...other, {
+              ...comments[0],
+              value
+            }]
+          }
+        } else {
+          // Just append other bodies
+          return [...all, ...other];
+        }
+      }, []);
+
+    plugin.mergeSelected({ bodies: mergeBodies });
+  }
   
   return (
     <div className="p-2 flex flex-col gap-12">
@@ -43,7 +78,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
         <Button 
           className="flex gap-2"
           variant="outline"
-          onClick={() => plugin.mergeSelected()}>
+          onClick={onMergeSelected}>
           <Combine className="size-5" /> Merge selected shapes
         </Button>
 
