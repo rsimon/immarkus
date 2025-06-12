@@ -83,9 +83,8 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
         </Button>
 
         <p className="py-4 px-0.5 leading-relaxed text-muted-foreground text-xs">
-          Combine selected shapes into a single union. Only data associated with 
-          the first selected shape is preserved. Data from other selections 
-          will be lost.
+          Combine selected shapes into a single union. Tags from all shapes are preserved. 
+          Notes are merged into a single note, concatenated in the order of selection.
         </p>
       </div>
 
