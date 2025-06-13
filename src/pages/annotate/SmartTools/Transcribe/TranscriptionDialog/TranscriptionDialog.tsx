@@ -14,6 +14,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
+import { TooltipProvider } from '@/ui/Tooltip';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -44,6 +45,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       setProcessingState(undefined);
   }
 
+  const onChangeRegion = (region: Region) => {
+    setRegion(region);
+    setProcessingState(undefined);
+  }
+
   const onClearAnnotations = () => {
     setAnnotations(undefined);
     setProcessingState(undefined);
@@ -68,10 +74,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     preprocess(props.image, region, setProcessingState).then(result => {
       setProcessingState('pending');
 
-      if ('file'in result) {
-        // File image or snippet
-        formData.append('file', result.file, props.image.name);
-          
+      const submit = () => {
         fetch('https://api.ocr.space/parse/image', {
           method: 'POST',
           body: formData
@@ -79,25 +82,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           const annotations = parseOCRSpaceResponse(data, result.transform);
           setAnnotations(annotations);
           
-          if (annotations.length > 0)
-            setProcessingState('success')
-          else 
-            setProcessingState('success_empty');
-        }).catch(error => {
-          console.error(error);
-          setProcessingState('ocr_failed');
-        });
-      } else {
-        // IIIF image or region snippet
-        formData.append('url', result.url);
-
-        fetch('https://api.ocr.space/parse/image', {
-          method: 'POST',
-          body: formData
-        }).then(res => res.json()).then(data => {              
-          const annotations = parseOCRSpaceResponse(data, result.transform);
-          setAnnotations(annotations);
-
           if (annotations.length > 0)
             setProcessingState('success')
           else 
@@ -107,99 +91,17 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           setProcessingState('ocr_failed');
         });
       }
+
+      if ('file'in result) {
+        // File image or snippet
+        formData.append('file', result.file, props.image.name);
+        submit();
+      } else {
+        // IIIF image or region snippet
+        formData.append('url', result.url);
+        submit();
+      }
     });
-
-
-
-    /*
-    if ('file' in props.image) {
-      const { file, data } = props.image;
-
-      // Local image
-      getImageDimensions(data).then(originalDimensions => {
-        const compressionOpts = {
-          maxSizeMB: 0.98,
-          useWebWorker: true
-        };
-
-        setProcessingState('compressing');
-
-        imageCompression(file, compressionOpts).then(compressed => {
-          formData.append('file', compressed, props.image.name);
-          
-          getImageDimensions(compressed).then(compressedDimensions => {
-            const kx = originalDimensions.width / compressedDimensions.width;
-            const ky = originalDimensions.height / compressedDimensions.height;
-
-            setProcessingState('pending');
-
-            fetch('https://api.ocr.space/parse/image', {
-              method: 'POST',
-              body: formData
-            }).then(res => res.json()).then(data => {              
-              const annotations = parseOCRSpaceResponse(data, kx, ky);
-              setAnnotations(annotations);
-
-              if (annotations.length > 0)
-                setProcessingState('success')
-              else 
-                setProcessingState('success_empty');
-            }).catch(error => {
-              console.error(error);
-              setProcessingState('ocr_failed');
-            })
-          });
-        }).catch(error => {
-          console.error(error);
-          setProcessingState('compressing_failed');
-        })
-      });
-    } else {
-      // IIIF Image
-      const image = props.image.canvas.images[0];
-
-      // Should never happen
-      if (!image) throw new Error('Canvas has no image');
-
-      // Determine the actual full-resolution pixel size of the
-      // first canvas image. Note that this can **differ** from 
-      // canvas.width/canvas.height!
-      image.getPixelSize().then(originalSize => {
-        
-        // Fetch a (possibly reduced-size) IIIF image for OCR
-        const imageURL = image.getImageURL(1200);
-        formData.append('url', imageURL);
-
-        setProcessingState('fetching_iiif');
-        
-        // We need to resolve the reduced image to know it's dimensions
-        fetch(imageURL).then(res => res.blob()).then(blob => {
-          getImageDimensions(blob).then(({ width, height }) => {
-            const kx = originalSize.width / width;
-            const ky = originalSize.height / height;
-
-            setProcessingState('pending');
-
-            fetch('https://api.ocr.space/parse/image', {
-              method: 'POST',
-              body: formData
-            }).then(res => res.json()).then(data => {
-              const annotations = parseOCRSpaceResponse(data, kx, ky);
-              setAnnotations(annotations);
-
-              if (annotations.length > 0)
-                setProcessingState('success');
-              else 
-                setProcessingState('success_empty');
-            }).catch(error => {
-              console.error(error);
-              setProcessingState('ocr_failed');
-            });
-          })
-        });
-      });
-    }
-    */
   }
 
   return (
@@ -227,21 +129,23 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         </DialogDescription>
         
         <div className="flex h-full gap-4">
-          <div className="flex-[2] min-w-0 rounded bg-muted border">
-            <TranscriptionPreview 
-              annotations={annotations}
-              image={props.image} 
-              onChangeRegion={setRegion}
-              onClearAnnotation={onClearAnnotations}
-              onImportAnnotations={onImportAnnotations} />
-          </div>
+          <TooltipProvider>
+            <div className="flex-[2] min-w-0 rounded bg-muted border">
+              <TranscriptionPreview 
+                annotations={annotations}
+                image={props.image} 
+                onChangeRegion={onChangeRegion}
+                onClearAnnotation={onClearAnnotations}
+                onImportAnnotations={onImportAnnotations} />
+            </div>
 
-          <div className="flex-[1] min-w-0">
-            <TranscriptionControls
-              processingState={processingState}
-              onCancel={() => onOpenChange(false)}
-              onSubmitImage={onSubmitImage} />
-          </div>
+            <div className="flex-[1] min-w-0">
+              <TranscriptionControls
+                processingState={processingState}
+                onCancel={() => onOpenChange(false)}
+                onSubmitImage={onSubmitImage} />
+            </div>
+          </TooltipProvider>
         </div>
       </DialogContent>
     </Dialog>

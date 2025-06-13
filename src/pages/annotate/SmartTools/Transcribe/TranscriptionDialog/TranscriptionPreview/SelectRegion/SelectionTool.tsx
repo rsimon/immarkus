@@ -93,7 +93,7 @@ export const SelectionTool = (props: SelectionToolProps) => {
         style={getStyle(1)} />
 
       <div 
-        className="absolute border-[1px] border-blue-600"
+        className="absolute border-[1px] border-black border-dashed"
         style={getStyle(0)} />
     </>
   ) : null;
