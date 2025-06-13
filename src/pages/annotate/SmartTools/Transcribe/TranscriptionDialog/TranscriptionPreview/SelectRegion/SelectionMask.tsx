@@ -38,7 +38,6 @@ export const SelectionMask = (props: SelectionMaskProps) => {
   useEffect(() => {
     if (!viewer) return;
 
-    // Tried and trusted: https://github.com/openseadragon/svg-overlay/blob/master/openseadragon-svg-overlay.js
     const svg = document.createElementNS(SVG, 'svg');
     svg.setAttribute('class', 'immarkus-ocr-selection')
     svg.style.position = 'absolute';
@@ -56,14 +55,14 @@ export const SelectionMask = (props: SelectionMaskProps) => {
 
     viewer.canvas.appendChild(svg);
 
+    // Cf. https://github.com/annotorious/annotorious/blob/main/packages/annotorious-openseadragon/src/annotation/svg/OSDLayer.svelte
     const onUpdateViewport = () => {
-      const p = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(0, 0), true);
+      const containerWidth = viewer.viewport.getContainerSize().x;
+
       const zoom = viewer.viewport.getZoom(true);
+      const p = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(0, 0), true);
 
-      // @ts-ignore
-      const containerSizeX = viewer.viewport._containerInnerSize.x
-      const scale = containerSizeX * zoom;
-
+      const scale = zoom * containerWidth / viewer.world.getContentFactor();
       container.setAttribute('transform', `translate(${p.x},${p.y}) scale(${scale},${scale})`);
     }
 
