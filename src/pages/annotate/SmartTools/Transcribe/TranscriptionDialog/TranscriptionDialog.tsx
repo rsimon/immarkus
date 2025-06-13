@@ -14,6 +14,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
+import { Region } from '../Types';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -42,6 +43,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
+  const [region, setRegion] = useState<Region | undefined>();
+
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
@@ -61,7 +64,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     setOpen(false);
   }
 
-  const onSubmitImage = (language: string) => {    
+  const onSubmitImage = (language: string) => {  
+    // TODO support region cropping
+
+    // TODO refactor into a utility function
+    
     setAnnotations(undefined);
 
     const formData  = new FormData();
@@ -188,6 +195,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             <TranscriptionPreview 
               annotations={annotations}
               image={props.image} 
+              onChangeRegion={setRegion}
               onClearAnnotation={onClearAnnotations}
               onImportAnnotations={onImportAnnotations} />
           </div>

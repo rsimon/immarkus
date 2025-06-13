@@ -4,6 +4,7 @@ import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
+import { Region } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -19,6 +20,8 @@ interface TranscriptionPreviewProps {
   annotations?: ImageAnnotation[];
 
   image: LoadedImage;
+
+  onChangeRegion(region?: Region): void;
 
   onClearAnnotation(): void;
 
@@ -79,7 +82,8 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
           className="h-full w-full"
           options={options} />
 
-        <SelectRegion />
+        <SelectRegion 
+          onChangeRegion={props.onChangeRegion} />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (

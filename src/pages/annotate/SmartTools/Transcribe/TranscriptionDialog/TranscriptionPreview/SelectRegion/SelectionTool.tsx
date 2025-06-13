@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { useViewer } from '@annotorious/react';
+import { Region } from '../../../Types';
 
 interface SelectionToolProps {
 
-  onSelect(x: number, y: number, width: number, height: number): void;
+  onSelect(region: Region): void;
 
 }
 
@@ -56,7 +57,7 @@ export const SelectionTool = (props: SelectionToolProps) => {
       const w = Math.abs(imageEnd.x - imageStart.x);
       const h = Math.abs(imageEnd.y - imageStart.y);
       
-      props.onSelect(x, y, w, h);
+      props.onSelect({ x, y, w, h });
     }
 
     viewer.setMouseNavEnabled(false);

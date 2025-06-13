@@ -1,10 +1,13 @@
-import { Toggle } from '@/ui/Toggle';
-import { SquareDashedMousePointer } from 'lucide-react';
 import { useState } from 'react';
+import { SquareDashedMousePointer } from 'lucide-react';
+import { Toggle } from '@/ui/Toggle';
 import { SelectionTool } from './SelectionTool';
 import { SelectionMask } from './SelectionMask';
+import { Region } from '../../../Types';
 
 interface SelectRegionProps {
+
+  onChangeRegion(region?: Region): void;
 
 }
 
@@ -12,15 +15,15 @@ export const SelectRegion = (props: SelectRegionProps) => {
 
   const [pressed, setPressed] = useState(false);
 
-  const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number }>();
+  const [region, setRegion] = useState<Region | undefined>();
 
   const onToggle = (pressed: boolean) => {
     setPressed(pressed);
-    setSelection(undefined);
+    setRegion(undefined);
   }
 
-  const onSelect = (x: number, y: number, w: number, h: number) => {
-    setSelection({ x, y, w, h });
+  const onSelect = (region: Region) => {
+    setRegion(region);
     setPressed(false);
   }
 
@@ -37,8 +40,8 @@ export const SelectRegion = (props: SelectRegionProps) => {
         <SelectionTool onSelect={onSelect} />
       )}
 
-      {selection && (
-        <SelectionMask {...selection} />
+      {region && (
+        <SelectionMask {...region} />
       )}
     </div>
   )
