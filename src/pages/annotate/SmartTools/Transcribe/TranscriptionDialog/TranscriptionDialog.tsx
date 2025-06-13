@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
+import { TooltipProvider } from '@/ui/Tooltip';
 import { LoadedImage } from '@/model';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
@@ -14,7 +15,6 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
-import { TooltipProvider } from '@/ui/Tooltip';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -63,8 +63,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onSubmitImage = (language: string) => {  
-    setAnnotations(undefined);
-
     const formData  = new FormData();
     formData.append('apikey', VITE_OCR_SPACE_KEY);
     formData.append('language', language);
@@ -80,7 +78,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           body: formData
         }).then(res => res.json()).then(data => {              
           const annotations = parseOCRSpaceResponse(data, result.transform);
-          setAnnotations(annotations);
+          setAnnotations(current => [...(current || []), ...annotations]);
           
           if (annotations.length > 0)
             setProcessingState('success')
@@ -134,6 +132,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
               <TranscriptionPreview 
                 annotations={annotations}
                 image={props.image} 
+                processingState={processingState}
                 onChangeRegion={onChangeRegion}
                 onClearAnnotation={onClearAnnotations}
                 onImportAnnotations={onImportAnnotations} />

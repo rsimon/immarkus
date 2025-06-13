@@ -24,12 +24,6 @@ interface IntermediateFilePrepocessingResult extends IntermediateBasePreprocessi
 
 }
 
-interface IntermediateIIIFPreprocessingResult extends IntermediateBasePreprocessingResult {
-
-  url: string;
-
-}
-
 export interface FilePreprocessingResult {
 
   file: File;
@@ -123,6 +117,7 @@ export const preprocess = (
     }
 
     const id = uuidv4();
+
     const annotation: ImageAnnotation = {
       id,
       bodies: [],
@@ -131,7 +126,6 @@ export const preprocess = (
         selector
       }
     };
-
 
     const getRegionTransform = (kx: number, ky: number) => (input: Region) => ({
       x: input.x * kx + region.x,

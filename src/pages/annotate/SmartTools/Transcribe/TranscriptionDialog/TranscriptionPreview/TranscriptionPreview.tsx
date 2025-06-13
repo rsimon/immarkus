@@ -4,7 +4,7 @@ import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
-import { Region } from '../../Types';
+import { ProcessingState, Region } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -16,6 +16,8 @@ import {
 } from '@annotorious/react';
 
 interface TranscriptionPreviewProps {
+
+  processingState?: ProcessingState;
 
   annotations?: ImageAnnotation[];
 
@@ -83,6 +85,7 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
           options={options} />
 
         <SelectRegion 
+          processingState={props.processingState}
           onChangeRegion={props.onChangeRegion} />
 
         <OpenSeadragonHoverTooltip 
