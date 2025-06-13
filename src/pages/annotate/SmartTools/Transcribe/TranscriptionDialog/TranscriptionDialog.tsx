@@ -65,7 +65,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     formData.append('isOverlayRequired', 'true');
     formData.append('detectOrientation', 'true');
 
-    preprocess(props.image, region, 5000, setProcessingState).then(result => {
+    preprocess(props.image, region, setProcessingState).then(result => {
       setProcessingState('pending');
 
       if ('file'in result) {

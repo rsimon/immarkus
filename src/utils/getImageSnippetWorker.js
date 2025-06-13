@@ -1,7 +1,7 @@
 self.onmessage = function(e) {
-  const { blob, annotation, maxWidth, maxHeight } = e.data;
+  const { blob, annotation } = e.data;
   
-  cropImage(blob, annotation, maxWidth, maxHeight)
+  cropImage(blob, annotation)
     .then(snippet => { 
       self.postMessage({ snippet });
       self.close();

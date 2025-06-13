@@ -1,3 +1,7 @@
+svg.immarkus-ocr-selection {
+  pointer-events: none;
+}
+
 svg.immarkus-ocr-selection path {
   fill: #000;
   fill-opacity: 0.65;

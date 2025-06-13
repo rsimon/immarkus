@@ -1,9 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import imageCompression from 'browser-image-compression';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
-import { LoadedImage } from '@/model';
+import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { PageTransform, ProcessingState, Region } from '../Types';
+import { DynamicImageServiceResource } from 'cozy-iiif';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -87,10 +88,20 @@ const preprocessImageData = (
   });
 }
 
+const isDynamicIIIF = (image: LoadedImage) => {
+  if (!('canvas' in image)) return false;
+
+  const firstImage = image.canvas.images[0];
+
+  // Should never happen
+  if (!firstImage) throw new Error('Canvas has no image');
+
+  return firstImage.type === 'dynamic';
+}
+
 export const preprocess = (
   image: LoadedImage, 
-  region: Region | undefined, 
-  maxSize: number,
+  region: Region | undefined,
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
   if (region) {
@@ -121,40 +132,48 @@ export const preprocess = (
       }
     };
 
+
     const getRegionTransform = (kx: number, ky: number) => (input: Region) => ({
-      x: (input.x + region.x) * kx,
-      y: (input.y + region.y) * ky,
+      x: input.x * kx + region.x,
+      y: input.y * ky + region.y,
       w: input.w * kx,
       h: input.h * ky 
     });
+    
+    if (isDynamicIIIF(image)) {
+      const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
+      const regionURL = firstImage.getRegionURL(region, { minSize: Math.min(region.w, region.h )});
 
-    return getImageSnippet(image, annotation, false, maxSize, maxSize).then(snippet => {
-      if ('data' in snippet && 'file' in image) {
-        const file = new File([new Blob([snippet.data])], image.name, { type: image.file.type });
-
-        /**
-         * Case 1: file image snippet (local or clipped static IIIF) with region
-         */
-        return preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => {
-          // Image scaling + crop
-          const { kx, ky } = result;
-          return { file, transform: getRegionTransform(kx, ky) };
+      /**
+       * Case 1: Dynamic IIIF image service snippet with region
+       */
+      return fetch(regionURL).then(res => res.blob()).then(blob => {
+        return getImageDimensions(blob).then(({ width, height }) => {
+          const kx = region.w / width;
+          const ky = region.h / height;
+          
+          return { url: regionURL, transform: getRegionTransform(kx, ky) };
         });
-      } else if ('src' in snippet) {
-        const kx = region.w / snippet.width;
-        const ky = region.h / snippet.height;
+      });
+    } else {
+      return getImageSnippet(image, annotation, false).then(snippet => {
+        if ('data' in snippet && 'file' in image) {
+          const file = new File([new Blob([snippet.data])], image.name, { type: image.file.type });
 
-        console.log({ region, snippet, kx, ky });
-
-        /**
-         * Case 2: IIIF image service with region
-         */
-        return { url: snippet.src, transform: getRegionTransform(kx, ky) };
-      } else {
-        // Should never happen
-        throw new Error('Unexpected snippet type');
-      }
-    });
+          /**
+           * Case 2: file image snippet (local or clipped static IIIF) with region
+           */
+          return preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => {
+            // Image scaling + crop
+            const { kx, ky } = result;
+            return { file, transform: getRegionTransform(kx, ky) };
+          });
+        } else {
+          // Should never happen
+          throw new Error('Unexpected snippet type');
+        }
+      });
+    }
   } else {
     const getImageTransform = (kx: number, ky: number) => (input: Region) => ({
       x: input.x * kx,

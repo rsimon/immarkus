@@ -69,7 +69,7 @@ export const SelectionTool = (props: SelectionToolProps) => {
     el.addEventListener('pointerup', onPointerUp);
 
     return () => {
-      viewer.setMouseNavEnabled(true);
+      viewer?.setMouseNavEnabled(true);
 
       el.style.cursor = null;
 
