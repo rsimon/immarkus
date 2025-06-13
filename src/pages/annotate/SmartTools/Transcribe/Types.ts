@@ -9,3 +9,14 @@ export interface Region {
   h: number;
   
 }
+
+export type PageTransform =  (region: Region) => Region;
+
+export type ProcessingState = 'cropping'
+  | 'compressing' 
+  | 'fetching_iiif' 
+  | 'pending' 
+  | 'success' 
+  | 'success_empty'
+  | 'compressing_failed' 
+  | 'ocr_failed';

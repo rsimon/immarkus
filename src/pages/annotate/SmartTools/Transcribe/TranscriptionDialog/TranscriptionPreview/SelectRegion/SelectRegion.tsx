@@ -25,6 +25,8 @@ export const SelectRegion = (props: SelectRegionProps) => {
   const onSelect = (region: Region) => {
     setRegion(region);
     setPressed(false);
+
+    props.onChangeRegion(region);
   }
 
   return (

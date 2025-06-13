@@ -71,7 +71,7 @@ export const SelectionMask = (props: SelectionMaskProps) => {
     viewer.addHandler('update-viewport', onUpdateViewport);
 
     return () => {
-      viewer.canvas.removeChild(svg);
+      viewer.canvas?.removeChild(svg);
       viewer.removeHandler('update-viewport', onUpdateViewport);
     }
   }, [viewer, d]);

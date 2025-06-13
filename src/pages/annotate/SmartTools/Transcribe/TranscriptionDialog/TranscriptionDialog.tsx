@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import imageCompression from 'browser-image-compression';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { LoadedImage } from '@/model';
-import { ProcessingState } from '../ProcessingState';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
 import { parseOCRSpaceResponse } from '../crosswalks';
+import { ProcessingState, Region } from '../Types';
+import { preprocess } from './preprocess';
 import { 
   Dialog, 
   DialogContent, 
@@ -14,16 +14,8 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
-import { Region } from '../Types';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
-
-const getImageDimensions = (blob: Blob) => createImageBitmap(blob)
-  .then(bitmap => {
-    const { width, height } = bitmap;
-    bitmap.close(); 
-    return { width, height }
-  });
 
 interface TranscriptionDialogProps {
 
@@ -65,10 +57,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onSubmitImage = (language: string) => {  
-    // TODO support region cropping
-
-    // TODO refactor into a utility function
-    
     setAnnotations(undefined);
 
     const formData  = new FormData();
@@ -77,6 +65,53 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     formData.append('isOverlayRequired', 'true');
     formData.append('detectOrientation', 'true');
 
+    preprocess(props.image, region, 5000, setProcessingState).then(result => {
+      setProcessingState('pending');
+
+      if ('file'in result) {
+        // File image or snippet
+        formData.append('file', result.file, props.image.name);
+          
+        fetch('https://api.ocr.space/parse/image', {
+          method: 'POST',
+          body: formData
+        }).then(res => res.json()).then(data => {              
+          const annotations = parseOCRSpaceResponse(data, result.transform);
+          setAnnotations(annotations);
+          
+          if (annotations.length > 0)
+            setProcessingState('success')
+          else 
+            setProcessingState('success_empty');
+        }).catch(error => {
+          console.error(error);
+          setProcessingState('ocr_failed');
+        });
+      } else {
+        // IIIF image or region snippet
+        formData.append('url', result.url);
+
+        fetch('https://api.ocr.space/parse/image', {
+          method: 'POST',
+          body: formData
+        }).then(res => res.json()).then(data => {              
+          const annotations = parseOCRSpaceResponse(data, result.transform);
+          setAnnotations(annotations);
+
+          if (annotations.length > 0)
+            setProcessingState('success')
+          else 
+            setProcessingState('success_empty');
+        }).catch(error => {
+          console.error(error);
+          setProcessingState('ocr_failed');
+        });
+      }
+    });
+
+
+
+    /*
     if ('file' in props.image) {
       const { file, data } = props.image;
 
@@ -164,6 +199,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         });
       });
     }
+    */
   }
 
   return (
