@@ -25,7 +25,7 @@ interface TranscriptionPreviewProps {
 
   onChangeRegion(region?: Region): void;
 
-  onClearAnnotation(): void;
+  onClearAnnotations(): void;
 
   onImportAnnotations(): void;
 
@@ -62,10 +62,11 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   useEffect(() => {
     if (!anno) return;
 
-    if (props.annotations)
+    if (props.annotations) {
       anno.setAnnotations(props.annotations);
-    else 
+    } else {
       anno.clearAnnotations();
+    }
   }, [props.annotations, anno]);
 
   return (
@@ -73,7 +74,7 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
       {props.annotations && ( 
         <ResultBadge 
           count={props.annotations.length} 
-          onClear={props.onClearAnnotation}
+          onClear={props.onClearAnnotations}
           onImport={props.onImportAnnotations} />
       )}
 

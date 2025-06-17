@@ -134,7 +134,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 image={props.image} 
                 processingState={processingState}
                 onChangeRegion={onChangeRegion}
-                onClearAnnotation={onClearAnnotations}
+                onClearAnnotations={onClearAnnotations}
                 onImportAnnotations={onImportAnnotations} />
             </div>
 
