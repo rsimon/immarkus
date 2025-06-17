@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import type { ProcessingState } from '../../ProcessingState';
+import { ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import {
   Select,

@@ -1,6 +1,6 @@
 import { CloudAlert, CloudCheck } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
-import { ProcessingState } from '../../ProcessingState';
+import { ProcessingState } from '../../Types';
 
 interface ProcessingStateBadgeProps {
 
@@ -35,7 +35,9 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     <div className="w-full bg-black text-white h-10 rounded-md flex items-center justify-center px-4 gap-2.5 text-sm">
       <Spinner className="size-5 mb-[1px]" />
 
-      {state === 'fetching_iiif' ? (
+      {state === 'cropping' ? ( 
+        <span>Cropping Image</span>
+      ) : state === 'fetching_iiif' ? (
         <span>Fetching IIIF Image</span>
       ) : state === 'compressing' ? (
         <span>Compressing Image</span>

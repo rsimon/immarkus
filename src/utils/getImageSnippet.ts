@@ -68,7 +68,11 @@ const SnippetScheduler = () => {
     });
   }
 
-  const getSnippet = (imageId: string, blob: Blob, annotation: ImageAnnotation): Promise<FileImageSnippet> => {
+  const getSnippet = (
+    imageId: string, 
+    blob: Blob, 
+    annotation: ImageAnnotation
+  ): Promise<FileImageSnippet> => {
     const cacheKey = `${imageId}-${annotation.id}`;
 
     // Already cached?

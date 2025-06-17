@@ -1,12 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation, ShapeType } from '@annotorious/react';
+import { PageTransform } from '../Types';
 
-export const parseOCRSpaceResponse = (response: any, kx = 1, ky = 1) => 
+export const parseOCRSpaceResponse = (response: any, transform: PageTransform) => 
   (response.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
     if ('TextOverlay' in result) {
       const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
         const words = line.Words.map(({ WordText, Left, Top, Height, Width }) => {
           const id = uuidv4();
+
+          const rect = transform({ x: Left, y: Top, w: Width, h: Height });
 
           return {
             id,
@@ -21,15 +24,12 @@ export const parseOCRSpaceResponse = (response: any, kx = 1, ky = 1) =>
                 type: ShapeType.RECTANGLE,
                 geometry: {
                   bounds: {
-                    minX: Left * kx,
-                    minY: Top * ky,
-                    maxX: (Left + Width) * kx,
-                    maxY: (Top + Height) * ky
+                    minX: rect.x,
+                    minY: rect.y,
+                    maxX: rect.x + rect.w,
+                    maxY: rect.y + rect.h
                   },
-                  x: Left * kx,
-                  y: Top * ky,
-                  w: Width * kx,
-                  h: Height * ky
+                  ...rect
                 }
               }
             }

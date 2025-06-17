@@ -3,6 +3,8 @@ import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
+import { SelectRegion } from './SelectRegion';
+import { ProcessingState, Region } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -15,11 +17,15 @@ import {
 
 interface TranscriptionPreviewProps {
 
+  processingState?: ProcessingState;
+
   annotations?: ImageAnnotation[];
 
   image: LoadedImage;
 
-  onClearAnnotation(): void;
+  onChangeRegion(region?: Region): void;
+
+  onClearAnnotations(): void;
 
   onImportAnnotations(): void;
 
@@ -56,10 +62,11 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
   useEffect(() => {
     if (!anno) return;
 
-    if (props.annotations)
+    if (props.annotations) {
       anno.setAnnotations(props.annotations);
-    else 
+    } else {
       anno.clearAnnotations();
+    }
   }, [props.annotations, anno]);
 
   return (
@@ -67,7 +74,7 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
       {props.annotations && ( 
         <ResultBadge 
           count={props.annotations.length} 
-          onClear={props.onClearAnnotation}
+          onClear={props.onClearAnnotations}
           onImport={props.onImportAnnotations} />
       )}
 
@@ -77,6 +84,10 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
         <OpenSeadragonViewer
           className="h-full w-full"
           options={options} />
+
+        <SelectRegion 
+          processingState={props.processingState}
+          onChangeRegion={props.onChangeRegion} />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (
