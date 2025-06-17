@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import { ProcessingState } from '../../Types';
+import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import {
   Select,
@@ -10,14 +10,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+import { Switch } from '@/ui/Switch';
 
 interface TranscriptionControlsProps {
 
   processingState?: ProcessingState;
 
+  options: Partial<OCROptions>;
+
+  onOptionsChanged(options: Partial<OCROptions>): void;
+
   onCancel(): void;
 
-  onSubmitImage(language: string): void;
+  onSubmit(): void;
 
 }
 
@@ -60,19 +65,25 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const [engine, _] = useState(ENGINES[0]);
 
-  const [language, setLanguage] = useState<keyof typeof LANGUAGES | ''>('');
+  const language = props.options.language || '';
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
   useEffect(() => {
     // Re-enable submit button if user changes language setting
     setShowProcessingState(false);
-  }, [language]);
+  }, [props.options.language]);
 
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
+
+  const onChangeLanguage = (language: string) =>
+    props.onOptionsChanged({ ...props.options, language });
+
+  const onChangeMergeLines = (mergeLines: boolean) =>
+    props.onOptionsChanged({ ...props.options, mergeLines });
 
   return (
     <div className="px-2 pt-1 flex flex-col h-full justify-between">
@@ -120,7 +131,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
           <Select 
             value={language}
-            onValueChange={val => setLanguage(val as keyof typeof LANGUAGES)}>
+            onValueChange={onChangeLanguage}>
             <SelectTrigger className="w-full mt-2">
               <SelectValue />
             </SelectTrigger>
@@ -136,6 +147,26 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             </SelectContent>
           </Select>
         </fieldset>
+
+        <fieldset>
+          <Label className="font-semibold">OCR Options</Label>
+
+          <div className="flex gap-3 items-start mt-3">
+            <Switch 
+              id="merge-lines" 
+              className="mt-1" 
+              checked={props.options.mergeLines} 
+              onCheckedChange={onChangeMergeLines} />
+
+            <div className="leading-relaxed">
+              <Label htmlFor="merge-lines">Merge Words into Line Annotations</Label>
+              <p className="text-sm text-muted-foreground pr-4">
+                Create one annotation per detected text line instead of 
+                separate annotations for each word.
+              </p>
+            </div>
+          </div>
+        </fieldset>
       </div>
 
       <div className="space-y-2">
@@ -145,7 +176,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         ) : (
           <Button 
             className="w-full"
-            onClick={() => props.onSubmitImage(language)}
+            onClick={() => props.onSubmit()}
             disabled={!language}>
             Start OCR Processing
           </Button>

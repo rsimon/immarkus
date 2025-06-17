@@ -1,42 +1,75 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ImageAnnotation, ShapeType } from '@annotorious/react';
-import { PageTransform } from '../Types';
+import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
+import { PageTransform, Region } from '../Types';
 
-export const parseOCRSpaceResponse = (response: any, transform: PageTransform) => 
+const toAnnotation = (text: string, region: Region): ImageAnnotation => {
+  const id = uuidv4();
+
+  return {
+    id,
+    bodies: [{
+      annotation: id,
+      purpose: 'commenting',
+      value: text
+    } as AnnotationBody],
+    target: {
+      annotation: id,
+      selector: {
+        type: ShapeType.RECTANGLE,
+        geometry: {
+          bounds: {
+            minX: region.x,
+            minY: region.y,
+            maxX: region.x + region.w,
+            maxY: region.y + region.h
+          },
+          ...region
+        }
+      }
+    }
+  }
+};
+
+const createLineAnnotation = (line: any, transform: PageTransform): ImageAnnotation => {
+  const { LineText, Words } = line;
+  
+  let minLeft = Infinity;
+  let minTop = Infinity;
+  let maxRight = -Infinity;
+  let maxBottom = -Infinity;
+  
+  Words.forEach(({ Left, Top, Height, Width }) => {
+    minLeft = Math.min(minLeft, Left);
+    minTop = Math.min(minTop, Top);
+    maxRight = Math.max(maxRight, Left + Width);
+    maxBottom = Math.max(maxBottom, Top + Height);
+  });
+  
+  const region = transform({
+    x: minLeft,
+    y: minTop,
+    w: maxRight - minLeft,
+    h: maxBottom - minTop
+  });
+
+  return toAnnotation(LineText, region);
+}
+
+const createWordAnnotations = (line: any, transform: PageTransform): ImageAnnotation[] =>
+  line.Words.map(({ WordText, Left, Top, Height, Width }) => {
+    const region = transform({ x: Left, y: Top, w: Width, h: Height });
+    return toAnnotation(WordText, region);
+  });
+
+export const parseOCRSpaceResponse = (response: any, transform: PageTransform, mergeLines?: boolean) => 
   (response.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
     if ('TextOverlay' in result) {
       const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
-        const words = line.Words.map(({ WordText, Left, Top, Height, Width }) => {
-          const id = uuidv4();
-
-          const rect = transform({ x: Left, y: Top, w: Width, h: Height });
-
-          return {
-            id,
-            bodies: [{
-              annotation: id,
-              purpose: 'commenting',
-              value: WordText
-            }],
-            target: {
-              annotation: id,
-              selector: {
-                type: ShapeType.RECTANGLE,
-                geometry: {
-                  bounds: {
-                    minX: rect.x,
-                    minY: rect.y,
-                    maxX: rect.x + rect.w,
-                    maxY: rect.y + rect.h
-                  },
-                  ...rect
-                }
-              }
-            }
-          }
-        });
-
-        return [...all, ...words];
+        if (mergeLines) {
+          return [...all, createLineAnnotation(line, transform)];
+        } else {  
+          return [...all, ...createWordAnnotations(line, transform)];
+        }
       }, []);
 
       return [...all, ...onThisPage];

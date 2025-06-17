@@ -1,3 +1,14 @@
+export interface OCROptions {
+
+  language: string;
+
+  mergeLines?: boolean
+
+}
+
+export const isOCROptions = (opts: Partial<OCROptions>): opts is OCROptions => 
+  typeof opts.language === 'string';
+
 export interface Region {
 
   x: number;

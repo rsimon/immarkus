@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
@@ -6,7 +6,7 @@ import { LoadedImage } from '@/model';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
 import { parseOCRSpaceResponse } from '../crosswalks';
-import { ProcessingState, Region } from '../Types';
+import { isOCROptions, OCROptions, PageTransform, ProcessingState, Region } from '../Types';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 
@@ -17,6 +17,14 @@ import {
 } from '@/ui/Dialog';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
+
+interface OCRResult {
+
+  data: any;
+
+  transform: PageTransform,
+
+} 
 
 interface TranscriptionDialogProps {
 
@@ -32,11 +40,31 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [open, setOpen] = useState(false);
 
-  const [annotations, setAnnotations] = useState<ImageAnnotation[] | undefined>();
+  const [region, setRegion] = useState<Region | undefined>();
+
+  const [options, setOptions] = useState<Partial<OCROptions>>({});
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
-  const [region, setRegion] = useState<Region | undefined>();
+  const [rawOCR, setRawOCR] = useState<OCRResult[] | undefined>();
+
+  const annotations = useMemo(() => {
+    if ((rawOCR || []).length === 0) return; // No (successful) OCR run yet
+
+    return rawOCR.reduce<ImageAnnotation[]>((all, result) => {
+      const inThisBatch = parseOCRSpaceResponse(result.data, result.transform, options.mergeLines);
+      return [...all, ...inThisBatch];
+    }, []);
+  }, [rawOCR, options.mergeLines]);
+
+  useEffect(() => {
+    if (!annotations) return;
+
+    if (annotations.length > 0)
+      setProcessingState('success')
+    else 
+      setProcessingState('success_empty');
+  }, [annotations]);
 
   const onOpenChange = (open: boolean) => {
     setOpen(open);
@@ -51,7 +79,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onClearAnnotations = () => {
-    setAnnotations(undefined);
+    setRawOCR(undefined);
     setProcessingState(undefined);
   }
 
@@ -62,10 +90,12 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     setOpen(false);
   }
 
-  const onSubmitImage = (language: string) => {  
+  const onSubmitImage = () => { 
+    if (!isOCROptions(options)) return;
+
     const formData  = new FormData();
     formData.append('apikey', VITE_OCR_SPACE_KEY);
-    formData.append('language', language);
+    formData.append('language', options.language);
     formData.append('isOverlayRequired', 'true');
     formData.append('detectOrientation', 'true');
 
@@ -77,13 +107,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           method: 'POST',
           body: formData
         }).then(res => res.json()).then(data => {              
-          const annotations = parseOCRSpaceResponse(data, result.transform);
-          setAnnotations(current => [...(current || []), ...annotations]);
-          
-          if (annotations.length > 0)
-            setProcessingState('success')
-          else 
-            setProcessingState('success_empty');
+          setRawOCR(current => [...(current || []), { data, transform: result.transform }]);
         }).catch(error => {
           console.error(error);
           setProcessingState('ocr_failed');
@@ -140,9 +164,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
             <div className="flex-[1] min-w-0">
               <TranscriptionControls
+                options={options}
                 processingState={processingState}
+                onOptionsChanged={setOptions}
                 onCancel={() => onOpenChange(false)}
-                onSubmitImage={onSubmitImage} />
+                onSubmit={onSubmitImage} />
             </div>
           </TooltipProvider>
         </div>
