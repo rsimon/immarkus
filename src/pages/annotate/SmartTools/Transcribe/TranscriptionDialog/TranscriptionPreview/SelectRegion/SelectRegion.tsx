@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { SquareDashedMousePointer, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Toggle } from '@/ui/Toggle';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { SelectionTool } from './SelectionTool';
 import { SelectionMask } from './SelectionMask';
 import { ProcessingState, Region } from '../../../Types';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
 interface SelectRegionProps {
 
