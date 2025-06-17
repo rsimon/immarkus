@@ -22,7 +22,7 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-babel-macros": "^1.0.6",
-    "vite-plugin-static-copy": "^3.0.0"
+    "vite-plugin-static-copy": "^3.0.2"
   },
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.2.4",
@@ -68,7 +68,7 @@
     "exceljs": "^4.4.0",
     "fuse.js": "^7.1.0",
     "localforage": "^1.10.0",
-    "lucide-react": "^0.515.0",
+    "lucide-react": "^0.516.0",
     "murmurhash": "^2.0.1",
     "openseadragon": "5.0.1",
     "p-throttle": "^7.0.0",
