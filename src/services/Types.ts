@@ -19,6 +19,18 @@ export interface ServiceConfig {
 
 }
 
+export interface ServiceConfigApiKeyParameter {
+
+  type: 'api_key';
+
+  id: string;
+
+  displayName: string;
+
+  required?: boolean;
+
+}
+
 export interface ServiceConfigStringParameter {
 
   type: 'string';
@@ -48,8 +60,9 @@ export interface ServiceConfigSwitchParameter {
 }
 
 export type ServiceConfigParameter = 
-   | ServiceConfigStringParameter
-   | ServiceConfigSwitchParameter;
+  | ServiceConfigApiKeyParameter
+  | ServiceConfigStringParameter
+  | ServiceConfigSwitchParameter;
 
 export interface ServiceConnector {
 

@@ -24,7 +24,7 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
 
   return (
     <fieldset className="space-y-2">
-      <Label className="font-semibold">Content Language</Label>
+      <Label className="font-semibold">{param.displayName}</Label>
 
       {param.options ? (
         <Select 
@@ -44,9 +44,7 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
             ))}
           </SelectContent>
         </Select>
-      ) : (
-        <div>Todo...</div>
-      )}
+      ) : null}
     </fieldset>
   )
 

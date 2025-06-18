@@ -4,7 +4,11 @@ import { Label } from '@/ui/Label';
 import { ServiceRegistry, ServiceConfigParameter, useService } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
-import { StringParameterControl, SwitchParameterControl } from './parameters';
+import { 
+  APIKeyParameterControl,
+  StringParameterControl, 
+  SwitchParameterControl 
+} from './parameters';
 import {
   Select,
   SelectContent,
@@ -67,7 +71,14 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         }
       });
 
-    return param.type === 'string' ? (
+    return param.type === 'api_key' ? (
+      <APIKeyParameterControl
+        key={param.id}
+        param={param} 
+        serviceId={serviceId} 
+        value={value} 
+        onValueChanged={onValueChanged} />
+    ) : param.type === 'string' ? (
       <StringParameterControl 
         key={param.id}
         param={param} 
@@ -123,7 +134,9 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
+        <form onSubmit={evt => evt.preventDefault()}>
+          {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
+        </form>
       </div>
 
       <div className="space-y-2">
