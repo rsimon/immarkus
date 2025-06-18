@@ -1,13 +1,10 @@
 export interface OCROptions {
 
-  language: string;
+  serviceId: string;
 
-  mergeLines?: boolean
+  options?: Record<string, any>;
 
 }
-
-export const isOCROptions = (opts: Partial<OCROptions>): opts is OCROptions => 
-  typeof opts.language === 'string';
 
 export interface Region {
 

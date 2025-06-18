@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { Switch } from '@/ui/Switch';
+import { ServiceRegistry } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import {
@@ -10,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { Switch } from '@/ui/Switch';
 
 interface TranscriptionControlsProps {
 
@@ -26,82 +27,54 @@ interface TranscriptionControlsProps {
 
 }
 
-const ENGINES = [{
-  name: 'OCR.space',
-  description: 'Free online OCR API provided by OCR.space.'
-}];
-
-const LANGUAGES = {
-  ara: 'Arabic',
-  bul: 'Bulgarian',
-  chs: 'Chinese (Simplified)',
-  cht: 'Chinese (Traditional)',
-  hrv: 'Croatian',
-  cze: 'Czech',
-  dan: 'Danish',
-  dut: 'Dutch',
-  eng: 'English',
-  fin: 'Finnish',
-  fre: 'French',
-  ger: 'German',
-  gre: 'Greek',
-  hun: 'Hungarian',
-  kor: 'Korean',
-  ita: 'Italian',
-  jpn: 'Japanese',
-  pol: 'Polish',
-  por: 'Portuguese',
-  rus: 'Russian',
-  slv: 'Slovenian',
-  spa: 'Spanish',
-  swe: 'Swedish',
-  tha: 'Thai',
-  tur: 'Turkish',
-  ukr: 'Ukrainian',
-  vnm: 'Vietnamese'
-};
+const services = ServiceRegistry.listAvailableServices();
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
-  const [engine, _] = useState(ENGINES[0]);
+  const [service, setService] = useState(services[0]);
 
-  const language = props.options.language || '';
+  // const language = props.options.language || '';
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
+  
+  /*
   useEffect(() => {
     // Re-enable submit button if user changes language setting
     setShowProcessingState(false);
   }, [props.options.language]);
+  */
 
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
+  /*
   const onChangeLanguage = (language: string) =>
     props.onOptionsChanged({ ...props.options, language });
 
   const onChangeMergeLines = (mergeLines: boolean) =>
     props.onOptionsChanged({ ...props.options, mergeLines });
+  */
 
   return (
     <div className="px-2 pt-1 flex flex-col h-full justify-between">
       <div className="space-y-8">
         <fieldset className="space-y-2">
-          <Label className="font-semibold">Engine</Label>
+          <Label className="font-semibold">Service</Label>
 
           <Select
-            value={engine.name}
-            onValueChange={name => ENGINES.find(e => e.name === name)}>
+            value={service.id}
+            onValueChange={id => setService(services.find(s => s.id === id))}>
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-2 pl-2.5 pr-2 py-2 flex justify-between">
               <div>
                 <h4 className="font-semibold">
-                  {engine.name}
+                  {service.displayName}
                 </h4>
                 <p className="text-xs leading-relaxed mt-0.5">
-                  {engine.description}
+                  {service.description}
                 </p>
               </div>
             </SelectTrigger>
@@ -109,16 +82,16 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <SelectContent
               align="start"
               className="">
-              {ENGINES.map(e => (
+              {services.map(s => (
                 <SelectItem
-                  key={e.name}
-                  value={e.name}
+                  key={s.id}
+                  value={s.id}
                   className="flex items-start [&>*:first-child]:mt-0.5">
                   <h4 className="font-semibold">
-                    {e.name}
+                    {s.displayName}
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
-                    {e.description}
+                    {s.description}
                   </p>
                 </SelectItem>
               ))}
@@ -126,7 +99,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        <fieldset className="space-y-2">
+        {/* <fieldset className="space-y-2">
           <Label className="font-semibold">Content Language</Label>
 
           <Select 
@@ -166,7 +139,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               </p>
             </div>
           </div>
-        </fieldset>
+        </fieldset> */}
       </div>
 
       <div className="space-y-2">
@@ -177,7 +150,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <Button 
             className="w-full"
             onClick={() => props.onSubmit()}
-            disabled={!language}>
+            disabled={false /*!language */}>
             Start OCR Processing
           </Button>
         )}
