@@ -4,7 +4,7 @@ import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
-import { ProcessingState, Region } from '../../Types';
+import { ProcessingState } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -14,6 +14,7 @@ import {
   useAnnotator, 
   UserSelectAction 
 } from '@annotorious/react';
+import { Region } from '@/services';
 
 interface TranscriptionPreviewProps {
 

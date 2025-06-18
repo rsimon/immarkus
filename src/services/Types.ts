@@ -74,7 +74,21 @@ export interface ServiceConnector {
 
 export type ServiceCrosswalk = (data: any, transform: PageTransform, options?: Record<string, any>) => ImageAnnotation[];
 
-export type PageTransform =  (region: Region) => Region;
+export type PageTransform = {
+
+  (region: Point): Point;
+
+  (region: Region): Region;
+
+}
+
+export interface Point { 
+
+  x: number;
+
+  y: number;
+
+}
 
 export interface Region {
 

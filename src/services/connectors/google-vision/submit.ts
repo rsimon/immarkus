@@ -26,10 +26,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload)
-    }).then(res => res.json()).then(data => {
-      console.log(data);
-      return data;
-    });
+    }).then(res => res.json());
   }
 
   if (typeof image === 'string') {

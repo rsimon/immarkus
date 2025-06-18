@@ -52,9 +52,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const annotations = useMemo(() => {
     if ((results || []).length === 0) return; // No (successful) OCR run yet
-
-    console.log('parsing result', options.serviceOptions)
-
+    
     return results.reduce<ImageAnnotation[]>((all, result) => {
       const { data, transform, crosswalk } = result;
       const inThisBatch = crosswalk(data, transform, options.serviceOptions);
