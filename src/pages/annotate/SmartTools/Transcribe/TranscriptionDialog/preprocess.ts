@@ -3,8 +3,9 @@ import imageCompression from 'browser-image-compression';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { getImageSnippet } from '@/utils/getImageSnippet';
-import { PageTransform, ProcessingState, Region } from '../Types';
+import { ProcessingState } from '../Types';
 import { DynamicImageServiceResource } from 'cozy-iiif';
+import { PageTransform, Region } from '@/services';
 
 interface IntermediateBasePreprocessingResult {
 
