@@ -15,20 +15,41 @@ export interface ServiceConfig {
   description: string;
 
   /** Configuration parameters supported by this service **/
-  parameters?: Record<string, ServiceConfigParameter>;
+  parameters?: ServiceConfigParameter[];
 
 }
 
 export interface ServiceConfigStringParameter {
 
-  type: 'string',
+  type: 'string';
+
+  id: string;
+
+  displayName: string;
+
+  required?: boolean;
   
   options?: Record<string, string>;
 
 }
 
-// For future use
-export type ServiceConfigParameter = ServiceConfigStringParameter;
+export interface ServiceConfigSwitchParameter {
+
+  type: 'switch';
+
+  id: string;
+
+  displayName: string;
+  
+  hint: string;
+
+  required?: boolean;
+
+}
+
+export type ServiceConfigParameter = 
+   | ServiceConfigStringParameter
+   | ServiceConfigSwitchParameter;
 
 export interface ServiceConnector {
 

@@ -1,16 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import { Switch } from '@/ui/Switch';
-import { ServiceRegistry } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
+import { StringParameterControl, SwitchParameterControl } from './parameters';
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectTrigger
 } from '@/ui/Select';
 
 interface TranscriptionControlsProps {
@@ -33,30 +32,52 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const [service, setService] = useState(services[0]);
 
-  // const language = props.options.language || '';
+  const [settings, setSettings] = useState<Record<string, any>>({});
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
-  
-  /*
   useEffect(() => {
-    // Re-enable submit button if user changes language setting
+    // Reset settings when service changes
+    setSettings({});
+  }, [service]);
+
+  useEffect(() => {
+    // Re-enable submit button if user changes settings
     setShowProcessingState(false);
-  }, [props.options.language]);
-  */
+  }, [settings]);
+
+  const canSumbit = useMemo(() => {
+    // Check if all required params are filled
+    const required = (service.parameters || []).filter(p => p.required);
+    return required.length === 0 || required
+      .every(param => Object.keys(settings).includes(param.id));
+  }, [service, settings]);
 
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
-  /*
-  const onChangeLanguage = (language: string) =>
-    props.onOptionsChanged({ ...props.options, language });
+  const renderParameterControl = (param: ServiceConfigParameter) => {
+    const value = settings[param.id];
 
-  const onChangeMergeLines = (mergeLines: boolean) =>
-    props.onOptionsChanged({ ...props.options, mergeLines });
-  */
+    const onValueChanged = (value: any) => 
+      setSettings(current => ({...current, [param.id]: value }));
+
+    return param.type === 'string' ? (
+      <StringParameterControl 
+        key={param.id}
+        param={param} 
+        value={value} 
+        onValueChanged={onValueChanged} />
+    ) : param.type === 'switch' ? (
+      <SwitchParameterControl 
+        key={param.id}
+        param={param} 
+        checked={value} 
+        onCheckedChange={onValueChanged} />
+    ) : null;
+  }
 
   return (
     <div className="px-2 pt-1 flex flex-col h-full justify-between">
@@ -99,47 +120,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        {/* <fieldset className="space-y-2">
-          <Label className="font-semibold">Content Language</Label>
-
-          <Select 
-            value={language}
-            onValueChange={onChangeLanguage}>
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              {Object.keys(LANGUAGES).map(code => (
-                <SelectItem 
-                  key={code}
-                  value={code}>
-                  {LANGUAGES[code]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </fieldset>
-
-        <fieldset>
-          <Label className="font-semibold">OCR Options</Label>
-
-          <div className="flex gap-3 items-start mt-3">
-            <Switch 
-              id="merge-lines" 
-              className="mt-1" 
-              checked={props.options.mergeLines} 
-              onCheckedChange={onChangeMergeLines} />
-
-            <div className="leading-relaxed">
-              <Label htmlFor="merge-lines">Merge Words into Line Annotations</Label>
-              <p className="text-sm text-muted-foreground pr-4">
-                Create one annotation per detected text line instead of 
-                separate annotations for each word.
-              </p>
-            </div>
-          </div>
-        </fieldset> */}
+        {(service.parameters || []).map(param => renderParameterControl(param))}
       </div>
 
       <div className="space-y-2">
@@ -150,7 +131,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <Button 
             className="w-full"
             onClick={() => props.onSubmit()}
-            disabled={false /*!language */}>
+            disabled={!canSumbit}>
             Start OCR Processing
           </Button>
         )}
