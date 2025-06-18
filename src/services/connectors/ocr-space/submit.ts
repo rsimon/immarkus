@@ -1,9 +1,7 @@
-import { ImageAnnotation } from '@annotorious/react';
-import { ServiceConnector } from '@/services/Types';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
-export interface OCRSpaceOptions {
+interface OCRSpaceOptions {
 
   language: string;
 
@@ -11,14 +9,11 @@ export interface OCRSpaceOptions {
 
 }
 
-export const isOCROptions = (opts: Partial<OCRSpaceOptions>): opts is OCRSpaceOptions => 
+const isOCRSpaceOptions = (opts: Record<string, any>): opts is OCRSpaceOptions => 
   typeof opts.language === 'string';
 
-const submit = (
-  image: File | string, 
-  options?: OCRSpaceOptions
-) => {
-  if (!isOCROptions(options)) {
+export const submit = (image: File | string, options?: Record<string, any>) => {
+  if (!isOCRSpaceOptions(options)) {
     console.error(options);
     return Promise.reject('Invalid OCR options');
   }
@@ -39,9 +34,3 @@ const submit = (
     body: formData
   }).then(res => res.json());
 }
-
-const parseResponse = (data: any, options?: Record<string, any>): ImageAnnotation[] => {
-  return [];
-} 
-
-export const OCRSpaceConnector: ServiceConnector = { submit, parseResponse };

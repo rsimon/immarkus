@@ -1,4 +1,4 @@
-import { ImageAnnotation } from "@annotorious/react";
+import { ImageAnnotation } from '@annotorious/react';
 
 export interface ServiceConfig {
 
@@ -55,6 +55,24 @@ export interface ServiceConnector {
 
   submit(image: File | string, options?: Record<string, any>): any;
 
-  parseResponse(data: any, options?: Record<string, any>): ImageAnnotation[];
+  parseResponse: ServiceCrosswalk;
 
 }
+
+export type ServiceCrosswalk = (data: any, transform: PageTransform, options?: Record<string, any>) => ImageAnnotation[];
+
+export type PageTransform =  (region: Region) => Region;
+
+export interface Region {
+
+  x: number;
+
+  y: number;
+
+  w: number;
+
+  h: number;
+  
+}
+
+

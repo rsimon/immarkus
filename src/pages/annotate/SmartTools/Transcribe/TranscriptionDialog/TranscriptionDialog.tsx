@@ -3,11 +3,10 @@ import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { LoadedImage } from '@/model';
-import { ServiceRegistry } from '@/services';
+import { PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
-import { parseOCRSpaceResponse } from '../crosswalks';
-import { PageTransform, ProcessingState, Region } from '../Types';
+import { OCROptions, ProcessingState } from '../Types';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 
@@ -21,7 +20,9 @@ interface OCRResult {
 
   data: any;
 
-  transform: PageTransform,
+  transform: PageTransform;
+
+  crosswalk: ServiceCrosswalk;
 
 } 
 
@@ -41,21 +42,25 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [region, setRegion] = useState<Region | undefined>();
 
-  const [options, setOptions] = useState<Record<string, any>>({});
+  const [options, setOptions] = useState<OCROptions>({ serviceId: ServiceRegistry.listAvailableServices()[0].id });
+  
+  const service = useService(options.serviceId);
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
-  const [rawOCR, setRawOCR] = useState<OCRResult[] | undefined>();
+  const [results, setResults] = useState<OCRResult[] | undefined>();
 
   const annotations = useMemo(() => {
-    if ((rawOCR || []).length === 0) return; // No (successful) OCR run yet
+    if ((results || []).length === 0) return; // No (successful) OCR run yet
 
-    return rawOCR.reduce<ImageAnnotation[]>((all, result) => {
+    console.log('parsing result', options.serviceOptions)
 
-      const inThisBatch = parseOCRSpaceResponse(result.data, result.transform, options.mergeLines);
+    return results.reduce<ImageAnnotation[]>((all, result) => {
+      const { data, transform, crosswalk } = result;
+      const inThisBatch = crosswalk(data, transform, options.serviceOptions);
       return [...all, ...inThisBatch];
     }, []);
-  }, [rawOCR, options.mergeLines]);
+  }, [results, options]);
 
   useEffect(() => {
     if (!annotations) return;
@@ -79,7 +84,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onClearAnnotations = () => {
-    setRawOCR(undefined);
+    setResults(undefined);
     setProcessingState(undefined);
   }
 
@@ -91,21 +96,24 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onSubmitImage = () => { 
-    ServiceRegistry.getConnector('ocr-space').then(connector => {
-      preprocess(props.image, region, setProcessingState).then(result => {
-        setProcessingState('pending');
+    if (!service.connector) return;
 
-        const image = 'file' in result ? result.file : result.url;
+    preprocess(props.image, region, setProcessingState).then(result => {
+      setProcessingState('pending');
 
-        connector.submit(image, options).then((data: any) => {
-          setRawOCR(current => [...(current || []), { data, transform: result.transform }]);
-        }).catch((error: any) => {
-          console.error(error);
-          setProcessingState('ocr_failed');
-        });   
-      });
-    }).catch(error => {
-      console.error(error);
+      const image = 'file' in result ? result.file : result.url;
+      const crosswalk = service.connector.parseResponse;
+
+      service.connector.submit(image, options.serviceOptions).then((data: any) => {
+        setResults(current => [...(current || []), { 
+          data, 
+          transform: result.transform,
+          crosswalk
+        }]);
+      }).catch((error: any) => {
+        console.error(error);
+        setProcessingState('ocr_failed');
+      });   
     });
   }
 

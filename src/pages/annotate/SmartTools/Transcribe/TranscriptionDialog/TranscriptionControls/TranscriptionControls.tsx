@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import { ServiceRegistry, ServiceConfigParameter } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter, useService } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { StringParameterControl, SwitchParameterControl } from './parameters';
@@ -16,9 +16,9 @@ interface TranscriptionControlsProps {
 
   processingState?: ProcessingState;
 
-  options: Partial<OCROptions>;
+  options: OCROptions;
 
-  onOptionsChanged(options: Partial<OCROptions>): void;
+  onOptionsChanged(options: OCROptions): void;
 
   onCancel(): void;
 
@@ -30,39 +30,42 @@ const services = ServiceRegistry.listAvailableServices();
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
-  const [service, setService] = useState(services[0]);
+  const { serviceId, serviceOptions } = props.options;
 
-  const [settings, setSettings] = useState<Record<string, any>>({});
+  const { config: serviceConfig } = useService(serviceId);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
   useEffect(() => {
-    // Reset settings when service changes
-    setSettings({});
-  }, [service]);
-
-  useEffect(() => {
     // Re-enable submit button if user changes settings
     setShowProcessingState(false);
-  }, [settings]);
+  }, [props.options]);
 
   const canSumbit = useMemo(() => {
     // Check if all required params are filled
-    const required = (service.parameters || []).filter(p => p.required);
-    return required.length === 0 || required
-      .every(param => Object.keys(settings).includes(param.id));
-  }, [service, settings]);
+    const required = (serviceConfig?.parameters || []).filter(p => p.required);
+    return required.length === 0 || required.every(param => Object.keys(serviceOptions || {}).includes(param.id));
+  }, [serviceConfig, props.options]);
 
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
+  const onChangeService = (serviceId: string) =>
+    props.onOptionsChanged({ serviceId });
+
   const renderParameterControl = (param: ServiceConfigParameter) => {
-    const value = settings[param.id];
+    const value = (serviceOptions || {})[param.id];
 
     const onValueChanged = (value: any) => 
-      setSettings(current => ({...current, [param.id]: value }));
+      props.onOptionsChanged({
+        serviceId, 
+        serviceOptions: {
+          ...(serviceOptions || {}),
+          [param.id]: value 
+        }
+      });
 
     return param.type === 'string' ? (
       <StringParameterControl 
@@ -86,16 +89,16 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <Label className="font-semibold">Service</Label>
 
           <Select
-            value={service.id}
-            onValueChange={id => setService(services.find(s => s.id === id))}>
+            value={serviceConfig.id}
+            onValueChange={onChangeService}>
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-2 pl-2.5 pr-2 py-2 flex justify-between">
               <div>
                 <h4 className="font-semibold">
-                  {service.displayName}
+                  {serviceConfig.displayName}
                 </h4>
                 <p className="text-xs leading-relaxed mt-0.5">
-                  {service.description}
+                  {serviceConfig.description}
                 </p>
               </div>
             </SelectTrigger>
@@ -120,7 +123,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        {(service.parameters || []).map(param => renderParameterControl(param))}
+        {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
       </div>
 
       <div className="space-y-2">
