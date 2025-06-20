@@ -11,7 +11,21 @@ const toAnnotation = (
 ): ImageAnnotation => {
   const id = uuidv4();
 
-  const points: [number, number][] = vertices.map(transform).map(({ x, y }) => [x, y]);
+  /**
+   * There's an ugly catch with the vertices contained in Google Vision responses: x and/or y 
+   * might be missing! See this–deeply buried in the docs (and actually from the face 
+   * recognition docs):
+   * 
+   * "Note that one or more x and/or y coordinates may not be generated in the BoundingPoly 
+   * (the polygon will be unbounded) if only a partial face appears in the image to be annotated."
+   * 
+   * Cf. https://stackoverflow.com/questions/39378862/incomplete-coordinate-values-for-google-vision-ocr
+   * 
+   * In our case, we set the coordinate to 0 if missing, since this seems the most reasonable thing to do.
+   */
+  const points: [number, number][] = 
+    vertices.map(({ x, y }) => transform({ x: x || 0, y: y || 0})).map(({ x, y }) => ([x, y]));
+
   const bounds = boundsFromPoints(points);
 
   return {
