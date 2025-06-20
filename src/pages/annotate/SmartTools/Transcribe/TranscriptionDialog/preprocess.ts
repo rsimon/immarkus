@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import imageCompression from 'browser-image-compression';
+import { DynamicImageServiceResource } from 'cozy-iiif';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { ProcessingState } from '../Types';
-import { DynamicImageServiceResource } from 'cozy-iiif';
 import { PageTransform, Point, Region } from '@/services';
 
 interface IntermediateBasePreprocessingResult {
