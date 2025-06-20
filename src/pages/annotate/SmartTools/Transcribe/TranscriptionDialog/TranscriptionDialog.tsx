@@ -74,8 +74,12 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
-    if (!open)
+    if (!open) {
+      setRegion(undefined);
       setProcessingState(undefined);
+      setLastError(undefined);
+      setResults(undefined);
+    }
   }
 
   const onChangeRegion = (region: Region) => {
