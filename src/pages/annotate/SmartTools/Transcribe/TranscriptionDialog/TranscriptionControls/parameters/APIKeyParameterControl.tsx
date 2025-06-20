@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { ServiceConfigApiKeyParameter } from '@/services';
+import { deobfuscate, obfuscate } from '@/utils/obfuscateString';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 
@@ -25,12 +26,12 @@ export const APIKeyParameterControl = (props: APIKeyParameterControlProps) => {
     // If there's no value on mount, try loading from localStorage
     const stored = localStorage.getItem(key);
     if (stored)
-      props.onValueChanged(stored);
+      props.onValueChanged(deobfuscate(stored));
   }, []);
 
   const onChange = (value: string) => {
     if (value) {
-      localStorage.setItem(key, value);
+      localStorage.setItem(key, obfuscate(value));
       props.onValueChanged(value);
     } else {
       localStorage.removeItem(key);
