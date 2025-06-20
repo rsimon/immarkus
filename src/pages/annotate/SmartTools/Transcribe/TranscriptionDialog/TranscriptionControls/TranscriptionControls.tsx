@@ -50,7 +50,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   const canSumbit = useMemo(() => {
     // Check if all required params are filled
     const required = (serviceConfig?.parameters || []).filter(p => p.required);
-    return required.length === 0 || required.every(param => Object.keys(serviceOptions || {}).includes(param.id));
+    return required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
   }, [serviceConfig, props.options]);
 
   useEffect(() => {
