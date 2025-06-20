@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
+import { Region } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
-import { ProcessingState, Region } from '../../Types';
+import { ProcessingState } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 

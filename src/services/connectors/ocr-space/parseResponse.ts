@@ -1,6 +1,12 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
-import { PageTransform, Region } from '../Types';
+import { PageTransform, Region } from '@/services/Types';
+
+interface ParseOCRSpaceResponseArgs {
+
+  'merge-lines'?: boolean;
+
+}
 
 const toAnnotation = (text: string, region: Region): ImageAnnotation => {
   const id = uuidv4();
@@ -28,7 +34,7 @@ const toAnnotation = (text: string, region: Region): ImageAnnotation => {
       }
     }
   }
-};
+}
 
 const createLineAnnotation = (line: any, transform: PageTransform): ImageAnnotation => {
   const { LineText, Words } = line;
@@ -61,11 +67,15 @@ const createWordAnnotations = (line: any, transform: PageTransform): ImageAnnota
     return toAnnotation(WordText, region);
   });
 
-export const parseOCRSpaceResponse = (response: any, transform: PageTransform, mergeLines?: boolean) => 
-  (response.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
+export const parseResponse = (
+  data: any, 
+  transform: PageTransform, 
+  options: ParseOCRSpaceResponseArgs = { 'merge-lines': false }
+): ImageAnnotation[] =>
+  (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
     if ('TextOverlay' in result) {
       const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
-        if (mergeLines) {
+        if (options['merge-lines']) {
           return [...all, createLineAnnotation(line, transform)];
         } else {  
           return [...all, ...createWordAnnotations(line, transform)];

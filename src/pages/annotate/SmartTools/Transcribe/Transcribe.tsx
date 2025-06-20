@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Annotorious, ImageAnnotation} from '@annotorious/react';
+import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation} from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
+import { useStore } from '@/store';
 import { TranscriptionDialog } from './TranscriptionDialog';
 import {
   Select,
@@ -11,7 +12,6 @@ import {
   SelectValue,
 } from '@/ui/Select';
 
-
 interface TranscribeProps {
 
   images: LoadedImage[];
@@ -19,6 +19,8 @@ interface TranscribeProps {
 }
 
 export const Transcribe = (props: TranscribeProps) => {
+
+  const store = useStore();
 
   // Should never happen
   if (props.images.length < 1) return null;
@@ -30,8 +32,18 @@ export const Transcribe = (props: TranscribeProps) => {
   const manifold = useAnnotoriousManifold();
 
   const onImportAnnotations = (annotations: ImageAnnotation[], image: LoadedImage) => {
+    if (!store) return; // Should never happen
+
+    // Add image annotations (internal data model!) to the annotator as a 'Remote' action
     const anno = manifold.getAnnotator(image.id);
-    anno.state.store.bulkAddAnnotations(annotations, false);
+    anno.state.store.bulkAddAnnotations(annotations, false, Origin.REMOTE);
+
+    // Crosswalk to W3C and write to store. (Note: we could add them to the annotator
+    // with Origin.LOCAL. This would handle W3C crosswalk for us. But because the
+    // outer W3C API has no bulk handling, we'd generate one file write access per 
+    // annotation, which will lead to overwrites!
+    const w3c = annotations.map(a => serializeW3CImageAnnotation(a, selectedImage.id));
+    store.bulkUpsertAnnotation(selectedImage.id, w3c);
   }
 
   return (

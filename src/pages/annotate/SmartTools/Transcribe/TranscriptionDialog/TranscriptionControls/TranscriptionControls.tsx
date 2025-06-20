@@ -1,24 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { KeyRound } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { ServiceRegistry, ServiceConfigParameter, useService } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
+import { 
+  APIKeyParameterControl,
+  StringParameterControl, 
+  SwitchParameterControl 
+} from './parameters';
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectTrigger
 } from '@/ui/Select';
-import { Switch } from '@/ui/Switch';
 
 interface TranscriptionControlsProps {
 
+  lastError?: string;
+
   processingState?: ProcessingState;
 
-  options: Partial<OCROptions>;
+  options: OCROptions;
 
-  onOptionsChanged(options: Partial<OCROptions>): void;
+  onOptionsChanged(options: OCROptions): void;
 
   onCancel(): void;
 
@@ -26,82 +33,91 @@ interface TranscriptionControlsProps {
 
 }
 
-const ENGINES = [{
-  name: 'OCR.space',
-  description: 'Free online OCR API provided by OCR.space.'
-}];
-
-const LANGUAGES = {
-  ara: 'Arabic',
-  bul: 'Bulgarian',
-  chs: 'Chinese (Simplified)',
-  cht: 'Chinese (Traditional)',
-  hrv: 'Croatian',
-  cze: 'Czech',
-  dan: 'Danish',
-  dut: 'Dutch',
-  eng: 'English',
-  fin: 'Finnish',
-  fre: 'French',
-  ger: 'German',
-  gre: 'Greek',
-  hun: 'Hungarian',
-  kor: 'Korean',
-  ita: 'Italian',
-  jpn: 'Japanese',
-  pol: 'Polish',
-  por: 'Portuguese',
-  rus: 'Russian',
-  slv: 'Slovenian',
-  spa: 'Spanish',
-  swe: 'Swedish',
-  tha: 'Thai',
-  tur: 'Turkish',
-  ukr: 'Ukrainian',
-  vnm: 'Vietnamese'
-};
+const services = ServiceRegistry.listAvailableServices();
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
-  const [engine, _] = useState(ENGINES[0]);
+  const { serviceId, serviceOptions } = props.options;
 
-  const language = props.options.language || '';
+  const { config: serviceConfig } = useService(serviceId);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
   useEffect(() => {
-    // Re-enable submit button if user changes language setting
+    // Re-enable submit button if user changes settings
     setShowProcessingState(false);
-  }, [props.options.language]);
+  }, [props.options]);
+
+  const canSumbit = useMemo(() => {
+    // Check if all required params are filled
+    const required = (serviceConfig?.parameters || []).filter(p => p.required);
+    return required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
+  }, [serviceConfig, props.options]);
 
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
-  const onChangeLanguage = (language: string) =>
-    props.onOptionsChanged({ ...props.options, language });
+  const onChangeService = (serviceId: string) =>
+    props.onOptionsChanged({ serviceId });
 
-  const onChangeMergeLines = (mergeLines: boolean) =>
-    props.onOptionsChanged({ ...props.options, mergeLines });
+  const renderParameterControl = (param: ServiceConfigParameter) => {
+    const value = (serviceOptions || {})[param.id];
+
+    const onValueChanged = (value: any) => 
+      props.onOptionsChanged({
+        serviceId, 
+        serviceOptions: {
+          ...(serviceOptions || {}),
+          [param.id]: value 
+        }
+      });
+
+    return param.type === 'api_key' ? (
+      <APIKeyParameterControl
+        key={param.id}
+        param={param} 
+        serviceId={serviceId} 
+        value={value} 
+        onValueChanged={onValueChanged} />
+    ) : param.type === 'string' ? (
+      <StringParameterControl 
+        key={param.id}
+        param={param} 
+        value={value} 
+        onValueChanged={onValueChanged} />
+    ) : param.type === 'switch' ? (
+      <SwitchParameterControl 
+        key={param.id}
+        param={param} 
+        checked={value} 
+        onCheckedChange={onValueChanged} />
+    ) : null;
+  }
 
   return (
     <div className="px-2 pt-1 flex flex-col h-full justify-between">
       <div className="space-y-8">
         <fieldset className="space-y-2">
-          <Label className="font-semibold">Engine</Label>
+          <Label className="font-semibold">Service</Label>
 
           <Select
-            value={engine.name}
-            onValueChange={name => ENGINES.find(e => e.name === name)}>
+            value={serviceConfig.id}
+            onValueChange={onChangeService}>
             <SelectTrigger 
-              className="w-full text-left h-auto text-sm border rounded shadow-xs mt-2 pl-2.5 pr-2 py-2 flex justify-between">
+              className="w-full text-left h-auto text-sm border rounded shadow-xs mt-1.5 pl-2.5 pr-2 py-2.5 flex justify-between">
               <div>
-                <h4 className="font-semibold">
-                  {engine.name}
+                <h4 className="font-semibold flex gap-1.5 items-center">
+                  {serviceConfig.displayName}
+                  {serviceConfig.requiresKey && (
+                    <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
+                      <KeyRound className="size-3" /> API Key Required
+                    </span>
+                  )}
                 </h4>
                 <p className="text-xs leading-relaxed mt-0.5">
-                  {engine.description}
+                  {serviceConfig.description}
                 </p>
               </div>
             </SelectTrigger>
@@ -109,16 +125,21 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <SelectContent
               align="start"
               className="">
-              {ENGINES.map(e => (
+              {services.map(s => (
                 <SelectItem
-                  key={e.name}
-                  value={e.name}
-                  className="flex items-start [&>*:first-child]:mt-0.5">
-                  <h4 className="font-semibold">
-                    {e.name}
+                  key={s.id}
+                  value={s.id}
+                  className="flex items-start [&>*:first-child]:mt-0.5 py-3">
+                  <h4 className="font-semibold flex gap-1.5 items-center">
+                    {s.displayName}
+                    {s.requiresKey && (
+                      <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
+                        <KeyRound className="size-3" /> API Key Required
+                      </span>
+                    )}
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
-                    {e.description}
+                    {s.description}
                   </p>
                 </SelectItem>
               ))}
@@ -126,58 +147,21 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        <fieldset className="space-y-2">
-          <Label className="font-semibold">Content Language</Label>
-
-          <Select 
-            value={language}
-            onValueChange={onChangeLanguage}>
-            <SelectTrigger className="w-full mt-2">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              {Object.keys(LANGUAGES).map(code => (
-                <SelectItem 
-                  key={code}
-                  value={code}>
-                  {LANGUAGES[code]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </fieldset>
-
-        <fieldset>
-          <Label className="font-semibold">OCR Options</Label>
-
-          <div className="flex gap-3 items-start mt-3">
-            <Switch 
-              id="merge-lines" 
-              className="mt-1" 
-              checked={props.options.mergeLines} 
-              onCheckedChange={onChangeMergeLines} />
-
-            <div className="leading-relaxed">
-              <Label htmlFor="merge-lines">Merge Words into Line Annotations</Label>
-              <p className="text-sm text-muted-foreground pr-4">
-                Create one annotation per detected text line instead of 
-                separate annotations for each word.
-              </p>
-            </div>
-          </div>
-        </fieldset>
+        <form onSubmit={evt => evt.preventDefault()}>
+          {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
+        </form>
       </div>
 
       <div className="space-y-2">
         {showProcessingState ? (
           <ProcessingStateBadge
+            lastError={props.lastError}
             processingState={props.processingState} />
         ) : (
           <Button 
             className="w-full"
             onClick={() => props.onSubmit()}
-            disabled={!language}>
+            disabled={!canSumbit}>
             Start OCR Processing
           </Button>
         )}

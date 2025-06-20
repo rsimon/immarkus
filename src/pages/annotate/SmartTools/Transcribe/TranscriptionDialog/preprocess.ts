@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import imageCompression from 'browser-image-compression';
+import { DynamicImageServiceResource } from 'cozy-iiif';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { getImageSnippet } from '@/utils/getImageSnippet';
-import { PageTransform, ProcessingState, Region } from '../Types';
-import { DynamicImageServiceResource } from 'cozy-iiif';
+import { ProcessingState } from '../Types';
+import { PageTransform, Point, Region } from '@/services';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -57,7 +58,8 @@ const preprocessImageData = (
 ): Promise<IntermediateFilePrepocessingResult> => {
   const compressionOpts = {
     maxSizeMB: 0.98,
-    useWebWorker: true
+    useWebWorker: true,
+    libURL: '/browser-image-compression.js'
   };
 
   onProgress('compressing');
@@ -127,12 +129,15 @@ export const preprocess = (
       }
     };
 
-    const getRegionTransform = (kx: number, ky: number) => (input: Region) => ({
+    const getRegionTransform = (kx: number, ky: number) => ((input: Point | Region) => 'w' in input ? {
       x: input.x * kx + region.x,
       y: input.y * ky + region.y,
       w: input.w * kx,
       h: input.h * ky 
-    });
+    } : {
+      x: input.x * kx + region.x,
+      y: input.y * ky + region.y
+    }) as PageTransform;
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
@@ -169,12 +174,15 @@ export const preprocess = (
       });
     }
   } else {
-    const getImageTransform = (kx: number, ky: number) => (input: Region) => ({
+    const getImageTransform = (kx: number, ky: number) => ((input: Point | Region) => 'w' in input ? {
       x: input.x * kx,
       y: input.y * ky,
       w: input.w * kx,
       h: input.h * ky
-    });
+    } : {
+      x: input.x * kx,
+      y: input.y * ky
+    }) as PageTransform;
 
     if ('file' in image) {
       return getImageDimensions(image.data).then(({ width, height }) => {

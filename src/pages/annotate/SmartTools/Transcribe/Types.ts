@@ -1,27 +1,10 @@
 export interface OCROptions {
 
-  language: string;
+  serviceId: string;
 
-  mergeLines?: boolean
+  serviceOptions?: Record<string, any>;
 
 }
-
-export const isOCROptions = (opts: Partial<OCROptions>): opts is OCROptions => 
-  typeof opts.language === 'string';
-
-export interface Region {
-
-  x: number;
-
-  y: number;
-
-  w: number;
-
-  h: number;
-  
-}
-
-export type PageTransform =  (region: Region) => Region;
 
 export type ProcessingState = 'cropping'
   | 'compressing' 
