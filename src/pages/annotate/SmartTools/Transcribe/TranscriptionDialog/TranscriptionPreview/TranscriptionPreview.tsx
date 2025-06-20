@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
+import { Region } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { ResultBadge } from './ResultBadge';
@@ -14,7 +15,6 @@ import {
   useAnnotator, 
   UserSelectAction 
 } from '@annotorious/react';
-import { Region } from '@/services';
 
 interface TranscriptionPreviewProps {
 
