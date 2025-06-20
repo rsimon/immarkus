@@ -107,7 +107,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             value={serviceConfig.id}
             onValueChange={onChangeService}>
             <SelectTrigger 
-              className="w-full text-left h-auto text-sm border rounded shadow-xs mt-2 pl-2.5 pr-2 py-2 flex justify-between">
+              className="w-full text-left h-auto text-sm border rounded shadow-xs mt-1.5 pl-2.5 pr-2 py-2.5 flex justify-between">
               <div>
                 <h4 className="font-semibold flex gap-1.5 items-center">
                   {serviceConfig.displayName}
@@ -130,7 +130,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                 <SelectItem
                   key={s.id}
                   value={s.id}
-                  className="flex items-start [&>*:first-child]:mt-0.5">
+                  className="flex items-start [&>*:first-child]:mt-0.5 py-3">
                   <h4 className="font-semibold flex gap-1.5 items-center">
                     {s.displayName}
                     {s.requiresKey && (
