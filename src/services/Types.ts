@@ -79,7 +79,7 @@ export type ServiceCrosswalk = (data: any, transform: PageTransform, options?: R
 
 export type PageTransform = {
 
-  (region: Point): Point;
+  (point: Point): Point;
 
   (region: Region): Region;
 
