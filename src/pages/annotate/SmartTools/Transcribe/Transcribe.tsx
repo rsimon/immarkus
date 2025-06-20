@@ -42,12 +42,8 @@ export const Transcribe = (props: TranscribeProps) => {
     // with Origin.LOCAL. This would handle W3C crosswalk for us. But because the
     // outer W3C API has no bulk handling, we'd generate one file write access per 
     // annotation, which will lead to overwrites!
-    const id = 'file' in selectedImage 
-      ? selectedImage.id 
-      : `iiif:${selectedImage.manifestId}:${selectedImage.canvas.id}`;
-
-    const w3c = annotations.map(a => serializeW3CImageAnnotation(a, id));
-    store.bulkUpsertAnnotation(id, w3c);
+    const w3c = annotations.map(a => serializeW3CImageAnnotation(a, selectedImage.id));
+    store.bulkUpsertAnnotation(selectedImage.id, w3c);
   }
 
   return (
