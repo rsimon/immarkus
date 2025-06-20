@@ -58,7 +58,8 @@ const preprocessImageData = (
 ): Promise<IntermediateFilePrepocessingResult> => {
   const compressionOpts = {
     maxSizeMB: 0.98,
-    useWebWorker: true
+    useWebWorker: true,
+    libURL: '/browser-image-compression.js'
   };
 
   onProgress('compressing');

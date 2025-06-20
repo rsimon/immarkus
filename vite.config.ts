@@ -12,16 +12,16 @@ export default defineConfig({
     macros(),
     tailwindcss(),
     viteStaticCopy({
-      targets: [
-        {
-          src: 'node_modules/@annotorious/plugin-segment-anything/dist/assets/*',
-          dest: 'assets'
-        },
-        {
-          src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
-          dest: 'assets'
-        }
-      ]
+      targets: [{
+        src: 'node_modules/browser-image-compression/dist/browser-image-compression.js',
+        dest: 'assets'
+      },{
+        src: 'node_modules/@annotorious/plugin-segment-anything/dist/assets/*',
+        dest: 'assets'
+      },{
+        src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
+        dest: 'assets'
+      }]
     }),
   ],
   resolve: {

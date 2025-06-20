@@ -34,23 +34,8 @@ export const SelectionTool = (props: SelectionToolProps) => {
     // when putting `end` in the dependency array.
     let currentEnd: Corner;
 
-    const onPointerDown = (evt: PointerEvent) => {
-      const { offsetX: x, offsetY: y } = evt;
-      setStart({ x, y });
-      setEnd(undefined);
-      currentEnd = undefined;
-    }
-
-    const onPointerMove = (evt: PointerEvent) => {
-      const { offsetX: x, offsetY: y } = evt;
-      if (start) {
-        setEnd({ x, y });
-        currentEnd = { x, y };
-      }
-    }
-
-    const onPointerUp = () => {
-      if (!currentEnd || !dimensions) return;
+    const onCreateSelection = () => {
+      if (!start || !currentEnd) return;
 
       const elementStart = new OpenSeadragon.Point(start.x, start.y);
       const elementEnd = new OpenSeadragon.Point(currentEnd.x, currentEnd.y);
@@ -92,8 +77,39 @@ export const SelectionTool = (props: SelectionToolProps) => {
 
         if (w * h > 0)      
           props.onSelect({ x, y, w, h });
-        else 
-          setStart(undefined); // Edge case, should never happen
+
+        setStart(undefined);
+      }
+    }
+
+    const onPointerDown = (evt: PointerEvent) => {
+      if (!start) {
+        // No start corner yet - start new selection
+        const { offsetX: x, offsetY: y } = evt;
+        setStart({ x, y });
+        setEnd(undefined);
+        currentEnd = undefined;
+      } else {
+        // User started with a click, this is the "closing" click
+        onCreateSelection();
+      }
+    }
+
+    const onPointerMove = (evt: PointerEvent) => {
+      const { offsetX: x, offsetY: y } = evt;
+      if (start) {
+        // User is dragging
+        setEnd({ x, y });
+        currentEnd = { x, y };
+      }
+    }
+
+    const onPointerUp = () => {
+      if (!dimensions || !start) return;
+
+      if (currentEnd) {
+        // User dragged - complete selection
+        onCreateSelection();
       }
     }
 
