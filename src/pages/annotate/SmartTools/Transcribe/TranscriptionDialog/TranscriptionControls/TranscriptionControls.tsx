@@ -18,6 +18,8 @@ import {
 
 interface TranscriptionControlsProps {
 
+  lastError?: string;
+
   processingState?: ProcessingState;
 
   options: OCROptions;
@@ -142,6 +144,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <div className="space-y-2">
         {showProcessingState ? (
           <ProcessingStateBadge
+            lastError={props.lastError}
             processingState={props.processingState} />
         ) : (
           <Button 

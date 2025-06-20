@@ -1,8 +1,13 @@
-import { CloudAlert, CloudCheck } from 'lucide-react';
+import { CloudAlert, CloudCheck, Info } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { ProcessingState } from '../../Types';
+import { Tooltip, TooltipContent } from '@/ui/Tooltip';
+import { TooltipTrigger } from '@radix-ui/react-tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 
 interface ProcessingStateBadgeProps {
+
+  lastError?: string;
 
   processingState: ProcessingState;
 
@@ -20,7 +25,26 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
       {state === 'compressing_failed' ? (
         <span>Image compression failed</span>
       ) : state === 'ocr_failed' ? (
-        <span>OCR Service Error</span>
+        <>
+          <span>
+            OCR Service Error
+          </span>
+
+          {props.lastError && (
+            <Popover>
+              <PopoverTrigger>
+                <Info className="size-4 mt-[1px] opacity-70 hover:opacity-100" />
+              </PopoverTrigger>
+
+              <PopoverContent 
+                side="top"
+                sideOffset={6}
+                className="text-xs px-2.5 py-2 w-48 leading-relaxed">
+                {props.lastError}
+              </PopoverContent>
+            </Popover>
+          )}
+        </>
       ) : null}
     </div>
   ) : state === 'success_empty' ? (

@@ -26,7 +26,16 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(payload)
-    }).then(res => res.json());
+    }).then(res => {
+      if (res.status === 200) {
+        return res.json()
+      } else {
+        return res.json().then(errorResponse => {
+          const message = errorResponse.error?.message;
+          throw new Error(message);
+        });
+      }
+    });
   }
 
   if (typeof image === 'string') {

@@ -48,6 +48,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
+  const [lastError, setLastError] = useState<string | undefined>();
+
   const [results, setResults] = useState<OCRResult[] | undefined>();
 
   const annotations = useMemo(() => {
@@ -108,9 +110,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           transform: result.transform,
           crosswalk
         }]);
-      }).catch((error: any) => {
-        console.error(error);
+      }).catch((error: Error) => {
         setProcessingState('ocr_failed');
+        setLastError(error.message);
       });   
     });
   }
@@ -155,6 +157,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
               <TranscriptionControls
                 options={options}
                 processingState={processingState}
+                lastError={lastError}
                 onOptionsChanged={setOptions}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />

@@ -43,6 +43,7 @@ export const APIKeyParameterControl = (props: APIKeyParameterControlProps) => {
       <Label className="font-semibold">{param.displayName}</Label>
 
       <Input
+        autoComplete="off"
         className="w-full mt-2" 
         type="password" 
         value={value || ''} 
