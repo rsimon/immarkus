@@ -60,14 +60,14 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         setBusy(true);
 
         Cozy.parseURL(uri)
-        .then(result => {
-          setBusy(false);
-          setParseResult(result);
-        })
-        .catch(error => {
-          console.error(error);
-          setBusy(false);
-        });
+          .then(result => {
+            setBusy(false);
+            setParseResult(result);
+          })
+          .catch(error => {
+            console.error(error);
+            setBusy(false);
+          });
       }
     });
   }, [uri]);
