@@ -56,6 +56,9 @@ export const parseResponse = (data: any, transform: PageTransform): ImageAnnotat
     throw new Error('Could not parse response');
   }
 
+  if (response.error)
+    throw new Error(response.error.message);
+
   return response.textAnnotations
     .filter(({ locale }) => !locale)
     .map(({ description, boundingPoly: { vertices }}) =>

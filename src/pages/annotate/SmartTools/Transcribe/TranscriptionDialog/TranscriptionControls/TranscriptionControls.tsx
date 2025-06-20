@@ -15,6 +15,8 @@ import {
   SelectItem,
   SelectTrigger
 } from '@/ui/Select';
+import { KeyRound } from 'lucide-react';
+import { Badge } from '@/ui/Badge';
 
 interface TranscriptionControlsProps {
 
@@ -107,8 +109,13 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-2 pl-2.5 pr-2 py-2 flex justify-between">
               <div>
-                <h4 className="font-semibold">
+                <h4 className="font-semibold flex gap-1.5 items-center">
                   {serviceConfig.displayName}
+                  {serviceConfig.requiresKey && (
+                    <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
+                      <KeyRound className="size-3" /> API Key Required
+                    </span>
+                  )}
                 </h4>
                 <p className="text-xs leading-relaxed mt-0.5">
                   {serviceConfig.description}
@@ -124,8 +131,13 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                   key={s.id}
                   value={s.id}
                   className="flex items-start [&>*:first-child]:mt-0.5">
-                  <h4 className="font-semibold">
+                  <h4 className="font-semibold flex gap-1.5 items-center">
                     {s.displayName}
+                    {s.requiresKey && (
+                      <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
+                        <KeyRound className="size-3" /> API Key Required
+                      </span>
+                    )}
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
                     {s.description}

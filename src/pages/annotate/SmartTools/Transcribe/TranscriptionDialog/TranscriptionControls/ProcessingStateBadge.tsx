@@ -37,8 +37,11 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
               <PopoverContent 
                 side="top"
                 sideOffset={6}
-                className="text-xs px-2.5 py-2 w-48 leading-relaxed">
-                {props.lastError}
+                className="text-xs px-2.5 py-2 w-72 leading-relaxed">
+                <h3 className="font-semibold">OCR service responded:</h3>
+                <p className="italic mt-1">
+                  "{props.lastError}"
+                </p>
               </PopoverContent>
             </Popover>
           )}

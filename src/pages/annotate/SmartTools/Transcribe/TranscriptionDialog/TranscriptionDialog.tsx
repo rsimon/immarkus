@@ -105,11 +105,19 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       const crosswalk = service.connector.parseResponse;
 
       service.connector.submit(image, options.serviceOptions).then((data: any) => {
-        setResults(current => [...(current || []), { 
-          data, 
-          transform: result.transform,
-          crosswalk
-        }]);
+        // Test the crosswalk to make sure data is valid
+        try {
+          crosswalk(data, result.transform, options.serviceOptions);
+
+          setResults(current => [...(current || []), { 
+            data, 
+            transform: result.transform,
+            crosswalk
+          }]);
+        } catch (error) {
+          setProcessingState('ocr_failed');
+          setLastError(error.message)
+        }
       }).catch((error: Error) => {
         setProcessingState('ocr_failed');
         setLastError(error.message);

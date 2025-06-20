@@ -14,6 +14,9 @@ export interface ServiceConfig {
   /** Service display description **/
   description: string;
 
+  /** Set to true if the service requires a user-provided API key **/
+  requiresKey?: boolean;
+
   /** Configuration parameters supported by this service **/
   parameters?: ServiceConfigParameter[];
 

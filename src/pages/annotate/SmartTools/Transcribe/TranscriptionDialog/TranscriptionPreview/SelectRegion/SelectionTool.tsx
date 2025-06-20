@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { useViewer } from '@annotorious/react';
-import { Region } from '../../../Types';
+import { Region } from '@/services';
 
 interface SelectionToolProps {
 
@@ -106,13 +106,20 @@ export const SelectionTool = (props: SelectionToolProps) => {
     document.body.addEventListener('pointerup', onPointerUp);
 
     return () => {
-      viewer?.setMouseNavEnabled(true);
-
-      el.style.cursor = null;
-
-      el?.removeEventListener('pointerdown', onPointerDown);
-      el?.removeEventListener('pointermove', onPointerMove);
       document.body.removeEventListener('pointerup', onPointerUp);
+      
+      if (el) {
+        el.style.cursor = null;
+
+        el.removeEventListener('pointerdown', onPointerDown);
+        el.removeEventListener('pointermove', onPointerMove);
+      }
+
+      try {
+        viewer?.setMouseNavEnabled(true);
+      } catch {
+        // Ignore
+      }
     }
   }, [viewer?.element, start, props.onSelect]);
 
