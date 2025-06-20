@@ -11,7 +11,9 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
         image: base64 ? {
           content: base64
         } : {
-          imageUri: image
+          source: {
+            imageUri: image
+          }
         },
         features: [{
           type: 'TEXT_DETECTION',
