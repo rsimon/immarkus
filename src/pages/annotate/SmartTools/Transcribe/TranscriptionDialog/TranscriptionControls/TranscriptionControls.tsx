@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { KeyRound } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { ServiceRegistry, ServiceConfigParameter, useService } from '@/services';
@@ -15,8 +16,6 @@ import {
   SelectItem,
   SelectTrigger
 } from '@/ui/Select';
-import { KeyRound } from 'lucide-react';
-import { Badge } from '@/ui/Badge';
 
 interface TranscriptionControlsProps {
 
