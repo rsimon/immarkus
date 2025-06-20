@@ -1,9 +1,7 @@
 import { CloudAlert, CloudCheck, Info } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Spinner } from '@/components/Spinner';
 import { ProcessingState } from '../../Types';
-import { Tooltip, TooltipContent } from '@/ui/Tooltip';
-import { TooltipTrigger } from '@radix-ui/react-tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 
 interface ProcessingStateBadgeProps {
 
