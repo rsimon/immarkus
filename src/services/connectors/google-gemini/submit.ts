@@ -19,8 +19,8 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
         responseMimeType: 'application/json',
         responseSchema: {
           type: Type.OBJECT,
-          properties: { text: { type: Type.STRING } },
-          required: ['text']
+          properties: { transcription: { type: Type.STRING } },
+          required: ['transcription']
         }
       }
     });
