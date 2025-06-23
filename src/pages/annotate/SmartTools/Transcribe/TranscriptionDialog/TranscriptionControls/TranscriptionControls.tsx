@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { KeyRound } from 'lucide-react';
+import { CircleCheck, KeyRound, SquareDashedMousePointer } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import { ServiceRegistry, ServiceConfigParameter, useService } from '@/services';
+import { cn } from '@/ui/utils';
+import { ServiceRegistry, ServiceConfigParameter, useService, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
@@ -22,6 +23,8 @@ interface TranscriptionControlsProps {
   lastError?: string;
 
   processingState?: ProcessingState;
+
+  region?: Region;
 
   options: OCROptions;
 
@@ -51,8 +54,10 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   const canSumbit = useMemo(() => {
     // Check if all required params are filled
     const required = (serviceConfig?.parameters || []).filter(p => p.required);
-    return required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
-  }, [serviceConfig, props.options]);
+    const allRequiredFilled = required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
+
+    return serviceConfig.requiresRegion ? allRequiredFilled && props.region : allRequiredFilled;
+  }, [serviceConfig, props.options, props.region]);
 
   useEffect(() => {
     // Show processing state instead of submit button
@@ -146,6 +151,28 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             </SelectContent>
           </Select>
         </fieldset>
+
+        {serviceConfig.requiresRegion && (
+          <div className={cn(
+            'border rounded px-2.5 py-2 text-sm',
+            props.region 
+              ? 'border-green-600 text-green-600 bg-green-600/5'
+              : 'border-destructive text-destructive bg-destructive/5'
+            )}>
+            <h5 className="font-semibold flex gap-2 items-center mb-0.5">
+              {props.region ? (
+                <CircleCheck className="size-4.5 mb-0.5" />
+              ) : (
+                <SquareDashedMousePointer className="size-4.5 mb-0.5" /> 
+              )} Select Area to Transcribe
+            </h5>
+
+            <p>
+              This service returns text without position data. Select the area to 
+              transcribe. The result will be inserted as a single annotation.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={evt => evt.preventDefault()}>
           {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}

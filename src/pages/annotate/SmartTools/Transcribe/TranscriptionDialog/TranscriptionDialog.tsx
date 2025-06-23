@@ -22,6 +22,8 @@ interface OCRResult {
 
   transform: PageTransform;
 
+  region?: Region;
+
   crosswalk: ServiceCrosswalk;
 
 } 
@@ -56,8 +58,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     if ((results || []).length === 0) return; // No (successful) OCR run yet
     
     return results.reduce<ImageAnnotation[]>((all, result) => {
-      const { data, transform, crosswalk } = result;
-      const inThisBatch = crosswalk(data, transform, options.serviceOptions);
+      const { data, transform, region, crosswalk } = result;
+      const inThisBatch = crosswalk(data, transform, region, options.serviceOptions);
       return [...all, ...inThisBatch];
     }, []);
   }, [results, options]);
@@ -111,11 +113,12 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       service.connector.submit(image, options.serviceOptions).then((data: any) => {
         // Test the crosswalk to make sure data is valid
         try {
-          crosswalk(data, result.transform, options.serviceOptions);
+          crosswalk(data, result.transform, region, options.serviceOptions);
 
           setResults(current => [...(current || []), { 
             data, 
             transform: result.transform,
+            region,
             crosswalk
           }]);
         } catch (error) {
@@ -167,9 +170,10 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
             <div className="flex-[1] min-w-0">
               <TranscriptionControls
+                lastError={lastError}
                 options={options}
                 processingState={processingState}
-                lastError={lastError}
+                region={region}
                 onOptionsChanged={setOptions}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />

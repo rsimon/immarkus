@@ -70,6 +70,7 @@ const createWordAnnotations = (line: any, transform: PageTransform): ImageAnnota
 export const parseResponse = (
   data: any, 
   transform: PageTransform, 
+  _: Region | undefined,
   options: ParseOCRSpaceResponseArgs = { 'merge-lines': false }
 ): ImageAnnotation[] =>
   (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
