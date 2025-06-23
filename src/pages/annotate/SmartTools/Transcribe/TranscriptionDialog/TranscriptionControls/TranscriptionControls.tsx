@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CircleCheck, KeyRound, SquareDashedMousePointer } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { cn } from '@/ui/utils';
 import { ServiceRegistry, ServiceConfigParameter, useService, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
@@ -16,7 +17,6 @@ import {
   SelectItem,
   SelectTrigger
 } from '@/ui/Select';
-import { cn } from '@/ui/utils';
 
 interface TranscriptionControlsProps {
 
