@@ -149,34 +149,40 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        {serviceConfig.requiresRegion && (
-          <div className={cn(
-            'border rounded px-2.5 py-2 text-sm',
-            props.region 
-              ? 'border-green-700/15 text-green-700 bg-green-700/10'
-              : 'border-red-700/15 text-red-700 bg-red-700/10'
-            )}>
-            <h5 className="font-semibold flex gap-2 items-center mb-0.5">
-              {props.region ? (
-                <CircleCheck className="size-4.5 mb-0.5" />
-              ) : (
-                <SquareDashedMousePointer className="size-4.5 mb-0.5" /> 
-              )} Select Area to Transcribe
-            </h5>
-
-            <p>
-              This service returns transcriptions without bounding box information. Select the area to 
-              transcribe. The result will be inserted as a single annotation.
-            </p>
-          </div>
-        )}
-
         <form onSubmit={evt => evt.preventDefault()}>
           {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
         </form>
       </div>
 
       <div className="space-y-2">
+        {serviceConfig.requiresRegion && (
+          <div className={cn(
+            'border rounded px-2.5 py-2 text-sm leading-relaxed',
+            props.region 
+              ? 'border-green-700/15 text-green-700 bg-green-700/10'
+              : 'border-amber-700/15 text-amber-700 bg-amber-700/10'
+            )}>
+            <h5 className="font-semibold flex gap-2 items-center mb-1">
+              {props.region ? (
+                <>
+                  <CircleCheck className="size-4.5 mb-0.5" />
+                  Area Selected
+                </>
+              ) : (
+                <>
+                  <SquareDashedMousePointer className="size-4.5 mb-0.5" /> 
+                  Select Area to Transcribe
+                </>
+              )} 
+            </h5>
+
+            <p>
+              This service returns transcriptions without bounding box information. Select the area you 
+              want to transcribe. The result will be inserted as a single annotation.
+            </p>
+          </div>
+        )}
+
         {showProcessingState ? (
           <ProcessingStateBadge
             lastError={props.lastError}
