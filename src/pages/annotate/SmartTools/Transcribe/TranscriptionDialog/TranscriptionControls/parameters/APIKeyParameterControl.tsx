@@ -30,7 +30,7 @@ export const APIKeyParameterControl = (props: APIKeyParameterControlProps) => {
     const stored = localStorage.getItem(key);
     if (stored)
       props.onValueChanged(deobfuscate(stored));
-  }, []);
+  }, [service.id]);
 
   const onChange = (value: string) => {
     if (value) {
