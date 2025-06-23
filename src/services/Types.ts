@@ -17,6 +17,9 @@ export interface ServiceConfig {
   /** Set to true if the service requires a user-provided API key **/
   requiresKey?: boolean;
 
+  /** Set to true if the service requires a user-provded region bounding box **/
+  requiresRegion?: boolean;
+
   /** Configuration parameters supported by this service **/
   parameters?: ServiceConfigParameter[];
 
@@ -75,7 +78,7 @@ export interface ServiceConnector {
 
 }
 
-export type ServiceCrosswalk = (data: any, transform: PageTransform, options?: Record<string, any>) => ImageAnnotation[];
+export type ServiceCrosswalk = (data: any, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
 
 export type PageTransform = {
 
