@@ -12,5 +12,11 @@ export const config: ServiceConfig = {
     id: 'api-key',
     displayName: 'Your API Key',
     required: true
-  }]
+  }],
+  keyInstructions: `
+You need an API key to use Google Gemini. To get your own key:
+
+- Go to <https://aistudio.google.com/>
+- Select **Get an API key** from the popup
+`
 };

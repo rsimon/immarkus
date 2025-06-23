@@ -13,7 +13,7 @@ export const config: ServiceConfig = {
     required: true
   }],
   keyInstructions: `
-You need an API key to use Google Vision. Note that Google Vision is a paid service!
+You need an API key to use Google Vision. Note that Google Vision is a **paid service**!
 
 To get your own key:
 - [Start here](https://cloud.google.com/vision/docs/before-you-begin) and create a new project
