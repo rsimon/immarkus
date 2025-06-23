@@ -170,9 +170,10 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
             <div className="flex-[1] min-w-0">
               <TranscriptionControls
+                lastError={lastError}
                 options={options}
                 processingState={processingState}
-                lastError={lastError}
+                region={region}
                 onOptionsChanged={setOptions}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />
