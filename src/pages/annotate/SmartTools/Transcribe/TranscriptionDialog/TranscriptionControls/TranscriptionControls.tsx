@@ -83,7 +83,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <APIKeyParameterControl
         key={param.id}
         param={param} 
-        serviceId={serviceId} 
+        service={serviceConfig} 
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'string' ? (
@@ -113,7 +113,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-1.5 pl-2.5 pr-2 py-2.5 flex justify-between">
               <div>
-                <h4 className="font-semibold flex gap-1.5 items-center">
+                <h4 className="font-semibold flex gap-2.5 items-center">
                   {serviceConfig.displayName}
                   {serviceConfig.requiresKey && (
                     <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
@@ -129,16 +129,16 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
             <SelectContent
               align="start"
-              className="">
+              className="[&_div[role=option]_span:nth-child(2)]:flex-1">
               {services.map(s => (
                 <SelectItem
                   key={s.id}
                   value={s.id}
                   className="flex items-start [&>*:first-child]:mt-0.5 py-3">
-                  <h4 className="font-semibold flex gap-1.5 items-center">
-                    {s.requiresKey && (
-                      <KeyRound className="size-3.5 text-gray-400 mb-[1px]" />
-                    )} {s.displayName}
+                  <h4 className="font-semibold flex gap-2 items-center justify-between">
+                    {s.displayName} {s.requiresKey && (
+                      <KeyRound className="size-3.5 text-orange-400 mr-1" />
+                    )} 
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
                     {s.description}
@@ -165,7 +165,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             </h5>
 
             <p>
-              This service returns text without position data. Select the area to 
+              This service returns transcriptions without bounding box information. Select the area to 
               transcribe. The result will be inserted as a single annotation.
             </p>
           </div>

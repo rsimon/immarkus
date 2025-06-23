@@ -4,7 +4,7 @@ export const config: ServiceConfig = {
   id: 'ocr-space',
   connector: 'ocr-space',
   displayName: 'OCR.space',
-  description: 'Free onlione OCR API provided by OCR.space.',
+  description: 'Free OCR service provided by OCR.space',
   parameters: [{
     type: 'string',
     id: 'language',

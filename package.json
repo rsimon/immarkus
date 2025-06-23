@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "@tailwindcss/vite": "^4.1.10",
     "@types/chroma-js": "^3.1.1",
     "@types/node": "^24.0.3",
@@ -81,6 +82,7 @@
     "react-dom": "^19.1.0",
     "react-force-graph-2d": "^1.27.1",
     "react-intersection-observer": "^9.16.0",
+    "react-markdown": "^10.1.0",
     "react-mosaic-component": "^6.1.1",
     "react-router-dom": "^7.6.2",
     "tailwind-merge": "^3.3.1",

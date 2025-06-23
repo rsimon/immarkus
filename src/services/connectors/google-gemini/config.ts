@@ -4,7 +4,7 @@ export const config: ServiceConfig = {
   id: 'google-gemini',
   connector: 'google-gemini',
   displayName: 'Google Gemini',
-  description: 'Transcribe text in an image area with Google Gemini.',
+  description: 'Full-text transcription via Google Gemini',
   requiresKey: true,
   requiresRegion: true,
   parameters: [{

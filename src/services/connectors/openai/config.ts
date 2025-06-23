@@ -4,7 +4,7 @@ export const config: ServiceConfig = {
   id: 'open-ai-gpt',
   connector: 'openai',
   displayName: 'OpenAI GPT',
-  description: 'Transcribe text in an image area with OpenAI GPT.',
+  description: 'Full-text transcription via OpenAI GPT',
   requiresKey: true,
   requiresRegion: true,
   parameters: [{
