@@ -157,7 +157,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <div className="space-y-2">
         {serviceConfig.requiresRegion && (
           <div className={cn(
-            'border rounded px-2.5 py-2 text-sm leading-relaxed',
+            'border rounded-md px-2.5 py-2 text-sm leading-relaxed',
             props.region 
               ? 'border-green-700/15 text-green-700 bg-green-700/10'
               : 'border-amber-700/15 text-amber-700 bg-amber-700/10'
