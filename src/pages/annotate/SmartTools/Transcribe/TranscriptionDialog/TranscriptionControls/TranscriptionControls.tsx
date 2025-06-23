@@ -136,12 +136,9 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                   value={s.id}
                   className="flex items-start [&>*:first-child]:mt-0.5 py-3">
                   <h4 className="font-semibold flex gap-1.5 items-center">
-                    {s.displayName}
                     {s.requiresKey && (
-                      <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
-                        <KeyRound className="size-3" /> API Key Required
-                      </span>
-                    )}
+                      <KeyRound className="size-3.5 text-gray-400 mb-[1px]" />
+                    )} {s.displayName}
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
                     {s.description}
@@ -156,8 +153,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <div className={cn(
             'border rounded px-2.5 py-2 text-sm',
             props.region 
-              ? 'border-green-600 text-green-600 bg-green-600/5'
-              : 'border-destructive text-destructive bg-destructive/5'
+              ? 'border-green-700/15 text-green-700 bg-green-700/10'
+              : 'border-red-700/15 text-red-700 bg-red-700/10'
             )}>
             <h5 className="font-semibold flex gap-2 items-center mb-0.5">
               {props.region ? (
