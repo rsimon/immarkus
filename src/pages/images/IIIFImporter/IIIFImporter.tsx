@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
-import { Ban, Check, CloudDownload, Loader2 } from 'lucide-react';
+import { Ban, Check, CloudDownload, Library, LibraryBig, Loader2, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
@@ -9,8 +9,9 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
-import { type CozyParseResult, Cozy } from 'cozy-iiif';
+import { type CozyParseResult, Cozy, CozyCollection } from 'cozy-iiif';
 import { ErrorAlert } from './ErrorAlert';
+import { ImportFromCollection } from './ImportFromCollection';
 
 interface IIIFImporterProps {
 
@@ -27,6 +28,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
   const [open, setOpen] = useState(false);
 
   const [uri, setURI] = useState('');
+
+  const [showCollectionImporter, setShowCollectionImporter] = useState(false);
 
   const [alreadyImported, setAlreadyImported] = useState(false);
 
@@ -72,6 +75,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     });
   }, [uri]);
 
+  const onBulkImport = (uris: string[]) => {
+    console.log('bulk importing', uris);
+  }
+
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
@@ -100,6 +107,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           setOpen(false);
         });
       });
+    } else if (parseResult.type === 'collection') {
+
     } else {
       // Should never happen
       console.warn('Unsupported content type', parseResult);
@@ -190,10 +199,15 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               <ErrorAlert message="Invalid URL: web page" />
             </div>
           ) : parseResult?.type === 'collection' ? (
-            <div 
-              className="p-3 mt-6 items-start leading-relaxed
-                rounded text-destructive border border-destructive">
-              <ErrorAlert message="Collection manifests are currently unsupported" />
+            <div className="flex items-center gap-1 pl-0.5">
+              <SquareLibrary className="size-4.5 mb-0.5" /> 
+              <div>
+                This is a IIIF Collection Manifest with multiple items. 
+                <Button 
+                  variant="link"
+                  className="px-1 text-xs"
+                  onClick={() => setShowCollectionImporter(true)}>Choose items to import</Button> 
+              </div>
             </div>
           ) : parseResult?.type === 'plain-image' ? (
             <div 
@@ -204,6 +218,12 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
           )}
+
+          <ImportFromCollection 
+            open={showCollectionImporter}
+            collection={(parseResult as any)?.resource as CozyCollection} 
+            onCancel={() => setShowCollectionImporter(false)} 
+            onImport={onBulkImport} />
 
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
