@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import murmur from 'murmurhash';
-import { LibrarySquare } from 'lucide-react';
+import { Ban, FileX, LibrarySquare } from 'lucide-react';
 import { Cozy, CozyCollection, CozyCollectionItem, CozyParseResult } from 'cozy-iiif';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Spinner } from '@/components/Spinner';
@@ -18,6 +18,15 @@ import {
   DialogFooter,
   DialogTitle
 } from '@/ui/Dialog';
+import { 
+  AlertDialog, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/ui/AlertDialog';
 
 interface ImportFromCollectionProps {
 
@@ -85,7 +94,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
       generateShortId(manifest.id).then(id => {
         const exists = Boolean(store.getIIIFResource(id));
         if (exists) {
-          return Promise.reject(`${manifest.getLabel()} already exists in your project.`);
+          return Promise.reject(new Error(`${manifest.getLabel()} already exists in your project. IMMARKUS is currently not able to import the same manifest into a project more than once.`));
         } else {
           return Cozy.parseURL(manifest.id).then(parsed => ({ id, parsed }));
         }
@@ -132,9 +141,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         setImporting(false);
         setImportError(error.message);
       });
-    }).catch(error => {
-      console.error(error);
-
+    }).catch((error: Error) => {
       setImporting(false);
       setImportError(error.message);
     });
@@ -207,6 +214,31 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         title="Importing"
         message={`Importing ${selected.length} IIIF manifests`}
         progress={importProgress} />
+
+      <AlertDialog 
+        open={Boolean(importError)}
+        onOpenChange={open => !open && setImportError(undefined)}>
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle
+              className="flex gap-2 items-center">
+              <FileX className="size-5" />  Import Error
+            </AlertDialogTitle>
+            <AlertDialogDescription
+              className="my-2 leading-relaxed">
+              {importError}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="bg-destructive border-destructive text-destructive-foreground hover:text-destructive-foreground hover:bg-destructive/90">
+              Close
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>  
   )
 
