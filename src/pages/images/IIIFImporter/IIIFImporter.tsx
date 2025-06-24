@@ -204,8 +204,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
                 This is a IIIF Collection Manifest with multiple items. 
                 <Button 
                   variant="link"
-                  className="px-1 text-xs"
-                  onClick={() => setShowCollectionImporter(true)}>Choose items to import</Button> 
+                  className="ml-1 p-0 h-auto text-xs"
+                  onClick={() => setShowCollectionImporter(true)}>Select items to import</Button>.
               </div>
             </div>
           ) : parseResult?.type === 'plain-image' ? (
