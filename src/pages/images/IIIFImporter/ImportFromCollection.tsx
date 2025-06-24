@@ -107,40 +107,44 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         return next;
       });
     }), Promise.resolve([])).then(results => {
-      results.reduce<Promise<void>>((promise, { parsed, id }) => promise.then(() => {
-        if (parsed.type === 'manifest') {
-          const { resource } = parsed;
+      const allValid = results.every(r => r.parsed.type === 'manifest');
 
-          const info: IIIFResourceInformation = {
-            id,
-            name: resource.getLabel() || `IIIF Presentation API v${resource.majorVersion}`,
-            uri: resource.id,
-            importedAt: new Date().toISOString(),
-            type: 'PRESENTATION_MANIFEST',
-            majorVersion: resource.majorVersion,
-            canvases: resource.canvases.map(canvas => ({
-              id: murmur.v3(canvas.id).toString(),
-              uri: canvas.id,
-              name: getCanvasLabelWithFallback(canvas),
-              manifestId: id
-            }))
+      if (allValid) {
+        results.reduce<Promise<void>>((promise, { parsed, id }) => promise.then(() => {
+          // Just to make the TS compiler happy
+          if (parsed.type === 'manifest') {
+            const { resource } = parsed;
+
+            const info: IIIFResourceInformation = {
+              id,
+              name: resource.getLabel() || `IIIF Presentation API v${resource.majorVersion}`,
+              uri: resource.id,
+              importedAt: new Date().toISOString(),
+              type: 'PRESENTATION_MANIFEST',
+              majorVersion: resource.majorVersion,
+              canvases: resource.canvases.map(canvas => ({
+                id: murmur.v3(canvas.id).toString(),
+                uri: canvas.id,
+                name: getCanvasLabelWithFallback(canvas),
+                manifestId: id
+              }))
+            }
+
+            return store.importIIIFResource(info, props.folderId).then(() => {});
           }
+        }), Promise.resolve(undefined)).then(() => {
+          setImporting(false);
+          props.onImported();
+        }).catch(error => {
+          console.error(error);
 
-          return store.importIIIFResource(info, props.folderId).then(() => {});
-        } else {
-          // Should never happen
-          console.error('Invalid parse result', parsed);
-          throw new Error(`Invalid parse result`);
-        }
-      }), Promise.resolve(undefined)).then(() => {
-        setImporting(false);
-        props.onImported();
-      }).catch(error => {
-        console.error(error);
-
-        setImporting(false);
-        setImportError(error.message);
-      });
+          setImporting(false);
+          setImportError(error.message);
+        });
+      } else {
+        console.error('Invalid parse result', results);
+        throw new Error(`Invalid parse result`);
+      }
     }).catch((error: Error) => {
       setImporting(false);
       setImportError(error.message);
