@@ -1,5 +1,5 @@
-import { FileChartColumn, FileJson } from 'lucide-react';
-import { ExportProgressDialog } from '@/components/ExportProgressDialog';
+import { FileChartColumn, FileJson, Table2 } from 'lucide-react';
+import { ProgressDialog } from '@/components/ProgressDialog';
 import { Spinner } from '@/components/Spinner';
 import { exportRelationshipsAsJSONLD, useExcelRelationshipExport, useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -73,7 +73,8 @@ export const ExportRelationships = () => {
         </li>
       </ul>
 
-      <ExportProgressDialog
+      <ProgressDialog
+        icon={<Table2 className="h-5 w-5" />}
         message="Exporting XLSX. This may take a while."
         open={busy}
         progress={progress} />

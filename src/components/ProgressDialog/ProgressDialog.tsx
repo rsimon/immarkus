@@ -2,8 +2,13 @@ import { Table2 } from 'lucide-react';
 import { Dialog, DialogTitle, DialogContent } from '@/ui/Dialog';
 import { Progress } from '@/ui/Progress';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { ReactElement } from 'react';
 
-interface ExportProgressDialogProps {
+interface ProgressDialogProps {
+
+  icon?: ReactElement;
+
+  title?: string;
 
   message: string;
 
@@ -13,13 +18,13 @@ interface ExportProgressDialogProps {
 
 }
 
-export const ExportProgressDialog = (props: ExportProgressDialogProps) => {
+export const ProgressDialog = (props: ProgressDialogProps) => {
 
   return (
     <Dialog open={props.open}>
       <DialogContent closeIcon={false}>
         <DialogTitle className="flex items-center gap-2">
-          <Table2 className="h-5 w-5" /> Processing
+          {props.icon} {props.title || 'Processing'}
         </DialogTitle>
 
         <div className="pb-4">

@@ -109,6 +109,11 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     }
   }
 
+  const onBulkImportComplete = () => {
+    setShowCollectionImporter(false);
+    setOpen(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -214,9 +219,11 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           )}
 
           <ImportFromCollection 
-            open={showCollectionImporter}
             collection={(parseResult as any)?.resource as CozyCollection} 
-            onCancel={() => setShowCollectionImporter(false)} />
+            folderId={props.folderId}
+            open={showCollectionImporter}
+            onCancel={() => setShowCollectionImporter(false)} 
+            onImported={onBulkImportComplete} />
 
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
