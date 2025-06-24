@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
-import { Ban, Check, CloudDownload, Library, LibraryBig, Loader2, SquareLibrary } from 'lucide-react';
+import { type CozyParseResult, Cozy, CozyCollection } from 'cozy-iiif';
+import { Ban, Check, CloudDownload, Loader2, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
@@ -9,7 +10,6 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } 
 import { useStore } from '@/store';
 import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
-import { type CozyParseResult, Cozy, CozyCollection } from 'cozy-iiif';
 import { ErrorAlert } from './ErrorAlert';
 import { ImportFromCollection } from './ImportFromCollection';
 
@@ -75,10 +75,6 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     });
   }, [uri]);
 
-  const onBulkImport = (uris: string[]) => {
-    console.log('bulk importing', uris);
-  }
-
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
@@ -107,8 +103,6 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           setOpen(false);
         });
       });
-    } else if (parseResult.type === 'collection') {
-
     } else {
       // Should never happen
       console.warn('Unsupported content type', parseResult);
@@ -222,8 +216,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           <ImportFromCollection 
             open={showCollectionImporter}
             collection={(parseResult as any)?.resource as CozyCollection} 
-            onCancel={() => setShowCollectionImporter(false)} 
-            onImport={onBulkImport} />
+            onCancel={() => setShowCollectionImporter(false)} />
 
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>

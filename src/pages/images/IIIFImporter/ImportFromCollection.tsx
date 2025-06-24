@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { CozyCollection, CozyCollectionItem } from 'cozy-iiif';
+import { useMemo, useState } from 'react';
+import { Cozy, CozyCollection, CozyCollectionItem, CozyParseResult } from 'cozy-iiif';
+import { useStore } from '@/store';
+import { generateShortId } from '@/store/utils';
 import { Button } from '@/ui/Button';
 import { Checkbox } from '@/ui/Checkbox';
 import { Separator } from '@/ui/Separator';
@@ -10,6 +12,7 @@ import {
   DialogFooter,
   DialogTitle
 } from '@/ui/Dialog';
+import { Spinner } from '@/components/Spinner';
 
 interface ImportFromCollectionProps {
 
@@ -19,13 +22,24 @@ interface ImportFromCollectionProps {
 
   onCancel(): void;
 
-  onImport(manifests: string[]): void;
-
 }
 
 export const ImportFromCollection = (props: ImportFromCollectionProps) => {
 
+  const store = useStore();
+
   const [selected, setSelected] = useState<CozyCollectionItem[]>([]);
+
+  const [parsed, setParsed] = useState<CozyParseResult[]>([]);
+
+  const [importing, setImporting] = useState(false);
+  
+  const [importError, setImportError] = useState<string | undefined>();
+
+  const importProgress = useMemo(() => {
+    if (!importing || selected.length === 0) return 0;
+    return parsed.length / selected.length;
+  }, [importing, selected, parsed]);
 
   const onToggleItem = (item: CozyCollectionItem, checked: boolean) => {
     if (checked) {
@@ -49,6 +63,39 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
   const isAllSelected = selected.length === (props.collection?.items || []).length;
 
   const isIndeterminate = selected.length > 0 && selected.length < (props.collection?.items || []).length;
+
+  const onImport = () => {
+    // Should never happen
+    if (selected.length === 0) return;
+
+    setImporting(true);
+
+    const importOne = (manifest: CozyCollectionItem) =>
+      generateShortId(manifest.id).then(id => {
+        const exists = Boolean(store.getIIIFResource(id));
+        if (exists) {
+          return Promise.reject(`${manifest.getLabel()} already exists in your project.`);
+        } else {
+          return Cozy.parseURL(manifest.id);
+        }
+      });
+
+    selected.reduce<Promise<CozyParseResult[]>>((promise, manifest) => promise.then(results => {
+      return importOne(manifest).then(parsed => {
+        const next = [...results, parsed];
+        setParsed(next);
+        return next;
+      });
+    }), Promise.resolve([])).then(results => {
+      setImporting(true);
+      console.log('resolved all', results);
+    }).catch(error => {
+      console.error(error);
+
+      setImporting(true);
+      setImportError(error.message);
+    });
+  }
 
   return (
     <Dialog open={props.open}>
@@ -90,16 +137,21 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         </div>
 
         <DialogFooter className="flex">
-          <Button 
+          <Button
             variant="ghost" 
             onClick={props.onCancel}>
             Cancel
           </Button>
 
           <Button 
-            onClick={() => props.onImport?.(selected.map(m => m.id))}
-            disabled={selected.length === 0}>
-            Import ({selected.length})
+            onClick={onImport}
+            className="min-w-32"
+            disabled={importing || selected.length === 0}>
+            {importing ? (
+              <Spinner className="size-4" />
+            ) : (
+              <span>Import ({selected.length})</span>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
