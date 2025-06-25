@@ -11,6 +11,15 @@ export const config: ServiceConfig = {
     id: 'api-key',
     displayName: 'Your API Key',
     required: true
+  }, {
+    type: 'radio',
+    id: 'merge-annotations',
+    displayName: 'Merge Annotations',
+    options: [
+      ['dont_merge', 'Don\'t merge'],
+      ['paragraph', 'Merge paragraphs'],
+      ['block', 'Merge blocks']  
+    ]
   }],
   keyInstructions: `
 You need an API key to use Google Vision. Note that Google Vision is a **paid service**!

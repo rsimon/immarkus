@@ -8,6 +8,7 @@ import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
   APIKeyParameterControl,
+  RadioParameterControl,
   StringParameterControl, 
   SwitchParameterControl 
 } from './parameters';
@@ -85,6 +86,12 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         param={param} 
         service={serviceConfig} 
         value={value} 
+        onValueChanged={onValueChanged} />
+    ) : param.type === 'radio' ? (
+      <RadioParameterControl 
+        key={param.id}
+        param={param}
+        value={value}
         onValueChanged={onValueChanged} />
     ) : param.type === 'string' ? (
       <StringParameterControl 

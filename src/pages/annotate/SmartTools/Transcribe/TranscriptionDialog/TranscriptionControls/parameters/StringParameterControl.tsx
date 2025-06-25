@@ -35,11 +35,11 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
           </SelectTrigger>
 
           <SelectContent>
-            {Object.keys(param.options).map(key => (
+            {param.options.map(([key, value]) => (
               <SelectItem 
                 key={key}
                 value={key}>
-                {param.options[key]}
+                {value}
               </SelectItem>
             ))}
           </SelectContent>

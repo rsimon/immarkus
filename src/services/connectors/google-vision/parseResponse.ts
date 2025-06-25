@@ -4,9 +4,25 @@ import { ImageAnnotation, Polygon, ShapeType } from '@annotorious/react';
 import type { AnnotationBody } from '@annotorious/react';
 import { boundsFromPoints } from '@annotorious/annotorious';
 
+interface WordPos {
+
+  word: string;
+
+  start: number;
+
+  end: number;
+
+}
+
+interface BoundingPoly {
+
+  vertices: { x?: number, y?: number }[]
+
+};
+
 const toAnnotation = (
   text: string, 
-  vertices: { x: number, y: number }[],
+  vertices: { x?: number, y?: number }[],
   transform: PageTransform
 ): ImageAnnotation => {
   const id = uuidv4();
@@ -48,16 +64,6 @@ const toAnnotation = (
   }
 }
 
-interface WordPos {
-
-  word: string;
-
-  start: number;
-
-  end: number;
-
-}
-
 const clipFullText = (words: string[], fullText: string, startSearchIndex = 0) => {
   if (words.length === 0) return { text: '', index: startSearchIndex };
   
@@ -92,7 +98,6 @@ const clipFullText = (words: string[], fullText: string, startSearchIndex = 0) =
 
 const mergeAnnotations = (
   response: any,
-  transform: PageTransform,
   granularity: 'block' | 'paragraph'
 ) => {
   const { fullTextAnnotation } = response;
@@ -119,7 +124,7 @@ const mergeAnnotations = (
 
   const merged = blocks
     .filter(b => b.blockType === 'TEXT')
-    .reduce<{ words: string[], boundingBox: [number, number][] }[]>((all, block) => {
+    .reduce<{ words: string[], boundingBox: BoundingPoly }[]>((all, block) => {
       if (granularity === 'block') {
         const { boundingBox } = block;
         const words: string[] = block.paragraphs
@@ -141,20 +146,23 @@ const mergeAnnotations = (
   // Note that the 'words' lose whitespace information! In order to re-construct
   // correct whitespace between words reliably & language-independent, we need to 
   // match them against the original fulltext returned by Google Vison.
-  const withCleanFullText = merged.reduce<{ text: string, boundingBox: [number, number][], index: number }[]>((result, { words, boundingBox }) => {
+  return merged.reduce<{ 
+    text: string, 
+    boundingBox: 
+    BoundingPoly, 
+    index: number 
+  }[]>((result, { words, boundingBox }) => {
     const startIdx = result.length === 0 ? 0 : result[result.length - 1].index; 
     const { text, index } = clipFullText(words, fullText, startIdx);
     return [...result, { text, boundingBox, index }];
   }, []);
-
-  console.log(withCleanFullText);
 }
 
 export const parseResponse = (
   data: any, 
   transform: PageTransform,
   _: Region | undefined,
-  options: Record<string, any>
+  options: Record<string, any> = { 'merge-annotations': 'dont_merge'}
 ): ImageAnnotation[] => {
   const response = data.responses[0];
 
@@ -166,12 +174,15 @@ export const parseResponse = (
   if (response.error)
     throw new Error(response.error.message);
 
-  mergeAnnotations(response, transform, 'paragraph');
-
-  console.log(response);
-
-  return response.textAnnotations
-    .filter(({ locale }) => !locale)
-    .map(({ description, boundingPoly: { vertices }}) =>
-      toAnnotation(description, vertices, transform), []);
+  const merge = options['merge-annotations'] === 'block' || options['merge-annotations'] === 'paragraph';
+  if (merge) {
+    return mergeAnnotations(response, options['merge-annotations'])
+      .map(({ text, boundingBox: { vertices } }) => 
+        toAnnotation(text, vertices, transform))
+  } else {
+    return response.textAnnotations
+      .filter(({ locale }) => !locale)
+      .map(({ description, boundingPoly: { vertices }}) => 
+        toAnnotation(description, vertices, transform));
+  }
 }
