@@ -192,7 +192,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            Start OCR Processing
+            Run OCR
           </Button>
         )}
 
