@@ -1,7 +1,7 @@
 import { Button } from '@/ui/Button';
-import { ChevronDown, Download, FileBarChart2 } from 'lucide-react';
+import { ChevronDown, Download, FileBarChart2, Table2 } from 'lucide-react';
 import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
-import { ExportProgressDialog } from '@/components/ExportProgressDialog';
+import { ProgressDialog } from '@/components/ProgressDialog';
 import { Graph, GraphNode, GraphNodeType } from '../../Types';
 import { getRelationships } from './exportRelationships';
 import { useMetadataExport } from './useMetadataExport';
@@ -108,7 +108,8 @@ export const ExportSelector = (props: ExportSelectorProps) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ExportProgressDialog 
+      <ProgressDialog 
+        icon={<Table2 className="h-5 w-5" />}
         open={busy}
         message="Exporting XLSX. This may take a while."
         progress={progress} />

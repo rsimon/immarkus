@@ -54,7 +54,7 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
 
       <ConfirmedDelete
         open={confirmDelete}
-        message="This will remove the manifest and will permanently delete all annotations from your computer."
+        message="This will remove the manifest and will permanently delete all its annotations from your computer."
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

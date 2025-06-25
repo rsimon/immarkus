@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { FileChartColumn, FileSpreadsheet } from 'lucide-react';
+import { FileChartColumn, FileSpreadsheet, Table2 } from 'lucide-react';
 import { Button } from '@/ui/Button';
-import { ExportProgressDialog } from '@/components/ExportProgressDialog';
+import { ProgressDialog } from '@/components/ProgressDialog';
 import { 
   exportFolderMetadataCSV, 
   exportFolderMetadataExcel, 
@@ -88,7 +88,8 @@ export const ExportMetadata = () => {
         </li>
       </ul>
 
-      <ExportProgressDialog
+      <ProgressDialog
+        icon={<Table2 className="h-5 w-5" />}
         message="Exporting XLSX. This may take a while."
         open={progress !== undefined}
         progress={progress} />

@@ -168,7 +168,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        message="This will remove the manifest and will permanently delete all annotations from your computer."
+        message="This will remove the manifest and will permanently delete all its annotations from your computer."
         onConfirm={onDeleteManifest}
         onOpenChange={setConfirmDelete} />
     </>
