@@ -67,7 +67,7 @@ export const APIKeyParameterControl = (props: APIKeyParameterControlProps) => {
 
       <Input
         autoComplete="off"
-        className="w-full mt-2" 
+        className="w-full my-2" 
         type="password" 
         value={value || ''} 
         onChange={evt => onChange(evt.target.value)} />

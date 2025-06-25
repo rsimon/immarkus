@@ -40,6 +40,20 @@ export interface ServiceConfigApiKeyParameter {
 
 }
 
+export interface ServiceConfigRadioParameter {
+
+  type: 'radio';
+
+  id: string;
+
+  displayName: string;
+
+  required?: boolean;
+
+  options: [string, string][];
+
+}
+
 export interface ServiceConfigStringParameter {
 
   type: 'string';
@@ -50,7 +64,7 @@ export interface ServiceConfigStringParameter {
 
   required?: boolean;
   
-  options?: Record<string, string>;
+  options?: [string, string][];
 
 }
 
@@ -70,6 +84,7 @@ export interface ServiceConfigSwitchParameter {
 
 export type ServiceConfigParameter = 
   | ServiceConfigApiKeyParameter
+  | ServiceConfigRadioParameter
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
 
