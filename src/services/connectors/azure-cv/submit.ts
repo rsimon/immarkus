@@ -1,49 +1,45 @@
+import { ApiKeyCredentials } from '@azure/ms-rest-js';
+import { ComputerVisionClient } from '@azure/cognitiveservices-computervision';
+import type { GetReadResultResponse } from '@azure/cognitiveservices-computervision/esm/models';
 import { fileToBase64 } from '@/services/utils';
 
+const sleep = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
+
 export const submit = (image: File | string, options?: Record<string, any>) => {
-  if (!options || !options['api-key']) throw new Error('Missing API key');
+  const endpoint = options['endpoint'];
+  const key = options['key'];
 
-  const apiKey = options['api-key'];
+  // Should never happen
+  if (!endpoint || !key)
+    throw new Error(`Missing access configuration`);
 
-  const submit = (base64?: string) => {
-    const payload = {
-      requests: [{
-        image: base64 ? {
-          content: base64
-        } : {
-          source: {
-            imageUri: image
-          }
-        },
-        features: [{
-          type: 'TEXT_DETECTION',
-          maxResults: 1
-        }]
-      }]
-    }
+  const client = new ComputerVisionClient(
+    new ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': key } }),
+    endpoint
+  );
 
-    return fetch(`https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    }).then(res => {
-      if (res.status === 200) {
-        return res.json()
+  return new Promise(async (resolve, reject) => {
+    try {
+      let response = (typeof image === 'string') 
+        ? await client.read(image)
+        : await client.readInStream(image);
+      
+      // Operation ID is last path segment of operationLocation (a URL)
+      const operationId = response.operationLocation.split('/').slice(-1)[0];
+
+      let result: GetReadResultResponse;
+      do {
+        await sleep(1000);
+        result = await client.getReadResult(operationId);
+      } while (result.status === 'running' || result.status === 'notStarted');
+
+      if (result.status === 'succeeded') {
+        resolve(result.analyzeResult);
       } else {
-        return res.json().then(errorResponse => {
-          const message = errorResponse.error?.message;
-          throw new Error(message);
-        });
+        reject(result);
       }
-    });
-  }
-
-  if (typeof image === 'string') {
-    return submit();
-  } else {
-    return fileToBase64(image as File).then(submit);
-  }
-
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
