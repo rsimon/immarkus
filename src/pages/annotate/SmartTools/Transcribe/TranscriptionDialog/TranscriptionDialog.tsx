@@ -84,6 +84,18 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     }
   }
 
+  const onServiceChanged = (serviceId: string) => 
+    setOptions(({ serviceId }));
+
+  const onServiceOptionChanged = (key: string, value: string) =>
+    setOptions(current => ({
+      ...current,
+      serviceOptions: {
+        ...(current.serviceOptions || {}),
+        [key]: value
+      } 
+    }));
+
   const onChangeRegion = (region: Region) => {
     setRegion(region);
     setProcessingState(undefined);
@@ -174,7 +186,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 options={options}
                 processingState={processingState}
                 region={region}
-                onOptionsChanged={setOptions}
+                onServiceChanged={onServiceChanged}
+                onServiceOptionChanged={onServiceOptionChanged}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />
             </div>

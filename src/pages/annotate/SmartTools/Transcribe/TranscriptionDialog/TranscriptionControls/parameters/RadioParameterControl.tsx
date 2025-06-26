@@ -17,7 +17,7 @@ export const RadioParameterControl = (props: RadioParameterControlProps) => {
   const { param, value, onValueChanged } = props;
 
   return (
-    <fieldset className="space-y-2 mt-3">
+    <fieldset className="space-y-2">
       <Label className="font-semibold">{param.displayName}</Label>
 
       <RadioGroup

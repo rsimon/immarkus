@@ -29,7 +29,9 @@ interface TranscriptionControlsProps {
 
   options: OCROptions;
 
-  onOptionsChanged(options: OCROptions): void;
+  onServiceChanged(serviceId: string): void;
+
+  onServiceOptionChanged(key: string, value: any): void;
 
   onCancel(): void;
 
@@ -65,20 +67,11 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     setShowProcessingState(Boolean(props.processingState));
   }, [props.processingState]);
 
-  const onChangeService = (serviceId: string) =>
-    props.onOptionsChanged({ serviceId });
-
   const renderParameterControl = (param: ServiceConfigParameter) => {
     const value = (serviceOptions || {})[param.id];
 
-    const onValueChanged = (value: any) => 
-      props.onOptionsChanged({
-        serviceId, 
-        serviceOptions: {
-          ...(serviceOptions || {}),
-          [param.id]: value 
-        }
-      });
+    const onValueChanged = (value: any) =>
+      props.onServiceOptionChanged(param.id, value);
 
     return param.type === 'api_key' ? (
       <APIKeyParameterControl
@@ -97,6 +90,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <StringParameterControl 
         key={param.id}
         param={param} 
+        service={serviceConfig} 
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'switch' ? (
@@ -116,7 +110,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
           <Select
             value={serviceConfig.id}
-            onValueChange={onChangeService}>
+            onValueChange={props.onServiceChanged}>
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-1.5 pl-2.5 pr-2 py-2.5 flex justify-between">
               <div>
@@ -156,7 +150,9 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           </Select>
         </fieldset>
 
-        <form onSubmit={evt => evt.preventDefault()}>
+        <form 
+          onSubmit={evt => evt.preventDefault()}
+          className="space-y-4">
           {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
         </form>
       </div>

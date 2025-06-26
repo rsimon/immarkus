@@ -13,7 +13,7 @@ export const config: ServiceConfig = {
     displayName: 'Your API Key',
     required: true
   }],
-    keyInstructions: `
+  keyInstructions: `
 You need an API key to use the OpenAI API. Note that OpenAI image analysis is a **paid service**! 
 
 To get your own key:

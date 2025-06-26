@@ -1,4 +1,6 @@
-import { ServiceConfigStringParameter } from '@/services/Types';
+import { useEffect } from 'react';
+import { ServiceConfig, ServiceConfigStringParameter } from '@/services/Types';
+import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { 
   Select, 
@@ -8,9 +10,12 @@ import {
    SelectValue 
 } from '@/ui/Select';
 
+
 interface StringParameterControlProps {
 
   param: ServiceConfigStringParameter;
+
+  service: ServiceConfig;
 
   value?: string;
 
@@ -20,7 +25,30 @@ interface StringParameterControlProps {
 
 export const StringParameterControl =  (props:StringParameterControlProps) => {
 
-  const { param, value, onValueChanged } = props;
+  const { param, value, service } = props;
+
+  const key = `immarkus:services:${service.id}:${param.id}`;
+  
+  useEffect(() => {
+    if (!param.persist) return;
+
+    // If there's no value on mount, try loading from localStorage
+    const stored = localStorage.getItem(key);
+    if (stored)
+      props.onValueChanged(stored);
+  }, [param, key]);
+  
+  const onChange = (value: string) => {
+    if (param.persist) {
+      if (value) {
+        localStorage.setItem(key, value);
+      } else {
+        localStorage.removeItem(key);
+      }
+    }
+
+    props.onValueChanged(value);
+  }
 
   return (
     <fieldset className="space-y-2">
@@ -29,7 +57,7 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
       {param.options ? (
         <Select 
           value={value || ''}
-          onValueChange={onValueChanged}>
+          onValueChange={onChange}>
           <SelectTrigger className="w-full mt-2">
             <SelectValue />
           </SelectTrigger>
@@ -44,7 +72,13 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
             ))}
           </SelectContent>
         </Select>
-      ) : null}
+      ) : (
+        <Input
+          autoComplete="off"
+          className="w-full my-2"
+          value={value || ''} 
+          onChange={evt => onChange(evt.target.value)} />
+      )}
     </fieldset>
   )
 

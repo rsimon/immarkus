@@ -1,4 +1,5 @@
 import { ServiceConfig } from './Types';
+import { config as AzureCV } from './connectors/azure-cv/config';
 import { config as GoogleGemini } from './connectors/google-gemini/config';
 import { config as GoogleVision } from './connectors/google-vision/config';
 import { config as OCRSpace } from './connectors/ocr-space/config';
@@ -8,5 +9,6 @@ export const Services: ServiceConfig[] = [
   OCRSpace,
   GoogleVision,
   GoogleGemini,
-  OpenAI
+  OpenAI,
+  AzureCV
 ]
