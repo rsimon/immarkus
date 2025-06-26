@@ -90,6 +90,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <StringParameterControl 
         key={param.id}
         param={param} 
+        service={serviceConfig} 
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'switch' ? (

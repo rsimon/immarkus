@@ -7,6 +7,5 @@ export const parseResponse = (
   _: Region | undefined,
   options: Record<string, any> = { 'merge-annotations': 'dont_merge'}
 ): ImageAnnotation[] => {
-  
   return [];
 }

@@ -63,6 +63,8 @@ export interface ServiceConfigStringParameter {
   displayName: string;
 
   required?: boolean;
+
+  persist?: boolean;
   
   options?: [string, string][];
 
