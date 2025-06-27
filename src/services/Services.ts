@@ -7,10 +7,10 @@ import { config as OCRSpace } from './connectors/ocr-space/config';
 import { config as OpenAI } from './connectors/openai/config';
 
 export const Services: ServiceConfig[] = [
-  OCRSpace,
-  GoogleVision,
-  GoogleGemini,
-  OpenAI,
   AzureCV,
-  KlusterAI
+  GoogleGemini, 
+  GoogleVision,
+  KlusterAI,
+  OCRSpace,
+  OpenAI
 ]
