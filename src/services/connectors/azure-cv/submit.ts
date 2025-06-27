@@ -5,7 +5,7 @@ import { fileToBase64 } from '@/services/utils';
 
 const sleep = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const submit = (image: File | string, options: Record<string, any> = {}) => {
   const endpoint = options['endpoint'];
   const key = options['key'];
 
