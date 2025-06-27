@@ -4,6 +4,12 @@ import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { PageTransform, Region } from '@/services/Types';
 import { ChatCompletion } from 'openai/resources/index.mjs';
 
+const parseResponseContent = (str: string) => {
+  // Strip markdown container, if any
+  const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
+  return JSON.parse(match[1]).text;
+}
+
 export const parseResponse = (data: ChatCompletion, _: PageTransform, region: Region): ImageAnnotation[] => {
   const choices = (data.choices || []);
   if (choices.length === 0) {
@@ -18,7 +24,9 @@ export const parseResponse = (data: ChatCompletion, _: PageTransform, region: Re
   }
 
   try {
-    const { text } = JSON.parse(result)  
+    const text = parseResponseContent(result);
+    if (!text)
+      throw new Error('Could not parse response');
 
     const id = uuidv4();
 
