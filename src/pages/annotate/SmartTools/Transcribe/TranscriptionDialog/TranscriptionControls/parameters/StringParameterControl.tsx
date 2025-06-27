@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ServiceConfig, ServiceConfigStringParameter } from '@/services/Types';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -28,7 +28,9 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
   const { param, value, service } = props;
 
   const key = `immarkus:services:${service.id}:${param.id}`;
-  
+
+  const [initialized, setInitialized] = useState(!param.persist);
+
   useEffect(() => {
     if (!param.persist) return;
 
@@ -36,9 +38,12 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
     const stored = localStorage.getItem(key);
     if (stored)
       props.onValueChanged(stored);
-  }, [param, key]);
+
+    setInitialized(true);
+  }, [key]);
   
   const onChange = (value: string) => {
+    console.log('onchange', key, value)
     if (param.persist) {
       if (value) {
         localStorage.setItem(key, value);
@@ -50,7 +55,7 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
     props.onValueChanged(value);
   }
 
-  return (
+  return initialized ? (
     <fieldset className="space-y-2">
       <Label className="font-semibold">{param.displayName}</Label>
 
@@ -80,6 +85,6 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
           onChange={evt => onChange(evt.target.value)} />
       )}
     </fieldset>
-  )
+  ) : null;
 
 }
