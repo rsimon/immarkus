@@ -81,4 +81,55 @@ function cropImage(blob, annotation, format = 'image/jpeg', maxWidth = 800, maxH
   });
 }
 
+function applyPolygonMask(context, points, bounds) {
+  // Will restore props like `globalCompositeOperation' later
+  context.save();
+
+  context.beginPath();
+
+  points.forEach(([px, py], index) => {
+    const x = px - bounds.minX;
+    const y = py - bounds.minY;
+    
+    if (index === 0)
+      context.moveTo(x, y);
+    else
+      context.lineTo(x, y);
+  });
+
+  context.closePath();
+  
+  // From the docs: The existing canvas content is kept where both the 
+  // new shape and existing canvas content overlap. Everything else is 
+  // made transparent.
+  context.globalCompositeOperation = 'destination-in';
+  context.fill();
+  
+  context.restore();
+}
+
+function applyEllipseMask(context, geometry, bounds) {
+  context.save();
+
+  const centerX = geometry.cx - bounds.minX;
+  const centerY = geometry.cy - bounds.minY;
+  
+  context.beginPath();
+
+  context.ellipse(
+    centerX, 
+    centerY, 
+    geometry.rx, 
+    geometry.ry, 
+    0, 
+    0, 
+    2 * Math.PI
+  );
+  
+  context.globalCompositeOperation = 'destination-in';
+  context.fill();
+  
+  context.restore();
+}
+
 export {}; // Necessary for Vite to treat this as a module
