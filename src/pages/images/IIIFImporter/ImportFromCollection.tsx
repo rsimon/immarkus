@@ -90,8 +90,9 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
 
     setImporting(true);
 
-    const importOne = (manifest: CozyCollectionItem) =>
-      generateShortId(manifest.id).then(id => {
+    const importOne = (manifest: CozyCollectionItem) => {
+      const idSeed = props.folderId ? `${props.folderId}/${manifest.id}` : manifest.id;
+      return generateShortId(idSeed).then(id => {
         const exists = Boolean(store.getIIIFResource(id));
         if (exists) {
           return Promise.reject(new Error(`${manifest.getLabel()} already exists in your project. IMMARKUS is currently not able to import the same manifest into a project more than once.`));
@@ -99,6 +100,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
           return Cozy.parseURL(manifest.id).then(parsed => ({ id, parsed }));
         }
       });
+    }
 
     selected.reduce<Promise<ParseResult[]>>((promise, manifest) => promise.then(results => {
       return importOne(manifest).then(parsed => {
