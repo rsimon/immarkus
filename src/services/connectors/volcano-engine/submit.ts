@@ -27,13 +27,6 @@ export const submit = (image: File | string, options: Record<string, any> = {}) 
         content: [{
           type: 'text',
           text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" }'
-          /*
-          text: `Extract ALL text from this image. Your response must be ONLY valid JSON in this exact format:
-
-{"text": "all extracted text goes here"}
-
-Find every word, label, title, number, and text element. Put all the text in a single string. Return ONLY the JSON object, no markdown, no explanations.`
-*/
         },{
           type: 'image_url',
           image_url: {
