@@ -219,7 +219,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           )}
 
           <ImportFromCollection 
-            collection={(parseResult as any)?.resource as CozyCollection} 
+            collection={parseResult?.type === 'collection' ? parseResult.resource : undefined} 
             folderId={props.folderId}
             open={showCollectionImporter}
             onCancel={() => setShowCollectionImporter(false)} 

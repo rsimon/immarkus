@@ -150,7 +150,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
       setImportError(error.message);
     });
   }
-
+  
   return (
     <>
       <Dialog open={props.open}>
