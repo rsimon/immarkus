@@ -71,7 +71,8 @@ const SnippetScheduler = () => {
   const getSnippet = (
     imageId: string, 
     blob: Blob, 
-    annotation: ImageAnnotation
+    annotation: ImageAnnotation,
+    format = 'image/jpeg'
   ): Promise<FileImageSnippet> => {
     const cacheKey = `${imageId}-${annotation.id}`;
 
@@ -102,7 +103,7 @@ const SnippetScheduler = () => {
 
       worker.addEventListener('message', messageHandler);
 
-      worker.postMessage({ blob, annotation });
+      worker.postMessage({ blob, annotation, format });
     });
 
     inProgress.set(cacheKey, snippetPromise);
@@ -138,9 +139,12 @@ const throttledFetch = throttle(async (url) => {
 export const getImageSnippet = (
   image: LoadedImage, 
   annotation: ImageAnnotation | W3CImageAnnotation,
-  downloadIIIF?: boolean
+  downloadIIIF?: boolean,
+  format?: 'png' | 'jpg'
 ): Promise<ImageSnippet> => {
   let a: ImageAnnotation;
+
+  const type = format === 'png' ? 'image/png' : 'image/jpeg'
 
   if (isW3C(annotation)) {
     const adapter = W3CImageFormat(image.name);
@@ -190,7 +194,7 @@ export const getImageSnippet = (
       // IIIF static image - fetch blob and crop
       return fetch(firstImage.url)
         .then(res => res.blob())
-        .then(blob => scheduler.getSnippet(canvas.id, blob, a));
+        .then(blob => scheduler.getSnippet(canvas.id, blob, a, type));
     } else if (firstImage.type === 'level0') {
       return cropRegion(firstImage, region).then(blob => {
         return blob.arrayBuffer().then(buffer => ({
@@ -203,7 +207,7 @@ export const getImageSnippet = (
     }
   } else {
     const blob = new Blob([(image as LoadedFileImage).data])
-    return scheduler.getSnippet(image.id, blob, a);
+    return scheduler.getSnippet(image.id, blob, a, type);
   }
 }
 

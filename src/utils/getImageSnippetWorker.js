@@ -1,7 +1,7 @@
 self.onmessage = function(e) {
-  const { blob, annotation } = e.data;
+  const { blob, annotation, format } = e.data;
   
-  cropImage(blob, annotation)
+  cropImage(blob, annotation, format)
     .then(snippet => { 
       self.postMessage({ snippet });
       self.close();
@@ -9,7 +9,7 @@ self.onmessage = function(e) {
     .catch(error => self.postMessage({ error: error.message }));
 };
 
-function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
+function cropImage(blob, annotation, format = 'image/jpeg', maxWidth = 800, maxHeight = 800, ) {
   return new Promise((resolve, reject) => {
     const { bounds } = annotation.target.selector.geometry;
 
@@ -53,9 +53,9 @@ function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
             0, 0, width * scale, height * scale
           );
 
-          return resizedCanvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 });
+          return resizedCanvas.convertToBlob({ type: format, quality: 0.9 });
         } else {
-          return canvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 });
+          return canvas.convertToBlob({ type: format, quality: 0.9 });
         }
       })
       .then(blob => {
