@@ -153,7 +153,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         <Button 
           disabled={props.disabled}
           className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3">
-          Select OCR Service
+          Select Transcription Service
         </Button>
       </DialogTrigger>
 
