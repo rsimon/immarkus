@@ -3,15 +3,7 @@ import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { PageTransform, Region } from '@/services/Types';
 
-const parseResponseContent = (str: string) => {
-  // Strip markdown container, if any
-  const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
-  return JSON.parse(match[1]).text;
-}
-
 export const parseResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
-  console.log(data);
-  
   const choices = (data.choices || []);
   if (choices.length === 0) {
     console.warn('Repsonse with no choices', data);
@@ -25,7 +17,7 @@ export const parseResponse = (data: any, _: PageTransform, region: Region): Imag
   }
 
   try {
-    const text = parseResponseContent(result);
+    const { text } = JSON.parse(result);
     if (!text)
       throw new Error('Could not parse response');
 
