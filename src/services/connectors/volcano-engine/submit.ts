@@ -26,7 +26,7 @@ export const submit = (image: File | string, options: Record<string, any> = {}) 
         role: 'user',
         content: [{
           type: 'text',
-          text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" }'
+          text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.'
         },{
           type: 'image_url',
           image_url: {
