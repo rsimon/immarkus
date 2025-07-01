@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { fileToBase64 } from '@/services/utils';
+import { fileToBase64, urlToBase64 } from '@/services/utils';
 
 export const submit = (image: File | string, options: Record<string, any> = {}) => {
   const key = options['api-key'];
@@ -37,7 +37,8 @@ export const submit = (image: File | string, options: Record<string, any> = {}) 
     });
 
   if (typeof image === 'string') {
-    return submit(image);
+    return urlToBase64(image).then(base64 =>
+      submit(`data:image/jpeg;base64,${base64}`));
   } else {
     return fileToBase64(image as File).then(base64 => 
       submit(`data:image/jpeg;base64,${base64}`));
