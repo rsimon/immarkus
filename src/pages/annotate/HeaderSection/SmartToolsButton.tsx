@@ -1,6 +1,6 @@
 import { WandSparkles } from 'lucide-react';
-import { ToolbarButton } from '../ToolbarButton';
 import { BorderBeam } from '@/ui/BorderBeam';
+import { ToolbarButton } from '../ToolbarButton';
 
 interface SmartToolsButtonProps {
 
