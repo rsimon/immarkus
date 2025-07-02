@@ -25,7 +25,7 @@ export const useCopySelectedAnnotation = (images: LoadedImage[]) => {
     const onKeydown = (evt: KeyboardEvent) => {
       if (!(evt.key === 'c' && (evt.metaKey || evt.ctrlKey))) return;
 
-      getImageSnippet(image, annotation, true, 'png').then((snippet: FileImageSnippet) => {
+      getImageSnippet(image, annotation, true, 'png', true).then((snippet: FileImageSnippet) => {
         const blob = new Blob([snippet.data], { type: 'image/png' });
         
         const clipboardItem = new ClipboardItem({
