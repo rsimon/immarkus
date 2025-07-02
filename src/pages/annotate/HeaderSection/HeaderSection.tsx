@@ -269,18 +269,10 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           mode={props.mode}
           onToolChange={onEnableDrawing} />
 
-        <ToolbarButton
-          onClick={props.onToggleSmartPanel}
-          data-state={props.isSmartPanelOpen ? 'active' : undefined}
-          tooltip="Smart annotation tools"
-          className="text-orange-400 mr-1 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
-          <WandSparkles className="size-4 h-8 w-8 p-2" />
-        </ToolbarButton>
+        <Separator orientation="vertical" className="h-4" />
 
         {!collapsed && (
           <>
-            <Separator orientation="vertical" className="h-4" />
-
             <CopyToClipboard 
               images={props.images} />
 
@@ -300,6 +292,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             )}
           </>
         )}
+        
+        <ToolbarButton
+          onClick={props.onToggleSmartPanel}
+          data-state={props.isSmartPanelOpen ? 'active' : undefined}
+          tooltip="Smart annotation tools"
+          className="text-orange-400 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
+          <WandSparkles className="size-4 h-8 w-8 p-2" />
+        </ToolbarButton>
       </section>
     </section>
   )

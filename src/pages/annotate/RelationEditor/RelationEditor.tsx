@@ -95,7 +95,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
           <ToolbarButton
             className="flex items-center"
             disabled={disabled}
-            tooltip="Relation"
+            tooltip="Create relation"
             onClick={() => props.onOpenChange(!props.open)}>
             <Spline
               className="h-8 w-8 p-2" />
