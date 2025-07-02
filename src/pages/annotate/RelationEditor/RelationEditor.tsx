@@ -32,7 +32,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
 
   const selection = useSelection();
 
-  const lastSelected = useRef<ImageAnnotation>();
+  const lastSelected = useRef<ImageAnnotation>(null);
 
   useEffect(() => {
     if ((selection?.selected || []).length > 0) {
@@ -93,11 +93,12 @@ export const RelationEditor = (props: RelationEditorProps) => {
       <PopoverTrigger asChild>
         <div>
           <ToolbarButton
-            className="flex items-center pr-2"
+            className="flex items-center"
             disabled={disabled}
+            tooltip="Create relation"
             onClick={() => props.onOpenChange(!props.open)}>
             <Spline
-              className="h-8 w-8 p-2" /> Relation
+              className="h-8 w-8 p-2" />
           </ToolbarButton>
         </div>
       </PopoverTrigger>

@@ -152,8 +152,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       <DialogTrigger asChild>
         <Button 
           disabled={props.disabled}
-          className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3">
-          Select Transcription Service
+          className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3 tracking-wide">
+          Select Service
         </Button>
       </DialogTrigger>
 

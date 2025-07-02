@@ -1,15 +1,27 @@
+import { shouldApplyShapeMask, applyShapeMask } from './getImageSnippetHelpers';
+
 self.onmessage = function(e) {
-  const { blob, annotation } = e.data;
+  const { blob, annotation, format, applyMask } = e.data;
   
-  cropImage(blob, annotation)
+  cropImage(blob, annotation, format, applyMask)
     .then(snippet => { 
       self.postMessage({ snippet });
       self.close();
     })
     .catch(error => self.postMessage({ error: error.message }));
-};
+}
 
-function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
+function cropImage(
+  blob, 
+  annotation, 
+  format = 'image/jpeg', 
+  applyMask = false,
+  maxWidth = 800,
+  maxHeight = 800
+) {
+  if (format === 'image/jpeg' && applyMask)
+    return new Promise.reject('Cannot apply mask to JPEG image');
+
   return new Promise((resolve, reject) => {
     const { bounds } = annotation.target.selector.geometry;
 
@@ -28,6 +40,9 @@ function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
         }
 
         context.drawImage(imageBitmap, bounds.minX, bounds.minY, width, height, 0, 0, width, height);
+
+        if (applyMask && shouldApplyShapeMask(annotation))
+          applyShapeMask(context, annotation);
 
         // Release memory (or at least try to...)
         imageBitmap.close();
@@ -53,9 +68,9 @@ function cropImage(blob, annotation, maxWidth = 800, maxHeight = 800) {
             0, 0, width * scale, height * scale
           );
 
-          return resizedCanvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 });
+          return resizedCanvas.convertToBlob({ type: format, quality: 0.9 });
         } else {
-          return canvas.convertToBlob({ type: 'image/jpeg', quality: 0.9 });
+          return canvas.convertToBlob({ type: format, quality: 0.9 });
         }
       })
       .then(blob => {

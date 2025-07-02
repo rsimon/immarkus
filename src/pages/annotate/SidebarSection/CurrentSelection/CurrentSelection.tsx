@@ -69,9 +69,15 @@ export const CurrentSelection = () => {
     anno.bulkDeleteAnnotations(annotations);
 
   const onKeyDown = (evt: React.KeyboardEvent) => {
+    if (showSearchDialog) return;
+
+    const isMetaKey = evt.ctrlKey || evt.metaKey;
+    if (isMetaKey) return;
+
     const ignore = ['Alt', 'Control', 'Meta', 'Shift', 'Tab'];
-    if (!ignore.includes(evt.key) && !showSearchDialog)
-      setShowSearchDialog(true)
+    if (ignore.includes(evt.key)) return;
+
+    setShowSearchDialog(true)
   }
 
   const onAddEntityType = (annotations: ImageAnnotation[], entity: EntityType) => {

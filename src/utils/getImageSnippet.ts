@@ -1,10 +1,11 @@
 import murmur from 'murmurhash';
 import pThrottle from 'p-throttle';
+import { cropRegion } from 'cozy-iiif/level-0';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
 import { fetchManifest } from './iiif/fetchManifest';
-import { cropRegion } from 'cozy-iiif/level-0';
+import { applyMaskToUint8Array } from './getImageSnippetHelpers';
 import { 
   CanvasInformation, 
   IIIFManifestResource, 
@@ -71,9 +72,11 @@ const SnippetScheduler = () => {
   const getSnippet = (
     imageId: string, 
     blob: Blob, 
-    annotation: ImageAnnotation
+    annotation: ImageAnnotation,
+    format = 'image/jpeg',
+    applyMask = false
   ): Promise<FileImageSnippet> => {
-    const cacheKey = `${imageId}-${annotation.id}`;
+    const cacheKey = `${imageId}-${annotation.id}-${format}-${applyMask}`;
 
     // Already cached?
     if (cache.has(cacheKey))
@@ -102,7 +105,7 @@ const SnippetScheduler = () => {
 
       worker.addEventListener('message', messageHandler);
 
-      worker.postMessage({ blob, annotation });
+      worker.postMessage({ blob, annotation, format, applyMask });
     });
 
     inProgress.set(cacheKey, snippetPromise);
@@ -138,9 +141,19 @@ const throttledFetch = throttle(async (url) => {
 export const getImageSnippet = (
   image: LoadedImage, 
   annotation: ImageAnnotation | W3CImageAnnotation,
-  downloadIIIF?: boolean
+  downloadIIIF = false,
+  format: 'png' | 'jpg' = 'jpg',
+  applyMask = false
 ): Promise<ImageSnippet> => {
+  if (format === 'jpg' && applyMask)
+    return Promise.reject('Cannot apply mask to JPEG image');
+
+  if (!downloadIIIF && applyMask)
+    return Promise.reject('downloadIIIF must be true to apply mask');
+
   let a: ImageAnnotation;
+
+  const type = format === 'png' ? 'image/png' : 'image/jpeg'
 
   if (isW3C(annotation)) {
     const adapter = W3CImageFormat(image.name);
@@ -181,7 +194,16 @@ export const getImageSnippet = (
       } as IIIFImageSnippet).then(snippet => {  
         if (downloadIIIF) {
           return throttledFetch(snippet.src)
-            .then(data => ({...snippet, data}) as FileImageSnippet);
+            .then(data => {
+              if (applyMask) {
+                return applyMaskToUint8Array(data, a).then(masked => ({
+                  ...snippet,
+                  data: masked
+                } as FileImageSnippet));
+              } else {
+                return {...snippet, data} as FileImageSnippet;
+              }
+            });
         } else {
           return snippet;
         }
@@ -190,20 +212,30 @@ export const getImageSnippet = (
       // IIIF static image - fetch blob and crop
       return fetch(firstImage.url)
         .then(res => res.blob())
-        .then(blob => scheduler.getSnippet(canvas.id, blob, a));
+        .then(blob => scheduler.getSnippet(canvas.id, blob, a, type, applyMask));
     } else if (firstImage.type === 'level0') {
       return cropRegion(firstImage, region).then(blob => {
-        return blob.arrayBuffer().then(buffer => ({
-          annotation: a,
-          height: bounds.maxY - bounds.minY,
-          width: bounds.maxX - bounds.minX,
-          data: new Uint8Array(buffer)
-        }));
+        return blob.arrayBuffer().then(buffer => {
+          const width = bounds.maxX - bounds.minX;
+          const height = bounds.maxY - bounds.minY;
+
+          if (applyMask) {
+            return applyMaskToUint8Array(new Uint8Array(buffer), a).then(masked => ({
+              annotation: a, width, height,
+              data: new Uint8Array(buffer)
+            }));
+          } else {
+            return {
+              annotation: a, width, height,
+              data: new Uint8Array(buffer)
+            }
+          }
+        });
       });
     }
   } else {
     const blob = new Blob([(image as LoadedFileImage).data])
-    return scheduler.getSnippet(image.id, blob, a);
+    return scheduler.getSnippet(image.id, blob, a, type, applyMask);
   }
 }
 

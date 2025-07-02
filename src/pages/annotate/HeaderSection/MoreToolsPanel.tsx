@@ -1,13 +1,14 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import { useState } from 'react';
 import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
 import { LoadedImage } from '@/model';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
-import { AddImage } from './AddImage';
-import { useState } from 'react';
 import { AnnotationMode } from '../AnnotationMode';
 import { RelationEditor } from '../RelationEditor';
+import { AddImage } from './AddImage';
+import { CopyToClipboard } from './CopyToClipboard';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -104,6 +105,9 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           </ToolbarButton>
 
           <Separator orientation="vertical" className="h-4" />
+
+          <CopyToClipboard 
+            images={props.images} />
 
           {ENABLE_CONNECTOR_PLUGIN ? (
             <button 
