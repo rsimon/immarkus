@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearch } from './useSearch';
 import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
 import { FolderListItem, ImageListItem } from './AddImageListItems';
@@ -111,12 +112,20 @@ export const AddImage = (props: AddImageProps) => {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger
-        className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
-          focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap">
-        <ImagePlus className="h-4 w-4 mr-1" /> Add image
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger
+            className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
+              focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap">
+            <ImagePlus className="h-4 w-4 mr-1" /> Add image
+          </PopoverTrigger>
+        </TooltipTrigger>
 
+        <TooltipContent>
+          Add image to workspace
+        </TooltipContent>
+      </Tooltip>
+      
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">

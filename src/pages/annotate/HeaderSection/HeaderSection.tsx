@@ -10,6 +10,7 @@ import { SavingState } from '../SavingState';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
+import { CopyToClipboard } from './CopyToClipboard';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
 import { RelationEditor } from '../RelationEditor';
@@ -199,14 +200,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
             <ToolbarButton
               disabled={osdToolsDisabled}
-              onClick={() => onRotate(false)}>
+              onClick={() => onRotate(false)}
+              tooltip="Rotate image counterclockwise">
               <RotateCcwSquare
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
 
             <ToolbarButton
               disabled={osdToolsDisabled}
-              onClick={() => onRotate(true)}>
+              onClick={() => onRotate(true)}
+              tooltip="Rotate image clockwise">
               <RotateCwSquare 
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
@@ -215,14 +218,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <ToolbarButton 
           disabled={osdToolsDisabled}
-          onClick={onZoom(2)}>
+          onClick={onZoom(2)}
+          tooltip="Zoom in">
           <ZoomIn 
             className="h-8 w-8 p-2" />
         </ToolbarButton>
 
         <ToolbarButton 
           disabled={osdToolsDisabled}
-          onClick={onZoom(0.5)}>
+          onClick={onZoom(0.5)}
+          tooltip="Zoom out">
           <ZoomOut 
             className="h-8 w-8 p-2" />
         </ToolbarButton>
@@ -233,14 +238,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <>
             <ToolbarButton
               disabled={osdToolsDisabled}
-              onClick={onUndo}>
+              onClick={onUndo}
+              tooltip="Undo">
               <Undo2 
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
 
             <ToolbarButton
               disabled={osdToolsDisabled}
-              onClick={onRedo}>
+              onClick={onRedo}
+              tooltip="Redo">
               <Redo2
                 className="h-8 w-8 p-2" />
             </ToolbarButton>
@@ -265,6 +272,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <ToolbarButton
           onClick={props.onToggleSmartPanel}
           data-state={props.isSmartPanelOpen ? 'active' : undefined}
+          tooltip="Smart annotation tools"
           className="text-orange-400 mr-1 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
           <WandSparkles className="size-4 h-8 w-8 p-2" />
         </ToolbarButton>
@@ -272,6 +280,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         {!collapsed && (
           <>
             <Separator orientation="vertical" className="h-4" />
+
+            <CopyToClipboard 
+              images={props.images} />
 
             {ENABLE_CONNECTOR_PLUGIN ? (
               <button 

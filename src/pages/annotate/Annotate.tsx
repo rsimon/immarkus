@@ -6,6 +6,7 @@ import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operat
 import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
+import { TooltipProvider } from '@/ui/Tooltip';
 import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
@@ -67,62 +68,64 @@ export const Annotate = () => {
 
   return (
     <div className="page annotate h-full w-full">
-      <AnnotoriousManifold>
-        <OSDViewerManifold>
-          <RelationEditorRoot>
-            <PluginProvider>
-              <Plugin 
-                name="boolean" 
-                plugin={BooleanPlugin} />
+      <TooltipProvider>
+        <AnnotoriousManifold>
+          <OSDViewerManifold>
+            <RelationEditorRoot>
+              <PluginProvider>
+                <Plugin 
+                  name="boolean" 
+                  plugin={BooleanPlugin} />
 
-              <Plugin
-                name="smart-selection"
-                plugin={SAMPlugin} />
+                <Plugin
+                  name="smart-selection"
+                  plugin={SAMPlugin} />
 
-              <SavingState.Root>
-                <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
-                  <HeaderSection
-                    images={images} 
-                    isSmartPanelOpen={isSmartPanelOpen}
-                    mode={mode}
-                    tool={tool}
-                    onAddImage={onAddImage} 
-                    onChangeImage={onChangeImage}
-                    onChangeMode={setMode}
-                    onChangeTool={setTool} 
-                    onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
-
-                  {images.length > 0 ? ( 
-                    <WorkspaceSection 
+                <SavingState.Root>
+                  <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                    <HeaderSection
                       images={images} 
+                      isSmartPanelOpen={isSmartPanelOpen}
                       mode={mode}
-                      tool={tool} 
-                      onAddImage={onAddImage} 
-                      onChangeImages={imageIds => setImageIds(imageIds)}
-                      onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-muted">
-                      <Loader2 className="animate-spin size-5 opacity-50" />
-                    </div>
-                  )}
-
-                  {isSmartPanelOpen && (
-                    <SmartToolsPanel 
-                      images={images}
-                      mode={mode} 
                       tool={tool}
-                      onChangeMode={setMode} 
-                      onChangeTool={setTool}
-                      onClosePanel={onCloseSmartPanel} />
-                  )}
-                </main>
+                      onAddImage={onAddImage} 
+                      onChangeImage={onChangeImage}
+                      onChangeMode={setMode}
+                      onChangeTool={setTool} 
+                      onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
 
-                <SidebarSection />
-              </SavingState.Root>
-            </PluginProvider>
-          </RelationEditorRoot>
-        </OSDViewerManifold>
-      </AnnotoriousManifold>
+                    {images.length > 0 ? ( 
+                      <WorkspaceSection 
+                        images={images} 
+                        mode={mode}
+                        tool={tool} 
+                        onAddImage={onAddImage} 
+                        onChangeImages={imageIds => setImageIds(imageIds)}
+                        onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                    ) : (
+                      <div className="flex items-center justify-center h-full bg-muted">
+                        <Loader2 className="animate-spin size-5 opacity-50" />
+                      </div>
+                    )}
+
+                    {isSmartPanelOpen && (
+                      <SmartToolsPanel 
+                        images={images}
+                        mode={mode} 
+                        tool={tool}
+                        onChangeMode={setMode} 
+                        onChangeTool={setTool}
+                        onClosePanel={onCloseSmartPanel} />
+                    )}
+                  </main>
+
+                  <SidebarSection />
+                </SavingState.Root>
+              </PluginProvider>
+            </RelationEditorRoot>
+          </OSDViewerManifold>
+        </AnnotoriousManifold>
+      </TooltipProvider>
     </div>
   )
 

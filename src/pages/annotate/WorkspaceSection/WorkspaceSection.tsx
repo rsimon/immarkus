@@ -7,7 +7,6 @@ import { AnnotatableImage } from './AnnotatableImage';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 import { usePersistentHistory } from './usePersistentHistory';
-import { useCopySelectedAnnotation } from './useCopySelectedAnnotation';
 
 import 'react-mosaic-component/react-mosaic-component.css';
 
@@ -42,8 +41,6 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   // Track window size, so we can update window toolbars responsively
   const { width } = useWindowSize();
-
-  useCopySelectedAnnotation(props.images);
   
   useEffect(() => {
     if (props.images.length > 1) {

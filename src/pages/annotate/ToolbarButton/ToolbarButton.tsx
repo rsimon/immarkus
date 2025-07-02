@@ -1,8 +1,11 @@
 import { ReactNode } from 'react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
 interface ToolbarButtonProps {
 
   children: ReactNode;
+
+  tooltip?: string;
 
   className?: string;
 
@@ -14,7 +17,7 @@ interface ToolbarButtonProps {
 
 export const ToolbarButton = (props: ToolbarButtonProps) => {
 
-  return (
+  const renderButton = () => (
     <button
       {...props}
       disabled={props.disabled}
@@ -25,5 +28,17 @@ export const ToolbarButton = (props: ToolbarButtonProps) => {
       {props.children}
     </button>
   )
+
+  return (props.tooltip && !props.disabled) ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {renderButton()}
+      </TooltipTrigger>
+
+      <TooltipContent>
+        {props.tooltip}
+      </TooltipContent>
+    </Tooltip>
+  ) : renderButton();
 
 }
