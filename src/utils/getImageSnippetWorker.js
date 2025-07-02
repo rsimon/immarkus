@@ -1,4 +1,4 @@
-import { shouldApplyMask, applyShapeMask } from './getImageSnippetHelpers';
+import { shouldApplyShapeMask, applyShapeMask } from './getImageSnippetHelpers';
 
 self.onmessage = function(e) {
   const { blob, annotation, format, applyMask } = e.data;
@@ -41,7 +41,7 @@ function cropImage(
 
         context.drawImage(imageBitmap, bounds.minX, bounds.minY, width, height, 0, 0, width, height);
 
-        if (applyMask && shouldApplyMask(annotation))
+        if (applyMask && shouldApplyShapeMask(annotation))
           applyShapeMask(context, annotation);
 
         // Release memory (or at least try to...)

@@ -14,6 +14,7 @@ import { CopyToClipboard } from './CopyToClipboard';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
 import { RelationEditor } from '../RelationEditor';
+import { SmartToolsButton } from './SmartToolsButton';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
   ChevronLeft, 
@@ -23,7 +24,6 @@ import {
   RotateCwSquare, 
   Spline, 
   Undo2, 
-  WandSparkles, 
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
@@ -293,13 +293,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           </>
         )}
         
-        <ToolbarButton
-          onClick={props.onToggleSmartPanel}
-          data-state={props.isSmartPanelOpen ? 'active' : undefined}
-          tooltip="Smart annotation tools"
-          className="text-orange-400 hover:text-orange-500 flex items-center rounded-md hover:bg-orange-50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-500">
-          <WandSparkles className="size-4 h-8 w-8 p-2" />
-        </ToolbarButton>
+        <SmartToolsButton 
+          isSmartPanelOpen={props.isSmartPanelOpen}
+          onClick={props.onToggleSmartPanel} />
       </section>
     </section>
   )

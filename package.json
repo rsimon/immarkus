@@ -72,6 +72,7 @@
     "fuse.js": "^7.1.0",
     "localforage": "^1.10.0",
     "lucide-react": "^0.525.0",
+    "motion": "^12.23.0",
     "murmurhash": "^2.0.1",
     "openai": "^5.8.2",
     "openseadragon": "5.0.1",
