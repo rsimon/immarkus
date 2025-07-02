@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import murmur from 'murmurhash';
-import { Ban, FileX, LibrarySquare } from 'lucide-react';
+import { FileX, LibrarySquare } from 'lucide-react';
 import { Cozy, CozyCollection, CozyCollectionItem, CozyParseResult } from 'cozy-iiif';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Spinner } from '@/components/Spinner';
@@ -95,7 +95,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
       return generateShortId(idSeed).then(id => {
         const exists = Boolean(store.getIIIFResource(id));
         if (exists) {
-          return Promise.reject(new Error(`${manifest.getLabel()} already exists in your project. IMMARKUS is currently not able to import the same manifest into a project more than once.`));
+          return Promise.reject(new Error(`${manifest.getLabel()} already exists in the current subfolder. IMMARKUS allows multiple imports of the same manifest, but each one must be placed in a different subfolder. To continue, please remove this manifest from the list or choose a different subfolder.`));
         } else {
           return Cozy.parseURL(manifest.id).then(parsed => ({ id, parsed }));
         }
@@ -155,7 +155,9 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
   
   return (
     <>
-      <Dialog open={props.open}>
+      <Dialog 
+        open={props.open}
+        onOpenChange={open => !open && props.onCancel()}>
         <DialogContent>
           <DialogTitle>
             Import from IIIF Collection
@@ -225,14 +227,14 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         open={Boolean(importError)}
         onOpenChange={open => !open && setImportError(undefined)}>
 
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-xl">
           <AlertDialogHeader>
             <AlertDialogTitle
-              className="flex gap-2 items-center">
-              <FileX className="size-5" />  Import Error
+              className="flex gap-2 items-center text-destructive">
+              <FileX className="size-5 -ml-0.5" />  Import Error
             </AlertDialogTitle>
             <AlertDialogDescription
-              className="my-2 leading-relaxed">
+              className="my-2 leading-relaxed text-primary">
               {importError}
             </AlertDialogDescription>
           </AlertDialogHeader>

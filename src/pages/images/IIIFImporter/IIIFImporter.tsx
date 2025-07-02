@@ -168,8 +168,9 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               </div>
 
               <div>
-                This manifests already exists in your project. IMMARKUS is currently not 
-                able to import the same manifest into a project more than once.
+                This manifest already exists in the current subfolder. IMMARKUS allows you to import the 
+                same manifest multiple times, but each import must be placed in a different subfolder.
+                To proceed, please select another subfolder and import the manifest there.
               </div>
             </div>
           ) : parseResult?.type === 'error' ? (
@@ -200,13 +201,13 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               <ErrorAlert message="Invalid URL: web page" />
             </div>
           ) : parseResult?.type === 'collection' ? (
-            <div className="flex items-center gap-1 pl-0.5">
+            <div className="flex items-center gap-1 pl-0.5 mt-1 text-amber-600">
               <SquareLibrary className="size-4.5 mb-0.5" /> 
               <div>
                 This is a IIIF Collection Manifest with multiple items. 
                 <Button 
                   variant="link"
-                  className="ml-1 p-0 h-auto text-xs"
+                  className="ml-1 p-0 h-auto text-xs text-amber-600 underline"
                   onClick={() => setShowCollectionImporter(true)}>Select items to import</Button>.
               </div>
             </div>
