@@ -53,8 +53,9 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
       return;
     }
 
-    // IMMARKUS can't currently import a manifest twice!
-    generateShortId(uri).then(id => {
+    // IMMARKUS will only allow the same manifest once per folder!
+    const idSeed = props.folderId ? `${props.folderId}/${uri}` : uri;
+    generateShortId(idSeed).then(id => {
       // ID is derived from the URI–check if it already exists
       const existing = Boolean(store.getIIIFResource(id));
       if (existing) {
@@ -73,7 +74,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           });
       }
     });
-  }, [uri]);
+  }, [props.folderId, uri]);
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
@@ -81,7 +82,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     if (!parseResult || parseResult.type === 'error') return;
 
     if (parseResult.type === 'manifest') {
-      generateShortId(uri).then(id => {
+      const idSeed = props.folderId ? `${props.folderId}/${uri}` : uri;
+      generateShortId(idSeed).then(id => {
         const { resource } = parseResult;
 
         const info: IIIFResourceInformation = {

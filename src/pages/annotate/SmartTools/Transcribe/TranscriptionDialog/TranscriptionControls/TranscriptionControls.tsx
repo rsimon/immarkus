@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { CircleCheck, KeyRound, SquareDashedMousePointer } from 'lucide-react';
+import { CircleCheck, KeyRound, ScanText, SquareDashedMousePointer } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
@@ -192,10 +192,10 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             processingState={props.processingState} />
         ) : (
           <Button 
-            className="w-full"
+            className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            Run OCR
+            <ScanText className="size-4.5" /> Run Transcription
           </Button>
         )}
 

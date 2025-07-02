@@ -5,6 +5,7 @@ import { parseIIIFId } from '@/utils/iiif';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
 import { repairAnnotations } from './integrity/annotationIntegrity';
+import { repairManifestId } from './integrity/iiifIntegrity';
 import { loadRelationStore, RelationStore } from './relations/RelationStore';
 import { 
   CanvasInformation, 
@@ -118,7 +119,7 @@ const loadDirectory = async (
         if (file.type.startsWith('image')) {
           const { name } = file;
           const id = await generateShortId(`${path.join('/')}/${dirHandle.name}/${name}`); 
-
+ 
           images.push({ id, name, path, file, folder: dirHandle });
         } else if (file.type === 'application/json' && file.name.startsWith('_iiif.') && !file.name.endsWith('.annotations.json')) {
           const data: any = await readJSONFile(file);
@@ -126,17 +127,20 @@ const loadDirectory = async (
           const idFilename = file.name.substring('_iiif.'.length, file.name.indexOf('.json'));
           const idData = data.id;
 
+          // ID in the filename MUST match ID in the JSON data!
           if (idFilename !== idData) {
             console.error(file);
             console.error(data);
             throw new Error('IIIF ID integrity error');
           }
 
-          // Legacy interop: 
-          // - ID in the filename MUST MATCH data.id
-          // - Check against murmur hash: the ID must also match the new hash-generation approach,
-          //   which is based on path + filename
-          // - If it doesn't, repair! 
+          // Legacy interop: if id doesn't match expected, the ID was still generated
+          // from URI only instead of path + URI - repair!
+          const idSeed = path.length === 0 ? data.uri : `${path[path.length - 1]}/${data.uri}`;
+          const expectedId = await generateShortId(idSeed); 
+
+          if (idFilename !== expectedId)
+            await repairManifestId(dirHandle, file, data, expectedId);
 
           iiifResources.push({ 
             path, 

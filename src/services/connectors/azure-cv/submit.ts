@@ -1,7 +1,6 @@
 import { ApiKeyCredentials } from '@azure/ms-rest-js';
 import { ComputerVisionClient } from '@azure/cognitiveservices-computervision';
 import type { GetReadResultResponse } from '@azure/cognitiveservices-computervision/esm/models';
-import { fileToBase64 } from '@/services/utils';
 
 const sleep = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 

@@ -1,4 +1,4 @@
-import { fileToBase64 } from '@/services/utils';
+import { fileToBase64, urlToBase64 } from '@/services/utils';
 
 export const submit = (image: File | string, options?: Record<string, any>) => {
   if (!options || !options['api-key']) throw new Error('Missing API key');
@@ -41,7 +41,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
   }
 
   if (typeof image === 'string') {
-    return submit();
+    return urlToBase64(image).then(submit);
   } else {
     return fileToBase64(image as File).then(submit);
   }

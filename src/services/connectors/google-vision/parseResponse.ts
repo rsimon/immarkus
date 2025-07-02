@@ -96,6 +96,9 @@ const clipFullText = (words: string[], fullText: string, startSearchIndex = 0) =
   };
 }
 
+const isValidResponse = (response: any) =>
+  'fullTextAnnotation' in response && 'textAnnotations' in response;
+
 const mergeAnnotations = (
   response: any,
   granularity: 'block' | 'paragraph'
@@ -173,6 +176,11 @@ export const parseResponse = (
 
   if (response.error)
     throw new Error(response.error.message);
+
+  if (!isValidResponse(response)) {
+    console.warn(data);
+    return [];
+  }
 
   const merge = options['merge-annotations'] === 'block' || options['merge-annotations'] === 'paragraph';
   if (merge) {
