@@ -30,7 +30,7 @@
     "@annotorious/plugin-connectors-react": "^0.4.0",
     "@annotorious/plugin-magnetic-outline": "^0.1.4",
     "@annotorious/plugin-segment-anything": "^0.2.4",
-    "@annotorious/plugin-tools": "^1.1.0",
+    "@annotorious/plugin-tools": "^1.2.0",
     "@annotorious/react": "^3.5.1",
     "@annotorious/react-manifold": "^3.5.1",
     "@azure/cognitiveservices-computervision": "^8.2.0",
@@ -82,7 +82,7 @@
     "react": "^19.1.0",
     "react-autosuggest": "^10.1.0",
     "react-dom": "^19.1.0",
-    "react-force-graph-2d": "^1.27.1",
+    "react-force-graph-2d": "^1.28.0",
     "react-intersection-observer": "^9.16.0",
     "react-markdown": "^10.1.0",
     "react-mosaic-component": "^6.1.1",
@@ -90,6 +90,6 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
-    "zod": "^3.25.67"
+    "zod": "^3.25.71"
   }
 }
