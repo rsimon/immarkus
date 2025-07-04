@@ -4,6 +4,7 @@ import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { TranscriptionDialog } from './TranscriptionDialog';
+import { AnnotationBatch } from './Types';
 import {
   Select,
   SelectContent,
@@ -31,8 +32,21 @@ export const Transcribe = (props: TranscribeProps) => {
 
   const manifold = useAnnotoriousManifold();
 
-  const onImportAnnotations = (annotations: ImageAnnotation[], image: LoadedImage) => {
+  const onImportAnnotations = (batches: AnnotationBatch[], image: LoadedImage) => {
     if (!store) return; // Should never happen
+
+    const annotations = batches.reduce<ImageAnnotation[]>((all, batch) => 
+      ([...all, ...batch.annotations.map(a => ({
+        ...a,
+        bodies: a.bodies.map(b => ({
+          ...b,
+          creator: {
+            type: batch.generator.type || 'Software',
+            ...batch.generator
+          },
+          created: new Date()
+        })),
+      }))]), []);
 
     // Add image annotations (internal data model!) to the annotator as a 'Remote' action
     const anno = manifold.getAnnotator(image.id);

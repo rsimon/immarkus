@@ -252,6 +252,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             <Note
               autoFocus={schemaBodies.length === 0}
               id={noteKey}
+              creator={note?.creator}
               value={formState[noteKey]}
               onChange={value => onChangeFormValue(noteKey, value)} />
           )}

@@ -1,13 +1,23 @@
+import { ServiceConnectorResponse } from '@/services/Types';
 import { fileToBase64 } from '@/services/utils';
 import { OpenAI } from 'openai';
 
-export const submit = (image: File | string, options: Record<string, any> = {}) => {
+export const submit = (
+  image: File | string, 
+  options: Record<string, any> = {}
+): Promise<ServiceConnectorResponse> => {
   const model = options['model'];
   const key = options['api-key'];
 
   // Should never happen
   if (!model || !key)
     throw new Error('Missing access configuration');
+
+  const generator = {
+    id: model,
+    name: `kluster.ai (${model})`,
+    homepage: 'https://www.kluster.ai/'
+  };
 
   const client = new OpenAI({
     apiKey: key,
@@ -36,7 +46,7 @@ Find every word, label, title, number, and text element. Put all the text in a s
           }
         }]
       }]
-    });
+    }).then(data => ({ data, generator }));
 
   if (typeof image === 'string') {
     return submit(image);

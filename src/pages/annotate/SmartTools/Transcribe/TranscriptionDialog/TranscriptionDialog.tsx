@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { LoadedImage } from '@/model';
-import { PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
+import { Generator, PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
-import { OCROptions, ProcessingState } from '../Types';
+import { AnnotationBatch, OCROptions, ProcessingState } from '../Types';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 
@@ -19,6 +19,8 @@ import {
 interface OCRResult {
 
   data: any;
+
+  generator: Generator;
 
   transform: PageTransform;
 
@@ -34,7 +36,7 @@ interface TranscriptionDialogProps {
 
   image: LoadedImage;
 
-  onImport(annotations: ImageAnnotation[]): void;
+  onImport(batches: AnnotationBatch[]): void;
 
 }
 
@@ -54,15 +56,22 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [results, setResults] = useState<OCRResult[] | undefined>();
 
-  const annotations = useMemo(() => {
+  const batches = useMemo(() => {
     if ((results || []).length === 0) return; // No (successful) OCR run yet
-    
-    return results.reduce<ImageAnnotation[]>((all, result) => {
-      const { data, transform, region, crosswalk } = result;
-      const inThisBatch = crosswalk(data, transform, region, options.serviceOptions);
-      return [...all, ...inThisBatch];
-    }, []);
+
+    return results.map(result => {
+      const { crosswalk, data, generator, region, transform } = result;
+      
+      const annotations = crosswalk(data, transform, region, options.serviceOptions);
+      return { annotations, generator };
+    });
   }, [results, options]);
+
+  const annotations = useMemo(() => {
+    if (!batches) return;
+
+    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), [])
+  }, [batches]);
 
   const reset = () => {
     setRegion(undefined);
@@ -79,9 +88,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   }
 
   const onImportAnnotations = () => {
-    if (!annotations) return;
+    if (!batches) return;
       
-    props.onImport(annotations);
+    props.onImport(batches);
 
     setOpen(false);
     reset();
@@ -118,13 +127,14 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       const image = 'file' in result ? result.file : result.url;
       const crosswalk = service.connector.parseResponse;
 
-      service.connector.submit(image, options.serviceOptions).then((data: any) => {
+      service.connector.submit(image, options.serviceOptions).then(({ data, generator }) => {
         // Test the crosswalk to make sure data is valid
         try {
           const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
 
           setResults(current => [...(current || []), { 
             data, 
+            generator,
             transform: result.transform,
             region,
             crosswalk

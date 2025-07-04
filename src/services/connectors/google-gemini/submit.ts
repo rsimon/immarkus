@@ -1,8 +1,18 @@
+import { ServiceConnectorResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { GoogleGenAI, Type } from '@google/genai';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const submit = (
+  image: File | string, 
+  options?: Record<string, any>
+): Promise<ServiceConnectorResponse>  => {
   const apiKey = options['api-key'];
+
+  const generator = {
+    id: 'gemini-2.0-flash',
+    name: 'Google Gemini (gemini-2.0-flash)',
+    homepage: 'https://gemini.google.com/app'
+  };
 
   const ai = new GoogleGenAI({ apiKey });
 
@@ -23,7 +33,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
           required: ['transcription']
         }
       }
-    });
+    }).then(data => ({ data, generator }));
 
     if (typeof image === 'string') {
       return urlToBase64(image).then(submit);

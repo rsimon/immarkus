@@ -1,12 +1,22 @@
+import { ServiceConnectorResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const submit = (
+  image: File | string, 
+  options?: Record<string, any>
+): Promise<ServiceConnectorResponse> => {
   const apiKey = options['api-key'];
 
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
+
+  const generator = {
+    id: 'gpt-4.1',
+    name: 'OpenAI GPT (gpt-4.1)',
+    homepage: 'https://openai.com/index/openai-api/'
+  };
 
   const Transcription = z.object({ text: z.string() });
 
@@ -27,7 +37,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
       text: {
         format: zodTextFormat(Transcription, 'transcriptions')
       }
-    });
+    }).then(data => ({ data, generator }));
 
     if (typeof image === 'string') {
       return urlToBase64(image).then(base64 =>  
