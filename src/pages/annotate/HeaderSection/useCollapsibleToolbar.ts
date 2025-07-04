@@ -1,25 +1,47 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export const useCollapsibleToolbar = () => {
+interface CollapseInfo {
+
+  level: number;
+
+  breakpoint: number;
+
+}
+
+export const useCollapsibleToolbar = (levels: number) => {
 
   const ref = useRef<HTMLElement>(null);
 
-  const [breakpoint, setBreakpoint] = useState(0);
+  const collapseStack = useRef<CollapseInfo[]>([...Array(levels).keys()].map((_, idx) => ({
+    level: idx,
+    breakpoint: 0
+  })));
 
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapseLevel, setCollapseLevel] = useState(levels);
 
   const checkCollapse = useCallback(() => {
     if (!ref.current) return;
     
-    const shouldCollapse = ref.current.scrollWidth > ref.current.clientWidth;
+    const isOverflowing = ref.current.scrollWidth > ref.current.clientWidth;
+
+    const stack = collapseStack.current;
+    const last = stack.length > 0 ? stack[stack.length - 1] : undefined;
     
-    if (shouldCollapse && !collapsed) {
-      setBreakpoint(window.innerWidth);
-      setCollapsed(true);
-    } else if (!shouldCollapse && window.innerWidth > breakpoint) {
-      setCollapsed(false);
+    if (isOverflowing) {
+      // Increase collapse level
+      const nextLevel = last ? last.level + 1 : 0;
+      if (nextLevel < levels) {
+        stack.push({ level: nextLevel, breakpoint: window.innerWidth });
+        setCollapseLevel(nextLevel);
+      }
+    } else if (!isOverflowing && stack.length > 0 && window.innerWidth > last.breakpoint) {
+      // Reduce collapse level
+      if (stack.length > 1) {
+        const popped = stack.pop();
+        setCollapseLevel(popped ? popped.level - 1 : 0);
+      }
     }
-  }, [collapsed, breakpoint]);
+  }, [collapseLevel]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -32,7 +54,7 @@ export const useCollapsibleToolbar = () => {
       requestAnimationFrame(checkCollapse);
 
     // Initial check after mounting
-    requestAnimationFrame(checkCollapse);
+    setTimeout(() => checkCollapse(), 200);
 
     resizeObserver.observe(ref.current);
     
@@ -44,6 +66,6 @@ export const useCollapsibleToolbar = () => {
     };
   }, [checkCollapse]);
 
-  return { ref, collapsed };
+  return { ref, collapseLevel };
 
 }

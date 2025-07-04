@@ -68,7 +68,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
    * The toolbar has a 'collapsed mode', GDocs-style, 
    * which we'll enable as soon as it overflows.
    */
-  const { ref, collapsed } = useCollapsibleToolbar();
+  const { ref, collapseLevel } = useCollapsibleToolbar(3);
 
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
@@ -136,7 +136,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   useEffect(() => {
     // If collapsed state changes, this will force-unmount the RelationEditor...
     props.onChangeMode('move');
-  }, [collapsed]);
+  }, [collapseLevel]);
 
   return (
     <section 
@@ -159,7 +159,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
       </section>
 
       <section className="toolbar-right flex gap-1 items-center grow-2 justify-end">
-        {collapsed && (
+        {collapseLevel > 0 && (
           <>
             <MoreToolsPanel 
               images={props.images}
@@ -178,7 +178,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           </>
         )}
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             {props.images.length > 0 && (
               <>
@@ -234,7 +234,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             <ToolbarButton
               disabled={osdToolsDisabled}
@@ -257,21 +257,23 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         )}
 
         <button 
-          className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
-          <MousePointer2 className="size-4 mr-1" /> Move
+          <MousePointer2 className="size-4" />
+          {collapseLevel < 2 && (<span className="ml-1 pr-1">Move</span>)}
         </button>
 
         <ToolSelector 
+          compact={collapseLevel === 2}
           tool={props.tool} 
           mode={props.mode}
           onToolChange={onEnableDrawing} />
 
         <Separator orientation="vertical" className="h-4" />
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             <CopyToClipboard 
               images={props.images} />
