@@ -37,7 +37,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
   }, [savingState]);
 
   return (
-    <div className="saving-state-indicator ml-1">
+    <div className="saving-state-indicator ml-1 shrink-0">
       {savingState.value === 'idle' ? (
         <Popover>
           <PopoverTrigger 

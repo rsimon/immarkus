@@ -141,16 +141,16 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   return (
     <section 
       ref={ref}
-      className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
-      <section className="toolbar-left flex gap-1 items-center">
-        <div className="flex items-center">
-          <Link className="font-semibold inline" to={back}>
+      className="toolbar relative border-b p-2 flex text-sm h-[46px]">
+      <section className="toolbar-left flex gap-1 basis-24 shrink-0 grow-1 items-center overflow-hidden">
+        <div className="flex items-center overflow-hidden">
+          <Link className="font-semibold inline shrink-0" to={back}>
             <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
               <ChevronLeft className="h-5 w-5" />
             </div>
           </Link>
 
-          <span className="text-xs font-medium ml-0.5 whitespace-nowrap max-w-[320px] overflow-hidden text-ellipsis">
+          <span className="text-xs font-medium ml-0.5 flex-1 min-w-0 truncate">
             {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
           </span>
         </div>
@@ -158,7 +158,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <SavingState.Indicator />
       </section>
 
-      <section className="toolbar-right flex gap-1 items-center">
+      <section className="toolbar-right flex gap-1 items-center grow-2 justify-end">
         {collapsed && (
           <>
             <MoreToolsPanel 
