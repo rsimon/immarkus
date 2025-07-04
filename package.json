@@ -90,6 +90,6 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
-    "zod": "^3.25.71"
+    "zod": "^3.25.72"
   }
 }
