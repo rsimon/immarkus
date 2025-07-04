@@ -73,15 +73,27 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       setProcessingState('success_empty');
   }, [annotations]);
 
+  const reset = () => {
+    setRegion(undefined);
+    setProcessingState(undefined);
+    setLastError(undefined);
+    setResults(undefined);
+  }
+
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
-    if (!open) {
-      setRegion(undefined);
-      setProcessingState(undefined);
-      setLastError(undefined);
-      setResults(undefined);
-    }
+    if (!open)
+      reset();
+  }
+
+  const onImportAnnotations = () => {
+    if (!annotations) return;
+      
+    props.onImport(annotations);
+
+    setOpen(false);
+    reset();
   }
 
   const onServiceChanged = (serviceId: string) => 
@@ -104,13 +116,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const onClearAnnotations = () => {
     setResults(undefined);
     setProcessingState(undefined);
-  }
-
-  const onImportAnnotations = () => {
-    if (!annotations) return;
-      
-    props.onImport(annotations);
-    setOpen(false);
   }
 
   const onSubmitImage = () => { 
