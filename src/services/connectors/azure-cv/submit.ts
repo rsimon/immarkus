@@ -1,10 +1,14 @@
 import { ApiKeyCredentials } from '@azure/ms-rest-js';
 import { ComputerVisionClient } from '@azure/cognitiveservices-computervision';
 import type { GetReadResultResponse } from '@azure/cognitiveservices-computervision/esm/models';
+import { Generator, ServiceConnectorResponse } from '@/services/Types';
 
 const sleep = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const submit = (image: File | string, options: Record<string, any> = {}) => {
+export const submit = (
+  image: File | string, 
+  options: Record<string, any> = {}
+): Promise<ServiceConnectorResponse> => {
   const endpoint = options['endpoint'];
   const key = options['key'];
 
@@ -33,7 +37,15 @@ export const submit = (image: File | string, options: Record<string, any> = {}) 
       } while (result.status === 'running' || result.status === 'notStarted');
 
       if (result.status === 'succeeded') {
-        resolve(result.analyzeResult);
+        const data = result.analyzeResult;
+        
+        const generator: Generator = {
+          id: 'ms-azure-computervision',
+          name: 'MS Azure Computervision',
+          homepage: 'https://azure.microsoft.com/en-us/products/ai-services/ai-vision'
+        };
+
+        resolve({ data, generator });
       } else {
         reject(result);
       }

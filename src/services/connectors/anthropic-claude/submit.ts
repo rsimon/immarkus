@@ -12,7 +12,13 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
     apiKey,
     'https://api.anthropic.com/v1',
     'claude-opus-4-20250514',
-    { 'anthropic-dangerous-direct-browser-access': 'true' }
+    { 
+      id: 'claude-opus-4-20250514',
+      name: 'OpenAI Claude Opus 4 (claude-opus-4-20250514)',
+      homepage: 'https://www.anthropic.com/api'
+    }, { 
+      'anthropic-dangerous-direct-browser-access': 'true' 
+    }
   );
 
 }

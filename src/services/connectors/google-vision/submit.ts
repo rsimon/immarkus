@@ -1,9 +1,19 @@
+import { ServiceConnectorResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const submit = (
+  image: File | string, 
+  options?: Record<string, any>
+): Promise<ServiceConnectorResponse> => {
   if (!options || !options['api-key']) throw new Error('Missing API key');
 
   const apiKey = options['api-key'];
+
+  const generator = {
+    id: 'google-vision',
+    name: 'Google Cloud Vision API',
+    homepage: 'https://cloud.google.com/vision'
+  };
 
   const submit = (base64?: string) => {
     const payload = {
@@ -37,7 +47,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
           throw new Error(message);
         });
       }
-    });
+    }).then(data => ({ data, generator }));
   }
 
   if (typeof image === 'string') {
