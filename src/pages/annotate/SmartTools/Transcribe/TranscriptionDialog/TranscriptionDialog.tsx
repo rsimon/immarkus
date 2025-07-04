@@ -64,15 +64,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     }, []);
   }, [results, options]);
 
-  useEffect(() => {
-    if (!annotations) return;
-
-    if (annotations.length > 0)
-      setProcessingState('success')
-    else 
-      setProcessingState('success_empty');
-  }, [annotations]);
-
   const reset = () => {
     setRegion(undefined);
     setProcessingState(undefined);
@@ -130,7 +121,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       service.connector.submit(image, options.serviceOptions).then((data: any) => {
         // Test the crosswalk to make sure data is valid
         try {
-          crosswalk(data, result.transform, region, options.serviceOptions);
+          const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
 
           setResults(current => [...(current || []), { 
             data, 
@@ -138,6 +129,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             region,
             crosswalk
           }]);
+
+          if (annotations.length > 0)
+            setProcessingState('success')
+          else 
+            setProcessingState('success_empty');
         } catch (error) {
           setProcessingState('ocr_failed');
           setLastError(error.message)
