@@ -7,7 +7,7 @@ import { ServiceRegistry, ServiceConfigParameter, useService, Region } from '@/s
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
-  APIKeyParameterControl,
+  CredentialParameterControl,
   RadioParameterControl,
   StringParameterControl, 
   SwitchParameterControl 
@@ -73,8 +73,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     const onValueChanged = (value: any) =>
       props.onServiceOptionChanged(param.id, value);
 
-    return param.type === 'api_key' ? (
-      <APIKeyParameterControl
+    return param.type === 'credential' ? (
+      <CredentialParameterControl
         key={param.id}
         param={param} 
         service={serviceConfig} 

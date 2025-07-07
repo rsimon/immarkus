@@ -7,7 +7,7 @@ export const config: ServiceConfig = {
   description: 'OCR via the Google Cloud Vision API',
   requiresKey: true,
   parameters: [{
-    type: 'api_key',
+    type: 'credential',
     id: 'api-key',
     displayName: 'Your API Key',
     required: true

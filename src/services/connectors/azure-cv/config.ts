@@ -13,7 +13,7 @@ export const config: ServiceConfig = {
     required: true,
     persist: true
   }, {
-    type: 'api_key',
+    type: 'credential',
     id: 'key',
     displayName: 'Key',
     required: true
