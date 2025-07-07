@@ -1,14 +1,16 @@
 // https://docs.google.com/document/d/1NSZnDdWgTp7SXW0PkAH8GmcTBja71n62/edit
 
+const { VITE_KIM_HAN_NOM_KEY } = import.meta.env;
+
 const BASE_PATH = import.meta.env.DEV 
   ? '' // Goes through Vite proxy in dev mode because of CORS
   : 'https://kimhannom.clc.hcmus.edu.vn';
 
 const CREATE_TOKEN_ENDPOINT = 
-  'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBPHXlc6zskkrELKq8s52oXTR4mPSWrnA4';
+  `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${VITE_KIM_HAN_NOM_KEY}`;
 
 const REFRESH_TOKEN_ENDPOINT = 
-  'https://securetoken.googleapis.com/v1/token?key=AIzaSyBPHXlc6zskkrELKq8s52oXTR4mPSWrnA4' ;
+  `https://securetoken.googleapis.com/v1/token?key=${VITE_KIM_HAN_NOM_KEY}` ;
 
 const createToken = (email: string, password: string) => 
   fetch(CREATE_TOKEN_ENDPOINT, {
