@@ -11,6 +11,8 @@ import {
 
 interface ToolSelectorProps {
 
+  compact?: boolean;
+
   mode: AnnotationMode;
 
   tool: Tool;
@@ -67,19 +69,22 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         className="tool-dropdown min-w-28">
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs">
-            <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> Box
+            <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> 
+            {!props.compact && (<>Box</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="polygon">
           <div className="flex items-center text-xs">
-            <TriangleRight className="w-3.5 h-3.5 mr-2 -rotate-[10deg]" /> Polygon
+            <TriangleRight className="w-3.5 h-3.5 mr-2 -rotate-[10deg]" /> 
+            {!props.compact && (<>Polygon</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="ellipse" >
           <div className="flex items-center text-xs">
-            <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" /> Ellipse
+            <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" />
+            {!props.compact && (<>Polygon</>)}
           </div>
         </SelectItem>
       </SelectContent>

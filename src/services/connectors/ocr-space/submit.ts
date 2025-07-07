@@ -1,3 +1,4 @@
+import { ServiceConnectorResponse } from "@/services/Types";
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -12,11 +13,20 @@ interface OCRSpaceOptions {
 const isOCRSpaceOptions = (opts: Record<string, any>): opts is OCRSpaceOptions => 
   typeof opts.language === 'string';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const submit = (
+  image: File | string, 
+  options?: Record<string, any>
+): Promise<ServiceConnectorResponse> => {
   if (!isOCRSpaceOptions(options)) {
     console.error(options);
     return Promise.reject('Invalid OCR options');
   }
+
+  const generator = {
+    id: 'ocr-space',
+    name: 'OCR.space',
+    homepage: 'https://ocr.space'
+  };
   
   const formData  = new FormData();
   formData.append('apikey', VITE_OCR_SPACE_KEY);
@@ -32,5 +42,5 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
   return fetch('https://api.ocr.space/parse/image', {
     method: 'POST',
     body: formData
-  }).then(res => res.json());
+  }).then(res => res.json()).then(data => ({ data, generator }));
 }

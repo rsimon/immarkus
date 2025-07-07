@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import { HeadersLike } from 'node_modules/openai/internal/headers.mjs';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { PageTransform, Region } from './Types';
+import { Generator, PageTransform, Region, ServiceConnectorResponse } from './Types';
 
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -27,8 +27,9 @@ export const submitOpenAICompatible = (
   apiKey: string,
   baseURL: string,
   model: string,
+  generator: Generator,
   defaultHeaders?: HeadersLike
-) => {
+): Promise<ServiceConnectorResponse> => {
   const client = new OpenAI({ 
     apiKey, 
     baseURL,
@@ -56,7 +57,7 @@ export const submitOpenAICompatible = (
           }
         }]
       }]
-    });
+    }).then((data: any) => ({ generator, data } as ServiceConnectorResponse));
 
   if (typeof image === 'string') {
     return urlToBase64(image).then(base64 =>  

@@ -1,3 +1,6 @@
+import { Generator } from "@/services";
+import { ImageAnnotation } from "@annotorious/react";
+
 export interface OCROptions {
 
   serviceId: string;
@@ -14,3 +17,11 @@ export type ProcessingState = 'cropping'
   | 'success_empty'
   | 'compressing_failed' 
   | 'ocr_failed';
+
+export interface AnnotationBatch {
+
+  annotations: ImageAnnotation[];
+
+  generator: Generator;
+  
+}

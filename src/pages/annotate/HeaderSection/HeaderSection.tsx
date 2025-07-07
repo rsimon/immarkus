@@ -68,7 +68,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
    * The toolbar has a 'collapsed mode', GDocs-style, 
    * which we'll enable as soon as it overflows.
    */
-  const { ref, collapsed } = useCollapsibleToolbar();
+  const { ref, collapseLevel } = useCollapsibleToolbar(3);
 
   const onEnableDrawing = (tool?: Tool) => {
     if (tool)
@@ -136,21 +136,21 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   useEffect(() => {
     // If collapsed state changes, this will force-unmount the RelationEditor...
     props.onChangeMode('move');
-  }, [collapsed]);
+  }, [collapseLevel]);
 
   return (
     <section 
       ref={ref}
-      className="toolbar relative border-b p-2 flex justify-between text-sm h-[46px]">
-      <section className="toolbar-left flex gap-1 items-center">
-        <div className="flex items-center">
-          <Link className="font-semibold inline" to={back}>
+      className="toolbar relative border-b p-2 flex text-sm h-[46px]">
+      <section className="toolbar-left flex gap-1 basis-24 shrink-0 grow-1 items-center overflow-hidden">
+        <div className="flex items-center overflow-hidden">
+          <Link className="font-semibold inline shrink-0" to={back}>
             <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
               <ChevronLeft className="h-5 w-5" />
             </div>
           </Link>
 
-          <span className="text-xs font-medium ml-0.5 whitespace-nowrap max-w-[320px] overflow-hidden text-ellipsis">
+          <span className="text-xs font-medium ml-0.5 flex-1 min-w-0 truncate">
             {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
           </span>
         </div>
@@ -158,8 +158,8 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <SavingState.Indicator />
       </section>
 
-      <section className="toolbar-right flex gap-1 items-center">
-        {collapsed && (
+      <section className="toolbar-right flex gap-1 items-center grow-2 justify-end">
+        {collapseLevel > 0 && (
           <>
             <MoreToolsPanel 
               images={props.images}
@@ -178,7 +178,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           </>
         )}
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             {props.images.length > 0 && (
               <>
@@ -234,7 +234,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         <Separator orientation="vertical" className="h-4" />
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             <ToolbarButton
               disabled={osdToolsDisabled}
@@ -257,21 +257,23 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         )}
 
         <button 
-          className="p-1.5 pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-selected={props.mode === 'move'}
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
-          <MousePointer2 className="size-4 mr-1" /> Move
+          <MousePointer2 className="size-4" />
+          {collapseLevel < 2 && (<span className="ml-1 pr-1">Move</span>)}
         </button>
 
         <ToolSelector 
+          compact={collapseLevel === 2}
           tool={props.tool} 
           mode={props.mode}
           onToolChange={onEnableDrawing} />
 
         <Separator orientation="vertical" className="h-4" />
 
-        {!collapsed && (
+        {collapseLevel === 0 && (
           <>
             <CopyToClipboard 
               images={props.images} />

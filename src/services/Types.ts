@@ -92,9 +92,30 @@ export type ServiceConfigParameter =
 
 export interface ServiceConnector {
 
-  submit(image: File | string, options?: Record<string, any>): any;
+  submit(image: File | string, options?: Record<string, any>): Promise<ServiceConnectorResponse>;
 
   parseResponse: ServiceCrosswalk;
+
+}
+
+export interface ServiceConnectorResponse<T extends unknown = any> {
+
+  data: T; 
+
+  generator: Generator;
+
+}
+
+export interface Generator {
+
+  id: string;
+
+  /** Defaults to 'Software' **/
+  type?: string;
+
+  name: string;
+
+  homepage?: string; 
 
 }
 

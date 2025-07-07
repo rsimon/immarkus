@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { LoadedImage } from '@/model';
-import { PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
+import { Generator, PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
-import { OCROptions, ProcessingState } from '../Types';
+import { AnnotationBatch, OCROptions, ProcessingState } from '../Types';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 
@@ -19,6 +19,8 @@ import {
 interface OCRResult {
 
   data: any;
+
+  generator: Generator;
 
   transform: PageTransform;
 
@@ -34,7 +36,7 @@ interface TranscriptionDialogProps {
 
   image: LoadedImage;
 
-  onImport(annotations: ImageAnnotation[]): void;
+  onImport(batches: AnnotationBatch[]): void;
 
 }
 
@@ -54,34 +56,44 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [results, setResults] = useState<OCRResult[] | undefined>();
 
-  const annotations = useMemo(() => {
+  const batches = useMemo(() => {
     if ((results || []).length === 0) return; // No (successful) OCR run yet
-    
-    return results.reduce<ImageAnnotation[]>((all, result) => {
-      const { data, transform, region, crosswalk } = result;
-      const inThisBatch = crosswalk(data, transform, region, options.serviceOptions);
-      return [...all, ...inThisBatch];
-    }, []);
+
+    return results.map(result => {
+      const { crosswalk, data, generator, region, transform } = result;
+      
+      const annotations = crosswalk(data, transform, region, options.serviceOptions);
+      return { annotations, generator };
+    });
   }, [results, options]);
 
-  useEffect(() => {
-    if (!annotations) return;
+  const annotations = useMemo(() => {
+    if (!batches) return;
 
-    if (annotations.length > 0)
-      setProcessingState('success')
-    else 
-      setProcessingState('success_empty');
-  }, [annotations]);
+    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), [])
+  }, [batches]);
+
+  const reset = () => {
+    setRegion(undefined);
+    setProcessingState(undefined);
+    setLastError(undefined);
+    setResults(undefined);
+  }
 
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
-    if (!open) {
-      setRegion(undefined);
-      setProcessingState(undefined);
-      setLastError(undefined);
-      setResults(undefined);
-    }
+    if (!open)
+      reset();
+  }
+
+  const onImportAnnotations = () => {
+    if (!batches) return;
+      
+    props.onImport(batches);
+
+    setOpen(false);
+    reset();
   }
 
   const onServiceChanged = (serviceId: string) => 
@@ -106,13 +118,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     setProcessingState(undefined);
   }
 
-  const onImportAnnotations = () => {
-    if (!annotations) return;
-      
-    props.onImport(annotations);
-    setOpen(false);
-  }
-
   const onSubmitImage = () => { 
     if (!service.connector) return;
 
@@ -122,17 +127,23 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       const image = 'file' in result ? result.file : result.url;
       const crosswalk = service.connector.parseResponse;
 
-      service.connector.submit(image, options.serviceOptions).then((data: any) => {
+      service.connector.submit(image, options.serviceOptions).then(({ data, generator }) => {
         // Test the crosswalk to make sure data is valid
         try {
-          crosswalk(data, result.transform, region, options.serviceOptions);
+          const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
 
           setResults(current => [...(current || []), { 
             data, 
+            generator,
             transform: result.transform,
             region,
             crosswalk
           }]);
+
+          if (annotations.length > 0)
+            setProcessingState('success')
+          else 
+            setProcessingState('success_empty');
         } catch (error) {
           setProcessingState('ocr_failed');
           setLastError(error.message)

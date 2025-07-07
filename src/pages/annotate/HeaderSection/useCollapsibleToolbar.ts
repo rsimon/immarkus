@@ -1,38 +1,71 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export const useCollapsibleToolbar = () => {
+interface CollapseInfo {
+
+  level: number;
+
+  breakpoint: number;
+
+}
+
+export const useCollapsibleToolbar = (levels: number) => {
 
   const ref = useRef<HTMLElement>(null);
 
-  const [windowWidth, setWindowWidth] = useState(Infinity);
+  const collapseStack = useRef<CollapseInfo[]>([...Array(levels).keys()].map((_, idx) => ({
+    level: idx,
+    breakpoint: 0
+  })));
 
-  const [breakpoint, setBreakpoint] = useState(0);
+  const [collapseLevel, setCollapseLevel] = useState(levels);
 
-  const [collapsed, setCollapsed] = useState(false);
+  const checkCollapse = useCallback(() => {
+    if (!ref.current) return;
+    
+    const isOverflowing = ref.current.scrollWidth > ref.current.clientWidth;
+
+    const stack = collapseStack.current;
+    const last = stack.length > 0 ? stack[stack.length - 1] : undefined;
+    
+    if (isOverflowing) {
+      // Increase collapse level
+      const nextLevel = last ? last.level + 1 : 0;
+      if (nextLevel < levels) {
+        stack.push({ level: nextLevel, breakpoint: window.innerWidth });
+        setCollapseLevel(nextLevel);
+      }
+    } else if (!isOverflowing && stack.length > 0 && window.innerWidth > last.breakpoint) {
+      // Reduce collapse level
+      if (stack.length > 1) {
+        const popped = stack.pop();
+        setCollapseLevel(popped ? popped.level - 1 : 0);
+      }
+    }
+  }, [collapseLevel]);
 
   useEffect(() => {
-    const onResize = () => setWindowWidth(window.innerWidth);
+    if (!ref.current) return;
 
-    window.addEventListener('resize', onResize);
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(checkCollapse);
+    });
+
+    const onWindowResize = () =>
+      requestAnimationFrame(checkCollapse);
+
+    // Initial check after mounting
+    setTimeout(() => checkCollapse(), 200);
+
+    resizeObserver.observe(ref.current);
     
-    setTimeout(() => onResize(), 1);
+    window.addEventListener('resize', onWindowResize);
 
     return () => {
-      window.removeEventListener('resize', onResize);
-    }
-  }, []);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', onWindowResize);
+    };
+  }, [checkCollapse]);
 
-  useEffect(() => {
-    const shouldCollapse = ref.current.scrollWidth > ref.current.clientWidth;
-
-    if (shouldCollapse && !collapsed) {
-      setBreakpoint(windowWidth);
-      setCollapsed(true);
-    } else if (!shouldCollapse && windowWidth > breakpoint) {
-      setCollapsed(false);
-    }
-  }, [windowWidth]);
-
-  return { ref, collapsed };
+  return { ref, collapseLevel };
 
 }

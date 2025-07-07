@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -90,6 +90,6 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.1.0",
-    "zod": "^3.25.71"
+    "zod": "^3.25.74"
   }
 }
