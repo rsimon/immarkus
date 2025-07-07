@@ -1,5 +1,7 @@
 // https://docs.google.com/document/d/1NSZnDdWgTp7SXW0PkAH8GmcTBja71n62/edit
 
+import { urlToFile } from "@/services/utils";
+
 const { VITE_KIM_HAN_NOM_KEY } = import.meta.env;
 
 const BASE_PATH = import.meta.env.DEV 
@@ -120,13 +122,13 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
       }
     });
 
-  return getToken(email, password).then(({ idToken, refreshToken }) => {
-    if (typeof image === 'string') {
-      console.log('TODO');
-      throw new Error('Not supported');
-    } else {
-      return uploadImage(image, idToken).then(imageName => runOCR(imageName, idToken));
-    }
+  return getToken(email, password).then(({ idToken }) => {
+    const promise = (typeof image === 'string')
+      ? urlToFile(image)
+      : Promise.resolve(image);
+
+    return promise.then(imageFile => 
+      uploadImage(imageFile, idToken).then(imageName => runOCR(imageName, idToken)));
   });
 
 }

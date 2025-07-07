@@ -22,6 +22,29 @@ export const urlToBase64 = (url: string): Promise<string> =>
     .then(res => res.blob())
     .then(fileToBase64);
 
+export const urlToFile = (url: string): Promise<File> =>
+  fetch(url)
+    .then(res => res.blob())
+    .then(blob => {
+      let filename: string;
+
+      const urlPath = new URL(url).pathname;
+      const urlFilename = urlPath.split('/').pop();
+    
+      if (urlFilename && urlFilename.includes('.')) {
+        filename = urlFilename;
+      } else {
+        const mimeType = blob.type;
+        const extension = mimeType.split('/')[1] || 'jpg'; // Default to jpg
+        filename = `image.${extension}`;
+      }
+  
+      return new File([blob], filename, {
+        type: blob.type,
+        lastModified: Date.now()
+      });
+    });
+
 export const submitOpenAICompatible = (
   image: File | string, 
   apiKey: string,
