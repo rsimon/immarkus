@@ -8,7 +8,7 @@ export const config: ServiceConfig = {
   requiresKey: true,
   requiresRegion: true,
   parameters: [{
-    type: 'api_key',
+    type: 'credential',
     id: 'api-key',
     displayName: 'Your API Key',
     required: true

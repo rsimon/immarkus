@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import Markdown from 'react-markdown';
-import { ServiceConfig, ServiceConfigApiKeyParameter } from '@/services';
+import { ServiceConfig, ServiceConfigCredentialParameter } from '@/services';
 import { deobfuscate, obfuscate } from '@/utils/obfuscateString';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Info } from 'lucide-react';
 
-interface APIKeyParameterControlProps {
+interface CredentialParameterControlProps {
 
-  param: ServiceConfigApiKeyParameter;
+  param: ServiceConfigCredentialParameter;
 
   service: ServiceConfig;
 
@@ -19,7 +19,7 @@ interface APIKeyParameterControlProps {
 
 }
 
-export const APIKeyParameterControl = (props: APIKeyParameterControlProps) => {
+export const CredentialParameterControl = (props: CredentialParameterControlProps) => {
 
   const { param, service, value } = props;
 

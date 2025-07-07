@@ -24,6 +24,15 @@ export default defineConfig({
       }]
     }),
   ],
+  server: {
+    proxy: {
+      '/api/web/clc-sinonom/': {
+        target: 'https://kimhannom.clc.hcmus.edu.vn',
+        changeOrigin: true,
+        secure: false
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')

@@ -20,7 +20,7 @@ export const config: ServiceConfig = {
       ['Qwen/Qwen2.5-VL-7B-Instruct', 'Qwen2.5-VL 7B']
     ]
   },{
-    type: 'api_key',
+    type: 'credential',
     id: 'api-key',
     displayName: 'Your kluster.ai API Key',
     required: true

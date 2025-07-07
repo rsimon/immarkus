@@ -28,9 +28,9 @@ export interface ServiceConfig {
 
 }
 
-export interface ServiceConfigApiKeyParameter {
+export interface ServiceConfigCredentialParameter {
 
-  type: 'api_key';
+  type: 'credential';
 
   id: string;
 
@@ -85,7 +85,7 @@ export interface ServiceConfigSwitchParameter {
 }
 
 export type ServiceConfigParameter = 
-  | ServiceConfigApiKeyParameter
+  | ServiceConfigCredentialParameter
   | ServiceConfigRadioParameter
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
