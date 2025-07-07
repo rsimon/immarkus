@@ -6,6 +6,8 @@ interface NoteProps {
 
   autoFocus?: boolean;
 
+  fontSize: string;
+
   id: string;
 
   creator?: User; 
@@ -30,13 +32,14 @@ export const Note = (props: NoteProps) => {
         </div>
       )}
       <TextareaAutosize
+        key={props.fontSize}
         cacheMeasurements
         autoFocus={props.autoFocus}
         id={props.id}
         minRows={4}
         maxRows={20}
         value={props.value || ''} 
-        className="shadow-xs w-full outline-black rounded-md border border-input p-2 bg-muted text-base placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+        className={`text-${props.fontSize} shadow-xs w-full outline-black rounded-md border border-input p-2 bg-muted placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50`}
         onChange={evt => props.onChange(evt.target.value)} />
     </div>
   )

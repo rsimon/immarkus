@@ -31,6 +31,8 @@ interface PropertiesFormProps {
 
 }
 
+const FontSizes = ['sm', 'base', 'lg', 'xl']; 
+
 export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const { annotation } = props;
@@ -163,9 +165,17 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     }
   }
 
+  const hasRelations = store.hasRelatedAnnotations(annotation.id);
+
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
-  const hasRelations = store.hasRelatedAnnotations(annotation.id);
+  const [noteFontSize, setNoteFontSize] = useState('base');
+
+  const onChangeNoteFontSize = () => setNoteFontSize(current => {
+    const currentIdx = FontSizes.indexOf(current);
+    const nextIdx = (currentIdx + 1) % FontSizes.length;
+    return FontSizes[nextIdx];
+  });
 
   return (
     <PropertyValidation
@@ -251,6 +261,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           {(hasNote || schemaBodies.length === 0) && (
             <Note
               autoFocus={schemaBodies.length === 0}
+              fontSize={noteFontSize}
               id={noteKey}
               creator={note?.creator}
               value={formState[noteKey]}
@@ -261,6 +272,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
             onAddNote={() => onChangeFormValue(noteKey, '')} 
+            onChangeFontSize={onChangeNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)}/>
         </div>
 
