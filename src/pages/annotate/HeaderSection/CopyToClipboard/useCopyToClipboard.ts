@@ -6,7 +6,11 @@ import { FileImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
 
 type CopyStatus = 'idle' | 'busy' | 'success' | 'failed';
 
-export const useCopyToClipboard = (images: LoadedImage[], resetStatusAfter = 2000) => {
+export const useCopyToClipboard = (
+  images: LoadedImage[], 
+  applyMask: boolean,
+  resetStatusAfter = 2000
+) => {
 
   const selection = useSelection();
 
@@ -33,7 +37,7 @@ export const useCopyToClipboard = (images: LoadedImage[], resetStatusAfter = 200
     
     setStatus('busy');
 
-    getImageSnippet(image, annotation, true, 'png', true).then((snippet: FileImageSnippet) => {
+    getImageSnippet(image, annotation, true, 'png', applyMask).then((snippet: FileImageSnippet) => {
       const blob = new Blob([snippet.data], { type: 'image/png' });
       
       const clipboardItem = new ClipboardItem({
@@ -47,7 +51,7 @@ export const useCopyToClipboard = (images: LoadedImage[], resetStatusAfter = 200
           setStatus('failed');
         });
     });
-  }, [selection.selected, images, canCopy])
+  }, [selection.selected, images, canCopy, applyMask])
 
   useEffect(() => {
     if (!canCopy) return;
