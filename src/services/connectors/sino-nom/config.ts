@@ -5,6 +5,7 @@ export const config: ServiceConfig = {
   connector: 'sino-nom',
   displayName: 'Kim Sino Nom',
   description: 'Sino-Nom OCR by the Kim Hán Nôm project',
+  requiresKey: true,
   parameters: [{
     type: 'credential',
     id: 'email',
