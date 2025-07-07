@@ -1,6 +1,6 @@
 import { ScanText } from 'lucide-react';
 import { User } from '@annotorious/react';
-import { Textarea } from '@/ui/Textarea';
+import TextareaAutosize from 'react-textarea-autosize';
 
 interface NoteProps {
 
@@ -29,11 +29,14 @@ export const Note = (props: NoteProps) => {
           {creator.name} <ScanText className="size-3.5 mb-[1px]" /> 
         </div>
       )}
-      <Textarea
+      <TextareaAutosize
+        cacheMeasurements
         autoFocus={props.autoFocus}
         id={props.id}
-        rows={4}
+        minRows={4}
+        maxRows={20}
         value={props.value || ''} 
+        className="shadow-xs w-full outline-black rounded-md border border-input p-2 bg-muted text-base placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
         onChange={evt => props.onChange(evt.target.value)} />
     </div>
   )
