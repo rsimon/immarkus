@@ -58,6 +58,10 @@ export const useCopyToClipboard = (
 
     const onKeydown = (evt: KeyboardEvent) => {
       if (!(evt.key === 'c' && (evt.metaKey || evt.ctrlKey))) return;
+
+      const nodeName = (evt.target as Node).nodeName;
+      if (nodeName === 'TEXTAREA' || nodeName === 'INPUT') return;
+
       copyToClipboard();        
     }
 
