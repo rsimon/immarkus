@@ -17,7 +17,7 @@ export const SidebarSection = () => {
       asChild      
       value={tab}
       onValueChange={setTab}>
-      <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
+      <aside id="sidebar-section" className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
         <section className="toolbar border-b h-[46px] flex items-center shrink-0">
           <Separator orientation="vertical" className="h-4" />
 
