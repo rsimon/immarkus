@@ -242,7 +242,8 @@ export const getImageSnippet = (
 export const getAnnotationsWithSnippets = (
   image: Image | CanvasInformation, 
   store: Store,
-  downloadIIIF?: boolean
+  applyMask: boolean,
+  downloadIIIF: boolean
 ): Promise<{ annotation: W3CImageAnnotation, snippet?: ImageSnippet }[]> => {
   if ('uri' in image) {
     const manifest = store.iiifResources.find(r => r.id === image.manifestId) as IIIFManifestResource;
@@ -264,7 +265,7 @@ export const getAnnotationsWithSnippets = (
           return Promise.all(annotations.map(a => {
             const annotation = a as W3CImageAnnotation;
 
-            return getImageSnippet(loaded, annotation, downloadIIIF)
+            return getImageSnippet(loaded, annotation, downloadIIIF, applyMask ? 'png' : 'jpg', applyMask)
               .then(snippet => ({ annotation, snippet }))
               .catch(error => { 
                 console.warn(error);
@@ -281,7 +282,7 @@ export const getAnnotationsWithSnippets = (
       store.getAnnotations(image.id, { type: 'image' }).then(annotations => 
         Promise.all(annotations.map(a => {
           const annotation = a as W3CImageAnnotation;
-          return getImageSnippet(loaded, annotation)
+          return getImageSnippet(loaded, annotation, true, applyMask ? 'png' : 'jpg', applyMask)
             .then(snippet => ({ annotation, snippet }))
             .catch(() => ({ annotation }))
         }))

@@ -170,7 +170,13 @@ const createNotesWorksheet = (
   fitColumnWidths(worksheet);
 }
 
-export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasInformation)[], onProgress: ((progress: number) => void), filename?: string) => {
+export const exportAnnotationsAsExcel = (
+  store: Store, 
+  images: (Image | CanvasInformation)[], 
+  onProgress: ((progress: number) => void), 
+  masked: boolean,
+  filename?: string
+) => {
   const model = store.getDataModel();
   const root = store.getRootFolder().handle;
 
@@ -186,7 +192,7 @@ export const exportAnnotationsAsExcel = (store: Store, images: (Image | CanvasIn
         : image.folder;
 
       return root.resolve(folder).then(path => {
-        return getAnnotationsWithSnippets(image, store, true)
+        return getAnnotationsWithSnippets(image, store, masked, true)
           .then(t => { 
             onProgress((idx + 2) * progressIncrement);
 

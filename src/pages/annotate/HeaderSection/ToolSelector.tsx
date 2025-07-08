@@ -66,25 +66,25 @@ export const ToolSelector = (props: ToolSelectorProps) => {
       <SelectContent
         align="end" 
         alignOffset={-14}
-        className="tool-dropdown min-w-28">
+        className="tool-dropdown min-w-0">
         <SelectItem value="rectangle">
-          <div className="flex items-center text-xs">
-            <Square className="w-3.5 h-3.5 mr-2 mb-[1px]" /> 
+          <div className="flex items-center text-xs gap-1.5">
+            <Square className="w-3.5 h-3.5 mb-[1px]" /> 
             {!props.compact && (<>Box</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="polygon">
-          <div className="flex items-center text-xs">
-            <TriangleRight className="w-3.5 h-3.5 mr-2 -rotate-[10deg]" /> 
+          <div className="flex items-center text-xs gap-1.5">
+            <TriangleRight className="w-3.5 h-3.5 -rotate-[10deg]" /> 
             {!props.compact && (<>Polygon</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="ellipse" >
-          <div className="flex items-center text-xs">
-            <Circle className="w-3.5 h-3.5 mr-2 scale-y-90 mb-[1px]" />
-            {!props.compact && (<>Polygon</>)}
+          <div className="flex items-center text-xs gap-1.5">
+            <Circle className="w-3.5 h-3.5 scale-y-90 mb-[1px]" />
+            {!props.compact && (<>Ellipse</>)}
           </div>
         </SelectItem>
       </SelectContent>

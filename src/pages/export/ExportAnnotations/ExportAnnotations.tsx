@@ -2,7 +2,7 @@ import { FileChartColumn, FileJson, ScissorsLineDashed, SquareDashed, Table2, Tr
 import { Spinner } from '@/components/Spinner';
 import { exportAnnotationsAsJSONLD, useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
+import { SnippetExportMode, useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
 import { useState } from 'react';
@@ -11,13 +11,13 @@ export const ExportAnnotations = () => {
 
   const store = useStore();
 
-  const [snippetMode, setSnippetMode] = useState<'masked' | 'unmasked'>('unmasked');
+  const [snippetMode, setSnippetMode] = useState<SnippetExportMode>('unmasked');
 
   const { 
     exportAnnotations: exportAnnotationsAsExcel, 
     busy, 
     progress
-  } = useExcelAnnotationExport();
+  } = useExcelAnnotationExport(snippetMode);
 
   return (
     <> 
@@ -75,7 +75,7 @@ export const ExportAnnotations = () => {
             <div className="flex justify-end gap-2 pt-3">
               <Select
                 value={snippetMode}
-                onValueChange={m => setSnippetMode(m as 'masked' | 'unmasked')}>
+                onValueChange={m => setSnippetMode(m as SnippetExportMode)}>
                 <SelectTrigger 
                   className="h-auto bg-transparent gap-1.5">
                   <SelectValue />
