@@ -1,13 +1,17 @@
-import { FileChartColumn, FileJson, Table2 } from 'lucide-react';
+import { FileChartColumn, FileJson, ScissorsLineDashed, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
 import { Spinner } from '@/components/Spinner';
 import { exportAnnotationsAsJSONLD, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
 import { ProgressDialog } from '@/components/ProgressDialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
+import { useState } from 'react';
 
 export const ExportAnnotations = () => {
 
   const store = useStore();
+
+  const [snippetMode, setSnippetMode] = useState<'masked' | 'unmasked'>('unmasked');
 
   const { 
     exportAnnotations: exportAnnotationsAsExcel, 
@@ -47,13 +51,52 @@ export const ExportAnnotations = () => {
               Annotations and Images
             </h3>
 
-            <p className="text-sm pt-3 pb-5 leading-relaxed">
+            <p className="text-sm pt-3 leading-relaxed">
               All annotations, on all images in your current work folder, as an Excel file. 
-              Each top-level Entity Class will be on a separate worksheet. Image snippets are included
-              as a spreadsheet column.
+              Each top-level Entity Class will appear on a separate worksheet. 
             </p>
 
-            <div className="flex justify-end pt-3">
+            <p className="text-sm pt-3 leading-relaxed">
+              Image snippets are included as a spreadsheet column. Choose your 
+              preferred format:
+            </p>
+
+            <ul className="list-disc text-sm leading-relaxed pt-1 pb-5 space-y-1">
+              <li className="ml-5">
+                <strong>Bounding box snippets</strong>: rectangular images showing the full 
+                area around each annotation.
+              </li>
+              <li className="ml-5">
+                <strong>Exact shape snippets</strong>: images clipped precisely to the annotated 
+                shape (applies to polygons and ellipses).
+              </li>
+            </ul>
+
+            <div className="flex justify-end gap-2 pt-3">
+              <Select
+                value={snippetMode}
+                onValueChange={m => setSnippetMode(m as 'masked' | 'unmasked')}>
+                <SelectTrigger 
+                  className="h-auto bg-transparent gap-1.5">
+                  <SelectValue />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectItem value="unmasked">
+                    <div className="flex items-center gap-1.5">
+                      <SquareDashed className="size-4" /> Export bounding box snippets
+                    </div>
+                  </SelectItem>
+
+                  <SelectItem 
+                    value="masked">
+                    <div className="flex items-center gap-2">
+                      <TriangleDashed className="size-4 rotate-[-15deg]" /> Export exact shape snippets
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
               <Button 
                 disabled={busy}
                 className="whitespace-nowrap flex gap-3 w-36"
