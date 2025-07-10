@@ -88,7 +88,7 @@ export const ToolSelector = (props: ToolSelectorProps) => {
           </div>
         </SelectItem>
 
-        <SelectItem value="smooth-polyline">
+        <SelectItem value="path">
           <div className="flex items-center text-xs gap-1.5">
             <Tangent className="w-3.5 h-3.5 scale-y-90 mb-[1px]" />
             {!props.compact && (<>Path</>)}
