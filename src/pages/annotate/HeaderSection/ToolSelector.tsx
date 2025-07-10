@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Circle, Square, TriangleRight } from 'lucide-react';
+import { Circle, Square, Tangent, TriangleRight } from 'lucide-react';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import {
   Select,
@@ -85,6 +85,13 @@ export const ToolSelector = (props: ToolSelectorProps) => {
           <div className="flex items-center text-xs gap-1.5">
             <Circle className="w-3.5 h-3.5 scale-y-90 mb-[1px]" />
             {!props.compact && (<>Ellipse</>)}
+          </div>
+        </SelectItem>
+
+        <SelectItem value="path">
+          <div className="flex items-center text-xs gap-1.5">
+            <Tangent className="w-3.5 h-3.5 scale-y-90 mb-[1px]" />
+            {!props.compact && (<>Path</>)}
           </div>
         </SelectItem>
       </SelectContent>

@@ -24,6 +24,7 @@ import {
 } from '@annotorious/react';
 
 import '@annotorious/react/annotorious-react.css';
+import '@annotorious/plugin-tools/annotorious-plugin-tools.css';
 import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
 import '@annotorious/plugin-magnetic-outline/plugin-magnetic-polyline.css';
 
