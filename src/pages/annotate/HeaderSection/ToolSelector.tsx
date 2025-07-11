@@ -21,7 +21,7 @@ interface ToolSelectorProps {
 
 }
 
-const TOOLS = new Set(['rectangle', 'polygon', 'ellipse']);
+const TOOLS = new Set(['rectangle', 'polygon', 'ellipse', 'path']);
 
 export const ToolSelector = (props: ToolSelectorProps) => {
 
