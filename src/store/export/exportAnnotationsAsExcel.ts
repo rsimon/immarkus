@@ -1,8 +1,9 @@
+// import { v4 as uuidv4 } from 'uuid';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { CanvasInformation, EntityType, Image, PropertyDefinition } from '@/model';
-import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
+import { /* FileImageSnippet, */ ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths } from './utils';
 
 interface ImageAnnotationSnippetTuple {
@@ -188,7 +189,7 @@ export const exportAnnotationsAsExcel = (
     return promise.then(all => {
       // While we're at it, resolve image folder path
       const folder = 'uri' in image 
-        ? store.iiifResources.find(r => r.id === image.manifestId).folder
+        ? store.iiifResources.find(r => r.id === image.manifestId)?.folder
         : image.folder;
 
       return root.resolve(folder).then(path => {
@@ -206,8 +207,49 @@ export const exportAnnotationsAsExcel = (
       })
     }, Promise.resolve([]));
 
-  promise.then(annotations => {
+  promise.then(async annotations => {
     const workbook = new ExcelJS.Workbook();
+
+    /**
+     * For hacking
+     *
+    const snippets = annotations.filter(a => a.snippet && 'data' in a.snippet).map(a => a.snippet! as FileImageSnippet);
+    const root = store.getRootFolder();
+
+    let imagesFolder;
+    try {
+      imagesFolder = await root.handle.getDirectoryHandle('images', { create: true });
+    } catch (error) {
+      console.error('Failed to create images folder:', error);
+      return;
+    }
+
+    for (const snippet of snippets) {
+      try {
+        const filename = `${uuidv4()}.jpg`;
+
+        // TODO write the file data into the root folder (ideally a subfolder named 'images')
+        snippet.data // Uint8Array<ArrayBufferLike>
+        root.handle // FileSystemDirectoryHandle
+
+        // Create a file handle in the images folder
+        const fileHandle = await imagesFolder.getFileHandle(filename, { create: true });
+        
+        // Create a writable stream
+        const writable = await fileHandle.createWritable();
+        
+        // Write the data
+        await writable.write(snippet.data);
+        
+        // Close the writable stream
+        await writable.close();
+        
+        console.log(`Successfully wrote ${filename}`);
+      } catch {
+        console.error('Failed')
+      }
+    }
+    */
 
     workbook.creator = `IMMARKUS v${process.env.PACKAGE_VERSION}`;
     workbook.lastModifiedBy = `IMMARKUS v${process.env.PACKAGE_VERSION}`;

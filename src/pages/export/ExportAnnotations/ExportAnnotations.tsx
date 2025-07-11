@@ -83,14 +83,14 @@ export const ExportAnnotations = () => {
 
                 <SelectContent>
                   <SelectItem value="unmasked">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
                       <SquareDashed className="size-4" /> Export bounding box snippets
                     </div>
                   </SelectItem>
 
                   <SelectItem 
                     value="masked">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 whitespace-nowrap">
                       <TriangleDashed className="size-4 rotate-[-15deg]" /> Export exact shape snippets
                     </div>
                   </SelectItem>
