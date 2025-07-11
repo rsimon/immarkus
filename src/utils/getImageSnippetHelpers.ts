@@ -1,5 +1,12 @@
-import { ShapeType } from '@annotorious/annotorious';
-import type { EllipseGeometry, ImageAnnotation, MultiPolygonGeometry, PolygonGeometry} from '@annotorious/annotorious';
+import { approximateAsPolygon, ShapeType } from '@annotorious/annotorious';
+import type { 
+  Bounds,
+  EllipseGeometry, 
+  ImageAnnotation, 
+  MultiPolygonGeometry, 
+  PolygonGeometry, 
+  PolylineGeometry
+} from '@annotorious/annotorious';
 
 const detectImageFormat = (uint8Array: Uint8Array<ArrayBuffer>) => {
   const header = uint8Array.slice(0, 4);
@@ -14,8 +21,13 @@ const detectImageFormat = (uint8Array: Uint8Array<ArrayBuffer>) => {
 
 // Shorthand
 export const shouldApplyShapeMask = (annotation: ImageAnnotation) => {
-  const { type } = annotation.target.selector;
-  return  type === ShapeType.ELLIPSE || type === ShapeType.MULTIPOLYGON || type === ShapeType.POLYGON;
+  const { selector } = annotation.target;
+  const { type } = selector;
+
+  return  type === ShapeType.ELLIPSE 
+    || type === ShapeType.MULTIPOLYGON 
+    || type === ShapeType.POLYGON
+    || (type === ShapeType.POLYLINE && (selector.geometry as PolylineGeometry).closed);
 }
 
 export const applyShapeMask = (
@@ -32,6 +44,8 @@ export const applyShapeMask = (
     applyMultiPolygonMask(context, selector.geometry as MultiPolygonGeometry, kx, ky);
   else if (selector.type === ShapeType.POLYGON)
     applyPolygonMask(context, selector.geometry as PolygonGeometry, kx, ky);
+  else if (selector.type === ShapeType.POLYLINE)
+    applyClosedPolylineMask(context, selector.geometry as PolylineGeometry, kx, ky);
 }
 
 export const applyMaskToUint8Array = (
@@ -70,18 +84,17 @@ export const applyMaskToUint8Array = (
   });
 }
 
-const applyPolygonMask = (
-  context: OffscreenCanvasRenderingContext2D, 
-  geometry: PolygonGeometry,
+const applyMaskToPolygonLike = (
+  context: OffscreenCanvasRenderingContext2D,
+  bounds: Bounds,
+  points: number[][],
   kx = 1,
-  ky = 1 
+  ky = 1
 ) => {
-  // Will allow us to restore props like `globalCompositeOperation' later
+    // Will allow us to restore props like `globalCompositeOperation' later
   context.save();
 
   context.beginPath();
-
-  const { bounds, points } = geometry;
 
   points.forEach(([px, py], index) => {
     const x = (px - bounds.minX) * kx;
@@ -102,6 +115,26 @@ const applyPolygonMask = (
   context.fill();
   
   context.restore();
+}
+
+const applyPolygonMask = (
+  context: OffscreenCanvasRenderingContext2D, 
+  geometry: PolygonGeometry,
+  kx = 1,
+  ky = 1 
+) => {
+  const { bounds, points } = geometry;
+  return applyMaskToPolygonLike(context, bounds, points, kx, ky);
+}
+
+const applyClosedPolylineMask = (
+  context: OffscreenCanvasRenderingContext2D, 
+  geometry: PolylineGeometry,
+  kx = 1,
+  ky = 1 
+) => {
+  const points = approximateAsPolygon(geometry.points, true);
+  return applyMaskToPolygonLike(context, geometry.bounds, points, kx, ky);
 }
 
 const applyEllipseMask = (
