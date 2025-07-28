@@ -1,9 +1,8 @@
-// import { v4 as uuidv4 } from 'uuid';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { CanvasInformation, EntityType, Image, PropertyDefinition } from '@/model';
-import { /* FileImageSnippet, */ ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
+import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths } from './utils';
 
 interface ImageAnnotationSnippetTuple {

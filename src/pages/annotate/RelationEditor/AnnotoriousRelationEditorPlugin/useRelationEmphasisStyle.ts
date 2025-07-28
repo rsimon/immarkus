@@ -6,14 +6,6 @@ import { useRelationEditor } from '../RelationEditorRoot';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
-/*
-export const isConnectedTo = (sourceId: string, store: Store) =>
-  new Set(store.getRelatedAnnotations(sourceId).reduce<string[]>((all, [link, _]) => {
-    const { target, body } = link;
-    return [...all, target, body].filter(id => id !== sourceId);
-  }, []));
-*/
-
 export const useRelationEmphasisStyle = (
   enabled: boolean,
   base: DrawingStyleExpression
@@ -29,8 +21,6 @@ export const useRelationEmphasisStyle = (
   const { source, target } = useRelationEditor();
 
   const enabledStyle = useMemo(() => {
-    // const alreadyConnected = source?.id ? isConnectedTo(source.id, store) : new Set([]);
-
     if (enabled) {
       const emphasis: DrawingStyleExpression = (a: ImageAnnotation, state?: AnnotationState) => {
         if (a.id === source?.id) {
@@ -46,7 +36,7 @@ export const useRelationEmphasisStyle = (
             strokeWidth: 3
           }
         } else if (state?.hovered) {
-          return /* !alreadyConnected.has(a.id) && */ {
+          return {
             stroke: '#22c55e',
             strokeOpacity: 1,
             strokeWidth: 1.2
