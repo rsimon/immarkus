@@ -105,8 +105,14 @@ export const parseOpenAICompatibleResponse = (data: any, _: PageTransform, regio
     return [];
   }
 
+  const parseResponseContent = (str: string) => {
+    // Strip markdown container, if any
+    const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
+    return JSON.parse(match[1]).text;
+  }
+
   try {
-    const { text } = JSON.parse(result);
+    const text = parseResponseContent(result);
     if (!text)
       throw new Error('Could not parse response');
 
