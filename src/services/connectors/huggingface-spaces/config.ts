@@ -5,7 +5,6 @@ export const config: ServiceConfig = {
   connector: 'huggingface-spaces',
   displayName: 'HuggingFace Spaces',
   description: 'Use your own model on HuggingFace Spaces',
-  requiresKey: true,
   requiresRegion: true,
   parameters: [{
     type: 'string',
