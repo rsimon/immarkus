@@ -24,5 +24,18 @@ export const config: ServiceConfig = {
       ['meta-llama/Llama-4-Maverick-17B-128E-Instruct', 'Meta Llama-4-Maverick-17B-128E-Instruct'],
       ['google/gemma-3-27b-it', 'Gemma-3-27b-it']
     ]
-  }]
+  }],
+    keyInstructions: `
+You need an Access Token to use HuggingFace Inference Providers.
+
+To get your own key:
+- [Start here](https://huggingface.co/) to create a HuggingFace account
+- After you are logged in, click your Avatar in the top-left corner to **open your account menu**
+- Choose **Settings**
+- In the sidebar, choose **Access Tokens**
+- Click **Create new token**
+- Give the new token a name of your choice (e.g. "IMMARKUS")
+- Under **User Permissions**, check **Make calls to Inference Providers**
+- Click **Create Token**
+`.trim()
 };
