@@ -62,6 +62,8 @@ export interface ServiceConfigStringParameter {
 
   displayName: string;
 
+  multiLine?: boolean;
+
   required?: boolean;
 
   persist?: boolean;

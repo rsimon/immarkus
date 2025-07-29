@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ServiceConfig, ServiceConfigStringParameter } from '@/services/Types';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
+import { Textarea } from '@/ui/Textarea';
 import { 
   Select, 
   SelectContent, 
@@ -75,6 +76,11 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
             ))}
           </SelectContent>
         </Select>
+      ) : param.multiLine ? (
+        <Textarea
+          className="w-full my-2"
+          value={value || ''} 
+          onChange={evt => onChange(evt.target.value)} />
       ) : (
         <Input
           autoComplete="off"

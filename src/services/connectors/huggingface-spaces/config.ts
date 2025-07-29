@@ -8,14 +8,20 @@ export const config: ServiceConfig = {
   requiresKey: true,
   requiresRegion: true,
   parameters: [{
-    type: 'credential',
-    id: 'api-key',
-    displayName: 'Your API Key',
-    required: true
-  },{
     type: 'string',
     id: 'endpoint',
-    displayName: 'Endpoint URL',
+    displayName: 'Endpoint',
+    persist: true,
+    required: true
+  },{
+    type: 'credential',
+    id: 'access-token',
+    displayName: 'Access Token (Optional)'
+  },{
+    type: 'string',
+    id: 'optional_args',
+    displayName: 'Additional Arguments (JSON, Optional)',
+    multiLine: true,
     persist: true
   }]
 };

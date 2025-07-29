@@ -1,37 +1,60 @@
-import { submitOpenAICompatible } from '@/services/utils';
+import { Client, handle_file } from '@gradio/client';
+import { urlToFile } from '@/services/utils';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
-  const modelChoice = options['model'];
-  const apiKey = options['api-key'];
+const isValidEndpoint = (url: string) => {
+  // TODO possibly support localhost URLs later?
+  return url.startsWith('https://huggingface.co/spaces/');
+}
+
+const parseArgs = (str: string): any | undefined => {
+  try {
+    const optionalArgs = JSON.parse(str || '{}');
+    return optionalArgs;
+  } catch (error) {
+    throw new Error('Malformed JSON');
+  }
+}
+
+export const submit = async (image: File | string, options?: Record<string, any>) => {
+  const endpoint = options['endpoint'];
 
   // Should never happen
-  if (!modelChoice || !apiKey)
+  if (!endpoint)
     throw new Error('Missing access configuration');
 
-  const customEndpoint = options['custom-endpoint']
-  const customModel = options['custom-model'];
+  if (!isValidEndpoint(endpoint))
+    throw new Error('Invalid endpoint URL (must start with https://huggingface.co/spaces/');
 
-  if (modelChoice === 'custom')
-    if (!customEndpoint || !customModel) throw new Error('Missing access configuration');
+  const optionalArgs = parseArgs(options['optional_args']);
+  
+  if (!optionalArgs)
+    throw new Error('Malformed arguments – must be valid JSON');
 
-  const model = modelChoice === 'custom' ? customModel : modelChoice;
-  const endpoint = modelChoice === 'custom' ? customEndpoint : 'https://router.huggingface.co/v1';
+  const spaceName = endpoint.substring('https://huggingface.co/spaces/'.length);
 
   const generator = {
-    id: model,
-    name: `HF (${model})`,
-    homepage: 'https://huggingface.co/'
+    id: spaceName,
+    name: `huggingface:${spaceName}`,
+    homepage: endpoint
   };
 
-  return submitOpenAICompatible(
-    image,
-    apiKey,
-    endpoint,
-    model,
-    generator, 
-    { 
-      'anthropic-dangerous-direct-browser-access': 'true' 
-    }
-  );
+  const submit = async (blob: Blob) => {
+    const client = await Client.connect(spaceName);
 
+    const job = await client.submit('/generate_image', { 		
+      ...optionalArgs,		
+      text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
+      image: handle_file(blob)
+    });
+
+    for await (const message of job) {
+      console.log(message);
+    }
+  }
+
+  if (typeof image === 'string') {
+    return urlToFile(image).then(submit);
+  } else {
+    return submit(image);
+  }
 }
