@@ -170,7 +170,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
       <DialogContent 
         closeIcon={false}
-        className="rounded-lg w-11/12 h-11/12 max-w-11/12 p-3">
+        className="rounded-lg w-11/12 h-11/12 max-w-11/12 p-0 overflow-hidden relative">
         <DialogTitle className="sr-only">
           Auto Transcribe
         </DialogTitle>
@@ -179,28 +179,32 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           Submit this image for automatic transcription.
         </DialogDescription>
         
-        <div className="flex h-full gap-4">
+        <div className="flex h-full gap-4 overflow-hidden relative">
           <TooltipProvider>
-            <div className="flex-[2] min-w-0 rounded bg-muted border">
-              <TranscriptionPreview 
-                annotations={annotations}
-                image={props.image} 
-                processingState={processingState}
-                onChangeRegion={onChangeRegion}
-                onClearAnnotations={onClearAnnotations}
-                onImportAnnotations={onImportAnnotations} />
+            <div className="p-3 flex-[2] min-w-0">
+              <div className="h-full rounded bg-muted border">
+                <TranscriptionPreview 
+                  annotations={annotations}
+                  image={props.image} 
+                  processingState={processingState}
+                  onChangeRegion={onChangeRegion}
+                  onClearAnnotations={onClearAnnotations}
+                  onImportAnnotations={onImportAnnotations} />
+              </div>
             </div>
 
-            <div className="flex-[1] min-w-0">
-              <TranscriptionControls
-                lastError={lastError}
-                options={options}
-                processingState={processingState}
-                region={region}
-                onServiceChanged={onServiceChanged}
-                onServiceOptionChanged={onServiceOptionChanged}
-                onCancel={() => onOpenChange(false)}
-                onSubmit={onSubmitImage} />
+            <div className="flex-[1] min-w-0 px-3 pl-0 relative overflow-y-auto">
+              <div className="py-4 h-full">
+                <TranscriptionControls
+                  lastError={lastError}
+                  options={options}
+                  processingState={processingState}
+                  region={region}
+                  onServiceChanged={onServiceChanged}
+                  onServiceOptionChanged={onServiceOptionChanged}
+                  onCancel={() => onOpenChange(false)}
+                  onSubmit={onSubmitImage} />
+              </div>
             </div>
           </TooltipProvider>
         </div>

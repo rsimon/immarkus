@@ -10,7 +10,6 @@ import {
    SelectValue 
 } from '@/ui/Select';
 
-
 interface StringParameterControlProps {
 
   param: ServiceConfigStringParameter;
@@ -43,7 +42,6 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
   }, [key]);
   
   const onChange = (value: string) => {
-    console.log('onchange', key, value)
     if (param.persist) {
       if (value) {
         localStorage.setItem(key, value);

@@ -157,7 +157,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         </form>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-2 pt-8">
         {serviceConfig.requiresRegion && (
           <div className={cn(
             'border rounded-md px-2.5 py-2 text-sm leading-relaxed',
