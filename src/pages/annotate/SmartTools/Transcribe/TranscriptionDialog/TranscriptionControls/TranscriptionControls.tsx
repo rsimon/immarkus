@@ -103,8 +103,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   }
 
   return (
-    <div className="px-2 pt-1 flex flex-col h-full justify-between">
-      <div className="space-y-8">
+    <div className="pr-2 py-4 min-h-full flex flex-col">
+      <div className="space-y-8 flex-1">
         <fieldset className="space-y-2">
           <Label className="font-semibold">Service</Label>
 
