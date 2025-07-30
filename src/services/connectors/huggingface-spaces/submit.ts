@@ -28,6 +28,9 @@ export const submit = async (image: File | string, options?: Record<string, any>
   // Make sure we're not sending an empty string!
   const accessToken = options['access-token'] ? options['access-token'] : undefined;
 
+  const imageFieldname = options['image_fieldname'] || 'image';
+  const promptFieldname = options['prompt_fieldname'] || 'text';
+
   const optionalArgs = parseArgs(options['optional_args']);
   
   if (!optionalArgs)
@@ -48,8 +51,8 @@ export const submit = async (image: File | string, options?: Record<string, any>
 
     const job = await client.predict('/generate_image', { 		
       ...optionalArgs,		
-      text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
-      image: handle_file(blob)
+      [promptFieldname]: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
+      [imageFieldname]: handle_file(blob)
     });
 
     const data = Array.isArray(job.data) ? job.data[0] : job.data;
