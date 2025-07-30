@@ -194,17 +194,15 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
             </div>
 
             <div className="flex-[1] min-w-0 px-3 pl-0 relative overflow-y-auto">
-              <div className="py-4 h-full">
-                <TranscriptionControls
-                  lastError={lastError}
-                  options={options}
-                  processingState={processingState}
-                  region={region}
-                  onServiceChanged={onServiceChanged}
-                  onServiceOptionChanged={onServiceOptionChanged}
-                  onCancel={() => onOpenChange(false)}
-                  onSubmit={onSubmitImage} />
-              </div>
+              <TranscriptionControls
+                lastError={lastError}
+                options={options}
+                processingState={processingState}
+                region={region}
+                onServiceChanged={onServiceChanged}
+                onServiceOptionChanged={onServiceOptionChanged}
+                onCancel={() => onOpenChange(false)}
+                onSubmit={onSubmitImage} />
             </div>
           </TooltipProvider>
         </div>

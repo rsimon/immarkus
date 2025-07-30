@@ -1,4 +1,4 @@
 import { submit } from './submit';
-import { parseOpenAICompatibleResponse as parseResponse } from '@/services/utils';
+import { parseResponse } from './parseResponse';
 
 export default { submit, parseResponse };

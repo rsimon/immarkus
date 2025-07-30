@@ -80,12 +80,14 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
         <Textarea
           className="w-full my-2"
           value={value || ''} 
+          placeholder={param.default}
           onChange={evt => onChange(evt.target.value)} />
       ) : (
         <Input
           autoComplete="off"
           className="w-full my-2"
           value={value || ''} 
+          placeholder={param.default}
           onChange={evt => onChange(evt.target.value)} />
       )}
     </fieldset>

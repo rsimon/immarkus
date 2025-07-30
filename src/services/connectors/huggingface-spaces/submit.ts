@@ -25,6 +25,12 @@ export const submit = async (image: File | string, options?: Record<string, any>
   if (!isValidEndpoint(endpoint))
     throw new Error('Invalid endpoint URL (must start with https://huggingface.co/spaces/');
 
+  // Make sure we're not sending an empty string!
+  const accessToken = options['access-token'] ? options['access-token'] : undefined;
+
+  const imageFieldname = options['image_fieldname'] || 'image';
+  const promptFieldname = options['prompt_fieldname'] || 'text';
+
   const optionalArgs = parseArgs(options['optional_args']);
   
   if (!optionalArgs)
@@ -34,22 +40,24 @@ export const submit = async (image: File | string, options?: Record<string, any>
 
   const generator = {
     id: spaceName,
-    name: `huggingface:${spaceName}`,
+    name: `hf:${spaceName}`,
     homepage: endpoint
   };
 
   const submit = async (blob: Blob) => {
-    const client = await Client.connect(spaceName);
-
-    const job = await client.submit('/generate_image', { 		
-      ...optionalArgs,		
-      text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
-      image: handle_file(blob)
+    const client = await Client.connect(spaceName, {
+      hf_token: accessToken
     });
 
-    for await (const message of job) {
-      console.log(message);
-    }
+    const job = await client.predict('/generate_image', { 		
+      ...optionalArgs,		
+      [promptFieldname]: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
+      [imageFieldname]: handle_file(blob)
+    });
+
+    const data = Array.isArray(job.data) ? job.data[0] : job.data;
+
+    return { generator, data };
   }
 
   if (typeof image === 'string') {
