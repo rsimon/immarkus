@@ -2,7 +2,7 @@ import { Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ImageAnnotation, createBody } from '@annotorious/react';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
-import { isW3CRelationLinkAnnotation } from '@annotorious/plugin-connectors-react';
+import { isW3CRelationLinkAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';

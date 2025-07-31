@@ -1,6 +1,6 @@
 import murmur from 'murmurhash';
 import { W3CAnnotation } from '@annotorious/react';
-import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityType, Folder, IIIFManifestResource, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { GraphLink, GraphLinkPrimitive, GraphNode } from '../Types';

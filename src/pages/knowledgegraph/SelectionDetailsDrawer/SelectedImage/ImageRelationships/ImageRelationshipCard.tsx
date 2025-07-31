@@ -1,6 +1,6 @@
 import { Image, SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Button } from '@/ui/Button';

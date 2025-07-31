@@ -2,7 +2,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { dequal } from 'dequal/lite';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
-import { W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';

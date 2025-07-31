@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import type OpenSeadragon from 'openseadragon';
 import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
-import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-connectors-react';
+import { OSDConnectionPopup, OSDConnectorPlugin, W3CImageRelationFormat } from '@annotorious/plugin-wires-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
 import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
 import { LoadedImage } from '@/model';
@@ -25,7 +25,7 @@ import {
 
 import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-tools/annotorious-plugin-tools.css';
-import '@annotorious/plugin-connectors-react/annotorious-connectors-react.css';
+import '@annotorious/plugin-wires-react/annotorious-wires-react.css';
 import '@annotorious/plugin-magnetic-outline/plugin-magnetic-polyline.css';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';

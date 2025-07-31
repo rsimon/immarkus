@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityType } from '@/model';
 import { useImageSnippets, useStore } from '@/store';
 import { GraphLinkPrimitive } from '../../../Types';

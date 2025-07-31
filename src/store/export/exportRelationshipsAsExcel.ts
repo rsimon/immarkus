@@ -1,6 +1,6 @@
 import murmur from 'murmurhash';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { CanvasInformation, FileImage, LoadedIIIFImage } from '@/model';
 import { Store } from '@/store';

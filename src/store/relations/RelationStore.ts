@@ -1,4 +1,4 @@
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { CanvasInformation, IIIFManifestResource, IIIFResource, Image } from '@/model';
 import { AnnotationStore } from '../Store';
 import { repairRelationships } from '../integrity';

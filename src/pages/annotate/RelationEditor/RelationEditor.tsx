@@ -3,7 +3,7 @@ import { Spline } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { ToolbarButton } from '../ToolbarButton';

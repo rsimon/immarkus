@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { exportRelationshipsAsExcel } from '@/store';
 import { Store } from '../Store';
 

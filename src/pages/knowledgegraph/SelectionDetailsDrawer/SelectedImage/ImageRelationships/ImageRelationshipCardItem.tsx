@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
 import { useImageSnippets, useStore } from '@/store';
 import { RelationshipThumbnail } from '../../RelationshipThumbnail';

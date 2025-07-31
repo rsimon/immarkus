@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CirclePlus, Plus } from 'lucide-react';
-import { ConnectionPopupProps } from '@annotorious/plugin-connectors-react';
+import { ConnectionPopupProps } from '@annotorious/plugin-wires-react';
 import { Combobox, ComboboxState } from '@/components/Combobox';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';

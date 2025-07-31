@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-connectors-react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { loadStore } from '../Store';
 import { StoreContext } from '../StoreProvider';
 import { IIIFResource, IIIFResourceInformation } from '@/model';
