@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { EllipsisVertical, Redo2, RotateCcwSquare, RotateCwSquare, Spline, Undo2 } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Separator } from '@/ui/Separator';
@@ -9,10 +8,22 @@ import { AnnotationMode } from '../AnnotationMode';
 import { RelationEditor } from '../RelationEditor';
 import { AddImage } from './AddImage';
 import { CopyToClipboard } from './CopyToClipboard';
+import { 
+  EllipsisVertical, 
+  Eye, 
+  EyeOff, 
+  Redo2, 
+  RotateCcwSquare, 
+  RotateCwSquare, 
+  Spline, 
+  Undo2 
+} from 'lucide-react';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface MoreToolsPanelProps {
+
+  hideAnnotations: boolean;
 
   images: LoadedImage[];
 
@@ -27,6 +38,8 @@ interface MoreToolsPanelProps {
   onChangeImage(previousId: string, nextId: string): void;
 
   onChangeMode(props: AnnotationMode): void;
+
+  onHideAnnotations(hide: boolean): void;
 
   onRelationsEditorOpenChange(open: boolean): void;
 
@@ -105,6 +118,16 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           </ToolbarButton>
 
           <Separator orientation="vertical" className="h-4" />
+
+          <ToolbarButton
+            tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+            onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
+            {props.hideAnnotations ? (
+              <Eye className="size-8 p-2" />
+            ) : (
+              <EyeOff className="size-8 p-2" />
+            )}
+          </ToolbarButton>
 
           <CopyToClipboard 
             images={props.images} />

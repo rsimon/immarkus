@@ -168,6 +168,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         {collapseLevel > 0 && (
           <>
             <MoreToolsPanel 
+              hideAnnotations={props.hideAnnotations}
               images={props.images}
               mode={props.mode}
               relationsEditorOpen={relationsEditorOpen}
@@ -175,6 +176,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onAddImage={props.onAddImage}
               onChangeImage={props.onChangeImage} 
               onChangeMode={props.onChangeMode}
+              onHideAnnotations={props.onHideAnnotations}
               onRelationsEditorOpenChange={onRelationsEditorOpenChange}
               onRedo={onRedo}
               onRotate={onRotate}
@@ -259,18 +261,18 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             </ToolbarButton>
 
             <Separator orientation="vertical" className="h-4" />
+
+            <ToolbarButton
+              tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+              onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
+              {props.hideAnnotations ? (
+                <Eye className="size-8 p-2" />
+              ) : (
+                <EyeOff className="size-8 p-2" />
+              )}
+            </ToolbarButton>
           </>
         )}
-
-        <ToolbarButton
-          tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
-          onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
-          {props.hideAnnotations ? (
-            <Eye className="size-8 p-2" />
-          ) : (
-            <EyeOff className="size-8 p-2" />
-          )}
-        </ToolbarButton>
 
         <button 
           className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
