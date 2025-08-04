@@ -17,9 +17,8 @@ import { RelationEditor } from '../RelationEditor';
 import { SmartToolsButton } from './SmartToolsButton';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
-  ChevronLeft, 
-  Eye, 
-  EyeOff, 
+  ChevronLeft,
+  MessageCircleOff, 
   MousePointer2, 
   Redo2, 
   RotateCcwSquare, 
@@ -291,7 +290,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
-              <EyeOff className="size-8 p-2" />
+              <MessageCircleOff className="size-8 p-2" />
             </ToolbarButton>         
 
             {ENABLE_CONNECTOR_PLUGIN ? (

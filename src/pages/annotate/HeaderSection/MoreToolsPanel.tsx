@@ -9,9 +9,8 @@ import { RelationEditor } from '../RelationEditor';
 import { AddImage } from './AddImage';
 import { CopyToClipboard } from './CopyToClipboard';
 import { 
-  EllipsisVertical, 
-  Eye, 
-  EyeOff, 
+  EllipsisVertical,
+  MessageCircleOff, 
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
@@ -127,7 +126,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
-            <EyeOff className="size-8 p-2" />
+            <MessageCircleOff className="size-8 p-2" />
           </ToolbarButton>       
 
           {ENABLE_CONNECTOR_PLUGIN ? (
