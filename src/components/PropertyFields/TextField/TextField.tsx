@@ -1,6 +1,6 @@
+import TextareaAutosize from 'react-textarea-autosize';
 import { TextPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
-import { Textarea } from '@/ui/Textarea';
 import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
 import { removeEmpty } from '../removeEmpty';
@@ -25,8 +25,6 @@ export const TextField = (props: TextFieldProps) => {
 
   const value = props.onChange ? props.value || '' : props.value;
 
-  const className = cn(props.className, 'mt-0.5');
-
   const onChange = (value: string | string[]) => {
     if (props.onChange) {
       const normalized = removeEmpty(value);
@@ -41,15 +39,18 @@ export const TextField = (props: TextFieldProps) => {
       value={value}
       onChange={onChange}
       render={(value, onChange) => definition.size === 'L' ? (
-        <Textarea 
+        <TextareaAutosize 
           id={id} 
-          className={className} 
+          cacheMeasurements
+          minRows={4}
+          maxRows={20}
+          className={cn('shadow-xs w-full outline-black rounded-md bg-muted border border-input p-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50', props.className)} 
           value={props.onChange ? value || '' : value} 
           onChange={evt => props.onChange && onChange(evt.target.value)} />
       ) : (
         <Input 
           id={id} 
-          className={className} 
+          className={cn(props.className, 'mt-0.5')} 
           value={props.onChange ? value || '' : value} 
           onChange={evt => props.onChange && onChange(evt.target.value)} />
       )} />
