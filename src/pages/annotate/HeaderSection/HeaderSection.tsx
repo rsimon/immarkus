@@ -261,16 +261,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             </ToolbarButton>
 
             <Separator orientation="vertical" className="h-4" />
-
-            <ToolbarButton
-              tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
-              onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
-              {props.hideAnnotations ? (
-                <Eye className="size-8 p-2" />
-              ) : (
-                <EyeOff className="size-8 p-2" />
-              )}
-            </ToolbarButton>
           </>
         )}
 
@@ -295,6 +285,14 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <>
             <CopyToClipboard 
               images={props.images} />
+
+            <ToolbarButton
+              data-state={props.hideAnnotations ? 'active' : undefined}
+              tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
+              <EyeOff className="size-8 p-2" />
+            </ToolbarButton>         
 
             {ENABLE_CONNECTOR_PLUGIN ? (
               <button 
