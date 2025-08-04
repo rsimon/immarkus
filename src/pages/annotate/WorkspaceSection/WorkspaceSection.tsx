@@ -14,6 +14,8 @@ interface WorkspaceSectionProps {
 
   images: LoadedImage[];
 
+  hideAnnotations: boolean;
+
   mode?: AnnotationMode;
 
   tool: Tool;
@@ -109,6 +111,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
         ref={trackRef(windowId)}
         windowId={windowId} 
         windowPath={path} 
+        hideAnnotations={props.hideAnnotations}
         image={image}
         initialHistory={getPersistedHistory(image.id)}
         mode={props.mode}
@@ -124,6 +127,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     <section className="workspace grow bg-muted">
       {props.images.length === 1 ? (
         <AnnotatableImage
+          hideAnnotations={props.hideAnnotations}
           initialHistory={getPersistedHistory(props.images[0].id)}
           image={props.images[0]}
           mode={props.mode}

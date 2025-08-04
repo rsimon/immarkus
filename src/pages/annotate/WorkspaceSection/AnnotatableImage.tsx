@@ -37,6 +37,8 @@ interface AnnotatableImageProps {
 
   image: LoadedImage;
 
+  hideAnnotations: boolean;
+
   initialHistory: History<ImageAnnotation>;
 
   windowId?: string;
@@ -114,6 +116,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       <OpenSeadragonAnnotator
         autoSave
         multiSelect
+        hideAnnotations={props.hideAnnotations}
         adapter={W3CImageRelationFormat('canvas' in image ? image.id : image.name)}
         drawingMode="click"
         drawingEnabled={props.mode === 'draw'}

@@ -31,6 +31,8 @@ export const Annotate = () => {
 
   const images = useImages(imageIds) as LoadedImage[];
 
+  const [hideAnnotations, setHideAnnotations] = useState(false);
+
   const [mode, setMode] = useState<AnnotationMode>('move');
 
   const [tool, setTool] = useState<Tool>('rectangle');
@@ -86,17 +88,20 @@ export const Annotate = () => {
                     <HeaderSection
                       images={images} 
                       isSmartPanelOpen={isSmartPanelOpen}
+                      hideAnnotations={hideAnnotations}
                       mode={mode}
                       tool={tool}
                       onAddImage={onAddImage} 
                       onChangeImage={onChangeImage}
                       onChangeMode={setMode}
                       onChangeTool={setTool} 
+                      onHideAnnotations={setHideAnnotations}
                       onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
 
                     {images.length > 0 ? ( 
                       <WorkspaceSection 
                         images={images} 
+                        hideAnnotations={hideAnnotations}
                         mode={mode}
                         tool={tool} 
                         onAddImage={onAddImage} 

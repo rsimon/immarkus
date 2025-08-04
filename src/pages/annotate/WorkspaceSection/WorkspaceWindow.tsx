@@ -22,6 +22,8 @@ interface WorkspaceWindowProps {
 
   windowPath: MosaicBranch[];
 
+  hideAnnotations: boolean;
+
   initialHistory: History<ImageAnnotation>;
 
   image: LoadedImage;
@@ -161,6 +163,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
 
       <AnnotatableImage
         windowId={props.windowId}
+        hideAnnotations={props.hideAnnotations}
         image={props.image} 
         initialHistory={props.initialHistory}
         mode={props.mode}

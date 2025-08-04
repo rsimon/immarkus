@@ -18,6 +18,8 @@ import { SmartToolsButton } from './SmartToolsButton';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import { 
   ChevronLeft, 
+  Eye, 
+  EyeOff, 
   MousePointer2, 
   Redo2, 
   RotateCcwSquare, 
@@ -31,6 +33,8 @@ import {
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface HeaderSectionProps {
+
+  hideAnnotations: boolean;
 
   images: LoadedImage[];
 
@@ -49,6 +53,8 @@ interface HeaderSectionProps {
   onChangeTool(tool: Tool): void;
 
   onChangeMode(mode?: AnnotationMode): void;
+
+  onHideAnnotations(hide: boolean): void;
 
 }
 
@@ -146,7 +152,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <div className="flex items-center overflow-hidden">
           <Link className="font-semibold inline shrink-0" to={back}>
             <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="size-5" />
             </div>
           </Link>
 
@@ -203,7 +209,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onClick={() => onRotate(false)}
               tooltip="Rotate image counterclockwise">
               <RotateCcwSquare
-                className="h-8 w-8 p-2" />
+                className="size-8 p-2" />
             </ToolbarButton>
 
             <ToolbarButton
@@ -211,7 +217,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onClick={() => onRotate(true)}
               tooltip="Rotate image clockwise">
               <RotateCwSquare 
-                className="h-8 w-8 p-2" />
+                className="size-8 p-2" />
             </ToolbarButton>
           </>
         )}
@@ -221,7 +227,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={onZoom(2)}
           tooltip="Zoom in">
           <ZoomIn 
-            className="h-8 w-8 p-2" />
+            className="size-8 p-2" />
         </ToolbarButton>
 
         <ToolbarButton 
@@ -229,7 +235,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           onClick={onZoom(0.5)}
           tooltip="Zoom out">
           <ZoomOut 
-            className="h-8 w-8 p-2" />
+            className="size-8 p-2" />
         </ToolbarButton>
 
         <Separator orientation="vertical" className="h-4" />
@@ -241,7 +247,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onClick={onUndo}
               tooltip="Undo">
               <Undo2 
-                className="h-8 w-8 p-2" />
+                className="size-8 p-2" />
             </ToolbarButton>
 
             <ToolbarButton
@@ -249,12 +255,22 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onClick={onRedo}
               tooltip="Redo">
               <Redo2
-                className="h-8 w-8 p-2" />
+                className="size-8 p-2" />
             </ToolbarButton>
 
             <Separator orientation="vertical" className="h-4" />
           </>
         )}
+
+        <ToolbarButton
+          tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+          onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
+          {props.hideAnnotations ? (
+            <Eye className="size-8 p-2" />
+          ) : (
+            <EyeOff className="size-8 p-2" />
+          )}
+        </ToolbarButton>
 
         <button 
           className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -285,7 +301,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
                 data-state={props.mode === 'relation'}
                 onClick={() => props.onChangeMode('relation')}>
                 <Spline
-                  className="h-8 w-8 p-2" /> Connect
+                  className="size-8 p-2" /> Connect
               </button>
             ) : (
               <RelationEditor 
