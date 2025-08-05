@@ -129,9 +129,9 @@ const loadDirectory = async (
 
           // ID in the filename MUST match ID in the JSON data!
           if (idFilename !== idData) {
-            console.error(file);
-            console.error(data);
-            throw new Error('IIIF ID integrity error');
+            console.warn(file);
+            console.warn(data);
+            console.warn('IIIF ID integrity error');
           }
 
           // Legacy interop: if id doesn't match expected, the ID was still generated
@@ -139,7 +139,7 @@ const loadDirectory = async (
           const idSeed = path.length === 0 ? data.uri : `${path[path.length - 1]}/${data.uri}`;
           const expectedId = await generateShortId(idSeed); 
 
-          if (idFilename !== expectedId)
+          if (idFilename !== idData)
             await repairManifestId(dirHandle, file, data, expectedId);
 
           iiifResources.push({ 

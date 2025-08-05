@@ -1,23 +1,20 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
-import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
-import { isSingleImageManifest } from '@/utils/iiif';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
+import { BackButton } from './BackButton';
 import { CopyToClipboard } from './CopyToClipboard';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
 import { RelationEditor } from '../RelationEditor';
 import { SmartToolsButton } from './SmartToolsButton';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
-import { 
-  ChevronLeft,
+import {
   MessageCircleOff, 
   MousePointer2, 
   Redo2, 
@@ -63,8 +60,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const manifold = useAnnotoriousManifold();
 
-  const store = useStore();
-
   const osdToolsDisabled = props.images.length === 0 || props.images.length > 1;
 
   const [relationsEditorOpen, setRelationsEditorOpen] = useState(false);
@@ -106,26 +101,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     anno.redo();
   }
 
-  const back = useMemo(() => {
-    // Just return to gallery root if there are multiple images open
-    if (props.images.length === 0 || props.images.length > 1) return '/images/';
-
-    const source = props.images[0];
-    if ('manifestId' in source) {
-      const manifest = store.getIIIFResource(source.manifestId);
-      if (isSingleImageManifest(manifest)) {
-        const folder = store.getFolder(manifest.folder);
-        return `/images/${folder && ('id' in folder) ? folder.id : ''}`;
-      } else {
-        return `/images/${source.manifestId}`;
-      }
-    }
-
-    // Return to parent folder (might be root)
-    const folder = store.getFolder(source.folder);
-    return `/images/${folder && ('id' in folder) ? folder.id : ''}`;
-  }, [props.images]);
-
   const onRelationsEditorOpenChange = (open: boolean) => {
     if (open) {
       props.onChangeMode('relation');
@@ -149,11 +124,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
       className="toolbar relative border-b p-2 flex text-sm h-[46px]">
       <section className="toolbar-left flex gap-1 basis-24 shrink-0 grow-1 items-center overflow-hidden">
         <div className="flex items-center overflow-hidden">
-          <Link className="font-semibold inline shrink-0" to={back}>
-            <div className="inline-flex justify-center items-center p-1 rounded-full hover:bg-muted">
-              <ChevronLeft className="size-5" />
-            </div>
-          </Link>
+          <BackButton images={props.images} />
 
           <span className="text-xs font-medium ml-0.5 flex-1 min-w-0 truncate">
             {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
