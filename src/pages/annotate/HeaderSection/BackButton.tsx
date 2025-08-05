@@ -32,15 +32,14 @@ const ManifestBackButton = ({ image }: { image: LoadedIIIFImage }) => {
 
       const toc = parsedManifest.getTableOfContents();
       const node = toc.getNavParent(image.canvas.id);
+      const canvasId = murmur.v3(image.canvas.id);
 
       if (node) {
-        const rangeId = murmur.v3(node.id);
-        const canvasId = murmur.v3(image.canvas.id);
-        
+        const rangeId = murmur.v3(node.id);  
         return `/images/${image.manifestId}@${rangeId}?canvas=${canvasId}`;
       } else {
         // Manifest has no ToC
-        return `/images/${image.manifestId}`;
+        return `/images/${image.manifestId}?canvas=${canvasId}`;
       }
     }
   }, [store, parsedManifest]);
