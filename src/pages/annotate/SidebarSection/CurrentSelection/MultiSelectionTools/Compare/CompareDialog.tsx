@@ -9,6 +9,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
+import { PropertiesForm } from '../../PropertiesForm';
 
 interface CompareDialogProps {
 
@@ -48,7 +49,13 @@ export const CompareDialog = (props: CompareDialogProps) => {
         </DialogDescription>
         
         <div className="flex h-full gap-4 overflow-hidden relative">
-          {/* TODO */}
+          {props.selected.map(annotation => (
+            <div className="border border-red-500">
+              <PropertiesForm 
+                annotation={annotation}
+                onAddTag={() => {}} />
+            </div>
+          ))}
         </div>
       </DialogContent>
     </Dialog>
