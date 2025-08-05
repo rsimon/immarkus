@@ -95,9 +95,8 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
 
     setTimeout(() => {
       const target = Array.from(document.getElementsByClassName(canvasId))[0];
-      if (target) {
-        target.scrollIntoView();
-      }
+      if (target)
+        target.scrollIntoView({ block: 'center' });
     }, 1);
   }, [queryParams]);
 

@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { CozyCanvas } from 'cozy-iiif';
+import { useSearchParams } from 'react-router-dom';
 import { CanvasInformation } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
@@ -12,6 +13,8 @@ import { getAnnotationsInRange } from '../../ImagesUtils';
 export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
   const { annotations, canvases, folders, hideUnannotated } = props;
+
+  const [ queryParams ] = useSearchParams();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
@@ -31,7 +34,18 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
       (annotations[canvas.id] || []).length > 0;
 
     return hideUnannotated ? canvases.filter(hasAnnotation) : canvases;
-  }, [hideUnannotated, canvases, annotations])
+  }, [hideUnannotated, canvases, annotations]);
+
+  useLayoutEffect(() => {
+    const canvasId = queryParams.get('canvas');
+    if (!canvasId) return;
+
+    setTimeout(() => {
+      const target = document.getElementById(canvasId);
+      if (target)
+        target.scrollIntoView({ block: 'center' });
+    }, 1);
+  }, [queryParams]);
 
   const renderCanvasItem = (info: CanvasInformation, canvas: CozyCanvas) => {
     const item: CanvasItem = ({ type: 'canvas', canvas, info });
@@ -71,7 +85,9 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
           <ul>
             {filteredCanvases.map((canvas, idx) => (
-              <li key={`${canvas.id}:${idx}`}>
+              <li 
+                key={`${canvas.id}:${idx}`}
+                id={canvas.id}>
                 {renderCanvasItem(canvas, parsedManifest.canvases.find(c => c.id === canvas.uri))}
               </li>
             ))}
