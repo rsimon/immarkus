@@ -3,7 +3,8 @@ import { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { usePluginManifold } from '@annotorious/react-manifold';
 import { Combine, Subtract } from './Icons';
 import { mountPlugin } from '@annotorious/plugin-boolean-operations';
-import { Cuboid, Trash2 } from 'lucide-react';
+import { Columns3, Cuboid, Trash2 } from 'lucide-react';
+import { CompareDialog } from './Compare/CompareDialog';
 
 interface MultiSelectionOptionsProps {
 
@@ -60,6 +61,11 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
   
   return (
     <div className="p-2 flex flex-col gap-12">
+      <div>
+        {props.selected.length} selected.
+        <CompareDialog selected={props.selected} />
+      </div>
+
       <div className="flex flex-col">
         <Button
           autoFocus
