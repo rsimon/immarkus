@@ -1,4 +1,6 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import murmur from 'murmurhash';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { W3CAnnotation } from '@annotorious/react';
@@ -66,6 +68,8 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
 
   const { annotations, canvases, folders, hideUnannotated } = props;
 
+  const [ queryParams ] = useSearchParams();
+
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
@@ -84,6 +88,18 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
   const filteredRows = useMemo(() => (
     hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
   ), [rows, hideUnannotated]);
+
+  useLayoutEffect(() => {
+    const canvasId = queryParams.get('canvas');
+    if (!canvasId) return;
+
+    setTimeout(() => {
+      const target = Array.from(document.getElementsByClassName(canvasId))[0];
+      if (target) {
+        target.scrollIntoView();
+      }
+    }, 1);
+  }, [queryParams]);
 
   const typeTemplate = (row: ItemTableRow) => {
     const item = row.data as CanvasItem;
@@ -121,10 +137,16 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
       props.onOpenCanvas(data.canvas);
   }
 
+  const rowClassName = (row: ItemTableRow) => {
+    if (row.type === 'folder') return;
+    return murmur.v3(row.data.canvas.id).toString()
+  } 
+
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
       <DataTable 
         removableSort
+        rowClassName={rowClassName}
         value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}

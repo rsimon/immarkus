@@ -35,7 +35,9 @@ const ManifestBackButton = ({ image }: { image: LoadedIIIFImage }) => {
 
       if (node) {
         const rangeId = murmur.v3(node.id);
-        return `/images/${image.manifestId}@${rangeId}`;
+        const canvasId = murmur.v3(image.canvas.id);
+        
+        return `/images/${image.manifestId}@${rangeId}?canvas=${canvasId}`;
       } else {
         // Manifest has no ToC
         return `/images/${image.manifestId}`;
