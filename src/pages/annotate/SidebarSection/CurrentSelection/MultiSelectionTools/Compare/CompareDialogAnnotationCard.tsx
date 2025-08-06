@@ -1,24 +1,28 @@
 import { ImageAnnotation } from '@annotorious/react';
-import { PropertiesForm } from '../../PropertiesForm';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
+import { PropertiesForm } from '../../PropertiesForm';
 
 interface CompareDialogAnnotationCardProps {
 
   annotation: ImageAnnotation;
+
+  onAddTag(): void;
 
 }
 
 export const CompareDialogAnnotationCard = (props: CompareDialogAnnotationCardProps) => {
 
   return (
-    <div className="flex flex-col min-w-84 overflow-y-auto mx-2">
+    <div className="flex flex-col shrink-0 basis-80 mx-2">
       <AnnotationThumbnail 
         annotation={props.annotation} />
 
-      <div className="p-3 pt-0 flex border rounded-md mt-2 grow">
+      <div className="flex flex-col border rounded-md mt-3 px-3 grow overflow-y-auto overflow-x-hidden">
         <PropertiesForm 
-          annotation={props.annotation}
-          onAddTag={() => {}} />
+            annotation={props.annotation}
+            onAddTag={props.onAddTag} />
+
+        <div className="shrink-0"><div className="w-2 h-3"/></div>
       </div>
     </div>
   )

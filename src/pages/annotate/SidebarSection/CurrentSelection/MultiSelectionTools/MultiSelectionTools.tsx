@@ -12,7 +12,7 @@ interface MultiSelectionOptionsProps {
 
   selected: ImageAnnotation[];
 
-  onAddTag(): void;
+  onAddTag(annotationId?: string): void;
 
   onDeleteSelected(): void;
 
@@ -122,6 +122,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
         <CompareDialog 
           open={showCompareDialog} 
           selected={props.selected}
+          onAddTag={props.onAddTag}
           onClose={() => setShowCompareDialog(false)} />
       </div>
 

@@ -11,6 +11,14 @@ import { PropertiesForm } from './PropertiesForm';
 import { useStore } from '@/store';
 import { MultiSelectionTools } from './MultiSelectionTools';
 
+interface SearchDialogState {
+
+  open: boolean;
+
+  annotationId?: string;
+
+}
+
 export const CurrentSelection = () => {
 
   const store = useStore();
@@ -32,7 +40,7 @@ export const CurrentSelection = () => {
 
   const ref = useRef<HTMLButtonElement>(null);
 
-  const [showSearchDialog, setShowSearchDialog] = useState(false);
+  const [searchDialogState, setSearchDialogState] = useState<SearchDialogState>({ open: false });
 
   const [showAsEmpty, setShowAsEmpty] = useState(isEmptyAnnotationSelected);
 
@@ -69,7 +77,7 @@ export const CurrentSelection = () => {
     anno.bulkDeleteAnnotations(annotations);
 
   const onKeyDown = (evt: React.KeyboardEvent) => {
-    if (showSearchDialog) return;
+    if (!searchDialogState.open) return;
 
     const isMetaKey = evt.ctrlKey || evt.metaKey;
     if (isMetaKey) return;
@@ -77,26 +85,38 @@ export const CurrentSelection = () => {
     const ignore = ['Alt', 'Control', 'Meta', 'Shift', 'Tab'];
     if (ignore.includes(evt.key)) return;
 
-    setShowSearchDialog(true)
+    setSearchDialogState({ open: true });
   }
 
-  const onAddEntityType = (annotations: ImageAnnotation[], entity: EntityType) => {
-    const updated: ImageAnnotation[] = annotations.map(a => { 
-      const body = createBody(a, {
-          type: 'Dataset',
-          purpose: 'classifying',
-          source: entity.id
-        }, new Date());
+  const onAddEntityType = (entity: EntityType) => {
+    const { annotationId } = searchDialogState;
 
-      return {
-        ...a,
-        bodies: [...a.bodies, body]
-      }
-    });
+    const annotations = annotationId 
+      ? [selected.find(s => s.id === annotationId)].filter(Boolean)
+      : selected;
 
-    anno.bulkUpdateAnnotations(updated);
+    if (annotations.length === 0) {
+      // Should never happen
+      console.warn('Attempt to add tag but no annotations selected')
+    } else {
+      const updated: ImageAnnotation[] = annotations.map(a => { 
+        const body = createBody(a, {
+            type: 'Dataset',
+            purpose: 'classifying',
+            source: entity.id
+          }, new Date());
 
-    setShowSearchDialog(false);
+        return {
+          ...a,
+          bodies: [...a.bodies, body]
+        }
+      });
+    
+
+      anno.bulkUpdateAnnotations(updated);
+    }
+
+    setSearchDialogState({ open: false });
   }
 
   return (
@@ -114,7 +134,7 @@ export const CurrentSelection = () => {
               <div>
                 <Button
                   ref={ref}
-                  onClick={() => setShowSearchDialog(true)}
+                  onClick={() => setSearchDialogState({ open: true })}
                   onKeyDown={onKeyDown}
                   className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
 
@@ -126,7 +146,7 @@ export const CurrentSelection = () => {
           ) : (
             <PropertiesForm 
               annotation={selected[0]} 
-              onAddTag={() => setShowSearchDialog(true)} />
+              onAddTag={() => setSearchDialogState({ open: true })} />
           )}
 
           <footer>
@@ -143,14 +163,14 @@ export const CurrentSelection = () => {
       ) : (
         <MultiSelectionTools 
           selected={selected}
-          onAddTag={() => setShowSearchDialog(true)} 
+          onAddTag={annotationId => setSearchDialogState({ open: true, annotationId })} 
           onDeleteSelected={() => onBulkDelete(selected)} />
       )}
 
       <EntityTypeBrowserDialog 
-        open={showSearchDialog} 
-        onAddEntityType={entity => onAddEntityType(selected, entity)}
-        onCancel={() => setShowSearchDialog(false)} />
+        open={searchDialogState.open} 
+        onAddEntityType={onAddEntityType}
+        onCancel={() => setSearchDialogState({ open: false })} />
     </>
   )
 

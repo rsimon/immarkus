@@ -16,6 +16,8 @@ interface CompareDialogProps {
 
   selected: ImageAnnotation[];
 
+  onAddTag(annotationId: string): void;
+
   onClose(): void;
 
 }
@@ -36,7 +38,7 @@ export const CompareDialog = (props: CompareDialogProps) => {
         closeIcon={false}
         className="rounded-lg flex flex-col md:w-auto h-11/12 max-w-11/12 p-0 
           overflow-hidden relative gap-1">
-        <div className="flex items-center justify-between w-full px-5 py-3 ">
+        <div className="flex items-center justify-between w-full px-5 pt-3 pb-2">
           <DialogTitle className="font-medium text-base">
             Compare {props.selected.length} Annotations
           </DialogTitle>
@@ -60,7 +62,8 @@ export const CompareDialog = (props: CompareDialogProps) => {
             {props.selected.map(annotation => (
               <CompareDialogAnnotationCard 
                 key={annotation.id}
-                annotation={annotation} />
+                annotation={annotation} 
+                onAddTag={() => props.onAddTag(annotation.id)} />
             ))}
 
             <div className="shrink-0"><div className="w-3 h-2"/></div>
