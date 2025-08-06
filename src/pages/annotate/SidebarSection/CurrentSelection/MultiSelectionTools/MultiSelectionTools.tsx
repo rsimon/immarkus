@@ -87,7 +87,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
   )
   
   return (
-    <div className="p-1 min-h-full flex flex-col justify-between space-y-8">
+    <div className="px-1 py-2 min-h-full flex flex-col justify-between space-y-8">
       <div>
         <MultiSelectionThumbnails selected={props.selected} />
 

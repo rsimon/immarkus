@@ -2,12 +2,15 @@ import { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { useImageSnippet } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { cn } from '@/ui/utils';
+import { CSSProperties } from 'react';
 
 interface AnnotationThumbnailProps {
 
   annotation: ImageAnnotation | W3CImageAnnotation | string;
 
   className?: string;
+
+  style?: CSSProperties;
 
 }
 
@@ -24,8 +27,9 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
       loading="lazy"
       src={'src' in snippet 
         ? snippet.src
-        : URL.createObjectURL(new Blob([snippet.data]))}
-      className={clsImg} />
+        : URL.createObjectURL(new Blob([snippet.data as BlobPart]))}
+      className={clsImg} 
+      style={props.style} />
   ) : (
     <Skeleton className={clsSkeleton} /> 
   )
