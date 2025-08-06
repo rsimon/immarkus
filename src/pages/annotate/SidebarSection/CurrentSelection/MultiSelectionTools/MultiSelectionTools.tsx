@@ -101,7 +101,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
           {renderButton(
             'Add Tag', 'Apply the same tag to all selected annotations.',
             <Cuboid className="size-5" />,
-            props.onAddTag
+            () => props.onAddTag()
           )}
 
           {renderButton(
