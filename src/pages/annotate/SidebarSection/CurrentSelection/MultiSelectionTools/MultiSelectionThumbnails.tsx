@@ -28,8 +28,7 @@ export const MultiSelectionThumbnails = (props: MultiSelectionThumbnailsProps) =
             className={`
               border border-neutral-400/50 absolute w-20 h-20 rounded-lg shadow-lg
               flex items-center justify-center text-white text-2xl font-bold
-              transition-all duration-300 hover:scale-110 cursor-pointer
-            `}
+              transition-all duration-300`}
             style={{
               ...stackStyles[index % stackStyles.length],
               transformOrigin: 'center center'
