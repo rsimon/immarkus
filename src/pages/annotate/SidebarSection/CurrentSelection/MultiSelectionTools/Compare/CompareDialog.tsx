@@ -34,7 +34,8 @@ export const CompareDialog = (props: CompareDialogProps) => {
 
       <DialogContent 
         closeIcon={false}
-        className="rounded-lg flex flex-col md:w-auto h-11/12 max-w-11/12 p-0 overflow-hidden relative">
+        className="rounded-lg flex flex-col md:w-auto h-11/12 max-w-11/12 p-0 
+          overflow-hidden relative gap-1">
         <div className="flex items-center justify-between w-full px-5 py-3 ">
           <DialogTitle className="font-medium text-base">
             Compare {props.selected.length} Annotations
