@@ -3,20 +3,24 @@ import { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { usePluginManifold } from '@annotorious/react-manifold';
 import { Combine, Subtract } from './Icons';
 import { mountPlugin } from '@annotorious/plugin-boolean-operations';
-import { Cuboid, Trash2 } from 'lucide-react';
+import { Columns3, Cuboid, Trash2 } from 'lucide-react';
+import { CompareDialog } from './Compare/CompareDialog';
+import { ReactNode, useState } from 'react';
+import { MultiSelectionThumbnails } from './MultiSelectionThumbnails';
 
 interface MultiSelectionOptionsProps {
 
   selected: ImageAnnotation[];
 
-  onAddTag(): void;
+  onAddTag(annotationId?: string): void;
 
   onDeleteSelected(): void;
 
-  onKeyDown(evt: React.KeyboardEvent): void;
 }
 
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
+
+  const [showCompareDialog, setShowCompareDialog] = useState(false);
 
   const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
 
@@ -57,51 +61,69 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
     plugin.mergeSelected({ bodies: mergeBodies });
   }
+
+  const renderButton = (
+    title: string, 
+    hint: string, 
+    icon: ReactNode, 
+    onClick: () => void,
+    disabled?: boolean
+  ) => (
+    <Button
+      disabled={disabled}
+      variant="outline"
+      className="border-transparent hover:border-input flex-col gap-2 h-auto px-3 py-3.5 w-full justify-start text-left items-start focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      onClick={onClick}
+      onKeyDown={evt => evt.stopPropagation()}>
+      <div className="flex gap-2 items-center">
+        {icon}
+        <h3 className="font-medium">{title}</h3>
+      </div>
+
+      <p className="text-xs text-muted-foreground font-normal leading-relaxed">
+        {hint}
+      </p>
+    </Button>
+  )
   
   return (
-    <div className="p-2 flex flex-col gap-12">
-      <div className="flex flex-col">
-        <Button
-          autoFocus
-          onClick={props.onAddTag}
-          onKeyDown={props.onKeyDown}
-          className="flex gap-2 px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">
-          <Cuboid className="size-5" /> Add Tag
-        </Button>
+    <div className="px-1 py-2 min-h-full flex flex-col justify-between space-y-8">
+      <div>
+        <MultiSelectionThumbnails selected={props.selected} />
 
-        <p className="py-4 px-0.5 leading-relaxed text-muted-foreground text-xs">
-          Add the same Entity Class tag to all selected annotations.
-        </p>
-      </div>
+        <div className="space-y-4">
+          {renderButton(
+            'Compare', 'View selected annotations side by side.',
+            <Columns3 className="size-5" />,
+            () => setShowCompareDialog(true)
+          )}
 
-      <div className="flex flex-col">
-        <Button 
-          className="flex gap-2"
-          variant="outline"
-          onClick={onMergeSelected}>
-          <Combine className="size-5" /> Merge selected shapes
-        </Button>
+          {renderButton(
+            'Add Tag', 'Apply the same tag to all selected annotations.',
+            <Cuboid className="size-5" />,
+            () => props.onAddTag()
+          )}
 
-        <p className="py-4 px-0.5 leading-relaxed text-muted-foreground text-xs">
-          Combine selected shapes into a single union. Tags from all shapes are preserved. 
-          Notes are merged into a single note, concatenated in the order of selection.
-        </p>
-      </div>
+          {renderButton(
+            'Merge', 'Combine selected annotations. Preserves all tags and concatenates notes in the order of selection.',
+            <Combine className="size-5" />,
+            onMergeSelected
+          )}
 
-      <div className="flex flex-col">
-        <Button 
-          disabled={!canSubtract}
-          className="flex gap-2"
-          variant="outline"
-          onClick={() => plugin.subtractSelected()}>
-          <Subtract className="size-5" /> Subtract
-        </Button>
+          {renderButton(
+            'Subtract', 
+            'Keep first annotation, delete all others. Overlapping areas are removed from the first annotation.',
+            <Subtract className="size-5" />,
+            () => plugin.subtractSelected(),
+            !canSubtract
+          )}
+        </div>
 
-        <p className="py-4 px-0.5 leading-relaxed text-muted-foreground text-xs">
-          Remove the area of the second shape from the first shape. Data 
-          from the first selected shape is preserved. The second shape will
-          be deleted.
-        </p>
+        <CompareDialog 
+          open={showCompareDialog} 
+          selected={props.selected}
+          onAddTag={props.onAddTag}
+          onClose={() => setShowCompareDialog(false)} />
       </div>
 
       <Button 
