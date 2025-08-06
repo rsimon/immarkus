@@ -102,7 +102,7 @@ export const CurrentSelection = () => {
   return (
     <>
       {selected.length === 0 ? (
-        <div className="flex rounded text-sm justify-center items-center w-full text-muted-foreground">
+        <div className="flex h-full rounded text-sm justify-center items-center w-full text-muted-foreground">
           No annotation selected
         </div> 
       ) : selected.length === 1 ? (
@@ -144,8 +144,7 @@ export const CurrentSelection = () => {
         <MultiSelectionTools 
           selected={selected}
           onAddTag={() => setShowSearchDialog(true)} 
-          onDeleteSelected={() => onBulkDelete(selected)}
-          onKeyDown={onKeyDown} />
+          onDeleteSelected={() => onBulkDelete(selected)} />
       )}
 
       <EntityTypeBrowserDialog 

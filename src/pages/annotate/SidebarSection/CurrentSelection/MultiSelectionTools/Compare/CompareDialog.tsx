@@ -13,29 +13,25 @@ import { PropertiesForm } from '../../PropertiesForm';
 
 interface CompareDialogProps {
 
+  open: boolean;
+
   selected: ImageAnnotation[];
+
+  onClose(): void;
 
 }
 
 export const CompareDialog = (props: CompareDialogProps) => {
 
-  const [open, setOpen] = useState(false);
-
   const onOpenChange = (open: boolean) => {
-    // For future use...
-    setOpen(open);
+    if (!open)
+      props.onClose();
   }
 
   return (
     <Dialog 
-      open={open} 
+      open={props.open} 
       onOpenChange={onOpenChange}>
-
-      <DialogTrigger asChild>
-        <Button className="flex gap-2">
-          <Columns3 className="size-5" /> Compare
-        </Button>
-      </DialogTrigger>
 
       <DialogContent 
         closeIcon={false}
