@@ -27,7 +27,7 @@ export const Note = (props: NoteProps) => {
   return (
     <div className="mt-3">
       {hasGenerator && (
-        <div className="text-[11px] flex gap-1 items-center justify-end mb-1.5 mr-0.5 text-muted-foreground/80">
+        <div className="text-[11px] flex gap-1 items-center justify-end mb-2.5 mr-0.5 text-muted-foreground/80">
           {creator.name} <ScanText className="size-3.5 mb-[1px]" /> 
         </div>
       )}

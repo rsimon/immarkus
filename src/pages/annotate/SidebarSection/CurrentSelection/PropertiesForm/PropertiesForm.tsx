@@ -177,6 +177,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     return FontSizes[nextIdx];
   });
 
+  const onShowNoteTranslation = () => {
+    console.log('show translation')
+  }
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -273,7 +277,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddTag={props.onAddTag} 
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
-            onClearNote={() => onChangeFormValue(noteKey, undefined)}/>
+            onClearNote={() => onChangeFormValue(noteKey, undefined)}
+            onShowTranslation={onShowNoteTranslation} />
         </div>
 
         <Button 
