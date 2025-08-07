@@ -30,6 +30,9 @@ export default defineConfig({
         target: 'https://kimhannom.clc.hcmus.edu.vn',
         changeOrigin: true,
         secure: false
+      },
+      '/translate': {
+        target: 'http://localhost:5000'
       }
     }
   },

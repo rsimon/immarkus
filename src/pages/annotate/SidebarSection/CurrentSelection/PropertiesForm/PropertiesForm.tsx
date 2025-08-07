@@ -6,6 +6,7 @@ import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
+import { Translation } from '@/components/Translation';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -169,6 +170,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
+  const [showTranslation, setShowTranslation] = useState(false);
+
   const [noteFontSize, setNoteFontSize] = useState('base');
 
   const onChangeNoteFontSize = () => setNoteFontSize(current => {
@@ -177,9 +180,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     return FontSizes[nextIdx];
   });
 
-  const onShowNoteTranslation = () => {
-    console.log('show translation')
-  }
+  const onShowNoteTranslation = () => setShowTranslation(show => !show);
 
   return (
     <PropertyValidation
@@ -270,6 +271,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               creator={note?.creator}
               value={formState[noteKey]}
               onChange={value => onChangeFormValue(noteKey, value)} />
+          )}
+
+          {showTranslation && (
+            <Translation text={formState[noteKey]} />
           )}
           
           <PropertiesFormActions 
