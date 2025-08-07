@@ -32,7 +32,10 @@ export default defineConfig({
         secure: false
       },
       '/translate': {
-        target: 'http://localhost:5000'
+        // target: 'http://localhost:5000'
+        target: 'https://api-free.deepl.com/v2/',
+        changeOrigin: true,
+        secure: false
       }
     }
   },

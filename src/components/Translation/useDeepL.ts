@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import type { TranslationResult } from './TranslationResult';
 
-export const DEFAULT_ENDPOINT = 'https://api-free.deepl.com/v2/translate';
+export const DEFAULT_ENDPOINT = '/translate';
 
 export interface DeepLResponse {
 
@@ -27,7 +27,7 @@ export const useDeepL = (key: string, endpoint: string = DEFAULT_ENDPOINT) => {
         Authorization: `DeepL-Auth-Key ${key}` 
       },
       body: JSON.stringify({
-        text, target_lang: 'EN'
+        text: [text], target_lang: 'EN'
       })
     })
       .then(res => res.json())

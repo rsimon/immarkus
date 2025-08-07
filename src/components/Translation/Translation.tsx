@@ -15,7 +15,7 @@ export const Translation = (props: TranslationProps) => {
   const [translated, setTranslated] = useState<TranslationResult | undefined>();
 
   // TODO
-  const translate = useLibreTranslate();
+  const translate = useDeepL('my-api-key')
 
   useEffect(() => {
     translate(props.text).then(setTranslated);
