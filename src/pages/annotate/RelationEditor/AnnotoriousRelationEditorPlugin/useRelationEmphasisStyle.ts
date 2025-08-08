@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Annotation, AnnotationState, DrawingStyle, DrawingStyleExpression, ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
-import { Store, useStore } from '@/store';
+import { useStore } from '@/store';
 import { useRelationEditor } from '../RelationEditorRoot';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';

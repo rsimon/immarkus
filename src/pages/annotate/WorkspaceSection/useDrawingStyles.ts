@@ -14,11 +14,13 @@ export const colorByEntityType = (
 
     return entityType ? { 
       fill: entityType.color as Color,
+      fillOpacity: 0.25,
       stroke: chroma(entityType.color).darken(2).hex() as Color,
       strokeOpacity: 1,
       strokeWidth: 1.2
     } : {
       fill: '#000000',
+      fillOpacity: 0.25,
       stroke: '#000000',
       strokeOpacity: 1,
       strokeWidth: 1.2
@@ -26,6 +28,7 @@ export const colorByEntityType = (
   } else {
     return {
       fill: '#000000',
+      fillOpacity: 0.25,
       stroke: '#000000',
       strokeOpacity: 1,
       strokeWidth: 1.2
