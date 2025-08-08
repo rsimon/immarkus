@@ -3,6 +3,7 @@ import { TranslationResult } from './TranslationResult';
 import { useDeepL } from './useDeepL';
 import { useLibreTranslate } from './useLibreTranslate';
 import { Separator } from '@/ui/Separator';
+import { useGoogleTranslate } from './useGoogleTranslate';
 
 interface TranslationProps {
 
@@ -16,6 +17,7 @@ export const Translation = (props: TranslationProps) => {
 
   // TODO
   const translate = useDeepL('my-api-key')
+  // const translate = useGoogleTranslate();
 
   useEffect(() => {
     translate(props.text).then(setTranslated);
