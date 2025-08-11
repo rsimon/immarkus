@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import { ServiceConnectorConfig, TranslationServiceResponse, useService } from '@/services';
 import { Separator } from '@/ui/Separator';
 import { deobfuscate } from '@/utils/obfuscateString';
+import { Button } from '@/ui/Button';
+import { Ban, X } from 'lucide-react';
+import { Spinner } from '../Spinner';
 
 interface TranslationProps {
 
   text: string;
 
   connector: ServiceConnectorConfig;
+
+  onClose();
 
 }
 
@@ -43,18 +48,32 @@ export const Translation = (props: TranslationProps) => {
 
         setBusy(false);
         setError('Translation service error');
-      })
+      });
   }, [connectorConfig, serviceConfig, connector]);
 
   return (
     <div>
       {busy ? (
-        <div>Translating...</div>
+        <div className="flex justify-center py-6">
+          <Spinner className="size-4 text-muted-foreground" />
+        </div>
       ) : error ? (
-        <div>Error! {error}</div>
+        <div className="flex justify-center py-6 text-destructive items-center gap-1.5 text-xs">
+          <Ban className="size-3.5" /> {error}
+        </div>
       ) : response?.translation ? (
-        <div className="p-2 text-muted-foreground/80 text-xs leading-relaxed">
-          {response.translation}
+        <div className="px-2 py-1 text-muted-foreground/80 text-xs leading-relaxed">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="float-right rounded-full p-1 size-8 -mr-2 ml-2 mb-2"
+            onClick={props.onClose}>
+            <X className="size-4" />
+          </Button>
+
+          <div className="pt-1.5 pb-2">
+            {response.translation}
+          </div>
         </div>
       ) : null}
 

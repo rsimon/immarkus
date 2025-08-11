@@ -282,7 +282,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           {translationService && (
             <Translation 
               text={formState[noteKey]}
-              connector={translationService} />
+              connector={translationService} 
+              onClose={() => setTranslationService(undefined)} />
           )}
           
           <PropertiesFormActions 
