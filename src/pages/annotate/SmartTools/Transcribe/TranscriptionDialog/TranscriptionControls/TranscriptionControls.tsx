@@ -48,8 +48,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   const { connectorConfig, serviceConfig } = useService(connectorId, 'TRANSCRIPTION');
 
   const parameters = useMemo(() => ([
-    ...(connectorConfig.parameters || []),
-    ...(serviceConfig.parameters || [])
+    ...(connectorConfig?.parameters || []),
+    ...(serviceConfig?.parameters || [])
   ]), [connectorConfig, serviceConfig]);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
@@ -60,6 +60,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   }, [props.options]);
 
   const canSumbit = useMemo(() => {
+    if (!serviceConfig) return false;
+
     // Check if all required params are filled
     const required = (serviceConfig?.parameters || []).filter(p => p.required);
     const allRequiredFilled = required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
@@ -107,7 +109,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     ) : null;
   }
 
-  return (
+  return (connectorConfig && serviceConfig) ? (
     <div className="pr-2 py-4 min-h-full flex flex-col">
       <div className="space-y-8 flex-1">
         <fieldset className="space-y-2">
@@ -212,6 +214,6 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         </Button>
       </div>
     </div>
-  )
+  ) : null;
 
 }
