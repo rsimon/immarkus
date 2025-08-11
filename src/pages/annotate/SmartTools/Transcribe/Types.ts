@@ -1,9 +1,9 @@
-import { Generator } from "@/services";
-import { ImageAnnotation } from "@annotorious/react";
+import { ImageAnnotation } from '@annotorious/react';
+import { Generator } from '@/services';
 
 export interface OCROptions {
 
-  serviceId: string;
+  connectorId: string;
 
   serviceOptions?: Record<string, any>;
 

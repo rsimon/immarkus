@@ -157,7 +157,7 @@ export const preprocess = (
     } else {
       return getImageSnippet(image, annotation, false).then(snippet => {
         if ('data' in snippet && 'file' in image) {
-          const file = new File([new Blob([snippet.data])], image.name, { type: image.file.type });
+          const file = new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type });
 
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region

@@ -20,6 +20,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Translation } from '@/components/Translation';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -169,6 +170,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
+  const [translatedNote, setTranslatedNote] = useState<string | null>(null);
+
   const [noteFontSize, setNoteFontSize] = useState('base');
 
   const onChangeNoteFontSize = () => setNoteFontSize(current => {
@@ -267,13 +270,18 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               value={formState[noteKey]}
               onChange={value => onChangeFormValue(noteKey, value)} />
           )}
+
+          {translatedNote !== null && (
+            <Translation translation={translatedNote} />
+          )}
           
           <PropertiesFormActions 
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
-            onClearNote={() => onChangeFormValue(noteKey, undefined)}/>
+            onClearNote={() => onChangeFormValue(noteKey, undefined)} 
+            onShowTranslation={setTranslatedNote} />
         </div>
 
         <Button 

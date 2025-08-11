@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import { HeadersLike } from 'node_modules/openai/internal/headers.mjs';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { Generator, PageTransform, Region, ServiceConnectorResponse } from './Types';
+import { Generator, PageTransform, Region, TranscriptionServiceResponse } from './Types';
 
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -45,14 +45,14 @@ export const urlToFile = (url: string): Promise<File> =>
       });
     });
 
-export const submitOpenAICompatible = (
+export const transcribeOpenAICompatible = (
   image: File | string, 
   apiKey: string,
   baseURL: string,
   model: string,
   generator: Generator,
   defaultHeaders?: HeadersLike
-): Promise<ServiceConnectorResponse> => {
+): Promise<TranscriptionServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
     baseURL,
@@ -80,7 +80,7 @@ export const submitOpenAICompatible = (
           }
         }]
       }]
-    }).then((data: any) => ({ generator, data } as ServiceConnectorResponse));
+    }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
 
   if (typeof image === 'string') {
     return urlToBase64(image).then(base64 =>  
@@ -92,7 +92,7 @@ export const submitOpenAICompatible = (
 
 }
 
-export const parseOpenAICompatibleResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
+export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
   const choices = (data.choices || []);
   if (choices.length === 0) {
     console.warn('Repsonse with no choices', data);

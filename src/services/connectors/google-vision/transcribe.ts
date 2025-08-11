@@ -1,10 +1,10 @@
-import { ServiceConnectorResponse } from '@/services/Types';
+import { TranscriptionServiceResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 
-export const submit = (
+export const transcribe = (
   image: File | string, 
   options?: Record<string, any>
-): Promise<ServiceConnectorResponse> => {
+): Promise<TranscriptionServiceResponse> => {
   if (!options || !options['api-key']) throw new Error('Missing API key');
 
   const apiKey = options['api-key'];

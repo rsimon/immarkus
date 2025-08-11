@@ -1,16 +1,19 @@
-import { ServiceConfig } from '@/services/Types';
+import { ServiceConnectorConfig } from '@/services/Types';
 
-export const config: ServiceConfig = {
+export const config: ServiceConnectorConfig = {
   id: 'volcano-engine',
   connector: 'volcano-engine',
   displayName: 'Volcano Engine',
-  description: 'Doubao 1.5 Vision Pro via Volcano Engine',
   requiresKey: true,
-  requiresRegion: true,
-  parameters: [{
-    type: 'credential',
-    id: 'api-key',
-    displayName: 'Your Volcano Engine API Key',
-    required: true
+  services: [{
+    type: 'TRANSCRIPTION',
+    description: 'Doubao 1.5 Vision Pro via Volcano Engine',
+    requiresRegion: true,
+    parameters: [{
+      type: 'credential',
+      id: 'api-key',
+      displayName: 'Your Volcano Engine API Key',
+      required: true
+    }]
   }]
 };

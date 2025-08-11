@@ -1,8 +1,8 @@
 import { InferenceClient } from '@huggingface/inference';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { ServiceConnectorResponse } from '@/services/Types';
+import { TranscriptionServiceResponse } from '@/services/Types';
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const transcribe = (image: File | string, options?: Record<string, any>) => {
   const hfToken = options['access-token'];
   const model = options['model'];
 
@@ -35,7 +35,7 @@ export const submit = (image: File | string, options?: Record<string, any>) => {
           }]
         },
       ],
-    }).then((data: any) => ({ generator, data } as ServiceConnectorResponse));
+    }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
 
   if (typeof image === 'string') {
     return urlToBase64(image).then(base64 =>  

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Markdown from 'react-markdown';
-import { ServiceConfig, ServiceConfigCredentialParameter } from '@/services';
+import { ServiceConfigCredentialParameter, ServiceConnectorConfig } from '@/services';
 import { deobfuscate, obfuscate } from '@/utils/obfuscateString';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -9,9 +9,9 @@ import { Info } from 'lucide-react';
 
 interface CredentialParameterControlProps {
 
-  param: ServiceConfigCredentialParameter;
+  connector: ServiceConnectorConfig;
 
-  service: ServiceConfig;
+  param: ServiceConfigCredentialParameter;
 
   value?: string;
 
@@ -21,9 +21,9 @@ interface CredentialParameterControlProps {
 
 export const CredentialParameterControl = (props: CredentialParameterControlProps) => {
 
-  const { param, service, value } = props;
+  const { connector, param, value } = props;
 
-  const key = `immarkus:services:${service.id}:${param.id}`;
+  const key = `immarkus:services:${connector.id}:${param.id}`;
 
   useEffect(() => {
     // If there's no value on mount, try loading from localStorage
@@ -46,7 +46,7 @@ export const CredentialParameterControl = (props: CredentialParameterControlProp
     <fieldset className="space-y-2">
       <div className="flex gap-2 items-center">
         <Label className="font-semibold">{param.displayName}</Label>
-        {service.keyInstructions && (
+        {connector.keyInstructions && (
           <Popover>
             <PopoverTrigger>
               <Info className="size-4 opacity-70 hover:opacity-100" />
@@ -59,7 +59,7 @@ export const CredentialParameterControl = (props: CredentialParameterControlProp
               alignOffset={-10}
               collisionPadding={10}
               className="text-xs shadow-2xl p-4 w-96 leading-relaxed prose prose-p:py-1 prose-p:m-0 prose-ul:my-2 prose-ul:px-4">
-              <Markdown>{service.keyInstructions}</Markdown>
+              <Markdown>{connector.keyInstructions}</Markdown>
             </PopoverContent>
           </Popover>
         )}

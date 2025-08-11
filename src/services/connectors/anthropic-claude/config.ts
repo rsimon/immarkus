@@ -1,16 +1,21 @@
-import { ServiceConfig } from '@/services/Types';
+import { ServiceConnectorConfig } from '@/services/Types';
 
-export const config: ServiceConfig = {
+export const config: ServiceConnectorConfig = {
   id: 'anthropic-claude',
   connector: 'anthropic-claude',
   displayName: 'Anthropic Claude',
-  description: 'Full-text transcription via Anthropic Claude',
   requiresKey: true,
-  requiresRegion: true,
-  parameters: [{
-    type: 'credential',
-    id: 'api-key',
-    displayName: 'Your API Key',
-    required: true
+  services: [{
+    type: 'TRANSCRIPTION',
+    description: 'Full-text transcription via Anthropic Claude',
+    requiresRegion: true,
+    parameters: [{
+      type: 'credential',
+      id: 'api-key',
+      displayName: 'Your API Key',
+      required: true
+    }]
+  }, {
+    type: 'TRANSLATION'
   }]
 };

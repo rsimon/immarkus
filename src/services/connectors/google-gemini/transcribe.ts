@@ -1,11 +1,11 @@
-import { ServiceConnectorResponse } from '@/services/Types';
+import { TranscriptionServiceResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { GoogleGenAI, Type } from '@google/genai';
 
-export const submit = (
+export const transcribe = (
   image: File | string, 
   options?: Record<string, any>
-): Promise<ServiceConnectorResponse>  => {
+): Promise<TranscriptionServiceResponse>  => {
   const apiKey = options['api-key'];
 
   const generator = {
