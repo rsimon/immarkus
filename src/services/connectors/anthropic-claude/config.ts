@@ -15,7 +15,5 @@ export const config: ServiceConnectorConfig = {
       displayName: 'Your API Key',
       required: true
     }]
-  }, {
-    type: 'TRANSLATION'
   }]
 };
