@@ -20,6 +20,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Translation } from '@/components/Translation';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -169,6 +171,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
+  const [translationService, setTranslationService] = 
+    useState<{ connector: ServiceConnectorConfig, service: TranslationServiceConfig } | undefined>();
+
   const [noteFontSize, setNoteFontSize] = useState('base');
 
   const onChangeNoteFontSize = () => setNoteFontSize(current => {
@@ -177,6 +182,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     return FontSizes[nextIdx];
   });
 
+  const onTranslate = (connector: ServiceConnectorConfig, service: TranslationServiceConfig) =>
+    setTranslationService({ connector, service });
+    
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -267,13 +275,22 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               value={formState[noteKey]}
               onChange={value => onChangeFormValue(noteKey, value)} />
           )}
+
+          {translationService && (
+            <Translation 
+              text={formState[noteKey]}
+              connector={translationService.connector} 
+              service={translationService.service}
+              onClose={() => setTranslationService(undefined)} />
+          )}
           
           <PropertiesFormActions 
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
-            onClearNote={() => onChangeFormValue(noteKey, undefined)}/>
+            onClearNote={() => onChangeFormValue(noteKey, undefined)} 
+            onTranslate={onTranslate} />
         </div>
 
         <Button 

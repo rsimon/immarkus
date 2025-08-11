@@ -66,7 +66,7 @@ const getToken = (email: string, password: string) => {
   }
 }
 
-export const submit = (image: File | string, options?: Record<string, any>) => {
+export const transcribe = (image: File | string, options?: Record<string, any>) => {
   const email = options['email'];
   const password = options['password'];
 

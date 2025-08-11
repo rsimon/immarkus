@@ -1,4 +1,4 @@
-import { ServiceConfig } from './Types';
+import { ServiceConnectorConfig } from './Types';
 import { config as AnthropicClaude } from './connectors/anthropic-claude/config';
 import { config as AzureCV } from './connectors/azure-cv/config';
 import { config as GoogleGemini } from './connectors/google-gemini/config';
@@ -10,7 +10,7 @@ import { config as OpenAI } from './connectors/openai/config';
 import { config as SinoNomAPI } from './connectors/sino-nom/config';
 import { config as VolcanoEngine } from './connectors/volcano-engine/config';
 
-export const Services: ServiceConfig[] = [
+export const Connectors: ServiceConnectorConfig[] = [
   AnthropicClaude,
   AzureCV,
   GoogleGemini, 

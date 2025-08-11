@@ -29,7 +29,7 @@ interface TranscriptionControlsProps {
 
   options: OCROptions;
 
-  onServiceChanged(serviceId: string): void;
+  onConnectorChanged(connectorId: string): void;
 
   onServiceOptionChanged(key: string, value: any): void;
 
@@ -39,13 +39,18 @@ interface TranscriptionControlsProps {
 
 }
 
-const services = ServiceRegistry.listAvailableServices();
+const connectors = ServiceRegistry.listAvailableConnectors('TRANSCRIPTION');
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
-  const { serviceId, serviceOptions } = props.options;
+  const { connectorId, serviceOptions } = props.options;
 
-  const { config: serviceConfig } = useService(serviceId);
+  const { connectorConfig, serviceConfig } = useService(connectorId, 'TRANSCRIPTION');
+
+  const parameters = useMemo(() => ([
+    ...(connectorConfig.parameters || []),
+    ...(serviceConfig.parameters || [])
+  ]), [connectorConfig, serviceConfig]);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
@@ -77,7 +82,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <CredentialParameterControl
         key={param.id}
         param={param} 
-        service={serviceConfig} 
+        connector={connectorConfig} 
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'radio' ? (
@@ -90,7 +95,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
       <StringParameterControl 
         key={param.id}
         param={param} 
-        service={serviceConfig} 
+        connector={connectorConfig} 
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'switch' ? (
@@ -109,14 +114,14 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <Label className="font-semibold">Service</Label>
 
           <Select
-            value={serviceConfig.id}
-            onValueChange={props.onServiceChanged}>
+            value={connectorConfig.id}
+            onValueChange={props.onConnectorChanged}>
             <SelectTrigger 
               className="w-full text-left h-auto text-sm border rounded shadow-xs mt-1.5 pl-2.5 pr-2 py-2.5 flex justify-between">
               <div>
                 <h4 className="font-semibold flex gap-2.5 items-center">
-                  {serviceConfig.displayName}
-                  {serviceConfig.requiresKey && (
+                  {connectorConfig.displayName}
+                  {connectorConfig.requiresKey && (
                     <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
                       <KeyRound className="size-3" /> API Key Required
                     </span>
@@ -131,18 +136,18 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <SelectContent
               align="start"
               className="[&_div[role=option]_span:nth-child(2)]:flex-1">
-              {services.map(s => (
+              {connectors.map(c => (
                 <SelectItem
-                  key={s.id}
-                  value={s.id}
+                  key={c.id}
+                  value={c.id}
                   className="flex items-start [&>*:first-child]:mt-0.5 py-3">
                   <h4 className="font-semibold flex gap-2 items-center justify-between">
-                    {s.displayName} {s.requiresKey && (
+                    {c.displayName} {c.requiresKey && (
                       <KeyRound className="size-3.5 text-orange-400 mr-1" />
                     )} 
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
-                    {s.description}
+                    {c.services.find(s => s.type === 'TRANSCRIPTION')?.description}
                   </p>
                 </SelectItem>
               ))}
@@ -153,7 +158,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         <form 
           onSubmit={evt => evt.preventDefault()}
           className="space-y-4">
-          {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
+          {parameters.map(param => renderParameterControl(param))}
         </form>
       </div>
 

@@ -1,13 +1,13 @@
-import { ServiceConnectorResponse } from '@/services/Types';
+import { TranscriptionServiceResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 
-export const submit = (
+export const transcribe = (
   image: File | string, 
   options?: Record<string, any>
-): Promise<ServiceConnectorResponse> => {
+): Promise<TranscriptionServiceResponse> => {
   const apiKey = options['api-key'];
 
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });

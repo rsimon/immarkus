@@ -1,5 +1,5 @@
-import { ServiceConnector } from './Types';
-import { Services } from './Services';
+import { ServiceConnector, ServiceType } from './Types';
+import { Connectors } from './Connectors';
 
 export const createServiceRegistry = () => {
 
@@ -7,40 +7,43 @@ export const createServiceRegistry = () => {
 
   const loadingPromises = new Map<string, Promise<ServiceConnector>>();
 
-  const listAvailableServices = () => [...Services];
+  const getConnectorConfig = (connectorId: string) => Connectors.find(s => s.id === connectorId);
 
-  const getServiceConfig = (serviceId: string) => Services.find(s => s.id === serviceId);
+  const listAvailableConnectors = (service?: ServiceType) =>
+    service 
+      ? [...Connectors].filter(c => c.services.some(s => s.type === service))
+      : [...Connectors];
   
-  const getConnector = (serviceId: string): Promise<ServiceConnector> => {
-    if (connectors.has(serviceId))
-      return Promise.resolve(connectors.get(serviceId));
+  const getConnector= (connectorId: string, type: ServiceType): Promise<ServiceConnector> => {
+    if (connectors.has(connectorId))
+      return Promise.resolve(connectors.get(connectorId));
 
-    if (loadingPromises.has(serviceId))
-      return loadingPromises.get(serviceId);
+    if (loadingPromises.has(connectorId))
+      return loadingPromises.get(connectorId);
 
-    const serviceConfig = Services.find(s => s.id === serviceId);
-    if (!serviceConfig)
-      return Promise.reject(`Service not available: ${serviceId}`);
+    const connectorConfig = Connectors.find(s => s.id === connectorId);
+    if (!connectorConfig)
+      return Promise.reject(`Unknown service connector: ${connectorId}`);
 
     const loadingPromise: Promise<ServiceConnector> = 
-      import(`./connectors/${serviceConfig.connector}/index.ts`).then(m => m.default);
+      import(`./connectors/${connectorConfig.connector}/index.ts`).then(m => m.default);
 
-    loadingPromises.set(serviceId, loadingPromise);
+    loadingPromises.set(connectorId, loadingPromise);
 
     return loadingPromise.then(connector => {
-      connectors.set(serviceId, connector);
-      loadingPromises.delete(serviceId);
+      connectors.set(connectorId, connector);
+      loadingPromises.delete(connectorId);
       return connector;
     }).catch(error => {
-      loadingPromises.delete(serviceId);
+      loadingPromises.delete(connectorId);
       throw error;
     });
   }
 
   return {
     getConnector,
-    getServiceConfig,
-    listAvailableServices
+    getConnectorConfig,
+    listAvailableConnectors
   }
 }
 

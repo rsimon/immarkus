@@ -1,18 +1,97 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ServiceRegistry } from './ServiceRegistry';
-import { ServiceConnector } from './Types';
+import { 
+  ServiceConnector, 
+  ServiceConnectorConfig, 
+  ServiceType, 
+  TranscriptionServiceConnector, 
+  TranslationServiceConnector,
+  TranscriptionServiceConfig,
+  TranslationServiceConfig
+} from './Types';
 
-export const useService = (serviceId: string) => {
+type UseServiceState =
+  | {
+      connectorConfig: ServiceConnectorConfig | undefined;
+      serviceConfig: TranscriptionServiceConfig | TranslationServiceConfig | undefined;
+      connector: ServiceConnector | undefined;
+    };
 
-  const config = useMemo(() => 
-    ServiceRegistry.getServiceConfig(serviceId), [serviceId]);
+const EMPTY_STATE: UseServiceState = { 
   
-  const [connector, setConnector] = useState<ServiceConnector>();
+  connectorConfig: undefined, 
+  
+  serviceConfig: undefined,
+
+  connector: undefined
+
+};
+
+export function useService(
+  connectorId: string,
+  type: 'TRANSCRIPTION'
+): { 
+  connectorConfig: ServiceConnectorConfig; 
+  serviceConfig: TranscriptionServiceConfig; 
+  connector?: TranscriptionServiceConnector; 
+};
+
+export function useService(
+  connectorId: string,
+  type: 'TRANSLATION'
+): { 
+  connectorConfig: ServiceConnectorConfig; 
+  serviceConfig: TranslationServiceConfig; 
+  connector?: TranslationServiceConnector; 
+};
+
+export function useService(
+  connectorId: string,
+  config: TranscriptionServiceConfig
+): { 
+  connectorConfig: ServiceConnectorConfig; 
+  serviceConfig: TranscriptionServiceConfig; 
+  connector?: TranscriptionServiceConnector; 
+};
+
+export function useService(
+  connectorId: string,
+  config: TranslationServiceConfig
+): { 
+  connectorConfig: ServiceConnectorConfig; 
+  serviceConfig: TranslationServiceConfig; 
+  connector?: TranslationServiceConnector; 
+};
+
+export function useService(
+  connectorId: string,
+  arg: ServiceType | TranscriptionServiceConfig | TranslationServiceConfig
+): {
+  connectorConfig: ServiceConnectorConfig;
+  serviceConfig: TranscriptionServiceConfig | TranslationServiceConfig;
+  connector?: ServiceConnector;
+} {
+  const type = typeof arg === 'string' ? arg : arg.type;
+  const [state, setState] = useState<UseServiceState>(EMPTY_STATE);
 
   useEffect(() => {
-    ServiceRegistry.getConnector(serviceId).then(setConnector);
-  }, [serviceId]);
+    setState(EMPTY_STATE);
 
-  return { config, connector };
+    const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
+    if (!connectorConfig)
+      throw new Error(`Unknown connector: ${connectorId}`);
 
+    if (!connectorConfig.services.some(s => s.type === type))
+      throw new Error(`Connector ${connectorId} does not support service type ${type}`);
+
+    const serviceConfig =
+      typeof arg === 'string'
+        ? connectorConfig.services.find(s => s.type === type)!
+        : arg;
+
+    ServiceRegistry.getConnector(connectorId, type).then(connector =>
+      setState({ connectorConfig, serviceConfig, connector }));
+  }, [connectorId, type, arg]);
+
+  return state;
 }

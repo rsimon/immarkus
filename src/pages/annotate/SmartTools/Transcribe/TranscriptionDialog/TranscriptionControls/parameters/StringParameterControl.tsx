@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ServiceConfig, ServiceConfigStringParameter } from '@/services/Types';
+import { ServiceConfigStringParameter, ServiceConnectorConfig } from '@/services/Types';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
 import { Textarea } from '@/ui/Textarea';
@@ -15,7 +15,7 @@ interface StringParameterControlProps {
 
   param: ServiceConfigStringParameter;
 
-  service: ServiceConfig;
+  connector: ServiceConnectorConfig;
 
   value?: string;
 
@@ -25,9 +25,9 @@ interface StringParameterControlProps {
 
 export const StringParameterControl =  (props:StringParameterControlProps) => {
 
-  const { param, value, service } = props;
+  const { connector, param, value } = props;
 
-  const key = `immarkus:services:${service.id}:${param.id}`;
+  const key = `immarkus:services:${connector.id}:${param.id}`;
 
   const [initialized, setInitialized] = useState(!param.persist);
 

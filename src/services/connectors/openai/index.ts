@@ -1,4 +1,6 @@
-import { submit } from './submit';
-import { parseResponse } from './parseResponse';
+import { transcribe } from './transcribe';
+import { translate } from './translate';
+import { parseResponse as parseTranscriptionResponse } from './parseResponse';
+import { ServiceConnector } from '@/services/Types';
 
-export default { submit, parseResponse };
+export default { transcribe, translate, parseTranscriptionResponse } as ServiceConnector;

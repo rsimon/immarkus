@@ -1,12 +1,10 @@
-import { ServiceConfig } from '@/services/Types';
+import { ServiceConnectorConfig } from '@/services/Types';
 
-export const config: ServiceConfig = {
+export const config: ServiceConnectorConfig = {
   id: 'google-gemini',
   connector: 'google-gemini',
   displayName: 'Google Gemini',
-  description: 'Full-text transcription via Google Gemini',
   requiresKey: true,
-  requiresRegion: true,
   parameters: [{
     type: 'credential',
     id: 'api-key',
@@ -17,6 +15,10 @@ export const config: ServiceConfig = {
 You need an API key to use Google Gemini. To get your own key:
 
 - Go to <https://aistudio.google.com/>
-- Select **Get an API key** from the popup
-`
+- Select **Get an API key** from the popup`.trim(),
+  services: [{
+    type: 'TRANSCRIPTION',
+    description: 'Full-text transcription via Google Gemini',
+    requiresRegion: true
+  }]
 };

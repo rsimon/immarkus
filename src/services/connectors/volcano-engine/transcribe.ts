@@ -1,13 +1,13 @@
-import { submitOpenAICompatible } from '@/services/utils';
+import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const submit = (image: File | string, options: Record<string, any> = {}) => {
+export const transcribe = (image: File | string, options: Record<string, any> = {}) => {
   const key = options['api-key'];
 
   // Should never happen
   if (!key)
     throw new Error('Missing API key');
 
-  return submitOpenAICompatible(
+  return transcribeOpenAICompatible(
     image,
     key,
     'https://ark.cn-beijing.volces.com/api/v3',

@@ -3,7 +3,6 @@ import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { LoadedImage } from '@/model';
-import { Generator, PageTransform, Region, ServiceCrosswalk, ServiceRegistry, useService } from '@/services';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
 import { AnnotationBatch, OCROptions, ProcessingState } from '../Types';
@@ -15,6 +14,14 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
+import { 
+  Generator, 
+  PageTransform, 
+  Region, 
+  TranscriptionServiceCrosswalk, 
+  ServiceRegistry, 
+  useService 
+} from '@/services';
 
 interface OCRResult {
 
@@ -26,7 +33,7 @@ interface OCRResult {
 
   region?: Region;
 
-  crosswalk: ServiceCrosswalk;
+  crosswalk: TranscriptionServiceCrosswalk;
 
 } 
 
@@ -46,9 +53,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [region, setRegion] = useState<Region | undefined>();
 
-  const [options, setOptions] = useState<OCROptions>({ serviceId: ServiceRegistry.listAvailableServices()[0].id });
+  const [options, setOptions] = useState<OCROptions>({
+    connectorId: ServiceRegistry.listAvailableConnectors('TRANSCRIPTION')[0].id 
+  });
   
-  const service = useService(options.serviceId);
+  const service = useService(options.connectorId, 'TRANSCRIPTION');
 
   const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
 
@@ -96,8 +105,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     reset();
   }
 
-  const onServiceChanged = (serviceId: string) => 
-    setOptions(({ serviceId }));
+  const onConnectorChanged = (connectorId: string) => 
+    setOptions(({ connectorId }));
 
   const onServiceOptionChanged = (key: string, value: string) =>
     setOptions(current => ({
@@ -125,9 +134,9 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       setProcessingState('pending');
 
       const image = 'file' in result ? result.file : result.url;
-      const crosswalk = service.connector.parseResponse;
+      const crosswalk = service.connector.parseTranscriptionResponse;
 
-      service.connector.submit(image, options.serviceOptions).then(({ data, generator }) => {
+      service.connector.transcribe(image, options.serviceOptions).then(({ data, generator }) => {
         // Test the crosswalk to make sure data is valid
         try {
           const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
@@ -199,7 +208,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 options={options}
                 processingState={processingState}
                 region={region}
-                onServiceChanged={onServiceChanged}
+                onConnectorChanged={onConnectorChanged}
                 onServiceOptionChanged={onServiceOptionChanged}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />

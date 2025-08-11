@@ -1,6 +1,8 @@
 import { ImageAnnotation } from '@annotorious/react';
 
-export interface ServiceConfig {
+export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION';
+
+export interface ServiceConnectorConfig {
 
   /** Any alphanumeric string, as long as unique within IMMARKUS **/
   id: string;
@@ -11,14 +13,27 @@ export interface ServiceConfig {
   /** Service display name **/
   displayName: string;
 
-  /** Service display description **/
-  description: string;
-
   /** Help text to show with the API key field, if any **/
   keyInstructions?: string;
 
   /** Set to true if the service requires a user-provided API key **/
   requiresKey?: boolean;
+
+  /** Common configuration parameters for all services provided by this connector **/
+  parameters?: ServiceConfigParameter[];
+
+  /** List of services provided through this connector */
+  services: ServiceConfig[];
+
+}
+
+export interface TranscriptionServiceConfig {
+  
+  /** Type of service **/
+  type: 'TRANSCRIPTION';
+
+  /** Service display description **/
+  description: string;
 
   /** Set to true if the service requires a user-provded region bounding box **/
   requiresRegion?: boolean;
@@ -27,6 +42,19 @@ export interface ServiceConfig {
   parameters?: ServiceConfigParameter[];
 
 }
+
+export interface TranslationServiceConfig {
+
+  type: 'TRANSLATION';
+
+  displayName?: string;
+
+  arguments?: Record<string, any>;
+  
+}
+
+export type ServiceConfig = TranscriptionServiceConfig | TranslationServiceConfig;
+
 
 export interface ServiceConfigCredentialParameter {
 
@@ -94,15 +122,23 @@ export type ServiceConfigParameter =
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
 
-export interface ServiceConnector {
+export interface TranscriptionServiceConnector {
 
-  submit(image: File | string, options?: Record<string, any>): Promise<ServiceConnectorResponse>;
+  transcribe(image: File | string, options?: Record<string, any>): Promise<TranscriptionServiceResponse>;
 
-  parseResponse: ServiceCrosswalk;
+  parseTranscriptionResponse: TranscriptionServiceCrosswalk;
 
 }
 
-export interface ServiceConnectorResponse<T extends unknown = any> {
+export interface TranslationServiceConnector {
+
+  translate(text: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
+
+}
+
+export type ServiceConnector = TranscriptionServiceConnector | TranslationServiceConnector;
+
+export interface TranscriptionServiceResponse<T extends unknown = any> {
 
   data: T; 
 
@@ -123,7 +159,7 @@ export interface Generator {
 
 }
 
-export type ServiceCrosswalk = (data: any, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
+export type TranscriptionServiceCrosswalk = (data: any, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
 
 export type PageTransform = {
 
@@ -153,4 +189,13 @@ export interface Region {
   
 }
 
+export interface TranslationServiceResponse {
+  
+  generator: Generator;
+
+  translation: string;
+
+  language?: string;
+
+}
 

@@ -1,14 +1,14 @@
 import { ApiKeyCredentials } from '@azure/ms-rest-js';
 import { ComputerVisionClient } from '@azure/cognitiveservices-computervision';
 import type { GetReadResultResponse } from '@azure/cognitiveservices-computervision/esm/models';
-import { Generator, ServiceConnectorResponse } from '@/services/Types';
+import { Generator, TranscriptionServiceResponse } from '@/services/Types';
 
 const sleep = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
-export const submit = (
+export const transcribe = (
   image: File | string, 
   options: Record<string, any> = {}
-): Promise<ServiceConnectorResponse> => {
+): Promise<TranscriptionServiceResponse> => {
   const endpoint = options['endpoint'];
   const key = options['key'];
 

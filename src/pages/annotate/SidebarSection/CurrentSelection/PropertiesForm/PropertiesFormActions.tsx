@@ -1,6 +1,8 @@
-import { ALargeSmall, Cuboid, NotebookPen, X } from 'lucide-react';
+import { ALargeSmall, Cuboid, NotebookPen } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
+import { TranslateButton } from '@/components/Translation';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 interface PropertiesFormActionsProps {
 
@@ -13,13 +15,15 @@ interface PropertiesFormActionsProps {
   onChangeFontSize(): void;
 
   onClearNote(): void;
+
+  onTranslate(connector: ServiceConnectorConfig, service: TranslationServiceConfig): void;
   
 }
 
 export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
 
   return (
-    <div className="py-2 flex gap-1 justify-between text-muted-foreground mb-4">
+    <div className="pt-0.5 pb-2 flex gap-1 justify-between text-muted-foreground mb-4">
       <Button 
         variant="ghost" 
         type="button"
@@ -30,14 +34,6 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
 
       {props.hasNote ? (
         <div className="flex items-center">
-          <Button 
-            variant="ghost" 
-            type="button"
-            className="text-xs pl-2 pr-2.5 font-normal py-3.5 h-6 rounded-full whitespace-nowrap"
-            onClick={props.onClearNote}>
-            <X className="size-3.5 mr-1" /> Clear Note
-          </Button>
-
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -52,6 +48,26 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
 
             <TooltipContent>
               Change font size
+            </TooltipContent>
+          </Tooltip>
+
+          <TranslateButton
+            onClickTranslate={props.onTranslate} />
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                className="h-6 w-auto py-3.5 px-2 rounded-full font-normal text-xs"
+                onClick={props.onClearNote}>
+                Clear Note
+              </Button>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              Clear note
             </TooltipContent>
           </Tooltip>
         </div>

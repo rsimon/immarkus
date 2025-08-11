@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import { HeadersLike } from 'node_modules/openai/internal/headers.mjs';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { Generator, PageTransform, Region, ServiceConnectorResponse } from './Types';
+import { Generator, PageTransform, Region, TranscriptionServiceResponse, TranslationServiceResponse } from './Types';
 
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -45,14 +45,14 @@ export const urlToFile = (url: string): Promise<File> =>
       });
     });
 
-export const submitOpenAICompatible = (
+export const transcribeOpenAICompatible = (
   image: File | string, 
   apiKey: string,
   baseURL: string,
   model: string,
   generator: Generator,
   defaultHeaders?: HeadersLike
-): Promise<ServiceConnectorResponse> => {
+): Promise<TranscriptionServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
     baseURL,
@@ -80,7 +80,7 @@ export const submitOpenAICompatible = (
           }
         }]
       }]
-    }).then((data: any) => ({ generator, data } as ServiceConnectorResponse));
+    }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
 
   if (typeof image === 'string') {
     return urlToBase64(image).then(base64 =>  
@@ -89,31 +89,37 @@ export const submitOpenAICompatible = (
     return fileToBase64(image as File).then(base64 => 
       submit(`data:image/jpeg;base64,${base64}`));
   }
-
 }
 
-export const parseOpenAICompatibleResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
+export const parseOpenAIResponse = (data: any) => {
   const choices = (data.choices || []);
   if (choices.length === 0) {
-    console.warn('Repsonse with no choices', data);
-    return [];
+    console.warn('Response with no choices', data);
+    return;
   }
 
   const result = choices.find(c => c.message.content)?.message?.content;
   if (!result) {
     console.warn('Response with no result content', data);
-    return [];
-  }
-
-  const parseResponseContent = (str: string) => {
-    // Strip markdown container, if any
-    const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
-    return JSON.parse(match[1]).text;
+    return;
   }
 
   try {
-    const text = parseResponseContent(result);
-    if (!text)
+    // Strip markdown container, if any
+    const match = result.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, result];
+    return JSON.parse(match[1]);
+  } catch (error) {
+    console.error(data);
+    console.error(error);
+    console.error('Could not parse OpenAI response');
+    return;
+  }
+}
+
+export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
+  try {
+    const result = parseOpenAIResponse(data);
+    if (!result?.text)
       throw new Error('Could not parse response');
 
     const id = uuidv4();
@@ -123,7 +129,7 @@ export const parseOpenAICompatibleResponse = (data: any, _: PageTransform, regio
       bodies: [{
         annotation: id,
         purpose: 'commenting',
-        value: text
+        value: result.text
       } as AnnotationBody],
       target: {
         annotation: id,
@@ -146,4 +152,44 @@ export const parseOpenAICompatibleResponse = (data: any, _: PageTransform, regio
     console.error(error);
     throw error;
   }
+}
+
+export const translateOpenAICompatible = (
+  text: string,
+  apiKey: string,
+  baseURL: string,
+  model: string,
+  generator: Generator,
+  defaultHeaders?: HeadersLike
+): Promise<TranslationServiceResponse> => {
+  const client = new OpenAI({ 
+    apiKey, 
+    baseURL,
+    dangerouslyAllowBrowser: true,
+    defaultHeaders
+  });
+
+  return client.chat.completions.create({
+      model,
+      max_completion_tokens: 4000,
+      temperature: 0.1, // Low temperature for consistent JSON
+      response_format: {
+        type: 'json_object'
+      },
+      messages: [{
+        role: 'user',
+        content: [{
+          type: 'text',
+          text: 'Guess the language of this text and translate it text to English. Your response must be ONLY valid JSON in this format: { "translation": "all translated text goes here", "language": "the guessed language, as ISO code" }'
+        },{
+          type: 'text',
+          text
+        }]
+      }]
+    }).then((data: any) => { 
+      const result = parseOpenAIResponse(data);
+      if (!result) throw new Error('OpenAI response parse error');
+      const { translation, language } = result;
+      return { generator, translation, language } as TranslationServiceResponse;
+    });
 }

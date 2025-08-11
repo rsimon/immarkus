@@ -1,4 +1,4 @@
-import { FileWarning, ScanText, Trash2, TriangleAlert } from 'lucide-react';
+import { FileWarning, ScanText, Trash2 } from 'lucide-react';
 import { Button } from '@/ui/Button';
 
 interface ResultBadgeProps {
