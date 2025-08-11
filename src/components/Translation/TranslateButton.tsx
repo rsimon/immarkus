@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Languages } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
@@ -23,6 +23,17 @@ const getStoredParam = (connectorId: string, paramId: string) => {
   return localStorage.getItem(key);
 }
 
+const KEY = 'immarkus:annotate:translation-connector';
+
+const getInitialConnector = (available: ServiceConnectorConfig[]) => {
+  const persistedId = localStorage.getItem(KEY);
+  if (!persistedId) return available[0];
+
+  return available.find(c => c.id === persistedId) || available[0];
+}
+
+const setPersisted = (connectorId: string) => localStorage.setItem(KEY, connectorId);
+
 export const TranslateButton = (props: TranslateButtonProps) => {
 
   const availableConnectors = useMemo(() => connectors.filter(connector => {
@@ -44,7 +55,11 @@ export const TranslateButton = (props: TranslateButtonProps) => {
 
   const disabled = availableConnectors.length === 0;
 
-  const [selectedConnector, setSelectedConnector] = useState<ServiceConnectorConfig>(availableConnectors[0]);
+  const [selectedConnector, setSelectedConnector] = useState<ServiceConnectorConfig>(
+    getInitialConnector(availableConnectors));
+
+  // Persist changes to locaStorage
+  useEffect(() => setPersisted(selectedConnector.id), [selectedConnector]);
 
   const onChangeConnector = (connectorId: string) =>
     setSelectedConnector(availableConnectors.find(c => c.id === connectorId));
