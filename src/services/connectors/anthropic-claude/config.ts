@@ -5,15 +5,17 @@ export const config: ServiceConnectorConfig = {
   connector: 'anthropic-claude',
   displayName: 'Anthropic Claude',
   requiresKey: true,
+  parameters: [{
+    type: 'credential',
+    id: 'api-key',
+    displayName: 'Your API Key',
+    required: true
+  }],
   services: [{
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via Anthropic Claude',
-    requiresRegion: true,
-    parameters: [{
-      type: 'credential',
-      id: 'api-key',
-      displayName: 'Your API Key',
-      required: true
-    }]
+    requiresRegion: true
+  }, {
+    type: 'TRANSLATION'
   }]
 };

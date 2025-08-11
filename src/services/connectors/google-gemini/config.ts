@@ -5,6 +5,12 @@ export const config: ServiceConnectorConfig = {
   connector: 'google-gemini',
   displayName: 'Google Gemini',
   requiresKey: true,
+  parameters: [{
+    type: 'credential',
+    id: 'api-key',
+    displayName: 'Your API Key',
+    required: true
+  }],
   keyInstructions: `
 You need an API key to use Google Gemini. To get your own key:
 
@@ -13,12 +19,6 @@ You need an API key to use Google Gemini. To get your own key:
   services: [{
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via Google Gemini',
-    requiresRegion: true,
-    parameters: [{
-      type: 'credential',
-      id: 'api-key',
-      displayName: 'Your API Key',
-      required: true
-    }]
+    requiresRegion: true
   }]
 };

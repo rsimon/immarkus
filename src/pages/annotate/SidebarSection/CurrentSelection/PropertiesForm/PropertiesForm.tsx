@@ -21,6 +21,7 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Translation } from '@/components/Translation';
+import { ServiceConnectorConfig } from '@/services';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -170,7 +171,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
-  const [translatedNote, setTranslatedNote] = useState<string | null>(null);
+  const [translationService, setTranslationService] = useState<ServiceConnectorConfig | undefined>();
 
   const [noteFontSize, setNoteFontSize] = useState('base');
 
@@ -179,6 +180,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     const nextIdx = (currentIdx + 1) % FontSizes.length;
     return FontSizes[nextIdx];
   });
+
+  const onToggleTranslation = (connector: ServiceConnectorConfig) => {
+    if (translationService)
+      setTranslationService(undefined)
+    else 
+      setTranslationService(connector);
+  }
 
   return (
     <PropertyValidation
@@ -271,8 +279,10 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               onChange={value => onChangeFormValue(noteKey, value)} />
           )}
 
-          {translatedNote !== null && (
-            <Translation translation={translatedNote} />
+          {translationService && (
+            <Translation 
+              text={formState[noteKey]}
+              connector={translationService} />
           )}
           
           <PropertiesFormActions 
@@ -281,7 +291,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
-            onShowTranslation={setTranslatedNote} />
+            onToggleShowTranslation={onToggleTranslation} />
         </div>
 
         <Button 

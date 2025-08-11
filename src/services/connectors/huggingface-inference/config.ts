@@ -18,16 +18,17 @@ To get your own key:
 - Under **User Permissions**, check **Make calls to Inference Providers**
 - Click **Create Token**
 `.trim(),
+  parameters: [{
+    type: 'credential',
+    id: 'access-token',
+    displayName: 'HuggingFace Access Token',
+    required: true
+  }],
   services: [{
     type: 'TRANSCRIPTION',
     requiresRegion: true,
     description: 'Transcription via HuggingFace\'s Inference Providers',
     parameters: [{
-      type: 'credential',
-      id: 'access-token',
-      displayName: 'HuggingFace Access Token',
-      required: true
-    },{
       type: 'string',
       id: 'model',
       displayName: 'Model',

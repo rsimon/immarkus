@@ -15,15 +15,17 @@ To get your own key:
 - Click **Create a new secret key**
 - Make sure that you have a payment method configured in your profile's billing settings
 `.trim(),
+  parameters: [{
+    type: 'credential',
+    id: 'api-key',
+    displayName: 'Your API Key',
+    required: true
+  }],
   services: [{
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via OpenAI GPT',
-    requiresRegion: true,
-    parameters: [{
-      type: 'credential',
-      id: 'api-key',
-      displayName: 'Your API Key',
-      required: true
-    }]
+    requiresRegion: true
+  }, {
+    type: 'TRANSLATION'
   }]
 };

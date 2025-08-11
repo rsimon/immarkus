@@ -1,30 +1,53 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronDown, Languages } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { ServiceRegistry } from '@/services';
+import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
 import { cn } from '@/ui/utils';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from '@/ui/DropdownMenu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger
+} from '@/ui/Select';
 
 const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
 
 interface TranslateButtonProps {
 
-  onTranslated(translation: string | null): void;
+  onClickTranslate(connector: ServiceConnectorConfig): void;
 
+}
+
+const getStoredParam = (connectorId: string, paramId: string) => {
+  const key = `immarkus:services:${connectorId}:${paramId}`;
+  return localStorage.getItem(key);
 }
 
 export const TranslateButton = (props: TranslateButtonProps) => {
 
-  const disabled = useMemo(() => {
-    if (connectors.length === 0) return true;
+  const availableConnectors = useMemo(() => connectors.filter(connector => {
+    if (!connector.requiresKey) return true;
 
-    return false;
-  }, []);
+    const requiredParams = (connector.parameters || []).filter(param => param.required);
+    if (requiredParams.some(param => param.type !== 'credential'))
+      return false; // Currently, only persisted credential params are supported
+
+    // Should never happen because `requiresKey` implies a required arg!
+    if (requiredParams.length === 0) {
+      console.warn(`Possibly misconfigured transcription service: ${connector.id}`);
+      return false;
+    }
+
+    // We have required credential params - check if they are stored!
+    return requiredParams.every(param => getStoredParam(connector.id, param.id));
+  }), []);
+
+  const disabled = availableConnectors.length === 0;
+
+  const [selectedConnector, setSelectedConnector] = useState<ServiceConnectorConfig>(availableConnectors[0]);
+
+  const onChangeConnector = (connectorId: string) =>
+    setSelectedConnector(availableConnectors.find(c => c.id === connectorId));
 
   return (
     <Tooltip>
@@ -38,26 +61,34 @@ export const TranslateButton = (props: TranslateButtonProps) => {
             type="button"
             className={cn('p-0 pr-1 flex items-center justify-center bg-transparent hover:text-accent-foreground',
               disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
-            onClick={() => { alert('yay')}}>
+            onClick={() => props.onClickTranslate(selectedConnector)}>
             <Languages className="size-4" />
           </button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger disabled={disabled} asChild>
+          <Select 
+            value={selectedConnector?.id}
+            onValueChange={onChangeConnector}>
+            <SelectTrigger 
+              asChild
+              disabled={disabled}>
               <button
                 type="button"
-                className={cn('flex items-center justify-center p-0 bg-transparent border-none', 
-                  disabled ? 'cursor-not-allowed' : 'hover:text-accent-foreground cursor-pointer')}>
+                className={cn('flex items-center justify-center p-0 bg-transparent hover:text-accent-foreground outline-0', 
+                  disabled ? 'cursor-not-allowed' : 'cursor-pointer')}>
                 <ChevronDown className="size-3.5" />
               </button>
-            </DropdownMenuTrigger>
+            </SelectTrigger>
 
-            <DropdownMenuContent>
-              <DropdownMenuItem>Option 1</DropdownMenuItem>
-              <DropdownMenuItem>Option 2</DropdownMenuItem>
-              <DropdownMenuItem>Option 3</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <SelectContent>
+              {availableConnectors.map(connector => (
+                <SelectItem 
+                  key={connector.id} 
+                  value={connector.id}>
+                  {connector.displayName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </TooltipTrigger>
 

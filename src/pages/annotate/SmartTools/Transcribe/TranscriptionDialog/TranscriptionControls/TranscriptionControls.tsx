@@ -47,6 +47,11 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const { connectorConfig, serviceConfig } = useService(connectorId, 'TRANSCRIPTION');
 
+  const parameters = useMemo(() => ([
+    ...(connectorConfig.parameters || []),
+    ...(serviceConfig.parameters || [])
+  ]), [connectorConfig, serviceConfig]);
+
   const [showProcessingState, setShowProcessingState] = useState(false);
 
   useEffect(() => {
@@ -153,7 +158,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         <form 
           onSubmit={evt => evt.preventDefault()}
           className="space-y-4">
-          {(serviceConfig.parameters || []).map(param => renderParameterControl(param))}
+          {parameters.map(param => renderParameterControl(param))}
         </form>
       </div>
 

@@ -19,6 +19,9 @@ export interface ServiceConnectorConfig {
   /** Set to true if the service requires a user-provided API key **/
   requiresKey?: boolean;
 
+  /** Common configuration parameters for all services provided by this connector **/
+  parameters?: ServiceConfigParameter[];
+
   /** List of services provided through this connector */
   services: ServiceConfig[];
 
@@ -183,6 +186,8 @@ export interface Region {
 }
 
 export interface TranslationServiceResponse {
+  
+  generator: Generator;
 
   translation: string;
 
