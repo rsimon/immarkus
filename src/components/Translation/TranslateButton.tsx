@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Languages } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
+import { ServiceConnectorConfig, ServiceRegistry, TranslationServiceConfig } from '@/services';
 import { cn } from '@/ui/utils';
 import {
   Select,
@@ -10,13 +10,23 @@ import {
   SelectTrigger
 } from '@/ui/Select';
 
-const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
-
 interface TranslateButtonProps {
 
-  onClickTranslate(connector: ServiceConnectorConfig): void;
+  onClickTranslate(connector: ServiceConnectorConfig, service: TranslationServiceConfig): void;
 
 }
+
+interface ServiceSelectionConfig { 
+  
+  connector: ServiceConnectorConfig;
+  
+  service: TranslationServiceConfig;
+
+  index: number;
+
+};
+
+const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
 
 const getStoredParam = (connectorId: string, paramId: string) => {
   const key = `immarkus:services:${connectorId}:${paramId}`;
@@ -25,14 +35,32 @@ const getStoredParam = (connectorId: string, paramId: string) => {
 
 const KEY = 'immarkus:annotate:translation-connector';
 
-const getInitialConnector = (available: ServiceConnectorConfig[]) => {
-  const persistedId = localStorage.getItem(KEY);
-  if (!persistedId) return available[0];
+const getInitialService = (available: ServiceConnectorConfig[]): ServiceSelectionConfig => {
+  const getFirst = () => {
+    const connector = available[0];
+    const service = available[0].services.find(s => s.type === 'TRANSLATION');
+    return { connector, service, index: 0 };
+  }
 
-  return available.find(c => c.id === persistedId) || available[0];
+  const persistedId = localStorage.getItem(KEY);
+  if (!persistedId) return getFirst();
+
+  const [connectorId, index] = persistedId.split('::');
+
+  const connector = available.find(c => c.id === connectorId);
+  if (!connector) return getFirst();
+
+  try {
+    const parsed = parseInt(index);
+    const service = connector.services.filter(s => s.type === 'TRANSLATION')[parsed];
+    return service ? { connector, service, index: parsed } : getFirst();
+  } catch {
+    return getFirst();
+  }
 }
 
-const setPersisted = (connectorId: string) => localStorage.setItem(KEY, connectorId);
+const setPersisted = (connectorId: string, index: number) => 
+  localStorage.setItem(KEY, `${connectorId}::${index}`);
 
 export const TranslateButton = (props: TranslateButtonProps) => {
 
@@ -55,14 +83,31 @@ export const TranslateButton = (props: TranslateButtonProps) => {
 
   const disabled = availableConnectors.length === 0;
 
-  const [selectedConnector, setSelectedConnector] = useState<ServiceConnectorConfig>(
-    getInitialConnector(availableConnectors));
+  const [selectedService, setSelectedService] =
+    useState<ServiceSelectionConfig>(getInitialService(availableConnectors));
 
   // Persist changes to locaStorage
-  useEffect(() => setPersisted(selectedConnector.id), [selectedConnector]);
+  useEffect(() => {
+    const { connector, index } = selectedService;
+    setPersisted(connector.id, index);
+  }, [selectedService]);
 
-  const onChangeConnector = (connectorId: string) =>
-    setSelectedConnector(availableConnectors.find(c => c.id === connectorId));
+  const onChangService = (value: string) => {    
+    try {
+      const [connectorId, indexStr] = value.split('::');
+      const index = parseInt(indexStr);
+
+      const connector = availableConnectors.find(c => c.id === connectorId);
+      const service = connector.services.filter(s => s.type === 'TRANSLATION')[index];
+      setSelectedService({ connector, service, index });
+    } catch {
+      // Should never happen
+      console.error('Error parsing service ID', value);
+    }
+  }
+
+  const onClickTranslate = () =>
+    props.onClickTranslate(selectedService.connector, selectedService.service);
 
   return (
     <Tooltip>
@@ -76,13 +121,13 @@ export const TranslateButton = (props: TranslateButtonProps) => {
             type="button"
             className={cn('p-0 pr-1 flex items-center justify-center bg-transparent hover:text-accent-foreground',
               disabled ? 'cursor-not-allowed' : 'cursor-pointer')}
-            onClick={() => props.onClickTranslate(selectedConnector)}>
+            onClick={onClickTranslate}>
             <Languages className="size-4" />
           </button>
 
           <Select 
-            value={selectedConnector?.id}
-            onValueChange={onChangeConnector}>
+            value={`${selectedService.connector.id}::${selectedService.index}`}
+            onValueChange={onChangService}>
             <SelectTrigger 
               asChild
               disabled={disabled}>
@@ -96,12 +141,14 @@ export const TranslateButton = (props: TranslateButtonProps) => {
 
             <SelectContent>
               {availableConnectors.map(connector => (
-                <SelectItem 
-                  key={connector.id} 
-                  value={connector.id}>
-                  {connector.displayName}
-                </SelectItem>
-              ))}
+                connector.services.filter(s => s.type === 'TRANSLATION')).map((service, idx) => (
+                  <SelectItem 
+                    key={`${connector.id}::${idx}`} 
+                    value={`${connector.id}::${idx}`}>
+                    {service.displayName || connector.displayName}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>

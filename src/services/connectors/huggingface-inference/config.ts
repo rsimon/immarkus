@@ -41,5 +41,17 @@ To get your own key:
         ['google/gemma-3-27b-it', 'Gemma-3-27b-it']
       ]
     }]
+  },{
+    type: 'TRANSLATION',
+    displayName: 'HuggingFace (Qwen)',
+    arguments: {
+      model: 'Qwen/Qwen2.5-VL-7B-Instruct'
+    }
+  },{
+    type: 'TRANSLATION',
+    displayName: 'HuggingFace (Llama Maverick)',
+    arguments: {
+      model: 'meta-llama/Llama-4-Maverick-17B-128E-Instruct'
+    }
   }]
 };

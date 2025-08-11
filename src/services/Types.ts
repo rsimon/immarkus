@@ -47,6 +47,10 @@ export interface TranslationServiceConfig {
 
   type: 'TRANSLATION';
 
+  displayName?: string;
+
+  arguments?: Record<string, any>;
+  
 }
 
 export type ServiceConfig = TranscriptionServiceConfig | TranslationServiceConfig;

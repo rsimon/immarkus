@@ -21,7 +21,7 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 import { Translation } from '@/components/Translation';
-import { ServiceConnectorConfig } from '@/services';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -171,7 +171,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
-  const [translationService, setTranslationService] = useState<ServiceConnectorConfig | undefined>();
+  const [translationService, setTranslationService] = 
+    useState<{ connector: ServiceConnectorConfig, service: TranslationServiceConfig } | undefined>();
 
   const [noteFontSize, setNoteFontSize] = useState('base');
 
@@ -181,13 +182,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     return FontSizes[nextIdx];
   });
 
-  const onToggleTranslation = (connector: ServiceConnectorConfig) => {
-    if (translationService)
-      setTranslationService(undefined)
-    else 
-      setTranslationService(connector);
-  }
-
+  const onTranslate = (connector: ServiceConnectorConfig, service: TranslationServiceConfig) =>
+    setTranslationService({ connector, service });
+    
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -282,7 +279,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           {translationService && (
             <Translation 
               text={formState[noteKey]}
-              connector={translationService} 
+              connector={translationService.connector} 
+              service={translationService.service}
               onClose={() => setTranslationService(undefined)} />
           )}
           
@@ -292,7 +290,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
-            onToggleShowTranslation={onToggleTranslation} />
+            onTranslate={onTranslate} />
         </div>
 
         <Button 

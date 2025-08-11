@@ -2,7 +2,7 @@ import { ALargeSmall, Cuboid, NotebookPen } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { TranslateButton } from '@/components/Translation';
-import { ServiceConnectorConfig } from '@/services';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 interface PropertiesFormActionsProps {
 
@@ -16,7 +16,7 @@ interface PropertiesFormActionsProps {
 
   onClearNote(): void;
 
-  onToggleShowTranslation(connector: ServiceConnectorConfig): void;
+  onTranslate(connector: ServiceConnectorConfig, service: TranslationServiceConfig): void;
   
 }
 
@@ -52,7 +52,7 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
           </Tooltip>
 
           <TranslateButton
-            onClickTranslate={props.onToggleShowTranslation} />
+            onClickTranslate={props.onTranslate} />
 
           <Tooltip>
             <TooltipTrigger asChild>

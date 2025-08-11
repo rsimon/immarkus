@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { ServiceConnectorConfig, TranslationServiceResponse, useService } from '@/services';
 import { Separator } from '@/ui/Separator';
 import { deobfuscate } from '@/utils/obfuscateString';
 import { Button } from '@/ui/Button';
 import { Ban, X } from 'lucide-react';
 import { Spinner } from '../Spinner';
+import { 
+  ServiceConnectorConfig, 
+  TranslationServiceConfig, 
+  TranslationServiceResponse, 
+  useService 
+} from '@/services';
 
 interface TranslationProps {
 
@@ -12,15 +17,15 @@ interface TranslationProps {
 
   connector: ServiceConnectorConfig;
 
-  onClose();
+  service: TranslationServiceConfig;
+
+  onClose(): void;
 
 }
 
 export const Translation = (props: TranslationProps) => {
 
-  const { connector: connectorConfig } = props;
-
-  const { serviceConfig, connector } = useService(connectorConfig.id, 'TRANSLATION');
+  const { connector, connectorConfig, serviceConfig } = useService(props.connector.id, props.service);
 
   const [busy, setBusy] = useState(false);
 
@@ -37,9 +42,15 @@ export const Translation = (props: TranslationProps) => {
       return [param.id, value];
     }).filter(t => t[1]);
 
+    const args = {
+      ...(serviceConfig.arguments || {}),
+      ...Object.fromEntries(storedParams)
+    };
+
+    setError(undefined);
     setBusy(true);
 
-    connector.translate(props.text, Object.fromEntries(storedParams))
+    connector.translate(props.text, args)
       .then(response => {
         setBusy(false);
         setResponse(response);

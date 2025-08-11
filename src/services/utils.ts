@@ -91,7 +91,7 @@ export const transcribeOpenAICompatible = (
   }
 }
 
-const parseOpenAIResponse = (data: any) => {
+export const parseOpenAIResponse = (data: any) => {
   const choices = (data.choices || []);
   if (choices.length === 0) {
     console.warn('Response with no choices', data);
