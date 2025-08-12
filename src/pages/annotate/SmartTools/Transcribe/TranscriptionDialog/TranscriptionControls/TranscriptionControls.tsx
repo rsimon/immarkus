@@ -3,7 +3,7 @@ import { CircleCheck, KeyRound, ScanText, SquareDashedMousePointer } from 'lucid
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, useService, Region } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
@@ -45,7 +45,11 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const { connectorId, serviceOptions } = props.options;
 
-  const { connectorConfig, serviceConfig } = useService(connectorId, 'TRANSCRIPTION');
+  const { connectorConfig, serviceConfig } = useMemo(() => {
+    const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
+    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION');
+    return { connectorConfig, serviceConfig };
+  }, [connectorId]);
 
   const parameters = useMemo(() => ([
     ...(connectorConfig?.parameters || []),
@@ -109,7 +113,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     ) : null;
   }
 
-  return (connectorConfig && serviceConfig) ? (
+  return (
     <div className="pr-2 py-4 min-h-full flex flex-col">
       <div className="space-y-8 flex-1">
         <fieldset className="space-y-2">
@@ -214,6 +218,6 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         </Button>
       </div>
     </div>
-  ) : null;
+  )
 
 }
