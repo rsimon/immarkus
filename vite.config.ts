@@ -64,6 +64,16 @@ export default defineConfig({
       external: (source, _, __) => {
         // Suppress warning about missing asset (handled by vite-static-copy)
         return source.includes('/assets/crosshair.svg');
+      },
+      onwarn: (warning, warn) => {
+        if (
+          warning.code === 'PLUGIN_WARNING' && 
+          warning.plugin === 'vite:resolve' &&
+          warning.message.includes('has been externalized for browser compatibility')) {
+          return;
+        }
+
+        warn(warning);
       }
     }
   }
