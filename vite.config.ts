@@ -22,7 +22,7 @@ export default defineConfig({
         src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
         dest: 'assets'
       }]
-    }),
+    })
   ],
   server: {
     proxy: {
@@ -60,6 +60,10 @@ export default defineConfig({
           'dep-sam': ['@annotorious/plugin-segment-anything'],
           'dep-opencv': ['@annotorious/plugin-magnetic-outline']
         }
+      },
+      external: (source, _, __) => {
+        // Suppress warning about missing asset (handled by vite-static-copy)
+        return source.includes('/assets/crosshair.svg');
       }
     }
   }
