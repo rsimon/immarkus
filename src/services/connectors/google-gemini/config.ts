@@ -20,5 +20,7 @@ You need an API key to use Google Gemini. To get your own key:
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via Google Gemini',
     requiresRegion: true
+  },{
+    type: 'TRANSLATION'
   }]
 };
