@@ -15,5 +15,7 @@ export const config: ServiceConnectorConfig = {
     type: 'TRANSCRIPTION',
     description: 'Doubao 1.5 Vision Pro via Volcano Engine',
     requiresRegion: true
+  }, {
+    type: 'TRANSLATION'
   }]
 };
