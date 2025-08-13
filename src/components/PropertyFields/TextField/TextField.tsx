@@ -1,4 +1,5 @@
 import TextareaAutosize from 'react-textarea-autosize';
+import { TranslateButton } from '@/components/Translation';
 import { TextPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
@@ -39,14 +40,21 @@ export const TextField = (props: TextFieldProps) => {
       value={value}
       onChange={onChange}
       render={(value, onChange) => definition.size === 'L' ? (
-        <TextareaAutosize 
-          id={id} 
-          cacheMeasurements
-          minRows={4}
-          maxRows={20}
-          className={cn('shadow-xs w-full outline-black rounded-md bg-muted border border-input p-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50', props.className)} 
-          value={props.onChange ? value || '' : value} 
-          onChange={evt => props.onChange && onChange(evt.target.value)} />
+        <div className="w-full">
+          <TextareaAutosize 
+            id={id} 
+            cacheMeasurements
+            minRows={4}
+            maxRows={20}
+            className={cn('shadow-xs w-full outline-black rounded-md bg-muted border border-input p-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50', props.className)} 
+            value={props.onChange ? value || '' : value} 
+            onChange={evt => props.onChange && onChange(evt.target.value)} />
+          
+          <div className="flex justify-end mt-0.5 text-muted-foreground">
+            <TranslateButton
+              onClickTranslate={() => {/**/}} />
+          </div>
+        </div>
       ) : (
         <Input 
           id={id} 
