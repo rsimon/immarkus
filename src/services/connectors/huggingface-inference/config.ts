@@ -43,15 +43,27 @@ To get your own key:
     }]
   },{
     type: 'TRANSLATION',
-    displayName: 'HuggingFace (Qwen)',
+    displayName: 'HuggingFace (Qwen 7B)',
     arguments: {
       model: 'Qwen/Qwen2.5-VL-7B-Instruct'
+    }
+  },{
+    type: 'TRANSLATION',
+    displayName: 'HuggingFace (Qwen 32B)',
+    arguments: {
+      model: 'Qwen/Qwen2.5-VL-32B-Instruct'
     }
   },{
     type: 'TRANSLATION',
     displayName: 'HuggingFace (Llama Maverick)',
     arguments: {
       model: 'meta-llama/Llama-4-Maverick-17B-128E-Instruct'
+    }
+  },{
+    type: 'TRANSLATION',
+    displayName: 'HuggingFace (Google Gemma)',
+    arguments: {
+      model: 'google/gemma-3-27b-it'
     }
   }]
 };
