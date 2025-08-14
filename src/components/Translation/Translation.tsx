@@ -76,21 +76,19 @@ export const Translation = (props: TranslationProps) => {
         </div>
       ) : response?.translation ? (
         <div className="px-1 py-1 text-muted-foreground/80 text-xs leading-relaxed">
-          <div className="flex justify-end -mr-2 -space-x-1">
+          <div className="flex justify-end pt-4 pb-2 gap-1.5">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <button
                   type="button"
-                  className="rounded-full p-1 size-8"
+                  className="hover:text-primary"
                   onClick={onCopyToClipboard}>
                   {copied ? (
                     <Check className="size-3.5" />
                   ) : (
                     <Copy className="size-3.5" />
                   )}
-                </Button>
+                </button>
               </TooltipTrigger>
 
               <TooltipContent>
@@ -100,14 +98,12 @@ export const Translation = (props: TranslationProps) => {
 
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <button
                   type="button"
-                  className="rounded-full p-1 size-8"
+                  className="hover:text-primary"
                   onClick={props.onClose}>
                   <X className="size-3.5" />
-                </Button>
+                </button>
               </TooltipTrigger>
 
               <TooltipContent>
