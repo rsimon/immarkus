@@ -72,6 +72,7 @@ export function useService(
   connector?: ServiceConnector;
 } {
   const type = typeof arg === 'string' ? arg : arg.type;
+
   const [state, setState] = useState<UseServiceState>(EMPTY_STATE);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ export function useService(
 
     ServiceRegistry.getConnector(connectorId, type).then(connector =>
       setState({ connectorConfig, serviceConfig, connector }));
-  }, [connectorId, type, arg]);
+  }, [connectorId, type, JSON.stringify(arg)]);
 
   return state;
 }

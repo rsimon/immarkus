@@ -38,7 +38,7 @@ export const useCopyToClipboard = (
     setStatus('busy');
 
     getImageSnippet(image, annotation, true, 'png', applyMask).then((snippet: FileImageSnippet) => {
-      const blob = new Blob([snippet.data], { type: 'image/png' });
+      const blob = new Blob([snippet.data as BlobPart], { type: 'image/png' });
       
       const clipboardItem = new ClipboardItem({
         'image/png': blob

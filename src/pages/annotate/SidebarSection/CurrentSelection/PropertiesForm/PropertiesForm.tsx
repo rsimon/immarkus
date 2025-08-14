@@ -44,9 +44,6 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const model = store.getDataModel();
 
-  // We're using a random key, so the component resets on save
-  const [formKey, setFormKey] = useState(Math.random());
-
   // Annotation bodies with purpose 'classifying' that have schemas
   const schemaBodies = useMemo(() => (annotation.bodies as unknown as W3CAnnotationBody[])
     .filter(b => b.purpose === 'classifying')
@@ -108,7 +105,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   ), []);
 
   const hasChanges = !dequal(formState, initialValues) || changedRelationships.length > 0;
-
+    
   const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
@@ -152,8 +149,6 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       // Store changed relationships, if any
       changedRelationships.forEach(meta => store.upsertRelation(undefined, meta));
       setChangedRelationships([]);
-
-      setFormKey(Math.random());
     } else {
       setShowValidationErrors(true);
     }
@@ -191,7 +186,6 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
       onChange={setIsValid}>
 
       <form 
-        key={`${formKey}`}
         className="grow pt-1 flex flex-col" 
         onSubmit={onSubmit}>
         <div className="grow">

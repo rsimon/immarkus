@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import { TranslationServiceResponse, useService } from '@/services';
 import { Separator } from '@/ui/Separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { deobfuscate } from '@/utils/obfuscateString';
 import { Button } from '@/ui/Button';
-import { Ban, X } from 'lucide-react';
+import { Ban, Check, Copy, X } from 'lucide-react';
 import { Spinner } from '../Spinner';
 import { TranslationArgs } from './TranslationArgs';
-import { TranslationServiceResponse, useService } from '@/services';
 
 interface TranslationProps {
 
@@ -19,11 +20,13 @@ export const Translation = (props: TranslationProps) => {
 
   const { connector, connectorConfig, serviceConfig } = useService(props.args.connector.id, props.args.service);
 
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(true);
 
   const [response, setResponse] = useState<TranslationServiceResponse | undefined>();
 
   const [error, setError] = useState<string | undefined>();
+
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!serviceConfig || !connector) return;
@@ -54,6 +57,13 @@ export const Translation = (props: TranslationProps) => {
       });
   }, [connectorConfig, serviceConfig, connector, props.args.text]);
 
+  const onCopyToClipboard = () => {
+    navigator.clipboard.writeText(response.translation).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 750);
+    });
+  }
+
   return (
     <div>
       {busy ? (
@@ -65,16 +75,48 @@ export const Translation = (props: TranslationProps) => {
           <Ban className="size-3.5" /> {error}
         </div>
       ) : response?.translation ? (
-        <div className="px-2 py-1 text-muted-foreground/80 text-xs leading-relaxed">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="float-right rounded-full p-1 size-8 -mr-2 ml-2 mb-2"
-            onClick={props.onClose}>
-            <X className="size-4" />
-          </Button>
+        <div className="px-1 py-1 text-muted-foreground/80 text-xs leading-relaxed">
+          <div className="flex justify-end -mr-2 -space-x-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  className="rounded-full p-1 size-8"
+                  onClick={onCopyToClipboard}>
+                  {copied ? (
+                    <Check className="size-3.5" />
+                  ) : (
+                    <Copy className="size-3.5" />
+                  )}
+                </Button>
+              </TooltipTrigger>
 
-          <div className="pt-1.5 pb-2">
+              <TooltipContent>
+                Copy to clipboard
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  className="rounded-full p-1 size-8"
+                  onClick={props.onClose}>
+                  <X className="size-3.5" />
+                </Button>
+              </TooltipTrigger>
+
+              <TooltipContent>
+                Hide translation
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          <div className="pb-2 whitespace-pre-wrap">
             {response.translation}
           </div>
         </div>

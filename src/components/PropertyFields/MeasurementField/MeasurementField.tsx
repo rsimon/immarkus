@@ -65,7 +65,7 @@ export const MeasurementField = (props: MeasurementFieldProps) => {
       else 
         props.onChange(validMeasurements[0]);
     } else {
-      props.onChange();
+      props.onChange(values.map(t => ({ value: t[0] as unknown as number, unit: t[1] })));
     }
   }, [values, isValid]);
 
