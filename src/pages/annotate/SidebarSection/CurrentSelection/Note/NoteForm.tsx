@@ -1,12 +1,13 @@
 import { ScanText } from 'lucide-react';
 import { User } from '@annotorious/react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { FontSize } from '@/components/FontSize';
 
 interface NoteProps {
 
   autoFocus?: boolean;
 
-  fontSize: string;
+  fontSize: FontSize;
 
   id: string;
 

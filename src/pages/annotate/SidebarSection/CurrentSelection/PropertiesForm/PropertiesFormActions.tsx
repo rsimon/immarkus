@@ -1,5 +1,6 @@
-import { ALargeSmall, Cuboid, NotebookPen } from 'lucide-react';
+import { Cuboid, NotebookPen } from 'lucide-react';
 import { Button } from '@/ui/Button';
+import { FontSize, FontSizeButton } from '@/components/FontSize';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { TranslateButton } from '@/components/Translation';
 import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
@@ -12,7 +13,7 @@ interface PropertiesFormActionsProps {
 
   onAddNote(): void;
 
-  onChangeFontSize(): void;
+  onChangeFontSize(size: FontSize): void;
 
   onClearNote(): void;
 
@@ -34,22 +35,8 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
 
       {props.hasNote ? (
         <div className="flex items-center">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                type="button"
-                className="h-6 w-auto py-3.5 px-2 rounded-full"
-                onClick={props.onChangeFontSize}>
-                <ALargeSmall className="size-4.5" />
-              </Button>
-            </TooltipTrigger>
-
-            <TooltipContent>
-              Change font size
-            </TooltipContent>
-          </Tooltip>
+          <FontSizeButton 
+            onChangeFontSize={props.onChangeFontSize} />
 
           <TranslateButton
             onClickTranslate={props.onTranslate} />

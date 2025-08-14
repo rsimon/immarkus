@@ -4,6 +4,7 @@ import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
+import { FontSize } from '@/components/FontSize';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Translation, TranslationArgs } from '@/components/Translation';
@@ -31,8 +32,6 @@ interface PropertiesFormProps {
   onAddTag(): void;
 
 }
-
-const FontSizes = ['sm', 'base', 'lg', 'xl']; 
 
 export const PropertiesForm = (props: PropertiesFormProps) => {
 
@@ -167,18 +166,12 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
 
-  const [noteFontSize, setNoteFontSize] = useState('base');
+  const [noteFontsize, setNoteFontSize] = useState<FontSize>('base');
 
   const onChangeNote = (value: string) => {
     setTranslationArgs(undefined);
     onChangeFormValue(noteKey, value)
   }
-
-  const onChangeNoteFontSize = () => setNoteFontSize(current => {
-    const currentIdx = FontSizes.indexOf(current);
-    const nextIdx = (currentIdx + 1) % FontSizes.length;
-    return FontSizes[nextIdx];
-  });
     
   return (
     <PropertyValidation
@@ -263,7 +256,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
           {(hasNote || schemaBodies.length === 0) && (
             <Note
               autoFocus={schemaBodies.length === 0}
-              fontSize={noteFontSize}
+              fontSize={noteFontsize}
               id={noteKey}
               creator={note?.creator}
               value={formState[noteKey]}
@@ -280,7 +273,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             hasNote={hasNote}
             onAddTag={props.onAddTag} 
             onAddNote={() => onChangeFormValue(noteKey, '')} 
-            onChangeFontSize={onChangeNoteFontSize}
+            onChangeFontSize={setNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
             onTranslate={(connector, service) => setTranslationArgs({ connector, service, text: formState[noteKey] })} />
         </div>
