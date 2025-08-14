@@ -36,10 +36,15 @@ export const LanguagesTab = (props: LanguagesTabProps) => {
             <CommandItem
               key={iso}
               value={iso}
-              className="cursor-pointer"
+              className="cursor-pointer text-xs py-1.5"
               onSelect={props.onChangeLanguage}>
+              {iso === props.language ? (
+                <Check className="size-4 mr-2"/>
+              ) : (
+                <div className="size-4 mr-2" />
+              )}
+              
               {label.of(iso)}
-              <Check className={cn('ml-auto', iso === props.language ? 'opacity-100' : 'opacity-0')} />
             </CommandItem>
           ))}
         </CommandGroup>

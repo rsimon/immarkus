@@ -44,16 +44,16 @@ export const ServicesTab = (props: ServicesTabProps) => {
         connector.services.filter(s => s.type === 'TRANSLATION')).map((service, idx) => (
         <div 
           key={`${connector.id}-${idx}`} 
-          className="flex gap-2 p-2 items-center hover:bg-accent rounded-sm font-sm">
+          className="flex items-center hover:bg-accent px-2 rounded-sm">
           {isSelected(connector, idx) ? (
-            <Check className="w-4 h-4 text-primary" />
+            <Check className="size-4" />
           ) : (
-            <div className="size-4" />
+            <div className="w-4 h-auto" />
           )}
 
           <Label
             htmlFor={`${connector.id}::${idx}`}
-            className="rounded-md cursor-pointer transition-colors font-normal">
+            className="rounded-md cursor-pointer transition-colors p-2 w-full font-normal text-xs">
             <RadioGroupItem
               value={`${connector.id}::${idx}`}
               id={`${connector.id}::${idx}`}
