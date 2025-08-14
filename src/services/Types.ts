@@ -132,7 +132,7 @@ export interface TranscriptionServiceConnector {
 
 export interface TranslationServiceConnector {
 
-  translate(text: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
+  translate(text: string, targetLanguage?: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
 
 }
 

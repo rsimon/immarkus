@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { FontSize, FontSizeButton } from '@/components/FontSize';
-import { TranslateButton, Translation, TranslationArgs } from '@/components/Translation';
+import { TranslateButton, Translation, TranslationArgs, TranslationSettings } from '@/components/Translation';
 import { TextPropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
@@ -41,6 +41,13 @@ export const TextField = (props: TextFieldProps) => {
     }
   }
 
+  const onTranslate = (settings: TranslationSettings, value: string) => setTranslationArgs({ 
+    connector: settings.service.connector,
+    service: settings.service.service, 
+    text: value,
+    language: settings.language
+  });
+
   return (
     <BasePropertyField
       id={id}
@@ -75,7 +82,7 @@ export const TextField = (props: TextFieldProps) => {
 
             <TranslateButton
               disabled={!props.onChange || !value}
-              onClickTranslate={(connector, service) => setTranslationArgs({ connector, service, text: value })} />
+              onClickTranslate={settings => onTranslate(settings, value)} />
           </div>
         </div>
       ) : (

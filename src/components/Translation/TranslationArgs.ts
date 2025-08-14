@@ -8,4 +8,6 @@ export interface TranslationArgs {
 
   text: string;
 
+  language?: string;
+
 }

@@ -1,6 +1,6 @@
 import { translateOpenAICompatible } from '@/services/utils';
 
-export const translate = (text: string, options?: Record<string, any>) => {
+export const translate = (text: string, lang?: string, options?: Record<string, any>) => {
   const key = options['api-key'];
 
   // Should never happen
@@ -16,7 +16,8 @@ export const translate = (text: string, options?: Record<string, any>) => {
       id: 'doubao-1.5-vision-pro-250328',
       name: 'VolcEngine (doubao-1.5-vision-pro-250328)',
       homepage: 'https://www.volcengine.com/'
-    }
+    },
+    lang
   );
 
 }

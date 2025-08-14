@@ -1,6 +1,6 @@
 import { translateOpenAICompatible } from '@/services/utils';
 
-export const translate = (text: string, options?: Record<string, any>) => {
+export const translate = (text: string, lang?: string, options?: Record<string, any>) => {
   const apiKey = options['api-key'];
 
   // Should never happen
@@ -16,7 +16,8 @@ export const translate = (text: string, options?: Record<string, any>) => {
       id: 'gpt-4.1',
       name: 'OpenAI GPT (gpt-4.1)',
       homepage: 'https://openai.com/index/openai-api/'
-    }
+    },
+    lang
   );
 
 }
