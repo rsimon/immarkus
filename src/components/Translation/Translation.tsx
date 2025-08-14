@@ -4,20 +4,12 @@ import { deobfuscate } from '@/utils/obfuscateString';
 import { Button } from '@/ui/Button';
 import { Ban, X } from 'lucide-react';
 import { Spinner } from '../Spinner';
-import { 
-  ServiceConnectorConfig, 
-  TranslationServiceConfig, 
-  TranslationServiceResponse, 
-  useService 
-} from '@/services';
+import { TranslationArgs } from './TranslationArgs';
+import { TranslationServiceResponse, useService } from '@/services';
 
 interface TranslationProps {
 
-  text: string;
-
-  connector: ServiceConnectorConfig;
-
-  service: TranslationServiceConfig;
+  args: TranslationArgs;
 
   onClose(): void;
 
@@ -25,7 +17,7 @@ interface TranslationProps {
 
 export const Translation = (props: TranslationProps) => {
 
-  const { connector, connectorConfig, serviceConfig } = useService(props.connector.id, props.service);
+  const { connector, connectorConfig, serviceConfig } = useService(props.args.connector.id, props.args.service);
 
   const [busy, setBusy] = useState(false);
 
@@ -50,7 +42,7 @@ export const Translation = (props: TranslationProps) => {
     setError(undefined);
     setBusy(true);
 
-    connector.translate(props.text, args)
+    connector.translate(props.args.text, args)
       .then(response => {
         setBusy(false);
         setResponse(response);
@@ -60,7 +52,7 @@ export const Translation = (props: TranslationProps) => {
         setBusy(false);
         setError('Translation service error');
       });
-  }, [connectorConfig, serviceConfig, connector]);
+  }, [connectorConfig, serviceConfig, connector, props.args.text]);
 
   return (
     <div>

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { TranslateButton, Translation } from '@/components/Translation';
+import { TranslateButton, Translation, TranslationArgs } from '@/components/Translation';
 import { TextPropertyDefinition } from '@/model';
-import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
@@ -22,30 +21,22 @@ interface TextFieldProps {
 
 }
 
-interface TranslationArgs {
-
-  connector: ServiceConnectorConfig;
-
-  service: TranslationServiceConfig;
-
-  text: string;
-
-}
-
 export const TextField = (props: TextFieldProps) => {
 
   const { id, definition } = props;
 
   const value = props.onChange ? props.value || '' : props.value;
 
+  const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
+
   const onChange = (value: string | string[]) => {
     if (props.onChange) {
+      setTranslationArgs(undefined);
+
       const normalized = removeEmpty(value);
       props.onChange(normalized);
     }
   }
-
-  const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
 
   return (
     <BasePropertyField
@@ -66,9 +57,7 @@ export const TextField = (props: TextFieldProps) => {
 
           {translationArgs && (
             <Translation 
-              text={translationArgs.text}
-              connector={translationArgs.connector} 
-              service={translationArgs.service}
+              args={translationArgs}
               onClose={() => setTranslationArgs(undefined)} />
           )}
           
