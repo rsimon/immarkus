@@ -4,7 +4,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
 import { cn } from '@/ui/utils';
 import { TranslateSettingsPopover } from './TranslateSettingsPopover';
-import { TranslationServiceSettings, TranslationSettings } from './Types';
+import { TranslationSettings } from './Types';
+import { usePersistentState } from '@/utils/usePersistentState';
 
 interface TranslateButtonProps {
 
@@ -14,18 +15,19 @@ interface TranslateButtonProps {
 
 }
 
-const KEY = 'immarkus:annotate:translation-connector';
+const KEY_SERVICE = 'immarkus:annotate:translation-service';
+const KEY_LANGUAGE = 'immarkus:annotate:translation-language'
 
 const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
 
-const getInitialService = (available: ServiceConnectorConfig[]): TranslationServiceSettings => {
+const getInitialService = (available: ServiceConnectorConfig[]): TranslationSettings => {
   const getFirst = () => {
     const connector = available[0];
     const service = available[0].services.find(s => s.type === 'TRANSLATION');
     return { connector, service, index: 0 };
   }
 
-  const persistedId = localStorage.getItem(KEY);
+  const persistedId = localStorage.getItem(KEY_SERVICE);
   if (!persistedId) return getFirst();
 
   const [connectorId, index] = persistedId.split('::');
@@ -47,8 +49,8 @@ const getStoredParam = (connectorId: string, paramId: string) => {
   return localStorage.getItem(key);
 }
 
-const setPersisted = (connectorId: string, index: number) => 
-  localStorage.setItem(KEY, `${connectorId}::${index}`);
+const setPersistedService = (connectorId: string, index: number) => 
+  localStorage.setItem(KEY_SERVICE, `${connectorId}::${index}`);
 
 export const TranslateButton = (props: TranslateButtonProps) => {
 
@@ -72,18 +74,18 @@ export const TranslateButton = (props: TranslateButtonProps) => {
   const disabled = props.disabled || availableConnectors.length === 0;
 
   const [selectedService, setSelectedService] =
-    useState<TranslationServiceSettings>(getInitialService(availableConnectors));
+    useState<TranslationSettings>(getInitialService(availableConnectors));
 
-  const [targetLanguage, setTargetLanguage] = useState('en');
+  const [targetLanguage, setTargetLanguage] = usePersistentState(KEY_LANGUAGE, 'en');
 
   // Persist changes to locaStorage
   useEffect(() => {
     const { connector, index } = selectedService;
-    setPersisted(connector.id, index);
+    setPersistedService(connector.id, index);
   }, [selectedService]);
 
   const onClickTranslate = () => props.onClickTranslate({
-    service: selectedService,
+    ...selectedService,
     language: targetLanguage
   });
 

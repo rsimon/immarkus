@@ -42,8 +42,8 @@ export const TextField = (props: TextFieldProps) => {
   }
 
   const onTranslate = (settings: TranslationSettings, value: string) => setTranslationArgs({ 
-    connector: settings.service.connector,
-    service: settings.service.service, 
+    connector: settings.connector,
+    service: settings.service, 
     text: value,
     language: settings.language
   });

@@ -2,15 +2,15 @@ import { Check } from 'lucide-react';
 import { Label } from '@/ui/Label';
 import { RadioGroup, RadioGroupItem } from '@/ui/RadioGroup';
 import { ServiceConnectorConfig } from '@/services';
-import { TranslationServiceSettings } from '../Types';
+import { TranslationSettings } from '../Types';
 
 interface ServicesTabProps {
 
   availableConnectors: ServiceConnectorConfig[];
 
-  selected: TranslationServiceSettings;
+  selected: TranslationSettings;
 
-  onChangeSelected(service: TranslationServiceSettings): void;
+  onChangeSelected(service: TranslationSettings): void;
 
 }
 

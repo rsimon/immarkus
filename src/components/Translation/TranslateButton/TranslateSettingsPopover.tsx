@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
 import { cn } from '@/ui/utils';
 import { ServicesTab } from './services';
-import { TranslationServiceSettings } from './Types';
+import { TranslationSettings } from './Types';
 import { LanguagesTab } from './languages';
 
 interface TranslateSettingsPopoverProps {
@@ -18,9 +18,9 @@ interface TranslateSettingsPopoverProps {
 
   availableConnectors: ServiceConnectorConfig[];
   
-  selectedService: TranslationServiceSettings;
+  selectedService: TranslationSettings;
   
-  onChangeService(service: TranslationServiceSettings): void;
+  onChangeService(service: TranslationSettings): void;
 
 }
 

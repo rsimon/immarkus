@@ -174,8 +174,8 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
   }
 
   const onTranslateNotes = (settings: TranslationSettings) => setTranslationArgs({ 
-    connector: settings.service.connector,
-    service: settings.service.service,
+    connector: settings.connector,
+    service: settings.service,
     text: formState[noteKey],
     language: settings.language
   });
