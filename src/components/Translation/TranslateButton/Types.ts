@@ -1,12 +1,12 @@
 import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
-export interface TranslationArgs {
+export interface TranslationSettings { 
 
   connector: ServiceConnectorConfig;
-
+  
   service: TranslationServiceConfig;
 
-  text: string;
+  index: number;
 
   language?: string;
 

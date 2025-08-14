@@ -154,12 +154,17 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
   }
 }
 
+const label = new Intl.DisplayNames(['en'], { type: 'language' });
+
+export const getLanguageName = (iso: string) => label.of(iso);
+
 export const translateOpenAICompatible = (
   text: string,
   apiKey: string,
   baseURL: string,
   model: string,
   generator: Generator,
+  language?: string,
   defaultHeaders?: HeadersLike
 ): Promise<TranslationServiceResponse> => {
   const client = new OpenAI({ 
@@ -168,6 +173,8 @@ export const translateOpenAICompatible = (
     dangerouslyAllowBrowser: true,
     defaultHeaders
   });
+
+  const lang = language ? getLanguageName(language) : 'English';
 
   return client.chat.completions.create({
       model,
@@ -180,7 +187,7 @@ export const translateOpenAICompatible = (
         role: 'user',
         content: [{
           type: 'text',
-          text: 'Guess the language of this text and translate it text to English. Your response must be ONLY valid JSON in this format: { "translation": "all translated text goes here", "language": "the guessed language, as ISO code" }'
+          text: `Guess the language of this text and translate it text to ${language}. Your response must be ONLY valid JSON in this format: { "translation": "all translated text goes here", "language": "the guessed language, as ISO code" }`
         },{
           type: 'text',
           text

@@ -1,0 +1,4 @@
+.language-filter div[cmdk-input-wrapper] {
+  /** Overrides a cmdk Tailwind style that's unaccessible otherwise... **/
+  border: none !important;
+}

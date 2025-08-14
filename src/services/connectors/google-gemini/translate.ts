@@ -1,4 +1,5 @@
 import { TranslationServiceResponse } from '@/services/Types';
+import { getLanguageName } from '@/services/utils';
 import { GoogleGenAI, Type } from '@google/genai';
 
 interface GeminiCandidate {
@@ -15,7 +16,7 @@ const parseTranslationResponse = (data: any) =>
       JSON.parse(part.text))];
   }, []);
 
-export const translate = (text: string, options?: Record<string, any>): Promise<TranslationServiceResponse>  => {
+export const translate = (text: string, lang?: string, options?: Record<string, any>): Promise<TranslationServiceResponse>  => {
   const apiKey = options['api-key'];
 
   const generator = {
@@ -24,13 +25,15 @@ export const translate = (text: string, options?: Record<string, any>): Promise<
     homepage: 'https://gemini.google.com/app'
   };
 
+  const language = getLanguageName(lang || 'en');
+
   const ai = new GoogleGenAI({ apiKey });
 
   // More detailed prompt for better language detection
   const prompt = `You are a professional translator. Please:
 
 1. Detect the source language of the given text
-2. Translate it accurately to English
+2. Translate it accurately to ${language}
 
 Text: 
 

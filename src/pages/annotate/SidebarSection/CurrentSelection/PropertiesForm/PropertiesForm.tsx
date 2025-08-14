@@ -7,7 +7,7 @@ import { EntityBadge } from '@/components/EntityBadge';
 import { FontSize } from '@/components/FontSize';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
-import { Translation, TranslationArgs } from '@/components/Translation';
+import { Translation, TranslationArgs, TranslationSettings } from '@/components/Translation';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -172,7 +172,14 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     setTranslationArgs(undefined);
     onChangeFormValue(noteKey, value)
   }
-    
+
+  const onTranslateNotes = (settings: TranslationSettings) => setTranslationArgs({ 
+    connector: settings.connector,
+    service: settings.service,
+    text: formState[noteKey],
+    language: settings.language
+  });
+ 
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -275,7 +282,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={setNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
-            onTranslate={(connector, service) => setTranslationArgs({ connector, service, text: formState[noteKey] })} />
+            onTranslate={onTranslateNotes} />
         </div>
 
         <Button 

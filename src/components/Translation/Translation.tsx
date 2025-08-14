@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Ban, Check, Copy, X } from 'lucide-react';
 import { TranslationServiceResponse, useService } from '@/services';
 import { Separator } from '@/ui/Separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { deobfuscate } from '@/utils/obfuscateString';
-import { Button } from '@/ui/Button';
-import { Ban, Check, Copy, X } from 'lucide-react';
 import { Spinner } from '../Spinner';
 import { TranslationArgs } from './TranslationArgs';
 
@@ -45,7 +44,7 @@ export const Translation = (props: TranslationProps) => {
     setError(undefined);
     setBusy(true);
 
-    connector.translate(props.args.text, args)
+    connector.translate(props.args.text, props.args.language, args)
       .then(response => {
         setBusy(false);
         setResponse(response);

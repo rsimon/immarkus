@@ -2,8 +2,7 @@ import { Cuboid, NotebookPen } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { FontSize, FontSizeButton } from '@/components/FontSize';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { TranslateButton } from '@/components/Translation';
-import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
+import { TranslateButton, TranslationSettings } from '@/components/Translation';
 
 interface PropertiesFormActionsProps {
 
@@ -17,7 +16,7 @@ interface PropertiesFormActionsProps {
 
   onClearNote(): void;
 
-  onTranslate(connector: ServiceConnectorConfig, service: TranslationServiceConfig): void;
+  onTranslate(settings: TranslationSettings): void;
   
 }
 
