@@ -12,6 +12,8 @@ import {
 
 interface TranslateButtonProps {
 
+  disabled?: boolean; 
+
   onClickTranslate(connector: ServiceConnectorConfig, service: TranslationServiceConfig): void;
 
 }
@@ -81,7 +83,7 @@ export const TranslateButton = (props: TranslateButtonProps) => {
     return requiredParams.every(param => getStoredParam(connector.id, param.id));
   }), []);
 
-  const disabled = availableConnectors.length === 0;
+  const disabled = props.disabled || availableConnectors.length === 0;
 
   const [selectedService, setSelectedService] =
     useState<ServiceSelectionConfig>(getInitialService(availableConnectors));

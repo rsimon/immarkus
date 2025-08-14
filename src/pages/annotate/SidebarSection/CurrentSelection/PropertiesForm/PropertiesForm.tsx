@@ -6,6 +6,7 @@ import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
+import { Translation, TranslationArgs } from '@/components/Translation';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -20,8 +21,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Translation } from '@/components/Translation';
-import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
@@ -171,19 +170,20 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
 
   const hasNote = useMemo(() => formState[noteKey] !== undefined, [formState]);
 
-  const [translationService, setTranslationService] = 
-    useState<{ connector: ServiceConnectorConfig, service: TranslationServiceConfig } | undefined>();
+  const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
 
   const [noteFontSize, setNoteFontSize] = useState('base');
+
+  const onChangeNote = (value: string) => {
+    setTranslationArgs(undefined);
+    onChangeFormValue(noteKey, value)
+  }
 
   const onChangeNoteFontSize = () => setNoteFontSize(current => {
     const currentIdx = FontSizes.indexOf(current);
     const nextIdx = (currentIdx + 1) % FontSizes.length;
     return FontSizes[nextIdx];
   });
-
-  const onTranslate = (connector: ServiceConnectorConfig, service: TranslationServiceConfig) =>
-    setTranslationService({ connector, service });
     
   return (
     <PropertyValidation
@@ -273,15 +273,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
               id={noteKey}
               creator={note?.creator}
               value={formState[noteKey]}
-              onChange={value => onChangeFormValue(noteKey, value)} />
+              onChange={onChangeNote} />
           )}
 
-          {translationService && (
+          {translationArgs && (
             <Translation 
-              text={formState[noteKey]}
-              connector={translationService.connector} 
-              service={translationService.service}
-              onClose={() => setTranslationService(undefined)} />
+              args={translationArgs}
+              onClose={() => setTranslationArgs(undefined)} />
           )}
           
           <PropertiesFormActions 
@@ -290,7 +288,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={onChangeNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
-            onTranslate={onTranslate} />
+            onTranslate={(connector, service) => setTranslationArgs({ connector, service, text: formState[noteKey] })} />
         </div>
 
         <Button 
