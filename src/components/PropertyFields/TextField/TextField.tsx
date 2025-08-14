@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { TranslateButton } from '@/components/Translation';
+import { TranslateButton, Translation } from '@/components/Translation';
 import { TextPropertyDefinition } from '@/model';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
 import { BasePropertyField } from '../BasePropertyField';
@@ -20,6 +22,16 @@ interface TextFieldProps {
 
 }
 
+interface TranslationArgs {
+
+  connector: ServiceConnectorConfig;
+
+  service: TranslationServiceConfig;
+
+  text: string;
+
+}
+
 export const TextField = (props: TextFieldProps) => {
 
   const { id, definition } = props;
@@ -32,6 +44,8 @@ export const TextField = (props: TextFieldProps) => {
       props.onChange(normalized);
     }
   }
+
+  const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
 
   return (
     <BasePropertyField
@@ -49,10 +63,19 @@ export const TextField = (props: TextFieldProps) => {
             className={cn('shadow-xs w-full outline-black rounded-md bg-muted border border-input p-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50', props.className)} 
             value={props.onChange ? value || '' : value} 
             onChange={evt => props.onChange && onChange(evt.target.value)} />
+
+          {translationArgs && (
+            <Translation 
+              text={translationArgs.text}
+              connector={translationArgs.connector} 
+              service={translationArgs.service}
+              onClose={() => setTranslationArgs(undefined)} />
+          )}
           
           <div className="flex justify-end mt-0.5 text-muted-foreground">
             <TranslateButton
-              onClickTranslate={() => {/**/}} />
+              disabled={!props.onChange}
+              onClickTranslate={(connector, service) => setTranslationArgs({ connector, service, text: value })} />
           </div>
         </div>
       ) : (

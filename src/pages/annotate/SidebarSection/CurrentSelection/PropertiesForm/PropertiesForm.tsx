@@ -6,6 +6,8 @@ import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
+import { Translation } from '@/components/Translation';
+import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -20,8 +22,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Translation } from '@/components/Translation';
-import { ServiceConnectorConfig, TranslationServiceConfig } from '@/services';
 
 const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
