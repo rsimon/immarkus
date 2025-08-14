@@ -63,7 +63,7 @@ export const TextField = (props: TextFieldProps) => {
           
           <div className="flex justify-end mt-0.5 text-muted-foreground">
             <TranslateButton
-              disabled={!props.onChange}
+              disabled={!props.onChange || !value}
               onClickTranslate={(connector, service) => setTranslationArgs({ connector, service, text: value })} />
           </div>
         </div>
