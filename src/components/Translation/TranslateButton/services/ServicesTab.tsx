@@ -37,14 +37,14 @@ export const ServicesTab = (props: ServicesTabProps) => {
 
   return (
     <RadioGroup
-      className="gap-0"
+      className="gap-0 p-1"
       value={`${selected.connector.id}::${selected.index}`}
       onValueChange={onChangeService}>
       {availableConnectors.map(connector => (
         connector.services.filter(s => s.type === 'TRANSLATION')).map((service, idx) => (
         <div 
           key={`${connector.id}-${idx}`} 
-          className="flex items-center hover:bg-accent px-2 rounded-sm">
+          className="flex items-center hover:bg-muted px-2 rounded-sm">
           {isSelected(connector, idx) ? (
             <Check className="size-4" />
           ) : (
