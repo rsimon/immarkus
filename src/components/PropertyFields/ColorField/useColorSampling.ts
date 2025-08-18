@@ -40,10 +40,13 @@ export const useColorSampling = (onSample: (color: string) => void) => {
       let pointerDownTime = 0;
 
       const onPointerDown = (event: PointerEvent) => { 
+        event.stopPropagation(); // Prevents annotation select
         pointerDownTime = Date.now();
       }
 
       const onPointerUp = (event: PointerEvent) => {
+        event.stopPropagation(); // Prevents annotation select
+
         const dt = Date.now() - pointerDownTime;
         if (dt > 300) return;
 
@@ -58,14 +61,17 @@ export const useColorSampling = (onSample: (color: string) => void) => {
         stopSampling();
 
         onSample(hex);
+
+        return false;
       }
 
-      viewer.element.addEventListener('pointerdown', onPointerDown);
-      viewer.element.addEventListener('pointerup', onPointerUp);
+      // Attach in capture phase, so we can prevent annotation select
+      viewer.element.addEventListener('pointerdown', onPointerDown, true);
+      viewer.element.addEventListener('pointerup', onPointerUp, true);
 
       return () => {
-        viewer?.element && viewer.element.removeEventListener('pointerdown', onPointerDown);
-        viewer?.element && viewer.element.removeEventListener('pointerup', onPointerUp);
+        viewer?.element && viewer.element.removeEventListener('pointerdown', onPointerDown, true);
+        viewer?.element && viewer.element.removeEventListener('pointerup', onPointerUp, true);
       }
     }
 
