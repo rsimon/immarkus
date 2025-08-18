@@ -173,13 +173,14 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     onChangeFormValue(noteKey, value)
   }
 
-  const onTranslateNotes = (settings: TranslationSettings) => setTranslationArgs({ 
-    connector: settings.connector,
-    service: settings.service,
-    text: formState[noteKey],
-    language: settings.language
-  });
- 
+  const onTranslateNote = (settings: TranslationSettings) =>
+    setTranslationArgs({ 
+      connector: settings.connector,
+      service: settings.service,
+      text: formState[noteKey],
+      language: settings.language
+    });
+
   return (
     <PropertyValidation
       showErrors={showValidationErrors}
@@ -282,7 +283,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             onAddNote={() => onChangeFormValue(noteKey, '')} 
             onChangeFontSize={setNoteFontSize}
             onClearNote={() => onChangeFormValue(noteKey, undefined)} 
-            onTranslate={onTranslateNotes} />
+            onTranslate={onTranslateNote} />
         </div>
 
         <Button 

@@ -24,7 +24,7 @@ export const LanguagesTab = (props: LanguagesTabProps) => {
 
   return (
     <Command>
-      <div className="p-1.5 pt-1 border-b">
+      <div className="p-1.5 border-b">
         <div className="language-filter bg-muted/70 rounded">
           <CommandInput 
             placeholder="Search language..." 

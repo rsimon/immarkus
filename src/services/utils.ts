@@ -187,7 +187,7 @@ export const translateOpenAICompatible = (
         role: 'user',
         content: [{
           type: 'text',
-          text: `Guess the language of this text and translate it text to ${language}. Your response must be ONLY valid JSON in this format: { "translation": "all translated text goes here", "language": "the guessed language, as ISO code" }`
+          text: `Guess the language of this text and translate it text to ${lang}. Your response must be ONLY valid JSON in this format: { "translation": "all translated text goes here", "language": "the guessed language, as ISO code" }`
         },{
           type: 'text',
           text

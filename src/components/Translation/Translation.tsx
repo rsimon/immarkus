@@ -54,7 +54,7 @@ export const Translation = (props: TranslationProps) => {
         setBusy(false);
         setError('Translation service error');
       });
-  }, [connectorConfig, serviceConfig, connector, props.args.text]);
+  }, [connectorConfig, serviceConfig, connector, props.args]);
 
   const onCopyToClipboard = () => {
     navigator.clipboard.writeText(response.translation).then(() => {

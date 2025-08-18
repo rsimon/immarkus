@@ -28,6 +28,16 @@ export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) =
 
   const [open, setOpen] = useState(false);
 
+  const onChangeLanguage = (language: string) => {
+    setOpen(false);
+    props.onChangeLanguage(language);
+  }
+
+  const onChangeService = (service: TranslationSettings) => {
+    setOpen(false);
+    props.onChangeService(service);
+  }
+
   return (
     <Popover 
       open={open} 
@@ -46,17 +56,17 @@ export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) =
         collisionPadding={20}>
         <Tabs defaultValue="service" className="w-full">
           <TabsList 
-            className="grid w-full grid-cols-2 p-1 h-auto bg-white rounded-b-none ">
+            className="grid w-full grid-cols-2 p-0 h-auto rounded-b-none border-b">
             <TabsTrigger 
               value="service"
-              className="flex border border-transparent text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-input">
+              className="flex border-b-2 border-r border-r-input border-transparent shadow-none rounded-none rounded-tl-md text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-b-black">
               <CloudCog className="size-4" />
               Services
             </TabsTrigger>
 
             <TabsTrigger 
               value="language" 
-              className="flex border border-transparent text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-input">
+              className="flex border-b-2 border-transparent shadow-none rounded-none rounded-tr-md text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-black">
               <Globe className="size-3.5" />
               Language
             </TabsTrigger>
@@ -68,7 +78,7 @@ export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) =
             <ServicesTab
               availableConnectors={props.availableConnectors}
               selected={props.selectedService}
-              onChangeSelected={props.onChangeService} />
+              onChangeSelected={onChangeService} />
           </TabsContent>
 
           <TabsContent 
@@ -76,7 +86,7 @@ export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) =
             className="mt-0">
             <LanguagesTab 
               language={props.language} 
-              onChangeLanguage={props.onChangeLanguage} />
+              onChangeLanguage={onChangeLanguage} />
           </TabsContent>
         </Tabs>
       </PopoverContent>
