@@ -18,8 +18,6 @@ interface LanguagesTabProps {
 
 }
 
-const label = new Intl.DisplayNames(['en'], { type: 'language' });
-
 export const LanguagesTab = (props: LanguagesTabProps) => {
 
   return (
@@ -35,19 +33,19 @@ export const LanguagesTab = (props: LanguagesTabProps) => {
       <CommandList 
         className="p-1.5">
         <CommandEmpty>No supported language found.</CommandEmpty>
-        {BASE_LANGUAGES.map(iso => (
+        {BASE_LANGUAGES.map(({ iso, label}) => (
           <CommandItem
             key={iso}
-            value={iso}
+            value={`${iso} ${label}`}
             className="cursor-pointer text-xs py-2"
-            onSelect={props.onChangeLanguage}>
+            onSelect={() => props.onChangeLanguage(iso)}>
             {iso === props.language ? (
               <Check className="size-4 mr-2"/>
             ) : (
               <div className="size-4 mr-2" />
             )}
             
-            {label.of(iso)}
+            {label}
           </CommandItem>
         ))}
       </CommandList>
