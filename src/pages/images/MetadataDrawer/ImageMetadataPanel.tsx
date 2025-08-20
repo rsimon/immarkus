@@ -39,7 +39,7 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
         className="flex flex-col justify-between h-full py-3 px-4"
         onSubmit={onSubmit}>
         <div className="flex flex-col grow">
-          <h2 className="leading-relaxed mr-5 mb-8 font-medium">
+          <h2 className="leading-relaxed mr-5 mb-8 font-medium whitespace-nowrap overflow-hidden truncate">
             {props.image.name}
           </h2>
           
