@@ -1,3 +1,4 @@
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage } from '@/model';
 import { Check } from 'lucide-react';
@@ -16,12 +17,14 @@ export const ImageListItem = (props: ImageListItemProps) => {
 
   const { image, isOpen, onSelect } = props;
 
+  const isIIIF = 'manifestId' in image;
+
   return (
     <li 
       className={`mt-0.5 py-2 px-3 rounded-lg cursor-pointer${isOpen ?  '' : ' hover:bg-muted'}`}>
       <button 
         disabled={isOpen}
-        className="flex gap-3 w-full"
+        className="flex gap-3 w-full relative"
         onClick={onSelect}>
         {isOpen ? (
           <div className="relative">
@@ -33,6 +36,13 @@ export const ImageListItem = (props: ImageListItemProps) => {
         ) : (
           <Thumbnail image={image} /> 
         )}
+
+        {isIIIF && (
+          <IIIFIcon
+            light
+            className="iiif-logo text-white transition-all absolute bottom-1.5 left-1.5 size-4" />
+        )}
+        
         <div className="grow line-clamp-3 overflow-hidden text-ellipsis text-left">
           {image.name}
         </div>
