@@ -17,7 +17,8 @@ export const EntityTypeSelector = (props: EntityTypeSelectorProps) => {
   const getOption = (id?: string) => {
     if (id) {
       const t = entityTypes.find(t => t.id === id);
-      return { label: t.label || t.id, value: t.id };
+      if (t)
+        return { label: t.label || t.id, value: t.id };
     }
   }
 

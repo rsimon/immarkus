@@ -33,25 +33,43 @@ export const Relationships = () => {
   const renderEntityType = useCallback((id: string, isSource: boolean) => {
     const entity = model.getEntityType(id);
 
-    const brightness = getBrightness(entity.color);
+    if (entity) {
+      const brightness = getBrightness(entity.color);
 
-    return (
-      <div className="flex gap-1.5 items-center text-black text-xs">
-        <div 
-          className="rounded-full text-white p-0.5" 
-          style={{ 
-            backgroundColor: entity.color, 
-            color: brightness > 0.5 ? '#000' : '#fff'  
-          }}>
-          {isSource ? (
-            <ArrowUpFromDot className="h-3.5 w-3.5" /> 
-          ) : (
-            <ArrowDownToDot className="h-3.5 w-3.5" />
-          )}
+      return (
+        <div className="flex gap-1.5 items-center text-black text-xs">
+          <div 
+            className="rounded-full text-white p-0.5" 
+            style={{ 
+              backgroundColor: entity.color, 
+              color: brightness > 0.5 ? '#000' : '#fff'  
+            }}>
+            {isSource ? (
+              <ArrowUpFromDot className="h-3.5 w-3.5" /> 
+            ) : (
+              <ArrowDownToDot className="h-3.5 w-3.5" />
+            )}
+          </div>
+          <span>{entity.label || entity.id}</span>
         </div>
-        <span>{entity.label || entity.id}</span>
-      </div>
-    )
+      )
+    } else {
+      // Note that this case can happen if the user has relations
+      // restricted to classes that no longer exist in the model!
+      return (
+        <div className="flex gap-1.5 items-center text-muted-foreground/50 text-xs">
+          <div 
+            className="rounded-full bg-muted-foreground/50 text-white p-0.5">
+            {isSource ? (
+              <ArrowUpFromDot className="h-3.5 w-3.5" /> 
+            ) : (
+              <ArrowDownToDot className="h-3.5 w-3.5" />
+            )}
+          </div>
+          <span>Deleted Class</span>
+        </div>
+      )
+    }
   }, [model]);
  
   return (
