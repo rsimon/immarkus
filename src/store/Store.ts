@@ -525,9 +525,9 @@ export const loadStore = (
         await writeJSONFile(handle, info);
 
         const resource: IIIFResource = {
+          ...info,
           folder: folder.handle,
-          path: folder.path,
-          ...info
+          path: folderId ? [...folder.path, folderId ] : []
         }
 
         iiifResources.push(resource);

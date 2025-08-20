@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
-import { type CozyParseResult, Cozy, CozyCollection } from 'cozy-iiif';
+import { type CozyParseResult, Cozy } from 'cozy-iiif';
 import { Ban, Check, CloudDownload, Loader2, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
