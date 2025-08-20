@@ -40,10 +40,6 @@ export const GeoCoordinatesFieldInput = (props: GeoCoordinatesFieldInputProps) =
         placeholder="Lng..."
         value={lngStr} 
         onChange={evt => props.onChange([latStr, evt.target.value])} />
-
-      <InheritedFrom 
-        className="mr-1"
-        definition={props.definition} />
     </div>
   )
 

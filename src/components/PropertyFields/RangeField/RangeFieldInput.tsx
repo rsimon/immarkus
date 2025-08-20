@@ -38,10 +38,6 @@ export const RangeFieldInput = (props: RangeFieldInputProps) => {
         placeholder="End..."
         value={endStr} 
         onChange={evt => props.onChange([startStr, evt.target.value])} />
-
-      <InheritedFrom 
-        className="mr-1"
-        definition={props.definition} />
     </div>
   )
 
