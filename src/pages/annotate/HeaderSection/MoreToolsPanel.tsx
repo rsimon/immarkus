@@ -78,11 +78,13 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
 
           <Separator orientation="vertical" className="h-4" />
 
-          <PaginationWidget 
-            disabled={props.osdToolsDisabled}
-            image={props.images[0]} 
-            onChangeImage={props.onChangeImage} 
-            onAddImage={onAddImage} />
+          {props.images.length > 0 && (
+            <PaginationWidget 
+              disabled={props.osdToolsDisabled}
+              image={props.images[0]} 
+              onChangeImage={props.onChangeImage} 
+              onAddImage={onAddImage} />
+          )}
 
           <Separator orientation="vertical" className="h-4" />
 

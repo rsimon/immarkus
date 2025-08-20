@@ -1,7 +1,3 @@
-.mosaic-window-toolbar {
-  overflow-x: auto;
-}
-
 .mosaic-window .mosaic-window-toolbar > div {
   flex: 0 0 auto;
 }

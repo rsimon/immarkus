@@ -76,7 +76,6 @@
   border-top-left-radius: 0;
   box-shadow: none;
   display: flex;
-  overflow: hidden;
   padding: 0;
   position: relative;
 }
