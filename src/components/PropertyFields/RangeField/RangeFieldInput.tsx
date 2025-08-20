@@ -11,8 +11,6 @@ interface RangeFieldInputProps {
 
   error?: boolean;
 
-  index: number;
-
   value?: [string, string];
 
   onChange(arg?: [string, string]): void;

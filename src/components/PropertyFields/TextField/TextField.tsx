@@ -1,97 +1,87 @@
-import { useState } from 'react';
-import TextareaAutosize from 'react-textarea-autosize';
-import { FontSize, FontSizeButton } from '@/components/FontSize';
-import { TranslateButton, Translation, TranslationArgs, TranslationSettings } from '@/components/Translation';
+import { useEffect, useState } from 'react';
+import { CopyPlus } from 'lucide-react';
 import { TextPropertyDefinition } from '@/model';
-import { Input } from '@/ui/Input';
-import { cn } from '@/ui/utils';
-import { BasePropertyField } from '../BasePropertyField';
+import { Label } from '@/ui/Label';
+import { InfoTooltip } from '../InfoTooltip';
+import { InheritedFrom } from '../InheritedFrom';
+import { TextFieldInput } from './TextFieldInput';
 import { removeEmpty } from '../removeEmpty';
 
 interface TextFieldProps {
 
   id: string;
-
+    
   className?: string;
 
   definition: TextPropertyDefinition;
 
-  value?: string | string[];
+  value: string | string[];
 
-  onChange?(value: string | string[]): void;
+  onChange?(value?: string | (string | undefined)[]): void;
 
 }
 
 export const TextField = (props: TextFieldProps) => {
 
-  const { id, definition } = props;
+  const { definition } = props;
 
-  const value = props.onChange ? props.value || '' : props.value;
+  const [values, setValues] = useState<(string | undefined)[]>(Array.isArray(props.value) ? props.value : [props.value]);
+    
+  const onChange = (idx: number, updated: string) =>
+    setValues(current => current.map((v, i) => i === idx ? updated : v));
 
-  const [fontsize, setFontSize] = useState<FontSize>('base');
+  const onAppendField = () =>
+    setValues(current => [...current, undefined]);
 
-  const [translationArgs, setTranslationArgs] = useState<TranslationArgs | undefined>();
-
-  const onChange = (value: string | string[]) => {
+  useEffect(() => {
     if (props.onChange) {
-      setTranslationArgs(undefined);
-
-      const normalized = removeEmpty(value);
-      props.onChange(normalized);
+      const normalized = removeEmpty(values);
+      if (normalized)
+        props.onChange(normalized);
     }
-  }
-
-  const onTranslate = (settings: TranslationSettings, value: string) => setTranslationArgs({ 
-    connector: settings.connector,
-    service: settings.service, 
-    text: value,
-    language: settings.language
-  });
+  }, [values]);
 
   return (
-    <BasePropertyField
-      id={id}
-      definition={definition}
-      value={value}
-      onChange={onChange}
-      render={(value, onChange) => definition.size === 'L' ? (
-        <div className="w-full">
-          <TextareaAutosize 
-            id={id} 
-            cacheMeasurements
-            minRows={4}
-            maxRows={20}
-            className={cn(
-              'shadow-xs w-full outline-black rounded-md bg-muted border border-input p-2 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50', 
-              props.className,
-              `text-${fontsize}`
-            )} 
-            value={props.onChange ? value || '' : value} 
-            onChange={evt => props.onChange && onChange(evt.target.value)} />
+    <div className="mb-8">
+      <div className="flex items-end justify-between pr-1 mb-1.5">
+        <div className="flex items-center gap-0.5">
+          <Label
+            htmlFor={props.id}
+            className="text-sm inline-block ml-0.5 ">
+            {definition.name}
+          </Label>
 
-          {translationArgs && (
-            <Translation 
-              args={translationArgs}
-              onClose={() => setTranslationArgs(undefined)} />
+          {definition.description && (
+            <InfoTooltip description={definition.description} />
           )}
-          
-          <div className="flex justify-end mt-0.5 text-muted-foreground">
-            <FontSizeButton
-              disabled={!props.value}
-              onChangeFontSize={setFontSize} />
-
-            <TranslateButton
-              disabled={!props.onChange || !value}
-              onClickTranslate={settings => onTranslate(settings, value)} />
-          </div>
         </div>
-      ) : (
-        <Input 
-          id={id} 
-          className={cn(props.className, 'mt-0.5')} 
-          value={props.onChange ? value || '' : value} 
-          onChange={evt => props.onChange && onChange(evt.target.value)} />
-      )} />
+        
+        <InheritedFrom definition={definition} />
+      </div>
+
+      <div className="flex flex-col gap-2 justify-end">
+        {values.map((value, idx) => (
+          <div key={idx} className="flex items-center gap-1">
+            <TextFieldInput
+              className={props.className}
+              definition={definition}
+              isLast={idx === values.length - 1}
+              value={value}
+              onAppendField={onAppendField}
+              onChange={value => onChange(idx, value)} />
+          </div>
+        ))}
+
+        {props.definition.multiple && !(props.definition.size === 'L') && (
+          <button 
+            className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
+            onClick={onAppendField}
+            type="button">
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+          </button>
+        )}
+      </div>
+    </div>
   )
 
 }

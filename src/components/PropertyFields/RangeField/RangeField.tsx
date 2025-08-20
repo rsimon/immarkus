@@ -120,7 +120,6 @@ export const RangeField = (props: RangeFieldProps) => {
             className={props.className}
             definition={definition} 
             error={Boolean(error)}
-            index={idx}
             value={value}
             onChange={value => onChange(idx, value)}/>
         ))}
