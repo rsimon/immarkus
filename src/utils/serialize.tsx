@@ -20,6 +20,6 @@ export const serializePropertyValue = (definition: PropertyDefinitionLike, value
     return coords.map((c: number[]) => `${c[0]}/${c[1]}`);
   } else {
     const values = Array.isArray(value) ? value : [value];
-    return values.map(v => v.toString());
+    return values.filter(Boolean).map(v => v.toString());
   }
 }
