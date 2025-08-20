@@ -126,19 +126,28 @@ export const getCanvasManifestPrimitives = ({ id, manifest }: { id: string, mani
   return manifest.canvases.map(canvas => {
     // Find the ToC node that this canvas belongs to
     const tocNode = toc.getNode(canvas.id);
+   
+    if (tocNode) {
+      const source = 
+        tocNode.parent?.navItems.length > 1 ? getId(tocNode.parent) :
+        tocNode.parent?.parent ? getId(tocNode.parent.parent) :
+        `iiif:${id}`; // Link to manifest directly
 
-    const source = 
-      tocNode.parent?.navItems.length > 1 ? getId(tocNode.parent) :
-      tocNode.parent?.parent ? getId(tocNode.parent.parent) :
-      `iiif:${id}`; // Link to manifest directly
+      const target = `iiif:${id}:${murmur.v3(canvas.id)}`;
 
-    const target = `iiif:${id}:${murmur.v3(canvas.id)}`;
-
-    return {
-      source,
-      target,
-      type: 'FOLDER_CONTAINS_IMAGE'
-    } as GraphLinkPrimitive;
+      return {
+        source,
+        target,
+        type: 'FOLDER_CONTAINS_IMAGE'
+      } as GraphLinkPrimitive;
+    } else {
+      // IIIF manifest without ToC
+      return {
+        source: `iiif:${manifest.id}`,
+        target: `iiif:${manifest.id}:${canvas.id}`,
+        type: 'FOLDER_CONTAINS_IMAGE'
+      } as GraphLinkPrimitive;
+    }
   });
 }
 
