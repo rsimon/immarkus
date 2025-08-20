@@ -11,6 +11,6 @@ export const exportRelationshipsAsJSONLD = (store: Store) => {
 
   const anchor = document.createElement('a');
   anchor.href = URL.createObjectURL(blob);
-  anchor.download = 'annotations.json';
+  anchor.download = 'relationships.json';
   anchor.click();
 }
