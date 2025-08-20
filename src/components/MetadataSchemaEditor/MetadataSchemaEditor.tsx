@@ -6,6 +6,7 @@ import { MetadataListItem } from './MetadataListItem';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Textarea } from '@/ui/Textarea';
+import { TooltipProvider } from '@/ui/Tooltip';
 import { AlertCircle, CheckCircle2, PlusCircle, Rows3 } from 'lucide-react';
 import { MetadataSchemaPreview } from './MetadataSchemaPreview';
 
@@ -76,100 +77,102 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
     }));
 
   return (
-    <article
-      className="grid grid-cols-2 rounded-lg">
-      <div className="p-5">
-        <div className="mt-6">
-          <Label 
-            htmlFor="name"
-            className="inline-block text-xs mb-1.5 ml-0.5">Schema Name
-          </Label>
+    <TooltipProvider>
+      <article
+        className="grid grid-cols-2 rounded-lg">
+        <div className="p-5">
+          <div className="mt-6">
+            <Label 
+              htmlFor="name"
+              className="inline-block text-xs mb-1.5 ml-0.5">Schema Name
+            </Label>
 
-          {errors.name_missing && (<span className="text-xs text-red-600 ml-1">required</span>)}
+            {errors.name_missing && (<span className="text-xs text-red-600 ml-1">required</span>)}
 
-          <Input
-            id="name"
-            className={errors.name_missing ? 'bg-white border-red-500' : 'bg-white'} 
-            value={schema.name || ''}
-            onChange={evt => setSchema(s => ({ ...s, name: evt.target.value }))} />
+            <Input
+              id="name"
+              className={errors.name_missing ? 'bg-white border-red-500' : 'bg-white'} 
+              value={schema.name || ''}
+              onChange={evt => setSchema(s => ({ ...s, name: evt.target.value }))} />
 
-          {schema.name && (!isNameAvailable ? (
-            <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
-              <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
-            </span>
-          ) : ((props.schema && isNameAvailable) || !props.schema) && (
-            <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-              <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
-            </span>
-          ))}
-        </div>
-
-        <div className="mt-6">
-          <Label 
-            htmlFor="description"
-            className="inline-block text-xs mb-1.5 ml-0.5">Schema Description</Label>
-
-          <Textarea 
-            id="description"
-            className="bg-white"
-            rows={3} 
-            value={schema.description || ''} 
-            onChange={evt => setSchema(s => ({ ...s, description: evt.target.value }))} />
-        </div>
-
-        {(schema?.properties || []).length === 0 ? (
-          <div className="my-6 py-5 bg-muted w-full rounded-sm text-muted-foreground text-sm flex justify-center items-center">
-            <PropertyDefinitionEditorDialog
-              editorHint={props.editorHint}
-              previewHint={props.previewHint}
-              schema={schema.properties || []}
-              onSave={addProperty}>
-              <Button className="flex items-center" variant="ghost">
-                <PlusCircle className="h-4 w-4 mr-1.5" /> Add Property
-              </Button>
-            </PropertyDefinitionEditorDialog>
+            {schema.name && (!isNameAvailable ? (
+              <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
+                <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
+              </span>
+            ) : ((props.schema && isNameAvailable) || !props.schema) && (
+              <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
+                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
+              </span>
+            ))}
           </div>
-        ) : (
-          <div className="mt-6 pt-2 pb-4 px-4 bg-muted w-full rounded-sm text-muted-foreground text-sm">
-            <ul>
-              {(schema?.properties || []).map(definition => (
-                <li key={definition.name}>
-                  <MetadataListItem 
-                    editorHint={props.editorHint}
-                    previewHint={props.previewHint}
-                    definition={definition} 
-                    schema={schema.properties || []}
-                    onMoveUp={() => moveProperty(definition, true)}
-                    onMoveDown={() => moveProperty(definition, false)}
-                    onUpdateProperty={updated => updateProperty(updated, definition)}
-                    onDeleteProperty={() => deleteProperty(definition)} />
-                </li>
-              ))}
-            </ul>
 
-            <div className="flex justify-end">
+          <div className="mt-6">
+            <Label 
+              htmlFor="description"
+              className="inline-block text-xs mb-1.5 ml-0.5">Schema Description</Label>
+
+            <Textarea 
+              id="description"
+              className="bg-white"
+              rows={3} 
+              value={schema.description || ''} 
+              onChange={evt => setSchema(s => ({ ...s, description: evt.target.value }))} />
+          </div>
+
+          {(schema?.properties || []).length === 0 ? (
+            <div className="my-6 py-5 bg-muted w-full rounded-sm text-muted-foreground text-sm flex justify-center items-center">
               <PropertyDefinitionEditorDialog
                 editorHint={props.editorHint}
                 previewHint={props.previewHint}
                 schema={schema.properties || []}
                 onSave={addProperty}>
-                <Button 
-                  variant="outline" 
-                  className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
-                  Add Property
+                <Button className="flex items-center" variant="ghost">
+                  <PlusCircle className="h-4 w-4 mr-1.5" /> Add Property
                 </Button>
               </PropertyDefinitionEditorDialog>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="mt-6 pt-2 pb-4 px-4 bg-muted w-full rounded-sm text-muted-foreground text-sm">
+              <ul>
+                {(schema?.properties || []).map(definition => (
+                  <li key={definition.name}>
+                    <MetadataListItem 
+                      editorHint={props.editorHint}
+                      previewHint={props.previewHint}
+                      definition={definition} 
+                      schema={schema.properties || []}
+                      onMoveUp={() => moveProperty(definition, true)}
+                      onMoveDown={() => moveProperty(definition, false)}
+                      onUpdateProperty={updated => updateProperty(updated, definition)}
+                      onDeleteProperty={() => deleteProperty(definition)} />
+                  </li>
+                ))}
+              </ul>
 
-        <Button className="w-full mt-7" onClick={onSave}>
-          <Rows3 className="w-4 h-4 mr-2" /> Save Schema
-        </Button>
-      </div>
+              <div className="flex justify-end">
+                <PropertyDefinitionEditorDialog
+                  editorHint={props.editorHint}
+                  previewHint={props.previewHint}
+                  schema={schema.properties || []}
+                  onSave={addProperty}>
+                  <Button 
+                    variant="outline" 
+                    className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
+                    Add Property
+                  </Button>
+                </PropertyDefinitionEditorDialog>
+              </div>
+            </div>
+          )}
 
-      <MetadataSchemaPreview schema={schema} />
-    </article>
+          <Button className="w-full mt-7" onClick={onSave}>
+            <Rows3 className="w-4 h-4 mr-2" /> Save Schema
+          </Button>
+        </div>
+
+        <MetadataSchemaPreview schema={schema} />
+      </article>
+    </TooltipProvider>
   )
 
 }
