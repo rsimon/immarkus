@@ -69,7 +69,6 @@ export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => 
             </Button>
           </div>
         </div>
-
       </DialogContent>
     </Dialog>
   )

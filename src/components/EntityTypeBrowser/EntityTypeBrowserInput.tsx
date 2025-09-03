@@ -52,13 +52,6 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
               className="w-6 h-6 p-1 text-muted-foreground hover:text-black" />
           </button>
         )}
-
-        <Separator orientation="vertical" className="h-4 mx-1" />
-
-        <button 
-          className="rounded-sm text-muted-foreground transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring hover:bg-accent hover:text-accent-foreground">
-          <ListTree className="w-6 h-6 p-1" />
-        </button>
       </div>
     </div>    
   )
