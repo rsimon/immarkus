@@ -27,6 +27,11 @@ export const CurrentSelection = () => {
 
   const selection = useSelection<ImageAnnotation>();
 
+  const isCrossImageSelection = useMemo(() => {
+    const annotatorIds = new Set(selection.selected.map(s => s.annotatorId));
+    return annotatorIds.size > 1;
+  }, [selection]);
+
   const selected: ImageAnnotation[] = 
     selection.selected?.length > 0 ? selection.selected.map(s => s.annotation) : [];
 
@@ -112,7 +117,6 @@ export const CurrentSelection = () => {
         }
       });
     
-
       anno.bulkUpdateAnnotations(updated);
     }
 
@@ -162,6 +166,7 @@ export const CurrentSelection = () => {
         </div>
       ) : (
         <MultiSelectionTools 
+          isCrossImageSelection={isCrossImageSelection}
           selected={selected}
           onAddTag={annotationId => setSearchDialogState({ open: true, annotationId })} 
           onDeleteSelected={() => onBulkDelete(selected)} />

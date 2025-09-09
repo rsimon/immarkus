@@ -10,6 +10,8 @@ import { MultiSelectionThumbnails } from './MultiSelectionThumbnails';
 
 interface MultiSelectionOptionsProps {
 
+  isCrossImageSelection: boolean;
+
   selected: ImageAnnotation[];
 
   onAddTag(annotationId?: string): void;
@@ -24,7 +26,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
   const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
 
-  const canSubtract = plugin.canSubtractSelected().some(Boolean);
+  const canSubtract = !props.isCrossImageSelection && plugin.canSubtractSelected().some(Boolean);
 
   const onMergeSelected = () => {
     const mergeBodies = (selected: ImageAnnotation[]) => 
@@ -107,7 +109,8 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
           {renderButton(
             'Merge', 'Combine selected annotations. Preserves all tags and concatenates notes in the order of selection.',
             <Combine className="size-5" />,
-            onMergeSelected
+            onMergeSelected,
+            props.isCrossImageSelection
           )}
 
           {renderButton(

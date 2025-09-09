@@ -71,7 +71,7 @@ export const Annotate = () => {
   return (
     <div className="page annotate h-full w-full">
       <TooltipProvider>
-        <AnnotoriousManifold>
+        <AnnotoriousManifold crossAnnotatorSelect>
           <OSDViewerManifold>
             <RelationEditorRoot>
               <PluginProvider>
