@@ -57,7 +57,7 @@ export const Transcribe = (props: TranscribeProps) => {
     // outer W3C API has no bulk handling, we'd generate one file write access per 
     // annotation, which will lead to overwrites!
     const w3c = annotations.map(a => serializeW3CImageAnnotation(a, selectedImage.id));
-    store.bulkUpsertAnnotation(selectedImage.id, w3c);
+    store.bulkUpsertAnnotation(image.id, w3c);
   }
 
   return (
@@ -99,7 +99,7 @@ export const Transcribe = (props: TranscribeProps) => {
         <TranscriptionDialog 
           disabled={!selectedImage}
           image={selectedImage} 
-          onImport={annotations => onImportAnnotations(annotations, props.images[0])} />
+          onImport={annotations => onImportAnnotations(annotations, selectedImage)} />
       </Annotorious>
     </div>
   )
