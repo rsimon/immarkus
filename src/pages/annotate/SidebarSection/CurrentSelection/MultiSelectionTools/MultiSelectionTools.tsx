@@ -26,7 +26,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
   const plugin = usePluginManifold<ReturnType<typeof mountPlugin>>('boolean');
 
-  const canSubtract = !props.isCrossImageSelection && plugin.canSubtractSelected().some(Boolean);
+  const canSubtract = !props.isCrossImageSelection && plugin?.canSubtractSelected().some(Boolean);
 
   const onMergeSelected = () => {
     const mergeBodies = (selected: ImageAnnotation[]) => 
