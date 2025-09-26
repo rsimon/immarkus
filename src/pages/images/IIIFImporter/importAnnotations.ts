@@ -3,7 +3,24 @@ import { CozyCanvas } from 'cozy-iiif';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
 import type { W3CImageAnnotation } from '@annotorious/react';
 
-export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): W3CImageAnnotation[] =>
+export const validateAnnotations = (canvases: CozyCanvas[]) => {
+  const annotations = canvases.reduce<any[]>((all, canvas) => {
+    if ((canvas.annotations || []).length > 0) {
+      const annotations = canvas.annotations.flatMap(p => (p.items || []));
+      return [...all, ...annotations];
+    } else {
+      return all;
+    }
+  }, []);
+
+  const valid = annotations
+    .map(orig => parseW3CImageAnnotation(orig as W3CImageAnnotation))
+    .filter(t => t.parsed && !t.error);
+
+  return { total: annotations.length, valid: valid.length };
+}
+
+export const crosswalkAnnotations = (manifestId: string, canvases: CozyCanvas[]): W3CImageAnnotation[] =>
   canvases.reduce<W3CImageAnnotation[]>((all, canvas) => {
     if ((canvas.annotations || []).length > 0) {
       const canvasId = murmur.v3(canvas.id).toString();
