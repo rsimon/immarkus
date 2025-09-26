@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
-import { Ban, Check, CloudDownload, Loader2, SquareLibrary } from 'lucide-react';
+import { Ban, Check, CloudDownload, Loader2, MessagesSquare, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
@@ -12,6 +12,8 @@ import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { ErrorAlert } from './ErrorAlert';
 import { ImportFromCollection } from './ImportFromCollection';
+import { W3CImageAnnotation } from '@annotorious/react';
+import { crosswalkAnnotations, validateAnnotations } from './importAnnotations';
 
 interface IIIFImporterProps {
 
@@ -37,6 +39,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [parseResult, setParseResult] = useState<CozyParseResult | undefined>();
 
+  const [annotations, setAnnotations] = useState<{ total: number, valid: number } |  undefined>();
+
   useEffect(() => {
     if (!open) {
       setURI('');
@@ -46,6 +50,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   useEffect(() => {
     setParseResult(undefined);
+    setAnnotations(undefined);
     setAlreadyImported(false);
 
     if (!uri) {
@@ -55,6 +60,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
     // IMMARKUS will only allow the same manifest once per folder!
     const idSeed = props.folderId ? `${props.folderId}/${uri}` : uri;
+
     generateShortId(idSeed).then(id => {
       // ID is derived from the URI–check if it already exists
       const existing = Boolean(store.getIIIFResource(id));
@@ -76,6 +82,12 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     });
   }, [props.folderId, uri]);
 
+  useEffect(() => {
+    if (parseResult?.type !== 'manifest') return;
+    const result = validateAnnotations(parseResult.resource.canvases);
+    setAnnotations(result);
+  }, [parseResult]);
+
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
 
@@ -83,6 +95,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
     if (parseResult.type === 'manifest') {
       const idSeed = props.folderId ? `${props.folderId}/${uri}` : uri;
+
       generateShortId(idSeed).then(id => {
         const { resource } = parseResult;
 
@@ -101,9 +114,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           }))
         }
 
-        store.importIIIFResource(info, props.folderId).then(() => {
-          setOpen(false);
-        });
+        const annotations = crosswalkAnnotations(id, resource.canvases);
+        store.importIIIFResource(info, props.folderId, annotations).then(() => setOpen(false));
       });
     } else {
       // Should never happen
@@ -191,9 +203,22 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               <Ban className="size-3.5 mb-[1px]" /> Image API URLs are currently unsupported
             </div>
           ) : parseResult?.type === 'manifest' ? (
-            <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-              <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
-            </div>
+            <>
+              <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
+                <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
+              </div>
+
+              {annotations && annotations.total > 0 
+                ? annotations.total === annotations.valid ? (
+                  <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
+                    <MessagesSquare className="size-4" /> {annotations.total} annotation{annotations.total > 1 ? 's' : ''} will be imported
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 pl-0.5 text-amber-600">
+                    <MessagesSquare className="size-4" /> {annotations.total} annotation{annotations.total > 1 ? 's' : ''} - cannot import {annotations.total - annotations.valid} 
+                  </div>
+                ) : null}
+            </>
           ) : parseResult?.type === 'webpage' ? (
             <div 
               className="p-3 mt-6 items-start leading-relaxed

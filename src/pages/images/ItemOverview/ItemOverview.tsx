@@ -46,7 +46,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   useEffect(() => {
     const imageAnnotations = images
       .reduce<Promise<Record<string, W3CAnnotation[]>>>((promise, image) => 
-        promise.then(agg =>
+        promise.then(agg => 
           store.getAnnotations(image.id, { type: 'image' }).then(a => ({ ...agg, [image.id]: a }))
         ), Promise.resolve({}));
 
