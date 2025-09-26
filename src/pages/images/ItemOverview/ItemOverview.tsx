@@ -8,6 +8,7 @@ import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
+import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 
 interface ItemOverviewProps {
 
@@ -46,7 +47,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   useEffect(() => {
     const imageAnnotations = images
       .reduce<Promise<Record<string, W3CAnnotation[]>>>((promise, image) => 
-        promise.then(agg =>
+        promise.then(agg => 
           store.getAnnotations(image.id, { type: 'image' }).then(a => ({ ...agg, [image.id]: a }))
         ), Promise.resolve({}));
 

@@ -3,7 +3,7 @@ import murmur from 'murmurhash';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
 import { Ban, Check, CloudDownload, Loader2, SquareLibrary } from 'lucide-react';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
-import type { W3CImageAnnotation } from '@annotorious/react';
+import type { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
@@ -14,6 +14,7 @@ import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { ErrorAlert } from './ErrorAlert';
 import { ImportFromCollection } from './ImportFromCollection';
+import { importAnnotations } from './importAnnotations';
 
 interface IIIFImporterProps {
 
@@ -104,36 +105,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           }))
         }
 
-        const annotations = parseResult.resource.canvases.reduce<W3CImageAnnotation[]>((all, canvas) => {
-          if ((canvas.annotations || []).length > 0) {
-            const canvasId = murmur.v3(canvas.id).toString();
-
-            const annotations = 
-              // @ts-ignore
-              canvas.annotations
-                .flatMap(p => (p.items || []))
-                .map(orig => {
-                  return serializeW3CImageAnnotation(
-                    parseW3CImageAnnotation(orig as W3CImageAnnotation).parsed, 
-                    `iiif:${id}:${canvasId}`
-                  )
-                }) as W3CImageAnnotation[];
-
-            // TODO crosswalk the following things:
-            // - (Maybe?) apply a new ID (UUID)
-            // - Replace target.source with `iiif:{id}:{canvasId}
-            // - 
-            return [...all, ...annotations];
-          } else {
-            return all;
-          }
-        }, []);
-
-        console.log(annotations);
-
-        store.importIIIFResource(info, props.folderId)
-          .then(() => store.bulkUpsertAnnotation(`iiif:${id}`, annotations))
-          .then(() => setOpen(false));
+        const annotations = importAnnotations(id, resource.canvases);
+        store.importIIIFResource(info, props.folderId, annotations).then(() => setOpen(false));
       });
     } else {
       // Should never happen

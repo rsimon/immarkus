@@ -64,7 +64,7 @@ export interface AnnotationStore {
 
   getRootFolder(): RootFolder;
 
-  importIIIFResource(info: IIIFResourceInformation, folderId?: string): Promise<IIIFResource>;
+  importIIIFResource(info: IIIFResourceInformation, folderId?: string, annotations?: W3CAnnotation[]): Promise<IIIFResource>;
 
   listImagesInFolder(folderId: string): Image[];
 
@@ -310,6 +310,7 @@ export const loadStore = (
 
     const normalizedId = _normalizeSourceId(sourceId);
     const cached = cachedAnnotations.get(normalizedId);
+
     if (cached) {
       // A precaution. The data model could have changed meanwhile
       const repaired = repairAnnotations(cached, datamodel);
@@ -505,7 +506,8 @@ export const loadStore = (
 
   const importIIIFResource = (
     info: IIIFResourceInformation, 
-    folderId?: string
+    folderId?: string,
+    annotations?: W3CAnnotation[]
   ) => new Promise<IIIFResource>(async (resolve, reject) => {
     const folder = folderId ? getFolder(folderId) : getRootFolder();
     if (!folder) {
@@ -531,6 +533,10 @@ export const loadStore = (
         }
 
         iiifResources.push(resource);
+
+        if ((annotations || []).length > 0)
+          await bulkUpsertAnnotation(`iiif:${info.id}`, annotations);
+
         resolve(resource);
       }
     }

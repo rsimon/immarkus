@@ -10,12 +10,19 @@ export const useStore = () => {
 
   // Make store reactive for selected methods
   const set = useCallback((p: Promise<void>) => p.then(() => setStore({...store })), []);
-  
+
+  const deleteAnnotation = useCallback((imageId: string, annotation: W3CAnnotation) => 
+    set(store.deleteAnnotation(imageId, annotation)), []);
+
+  const deleteRelation = useCallback((linkId: string) =>
+    set(store.deleteRelation(linkId)), []);
+
   const importIIIFResource = useCallback((
     info: IIIFResourceInformation, 
-    folderId?: string
+    folderId?: string,
+    annotations?: W3CAnnotation[]
   ) => {
-    return store.importIIIFResource(info, folderId).then(resource => {
+    return store.importIIIFResource(info, folderId, annotations).then(resource => {
       setStore({...store});
       return resource;
     })
@@ -23,12 +30,6 @@ export const useStore = () => {
 
   const removeIIIFResource = useCallback((resource: IIIFResource) =>
     set(store.removeIIIFResource(resource)), []); 
-
-  const deleteAnnotation = useCallback((imageId: string, annotation: W3CAnnotation) => 
-    set(store.deleteAnnotation(imageId, annotation)), []);
-
-  const deleteRelation = useCallback((linkId: string) =>
-    set(store.deleteRelation(linkId)), []);
 
   const upsertRelation = useCallback((
     link: W3CRelationLinkAnnotation, 
