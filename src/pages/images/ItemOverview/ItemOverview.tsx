@@ -8,7 +8,6 @@ import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
-import { ChartNoAxesColumnDecreasing } from 'lucide-react';
 
 interface ItemOverviewProps {
 
