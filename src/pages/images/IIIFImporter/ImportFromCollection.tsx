@@ -11,6 +11,7 @@ import { Button } from '@/ui/Button';
 import { Checkbox } from '@/ui/Checkbox';
 import { Separator } from '@/ui/Separator';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
+import { crosswalkAnnotations } from './importAnnotations';
 import { 
   Dialog, 
   DialogContent, 
@@ -132,7 +133,8 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
               }))
             }
 
-            return store.importIIIFResource(info, props.folderId).then(() => {});
+            const annotations = crosswalkAnnotations(id, resource.canvases);
+            return store.importIIIFResource(info, props.folderId, annotations).then(() => {});
           }
         }), Promise.resolve(undefined)).then(() => {
           setImporting(false);
