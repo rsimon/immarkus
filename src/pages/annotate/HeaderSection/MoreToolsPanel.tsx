@@ -14,11 +14,8 @@ import {
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
-  Spline, 
   Undo2 
 } from 'lucide-react';
-
-const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface MoreToolsPanelProps {
 
@@ -131,20 +128,9 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             <MessageCircleOff className="size-8 p-2" />
           </ToolbarButton>       
 
-          {ENABLE_CONNECTOR_PLUGIN ? (
-            <button 
-              className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              aria-selected={props.mode === 'relation'}
-              data-state={props.mode === 'relation'}
-              onClick={() => props.onChangeMode('relation')}>
-              <Spline
-                className="h-8 w-8 p-2" /> Connect
-            </button>
-          ) : (
-            <RelationEditor 
-              open={props.relationsEditorOpen}
-              onOpenChange={props.onRelationsEditorOpenChange} />
-          )}
+          <RelationEditor 
+            open={props.relationsEditorOpen}
+            onOpenChange={props.onRelationsEditorOpenChange} />
         </section>
       </PopoverContent>
     </Popover>

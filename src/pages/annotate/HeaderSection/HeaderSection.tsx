@@ -19,14 +19,11 @@ import {
   MousePointer2, 
   Redo2, 
   RotateCcwSquare, 
-  RotateCwSquare, 
-  Spline, 
+  RotateCwSquare,
   Undo2, 
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
-
-const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface HeaderSectionProps {
 
@@ -264,20 +261,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               <MessageCircleOff className="size-8 p-2" />
             </ToolbarButton>         
 
-            {ENABLE_CONNECTOR_PLUGIN ? (
-              <button 
-                className="pr-2.5 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                aria-selected={props.mode === 'relation'}
-                data-state={props.mode === 'relation'}
-                onClick={() => props.onChangeMode('relation')}>
-                <Spline
-                  className="size-8 p-2" /> Connect
-              </button>
-            ) : (
-              <RelationEditor 
-                open={relationsEditorOpen}
-                onOpenChange={onRelationsEditorOpenChange}/>
-            )}
+            <RelationEditor 
+              open={relationsEditorOpen}
+              onOpenChange={onRelationsEditorOpenChange}/>
           </>
         )}
         

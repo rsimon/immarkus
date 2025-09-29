@@ -29,7 +29,7 @@
     "@annotorious/plugin-magnetic-outline": "^0.1.7",
     "@annotorious/plugin-segment-anything": "^0.3.1",
     "@annotorious/plugin-tools": "^1.4.5",
-    "@annotorious/plugin-wires-react": "^0.6.2",
+    "@annotorious/plugin-wires-react": "^0.7.4",
     "@annotorious/react": "^3.7.8",
     "@annotorious/react-manifold": "^3.7.8",
     "@azure/cognitiveservices-computervision": "^8.2.0",

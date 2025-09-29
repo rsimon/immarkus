@@ -5,7 +5,6 @@ import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityBadge } from '@/components/EntityBadge';
 import { FontSize } from '@/components/FontSize';
-import { PluginConnectionsList } from '@/components/PluginConnectionsList';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Translation, TranslationArgs, TranslationSettings } from '@/components/Translation';
 import { useStore } from '@/store';
@@ -22,8 +21,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-
-const ENABLE_CONNECTOR_PLUGIN = import.meta.env.VITE_ENABLE_CONNECTOR_PLUGIN === 'true';
 
 interface PropertiesFormProps {
 
@@ -252,10 +249,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
             </Accordion>
           ) : null}
 
-          {ENABLE_CONNECTOR_PLUGIN ? (
-            <PluginConnectionsList 
-              annotation={annotation} />
-          ) : hasRelations && (
+          {hasRelations && (
             <RelationsList 
               annotation={annotation} 
               onUpdateRelationship={onChangeRelationship} />
