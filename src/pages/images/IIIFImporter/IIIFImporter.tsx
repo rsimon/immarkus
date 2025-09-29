@@ -3,6 +3,7 @@ import murmur from 'murmurhash';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
 import { Ban, Check, CloudDownload, Loader2, MessagesSquare, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { Spinner } from '@/components/Spinner';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -38,7 +39,9 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [parseResult, setParseResult] = useState<CozyParseResult | undefined>();
 
-  const [annotations, setAnnotations] = useState<{ total: number, valid: number } |  undefined>();
+  const [validatingAnnotations, setValidatingAnnotations] = useState(false);
+
+  const [annotationValidationResult, setAnnotationValidationResult] = useState<{ total: number, valid: number } |  undefined>();
 
   useEffect(() => {
     if (!open) {
@@ -49,7 +52,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   useEffect(() => {
     setParseResult(undefined);
-    setAnnotations(undefined);
+    setValidatingAnnotations(false)
+    setAnnotationValidationResult(undefined);
     setAlreadyImported(false);
 
     if (!uri) {
@@ -83,8 +87,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   useEffect(() => {
     if (parseResult?.type !== 'manifest') return;
-    const result = validateAnnotations(parseResult.resource.canvases);
-    setAnnotations(result);
+
+    setValidatingAnnotations(true);
+    validateAnnotations(parseResult.resource.canvases)
+      .then(setAnnotationValidationResult);
   }, [parseResult]);
 
   const onSubmit = (evt: React.FormEvent) => {
@@ -208,16 +214,30 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
                 <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
               </div>
 
-              {annotations && annotations.total > 0 
-                ? annotations.total === annotations.valid ? (
+              {annotationValidationResult && annotationValidationResult.total > 0 ? (
+                annotationValidationResult.total === annotationValidationResult.valid ? (
                   <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-                    <MessagesSquare className="size-4" /> {annotations.total} annotation{annotations.total > 1 ? 's' : ''} will be imported
+                    <MessagesSquare className="size-4" /> 
+                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} will be imported
                   </div>
                 ) : (
                   <div className="flex items-center gap-1.5 pl-0.5 text-amber-600">
-                    <MessagesSquare className="size-4" /> {annotations.total} annotation{annotations.total > 1 ? 's' : ''} - cannot import {annotations.total - annotations.valid} 
+                    <MessagesSquare className="size-4" /> 
+                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} - cannot 
+                    import {annotationValidationResult.total - annotationValidationResult.valid} 
                   </div>
-                ) : null}
+                )
+              ) : annotationValidationResult ? (
+                  <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
+                    <MessagesSquare className="size-4" /> 
+                    Manifest includes no annotations
+                  </div>
+              ) : validatingAnnotations && (
+                <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
+                  <Spinner className="size-4" /> 
+                  Resolving annotations
+                </div>
+              )}
             </>
           ) : parseResult?.type === 'webpage' ? (
             <div 

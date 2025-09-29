@@ -5,20 +5,17 @@ import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorio
 import type { AnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 
 export const validateAnnotations = (canvases: CozyCanvas[]) => {
-  const annotations = canvases.reduce<any[]>((all, canvas) => {
-    if ((canvas.annotations || []).length > 0) {
-      const annotations = canvas.annotations.flatMap(p => (p.items || []));
-      return [...all, ...annotations];
-    } else {
-      return all;
-    }
-  }, []);
+  return canvases.reduce<Promise<any[]>>((p, canvas) => p.then(all => {
+    return fetchAnnotations(canvas).then(onThisCanvas => {
+      return [...all, ...onThisCanvas];
+    });
+  }), Promise.resolve([])).then(annotations => {
+    const valid = annotations
+      .map(orig => parseW3CImageAnnotation(orig as W3CImageAnnotation))
+      .filter(t => t.parsed && !t.error);
 
-  const valid = annotations
-    .map(orig => parseW3CImageAnnotation(orig as W3CImageAnnotation))
-    .filter(t => t.parsed && !t.error);
-
-  return { total: annotations.length, valid: valid.length };
+    return { total: annotations.length, valid: valid.length };
+  });
 }
 
 /**
