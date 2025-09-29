@@ -12,8 +12,7 @@ import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { ErrorAlert } from './ErrorAlert';
 import { ImportFromCollection } from './ImportFromCollection';
-import { W3CImageAnnotation } from '@annotorious/react';
-import { crosswalkAnnotations, validateAnnotations } from './importAnnotations';
+import { importAnnotations, validateAnnotations } from './importAnnotations';
 
 interface IIIFImporterProps {
 
@@ -114,8 +113,9 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
           }))
         }
 
-        const annotations = crosswalkAnnotations(id, resource.canvases);
-        store.importIIIFResource(info, props.folderId, annotations).then(() => setOpen(false));
+        importAnnotations(id, resource.canvases)
+          .then(annotations => store.importIIIFResource(info, props.folderId, annotations))
+          .then(() => setOpen(false));
       });
     } else {
       // Should never happen

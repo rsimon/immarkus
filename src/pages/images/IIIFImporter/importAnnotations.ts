@@ -1,5 +1,6 @@
 import murmur from 'murmurhash';
 import { CozyCanvas } from 'cozy-iiif';
+import { fetchAnnotations } from 'cozy-iiif/helpers';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
 import type { AnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 
@@ -49,15 +50,13 @@ const crosswalkAnnotationBody = (bodies: AnnotationBody[]): AnnotationBody[] => 
   } as AnnotationBody]
 }
 
-export const crosswalkAnnotations = (manifestId: string, canvases: CozyCanvas[]): W3CImageAnnotation[] =>
-  canvases.reduce<W3CImageAnnotation[]>((all, canvas) => {
-    if ((canvas.annotations || []).length > 0) {
-      const canvasId = murmur.v3(canvas.id).toString();
+export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): Promise<W3CImageAnnotation[]> => 
+  canvases.reduce<Promise<W3CImageAnnotation[]>>((p, canvas) => p.then(all => {
+    return fetchAnnotations(canvas).then(onThisCanvas => {
+      if (onThisCanvas.length > 0) {
+        const canvasId = murmur.v3(canvas.id).toString();
 
-      const annotations = canvas.annotations
-        // Flatten annotation pages
-        .flatMap(p => (p.items || []))
-        .reduce<W3CImageAnnotation[]>((all, orig) => {
+        const normalized = onThisCanvas.reduce<W3CImageAnnotation[]>((all, orig) => {
           // Normalize annotations by "double"-crosswalking them
           const parsed = parseW3CImageAnnotation(orig as W3CImageAnnotation).parsed;
           if (parsed) {
@@ -73,8 +72,9 @@ export const crosswalkAnnotations = (manifestId: string, canvases: CozyCanvas[])
           }
         }, []);
 
-      return [...all, ...annotations];
-    } else {
-      return all;
-    }
-  }, []);
+        return [...all, ...normalized];
+      } else {
+        return all;
+      }
+    });
+  }), Promise.resolve([]));
