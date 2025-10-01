@@ -17,10 +17,10 @@ export const useCopyToClipboard = (
   const canCopy = useMemo(() => {
     if (selection.selected.length !== 1) return false;
 
-    const image = images.find(i => i.id === selection.id);
+    const image = images.find(i => i.id === selection.selected[0].annotatorId);
     if (!image) {
       // Should never happen
-      console.warn(`Invalid selection: image ${selection.id} not in workspace`);
+      console.warn(`Invalid selection: image ${selection.selected[0].annotatorId} not in workspace`);
       return false;
     }
 
@@ -32,7 +32,7 @@ export const useCopyToClipboard = (
   const copyToClipboard = useCallback(() => {
     if (!canCopy) return;
 
-    const image = images.find(i => i.id === selection.id);
+    const image = images.find(i => i.id === selection.selected[0].annotatorId);
     const annotation = selection.selected[0].annotation as ImageAnnotation;
     
     setStatus('busy');
