@@ -22,7 +22,7 @@ the following bibliographic information:
 __Platform__
 
 ```
-Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Dawn Zhuang, Meret Meister, 
+Hilde De Weerdt, Rainer Simon, Dawn Zhuang, Lee Sunkyu, Iva Stojević, Meret Meister, 
 and Xi Wangzhi. IMMARKUS: Image Annotation. 2024-. https://immarkus.xmarkus.org.
 ```
 
@@ -36,7 +36,7 @@ https://github.com/rsimon/immarkus.
 __Wiki__
 
 ```
-Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Dawn Zhuang. Image Annotation in
+Hilde De Weerdt, Rainer Simon, Dawn Zhuang, Lee Sunkyu, and Iva Stojević. Image Annotation in
 IMMARKUS Wiki. 2024-. https://github.com/rsimon/immarkus/wiki.
 ```
 
