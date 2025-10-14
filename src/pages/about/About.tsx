@@ -12,7 +12,7 @@ export const About = () => {
         <p className="p-1 mt-3 text-sm max-w-2xl leading-6">
           IMMARKUS: Image Annotation has been developed by Prof. Dr. Hilde De 
           Weerdt, <a className="text-sky-700 hover:underline" href="https://rainersimon.io" target="_blank">Dr. Rainer Simon</a>, 
-          Dr. Lee Sunkyu, Dr. Iva Stojević, Meret Meister, and Xi Wangzhi as part of the 
+          Dawn Zhuang, Dr. Lee Sunkyu, Dr. Iva Stojević, Meret Meister, and Xi Wangzhi as part of the 
           Regionalizing Infrastructures in Chinese History 
           (<a href="https://www.infrastructurelives.eu/" className="text-sky-700 hover:underline" target="_blank">RegInfra</a>) project.
         </p>
@@ -34,7 +34,7 @@ export const About = () => {
           </dt>
 
           <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
-            Hilde De Weerdt, Rainer Simon, Lee Sunkyu, Iva Stojević, Meret Meister, and Xi Wangzhi.
+            Hilde De Weerdt, Rainer Simon, Dawn Zhuang, Lee Sunkyu, Iva Stojević, Meret Meister, and Xi Wangzhi.
             IMMARKUS: Image Annotation. 2024. <a className="text-sky-700 hover:underline" href="https://immarkus.xmarkus.org" target="_blank">immarkus.xmarkus.org</a>.
           </dd>
           
@@ -51,7 +51,7 @@ export const About = () => {
           </dt>
 
           <dd className="px-1.5 text-sm max-w-xl leading-6 bg-muted py-1 rounded-sm">
-            Hilde De Weerdt, Rainer Simon, Lee Sunkyu, and Iva Stojević. Instructions 
+            Hilde De Weerdt, Rainer Simon, Dawn Zhuang, Lee Sunkyu, and Iva Stojević. Instructions 
             for Image Annotation in IMMARKUS. 2024. <a className="text-sky-700 hover:underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">github.com/rsimon/immarkus/wiki</a>.
           </dd>
         </dl>
