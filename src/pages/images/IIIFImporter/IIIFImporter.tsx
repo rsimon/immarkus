@@ -74,10 +74,12 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
         Cozy.parseURL(uri)
           .then(result => {
+            console.log('RESULT', uri, result);
             setBusy(false);
             setParseResult(result);
           })
           .catch(error => {
+            console.log('error!');
             console.error(error);
             setBusy(false);
           });
