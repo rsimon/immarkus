@@ -23,7 +23,7 @@ const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
 const getInitialService = (available: ServiceConnectorConfig[]): TranslationSettings => {
   const getFirst = () => {
     const connector = available[0];
-    const service = available[0].services.find(s => s.type === 'TRANSLATION');
+    const service = connector?.services.find(s => s.type === 'TRANSLATION');
     return { connector, service, index: 0 };
   }
 
@@ -81,7 +81,8 @@ export const TranslateButton = (props: TranslateButtonProps) => {
   // Persist changes to locaStorage
   useEffect(() => {
     const { connector, index } = selectedService;
-    setPersistedService(connector.id, index);
+    if (connector)
+      setPersistedService(connector.id, index);
   }, [selectedService]);
 
   const onClickTranslate = () => props.onClickTranslate({
@@ -89,7 +90,7 @@ export const TranslateButton = (props: TranslateButtonProps) => {
     language: targetLanguage
   });
 
-  return (
+  return availableConnectors.length > 0 ? (
     <Tooltip>
       <TooltipTrigger asChild>
         <div 
@@ -119,6 +120,6 @@ export const TranslateButton = (props: TranslateButtonProps) => {
         Show translation
       </TooltipContent>
     </Tooltip>
-  )
+  ) : null;
 
 }
