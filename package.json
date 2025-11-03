@@ -12,7 +12,7 @@
     "@tailwindcss/vite": "^4.1.16",
     "@types/chroma-js": "^3.1.2",
     "@types/node": "^24.10.0",
-    "@types/openseadragon": "^4.1.0",
+    "@types/openseadragon": "^5.0.1",
     "@types/react": "^19.2.2",
     "@types/react-autosuggest": "^10.1.11",
     "@types/react-dom": "^19.2.2",
