@@ -41,6 +41,8 @@ interface AnnotatableImageProps {
 
   tool: Tool;
 
+  onInitError(error: Error): void;
+
   onUnmount(history: History<ImageAnnotation>): void;
 
 }
@@ -117,7 +119,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         initialHistory={props.initialHistory}
         userSelectAction={(props.mode === 'relation' || !props.mode) ? UserSelectAction.NONE : undefined}
         style={style}
-        tool={props.tool}>
+        tool={props.tool}
+        onInitError={props.onInitError}>
 
         <HistoryConsumer 
           onUnmount={props.onUnmount} />

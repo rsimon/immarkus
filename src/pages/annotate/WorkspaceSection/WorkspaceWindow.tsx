@@ -38,6 +38,8 @@ interface WorkspaceWindowProps {
 
   onClose(): void;
 
+  onInitError(error: Error): void;
+
   onUnmount(history: History<ImageAnnotation>): void;
 
 }
@@ -168,6 +170,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
         initialHistory={props.initialHistory}
         mode={props.mode}
         tool={props.tool} 
+        onInitError={props.onInitError}
         onUnmount={props.onUnmount} />
     </MosaicWindow>
   )

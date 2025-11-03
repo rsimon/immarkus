@@ -18,6 +18,7 @@ import { WorkspaceSection} from './WorkspaceSection';
 import './Annotate.css';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
+import { GPUDisabledError } from './GPUDisabledError';
 
 export const Annotate = () => {
 
@@ -38,6 +39,8 @@ export const Annotate = () => {
   const [tool, setTool] = useState<Tool>('rectangle');
 
   const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
+
+  const [initError, setInitError] = useState<Error | undefined>();
 
   const onCloseSmartPanel = useCallback(() => {
     setMode('move');
@@ -98,7 +101,9 @@ export const Annotate = () => {
                       onHideAnnotations={setHideAnnotations}
                       onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
 
-                    {images.length > 0 ? ( 
+                    {initError ? (
+                      <GPUDisabledError />
+                    ) : images.length > 0 ? ( 
                       <WorkspaceSection 
                         images={images} 
                         hideAnnotations={hideAnnotations}
@@ -106,6 +111,7 @@ export const Annotate = () => {
                         tool={tool} 
                         onAddImage={onAddImage} 
                         onChangeImages={imageIds => setImageIds(imageIds)}
+                        onInitError={error => setInitError(error)}
                         onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
                     ) : (
                       <div className="flex items-center justify-center h-full bg-muted">
