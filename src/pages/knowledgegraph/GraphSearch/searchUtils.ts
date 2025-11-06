@@ -348,6 +348,11 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
   return Promise.all([folderMetadata, imageMetadata]).then(res => res.flat());
 }
 
+export type PropertyCondition = 
+  | { operator: 'EQUALS'; value: string }
+  | { operator: 'IS_NOT_EMPTY' }
+  | { operator: 'IS_EMPTY' };
+  
 const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) => {
   // Match all non-empty
   if (!value) return true;
@@ -366,7 +371,7 @@ export const findImagesByMetadata = (
   store: Store, 
   propertyType: 'FOLDER' | 'IMAGE', 
   propertyName: string, 
-  value?: string,
+  condition: PropertyCondition,
   builtIn?: boolean
 ): Promise<(Image | CanvasInformation)[]> => {
   const { folders, images } = store;
@@ -384,7 +389,10 @@ export const findImagesByMetadata = (
 
   if (builtIn) {
     if (propertyType === 'FOLDER' && propertyName === 'folder name') {
-      if (!value) {
+      if (condition.operator === 'IS_EMPTY') {
+        // Folder name is never empty
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
         // All images in sub-folders
         const root = store.getFolderContents(store.getRootFolder().handle);
         const imagesInRoot = new Set(root.images.map(i => i.id));
@@ -399,7 +407,7 @@ export const findImagesByMetadata = (
           ...canvases
         ]);
       } else {
-        const folder = folderLike.find(f => f.name === value);
+        const folder = folderLike.find(f => f.name === condition.value);
         if (folder) {
           if ('uri' in folder) {
             return Promise.resolve(folder.canvases);
@@ -411,9 +419,14 @@ export const findImagesByMetadata = (
         }
       }
     } else if (propertyType === 'IMAGE' && propertyName === 'image filename') {
-      // Trivial case: image filename is never empty;
-      if (!value) return Promise.resolve(imageLike);
-      return Promise.resolve(imageLike.filter(i => i.name === value)); 
+      // Image filename is never empty;
+      if (condition.operator === 'IS_EMPTY') {
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
+        return Promise.resolve(imageLike);
+      } else {
+        return Promise.resolve(imageLike.filter(i => i.name === condition.value)); 
+      }        
     } else {
       console.error('Unsupported built-in property', propertyType, propertyName);
       return Promise.resolve([]);
@@ -431,8 +444,9 @@ export const findImagesByMetadata = (
     return promise.then(metadata => {
       return metadata
         .filter(({ metadata }) =>
-          metadata.find(m => 
-            m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
+          metadata.find(m => {
+            return m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)
+          }))
         .map(({ image }) => image);
     });
   }
