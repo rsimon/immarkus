@@ -135,7 +135,7 @@ export const AddImage = (props: AddImageProps) => {
           <input 
             autoFocus
             placeholder="Search..."
-            className="relative top-[1px] py-1 outline-hidden px-0.5 grow text-sm" 
+            className="relative top-px py-1 outline-hidden px-0.5 grow text-sm" 
             value={query} 
             onChange={evt => setQuery(evt.target.value)} />
         </div>

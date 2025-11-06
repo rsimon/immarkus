@@ -77,6 +77,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
 
                 <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
                   <SingleCanvasManifestItemActions
+                    manifest={props.resource}
                     canvas={info}
                     onDelete={props.onDelete}
                     onSelectCanvas={onSelectCanvas} 
