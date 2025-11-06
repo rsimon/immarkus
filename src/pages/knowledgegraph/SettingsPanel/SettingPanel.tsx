@@ -132,7 +132,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
           onValueChange={(graphMode: 'HIERARCHY' | 'RELATIONS') => props.onChangeSettings({...settings, graphMode })}>
           <div className="flex items-start gap-3 pl-1">
             <RadioGroupItem 
-              className="mt-[2px] shrink-0"
+              className="mt-0.5 shrink-0"
               value="HIERARCHY" 
               id="HIERARCHY" />
 
@@ -146,7 +146,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
           <div className="flex items-start gap-3 pl-1">
             <RadioGroupItem 
-              className="mt-[2px] shrink-0"
+              className="mt-0.5 shrink-0"
               value="RELATIONS" 
               id="RELATIONS" />
 

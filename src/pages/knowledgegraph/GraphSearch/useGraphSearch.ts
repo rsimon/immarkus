@@ -106,7 +106,7 @@ export const useGraphSearch = (
           findImagesByMetadata(store, type, propertyName, condition, s.Attribute.builtIn).then(results =>
             setMatches(results.map(image => 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id)));  
         } else {
-          findFoldersByMetadata(store, graph, propertyName, /* condition */ null, s.Attribute.builtIn)
+          findFoldersByMetadata(store, graph, propertyName, condition, s.Attribute.builtIn)
             .then(setMatches);
         }
       }

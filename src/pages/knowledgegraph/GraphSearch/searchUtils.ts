@@ -350,8 +350,8 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
 
 export type PropertyCondition = 
   | { operator: 'EQUALS'; value: string }
-  | { operator: 'IS_NOT_EMPTY' }
-  | { operator: 'IS_EMPTY' };
+  | { operator: 'IS_NOT_EMPTY', value?: undefined }
+  | { operator: 'IS_EMPTY', value?: undefined };
   
 const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) => {
   // Match all non-empty
@@ -443,10 +443,15 @@ export const findImagesByMetadata = (
 
     return promise.then(metadata => {
       return metadata
-        .filter(({ metadata }) =>
-          metadata.find(m => {
-            return m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)
-          }))
+        .filter(({ metadata }) => {
+          if (condition.operator === 'IS_EMPTY') {
+            return !metadata.some(m => m.type === propertyType && m.propertyName === propertyName && m.value);
+          } else {
+            return metadata.find(m => {
+              return m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, condition.value)
+            });
+          }
+        })
         .map(({ image }) => image);
     });
   }
@@ -457,7 +462,7 @@ export const findFoldersByMetadata = (
   store: Store, 
   graph: Graph,
   propertyName: string, 
-  value?: string,
+  condition: PropertyCondition,
   builtin?: boolean
 ): Promise<string[]> => {
   const folderLike = [
@@ -478,9 +483,15 @@ export const findFoldersByMetadata = (
     ];
 
     if (propertyName === 'folder name') {
-      return value 
-        ? Promise.resolve(items.filter(f => f.name === value).map(i => i.id))
-        : Promise.resolve(items.map(i => i.id));
+      if (condition.operator === 'IS_EMPTY') {
+        // Folder name is never empty
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
+        // All items
+        return Promise.resolve(items.map(i => i.id));
+      } else {
+        return Promise.resolve(items.filter(f => f.name === condition.value).map(i => i.id))
+      }
     } else {
       console.error('Unsupported built-in folder property', propertyName);
       return Promise.resolve([]);
@@ -501,9 +512,15 @@ export const findFoldersByMetadata = (
 
     return promise.then(metadata => {
       return metadata
-        .filter(({ metadata }) =>
-          metadata.find(m => 
-            m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .filter(({ metadata }) => {
+          if (condition.operator === 'IS_EMPTY') {
+            return !metadata.some(m => m.propertyName === propertyName && m.value);
+          } else {
+            return metadata.find(m => {
+              return m.propertyName === propertyName && hasMatchingValue(m, condition.value)
+            })
+          }
+        })
         .map(({ folder }) => folder.id);
     });
   }
