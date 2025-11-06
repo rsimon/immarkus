@@ -571,19 +571,24 @@ export const findImagesByEntityConditions = (
 
       // Check if any body matches the given query conditions.
       return bodies.some(body => {
-        if (!('properties' in body)) return false;
-
         return conditions.every(c => { 
           if (!c.Attribute || !c.Comparator) return; 
 
           if (c.Comparator === 'IS' && !c.Value) return;
 
           const definition = type.properties.find(p => p.name === c.Attribute.value);
-          if (definition) {
-            const serialized = serializePropertyValue(definition, body.properties[c.Attribute.value]);
-            return c.Comparator === 'IS'
-              ? serialized.includes(c.Value.value)
-              : serialized.length > 0;
+          const properties = 'properties' in body ? body.properties : null;
+          if (definition && properties) {
+            const serialized = serializePropertyValue(definition, properties[c.Attribute.value]);
+            if (c.Comparator === 'IS') {
+              return serialized.includes(c.Value.value);
+            } else if (c.Comparator === 'IS_EMPTY') {
+              return serialized.length === 0;
+            } else {
+              return serialized.length > 0;
+            }
+          } else if (definition) {
+            return c.Comparator === 'IS_EMPTY'
           }
         });
       });
