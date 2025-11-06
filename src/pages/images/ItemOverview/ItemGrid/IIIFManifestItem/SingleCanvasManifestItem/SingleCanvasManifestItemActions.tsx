@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Image, Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { CanvasInformation } from '@/model';
+import { CanvasInformation, IIIFManifestResource } from '@/model';
+import { IIIFOpenInViewerAction } from '../../../IIIFOpenInViewerAction';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +13,10 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
-import { IIIFOpenInViewerAction } from '../../../IIIFOpenInViewerAction';
 
 interface SingleCanvasManifestItemActionsProps {
+
+  manifest: IIIFManifestResource;
 
   canvas: CanvasInformation;
 
@@ -66,7 +68,7 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
             </Link>
           </DropdownMenuItem>
 
-          <IIIFOpenInViewerAction />
+          <IIIFOpenInViewerAction manifest={props.manifest} />
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
               <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />

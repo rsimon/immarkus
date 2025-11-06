@@ -152,7 +152,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
                 </Link>
               </DropdownMenuItem>
 
-              <IIIFOpenInViewerAction />
+              <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
             </>
           ) : (
             <DropdownMenuItem asChild>

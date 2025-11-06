@@ -1,5 +1,6 @@
 import { MouseEvent, useState } from 'react';
-import { ChevronDown, ClipboardCheck, Share2 } from 'lucide-react';
+import { ChevronDown, Share2 } from 'lucide-react';
+import { CopyManifestURL } from '@/components/CopyManifestURL';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
 import { 
@@ -9,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { IIIFIcon } from '@/components/IIIFIcon';
 
 interface IIIFOpenOtherViewerProps {
 
@@ -45,7 +45,7 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
         alignOffset={20}>
         <DropdownMenuItem asChild className="text-xs">
           <a 
-            href={` https://samvera-labs.github.io/clover-iiif/docs/viewer/demo?iiif-content=${encodeURIComponent(props.manifest.uri)}`}
+            href={`https://samvera-labs.github.io/clover-iiif/docs/viewer/demo?iiif-content=${encodeURIComponent(props.manifest.uri)}`}
             target="_blank">
             Clover
           </a>
@@ -93,16 +93,8 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onSelect={evt => evt.preventDefault} asChild>
-          <button 
-            onClick={onCopyManifestURL}
-            className="w-full flex items-center gap-1.5 cursor-pointer text-xs text-muted-foreground">
-            {copied ? (
-              <ClipboardCheck className="size-4 text-green-700" /> 
-            ) : (
-              <IIIFIcon color className="size-4" />
-            )} <span className="mt-[1px]">Copy Manifest URL</span>
-          </button>
+        <DropdownMenuItem onSelect={evt => evt.preventDefault}>
+          <CopyManifestURL manifest={props.manifest} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
