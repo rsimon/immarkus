@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
-import { IIIFResource } from '@/model';
+import { IIIFManifestResource, IIIFResource } from '@/model';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
+import { IIIFOpenInViewerAction } from '../../IIIFOpenInViewerAction';
 
 interface IIIFManifestItemActionsProps {
 
@@ -45,8 +46,10 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
             </Link>
           </DropdownMenuItem>
 
+          <IIIFOpenInViewerAction manifest={props.resource as IIIFManifestResource} />
+
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
-              <Trash2 className="size-4 mr-2 mb-[1px] text-red-700/70" />
+              <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
               <span className="text-red-700 hover:text-red-700">Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
