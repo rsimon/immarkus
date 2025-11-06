@@ -146,7 +146,7 @@ export interface NestedConditionSentence extends BaseSentence {
 
 export type Sentence = SimpleConditionSentence | NestedConditionSentence | CustomSentence;
 
-export type Comparator = 'IS' | 'IS_NOT_EMPTY';
+export type Comparator = 'IS' | 'IS_EMPTY' | 'IS_NOT_EMPTY';
 
 export interface SubCondition {
 

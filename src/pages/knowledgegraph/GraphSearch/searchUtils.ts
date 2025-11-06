@@ -348,6 +348,11 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
   return Promise.all([folderMetadata, imageMetadata]).then(res => res.flat());
 }
 
+export type PropertyCondition = 
+  | { operator: 'EQUALS'; value: string }
+  | { operator: 'IS_NOT_EMPTY', value?: undefined }
+  | { operator: 'IS_EMPTY', value?: undefined };
+  
 const hasMatchingValue = (propertyValue: SchemaPropertyValue, value?: string) => {
   // Match all non-empty
   if (!value) return true;
@@ -366,7 +371,7 @@ export const findImagesByMetadata = (
   store: Store, 
   propertyType: 'FOLDER' | 'IMAGE', 
   propertyName: string, 
-  value?: string,
+  condition: PropertyCondition,
   builtIn?: boolean
 ): Promise<(Image | CanvasInformation)[]> => {
   const { folders, images } = store;
@@ -384,7 +389,10 @@ export const findImagesByMetadata = (
 
   if (builtIn) {
     if (propertyType === 'FOLDER' && propertyName === 'folder name') {
-      if (!value) {
+      if (condition.operator === 'IS_EMPTY') {
+        // Folder name is never empty
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
         // All images in sub-folders
         const root = store.getFolderContents(store.getRootFolder().handle);
         const imagesInRoot = new Set(root.images.map(i => i.id));
@@ -399,7 +407,7 @@ export const findImagesByMetadata = (
           ...canvases
         ]);
       } else {
-        const folder = folderLike.find(f => f.name === value);
+        const folder = folderLike.find(f => f.name === condition.value);
         if (folder) {
           if ('uri' in folder) {
             return Promise.resolve(folder.canvases);
@@ -411,9 +419,14 @@ export const findImagesByMetadata = (
         }
       }
     } else if (propertyType === 'IMAGE' && propertyName === 'image filename') {
-      // Trivial case: image filename is never empty;
-      if (!value) return Promise.resolve(imageLike);
-      return Promise.resolve(imageLike.filter(i => i.name === value)); 
+      // Image filename is never empty;
+      if (condition.operator === 'IS_EMPTY') {
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
+        return Promise.resolve(imageLike);
+      } else {
+        return Promise.resolve(imageLike.filter(i => i.name === condition.value)); 
+      }        
     } else {
       console.error('Unsupported built-in property', propertyType, propertyName);
       return Promise.resolve([]);
@@ -430,9 +443,15 @@ export const findImagesByMetadata = (
 
     return promise.then(metadata => {
       return metadata
-        .filter(({ metadata }) =>
-          metadata.find(m => 
-            m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .filter(({ metadata }) => {
+          if (condition.operator === 'IS_EMPTY') {
+            return !metadata.some(m => m.type === propertyType && m.propertyName === propertyName && m.value);
+          } else {
+            return metadata.find(m => {
+              return m.type === propertyType && m.propertyName === propertyName && hasMatchingValue(m, condition.value)
+            });
+          }
+        })
         .map(({ image }) => image);
     });
   }
@@ -443,7 +462,7 @@ export const findFoldersByMetadata = (
   store: Store, 
   graph: Graph,
   propertyName: string, 
-  value?: string,
+  condition: PropertyCondition,
   builtin?: boolean
 ): Promise<string[]> => {
   const folderLike = [
@@ -464,9 +483,15 @@ export const findFoldersByMetadata = (
     ];
 
     if (propertyName === 'folder name') {
-      return value 
-        ? Promise.resolve(items.filter(f => f.name === value).map(i => i.id))
-        : Promise.resolve(items.map(i => i.id));
+      if (condition.operator === 'IS_EMPTY') {
+        // Folder name is never empty
+        return Promise.resolve([]);
+      } else if (condition.operator === 'IS_NOT_EMPTY') {
+        // All items
+        return Promise.resolve(items.map(i => i.id));
+      } else {
+        return Promise.resolve(items.filter(f => f.name === condition.value).map(i => i.id))
+      }
     } else {
       console.error('Unsupported built-in folder property', propertyName);
       return Promise.resolve([]);
@@ -487,9 +512,15 @@ export const findFoldersByMetadata = (
 
     return promise.then(metadata => {
       return metadata
-        .filter(({ metadata }) =>
-          metadata.find(m => 
-            m.propertyName === propertyName && hasMatchingValue(m, value)))
+        .filter(({ metadata }) => {
+          if (condition.operator === 'IS_EMPTY') {
+            return !metadata.some(m => m.propertyName === propertyName && m.value);
+          } else {
+            return metadata.find(m => {
+              return m.propertyName === propertyName && hasMatchingValue(m, condition.value)
+            })
+          }
+        })
         .map(({ folder }) => folder.id);
     });
   }
@@ -540,19 +571,24 @@ export const findImagesByEntityConditions = (
 
       // Check if any body matches the given query conditions.
       return bodies.some(body => {
-        if (!('properties' in body)) return false;
-
         return conditions.every(c => { 
           if (!c.Attribute || !c.Comparator) return; 
 
           if (c.Comparator === 'IS' && !c.Value) return;
 
           const definition = type.properties.find(p => p.name === c.Attribute.value);
-          if (definition) {
-            const serialized = serializePropertyValue(definition, body.properties[c.Attribute.value]);
-            return c.Comparator === 'IS'
-              ? serialized.includes(c.Value.value)
-              : serialized.length > 0;
+          const properties = 'properties' in body ? body.properties : null;
+          if (definition && properties) {
+            const serialized = serializePropertyValue(definition, properties[c.Attribute.value]);
+            if (c.Comparator === 'IS') {
+              return serialized.includes(c.Value.value);
+            } else if (c.Comparator === 'IS_EMPTY') {
+              return serialized.length === 0;
+            } else {
+              return serialized.length > 0;
+            }
+          } else if (definition) {
+            return c.Comparator === 'IS_EMPTY'
           }
         });
       });

@@ -23,11 +23,13 @@ import {
   listAllMetadataProperties, 
   listAllNotes, 
   listFolderMetadataProperties, 
-  listMetadataValues 
+  listMetadataValues, 
+  PropertyCondition
 } from './searchUtils';
 
 const ComparatorOptions = [
   { label: 'is', value: 'IS' }, 
+  { label: 'is empty', value: 'IS_EMPTY' },
   { label: 'is not empty', value: 'IS_NOT_EMPTY'}
 ];
 
@@ -94,13 +96,17 @@ export const useGraphSearch = (
         });
       } else {
         const [type, propertyName] = resolveAttribute(s.Attribute);
-        const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value.value;
+        // const value = s.Comparator === 'IS_NOT_EMPTY' ? undefined : s.Value?.value;
+
+        const condition: PropertyCondition = 
+          s.Comparator === 'IS' ? { operator: 'EQUALS', value: s.Value.value } :
+          { operator: s.Comparator };
 
         if (objectType === 'IMAGE') {
-          findImagesByMetadata(store, type, propertyName, value, s.Attribute.builtIn).then(results =>
+          findImagesByMetadata(store, type, propertyName, condition, s.Attribute.builtIn).then(results =>
             setMatches(results.map(image => 'uri' in image ? `iiif:${image.manifestId}:${image.id}` : image.id)));  
         } else {
-          findFoldersByMetadata(store, graph, propertyName, value, s.Attribute.builtIn)
+          findFoldersByMetadata(store, graph, propertyName, condition, s.Attribute.builtIn)
             .then(setMatches);
         }
       }

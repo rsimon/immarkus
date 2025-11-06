@@ -6,6 +6,7 @@ import { DropdownOption } from '../Types';
 
 const comparatorOptions = [
   { label: 'is', value: 'IS' }, 
+  { label: 'is empty', value: 'IS_EMPTY' },
   { label: 'is not empty', value: 'IS_NOT_EMPTY'}
 ];
 
