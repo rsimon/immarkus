@@ -155,11 +155,15 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
             </>
           ) : (
-            <DropdownMenuItem asChild>
-              <Link to={`/images/${props.data.id}`}>
-                <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild>
+                <Link to={`/images/${props.data.id}`}>
+                  <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
+                </Link>
+              </DropdownMenuItem>
+
+              <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
+            </>
           )}
 
           {isManifest && (
