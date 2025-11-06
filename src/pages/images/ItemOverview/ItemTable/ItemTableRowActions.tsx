@@ -17,6 +17,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
+import { IIIFOpenInViewerAction } from '../IIIFOpenInViewerAction';
 
 interface ItemTableRowActions {
 
@@ -144,11 +145,15 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               </Link>
             </DropdownMenuItem>
           ) : isSingleCanvas ? (
-            <DropdownMenuItem asChild>
-              <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
-                <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild>
+                <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
+                  <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
+                </Link>
+              </DropdownMenuItem>
+
+              <IIIFOpenInViewerAction />
+            </>
           ) : (
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
@@ -159,7 +164,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
           {isManifest && (
             <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
-                <Trash2 className="size-4 mr-2 mb-[1px] text-red-700/70" />
+                <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
                 <span className="text-red-700 hover:text-red-700">Delete</span>
             </DropdownMenuItem>
           )}
