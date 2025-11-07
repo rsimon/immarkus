@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
+import { ArrowLeft, ImagePlus, MessageSquareOff, Search } from 'lucide-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import { Toggle } from '@/ui/Toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearch } from './useSearch';
 import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
@@ -35,6 +36,8 @@ export const AddImage = (props: AddImageProps) => {
 
   const [open, setOpen] = useState(false);
 
+  const [hideUnannotated, setHideUnannotated] = useState(false);
+
   const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder | IIIFResource>(store.getRootFolder());
 
   const isRootLevel = !('canvases' in currentFolder) && !('parent' in currentFolder);
@@ -42,6 +45,10 @@ export const AddImage = (props: AddImageProps) => {
   const [query, setQuery] = useState<string>('');
 
   const [items, setItems] = useState<{ item: AddImageListItem, annotations: number }[]>([]);
+
+  const filteredItems = useMemo(() => {
+    return hideUnannotated ? items.filter(i => i.annotations > 0) : items
+  }, [items, hideUnannotated]);
 
   const getInitialContents = useCallback(() => {
     const root = store.getRootFolder();
@@ -145,7 +152,7 @@ export const AddImage = (props: AddImageProps) => {
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">
-        <div className="px-1 py-2 mb-2 flex border-b items-center">
+        <div className="pl-1 pr-2 py-2 mb-2 flex border-b items-center">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
           <input 
@@ -154,6 +161,21 @@ export const AddImage = (props: AddImageProps) => {
             className="relative top-px py-1 outline-hidden px-0.5 grow text-sm" 
             value={query} 
             onChange={evt => setQuery(evt.target.value)} />
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Toggle 
+                size="sm"
+                pressed={hideUnannotated}
+                onPressedChange={setHideUnannotated}>
+                <MessageSquareOff className="size-4" />
+              </Toggle>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              Hide unannotated
+            </TooltipContent>
+          </Tooltip>
         </div>
         
         {!(isRootLevel || query) && (
@@ -173,7 +195,7 @@ export const AddImage = (props: AddImageProps) => {
 
         <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
-            {items.map(entry => 
+            {filteredItems.map(entry => 
               isFolder(entry.item) || isIIIManifestResource(entry.item) ? (
                 <FolderListItem 
                   key={entry.item.id} 
