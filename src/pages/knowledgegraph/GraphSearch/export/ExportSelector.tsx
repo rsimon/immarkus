@@ -85,7 +85,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
             variant="link"
             size="sm"
             className="flex items-center text-xs py-0 px-0 font-normal">
-            <Download className="h-3.5 w-3.5 mr-1.5 mb-[1px]" /> 
+            <Download className="h-3.5 w-3.5 mr-1.5 mb-px" /> 
             Export Search Result 
             <ChevronDown className="h-3.5 w-3.5 ml-0.5" />
           </Button>
