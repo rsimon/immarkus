@@ -1,13 +1,13 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
-import { CanvasInformation, EntityType, Image, PropertyDefinition } from '@/model';
+import { CanvasInformation, EntityType, IIIFManifestResource, Image, PropertyDefinition } from '@/model';
 import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths } from './utils';
+import { resolveManifestsWithId } from '@/utils/iiif';
+import { CozyManifest } from 'cozy-iiif';
 
-interface ImageAnnotationSnippetTuple {
-
-  image: Image | CanvasInformation;
+interface BaseSourceAnnotationSnippetTuple {
 
   path: string[];
 
@@ -16,6 +16,22 @@ interface ImageAnnotationSnippetTuple {
   snippet?: ImageSnippet;
 
 }
+
+interface ImageAnnotationSnippetTuple extends BaseSourceAnnotationSnippetTuple {
+
+  image: Image;
+
+}
+
+interface CanvasAnnotationSnippetTuple extends BaseSourceAnnotationSnippetTuple {
+
+  image: CanvasInformation;
+
+  manifest: CozyManifest;
+
+}
+
+type SourceAnnotationSnippetTuple = ImageAnnotationSnippetTuple | CanvasAnnotationSnippetTuple;
 
 /**
  * Creates a list of all PropertyDefinitions in this EntityType, and all
@@ -43,9 +59,17 @@ const aggregateSchemaFields = (types: EntityType[]): PropertyDefinition[] =>
     [...agg, ...(type.properties || [])]
   ), []);
 
+const getIIIFPath = (tuple: SourceAnnotationSnippetTuple) => {
+  if (!('uri' in tuple.image) || !('manifest' in tuple)) return;
+
+  const canvasId = tuple.image.uri;
+  const nodes = tuple.manifest.getTableOfContents().getBreadcrumbs(canvasId);
+  return nodes.map(n => n.getLabel()).join('/');
+} 
+
 const createEntityWorksheet = (
   workbook: any, 
-  annotations: ImageAnnotationSnippetTuple[], 
+  annotations: SourceAnnotationSnippetTuple[], 
   entityType: EntityType,
   store: Store
 ) => {
@@ -61,6 +85,8 @@ const createEntityWorksheet = (
     { header: 'Snippet', key: 'snippet', width: 30 },
     { header: 'Image Filename', key: 'image', width: 30 },
     { header: 'Folder Name', key: 'folder', width: 30 },
+    { header: 'IIIF Manifest Name', key: 'iiif_manifest', width: 60 },
+    { header: 'IIIF ToC Path', key: 'iiif_path', width: 60 },
     { header: 'Annotation ID', key: 'id', width: 20 },
     { header: 'Created', key: 'created', width: 20 },
     { header: 'Entity Class', key: 'entity', width: 20 },
@@ -96,7 +122,9 @@ const createEntityWorksheet = (
 
   let rowIndex = 1;
 
-  annotations.forEach(({ annotation, image, path, snippet }) => {
+  annotations.forEach(tuple => {
+    const { annotation, image, path, snippet } = tuple;
+
     // All bodies that point to this entity, or to an entity that's a child of this entity
     const entityBodies = (Array.isArray(annotation.body) ? annotation.body : [annotation.body])
       .filter(isDescendant);
@@ -106,6 +134,8 @@ const createEntityWorksheet = (
       const row = {
         image: image.name,
         folder: path.join('/'),
+        iiif_manifest: 'manifest' in tuple ? tuple.manifest.getLabel() : undefined,
+        iiif_path: getIIIFPath(tuple),
         id: annotation.id,
         created: annotation.created,
         entity: body.source
@@ -133,7 +163,7 @@ const createEntityWorksheet = (
 
 const createNotesWorksheet = (
   workbook: any, 
-  annotations: ImageAnnotationSnippetTuple[]
+  annotations: SourceAnnotationSnippetTuple[]
 ) => {
   const worksheet = workbook.addWorksheet('Notes');
 
@@ -141,6 +171,8 @@ const createNotesWorksheet = (
     { header: 'Snippet', key: 'snippet', width: 30 },
     { header: 'Image Filename', key: 'image', width: 30 },
     { header: 'Folder Name', key: 'folder', width: 30 },
+    { header: 'IIIF Manifest Name', key: 'iiif_manifest', width: 60 },
+    { header: 'IIIF ToC Path', key: 'iiif_path', width: 60 },
     { header: 'Annotation ID', key: 'id', width: 20 },
     { header: 'Created', key: 'created', width: 20 },
     { header: 'Note', key: 'note', width: 50 }
@@ -148,13 +180,17 @@ const createNotesWorksheet = (
 
   let rowIndex = 1;
 
-  annotations.forEach(({ annotation, image, path, snippet }) => {
+  annotations.forEach(tuple => {
+    const { annotation, image, path, snippet } = tuple;
+
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
     const note = bodies.find(b => b.purpose === 'commenting')?.value;
     if (note) {
       worksheet.addRow({
         image: image.name,
         folder: path.join('/'),
+        iiif_manifest: 'manifest' in tuple ? tuple.manifest.getLabel() : undefined,
+        iiif_path: getIIIFPath(tuple),
         id: annotation.id,
         created: annotation.created,
         note
@@ -180,31 +216,55 @@ export const exportAnnotationsAsExcel = (
   const model = store.getDataModel();
   const root = store.getRootFolder().handle;
 
+  const canvases = images.filter(i => 'uri' in i);
+
+  const manifests = [
+    ...new Set(canvases.map(c => c.manifestId))
+  ].map(id => store.getIIIFResource(id) as IIIFManifestResource);
+
   // One step for comfort ;-) Then one for each image, plus final step for creating the XLSX
-  const progressIncrement = 100 / (images.length + 2);
-  onProgress(progressIncrement);
+  const progressIncrement = 100 / (manifests.length + images.length + 2);
 
-  const promise = images.reduce<Promise<ImageAnnotationSnippetTuple[]>>((promise, image, idx) => {
-    return promise.then(all => {
-      // While we're at it, resolve image folder path
-      const folder = 'uri' in image 
-        ? store.iiifResources.find(r => r.id === image.manifestId)?.folder
-        : image.folder;
+  let progress = 0;
 
-      return root.resolve(folder).then(path => {
-        return getAnnotationsWithSnippets(image, store, masked, true)
-          .then(t => { 
-            onProgress((idx + 2) * progressIncrement);
+  const updateProgress = () => {
+    progress += progressIncrement;
+    onProgress(progress);
+  }
 
-            return [
-              ...all,
-              ...t.map(({ annotation, snippet }) => 
-                ({ image, path: [root.name, ...path], annotation, snippet }))
-            ]
-          });
+  updateProgress();
+
+  const promise = resolveManifestsWithId(manifests, updateProgress).then(manifests => {
+    return images.reduce<Promise<SourceAnnotationSnippetTuple[]>>((promise, image, idx) => {
+      return promise.then(all => {
+        // While we're at it, resolve image folder path
+        const folder = 'uri' in image 
+          ? store.iiifResources.find(r => r.id === image.manifestId)?.folder
+          : image.folder;
+
+        const manifest = 'uri' in image 
+          ? manifests.find(m => m.id === image.manifestId)?.manifest : undefined;
+
+        return root.resolve(folder).then(path => {
+          return getAnnotationsWithSnippets(image, store, masked, true)
+            .then(t => { 
+              onProgress((idx + 2) * progressIncrement);
+
+              return [
+                ...all,
+                ...t.map(({ annotation, snippet }) => ({ 
+                    image, 
+                    path: [root.name, ...path], 
+                    manifest,
+                    annotation, 
+                    snippet 
+                  } as SourceAnnotationSnippetTuple))
+              ]
+            });
+          })
         })
-      })
-    }, Promise.resolve([]));
+      }, Promise.resolve([]));
+  });
 
   promise.then(async annotations => {
     const workbook = new ExcelJS.Workbook();
