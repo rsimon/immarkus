@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ImagePlus, Search } from 'lucide-react';
+import { ArrowLeft, ImagePlus, MessageSquareOff, Search } from 'lucide-react';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import { Toggle } from '@/ui/Toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearch } from './useSearch';
 import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
 import { FolderListItem, ImageListItem } from './AddImageListItems';
+import { countAnnotations } from './countAnnotations';
 import { 
   CanvasInformation, 
   FileImage, 
@@ -34,24 +36,37 @@ export const AddImage = (props: AddImageProps) => {
 
   const [open, setOpen] = useState(false);
 
+  const [hideUnannotated, setHideUnannotated] = useState(false);
+
   const [currentFolder, setCurrentFolder] = useState<Folder | RootFolder | IIIFResource>(store.getRootFolder());
 
   const isRootLevel = !('canvases' in currentFolder) && !('parent' in currentFolder);
 
   const [query, setQuery] = useState<string>('');
 
-  const [items, setItems] = useState<AddImageListItem[]>([]);
+  const [items, setItems] = useState<{ item: AddImageListItem, annotations: number }[]>([]);
+
+  const filteredItems = useMemo(() => {
+    return hideUnannotated ? items.filter(i => i.annotations > 0) : items
+  }, [items, hideUnannotated]);
 
   const getInitialContents = useCallback(() => {
     const root = store.getRootFolder();
     const { folders, iiifResources, images } = store.getFolderContents(root.handle);
-    return [...folders, ...iiifResources, ...images] as AddImageListItem[];
+
+    const items = [
+      ...folders, 
+      ...(iiifResources as IIIFManifestResource[]),
+      ...images
+    ];
+
+    return countAnnotations(items, store);
   }, [store]);
 
   useEffect(() => {
     if (open) {
       // Initialize search with root folder options
-      setItems(getInitialContents());
+      getInitialContents().then(setItems);
     } else {
       // Reset on close
       const root = store.getRootFolder();
@@ -61,16 +76,23 @@ export const AddImage = (props: AddImageProps) => {
     }
   }, [store, getInitialContents, open, [...openImages].join('.')])
 
-
   const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
+    if (!store) return;
+
     setCurrentFolder(folder);
 
     if ('canvases' in folder) {
-      setItems(folder.canvases);
+      countAnnotations(folder.canvases, store).then(setItems);
     } else if ('handle' in folder) {
       const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
-      const items = [...folders, ...iiifResources, ...images] as AddImageListItem[];
-      setItems(items);
+
+      const items = [
+        ...folders,
+        ...(iiifResources as IIIFManifestResource[]),
+        ...images
+      ];
+
+      countAnnotations(items, store).then(setItems);
     }
   }
 
@@ -104,10 +126,11 @@ export const AddImage = (props: AddImageProps) => {
   }
 
   useEffect(() => {
-    if (query)
-      setItems(search(query));
-    else
-      setItems(getInitialContents());
+    if (query) {
+      countAnnotations(search(query), store).then(setItems);
+    } else {
+      getInitialContents().then(setItems);
+    }
   }, [query, getInitialContents]);
 
   return (
@@ -129,7 +152,7 @@ export const AddImage = (props: AddImageProps) => {
       <PopoverContent 
         sideOffset={0}
         className="w-[400px] p-0 shadow-lg">
-        <div className="px-1 py-2 mb-2 flex border-b items-center">
+        <div className="pl-1 pr-2 py-2 mb-2 flex border-b items-center">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
           <input 
@@ -138,6 +161,21 @@ export const AddImage = (props: AddImageProps) => {
             className="relative top-px py-1 outline-hidden px-0.5 grow text-sm" 
             value={query} 
             onChange={evt => setQuery(evt.target.value)} />
+
+          <Tooltip>
+            <TooltipTrigger>
+              <Toggle 
+                size="sm"
+                pressed={hideUnannotated}
+                onPressedChange={setHideUnannotated}>
+                <MessageSquareOff className="size-4" />
+              </Toggle>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              Hide unannotated
+            </TooltipContent>
+          </Tooltip>
         </div>
         
         {!(isRootLevel || query) && (
@@ -157,18 +195,20 @@ export const AddImage = (props: AddImageProps) => {
 
         <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
-            {items.map(item => 
-              isFolder(item) || isIIIManifestResource(item) ? (
+            {filteredItems.map(entry => 
+              isFolder(entry.item) || isIIIManifestResource(entry.item) ? (
                 <FolderListItem 
-                  key={item.id} 
-                  folder={item} 
-                  onOpenFolder={() => onOpenFolder(item)} />
+                  key={entry.item.id} 
+                  annotations={entry.annotations}
+                  folder={entry.item} 
+                  onOpenFolder={() => onOpenFolder(entry.item as Folder)} />
               ) : (
                 <ImageListItem 
-                  key={item.id} 
-                  image={item} 
-                  isOpen={isOpen(item)} 
-                  onSelect={() => onAddImage(item)} />
+                  key={entry.item.id} 
+                  annotations={entry.annotations}
+                  image={entry.item} 
+                  isOpen={isOpen(entry.item)} 
+                  onSelect={() => onAddImage(entry.item as FileImage | CanvasInformation)} />
               )
             )}
           </ul>
