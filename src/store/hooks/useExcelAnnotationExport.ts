@@ -4,7 +4,7 @@ import { exportAnnotationsAsExcel, useStore } from '@/store';
 
 export type SnippetExportMode = 'masked' | 'unmasked';
 
-export const useExcelAnnotationExport = (mode: SnippetExportMode) => {
+export const useExcelAnnotationExport = (mode: SnippetExportMode = 'unmasked') => {
 
   const store = useStore();
 
