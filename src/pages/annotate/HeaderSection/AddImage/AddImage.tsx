@@ -6,6 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearch } from './useSearch';
 import { AddImageListItem, isCanvasInformation, isFolder, isIIIManifestResource } from './Types';
 import { FolderListItem, ImageListItem } from './AddImageListItems';
+import { countAnnotations } from './countAnnotations';
 import { 
   CanvasInformation, 
   FileImage, 
@@ -15,7 +16,6 @@ import {
   Image, 
   RootFolder 
 } from '@/model';
-import { countAnnotations, countCanvasAnnotations } from './countAnnotations';
 
 interface AddImageProps {
 
@@ -46,7 +46,14 @@ export const AddImage = (props: AddImageProps) => {
   const getInitialContents = useCallback(() => {
     const root = store.getRootFolder();
     const { folders, iiifResources, images } = store.getFolderContents(root.handle);
-    return countAnnotations(folders, iiifResources, images, store).then()
+
+    const items = [
+      ...folders, 
+      ...(iiifResources as IIIFManifestResource[]),
+      ...images
+    ];
+
+    return countAnnotations(items, store);
   }, [store]);
 
   useEffect(() => {
@@ -62,17 +69,23 @@ export const AddImage = (props: AddImageProps) => {
     }
   }, [store, getInitialContents, open, [...openImages].join('.')])
 
-
   const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
     if (!store) return;
 
     setCurrentFolder(folder);
 
     if ('canvases' in folder) {
-      countCanvasAnnotations(folder.canvases, store).then(setItems);
+      countAnnotations(folder.canvases, store).then(setItems);
     } else if ('handle' in folder) {
       const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
-      countAnnotations(folders, iiifResources, images, store).then(setItems);
+
+      const items = [
+        ...folders,
+        ...(iiifResources as IIIFManifestResource[]),
+        ...images
+      ];
+
+      countAnnotations(items, store).then(setItems);
     }
   }
 
@@ -107,7 +120,7 @@ export const AddImage = (props: AddImageProps) => {
 
   useEffect(() => {
     if (query) {
-      // setItems(search(query));
+      countAnnotations(search(query), store).then(setItems);
     } else {
       getInitialContents().then(setItems);
     }
