@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check, MessagesSquare } from 'lucide-react';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage } from '@/model';
@@ -46,7 +46,14 @@ export const ImageListItem = (props: ImageListItemProps) => {
         )}
         
         <div className="grow line-clamp-3 overflow-hidden text-ellipsis text-left">
-          {image.name} / {props.annotations}
+          <div className="py-1 space-y-0.5">
+            <div>{image.name}</div>
+            {props.annotations > 0 && (
+              <div className="flex gap-1 items-center text-muted-foreground">
+                <MessagesSquare className="size-3.5" /> {props.annotations}
+              </div>
+            )}
+          </div>
         </div>
       </button>
     </li>
