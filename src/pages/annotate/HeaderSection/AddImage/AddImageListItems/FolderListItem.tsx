@@ -20,7 +20,7 @@ export const FolderListItem = (props: FolderListItemProps) => {
         className="flex gap-3 w-full items-start relative text-left"
         onClick={props.onOpenFolder}>
         <FolderIcon
-          className="w-14 h-14 -ml-[1px] drop-shadow-md" />
+          className="w-14 h-14 -ml-px drop-shadow-md" />
         
         {isIIIF && (
           <IIIFIcon
