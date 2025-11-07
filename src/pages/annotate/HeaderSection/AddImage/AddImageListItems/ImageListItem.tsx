@@ -46,7 +46,7 @@ export const ImageListItem = (props: ImageListItemProps) => {
         )}
         
         <div className="grow line-clamp-3 overflow-hidden text-ellipsis text-left">
-          <div className="py-1 space-y-0.5">
+          <div className="py-1 space-y-1">
             <div>{image.name}</div>
             {props.annotations > 0 && (
               <div className="flex gap-1 items-center text-muted-foreground">
