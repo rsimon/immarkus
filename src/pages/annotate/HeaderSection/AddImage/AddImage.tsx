@@ -15,6 +15,7 @@ import {
   Image, 
   RootFolder 
 } from '@/model';
+import { countAnnotations, countCanvasAnnotations } from './countAnnotations';
 
 interface AddImageProps {
 
@@ -40,18 +41,18 @@ export const AddImage = (props: AddImageProps) => {
 
   const [query, setQuery] = useState<string>('');
 
-  const [items, setItems] = useState<AddImageListItem[]>([]);
+  const [items, setItems] = useState<{ item: AddImageListItem, annotations: number }[]>([]);
 
   const getInitialContents = useCallback(() => {
     const root = store.getRootFolder();
     const { folders, iiifResources, images } = store.getFolderContents(root.handle);
-    return [...folders, ...iiifResources, ...images] as AddImageListItem[];
+    return countAnnotations(folders, iiifResources, images, store).then()
   }, [store]);
 
   useEffect(() => {
     if (open) {
       // Initialize search with root folder options
-      setItems(getInitialContents());
+      getInitialContents().then(setItems);
     } else {
       // Reset on close
       const root = store.getRootFolder();
@@ -63,14 +64,15 @@ export const AddImage = (props: AddImageProps) => {
 
 
   const onOpenFolder = (folder: Folder | RootFolder | IIIFResource) => {
+    if (!store) return;
+
     setCurrentFolder(folder);
 
     if ('canvases' in folder) {
-      setItems(folder.canvases);
+      countCanvasAnnotations(folder.canvases, store).then(setItems);
     } else if ('handle' in folder) {
       const { folders, iiifResources, images } = store.getFolderContents(folder.handle);
-      const items = [...folders, ...iiifResources, ...images] as AddImageListItem[];
-      setItems(items);
+      countAnnotations(folders, iiifResources, images, store).then(setItems);
     }
   }
 
@@ -104,10 +106,11 @@ export const AddImage = (props: AddImageProps) => {
   }
 
   useEffect(() => {
-    if (query)
-      setItems(search(query));
-    else
-      setItems(getInitialContents());
+    if (query) {
+      // setItems(search(query));
+    } else {
+      getInitialContents().then(setItems);
+    }
   }, [query, getInitialContents]);
 
   return (
@@ -157,18 +160,20 @@ export const AddImage = (props: AddImageProps) => {
 
         <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
-            {items.map(item => 
-              isFolder(item) || isIIIManifestResource(item) ? (
+            {items.map(entry => 
+              isFolder(entry.item) || isIIIManifestResource(entry.item) ? (
                 <FolderListItem 
-                  key={item.id} 
-                  folder={item} 
-                  onOpenFolder={() => onOpenFolder(item)} />
+                  key={entry.item.id} 
+                  annotations={entry.annotations}
+                  folder={entry.item} 
+                  onOpenFolder={() => onOpenFolder(entry.item as Folder)} />
               ) : (
                 <ImageListItem 
-                  key={item.id} 
-                  image={item} 
-                  isOpen={isOpen(item)} 
-                  onSelect={() => onAddImage(item)} />
+                  key={entry.item.id} 
+                  annotations={entry.annotations}
+                  image={entry.item} 
+                  isOpen={isOpen(entry.item)} 
+                  onSelect={() => onAddImage(entry.item as FileImage | CanvasInformation)} />
               )
             )}
           </ul>

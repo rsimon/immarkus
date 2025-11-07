@@ -4,6 +4,8 @@ import { Folder, IIIFManifestResource } from '@/model';
 
 interface FolderListItemProps {
 
+  annotations: number;
+
   folder: Folder | IIIFManifestResource;
 
   onOpenFolder(): void;
@@ -28,7 +30,7 @@ export const FolderListItem = (props: FolderListItemProps) => {
             className="iiif-logo text-white transition-all absolute bottom-1.5 left-1.5 size-4" />
         )}
 
-        <div className="py-1">{props.folder.name}</div>
+        <div className="py-1">{props.folder.name} / {props.annotations}</div>
       </button>
     </li>
   )

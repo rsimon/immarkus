@@ -1,11 +1,11 @@
+import { Check } from 'lucide-react';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage } from '@/model';
-import { useStore } from '@/store';
-import { Check } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
 
 interface ImageListItemProps {
+
+  annotations: number;
 
   image: FileImage | CanvasInformation;
 
@@ -16,18 +16,6 @@ interface ImageListItemProps {
 }
 
 export const ImageListItem = (props: ImageListItemProps) => {
-
-  const store = useStore();
-
-  const [annotations, setAnnotations] = useState(0);
-
-  useEffect(() => {
-    if (!store) return;
-    
-    const id = 'uri' in props.image ? `iiif:${props.image.manifestId}:${props.image.id}` : image.id;
-    store.countAnnotations(id, true)
-      .then(setAnnotations);
-  }, [store, props.image]);
 
   const { image, isOpen, onSelect } = props;
 
@@ -58,7 +46,7 @@ export const ImageListItem = (props: ImageListItemProps) => {
         )}
         
         <div className="grow line-clamp-3 overflow-hidden text-ellipsis text-left">
-          {image.name} {annotations}
+          {image.name} / {props.annotations}
         </div>
       </button>
     </li>
