@@ -3,8 +3,12 @@ import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation} from
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
+import { Checkbox } from '@/ui/Checkbox';
+import { Label } from '@/ui/Label';
 import { TranscriptionDialog } from './TranscriptionDialog';
 import { AnnotationBatch } from './Types';
+import { useOptIn } from './useOptInt';
+import { AIConsent } from './AIConsent';
 import {
   Select,
   SelectContent,
@@ -25,6 +29,8 @@ export const Transcribe = (props: TranscribeProps) => {
 
   // Should never happen
   if (props.images.length < 1) return null;
+
+  const [optIn, setOptIn] = useOptIn();
 
   const [selectedImage, setSelectedImage] = useState<LoadedImage | undefined>(
     props.images.length === 1 ? props.images[0] : undefined
@@ -74,12 +80,30 @@ export const Transcribe = (props: TranscribeProps) => {
         )}
       </div>
 
+      <div className="border border-slate-300 p-2 rounded space-y-1 leading-relaxed mt-2">
+        <div className="flex gap-2 items-center">
+          <Checkbox 
+            id="ai-opt-in-compact"
+            checked={optIn}
+            onCheckedChange={checked => setOptIn(checked as boolean)} />
+
+          <Label htmlFor="ai-opt-in-compact">
+            <strong className="font-semibold text-xs">Enable external AI tools.</strong>
+          </Label>
+        </div>
+        
+        <p>
+          I understand that images I send are processed by 3rd-party services
+          and that I’m responsible for what I upload.
+        </p>
+      </div>
+
       <Annotorious>
         {props.images.length > 1 && (
           <Select
             value={selectedImage?.id}
             onValueChange={id => setSelectedImage(props.images.find(i => i.id === id))}>
-            <SelectTrigger className="mt-2 w-full bg-white whitespace-nowrap [&>*]:overflow-hidden [&>*]:text-ellipsis">
+            <SelectTrigger className="mt-2 w-full bg-white whitespace-nowrap *:overflow-hidden *:text-ellipsis">
               <SelectValue />
             </SelectTrigger>
 
@@ -96,8 +120,12 @@ export const Transcribe = (props: TranscribeProps) => {
           </Select>
         )}
 
+        <AIConsent 
+          optIn={optIn}
+          onChangeOptIn={setOptIn} />
+
         <TranscriptionDialog 
-          disabled={!selectedImage}
+          disabled={!selectedImage || !optIn}
           image={selectedImage} 
           onImport={annotations => onImportAnnotations(annotations, selectedImage)} />
       </Annotorious>

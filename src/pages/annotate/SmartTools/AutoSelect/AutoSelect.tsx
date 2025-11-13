@@ -98,7 +98,7 @@ export const AutoSelect = (props: AutoSelectProps) => {
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="add"
-            className="!rounded-md aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
+            className="rounded-md! aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             {busy ? (
               <Spinner />
             ) : (
@@ -111,7 +111,7 @@ export const AutoSelect = (props: AutoSelectProps) => {
         <div className="flex flex-col items-center gap-1">
           <ToggleGroupItem 
             value="remove"
-            className="!rounded-md aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
+            className="rounded-md! aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             <Minus className="size-5"/>
           </ToggleGroupItem>
           <span className="pt-1 text-orange-600/40">Remove area</span>
