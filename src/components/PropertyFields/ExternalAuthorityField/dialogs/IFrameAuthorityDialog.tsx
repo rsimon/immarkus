@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Database, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
-import { ExternalAuthority } from '@/model/ExternalAuthority';
+import { ExternalAuthority, findMatchingPattern } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
 import { useDebounce } from '@/utils/useDebounce';
 
@@ -56,6 +56,21 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
       setLoading(false);
   }, [debounced]);
 
+  const searchURL = useMemo(() => {
+    if (!debounced) return;
+
+    if (typeof authority.search_pattern === 'string') {
+      return authority.search_pattern.replace('{{query}}', debounced)
+    } else {
+      const endpoint = findMatchingPattern(authority.search_pattern, debounced);
+      return endpoint?.replace('{{query}}', debounced);
+    }
+  }, [authority, debounced]);
+
+  const linkURL = useMemo(() => (
+    authority.external_url_pattern?.replace('{{query}}', debounced) || searchURL
+  ), [authority, searchURL]);
+
   return (
     <Dialog open={Boolean(props.authority)} onOpenChange={() => props.onClose()}>
       <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
@@ -77,7 +92,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
               <a 
                 className="px-4 h-full flex items-center 
                 hover:bg-slate-200/80 hover:disabled:bg-muted"
-                href={(authority.external_url_pattern || authority.search_pattern).replace('{{query}}', debounced)}
+                href={linkURL}
                 target="_blank">
                 <ExternalLink className="h-4 w-4" />
               </a>
@@ -102,13 +117,13 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
             </div>
           )}
 
-          {debounced && (
+          {searchURL && (
             <iframe 
               ref={iframe}
               style={{ opacity: loading ? 0 : 1}}
               className="absolute top-0 left-0 w-full h-full"
               onLoad={() => setLoading(false)}
-              src={authority.search_pattern.replace('{{query}}', debounced)} />
+              src={searchURL} />
           )}
         </div>
       </DialogContent>

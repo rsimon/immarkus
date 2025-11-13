@@ -33,8 +33,14 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
   const isSelected = (authority: ExternalAuthority) =>
     Boolean((props.definition.authorities || []).find(a => a === authority.name));
 
-  const hasValidConfiguration = (a: ExternalAuthority) =>
-    Boolean(a.name) && a.search_pattern?.includes('{{query}}') && a.type === 'IFRAME';
+  const hasValidConfiguration = (a: ExternalAuthority) => {
+    const hasValidSearchPattern = a.search_pattern && a.type === 'IFRAME' && (
+      (typeof a.search_pattern === 'string' && a.search_pattern.includes('{{query}}')) || 
+      typeof a.search_pattern === 'object' && Object.values(a.search_pattern).every(url => url.includes('{{query}}'))
+    );
+
+    return Boolean(a.name) && hasValidSearchPattern;
+  }
 
   return (
     <div className="bg-muted px-2 py-3 mt-2 rounded-md text-sm">
