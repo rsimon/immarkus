@@ -116,7 +116,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
             authorities={authorities.filter(a => (props.definition.authorities || []).includes(a.name))} 
             onCloseDialog={onCloseDialog} />  
 
-          <div className="flex relative -top-[1px]">
+          <div className="flex relative -top-px">
             <InheritedFrom definition={definition} />
           </div>
         </div> 

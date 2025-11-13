@@ -16,7 +16,7 @@ interface IFrameAuthorityDialogProps {
 
 export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
-  const iframe = useRef<HTMLIFrameElement>();
+  const iframe = useRef<HTMLIFrameElement>(null);
 
   const { authority } = props;
 
