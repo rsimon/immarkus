@@ -51,7 +51,7 @@ export const AIConsent = (props: AIConsentProps) => {
             <li className="pl-1">
               <strong>External Processing</strong>: When you use the Auto Transcribe tool, 
               any images or image portions you submit will be sent to the selected 
-              third-party services for processing.
+              third-party service for processing.
             </li>
 
             <li className="pl-1">
@@ -80,7 +80,7 @@ export const AIConsent = (props: AIConsentProps) => {
             and accept responsibility for your use of external AI services.
           </p>
 
-          <div className="p-4 flex gap-2 items-center font-medium border rounded mb-6">
+          <div className="p-4 flex gap-2 items-center font-medium border rounded-md mb-6">
             <Checkbox
               id="ai-opt-in"
               checked={checked}
