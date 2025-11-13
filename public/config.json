@@ -20,7 +20,7 @@
     "name": "CBDB",
     "description": "China Biographical Database Project",
     "type": "IFRAME",
-    "search_pattern": "https://cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
+    "search_pattern": "https://input.cbdb.fas.harvard.edu/cbdbapi/person.php?name={{query}}"
   }, {
     "name": "DILA (Person)",
     "description": "Buddhist Studies Authority Database Project (Person Search)",
