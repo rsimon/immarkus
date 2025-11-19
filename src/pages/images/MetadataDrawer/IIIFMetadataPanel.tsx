@@ -9,8 +9,9 @@ import { IIIFManifestResource } from '@/model';
 import { useImageMetadata, useManifestMetadata } from '@/store';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
-import { CozyMetadata } from 'cozy-iiif';
-import { useIIIFResource } from '@/utils/iiif/hooks';
+import { Annotation, CozyMetadata } from 'cozy-iiif';
+import { getCanvasAnnotations } from '@/utils/iiif';
+import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasItem } from '../Types';
 
 interface MetadataListProps {
@@ -20,6 +21,8 @@ interface MetadataListProps {
   customMetadata: W3CAnnotationBody;
   
   iiifMetadata?: CozyMetadata[]; 
+
+  iiifAnnotations?: Annotation[];
 
   onUpdateMetadata(body: W3CAnnotationBody): void;
 
@@ -67,7 +70,9 @@ const MetadataList = (props: MetadataListProps) => {
         value="embedded"
         className="grow">
         {iiifMetadata ? (
-          <IIIFMetadataList metadata={iiifMetadata} />
+          <IIIFMetadataList 
+            annotations={props.iiifAnnotations}
+            metadata={iiifMetadata} />
         ) : null}
       </TabsContent>
 
@@ -144,14 +149,22 @@ export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasItem }) => {
 
   const { metadata, updateMetadata } = useImageMetadata(id);
 
+  const canvas = useCanvas(id);
+
   const navigate = useNavigate();
 
   const onOpen = () => navigate(`/annotate/${id}`);
+
+  const annotations = useMemo(() => {
+    if (!canvas) return [];
+    return getCanvasAnnotations(canvas.annotations);
+  }, [canvas]);
 
   return (
     <div className="px-4 py-3 h-full">
       <MetadataList
         customMetadata={metadata}
+        iiifAnnotations={annotations}
         iiifMetadata={item.canvas.getMetadata()} 
         onUpdateMetadata={updateMetadata} 
         onOpen={onOpen} />
