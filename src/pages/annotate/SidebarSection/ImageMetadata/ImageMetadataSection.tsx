@@ -9,6 +9,7 @@ import { IIIFMetadataList } from '@/components/IIIFMetadataList';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
+import { getCanvasAnnotations } from '@/utils/iiif';
 import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
 
 interface ImageMetadataSectionProps {
@@ -49,12 +50,17 @@ const IIIFCanvasMetadataTab = (props: ImageMetadataSectionProps) => {
     return canvas.getMetadata();
   }, [canvas]);
 
-  return metadata ? (
+  const annotations = useMemo(() => {
+    if (!canvas) return [];
+    return getCanvasAnnotations(canvas.annotations);
+  }, [canvas]);
+
+  return metadata && (
     <IIIFMetadataList 
+      annotations={annotations}
       metadata={metadata} 
       emptyMessage="No Canvas Metadata" />
-  ) : null;
-
+  );
 }
 
 const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
