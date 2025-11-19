@@ -1,5 +1,5 @@
-import { Annotation } from 'cozy-iiif';
 import { useMemo } from 'react';
+import { Annotation } from 'cozy-iiif';
 
 interface IIIFCanvasAnnotationCardProps {
 

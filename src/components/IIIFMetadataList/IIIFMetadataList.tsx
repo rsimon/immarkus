@@ -1,4 +1,3 @@
-import { IIIFCanvasItem } from '@/pages/images/IIIFManifestOverview/IIIFManifestGrid/IIIFCanvasItem';
 import { Annotation, CozyMetadata } from 'cozy-iiif';
 import { IIIFCanvasAnnotationCard } from './IIIFCanvasAnnotationCard';
 
