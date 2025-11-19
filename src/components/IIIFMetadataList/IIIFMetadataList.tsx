@@ -33,7 +33,7 @@ export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
               </div>
               
               <div 
-                className="pl-4 [&_a]:text-sky-700 hover:[&_a]:underline"
+                className="pl-4 [&_a]:text-sky-700 hover:[&_a]:underline wrap-break-word"
                 dangerouslySetInnerHTML={{ __html: value || '' }} />
             </li>
           ))}
