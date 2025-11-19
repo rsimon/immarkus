@@ -224,8 +224,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
                 ) : (
                   <div className="flex items-center gap-1.5 pl-0.5 text-amber-600">
                     <MessagesSquare className="size-4" /> 
-                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} - cannot 
-                    import {annotationValidationResult.total - annotationValidationResult.valid} 
+                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} (skipping {annotationValidationResult.total - annotationValidationResult.valid} - not valid shape annotations)
                   </div>
                 )
               ) : annotationValidationResult ? (
