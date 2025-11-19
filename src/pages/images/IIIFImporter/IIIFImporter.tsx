@@ -74,12 +74,10 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
         Cozy.parseURL(uri)
           .then(result => {
-            console.log('RESULT', uri, result);
             setBusy(false);
             setParseResult(result);
           })
           .catch(error => {
-            console.log('error!');
             console.error(error);
             setBusy(false);
           });
@@ -91,6 +89,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     if (parseResult?.type !== 'manifest') return;
 
     setValidatingAnnotations(true);
+    
     validateAnnotations(parseResult.resource.canvases)
       .then(setAnnotationValidationResult);
   }, [parseResult]);
@@ -142,7 +141,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         <Button
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded">
-          <CloudDownload className="size-[18px] pt-[1px]" /> Import IIIF
+          <CloudDownload className="size-[18px] pt-px" /> Import IIIF
         </Button>
       </DialogTrigger>
 
@@ -177,7 +176,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
           {busy ? (
             <div className="flex items-center gap-1.5 pl-0.5">
-              <Loader2 className="animate-spin size-3.5 mb-[1px]" /> Fetching...
+              <Loader2 className="animate-spin size-3.5 mb-px" /> Fetching...
             </div>
           ) : alreadyImported ? (
             <div 
@@ -208,7 +207,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
             </div>
           ) : parseResult?.type === 'iiif-image' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
-              <Ban className="size-3.5 mb-[1px]" /> Image API URLs are currently unsupported
+              <Ban className="size-3.5 mb-px" /> Image API URLs are currently unsupported
             </div>
           ) : parseResult?.type === 'manifest' ? (
             <>

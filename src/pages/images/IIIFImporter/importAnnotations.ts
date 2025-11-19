@@ -2,7 +2,7 @@ import murmur from 'murmurhash';
 import { CozyCanvas } from 'cozy-iiif';
 import { fetchAnnotations } from 'cozy-iiif/helpers';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
-import type { AnnotationBody, W3CImageAnnotation } from '@annotorious/react';
+import type { AnnotationBody, ImageAnnotation, ParseResult, W3CImageAnnotation } from '@annotorious/react';
 
 export const validateAnnotations = (canvases: CozyCanvas[]) => {
   return canvases.reduce<Promise<any[]>>((p, canvas) => p.then(all => {
@@ -11,7 +11,15 @@ export const validateAnnotations = (canvases: CozyCanvas[]) => {
     });
   }), Promise.resolve([])).then(annotations => {
     const valid = annotations
-      .map(orig => parseW3CImageAnnotation(orig as W3CImageAnnotation))
+      .map(orig => {
+        try {
+          return parseW3CImageAnnotation(orig as W3CImageAnnotation);
+        } catch (error) {
+          console.warn(error);
+          console.warn('Could not parse annotation', orig);
+          return { error } as ParseResult<ImageAnnotation>;
+        }
+      })
       .filter(t => t.parsed && !t.error);
 
     return { total: annotations.length, valid: valid.length };
@@ -55,16 +63,20 @@ export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): P
 
         const normalized = onThisCanvas.reduce<W3CImageAnnotation[]>((all, orig) => {
           // Normalize annotations by "double"-crosswalking them
-          const parsed = parseW3CImageAnnotation(orig as W3CImageAnnotation).parsed;
-          if (parsed) {
-            const crosswalked = {
-              ...parsed,
-              bodies: crosswalkAnnotationBody(parsed.bodies)
-            };
+          try {
+            const parsed = parseW3CImageAnnotation(orig as W3CImageAnnotation).parsed;
+            if (parsed) {
+              const crosswalked = {
+                ...parsed,
+                bodies: crosswalkAnnotationBody(parsed.bodies)
+              };
 
-            const normalized = serializeW3CImageAnnotation(crosswalked, `iiif:${manifestId}:${canvasId}`);
-            return [...all, normalized];
-          } else {
+              const normalized = serializeW3CImageAnnotation(crosswalked, `iiif:${manifestId}:${canvasId}`);
+              return [...all, normalized];
+            } else {
+              return all;
+            }
+          } catch {
             return all;
           }
         }, []);
