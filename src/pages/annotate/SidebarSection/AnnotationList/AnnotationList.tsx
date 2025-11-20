@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
 import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
@@ -95,12 +95,20 @@ export const AnnotationList = (props: AnnotationListProps) => {
     selected.some(s => s.annotation.id === annotation.id);
 
   const onSelectAll = () => {
-    const toSelect = imageIds.flatMap(id => listAnnotations(id));
-    console.log('selecting', toSelect);
+    const toSelect = imageIds.flatMap(id => listAnnotations(id)).map(a => a.id);
+    manifold.setSelected(toSelect);
+  }
+
+  const onListClick = (evt: MouseEvent) => {
+    // If the container (not a list item) was clicked, deselect all
+    if (evt.target === evt.currentTarget)
+      manifold.setSelected([]);
   }
 
   return (
-    <div className="py-3 px-2 bg-slate-100/50 grow h-full">
+    <div 
+      className="py-3 px-2 bg-slate-100/50 grow h-full" 
+      onClick={onListClick}>
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
         <div>
           <SelectListOrder 

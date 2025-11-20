@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { EntityBadge } from '@/components/EntityBadge';
@@ -16,9 +16,9 @@ interface AnnotationListItemRelationProps {
 
   relation?: string;
 
-  onClickSource(): void;
+  onClickSource(evt: MouseEvent): void;
 
-  onClickTarget(): void;
+  onClickTarget(evt: MouseEvent): void;
 
 }
 
@@ -53,14 +53,14 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
     <div className="w-full flex justify-between items-center py-0.5 px-2 gap-1">
       <button 
         className="shrink-0 rounded-full"
-        onClick={leftSideAnnotation.id === sourceId ? props.onClickSource : props.onClickTarget}>
+        onClick={evt => leftSideAnnotation.id === sourceId ? props.onClickSource(evt) : props.onClickTarget(evt)}>
         <AnnotationThumbnail 
           className="rounded-full h-7 w-7 border border-gray-400"
           annotation={leftSideAnnotation} />
       </button>
 
       <div className="relative grow flex items-center justify-center">
-        <div className="absolute border-t border-gray-600 border-dashed h-[1px] w-full z-0" />
+        <div className="absolute border-t border-gray-600 border-dashed h-px w-full z-0" />
       
         <div className="w-[85%] flex justify-center z-10 font-light text-[11px]">
           <span className="bg-white px-1 max-w-28 whitespace-nowrap overflow-hidden text-ellipsis">{props.relation}</span>
@@ -68,9 +68,9 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
 
         {type?.directed && (
           leftSideAnnotation.id === sourceId ? (
-            <div className="absolute -right-0.5 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[10px] border-l-gray-600" />
+            <div className="absolute -right-0.5 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-10 border-l-gray-600" />
           ) : (
-            <div className="absolute -left-0.5 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-r-[10px] border-r-gray-600" />
+            <div className="absolute -left-0.5 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-10 border-r-gray-600" />
           )
         )}
       </div>
@@ -78,7 +78,7 @@ export const AnnotationListItemRelation = (props: AnnotationListItemRelationProp
       <div className="flex gap-1 items-center">
         <button
           className="shrink-0 rounded-full"
-          onClick={rightSideId === targetId ? props.onClickTarget : props.onClickSource}>
+          onClick={evt => rightSideId === targetId ? props.onClickTarget(evt) : props.onClickSource(evt)}>
           <AnnotationThumbnail 
             className="rounded-full h-7 w-7 border border-gray-400"
             annotation={rightSideId} />
