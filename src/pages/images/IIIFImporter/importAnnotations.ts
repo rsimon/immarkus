@@ -2,27 +2,48 @@ import murmur from 'murmurhash';
 import { CozyCanvas } from 'cozy-iiif';
 import { fetchAnnotations } from 'cozy-iiif/helpers';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
-import type { AnnotationBody, ImageAnnotation, ParseResult, W3CImageAnnotation } from '@annotorious/react';
+import type { AnnotationBody, W3CImageAnnotation } from '@annotorious/react';
+import { isCanvasAnnotation } from '@/utils/iiif';
 
-export const validateAnnotations = (canvases: CozyCanvas[]) => {
+export interface AnnotationValidationResult {
+
+  total: number;
+
+  canvasAnnotations: number;
+
+  shapeAnnotations: number;
+
+  failed: number;
+
+}
+
+export const validateAnnotations = (canvases: CozyCanvas[]): Promise<AnnotationValidationResult> => {
   return canvases.reduce<Promise<any[]>>((p, canvas) => p.then(all => {
     return fetchAnnotations(canvas).then(onThisCanvas => {
       return [...all, ...onThisCanvas];
     });
   }), Promise.resolve([])).then(annotations => {
-    const valid = annotations
-      .map(orig => {
+    const result = annotations.reduce<Partial<AnnotationValidationResult>>((result, annotation) => {
+      if (isCanvasAnnotation(annotation)) {
+        return { ...result, canvasAnnotations: result.canvasAnnotations + 1 };
+      } else {
         try {
-          return parseW3CImageAnnotation(orig as W3CImageAnnotation);
+          const { parsed, error } = parseW3CImageAnnotation(annotation as W3CImageAnnotation);
+          return (parsed && !error) ? 
+            { ...result, shapeAnnotations: result.shapeAnnotations + 1 } :
+            { ...result, failed: result.failed + 1 };
         } catch (error) {
           console.warn(error);
-          console.warn('Could not parse annotation', orig);
-          return { error } as ParseResult<ImageAnnotation>;
+          console.warn('Could not parse annotation', annotation);
+          return { ...result, failed: result.failed + 1 };
         }
-      })
-      .filter(t => t.parsed && !t.error);
+      }
+    }, { canvasAnnotations: 0, shapeAnnotations: 0, failed: 0 });
 
-    return { total: annotations.length, valid: valid.length };
+    return { 
+      ...result, 
+      total: result.canvasAnnotations + result.shapeAnnotations + result.failed
+    } as AnnotationValidationResult;
   });
 }
 

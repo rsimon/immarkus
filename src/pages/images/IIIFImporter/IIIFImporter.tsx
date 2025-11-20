@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import murmur from 'murmurhash';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
-import { Ban, Check, CloudDownload, Loader2, MessagesSquare, SquareLibrary } from 'lucide-react';
+import { Ban, Check, CloudDownload, Loader2, MessageSquareX, MessagesSquare, SquareLibrary } from 'lucide-react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Spinner } from '@/components/Spinner';
 import { IIIFResource, IIIFResourceInformation } from '@/model/IIIFResource';
@@ -13,7 +13,7 @@ import { generateShortId } from '@/store/utils';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { ErrorAlert } from './ErrorAlert';
 import { ImportFromCollection } from './ImportFromCollection';
-import { importAnnotations, validateAnnotations } from './importAnnotations';
+import { AnnotationValidationResult, importAnnotations, validateAnnotations } from './importAnnotations';
 
 interface IIIFImporterProps {
 
@@ -41,7 +41,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [validatingAnnotations, setValidatingAnnotations] = useState(false);
 
-  const [annotationValidationResult, setAnnotationValidationResult] = useState<{ total: number, valid: number } |  undefined>();
+  const [validationResult, setValidationResult] = useState<AnnotationValidationResult |  undefined>();
 
   useEffect(() => {
     if (!open) {
@@ -53,7 +53,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
   useEffect(() => {
     setParseResult(undefined);
     setValidatingAnnotations(false)
-    setAnnotationValidationResult(undefined);
+    setValidationResult(undefined);
     setAlreadyImported(false);
 
     if (!uri) {
@@ -91,7 +91,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     setValidatingAnnotations(true);
     
     validateAnnotations(parseResult.resource.canvases)
-      .then(setAnnotationValidationResult);
+      .then(setValidationResult);
   }, [parseResult]);
 
   const onSubmit = (evt: React.FormEvent) => {
@@ -215,19 +215,30 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
                 <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
               </div>
 
-              {annotationValidationResult && annotationValidationResult.total > 0 ? (
-                annotationValidationResult.total === annotationValidationResult.valid ? (
-                  <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-                    <MessagesSquare className="size-4" /> 
-                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} will be imported
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1.5 pl-0.5 text-amber-600">
-                    <MessagesSquare className="size-4" /> 
-                    {annotationValidationResult.total} annotation{annotationValidationResult.total > 1 ? 's' : ''} (skipping {annotationValidationResult.total - annotationValidationResult.valid} - not valid shape annotations)
-                  </div>
-                )
-              ) : annotationValidationResult ? (
+              {validationResult && validationResult.total > 0 ? (
+                <>
+                  {validationResult.shapeAnnotations > 0 && (
+                    <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
+                      <MessagesSquare className="size-4" /> 
+                      {validationResult.shapeAnnotations} annotation{validationResult.shapeAnnotations > 1 ? 's' : ''}
+                    </div>
+                  )}
+
+                  {validationResult.canvasAnnotations > 0 && (
+                    <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
+                      <MessagesSquare className="size-4" /> 
+                      {validationResult.canvasAnnotations} non-region annotation{validationResult.canvasAnnotations > 1 ? 's' : ''} (canvas metadata)
+                    </div>
+                  )}
+
+                  {validationResult.failed > 0 && (
+                    <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
+                      <MessageSquareX className="size-4" /> 
+                      Failed to parse {validationResult.failed} annotation{validationResult.failed > 1 ? 's' : ''} - skipping
+                    </div>
+                  )}
+                </>
+              ) :validationResult ? (
                   <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
                     <MessagesSquare className="size-4" /> 
                     Manifest includes no annotations

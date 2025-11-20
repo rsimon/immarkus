@@ -1,6 +1,6 @@
 import { Annotation, AnnotationPage } from 'cozy-iiif';
 
-const isCanvasAnnotation = (annotation: Annotation) => {
+export const isCanvasAnnotation = (annotation: Annotation) => {
   const target = Array.isArray(annotation.target) ? 
     annotation.target[0] : annotation.target;
 
