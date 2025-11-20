@@ -9,6 +9,8 @@ interface SortableAnnotationListItemProps {
 
   annotation: W3CImageAnnotation;
 
+  isSelected?: boolean;
+
   onEdit(): void;
 
   onDelete(): void;
@@ -39,6 +41,7 @@ export const SortableAnnotationListItem = (props: SortableAnnotationListItemProp
       style={style}>
       <AnnotationListItem 
         annotation={props.annotation} 
+        isSelected={props.isSelected}
         onEdit={props.onEdit} 
         onDelete={props.onDelete}       
         dragAttributes={attributes} 

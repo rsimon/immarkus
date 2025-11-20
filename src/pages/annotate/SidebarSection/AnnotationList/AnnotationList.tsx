@@ -2,10 +2,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
 import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
+import { Separator } from '@/ui/Separator';
 import { SelectFilter } from './SelectFilter';
 import { SortableAnnotationList } from './sortable';
+import { SelectAll } from './SelectAll';
 import { DEFAULT_SORTING, SelectListOrder } from './SelectListOrder';
 import { useSortableAnnotations } from './useSortableAnnotations';
 import {
@@ -14,8 +16,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { SelectAll } from './SelectAll';
-import { Separator } from '@/ui/Separator';
 
 interface AnnotationListProps {
 
@@ -26,6 +26,8 @@ interface AnnotationListProps {
 export const AnnotationList = (props: AnnotationListProps) => {
 
   const manifold = useAnnotoriousManifold();
+
+  const { selected } = useSelection();
 
   const store = useStore();
 
@@ -89,6 +91,14 @@ export const AnnotationList = (props: AnnotationListProps) => {
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [filter, sorting, annotations]);
 
+  const isSelected = (annotation: W3CImageAnnotation) =>
+    selected.some(s => s.annotation.id === annotation.id);
+
+  const onSelectAll = () => {
+    const toSelect = imageIds.flatMap(id => listAnnotations(id));
+    console.log('selecting', toSelect);
+  }
+
   return (
     <div className="py-3 px-2 bg-slate-100/50 grow h-full">
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
@@ -101,13 +111,14 @@ export const AnnotationList = (props: AnnotationListProps) => {
           <SelectFilter 
             entityTypes={entityTypes}
             relationshipNames={relationshipNames}
-            onSelect={filter => setFilter(() => filter)} />
+            onSelectFilter={filter => setFilter(() => filter)} />
 
           <Separator 
             orientation="vertical" 
             className="ml-1" />
 
-          <SelectAll />
+          <SelectAll 
+            onSelectAll={onSelectAll}/>
         </div>
       </div>
 
@@ -127,6 +138,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                 <li key={annotation.id}>
                   <AnnotationListItem 
                     annotation={annotation} 
+                    isSelected={isSelected(annotation)}
                     onEdit={() => onEdit(annotation)}
                     onDelete={() => onDelete(annotation)} />
                 </li>
@@ -157,6 +169,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                       <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 
+                          isSelected={isSelected(annotation)}
                           onEdit={() => onEdit(annotation)}
                           onDelete={() => onDelete(annotation)} />
                       </li>

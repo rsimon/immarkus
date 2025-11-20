@@ -17,7 +17,7 @@ interface SelectFilterOpts {
 
   relationshipNames: string[];
 
-  onSelect(filter: ((a: W3CImageAnnotation) => boolean) | undefined): void;
+  onSelectFilter(filter: ((a: W3CImageAnnotation) => boolean) | undefined): void;
 
 }
 
@@ -55,7 +55,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
         store.getRelatedAnnotations(a.id).some(([_, meta]) => meta?.body?.value === name);
     }
 
-    props.onSelect(filter);
+    props.onSelectFilter(filter);
   }
 
   return (

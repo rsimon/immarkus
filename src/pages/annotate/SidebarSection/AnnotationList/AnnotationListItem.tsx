@@ -12,10 +12,13 @@ import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { AnnotationListItemRelation } from './AnnotationListItemRelation';
+import { cn } from '@/ui/utils';
 
 interface AnnotationListItemProps {
 
   annotation: W3CImageAnnotation;
+
+  isSelected?: boolean;
 
   onEdit(): void;
 
@@ -69,7 +72,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
     <>
       <div 
         ref={ref}
-        className="relative border mb-2 rounded text-xs bg-white">
+        className={cn(
+          'relative border mb-2 rounded text-xs bg-white',
+          props.isSelected && 'outline-2 outline-blue-300'
+        )}>
         <button 
           className="w-full text-left"
           onClick={() => onClick(props.annotation.id)}
