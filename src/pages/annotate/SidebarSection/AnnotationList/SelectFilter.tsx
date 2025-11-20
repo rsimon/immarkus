@@ -30,11 +30,14 @@ export const SelectFilter = (props: SelectFilterOpts) => {
 
     const bodies = (a: W3CImageAnnotation) => Array.isArray(a.body) ? a.body : [a.body];
 
-    if (value === 'all_entity') {
+    if (value === 'with_entity') {
       // Filter all annotations with any 'classifying' body
       filter = (a: W3CImageAnnotation) =>
         bodies(a).some(b => b.purpose === 'classifying');
-    } else if (value === 'all_relationship') {
+    } else if (value === 'without_entity') {
+      filter = (a: W3CImageAnnotation) =>
+        bodies(a).every(b => b.purpose !== 'classifying');
+    } else if (value === 'with_relationship') {
       // Filter all annotations with related annotations
       filter = (a: W3CImageAnnotation) => 
         store.getRelatedAnnotations(a.id).length > 0;
@@ -70,13 +73,19 @@ export const SelectFilter = (props: SelectFilterOpts) => {
 
           <UndecoratedSelectItem 
             disabled={props.entityTypes.length === 0}
-            value="all_entity">
+            value="with_entity">
             With Entity
           </UndecoratedSelectItem>
 
           <UndecoratedSelectItem 
+            disabled={props.entityTypes.length === 0}
+            value="without_entity">
+            Without Entity
+          </UndecoratedSelectItem>
+
+          <UndecoratedSelectItem 
             disabled={props.relationshipNames.length === 0}
-            value="all_relationship">
+            value="with_relationship">
             With Relation
           </UndecoratedSelectItem>
 
