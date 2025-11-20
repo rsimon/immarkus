@@ -14,6 +14,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { SelectAll } from './SelectAll';
+import { Separator } from '@/ui/Separator';
 
 interface AnnotationListProps {
 
@@ -82,7 +84,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
   const listAnnotations = useCallback((imageId: string) => {
     const filtered = filter 
       ? annotations.get(imageId).filter(filter)
-      : annotations.get(imageId).filter(a => 'selector'  in a.target);
+      : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [filter, sorting, annotations]);
@@ -90,19 +92,29 @@ export const AnnotationList = (props: AnnotationListProps) => {
   return (
     <div className="py-3 px-2 bg-slate-100/50 grow h-full">
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
-        <SelectListOrder 
-          onChangeOrdering={sorting => setSorting(() => sorting)} />
+        <div>
+          <SelectListOrder 
+            onChangeOrdering={sorting => setSorting(() => sorting)} />
+        </div>
 
-        <SelectFilter 
-          entityTypes={entityTypes}
-          relationshipNames={relationshipNames}
-          onSelect={filter => setFilter(() => filter)} />
+        <div className="flex items-center">
+          <SelectFilter 
+            entityTypes={entityTypes}
+            relationshipNames={relationshipNames}
+            onSelect={filter => setFilter(() => filter)} />
+
+          <Separator 
+            orientation="vertical" 
+            className="ml-1" />
+
+          <SelectAll />
+        </div>
       </div>
 
       {!sorting && (
         <div className="px-1.5 py-3 border border-dashed border-slate-300/50 rounded mt-2.5 mb-1 text-muted-foreground/80 text-xs flex justify-center">
           <span className="flex gap-1.5">
-            <Move className="size-3.5 mt-[1px]" /> Drag cards to change order
+            <Move className="size-3.5 mt-px" /> Drag cards to change order
           </span>
         </div>
       )}
