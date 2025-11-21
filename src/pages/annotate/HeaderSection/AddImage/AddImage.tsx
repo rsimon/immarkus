@@ -163,13 +163,15 @@ export const AddImage = (props: AddImageProps) => {
             onChange={evt => setQuery(evt.target.value)} />
 
           <Tooltip>
-            <TooltipTrigger>
-              <Toggle 
-                size="sm"
-                pressed={hideUnannotated}
-                onPressedChange={setHideUnannotated}>
-                <MessageSquareOff className="size-4" />
-              </Toggle>
+            <TooltipTrigger asChild>
+              <div>
+                <Toggle 
+                  size="sm"
+                  pressed={hideUnannotated}
+                  onPressedChange={setHideUnannotated}>
+                  <MessageSquareOff className="size-4" />
+                </Toggle>
+              </div>
             </TooltipTrigger>
 
             <TooltipContent>
