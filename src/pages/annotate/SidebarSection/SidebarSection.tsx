@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
+import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
 import { CurrentSelection } from './CurrentSelection';
@@ -8,9 +9,13 @@ import { ImageMetadata } from './ImageMetadata';
 
 export const SidebarSection = () => {
 
+  const { selected } = useSelection();
+
   const [tab, setTab] = useState('selection');
 
   const onEdit = () => setTab('selection');
+
+  const showPip = tab !== 'selection' && selected.length > 0;
 
   return (
     <Tabs.Root 
@@ -22,8 +27,13 @@ export const SidebarSection = () => {
           <Separator orientation="vertical" className="h-4" />
 
           <Tabs.List className="flex gap-1.5 py-0.5 px-3">
-            <Tabs.Trigger value="selection" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
+            <Tabs.Trigger 
+              value="selection" 
+              className="relative group p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
               <SquareMousePointer className="h-4 w-4 mr-1" /> Selection
+              {showPip && (
+                <div className="absolute top-1 left-1 border border-white group-hover:border-muted size-2 rounded-full bg-orange-400" />
+              )}
             </Tabs.Trigger>
 
             <Tabs.Trigger value="annotation-list" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted">

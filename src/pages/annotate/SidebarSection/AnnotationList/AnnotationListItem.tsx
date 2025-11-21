@@ -86,7 +86,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         ref={ref}
         className={cn(
           'relative border mb-2 rounded text-xs bg-white',
-          props.isSelected && 'outline-2 outline-blue-300'
+          props.isSelected && 'outline-2 outline-orange-300'
         )}>
         <button 
           className="w-full text-left"
