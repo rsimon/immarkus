@@ -31,6 +31,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const store = useStore();
 
+  const [accordionState, setAccordionState] = useState<string[]>([]);
+
   const { annotations, updateOrder } = useSortableAnnotations();
 
   const [sorting, setSorting] = useState<((a: W3CImageAnnotation, b: W3CImageAnnotation) => number) | undefined>(
@@ -91,11 +93,22 @@ export const AnnotationList = (props: AnnotationListProps) => {
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [filter, sorting, annotations]);
 
+  const canSelectAll = useMemo(() => {
+    if (imageIds.length === 1) {
+      return listAnnotations(imageIds[0]).length > 0;
+    } else {
+      return accordionState.reduce((visible, imageId) => {
+        return visible + listAnnotations(imageId).length;
+      }, 0) > 0;
+    }
+  }, [imageIds, accordionState, listAnnotations])
+
   const isSelected = (annotation: W3CImageAnnotation) =>
     selected.some(s => s.annotation.id === annotation.id);
 
   const onSelectAll = () => {
-    const toSelect = imageIds.flatMap(id => listAnnotations(id)).map(a => a.id);
+    const activeIds = imageIds.length === 1 ? imageIds : accordionState;
+    const toSelect = activeIds.flatMap(id => listAnnotations(id)).map(a => a.id);
     manifold.setSelected(toSelect);
   }
 
@@ -126,6 +139,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
             className="ml-1" />
 
           <SelectAll 
+            disabled={!canSelectAll}
             onSelectAll={onSelectAll}/>
         </div>
       </div>
@@ -160,7 +174,11 @@ export const AnnotationList = (props: AnnotationListProps) => {
             </ul> 
           </div>
         ) : (
-          <Accordion className="py-2 grow" type="multiple">
+          <Accordion 
+            className="py-2 grow" 
+            type="multiple"
+            value={accordionState}
+            onValueChange={setAccordionState}>
             {Array.from(annotations.keys()).map(sourceId => (
               <AccordionItem key={sourceId} value={sourceId}>
                 <AccordionTrigger className="text-xs font-medium hover:no-underline overflow-hidden">
@@ -172,7 +190,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                 </AccordionTrigger>
 
                 <AccordionContent>
-                  <ul className="space-y-2">
+                  <ul className="space-y-2 px-1 py-1">
                     {sorting ? (listAnnotations(sourceId).map(annotation => (
                       <li key={annotation.id}>
                         <AnnotationListItem 
