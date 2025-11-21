@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
+import { useSelection } from '@annotorious/react-manifold';
 import { SortableAnnotationListItem } from './SortableAnnotationListItem';
 import {
   DndContext, 
@@ -32,6 +33,8 @@ interface SortableAnnotationListProps {
 }
 
 export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
+
+  const { selected } = useSelection();
 
   const [activeId, setActiveId] = useState<string | undefined>();
 
@@ -69,12 +72,14 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
 
   const renderSortableItem = (id: string, ghost?: boolean) => {
     const annotation = props.annotations.find(a => a.id === id);
+    const isSelected = selected.some(s => s.annotation.id === annotation.id);
 
     return (
       <SortableAnnotationListItem
         key={id}
         ghost={ghost}
         annotation={annotation}
+        isSelected={isSelected}
         onEdit={() => props.onEdit(annotation)}
         onDelete={() => props.onDelete(annotation)} />
     )

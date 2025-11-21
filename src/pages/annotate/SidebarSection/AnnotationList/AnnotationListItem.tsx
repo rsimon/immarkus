@@ -1,21 +1,24 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type MouseEvent } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
 import { DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { AnnotationListItemRelation } from './AnnotationListItemRelation';
+import { cn } from '@/ui/utils';
 
 interface AnnotationListItemProps {
 
   annotation: W3CImageAnnotation;
+
+  isSelected?: boolean;
 
   onEdit(): void;
 
@@ -32,6 +35,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
   const store = useStore();
 
   const manifold = useAnnotoriousManifold();
+
+  const { selected } = useSelection();
 
   const { ref, inView } = useInView();
 
@@ -57,22 +62,35 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
   const lastEdit = timestamps.length > 0 ? timestamps[timestamps.length - 1] : undefined;
 
-  const onClick = (annotationId: string) => {
-    manifold.setSelected(annotationId);
+  const onClick = (evt: MouseEvent, annotationId: string) => {
+    if (evt.metaKey) {
+      // Toggle selection
+      const current = selected.map(s => s.annotation.id);
+      const next = current.includes(annotationId) ?
+        current.filter(id => id !== annotationId) :
+        [...current, annotationId];
 
-    const annotator = manifold.findAnnotator(annotationId);
-    if (annotator)
-      (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotationId, { padding: 200 });
+      manifold.setSelected(next);
+    } else {
+      manifold.setSelected(annotationId);
+
+      const annotator = manifold.findAnnotator(annotationId);
+      if (annotator)
+        (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotationId, { padding: 200 });
+    }
   }
 
   return (
     <>
       <div 
         ref={ref}
-        className="relative border mb-2 rounded text-xs bg-white">
+        className={cn(
+          'relative border mb-2 rounded text-xs bg-white',
+          props.isSelected && 'outline-2 outline-orange-300'
+        )}>
         <button 
           className="w-full text-left"
-          onClick={() => onClick(props.annotation.id)}
+          onClick={evt => onClick(evt, props.annotation.id)}
           {...(props.dragAttributes || {})}
           {...(props.dragListeners || {})}>
           {entityTags.length > 0 && (
@@ -114,8 +132,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
                 sourceId={link.target} 
                 targetId={link.body} 
                 relation={meta?.body?.value} 
-                onClickSource={() => onClick(link.target)}
-                onClickTarget={() => onClick(link.body)} />
+                onClickSource={evt => onClick(evt, link.target)}
+                onClickTarget={evt => onClick(evt, link.body)} />
             ))}
           </ul>
         )}

@@ -9,6 +9,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-react';
 
 interface SelectListOrderProps {
 
@@ -70,18 +71,19 @@ export const SelectListOrder = (props: SelectListOrderProps) => {
   }
   
   return (
-    <div className="flex text-xs">
-      Sort by <Select value={value} onValueChange={setValue}>
+    <div className="flex text-xs items-center">
+      <ArrowDownWideNarrow className="size-4 mt-0.5" /> 
+      <Select value={value} onValueChange={setValue}>
         <SelectTrigger 
           className="p-0 shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
           <SelectValue />
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value="recent">most recent</SelectItem>
+          <SelectItem value="recent">recent</SelectItem>
           <SelectItem value="oldest">oldest</SelectItem>
           <SelectItem value="entity">entity</SelectItem>
-          <SelectItem value="custom">custom order</SelectItem>
+          <SelectItem value="custom">custom</SelectItem>
         </SelectContent>
       </Select>
     </div>

@@ -1,11 +1,13 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
 import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
+import { Separator } from '@/ui/Separator';
 import { SelectFilter } from './SelectFilter';
 import { SortableAnnotationList } from './sortable';
+import { SelectAll } from './SelectAll';
 import { DEFAULT_SORTING, SelectListOrder } from './SelectListOrder';
 import { useSortableAnnotations } from './useSortableAnnotations';
 import {
@@ -24,6 +26,8 @@ interface AnnotationListProps {
 export const AnnotationList = (props: AnnotationListProps) => {
 
   const manifold = useAnnotoriousManifold();
+
+  const { selected } = useSelection();
 
   const store = useStore();
 
@@ -82,27 +86,54 @@ export const AnnotationList = (props: AnnotationListProps) => {
   const listAnnotations = useCallback((imageId: string) => {
     const filtered = filter 
       ? annotations.get(imageId).filter(filter)
-      : annotations.get(imageId).filter(a => 'selector'  in a.target);
+      : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [filter, sorting, annotations]);
 
-  return (
-    <div className="py-3 px-2 bg-slate-100/50 grow h-full">
-      <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
-        <SelectListOrder 
-          onChangeOrdering={sorting => setSorting(() => sorting)} />
+  const isSelected = (annotation: W3CImageAnnotation) =>
+    selected.some(s => s.annotation.id === annotation.id);
 
-        <SelectFilter 
-          entityTypes={entityTypes}
-          relationshipNames={relationshipNames}
-          onSelect={filter => setFilter(() => filter)} />
+  const onSelectAll = () => {
+    const toSelect = imageIds.flatMap(id => listAnnotations(id)).map(a => a.id);
+    manifold.setSelected(toSelect);
+  }
+
+  const onListClick = (evt: MouseEvent) => {
+    // If the container (not a list item) was clicked, deselect all
+    if (evt.target === evt.currentTarget)
+      manifold.setSelected([]);
+  }
+
+  return (
+    <div 
+      className="py-3 px-2 bg-slate-100/50 grow h-full" 
+      onClick={onListClick}>
+      <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
+        <div>
+          <SelectListOrder 
+            onChangeOrdering={sorting => setSorting(() => sorting)} />
+        </div>
+
+        <div className="flex items-center">
+          <SelectFilter 
+            entityTypes={entityTypes}
+            relationshipNames={relationshipNames}
+            onSelectFilter={filter => setFilter(() => filter)} />
+
+          <Separator 
+            orientation="vertical" 
+            className="ml-1" />
+
+          <SelectAll 
+            onSelectAll={onSelectAll}/>
+        </div>
       </div>
 
       {!sorting && (
         <div className="px-1.5 py-3 border border-dashed border-slate-300/50 rounded mt-2.5 mb-1 text-muted-foreground/80 text-xs flex justify-center">
           <span className="flex gap-1.5">
-            <Move className="size-3.5 mt-[1px]" /> Drag cards to change order
+            <Move className="size-3.5 mt-px" /> Drag cards to change order
           </span>
         </div>
       )}
@@ -115,6 +146,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                 <li key={annotation.id}>
                   <AnnotationListItem 
                     annotation={annotation} 
+                    isSelected={isSelected(annotation)}
                     onEdit={() => onEdit(annotation)}
                     onDelete={() => onDelete(annotation)} />
                 </li>
@@ -145,6 +177,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                       <li key={annotation.id}>
                         <AnnotationListItem 
                           annotation={annotation} 
+                          isSelected={isSelected(annotation)}
                           onEdit={() => onEdit(annotation)}
                           onDelete={() => onDelete(annotation)} />
                       </li>
