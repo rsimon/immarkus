@@ -1,5 +1,5 @@
 import murmur from 'murmurhash';
-import { CozyCanvas } from 'cozy-iiif';
+import { Annotation, CozyCanvas } from 'cozy-iiif';
 import { fetchAnnotations } from 'cozy-iiif/helpers';
 import { parseW3CImageAnnotation, serializeW3CImageAnnotation } from '@annotorious/react';
 import type { AnnotationBody, W3CImageAnnotation } from '@annotorious/react';
@@ -17,9 +17,14 @@ export interface AnnotationValidationResult {
 
 }
 
+const cached = new Map<string, Annotation[]>(); 
+
 export const validateAnnotations = (canvases: CozyCanvas[]): Promise<AnnotationValidationResult> => {
+  cached.clear();
+
   return canvases.reduce<Promise<any[]>>((p, canvas) => p.then(all => {
     return fetchAnnotations(canvas).then(onThisCanvas => {
+      cached.set(canvas.id, onThisCanvas);
       return [...all, ...onThisCanvas];
     });
   }), Promise.resolve([])).then(annotations => {
@@ -76,9 +81,14 @@ const crosswalkAnnotationBody = (bodies: AnnotationBody[]): AnnotationBody[] => 
   } as AnnotationBody]
 }
 
-export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): Promise<W3CImageAnnotation[]> => 
-  canvases.reduce<Promise<W3CImageAnnotation[]>>((p, canvas) => p.then(all => {
-    return fetchAnnotations(canvas).then(onThisCanvas => {
+const cachedFetch = (canvas: CozyCanvas): Promise<Annotation[]> => {
+  const fromCache = cached.get(canvas.id);
+  return fromCache ? Promise.resolve(fromCache) : fetchAnnotations(canvas);
+}
+
+export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): Promise<W3CImageAnnotation[]> => {
+  return canvases.reduce<Promise<W3CImageAnnotation[]>>((p, canvas) => p.then(all => {
+    return cachedFetch(canvas).then(onThisCanvas => {
       if (onThisCanvas.length > 0) {
         const canvasId = murmur.v3(canvas.id).toString();
 
@@ -107,4 +117,8 @@ export const importAnnotations = (manifestId: string, canvases: CozyCanvas[]): P
         return all;
       }
     });
-  }), Promise.resolve([]));
+  }), Promise.resolve([])).then(result => {
+    cached.clear();
+    return result;
+  });
+}
