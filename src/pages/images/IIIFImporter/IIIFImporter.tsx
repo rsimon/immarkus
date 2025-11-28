@@ -41,6 +41,8 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
   const [validatingAnnotations, setValidatingAnnotations] = useState(false);
 
+  const [validatingSlow, setValidatingSlow] = useState(false);
+
   const [validationResult, setValidationResult] = useState<AnnotationValidationResult |  undefined>();
 
   useEffect(() => {
@@ -89,8 +91,11 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
     if (parseResult?.type !== 'manifest') return;
 
     setValidatingAnnotations(true);
+    setValidatingSlow(false);
+
+    const onValidationSlow = () => setValidatingSlow(true);
     
-    validateAnnotations(parseResult.resource.canvases)
+    validateAnnotations(parseResult.resource.canvases, onValidationSlow)
       .then(setValidationResult);
   }, [parseResult]);
 
@@ -246,7 +251,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               ) : validatingAnnotations && (
                 <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
                   <Spinner className="size-4" /> 
-                  Resolving annotations
+                  Resolving annotations {validatingSlow && (<span>(this may take a while)</span>)}
                 </div>
               )}
             </>

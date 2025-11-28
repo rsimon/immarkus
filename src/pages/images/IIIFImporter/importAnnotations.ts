@@ -19,12 +19,26 @@ export interface AnnotationValidationResult {
 
 const cached = new Map<string, Annotation[]>(); 
 
-export const validateAnnotations = (canvases: CozyCanvas[]): Promise<AnnotationValidationResult> => {
+export const validateAnnotations = (
+  canvases: CozyCanvas[],
+  onValidationSlow: () => void
+): Promise<AnnotationValidationResult> => {
+  // Clear cache
   cached.clear();
+
+  // Record start time and set 'is slow' flag
+  const startAt = performance.now(); 
+  let slow = false;
 
   return canvases.reduce<Promise<any[]>>((p, canvas) => p.then(all => {
     return fetchAnnotations(canvas).then(onThisCanvas => {
       cached.set(canvas.id, onThisCanvas);
+
+      if (!slow && (performance.now() - startAt) > 1000) {
+        slow = true;
+        onValidationSlow();
+      }
+
       return [...all, ...onThisCanvas];
     });
   }), Promise.resolve([])).then(annotations => {
