@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -28,7 +29,7 @@ import './ThumbnailStrip.css';
 
 export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
-  const el = useRef<HTMLOListElement>();
+  const el = useRef<HTMLOListElement>(null);
 
   // Use a state for instant feedback!
   const [selected, setSelected] = useState(props.currentImage.id);
@@ -85,7 +86,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
   return transition((style, open) => open && (
     <animated.section 
       style={style}
-      className="thumbnail-strip flex justify-center overflow-hidden absolute bg-white left-0 w-full h-20 top-[100%] z-10 border-b border-b-slate-300/60 border-t">
+      className="thumbnail-strip flex justify-center overflow-hidden absolute bg-white left-0 w-full h-20 top-full z-10 border-b border-b-slate-300/60 border-t">
       
       {scrollable && (
         <button 
@@ -104,15 +105,25 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
             className="shrink-0 inline-block mx-1.5">
             <ContextMenu>
               <ContextMenuTrigger>
-                <button
-                  className={isSelected(image)  
-                    ? 'block outline outline-2 outline-offset-2 rounded-sm outline-black' 
-                    : 'block hover:outline outline-2 outline-offset-2 rounded-sm outline-black'}
-                  onClick={() => onSelect(image)}>
-                  <Thumbnail 
-                    image={image} 
-                    delay={160} />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={isSelected(image)  
+                        ? 'block outline-2 outline-offset-2 rounded-sm outline-black' 
+                        : 'block hover:outline-2 outline-offset-2 rounded-sm outline-black'}
+                      onClick={() => onSelect(image)}>
+                      <Thumbnail 
+                        image={image} 
+                        delay={160} />
+                    </button>
+                  </TooltipTrigger>
+
+                  <TooltipContent
+                    side="bottom"
+                    sideOffset={6}>
+                    {image.name}
+                  </TooltipContent>
+                </Tooltip>
               </ContextMenuTrigger>
 
               <ContextMenuContent>
