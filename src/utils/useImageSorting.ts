@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SortOrder } from 'primereact/datatable';
+import { CanvasInformation, FileImage } from '@/model';
 
 const KEY_IMAGE_SORTING = 'immarkus:image-sorting';
 

@@ -5,6 +5,7 @@ import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { isSingleImageManifest } from '@/utils/iiif';
+import { getLastEdit } from '@/utils/annotation';
 import { useImageSorting } from '@/utils/useImageSorting';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 import { AnnotationMap, ItemTableRow } from '../../Types';
@@ -14,7 +15,6 @@ import { ItemTableRowCanvasThumbnail } from './ItemTableRowCanvasThumbnail';
 import { 
   ANNOTATIONS_COLUMN_TEMPLATE,
   DIMENSIONS_COLUMN_TEMPLATE,
-  getLastEdit, 
   LAST_EDIT_COLUMN_TEMPLATE, 
   NAME_COLUMN_TEMPLATE, 
   sortByAnnotations, 

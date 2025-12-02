@@ -17,7 +17,7 @@ interface ThumbnailStripProps {
 
   currentImage: LoadedImage;
 
-  images: FileImage[] | CanvasInformation[];
+  images: (FileImage | CanvasInformation)[];
 
   onSelect(imageId: string): void;
 
