@@ -28,3 +28,28 @@ export const hasPropertyValue = (body: W3CAnnotationBody, propKey: string, propV
   // Compare non-pimitive types by value
   return JSON.stringify(val) === JSON.stringify(propValue);
 }
+
+export const getLastEdit = (annotations: W3CAnnotation[]): Date | undefined => {
+  // Helper
+  const getLatestTimestamp = (annotation: W3CAnnotation): Date | undefined => {
+    const timestamps: Date[] = [];
+
+    if (annotation.created) timestamps.push(new Date(annotation.created));
+    if (annotation.modified) timestamps.push(new Date(annotation.modified));
+
+    const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
+    bodies.forEach(body => {
+      if (body.created) timestamps.push(new Date(body.created));
+      if (body.modified) timestamps.push(new Date(body.modified));
+    });
+
+    return timestamps.length > 0 
+      ? new Date(Math.max(...timestamps.map(t => t.getTime())))
+      : undefined
+  };
+
+  const timestamps = annotations.map(a => getLatestTimestamp(a)).filter(Boolean);
+  return timestamps.length > 0 
+      ? new Date(Math.max(...timestamps.map(t => t.getTime())))
+      : undefined
+}

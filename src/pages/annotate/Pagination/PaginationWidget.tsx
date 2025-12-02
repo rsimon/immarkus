@@ -6,6 +6,7 @@ import { parseIIIFId } from '@/utils/iiif';
 import { ToolbarButton } from '../ToolbarButton';
 import { ThumbnailStrip } from './ThumbnailStrip';
 import { useClickOutside } from './useClickoutside';
+import { useSortedThumbnails } from './useSortedThumbnails';
 
 interface PaginationWidgetProps {
 
@@ -41,6 +42,8 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
     }
     
   }, [store, props.image]);
+
+  const sorted = useSortedThumbnails(images);
 
   const currentIndex = useMemo(() => {
     const id = props.image.id.startsWith('iiif:') ? parseIIIFId(props.image.id)[1] : props.image.id;
@@ -143,7 +146,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
 
       <ThumbnailStrip 
         currentImage={props.image} 
-        images={images}
+        images={sorted}
         open={showThumbnails} 
         onSelect={onSetImage} 
         onAdd={props.onAddImage} />

@@ -9,6 +9,7 @@ import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { CanvasInformation } from '@/model';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { getLastEdit } from '@/utils/annotation';
 import { IIIFManifestOverviewLayoutProps } from '../IIIFManifestOverviewLayoutProps';
 import { CanvasItem, ItemTableRow } from '../../Types';
 import { IIIFManifestTableRowThumbnail } from './IIIFManifestTableRowThumbnail';
@@ -16,8 +17,7 @@ import { IIIFManifestTableRowActions } from './IIIFManifestTableRowActions';
 import { 
   ANNOTATIONS_COLUMN_TEMPLATE, 
   DIMENSIONS_COLUMN_TEMPLATE, 
-  getAnnotationsInRange, 
-  getLastEdit, 
+  getAnnotationsInRange,
   LAST_EDIT_COLUMN_TEMPLATE, 
   NAME_COLUMN_TEMPLATE, 
   sortByAnnotations, 
