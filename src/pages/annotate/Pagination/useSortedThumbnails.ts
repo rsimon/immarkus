@@ -43,21 +43,21 @@ export const useSortedThumbnails = (items: (FileImage | CanvasInformation)[]) =>
     const sorted = [...items];
 
     if (sortField === 'name') {
-      items.sort((a, b) => sortOrder * a.name.localeCompare(b.name));
+      sorted.sort((a, b) => sortOrder * a.name.localeCompare(b.name));
     } else if (sortField === 'annotations') {
-      items.sort((a, b) => {
+      sorted.sort((a, b) => {
         const annotationsA = getAnnotationCount(a);
         const annotationsB = getAnnotationCount(b);
         return (annotationsA - annotationsB) * sortOrder;
       });
     } else if (sortField === 'lastEdit') {
-      items.sort((a, b) => {
+      sorted.sort((a, b) => {
         const lastEditA = getLastEdit(a)?.getTime() || 0;
         const lastEditB = getLastEdit(b)?.getTime() || 0;
         return (lastEditA - lastEditB) * sortOrder;
       });
     }
-    
+
     return sorted; 
   }, [items, getAnnotationCount, getLastEdit, sortField, sortOrder]);
 
