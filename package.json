@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -62,7 +62,7 @@
     "@react-spring/web": "^10.0.3",
     "ajv": "^8.17.1",
     "browser-image-compression": "^2.0.2",
-    "chroma-js": "^3.1.4",
+    "chroma-js": "^3.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -73,7 +73,7 @@
     "fuse.js": "^7.1.0",
     "localforage": "^1.10.0",
     "lucide-react": "^0.555.0",
-    "motion": "^12.23.24",
+    "motion": "^12.23.25",
     "murmurhash": "^2.0.1",
     "openai": "^6.9.1",
     "openseadragon": "5.0.1",
