@@ -5,6 +5,7 @@ import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { isSingleImageManifest } from '@/utils/iiif';
+import { useImageSorting } from '@/utils/useImageSorting';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 import { AnnotationMap, ItemTableRow } from '../../Types';
 import { ItemTableRowImageThumbnail } from './ItemTableRowImageThumbnail';
@@ -70,6 +71,8 @@ const imageToRow = (
 export const ItemTable = (props: ItemOverviewLayoutProps) => {
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
+
+  const { sortField, sortOrder, onSort } = useImageSorting();
 
   const [dimensions, setDimensions] = useState<Record<string, [number, number]>>({});
 
@@ -145,6 +148,9 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
         value={filteredRows} 
         onRowClick={onRowClick}
         sortIcon={sortIcon}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        onSort={onSort}
         emptyMessage={TABLE_EMPTY_MESSAGE}>
         <Column
           field="type" 
