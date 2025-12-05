@@ -72,9 +72,12 @@ export const Markus = () => {
 
           <p>
             Hilde De Weerdt, Brent Ho, Rainer Simon, Lee Sunkyu, Sander Molenaar, Xi Wangzhi, 
-            Dawn Zhuang, Iva Stojević, Tu Hsieh-Chang, Taylor Zaneri, Lin Nung-yao, and Meret 
-            Meister. "Contextual Semantic Text and Image Annotation in the MARKUS Environment." 
-            Digital Humanities Quarterly 19.3 (2025). 
+            Dawn Zhuang, Iva Stojević, Tu Hsieh-Chang, Taylor Zaneri, Lin Nung-Yao, and Meret 
+            Meister. "Contextual Semantic Text and Image Annotation in the MARKUS Environment."
+            Digital Humanities Quarterly 19.4 (2025). <a 
+              className="text-sky-700 hover:underline" 
+              target="_blank"
+              href="https://dhq.digitalhumanities.org/preview/index.html">dhq.digitalhumanities.org/preview</a>
           </p>
           
           <p>

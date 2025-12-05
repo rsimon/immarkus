@@ -134,7 +134,7 @@ const createEntityWorksheet = (
       const row = {
         image: image.name,
         folder: path.join('/'),
-        iiif_manifest: 'manifest' in tuple ? tuple.manifest.getLabel() : undefined,
+        iiif_manifest: 'manifest' in tuple ? tuple.manifest?.getLabel() : undefined,
         iiif_path: getIIIFPath(tuple),
         id: annotation.id,
         created: annotation.created,
@@ -189,7 +189,7 @@ const createNotesWorksheet = (
       worksheet.addRow({
         image: image.name,
         folder: path.join('/'),
-        iiif_manifest: 'manifest' in tuple ? tuple.manifest.getLabel() : undefined,
+        iiif_manifest: 'manifest' in tuple ? tuple.manifest?.getLabel() : undefined,
         iiif_path: getIIIFPath(tuple),
         id: annotation.id,
         created: annotation.created,
