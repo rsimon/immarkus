@@ -77,7 +77,7 @@ export const Markus = () => {
             Digital Humanities Quarterly 19.4 (2025). <a 
               className="text-sky-700 hover:underline" 
               target="_blank"
-              href="https://dhq.digitalhumanities.org/preview/index.html">dhq.digitalhumanities.org/preview</a>
+              href="https://dhq.digitalhumanities.org/vol/19/4/">dhq.digitalhumanities.org/vol/19/4</a>
           </p>
           
           <p>
