@@ -19,7 +19,19 @@ You need an API key to use Google Gemini. To get your own key:
   services: [{
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via Google Gemini',
-    requiresRegion: true
+    requiresRegion: true,
+    parameters: [{
+      type: 'string',
+      id: 'model',
+      displayName: 'Model',
+      required: true,
+      persist: true,
+      options: [
+        ['gemini-2.0-flash', 'Google Gemini (gemini-2.0-flash)'],
+        ['gemini-2.5-flash', 'Google Gemini (gemini-2.5-flash)'],
+        ['gemini-3-pro-preview', 'Google Gemini (gemini-3-pro-preview)'],
+      ]
+    }]
   },{
     type: 'TRANSLATION'
   }]

@@ -7,10 +7,11 @@ export const transcribe = (
   options?: Record<string, any>
 ): Promise<TranscriptionServiceResponse>  => {
   const apiKey = options['api-key'];
+  const model = options['model'];
 
   const generator = {
-    id: 'gemini-2.0-flash',
-    name: 'Google Gemini (gemini-2.0-flash)',
+    id: model,
+    name: `Google Gemini (${model})`,
     homepage: 'https://gemini.google.com/app'
   };
 
@@ -18,7 +19,7 @@ export const transcribe = (
 
   const submit = (base64: string) => 
     ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model,
       contents: [{
         inlineData: {
           mimeType: 'image/jpeg',
