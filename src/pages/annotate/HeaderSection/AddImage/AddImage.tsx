@@ -151,7 +151,7 @@ export const AddImage = (props: AddImageProps) => {
       
       <PopoverContent 
         sideOffset={0}
-        className="w-[400px] p-0 shadow-lg">
+        className="w-100 p-0 shadow-lg">
         <div className="pl-1 pr-2 py-2 mb-2 flex border-b items-center">
           <Search className="w-8 h-4 px-2 text-muted-foreground" />
           
@@ -195,7 +195,7 @@ export const AddImage = (props: AddImageProps) => {
           </div>
         )}
 
-        <div className="max-h-[420px] overflow-y-auto px-2.5 pb-2">
+        <div className="max-h-105 overflow-y-auto px-2.5 pb-2">
           <ul className="text-xs">
             {filteredItems.map(entry => 
               isFolder(entry.item) || isIIIManifestResource(entry.item) ? (

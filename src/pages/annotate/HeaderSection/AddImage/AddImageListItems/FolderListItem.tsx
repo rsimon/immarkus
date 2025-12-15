@@ -28,7 +28,7 @@ export const FolderListItem = (props: FolderListItemProps) => {
         {isIIIF && (
           <IIIFIcon
             light
-            className="iiif-logo text-white transition-all absolute bottom-1.5 left-1.5 size-4" />
+            className="iiif-logo text-white transition-all absolute top-8.5 left-1.5 size-4" />
         )}
 
         <div className="py-1 space-y-1">

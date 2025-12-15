@@ -23,6 +23,7 @@ export const useSearch = () => {
   const fuse = useMemo(() => new Fuse<AddImageListItem>(items, { 
     keys: ['name'],
     shouldSort: true,
+    ignoreLocation: true,
     threshold: 0.6,
     includeScore: true,
     useExtendedSearch: true
