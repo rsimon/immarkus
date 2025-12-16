@@ -1,13 +1,13 @@
 import { MessagesSquare } from 'lucide-react';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
+import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { IIIFManifestResource, IIIFResource } from '@/model';
 import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
 import { OverviewItem } from '../../../Types';
-import { TruncatedLabel } from '../TruncatedLabel';
 
 interface IIIFManifestItemProps {
 

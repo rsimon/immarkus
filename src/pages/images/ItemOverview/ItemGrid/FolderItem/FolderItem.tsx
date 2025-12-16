@@ -3,8 +3,8 @@ import { MessagesSquare } from 'lucide-react';
 import { Folder } from '@/model';
 import { useStore } from '@/store';
 import { FolderIcon } from '@/components/FolderIcon';
+import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { FolderItemActions } from './FolderItemActions';
-import { TruncatedLabel } from '../TruncatedLabel';
 
 interface FolderItemProps {
 

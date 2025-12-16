@@ -1,8 +1,8 @@
 import { MessagesSquare } from 'lucide-react';
+import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { LoadedFileImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
 import { useImageDimensions } from '@/utils/useImageDimensions';
-import { TruncatedLabel } from '../TruncatedLabel';
 
 interface ImageItemProps {
 
@@ -29,7 +29,7 @@ export const ImageItem = (props: ImageItemProps) => {
       <div className="flex items-center justify-center w-45 h-50">
         <div 
           data-selected={props.selected ? true : undefined}
-          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-44.5 h-44.5">
           <img
             onLoad={onLoad}
             loading="lazy"

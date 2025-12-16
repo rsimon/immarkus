@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
+import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
@@ -118,14 +119,13 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   return (
     <section 
       ref={ref}
-      className="toolbar relative border-b p-2 flex text-sm h-[46px]">
-      <section className="toolbar-left flex gap-1 basis-24 shrink-0 grow-1 items-center overflow-hidden">
+      className="toolbar relative border-b p-2 flex text-sm h-11.5">
+      <section className="toolbar-left flex gap-1 basis-24 shrink-0 grow items-center overflow-hidden">
         <div className="flex items-center overflow-hidden">
           <BackButton images={props.images} />
 
-          <span className="text-xs font-medium ml-0.5 flex-1 min-w-0 truncate">
-            {props.images.length === 1 ? props.images[0].name : 'Back to Gallery'}
-          </span>
+          <TruncatedLabel
+            value={props.images.length === 1 ? props.images[0].name : 'Back to Gallery'} />
         </div>
 
         <SavingState.Indicator />
