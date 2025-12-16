@@ -3,6 +3,7 @@ import { Folder } from '@/model';
 import { useStore } from '@/store';
 import { FolderIcon } from '@/components/FolderIcon';
 import { FolderItemActions } from './FolderItemActions';
+import { useMemo } from 'react';
 
 interface FolderItemProps {
 
@@ -20,18 +21,38 @@ export const FolderItem = (props: FolderItemProps) => {
 
   const store = useStore();
 
-  const { images, folders } = store.getFolderContents(props.folder.handle);
+  const { images, folders, iiifResources } = store.getFolderContents(props.folder.handle);
+
+  const counts = useMemo(() => {
+    const i = images.length;
+    const f = folders.length;
+    const m = iiifResources.length;
+
+    if ((i + f + m) === 0) {
+      return 'Empty';
+    } else {
+      const tokens = [
+        i > 0 ? `${i} Image${i > 1 ? 's' : ''}` : undefined,
+        m > 0 ? `${m} IIIF` : undefined,
+        f > 0 ? `${f} Subfolder${f > 1 ? 's' : ''}` : undefined,
+      ].filter(Boolean);
+
+      return tokens.join(' · ')
+    }
+  }, [images.length, folders.length, iiifResources.length]);
+
+  const isEmpty = (images.length + folders.length + iiifResources.length) === 0;
 
   return (
     <div>
       <div 
         className="folder-item cursor-pointer relative rounded-md 
-          w-[200px] h-[200px] flex justify-center items-center">
+          w-50 h-50 flex justify-center items-center">
 
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
-            className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
+            className="scale w-47.5 h-47.5 transition-all drop-shadow-md" />
         </button>
         
         <div className="absolute bottom-3 px-3 pt-10 pb-3 left-1.5 w-full pointer-events-none">
@@ -53,18 +74,11 @@ export const FolderItem = (props: FolderItemProps) => {
       <div className="ml-2">
         <div>
           <h3
-            className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
+            className="text-sm max-w-50 overflow-hidden text-ellipsis">
             {props.folder.name}
           </h3>
           <p className="pt-1 text-xs text-muted-foreground">
-            {images.length === 0 && folders.length === 0 ? 
-                'Empty' : 
-              images.length > 0 && folders.length > 0 ?
-                `${images.length} Image${images.length > 1 ? 's' : ''} · ${folders.length} Subfolder${folders.length > 1 ? 's' : ''}` :
-              images.length > 0 ?
-                `${images.length} Image${images.length > 1 ? 's' : ''}` :
-                `${folders.length} Subfolder${folders.length > 1 ? 's' : ''}`
-            }
+            {counts}
           </p>
         </div>
       </div>
