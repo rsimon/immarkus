@@ -1,9 +1,10 @@
+import { useMemo } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { Folder } from '@/model';
 import { useStore } from '@/store';
 import { FolderIcon } from '@/components/FolderIcon';
 import { FolderItemActions } from './FolderItemActions';
-import { useMemo } from 'react';
+import { TruncatedLabel } from '../TruncatedLabel';
 
 interface FolderItemProps {
 
@@ -72,11 +73,8 @@ export const FolderItem = (props: FolderItemProps) => {
       </div>
 
       <div className="ml-2">
-        <div>
-          <h3
-            className="text-sm max-w-50 overflow-hidden text-ellipsis">
-            {props.folder.name}
-          </h3>
+        <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
+          <TruncatedLabel value={props.folder.name} />
           <p className="pt-1 text-xs text-muted-foreground">
             {counts}
           </p>

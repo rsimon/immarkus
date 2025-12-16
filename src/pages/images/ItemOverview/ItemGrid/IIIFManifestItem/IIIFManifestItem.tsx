@@ -7,6 +7,7 @@ import { isSingleImageManifest } from '@/utils/iiif';
 import { IIIFManifestItemActions } from './IIIFManifestItemActions';
 import { SingleCanvasManifestItem } from './SingleCanvasManifestItem';
 import { OverviewItem } from '../../../Types';
+import { TruncatedLabel } from '../TruncatedLabel';
 
 interface IIIFManifestItemProps {
 
@@ -38,11 +39,11 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
     <div>
       <div
         className="folder-item manifest-item cursor-pointer relative rounded-md 
-          w-[200px] h-[200px] flex justify-center items-center">
+          w-50 h-50 flex justify-center items-center">
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
-            className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
+            className="scale w-47.5 h-47.5 transition-all drop-shadow-md" />
 
           <IIIFIcon
             className="iiif-logo text-white transition-all absolute top-5 left-4 size-5" />
@@ -66,11 +67,8 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
       </div>
 
       <div className="ml-2">
-        <div>
-          <h3
-            className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
-            {resource.name}
-          </h3>
+        <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
+          <TruncatedLabel value={resource.name} />
           <p className="pt-1 text-xs text-muted-foreground">
             {`${resource.canvases.length.toLocaleString()} Canvas${resource.canvases.length === 1 ? '' : 'es'}`}
           </p>

@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { Folder, IIIFManifestResource, RootFolder } from '@/model';
 import { useStore } from '@/store';
+import { TooltipProvider } from '@/ui/Tooltip';
+import { usePersistentState } from '@/utils/usePersistentState';
 import { ItemOverview } from './ItemOverview';
 import { MetadataDrawer } from './MetadataDrawer';
 import { OverviewItem, isPresentationManifest } from './Types';
 import { IIIFManifestOverview } from './IIIFManifestOverview';
 
 import './Images.css';
-import { usePersistentState } from '@/utils/usePersistentState';
 
 export const Images = () => {
 
@@ -49,33 +50,35 @@ export const Images = () => {
 
   return store && (
     <div className="page-root">
-      <AppNavigationSidebar />
+      <TooltipProvider>
+        <AppNavigationSidebar />
 
-      <main className="page images flex flex-row p-0 overflow-x-hidden">
-        <div className="grow px-12 py-6 overflow-y-auto">
-          {isPresentationManifest(currentFolder) ? (
-            <IIIFManifestOverview 
-              manifest={currentFolder} 
-              hideUnannotated={hideUnannotated}
-              selected={selected}
-              onShowMetadata={onShowFolderMetadata}
-              onChangeHideUnannotated={setHideUnannotated}
-              onSelect={setSelected} />
-          ) : (            
-            <ItemOverview 
-              folder={currentFolder}
-              hideUnannotated={hideUnannotated}
-              selected={selected}
-              onShowMetadata={onShowFolderMetadata} 
-              onChangeHideUnannotated={setHideUnannotated}
-              onSelect={setSelected} />
-          )}
-        </div>
+        <main className="page images flex flex-row p-0 overflow-x-hidden">
+          <div className="grow px-12 py-6 overflow-y-auto">
+            {isPresentationManifest(currentFolder) ? (
+              <IIIFManifestOverview 
+                manifest={currentFolder} 
+                hideUnannotated={hideUnannotated}
+                selected={selected}
+                onShowMetadata={onShowFolderMetadata}
+                onChangeHideUnannotated={setHideUnannotated}
+                onSelect={setSelected} />
+            ) : (            
+              <ItemOverview 
+                folder={currentFolder}
+                hideUnannotated={hideUnannotated}
+                selected={selected}
+                onShowMetadata={onShowFolderMetadata} 
+                onChangeHideUnannotated={setHideUnannotated}
+                onSelect={setSelected} />
+            )}
+          </div>
 
-        <MetadataDrawer 
-          item={selected}
-          onClose={() => setSelected(undefined)}/>
-      </main>
+          <MetadataDrawer 
+            item={selected}
+            onClose={() => setSelected(undefined)}/>
+        </main>
+      </TooltipProvider>
     </div>
   )
 

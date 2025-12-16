@@ -2,6 +2,7 @@ import { MessagesSquare } from 'lucide-react';
 import { LoadedFileImage } from '@/model';
 import { ImageItemActions } from './ImageItemActions';
 import { useImageDimensions } from '@/utils/useImageDimensions';
+import { TruncatedLabel } from '../TruncatedLabel';
 
 interface ImageItemProps {
 
@@ -25,7 +26,7 @@ export const ImageItem = (props: ImageItemProps) => {
 
   return (
     <div>
-      <div className="flex items-center justify-center w-[180px] h-[200px]">
+      <div className="flex items-center justify-center w-45 h-50">
         <div 
           data-selected={props.selected ? true : undefined}
           className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
@@ -55,11 +56,8 @@ export const ImageItem = (props: ImageItemProps) => {
         </div>
       </div>
       
-      <div className="text-sm ml-1 max-w-[190px] overflow-hidden">
-        <h3 
-          className="overflow-hidden whitespace-nowrap text-ellipsis">
-          {image.name}
-        </h3>
+      <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
+        <TruncatedLabel value={image.name} /> 
         <p className="pt-1 text-xs text-muted-foreground">
           {dimensions && (
             <>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()}</>
