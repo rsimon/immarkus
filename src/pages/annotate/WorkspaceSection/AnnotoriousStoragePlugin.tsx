@@ -68,7 +68,10 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
       store.getAnnotations(imageId).then(annotations => {
         // IIIF? If so, these are all annotations on the resource - filter by canvas
         if (imageId.startsWith('iiif:')) {
-          const onThisCanvas = annotations.filter(a => !Array.isArray(a.target) && a.target.source === imageId);
+          const onThisCanvas = annotations.filter(a => 
+            !Array.isArray(a.target) && 
+            typeof a.target !== 'string' &&
+            a.target.source === imageId);
           anno.setAnnotations(onThisCanvas);
         } else {
           anno.setAnnotations(annotations);

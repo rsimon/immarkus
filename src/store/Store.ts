@@ -246,7 +246,7 @@ export const loadStore = (
   const findAnnotation = (annotationId: string) => {    
     const getCanvas = (annotation: W3CAnnotation, manifest: IIIFManifestResource) => {
       const targetSource = Array.isArray(annotation.target) ? annotation.target[0] : annotation.target;
-      const [_, canvasId] = parseIIIFId(targetSource.source);
+      const [_, canvasId] = parseIIIFId(typeof targetSource === 'string' ? targetSource : targetSource.source);
       const { canvases } = (manifest as IIIFManifestResource);
       return canvases.find(c => c.id === canvasId);
     }
@@ -400,7 +400,10 @@ export const loadStore = (
       if (opts.includeCanvases) {
         return annotations;
       } else {
-        return annotations.filter(a => !Array.isArray(a.target) && a.target.source === `iiif:${manifestId}`)
+        return annotations.filter(a => 
+          !Array.isArray(a.target) && 
+          typeof a.target !== 'string' &&
+          a.target.source === `iiif:${manifestId}`)
       }
     });
   }
@@ -420,7 +423,10 @@ export const loadStore = (
     const [manifestId, canvasId] = parseIIIFId(id);
     return _getAnnotations(`iiif:${manifestId}`, opts).then(annotations => {
       return canvasId 
-        ? annotations.filter(a => !Array.isArray(a.target) && a.target.source === id)
+        ? annotations.filter(a => 
+          !Array.isArray(a.target) && 
+          typeof a.target !== 'string' &&
+          a.target.source === id)
         : annotations;
     })
   }
