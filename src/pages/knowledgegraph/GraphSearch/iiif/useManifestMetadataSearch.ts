@@ -75,7 +75,6 @@ const buildCanvasIndexRecords = (manifests: { id: string, manifest: CozyManifest
             { data: normalized, stringified, canvases: [{ manifestId: t.id, canvas }] }
           ];
         }
-        return distinct;
       }, distinct);  
     }, distinct);
   }, manifestRecords);
@@ -97,8 +96,9 @@ export const useManifestMetadataSearch = (objectType: GraphNodeType) => {
     // Fetches all manifests, using cached versions if possbile,
     // or throttled HTTP downloads if not.
     fetchManifests(uris).then(manifests => {
-      const withId = manifests.map(manifest => {
-        const id = iiifResources.find(r => r.uri === manifest.id)?.id;
+      const withId = manifests.map((manifest, idx) => {
+        const uri = uris[idx];
+        const id = iiifResources.find(r => r.uri === uri)?.id;
         return { id, manifest }
       });
 
