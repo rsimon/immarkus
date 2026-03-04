@@ -18,7 +18,6 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
-
 interface AnnotationListProps {
 
   onEdit(): void;

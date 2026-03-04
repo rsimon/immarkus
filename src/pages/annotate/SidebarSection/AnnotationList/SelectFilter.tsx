@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
 
-
 interface SelectFilterOpts {
 
   entityTypes: EntityType[];
