@@ -1,6 +1,6 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
-import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
+import type { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
@@ -23,7 +23,7 @@ interface AnnotationListProps {
 
   filter?: (a: W3CImageAnnotation) => boolean;
   
-  onSetFilter(filter?: (a: W3CImageAnnotation) => boolean): void;
+  onSetFilter(filter?: (a: W3CImageAnnotation | ImageAnnotation) => boolean): void;
 
 }
 

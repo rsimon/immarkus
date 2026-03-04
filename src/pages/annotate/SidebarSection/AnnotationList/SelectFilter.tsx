@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { W3CImageAnnotation } from '@annotorious/react';
+import type { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
 import { 
@@ -18,7 +18,7 @@ interface SelectFilterOpts {
 
   relationshipNames: string[];
 
-  onSelectFilter(filter: ((a: W3CImageAnnotation) => boolean) | undefined): void;
+  onSelectFilter(filter: ((a: W3CImageAnnotation | ImageAnnotation) => boolean) | undefined): void;
 
 }
 
@@ -43,7 +43,12 @@ export const SelectFilter = (props: SelectFilterOpts) => {
   const [filterValue, setFilterValue] = useState<FilterValue | FilterValue[]>('all');
 
   const onSetValue = (value: FilterValue, checked: boolean) => {
-    const bodies = (a: W3CImageAnnotation) => Array.isArray(a.body) ? a.body : [a.body];
+    const bodies = (a: W3CImageAnnotation | ImageAnnotation) => {
+      if ('body' in a)
+        return Array.isArray(a.body) ? a.body : [a.body];
+      else
+        return Array.isArray(a.bodies) ? a.bodies : [a.bodies];
+    }
 
     let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
 
@@ -62,7 +67,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
     } else if (value === 'with_entity') {
       if (checked) {
         setFilterValue('with_entity');
-        filter = (a: W3CImageAnnotation) =>
+        filter = (a: W3CImageAnnotation | ImageAnnotation) =>
           bodies(a).some(b => b.purpose === 'classifying');
       } else {
         resetToAll();
