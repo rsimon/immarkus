@@ -1,7 +1,8 @@
-import { W3CImageAnnotation } from '@annotorious/react';
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import type { W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
-import { useState } from 'react';
 import { 
   DropdownMenu, 
   DropdownMenuCheckboxItem, 
@@ -27,6 +28,13 @@ type FilterValue = 'all'
   | 'with_relationship' 
   | `entity-${string}`
   | `rel-${string}`;
+
+const LABELS = {
+  all: 'All',
+  with_entity: 'With Entity',
+  without_entity: 'Without Entity',
+  with_relationship: 'With Relation'
+}
 
 export const SelectFilter = (props: SelectFilterOpts) => {
 
@@ -134,53 +142,76 @@ export const SelectFilter = (props: SelectFilterOpts) => {
   const isChecked = (value: FilterValue) =>
     Array.isArray(filterValue) ? filterValue.includes(value) : filterValue === value;
 
+  const getLabel = () => {
+    if (Array.isArray(filterValue)) {
+      const first = filterValue[0];
+
+      if (filterValue.length === 1) {
+        return first.substring(first.indexOf('-') + 1);
+      } else {
+        return `${filterValue.length} ${first.startsWith('entity-') ? 'classes' : 'relations'}`; 
+      }
+    } else {
+      return LABELS[filterValue];
+    }
+  }
+
   return (
     <div className="flex text-xs">
       Show <DropdownMenu>
         <DropdownMenuTrigger 
-          className="p-0 whitespace-nowrap [&>span]:max-w-24 [&>span]:overflow-hidden [&>span]:text-ellipsis shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
-          Filter
+          className="flex overflow-hidden items-center p-0 whitespace-nowrap [&>span]:max-w-24 [&>span]:overflow-hidden [&>span]:text-ellipsis shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
+          <div className="max-w-22 truncate">{getLabel()}</div>
+          <ChevronDown className="size-4 opacity-50" />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent>
+        <DropdownMenuContent className="max-h-[80vh] overflow-y-auto">
           <DropdownMenuGroup>
             <DropdownMenuCheckboxItem
               checked={filterValue === 'all'}
-              onCheckedChange={() => onSetValue('all', true)}>
+              onCheckedChange={() => onSetValue('all', true)}
+              className="text-xs text-muted-foreground py-1">
               All
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem
               disabled={props.entityTypes.length === 0}
               checked={filterValue === 'with_entity'}
-              onCheckedChange={checked => onSetValue('with_entity', checked)}>
+              onCheckedChange={checked => onSetValue('with_entity', checked)}
+              className="text-xs text-muted-foreground py-1">
               With Entity
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem 
               disabled={props.entityTypes.length === 0}
               checked={filterValue === 'without_entity'}
-              onCheckedChange={checked => onSetValue('without_entity', checked)}>
+              onCheckedChange={checked => onSetValue('without_entity', checked)}
+              className="text-xs text-muted-foreground py-1">
               Without Entity
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem 
               disabled={props.relationshipNames.length === 0}
               checked={filterValue === 'with_relationship'}
-              onCheckedChange={checked => onSetValue('with_relationship', checked)}>
+              onCheckedChange={checked => onSetValue('with_relationship', checked)}
+              className="text-xs text-muted-foreground py-1">
               With Relation
             </DropdownMenuCheckboxItem>
           </DropdownMenuGroup>
 
           {props.entityTypes.length > 0 && (
             <DropdownMenuGroup>
-              <DropdownMenuLabel>Entity Classes</DropdownMenuLabel>
+              <DropdownMenuLabel
+                className="text-xs py-1">
+                Entity Classes
+              </DropdownMenuLabel>
 
               {props.entityTypes.map(type => (
                 <DropdownMenuCheckboxItem
                   key={type.id}
                   checked={isChecked(`entity-${type.id}`)}
-                  onCheckedChange={checked => onSetValue(`entity-${type.id}`, checked)}>
+                  onCheckedChange={checked => onSetValue(`entity-${type.id}`, checked)}
+                  className="text-xs text-muted-foreground py-1">
                   {type.label || type.id}
                 </DropdownMenuCheckboxItem>
               ))}
@@ -189,12 +220,16 @@ export const SelectFilter = (props: SelectFilterOpts) => {
 
           {props.relationshipNames.length > 0 && (
             <DropdownMenuGroup>
-              <DropdownMenuLabel>Relationship Types</DropdownMenuLabel>
+              <DropdownMenuLabel
+                className="text-xs py-1">
+                Relationship Types
+              </DropdownMenuLabel>
               {props.relationshipNames.map(name => (
                 <DropdownMenuCheckboxItem 
                   key={name}
                   checked={isChecked(`rel-${name}`)}
-                  onCheckedChange={checked => onSetValue(`rel-${name}`, checked)}>
+                  onCheckedChange={checked => onSetValue(`rel-${name}`, checked)}
+                  className="text-xs text-muted-foreground py-1">
                   {name}
                 </DropdownMenuCheckboxItem>
               ))}
