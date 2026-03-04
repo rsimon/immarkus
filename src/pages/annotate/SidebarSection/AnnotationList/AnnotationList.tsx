@@ -21,6 +21,10 @@ interface AnnotationListProps {
 
   onEdit(): void;
 
+  filter?: (a: W3CImageAnnotation) => boolean;
+  
+  onSetFilter(filter?: (a: W3CImageAnnotation) => boolean): void;
+
 }
 
 export const AnnotationList = (props: AnnotationListProps) => {
@@ -41,8 +45,6 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const flattened = useMemo(() => Array.from(annotations.values())
     .reduce<W3CImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []), [annotations]);
-
-  const [filter, setFilter] = useState<((a: W3CImageAnnotation) => boolean) | undefined>();
 
   const onEdit = (annotation: W3CImageAnnotation) => {
     manifold.setSelected(annotation.id);
@@ -86,12 +88,12 @@ export const AnnotationList = (props: AnnotationListProps) => {
   }, [flattened]);
 
   const listAnnotations = useCallback((imageId: string) => {
-    const filtered = filter 
-      ? annotations.get(imageId).filter(filter)
+    const filtered = props.filter 
+      ? annotations.get(imageId).filter(props.filter)
       : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
-  }, [filter, sorting, annotations]);
+  }, [props.filter, sorting, annotations]);
 
   const canSelectAll = useMemo(() => {
     if (imageIds.length === 1) {
@@ -132,7 +134,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
           <SelectFilter 
             entityTypes={entityTypes}
             relationshipNames={relationshipNames}
-            onSelectFilter={filter => setFilter(() => filter)} />
+            onSelectFilter={filter => props.onSetFilter(filter)} />
 
           <Separator 
             orientation="vertical" 

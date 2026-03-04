@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
+import type { W3CImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
@@ -7,7 +8,16 @@ import { CurrentSelection } from './CurrentSelection';
 import { AnnotationList } from './AnnotationList';
 import { ImageMetadata } from './ImageMetadata';
 
-export const SidebarSection = () => {
+
+interface SidebarSectionProps {
+
+  annotationFilter?: (a: W3CImageAnnotation) => boolean;
+  
+  onSetAnnotationFilter(filter?: (a: W3CImageAnnotation) => boolean): void;
+
+}
+
+export const SidebarSection = (props: SidebarSectionProps) => {
 
   const { selected } = useSelection();
 
@@ -22,8 +32,8 @@ export const SidebarSection = () => {
       asChild      
       value={tab}
       onValueChange={setTab}>
-      <aside className="absolute top-0 right-0 h-full w-[340px] flex flex-col overflow-hidden">
-        <section className="toolbar border-b h-[46px] flex items-center shrink-0">
+      <aside className="absolute top-0 right-0 h-full w-85 flex flex-col overflow-hidden">
+        <section className="toolbar border-b h-11.5 flex items-center shrink-0">
           <Separator orientation="vertical" className="h-4" />
 
           <Tabs.List className="flex gap-1.5 py-0.5 px-3">
@@ -59,6 +69,8 @@ export const SidebarSection = () => {
             <div 
               className="grow h-full text-sm justify-center items-center w-full">
               <AnnotationList 
+                filter={props.annotationFilter}
+                onSetFilter={props.onSetAnnotationFilter}
                 onEdit={onEdit} />
             </div> 
           </Tabs.Content>

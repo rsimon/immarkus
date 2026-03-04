@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import type { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
 import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
@@ -14,11 +15,11 @@ import { SidebarSection } from './SidebarSection';
 import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
+import { GPUDisabledError } from './GPUDisabledError';
 
 import './Annotate.css';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
-import { GPUDisabledError } from './GPUDisabledError';
 
 export const Annotate = () => {
 
@@ -33,6 +34,8 @@ export const Annotate = () => {
   const images = useImages(imageIds) as LoadedImage[];
 
   const [hideAnnotations, setHideAnnotations] = useState(false);
+
+  const [annotationfilter, setAnnotationFilter] = useState<((a: W3CImageAnnotation) => boolean) | undefined>();
 
   const [mode, setMode] = useState<AnnotationMode>('move');
 
@@ -87,7 +90,7 @@ export const Annotate = () => {
                   plugin={SAMPlugin} />
 
                 <SavingState.Root>
-                  <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                  <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
                     <HeaderSection
                       images={images} 
                       isSmartPanelOpen={isSmartPanelOpen}
@@ -130,7 +133,9 @@ export const Annotate = () => {
                     )}
                   </main>
 
-                  <SidebarSection />
+                  <SidebarSection 
+                    annotationFilter={annotationfilter} 
+                    onSetAnnotationFilter={f => setAnnotationFilter(() => f)} />
                 </SavingState.Root>
               </PluginProvider>
             </RelationEditorRoot>
