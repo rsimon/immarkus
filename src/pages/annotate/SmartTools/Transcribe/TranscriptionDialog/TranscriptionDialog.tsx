@@ -190,7 +190,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         
         <div className="flex h-full gap-4 overflow-hidden relative">
           <TooltipProvider>
-            <div className="p-3 flex-[2] min-w-0">
+            <div className="p-3 flex-2 min-w-0">
               <div className="h-full rounded bg-muted border">
                 <TranscriptionPreview 
                   annotations={annotations}
@@ -202,7 +202,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
               </div>
             </div>
 
-            <div className="flex-[1] min-w-0 px-3 pl-0 relative overflow-y-auto">
+            <div className="flex-1 min-w-0 px-3 pl-0 relative overflow-y-auto">
               <TranscriptionControls
                 lastError={lastError}
                 options={options}
