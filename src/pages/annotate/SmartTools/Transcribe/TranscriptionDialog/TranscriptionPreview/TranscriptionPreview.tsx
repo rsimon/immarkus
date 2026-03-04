@@ -3,6 +3,7 @@ import { LoadedImage } from '@/model';
 import { Region } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
+import { NavControls } from './NavControls';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
 import { ProcessingState } from '../../Types';
@@ -89,6 +90,8 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
         <SelectRegion 
           processingState={props.processingState}
           onChangeRegion={props.onChangeRegion} />
+
+        <NavControls />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (
