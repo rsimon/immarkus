@@ -14,11 +14,12 @@ import { SidebarSection } from './SidebarSection';
 import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
+import { FilterState } from './FilterState';
+import { GPUDisabledError } from './GPUDisabledError';
 
 import './Annotate.css';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
-import { GPUDisabledError } from './GPUDisabledError';
 
 export const Annotate = () => {
 
@@ -33,6 +34,8 @@ export const Annotate = () => {
   const images = useImages(imageIds) as LoadedImage[];
 
   const [hideAnnotations, setHideAnnotations] = useState(false);
+
+  const [filterState, setFilterState] = useState<FilterState | undefined>();
 
   const [mode, setMode] = useState<AnnotationMode>('move');
 
@@ -87,7 +90,7 @@ export const Annotate = () => {
                   plugin={SAMPlugin} />
 
                 <SavingState.Root>
-                  <main className="absolute top-0 left-0 h-full right-[340px] flex flex-col">
+                  <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
                     <HeaderSection
                       images={images} 
                       isSmartPanelOpen={isSmartPanelOpen}
@@ -105,6 +108,7 @@ export const Annotate = () => {
                       <GPUDisabledError />
                     ) : images.length > 0 ? ( 
                       <WorkspaceSection 
+                        filterState={filterState}
                         images={images} 
                         hideAnnotations={hideAnnotations}
                         mode={mode}
@@ -130,7 +134,9 @@ export const Annotate = () => {
                     )}
                   </main>
 
-                  <SidebarSection />
+                  <SidebarSection 
+                    filterState={filterState} 
+                    onChangeFilterState={setFilterState} />
                 </SavingState.Root>
               </PluginProvider>
             </RelationEditorRoot>

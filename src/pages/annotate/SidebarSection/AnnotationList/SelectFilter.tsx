@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import type { W3CImageAnnotation } from '@annotorious/react';
+import type { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
+import { FilterState, FilterValue } from '../../FilterState';
 import { 
   DropdownMenu, 
   DropdownMenuCheckboxItem, 
@@ -18,16 +18,11 @@ interface SelectFilterOpts {
 
   relationshipNames: string[];
 
-  onSelectFilter(filter: ((a: W3CImageAnnotation) => boolean) | undefined): void;
+  filterState?: FilterState;
+
+  onChangeFilterState(filter?: FilterState): void;
 
 }
-
-type FilterValue = 'all' 
-  | 'with_entity' 
-  | 'without_entity' 
-  | 'with_relationship' 
-  | `entity-${string}`
-  | `rel-${string}`;
 
 const LABELS = {
   all: 'All',
@@ -40,46 +35,51 @@ export const SelectFilter = (props: SelectFilterOpts) => {
 
   const store = useStore();
 
-  const [filterValue, setFilterValue] = useState<FilterValue | FilterValue[]>('all');
+  const filterValue = props.filterState?.value || 'all';
 
   const onSetValue = (value: FilterValue, checked: boolean) => {
-    const bodies = (a: W3CImageAnnotation) => Array.isArray(a.body) ? a.body : [a.body];
+    const bodies = (a: W3CImageAnnotation | ImageAnnotation) => {
+      if ('body' in a)
+        return Array.isArray(a.body) ? a.body : [a.body];
+      else
+        return Array.isArray(a.bodies) ? a.bodies : [a.bodies];
+    }
 
-    let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
+    let filterState: FilterState = undefined;
 
     // Shorthand
     const isOnlySelected = (value: FilterValue) =>
       Array.isArray(filterValue) && filterValue.length === 1 && filterValue[0] === value;
 
     const resetToAll = () => {
-      setFilterValue('all');
-      filter = undefined;
+      props.onChangeFilterState();
+      filterState = undefined;
     }
 
-    if (value === 'all') {
-      // Click 'all' ALWAYS sets 'all' as filterValue (ignore checked) and clears filter
-      setFilterValue('all');
-    } else if (value === 'with_entity') {
+    if (value === 'with_entity') {
       if (checked) {
-        setFilterValue('with_entity');
-        filter = (a: W3CImageAnnotation) =>
-          bodies(a).some(b => b.purpose === 'classifying');
+        filterState = {
+          value: 'with_entity',
+          fn: (a: W3CImageAnnotation | ImageAnnotation) => bodies(a).some(b => b.purpose === 'classifying')
+        };
       } else {
         resetToAll();
       }
     } else if (value === 'without_entity') {
       if (checked) {
-        setFilterValue('without_entity');
-        filter = (a: W3CImageAnnotation) =>
-          bodies(a).every(b => b.purpose !== 'classifying');
+        filterState = {
+          value: 'without_entity',
+          fn: (a: W3CImageAnnotation) => bodies(a).every(b => b.purpose !== 'classifying')
+        };
       } else {
         resetToAll();
       }
     } else if (value === 'with_relationship') {
       if (checked) {
-        setFilterValue('with_relationship');
-        filter = (a: W3CImageAnnotation) => 
-          store.getRelatedAnnotations(a.id).length > 0;
+        filterState = {
+          value: 'with_relationship',
+          fn: (a: W3CImageAnnotation) => store.getRelatedAnnotations(a.id).length > 0
+        };
       } else {
         resetToAll();
       }
@@ -89,11 +89,13 @@ export const SelectFilter = (props: SelectFilterOpts) => {
           ? [...new Set([...filterValue.filter(v => v.startsWith('entity')), value])]
           : [value];
 
-        setFilterValue(updated);
-
         const ids = updated.map(v => v.substring('entity-'.length));
-        filter = (a: W3CImageAnnotation) =>
-          bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source));
+
+        filterState = {
+          value: updated,
+          fn: (a: W3CImageAnnotation) =>
+            bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source))
+        };
       } else {
         if (isOnlySelected(value)) {
           resetToAll();
@@ -101,11 +103,13 @@ export const SelectFilter = (props: SelectFilterOpts) => {
         } else if (Array.isArray(filterValue)) {
           const updated = filterValue.filter(v => v !== value);
 
-          setFilterValue(updated);
-
           const ids = updated.map(v => v.substring('entity-'.length));
-          filter = (a: W3CImageAnnotation) =>
-            bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source));
+
+          filterState = {
+            value: updated,
+            fn: (a: W3CImageAnnotation) =>
+              bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source))
+          }
         }
       }
     } else if (value.startsWith('rel-')) {
@@ -114,12 +118,13 @@ export const SelectFilter = (props: SelectFilterOpts) => {
           ? [...new Set([...filterValue.filter(v => v.startsWith('rel')), value])]
           : [value];
 
-        setFilterValue(updated);
-
-        // Filter annotations with any relation of the given name
         const names = updated.map(v => v.substring('rel-'.length));
-        filter = (a: W3CImageAnnotation) =>
-          store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value));
+
+        filterState = {
+          value: updated,
+          fn: (a: W3CImageAnnotation) =>
+            store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value))
+        };
       } else {
         if (isOnlySelected(value)) {
           resetToAll();
@@ -127,16 +132,18 @@ export const SelectFilter = (props: SelectFilterOpts) => {
         } else if (Array.isArray(filterValue)) {
           const updated = filterValue.filter(v => v !== value);
 
-          setFilterValue(updated);
-
           const names = updated.map(v => v.substring('rel-'.length));
-          filter = (a: W3CImageAnnotation) =>
-            store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value));
+
+          filterState = {
+            value: updated,
+            fn: (a: W3CImageAnnotation) =>
+              store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value))
+          };
         }
       }
     }
 
-    props.onSelectFilter(filter);
+    props.onChangeFilterState(filterState);
   }
 
   const isChecked = (value: FilterValue) =>

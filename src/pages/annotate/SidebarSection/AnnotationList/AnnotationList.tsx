@@ -1,6 +1,6 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
-import { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
+import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
@@ -10,6 +10,7 @@ import { SortableAnnotationList } from './sortable';
 import { SelectAll } from './SelectAll';
 import { DEFAULT_SORTING, SelectListOrder } from './SelectListOrder';
 import { useSortableAnnotations } from './useSortableAnnotations';
+import { FilterState } from '../../FilterState';
 import {
   Accordion,
   AccordionContent,
@@ -20,6 +21,10 @@ import {
 interface AnnotationListProps {
 
   onEdit(): void;
+
+  filterState?: FilterState;
+  
+  onChangeFilterState(filter?: FilterState): void;
 
 }
 
@@ -41,8 +46,6 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const flattened = useMemo(() => Array.from(annotations.values())
     .reduce<W3CImageAnnotation[]>((all, annotations) => ([...all, ...annotations]), []), [annotations]);
-
-  const [filter, setFilter] = useState<((a: W3CImageAnnotation) => boolean) | undefined>();
 
   const onEdit = (annotation: W3CImageAnnotation) => {
     manifold.setSelected(annotation.id);
@@ -86,12 +89,12 @@ export const AnnotationList = (props: AnnotationListProps) => {
   }, [flattened]);
 
   const listAnnotations = useCallback((imageId: string) => {
-    const filtered = filter 
-      ? annotations.get(imageId).filter(filter)
+    const filtered = props.filterState?.fn
+      ? annotations.get(imageId).filter(props.filterState.fn)
       : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
-  }, [filter, sorting, annotations]);
+  }, [props.filterState, sorting, annotations]);
 
   const canSelectAll = useMemo(() => {
     if (imageIds.length === 1) {
@@ -132,7 +135,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
           <SelectFilter 
             entityTypes={entityTypes}
             relationshipNames={relationshipNames}
-            onSelectFilter={filter => setFilter(() => filter)} />
+            filterState={props.filterState}
+            onChangeFilterState={props.onChangeFilterState} />
 
           <Separator 
             orientation="vertical" 

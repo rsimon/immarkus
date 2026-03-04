@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
 import { v4 as uuidv4 } from 'uuid';
+import type { Filter, ImageAnnotation } from '@annotorious/react';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useWindowSize } from '@/utils/useWindowSize';
 import { AnnotatableImage } from './AnnotatableImage';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 import { usePersistentHistory } from './usePersistentHistory';
+import { FilterState } from '../FilterState';
 
 import 'react-mosaic-component/react-mosaic-component.css';
 
 interface WorkspaceSectionProps {
+
+  filterState?: FilterState;
 
   images: LoadedImage[];
 
@@ -32,6 +37,8 @@ interface WorkspaceSectionProps {
 
 export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
+  const manifold = useAnnotoriousManifold();
+
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
 
@@ -45,6 +52,14 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   // Track window size, so we can update window toolbars responsively
   const { width } = useWindowSize();
+
+  useEffect(() => {
+    if (!manifold) return;
+
+    // TODO replace with manifold method later, when available
+    manifold.annotators.forEach(anno => 
+      anno.setFilter(props.filterState?.fn as unknown as Filter<ImageAnnotation>));
+  }, [manifold, props.filterState]);
   
   useEffect(() => {
     if (props.images.length > 1) {
