@@ -1,15 +1,15 @@
 import { W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
+import { useState } from 'react';
 import { 
-  Select, 
-  SelectContent, 
-  SelectGroup,
-  SelectLabel,
-  SelectTrigger, 
-  SelectValue,
-  UndecoratedSelectItem
-} from '@/ui/Select';
+  DropdownMenu, 
+  DropdownMenuCheckboxItem, 
+  DropdownMenuContent, 
+  DropdownMenuGroup, 
+  DropdownMenuLabel, 
+  DropdownMenuTrigger 
+} from '@/ui/DropdownMenu';
 
 interface SelectFilterOpts {
 
@@ -21,101 +21,187 @@ interface SelectFilterOpts {
 
 }
 
+type FilterValue = 'all' 
+  | 'with_entity' 
+  | 'without_entity' 
+  | 'with_relationship' 
+  | `entity-${string}`
+  | `rel-${string}`;
+
 export const SelectFilter = (props: SelectFilterOpts) => {
 
   const store = useStore();
 
-  const onValueChange = (value: string) => {
-    let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
+  const [filterValue, setFilterValue] = useState<FilterValue | FilterValue[]>('all');
 
+  const onSetValue = (value: FilterValue, checked: boolean) => {
     const bodies = (a: W3CImageAnnotation) => Array.isArray(a.body) ? a.body : [a.body];
 
-    if (value === 'with_entity') {
-      // Filter all annotations with any 'classifying' body
-      filter = (a: W3CImageAnnotation) =>
-        bodies(a).some(b => b.purpose === 'classifying');
+    let filter: ((a: W3CImageAnnotation) => boolean) = undefined;
+
+    // Shorthand
+    const isOnlySelected = (value: FilterValue) =>
+      Array.isArray(filterValue) && filterValue.length === 1 && filterValue[0] === value;
+
+    const resetToAll = () => {
+      setFilterValue('all');
+      filter = undefined;
+    }
+
+    if (value === 'all') {
+      // Click 'all' ALWAYS sets 'all' as filterValue (ignore checked) and clears filter
+      setFilterValue('all');
+    } else if (value === 'with_entity') {
+      if (checked) {
+        setFilterValue('with_entity');
+        filter = (a: W3CImageAnnotation) =>
+          bodies(a).some(b => b.purpose === 'classifying');
+      } else {
+        resetToAll();
+      }
     } else if (value === 'without_entity') {
-      filter = (a: W3CImageAnnotation) =>
-        bodies(a).every(b => b.purpose !== 'classifying');
+      if (checked) {
+        setFilterValue('without_entity');
+        filter = (a: W3CImageAnnotation) =>
+          bodies(a).every(b => b.purpose !== 'classifying');
+      } else {
+        resetToAll();
+      }
     } else if (value === 'with_relationship') {
-      // Filter all annotations with related annotations
-      filter = (a: W3CImageAnnotation) => 
-        store.getRelatedAnnotations(a.id).length > 0;
+      if (checked) {
+        setFilterValue('with_relationship');
+        filter = (a: W3CImageAnnotation) => 
+          store.getRelatedAnnotations(a.id).length > 0;
+      } else {
+        resetToAll();
+      }
     } else if (value.startsWith('entity-')) { 
-      // Filter annotations with the given 'classifying' source
-      const id = value.substring('entity-'.length);
+      if (checked) {
+        const updated = Array.isArray(filterValue) 
+          ? [...new Set([...filterValue.filter(v => v.startsWith('entity')), value])]
+          : [value];
 
-      filter = (a: W3CImageAnnotation) =>
-        bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && b.source === id);
+        setFilterValue(updated);
+
+        const ids = updated.map(v => v.substring('entity-'.length));
+        filter = (a: W3CImageAnnotation) =>
+          bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source));
+      } else {
+        if (isOnlySelected(value)) {
+          resetToAll();
+        // Should always be an array at this point!
+        } else if (Array.isArray(filterValue)) {
+          const updated = filterValue.filter(v => v !== value);
+
+          setFilterValue(updated);
+
+          const ids = updated.map(v => v.substring('entity-'.length));
+          filter = (a: W3CImageAnnotation) =>
+            bodies(a).some(b => b.purpose === 'classifying' && 'source' in b && ids.includes(b.source));
+        }
+      }
     } else if (value.startsWith('rel-')) {
-      // Filter annotations with any relation of the given name
-      const name = value.substring('rel-'.length);
+      if (checked) {
+        const updated = Array.isArray(filterValue) 
+          ? [...new Set([...filterValue.filter(v => v.startsWith('rel')), value])]
+          : [value];
 
-      filter = (a: W3CImageAnnotation) =>
-        store.getRelatedAnnotations(a.id).some(([_, meta]) => meta?.body?.value === name);
+        setFilterValue(updated);
+
+        // Filter annotations with any relation of the given name
+        const names = updated.map(v => v.substring('rel-'.length));
+        filter = (a: W3CImageAnnotation) =>
+          store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value));
+      } else {
+        if (isOnlySelected(value)) {
+          resetToAll();
+        // Should always be an array at this point!
+        } else if (Array.isArray(filterValue)) {
+          const updated = filterValue.filter(v => v !== value);
+
+          setFilterValue(updated);
+
+          const names = updated.map(v => v.substring('rel-'.length));
+          filter = (a: W3CImageAnnotation) =>
+            store.getRelatedAnnotations(a.id).some(([_, meta]) => names.includes(meta?.body?.value));
+        }
+      }
     }
 
     props.onSelectFilter(filter);
   }
 
+  const isChecked = (value: FilterValue) =>
+    Array.isArray(filterValue) ? filterValue.includes(value) : filterValue === value;
+
   return (
     <div className="flex text-xs">
-      Show <Select defaultValue="all" onValueChange={onValueChange}>
-        <SelectTrigger 
+      Show <DropdownMenu>
+        <DropdownMenuTrigger 
           className="p-0 whitespace-nowrap [&>span]:max-w-24 [&>span]:overflow-hidden [&>span]:text-ellipsis shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
-          <SelectValue />
-        </SelectTrigger>
+          Filter
+        </DropdownMenuTrigger>
 
-        <SelectContent>
-          <UndecoratedSelectItem value="all">
-            All
-          </UndecoratedSelectItem>
+        <DropdownMenuContent>
+          <DropdownMenuGroup>
+            <DropdownMenuCheckboxItem
+              checked={filterValue === 'all'}
+              onCheckedChange={() => onSetValue('all', true)}>
+              All
+            </DropdownMenuCheckboxItem>
 
-          <UndecoratedSelectItem 
-            disabled={props.entityTypes.length === 0}
-            value="with_entity">
-            With Entity
-          </UndecoratedSelectItem>
+            <DropdownMenuCheckboxItem
+              disabled={props.entityTypes.length === 0}
+              checked={filterValue === 'with_entity'}
+              onCheckedChange={checked => onSetValue('with_entity', checked)}>
+              With Entity
+            </DropdownMenuCheckboxItem>
 
-          <UndecoratedSelectItem 
-            disabled={props.entityTypes.length === 0}
-            value="without_entity">
-            Without Entity
-          </UndecoratedSelectItem>
+            <DropdownMenuCheckboxItem 
+              disabled={props.entityTypes.length === 0}
+              checked={filterValue === 'without_entity'}
+              onCheckedChange={checked => onSetValue('without_entity', checked)}>
+              Without Entity
+            </DropdownMenuCheckboxItem>
 
-          <UndecoratedSelectItem 
-            disabled={props.relationshipNames.length === 0}
-            value="with_relationship">
-            With Relation
-          </UndecoratedSelectItem>
+            <DropdownMenuCheckboxItem 
+              disabled={props.relationshipNames.length === 0}
+              checked={filterValue === 'with_relationship'}
+              onCheckedChange={checked => onSetValue('with_relationship', checked)}>
+              With Relation
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuGroup>
 
           {props.entityTypes.length > 0 && (
-            <SelectGroup>
-              <SelectLabel>Entity Classes</SelectLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Entity Classes</DropdownMenuLabel>
+
               {props.entityTypes.map(type => (
-                <UndecoratedSelectItem 
+                <DropdownMenuCheckboxItem
                   key={type.id}
-                  value={`entity-${type.id}`}>
+                  checked={isChecked(`entity-${type.id}`)}
+                  onCheckedChange={checked => onSetValue(`entity-${type.id}`, checked)}>
                   {type.label || type.id}
-                </UndecoratedSelectItem>
+                </DropdownMenuCheckboxItem>
               ))}
-            </SelectGroup>
+            </DropdownMenuGroup>
           )}
 
           {props.relationshipNames.length > 0 && (
-            <SelectGroup>
-              <SelectLabel>Relationship Types</SelectLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Relationship Types</DropdownMenuLabel>
               {props.relationshipNames.map(name => (
-                <UndecoratedSelectItem 
+                <DropdownMenuCheckboxItem 
                   key={name}
-                  value={`rel-${name}`}>
+                  checked={isChecked(`rel-${name}`)}
+                  onCheckedChange={checked => onSetValue(`rel-${name}`, checked)}>
                   {name}
-                </UndecoratedSelectItem>
+                </DropdownMenuCheckboxItem>
               ))}
-            </SelectGroup>
+            </DropdownMenuGroup>
           )}
-        </SelectContent>
-      </Select>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 
