@@ -1,6 +1,6 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
-import type { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
+import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
@@ -10,6 +10,7 @@ import { SortableAnnotationList } from './sortable';
 import { SelectAll } from './SelectAll';
 import { DEFAULT_SORTING, SelectListOrder } from './SelectListOrder';
 import { useSortableAnnotations } from './useSortableAnnotations';
+import { FilterState } from '../../FilterState';
 import {
   Accordion,
   AccordionContent,
@@ -17,13 +18,14 @@ import {
   AccordionTrigger,
 } from '@/ui/Accordion';
 
+
 interface AnnotationListProps {
 
   onEdit(): void;
 
-  filter?: (a: W3CImageAnnotation) => boolean;
+  filterState?: FilterState;
   
-  onSetFilter(filter?: (a: W3CImageAnnotation | ImageAnnotation) => boolean): void;
+  onChangeFilterState(filter?: FilterState): void;
 
 }
 
@@ -88,12 +90,12 @@ export const AnnotationList = (props: AnnotationListProps) => {
   }, [flattened]);
 
   const listAnnotations = useCallback((imageId: string) => {
-    const filtered = props.filter 
-      ? annotations.get(imageId).filter(props.filter)
+    const filtered = props.filterState?.fn
+      ? annotations.get(imageId).filter(props.filterState.fn)
       : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
-  }, [props.filter, sorting, annotations]);
+  }, [props.filterState, sorting, annotations]);
 
   const canSelectAll = useMemo(() => {
     if (imageIds.length === 1) {
@@ -134,7 +136,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
           <SelectFilter 
             entityTypes={entityTypes}
             relationshipNames={relationshipNames}
-            onSelectFilter={filter => props.onSetFilter(filter)} />
+            filterState={props.filterState}
+            onChangeFilterState={props.onChangeFilterState} />
 
           <Separator 
             orientation="vertical" 

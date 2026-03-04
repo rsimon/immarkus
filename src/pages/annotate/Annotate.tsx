@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import type { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
 import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
@@ -15,6 +14,7 @@ import { SidebarSection } from './SidebarSection';
 import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
+import { FilterState } from './FilterState';
 import { GPUDisabledError } from './GPUDisabledError';
 
 import './Annotate.css';
@@ -35,8 +35,7 @@ export const Annotate = () => {
 
   const [hideAnnotations, setHideAnnotations] = useState(false);
 
-  const [annotationfilter, setAnnotationFilter] = 
-    useState<((a: W3CImageAnnotation | ImageAnnotation) => boolean) | undefined>();
+  const [filterState, setFilterState] = useState<FilterState | undefined>();
 
   const [mode, setMode] = useState<AnnotationMode>('move');
 
@@ -109,7 +108,7 @@ export const Annotate = () => {
                       <GPUDisabledError />
                     ) : images.length > 0 ? ( 
                       <WorkspaceSection 
-                        annotationFilter={annotationfilter}
+                        filterState={filterState}
                         images={images} 
                         hideAnnotations={hideAnnotations}
                         mode={mode}
@@ -136,8 +135,8 @@ export const Annotate = () => {
                   </main>
 
                   <SidebarSection 
-                    annotationFilter={annotationfilter} 
-                    onSetAnnotationFilter={f => setAnnotationFilter(() => f)} />
+                    filterState={filterState} 
+                    onChangeFilterState={setFilterState} />
                 </SavingState.Root>
               </PluginProvider>
             </RelationEditorRoot>
