@@ -141,7 +141,9 @@ export const preprocess = (
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, { minSize: Math.min(region.w, region.h )});
+      const regionURL = firstImage.getRegionURL(region, region.rotation, { minSize: Math.max(region.w, region.h)});
+      
+      console.log('region url', regionURL);
 
       /**
        * Case 1: Dynamic IIIF image service snippet with region
