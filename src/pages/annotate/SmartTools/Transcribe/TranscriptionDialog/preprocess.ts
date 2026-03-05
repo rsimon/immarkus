@@ -3,10 +3,10 @@ import imageCompression from 'browser-image-compression';
 import { DynamicImageServiceResource } from 'cozy-iiif';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { getImageSnippet } from '@/utils/getImageSnippet';
-import { ProcessingState } from '../Types';
 import { PageTransform, Point, Region } from '@/services';
+import { getImageSnippet } from '@/utils/getImageSnippet';
 import { rotateImage } from '@/utils/rotateImage';
+import { ProcessingState } from '../Types';
 
 interface IntermediateBasePreprocessingResult {
 
