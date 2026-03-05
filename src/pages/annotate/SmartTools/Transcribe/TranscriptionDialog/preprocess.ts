@@ -6,6 +6,7 @@ import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { ProcessingState } from '../Types';
 import { PageTransform, Point, Region } from '@/services';
+import { rotateImage } from '@/utils/rotateImage';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -154,20 +155,13 @@ export const preprocess = (
       };
 
       if ('w' in input) {
-        const corners = [
-          transformPoint(input.x, input.y),
-          transformPoint(input.x + input.w, input.y),
-          transformPoint(input.x, input.y + input.h),
-          transformPoint(input.x + input.w, input.y + input.h)
-        ];
+        const tl = transformPoint(input.x, input.y);
+        const br = transformPoint(input.x + input.w, input.y + input.h);
 
-        const xs = corners.map(p => p.x);
-        const ys = corners.map(p => p.y);
-
-        const minX = Math.min(...xs);
-        const minY = Math.min(...ys);
-        const maxX = Math.max(...xs);
-        const maxY = Math.max(...ys);
+        const minX = Math.min(tl.x, br.x);
+        const minY = Math.min(tl.y, br.y);
+        const maxX = Math.max(tl.x, br.x);
+        const maxY = Math.max(tl.y, br.y);
 
         return { 
           x: minX, 
@@ -188,21 +182,24 @@ export const preprocess = (
        * Case 1: Dynamic IIIF image service snippet with region
        */
       return fetch(regionURL).then(res => res.blob()).then(blob => {
-        return getImageDimensions(blob).then(({ width, height }) => {
-          return { url: regionURL, transform: getRegionTransform(width, height) };
-        });
+        return getImageDimensions(blob).then(({ width, height }) => (
+          { url: regionURL, transform: getRegionTransform(width, height) }
+        ));
       });
     } else {
       return getImageSnippet(image, annotation, false).then(snippet => {
         if ('data' in snippet && 'file' in image) {
-          const file = new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type });
+          const inputFile = region.rotation === 0
+            ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
+            : rotateImage(new Blob([snippet.data as BlobPart]), region.rotation, image.file.type).then(blob =>
+              new File([blob], image.name, { type: image.file.type }))
 
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region
            */
-          return preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => {
-            return { file, transform: getRegionTransform(result.width, result.height) };
-          });
+          return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => (
+            { file, transform: getRegionTransform(result.width, result.height) }
+          )));
         } else {
           // Should never happen
           throw new Error('Unexpected snippet type');
