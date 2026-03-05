@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
-import { Region } from '@/services';
+import { Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { HoverTooltip } from './HoverTooltip';
 import { NavControls } from './NavControls';
@@ -26,6 +26,8 @@ interface TranscriptionPreviewProps {
   image: LoadedImage;
 
   onChangeRegion(region?: Region): void;
+
+  onChangeRotation(rotation: Rotation): void;
 
   onClearAnnotations(): void;
 
@@ -91,7 +93,8 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
           processingState={props.processingState}
           onChangeRegion={props.onChangeRegion} />
 
-        <NavControls />
+        <NavControls 
+          onChangeRotation={props.onChangeRotation} />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (

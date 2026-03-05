@@ -186,10 +186,10 @@ export interface Region {
   w: number;
 
   h: number;
-
-  rotation: 0 | 90 | 180 | 270;
   
 }
+
+export type Rotation = 0 | 90 | 180 | 270;
 
 export interface TranslationServiceResponse {
   

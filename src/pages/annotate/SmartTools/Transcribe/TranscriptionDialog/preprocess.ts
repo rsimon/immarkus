@@ -3,7 +3,7 @@ import imageCompression from 'browser-image-compression';
 import { DynamicImageServiceResource } from 'cozy-iiif';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { PageTransform, Point, Region } from '@/services';
+import { PageTransform, Point, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { rotateImage } from '@/utils/rotateImage';
 import { ProcessingState } from '../Types';
@@ -99,6 +99,7 @@ const isDynamicIIIF = (image: LoadedImage) => {
 export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
+  rotation: Rotation,
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
   if (region) {
@@ -131,8 +132,8 @@ export const preprocess = (
     };
 
     const getRegionTransform = (snippetWidth: number, snippetHeight: number) => ((input: Point | Region) => {
-      const rotation = region.rotation ?? 0;
-      const deg = ((rotation % 360) + 360) % 360;
+      const rot = rotation ?? 0;
+      const deg = ((rot % 360) + 360) % 360;
 
       const transformPoint = (x: number, y: number): Point => {
         let ux: number;
@@ -145,7 +146,7 @@ export const preprocess = (
           ux = x * (region.w / snippetHeight);
           uy = y * (region.h / snippetWidth);
         } else {
-          throw new Error('Unsupported rotation:' + rotation);
+          throw new Error('Unsupported rotation:' + rot);
         }
 
         return {
@@ -176,7 +177,7 @@ export const preprocess = (
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, region.rotation, { minSize: Math.min(region.w, region.h)});
+      const regionURL = firstImage.getRegionURL(region, rotation, { minSize: Math.min(region.w, region.h)});
 
       /**
        * Case 1: Dynamic IIIF image service snippet with region
@@ -189,10 +190,10 @@ export const preprocess = (
     } else {
       return getImageSnippet(image, annotation, false).then(snippet => {
         if ('data' in snippet && 'file' in image) {
-          const inputFile = region.rotation === 0
+          const inputFile = rotation === 0
             ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
-            : rotateImage(new Blob([snippet.data as BlobPart]), region.rotation, image.file.type).then(blob =>
-              new File([blob], image.name, { type: image.file.type }))
+            : rotateImage(new Blob([snippet.data as BlobPart]), rotation, image.file.type).then(blob =>
+              new File([blob], image.name, { type: image.file.type }));
 
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region
@@ -207,25 +208,46 @@ export const preprocess = (
       });
     }
   } else {
-    const getImageTransform = (kx: number, ky: number) => ((input: Point | Region) => 'w' in input ? {
-      x: input.x * kx,
-      y: input.y * ky,
-      w: input.w * kx,
-      h: input.h * ky
-    } : {
-      x: input.x * kx,
-      y: input.y * ky
+    const getImageTransform = (imageWidth: number, imageHeight: number, resultWidth: number, resultHeight: number) => ((input: Point | Region) => {
+      const transformPoint = (x: number, y: number): Point => ({
+        x: x * (imageWidth / resultWidth), 
+        y: y * (imageHeight / resultHeight) 
+      });
+
+      if ('w' in input) {
+        const tl = transformPoint(input.x, input.y);
+        const br = transformPoint(input.x + input.w, input.y + input.h);
+
+        const minX = Math.min(tl.x, br.x);
+        const minY = Math.min(tl.y, br.y);
+        const maxX = Math.max(tl.x, br.x);
+        const maxY = Math.max(tl.y, br.y);
+
+        return { 
+          x: minX, 
+          y: minY, 
+          w: maxX - minX, 
+          h: maxY - minY 
+        } as Region;
+      } else {
+        return transformPoint(input.x, input.y);
+      }
     }) as PageTransform;
 
     if ('file' in image) {
-      return getImageDimensions(image.data).then(({ width, height }) => {
+      const inputFile = rotation === 0
+        ? Promise.resolve(image.file)
+        : rotateImage(image.file, rotation, image.file.type).then(blob =>
+          new File([blob], image.name, { type: image.file.type }));
+
+      return inputFile.then(data => getImageDimensions(data).then(({ width, height }) => {
         /**
          * Case 3: local image file without region
          */
-        return preprocessImageData(image.file, width, height, onProgress).then(result => ({
-          file: result.file, transform: getImageTransform(result.kx, result.ky)
+        return preprocessImageData(data, width, height, onProgress).then(result => ({
+          file: result.file, transform: getImageTransform(width, height, result.width, result.height)
         }));
-      });
+      }));
     } else {
       const firstImage = image.canvas.images[0];
 
@@ -238,13 +260,10 @@ export const preprocess = (
       return firstImage.getPixelSize().then(originalSize => {
         return fetch(imageURL).then(res => res.blob()).then(blob => {
           return getImageDimensions(blob).then(({ width, height }) => {
-            const kx = originalSize.width / width;
-            const ky = originalSize.height / height;
-
             /**
              * Case 4: IIIF image (service or static) without region
              */
-            return { url: imageURL, transform: getImageTransform(kx, ky) };
+            return { url: imageURL, transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
           })
         });
       });

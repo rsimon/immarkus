@@ -1,17 +1,26 @@
 import { RotateCcwSquare, RotateCwSquare, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewer } from '@annotorious/react';
+import { Rotation } from '@/services';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
-export const NavControls = () => {
+interface NavControlsProps {
+
+  onChangeRotation(rotation: Rotation): void;
+
+}
+
+export const NavControls = (props: NavControlsProps) => {
 
   const viewer = useViewer();
 
   const onZoom = (factor: number) => () =>
     viewer.viewport.zoomBy(factor);
 
-  const onRotate = (clockwise: boolean) => () =>
+  const onRotate = (clockwise: boolean) => () => {
     viewer.viewport.rotateBy(clockwise ? 90 : -90);
+    props.onChangeRotation(viewer.viewport.getRotation() as Rotation);
+  }
 
   return (
     <div className="absolute top-2 right-2 flex gap-2">
