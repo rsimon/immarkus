@@ -20,7 +20,8 @@ import {
   Region, 
   TranscriptionServiceCrosswalk, 
   ServiceRegistry, 
-  useService 
+  useService, 
+  Rotation
 } from '@/services';
 
 interface OCRResult {
@@ -52,6 +53,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const [open, setOpen] = useState(false);
 
   const [region, setRegion] = useState<Region | undefined>();
+
+  const [rotation, setRotation] = useState<Rotation>(0);
 
   const [options, setOptions] = useState<OCROptions>({
     connectorId: ServiceRegistry.listAvailableConnectors('TRANSCRIPTION')[0].id 
@@ -130,7 +133,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const onSubmitImage = () => { 
     if (!service.connector) return;
 
-    preprocess(props.image, region, setProcessingState).then(result => {
+    preprocess(props.image, region, rotation, setProcessingState).then(result => {
       setProcessingState('pending');
 
       const image = 'file' in result ? result.file : result.url;
@@ -190,19 +193,20 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         
         <div className="flex h-full gap-4 overflow-hidden relative">
           <TooltipProvider>
-            <div className="p-3 flex-[2] min-w-0">
+            <div className="p-3 flex-2 min-w-0">
               <div className="h-full rounded bg-muted border">
                 <TranscriptionPreview 
                   annotations={annotations}
                   image={props.image} 
                   processingState={processingState}
                   onChangeRegion={onChangeRegion}
+                  onChangeRotation={setRotation}
                   onClearAnnotations={onClearAnnotations}
                   onImportAnnotations={onImportAnnotations} />
               </div>
             </div>
 
-            <div className="flex-[1] min-w-0 px-3 pl-0 relative overflow-y-auto">
+            <div className="flex-1 min-w-0 px-3 pl-0 relative overflow-y-auto">
               <TranscriptionControls
                 lastError={lastError}
                 options={options}

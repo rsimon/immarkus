@@ -189,6 +189,8 @@ export interface Region {
   
 }
 
+export type Rotation = 0 | 90 | 180 | 270;
+
 export interface TranslationServiceResponse {
   
   generator: Generator;

@@ -128,7 +128,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                 <h4 className="font-semibold flex gap-2.5 items-center">
                   {connectorConfig.displayName}
                   {connectorConfig.requiresKey && (
-                    <span className="rounded-full mb-[1px] text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
+                    <span className="rounded-full mb-px text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
                       <KeyRound className="size-3" /> API Key Required
                     </span>
                   )}
