@@ -129,31 +129,67 @@ export const preprocess = (
       }
     };
 
-    const getRegionTransform = (kx: number, ky: number) => ((input: Point | Region) => 'w' in input ? {
-      x: input.x * kx + region.x,
-      y: input.y * ky + region.y,
-      w: input.w * kx,
-      h: input.h * ky 
-    } : {
-      x: input.x * kx + region.x,
-      y: input.y * ky + region.y
+    const getRegionTransform = (snippetWidth: number, snippetHeight: number) => ((input: Point | Region) => {
+      const rotation = region.rotation ?? 0;
+      const deg = ((rotation % 360) + 360) % 360;
+
+      const transformPoint = (x: number, y: number): Point => {
+        let ux: number;
+        let uy: number;
+
+        if (deg === 0 || deg === 180) {
+          ux = x * (region.w / snippetWidth);
+          uy = y * (region.h / snippetHeight);
+        } else if (deg === 90 || deg === 270) {
+          ux = x * (region.w / snippetHeight);
+          uy = y * (region.h / snippetWidth);
+        } else {
+          throw new Error('Unsupported rotation:' + rotation);
+        }
+
+        return {
+          x: ux + region.x,
+          y: uy + region.y
+        };
+      };
+
+      if ('w' in input) {
+        const corners = [
+          transformPoint(input.x, input.y),
+          transformPoint(input.x + input.w, input.y),
+          transformPoint(input.x, input.y + input.h),
+          transformPoint(input.x + input.w, input.y + input.h)
+        ];
+
+        const xs = corners.map(p => p.x);
+        const ys = corners.map(p => p.y);
+
+        const minX = Math.min(...xs);
+        const minY = Math.min(...ys);
+        const maxX = Math.max(...xs);
+        const maxY = Math.max(...ys);
+
+        return { 
+          x: minX, 
+          y: minY, 
+          w: maxX - minX, 
+          h: maxY - minY 
+        } as Region;
+      } else {
+        return transformPoint(input.x, input.y);
+      }
     }) as PageTransform;
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, region.rotation, { minSize: Math.max(region.w, region.h)});
-      
-      console.log('region url', regionURL);
+      const regionURL = firstImage.getRegionURL(region, region.rotation, { minSize: Math.min(region.w, region.h)});
 
       /**
        * Case 1: Dynamic IIIF image service snippet with region
        */
       return fetch(regionURL).then(res => res.blob()).then(blob => {
         return getImageDimensions(blob).then(({ width, height }) => {
-          const kx = region.w / width;
-          const ky = region.h / height;
-          
-          return { url: regionURL, transform: getRegionTransform(kx, ky) };
+          return { url: regionURL, transform: getRegionTransform(width, height) };
         });
       });
     } else {
@@ -165,9 +201,7 @@ export const preprocess = (
            * Case 2: file image snippet (local or clipped static IIIF) with region
            */
           return preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => {
-            // Image scaling + crop
-            const { kx, ky } = result;
-            return { file, transform: getRegionTransform(kx, ky) };
+            return { file, transform: getRegionTransform(result.width, result.height) };
           });
         } else {
           // Should never happen
@@ -188,7 +222,6 @@ export const preprocess = (
 
     if ('file' in image) {
       return getImageDimensions(image.data).then(({ width, height }) => {
-
         /**
          * Case 3: local image file without region
          */

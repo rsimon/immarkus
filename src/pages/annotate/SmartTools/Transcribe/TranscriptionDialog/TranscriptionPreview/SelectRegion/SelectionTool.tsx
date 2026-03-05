@@ -76,7 +76,7 @@ export const SelectionTool = (props: SelectionToolProps) => {
         const h = Math.min(maxHeight, trimmedH);
 
         if (w * h > 0)      
-          props.onSelect({ x, y, w, h, rotation: viewer.viewport.getRotation() });
+          props.onSelect({ x, y, w, h, rotation: viewer.viewport.getRotation() as 0 | 90 | 180 | 270 });
 
         setStart(undefined);
       }

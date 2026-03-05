@@ -187,7 +187,7 @@ export interface Region {
 
   h: number;
 
-  rotation: number;
+  rotation: 0 | 90 | 180 | 270;
   
 }
 
