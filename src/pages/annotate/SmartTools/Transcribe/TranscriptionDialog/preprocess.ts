@@ -254,16 +254,20 @@ export const preprocess = (
       // Should never happen
       if (!firstImage) throw new Error('Canvas has no image');
 
-      const imageURL = firstImage.getImageURL(1200);
+      const imageURL = firstImage.getImageURL(1200, rotation);
+
       onProgress('fetching_iiif');
 
       return firstImage.getPixelSize().then(originalSize => {
         return fetch(imageURL).then(res => res.blob()).then(blob => {
           return getImageDimensions(blob).then(({ width, height }) => {
+            const originalWidth = (rotation === 0 || rotation === 180) ? originalSize.width : originalSize.height;
+            const originalHeight = (rotation === 0 || rotation === 180) ? originalSize.height : originalSize.width;
+
             /**
              * Case 4: IIIF image (service or static) without region
              */
-            return { url: imageURL, transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
+            return { url: imageURL, transform: getImageTransform(originalWidth, originalHeight, width, height) };
           })
         });
       });
