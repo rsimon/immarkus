@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle } from 'react';
-import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component';
-import { MosaicBranch, MosaicKey } from 'react-mosaic-component/lib/types';
+import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component2';
+import type { MosaicBranch } from 'react-mosaic-component2';
 import type { History } from '@annotorious/core';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
@@ -59,7 +59,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
   const { toolbarRef, collapsed, onResize } = useCollapsibleToolbar();
 
   const onCloseWindow = (
-    actions: MosaicRootActions<MosaicKey>
+    actions: MosaicRootActions<any>
   ) => () => {
     actions.remove(props.windowPath);
     props.onClose();

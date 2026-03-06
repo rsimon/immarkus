@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component';
+import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component2';
 import { v4 as uuidv4 } from 'uuid';
 import type { Filter, ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
@@ -11,7 +11,7 @@ import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 import { usePersistentHistory } from './usePersistentHistory';
 import { FilterState } from '../FilterState';
 
-import 'react-mosaic-component/react-mosaic-component.css';
+import 'react-mosaic-component2/react-mosaic-component.css';
 
 interface WorkspaceSectionProps {
 
