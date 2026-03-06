@@ -20,8 +20,8 @@ export const transcribe = (
 
   const Transcription = z.object({ text: z.string() });
 
-  const submit = (image_url: string) => 
-    openai.responses.create({
+  const submit = (image_url: string) => {
+    return openai.responses.create({
       model: 'gpt-4.1',
       input:[{
         role: 'user',
@@ -38,13 +38,14 @@ export const transcribe = (
         format: zodTextFormat(Transcription, 'transcriptions')
       }
     }).then(data => ({ data, generator }));
-
-    if (typeof image === 'string') {
-      return urlToBase64(image).then(base64 =>  
-        submit(`data:image/jpeg;base64,${base64}`));
-    } else {
-      return fileToBase64(image as File).then(base64 => 
-        submit(`data:image/jpeg;base64,${base64}`));
-    }
-
   }
+
+  if (typeof image === 'string') {
+    return urlToBase64(image).then(base64 =>  
+      submit(`data:image/jpeg;base64,${base64}`));
+  } else {
+    return fileToBase64(image as File).then(base64 => 
+      submit(`data:image/jpeg;base64,${base64}`));
+  }
+
+}

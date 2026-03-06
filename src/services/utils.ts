@@ -60,14 +60,11 @@ export const transcribeOpenAICompatible = (
     defaultHeaders
   });
 
-  const submit = (imageUrl: string) =>
-    client.chat.completions.create({
+  const submit = (imageUrl: string) => {    
+    return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
       temperature: 0.1, // Low temperature for consistent JSON
-      response_format: {
-        type: 'json_object'
-      },
       messages: [{
         role: 'user',
         content: [{
@@ -81,6 +78,7 @@ export const transcribeOpenAICompatible = (
         }]
       }]
     }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
+  }
 
   if (typeof image === 'string') {
     return urlToBase64(image).then(base64 =>  
@@ -180,9 +178,6 @@ export const translateOpenAICompatible = (
       model,
       max_completion_tokens: 4000,
       temperature: 0.1, // Low temperature for consistent JSON
-      response_format: {
-        type: 'json_object'
-      },
       messages: [{
         role: 'user',
         content: [{
