@@ -53,13 +53,13 @@ export default defineConfig({
       output: {
         entryFileNames: 'assets/immarkus-[hash].js',
         assetFileNames: 'assets/immarkus-[hash].[ext]',
-        manualChunks: {
-          'dep-annotorious': ['@annotorious/react'],
-          'dep-exceljs': ['exceljs/dist/exceljs.min.js'],
-          'dep-primereact': ['primereact/treetable'],
-          'dep-sam': ['@annotorious/plugin-segment-anything'],
-          'dep-opencv': ['@annotorious/plugin-magnetic-outline']
-        }
+        manualChunks(id) {
+          if (id.includes('node_modules/@annotorious/react')) return 'dep-annotorious';
+          if (id.includes('node_modules/exceljs')) return 'dep-exceljs';
+          if (id.includes('node_modules/primereact')) return 'dep-primereact';
+          if (id.includes('node_modules/@annotorious/plugin-segment-anything')) return 'dep-sam';
+          if (id.includes('node_modules/@annotorious/plugin-magnetic-outline')) return 'dep-opencv';
+        },
       },
       external: (source, _, __) => {
         // Suppress warning about missing asset (handled by vite-static-copy)

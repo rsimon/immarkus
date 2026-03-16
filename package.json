@@ -16,10 +16,10 @@
     "@types/react-autosuggest": "^10.1.11",
     "@types/react-dom": "^19.2.3",
     "@types/wicg-file-system-access": "^2023.10.7",
-    "@vitejs/plugin-react": "^5.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.0",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-static-copy": "^3.3.0"
   },
@@ -92,5 +92,10 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "zod": "^4.3.6"
+  },
+  "overrides": {
+    "@tailwindcss/vite": {
+      "vite": "^8"
+    }
   }
 }
