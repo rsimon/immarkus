@@ -1,5 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Download, HelpCircle, Image, Info, LogOut, Plug, ToyBrick, Waypoints } from 'lucide-react';
+import { 
+  Download, 
+  HelpCircle, 
+  Image, 
+  Images, 
+  Info, 
+  LogOut, 
+  Plug,
+  ToyBrick, 
+  Waypoints 
+} from 'lucide-react';
 
 import './AppNavigationSidebar.css';
 
@@ -45,6 +55,14 @@ export const AppNavigationSidebar = () => {
                 <Waypoints size={18} className="mr-2" />  Knowledge Graph
               </Link>
             </li>
+            
+            <li>
+              <Link
+                className={pathname === '/visual-search' ? active : undefined}
+                to="/visual-search">
+                <Images size={18} className="mr-2" /> Visual Search
+              </Link>
+            </li>
 
             <li>
               <Link 
@@ -66,14 +84,14 @@ export const AppNavigationSidebar = () => {
               <Link 
                 className={pathname === '/about' ? active : undefined} 
                 to="/about">
-                <Info size={18} className="mr-2 relative -top-[1px]" /> About
+                <Info size={18} className="mr-2 relative -top-px" /> About
               </Link>
             </li>
 
             <li>
               <a
                 href="https://github.com/rsimon/immarkus/wiki" target="_blank">
-                <HelpCircle size={18} className="mr-2 relative -top-[1px]" /> Help
+                <HelpCircle size={18} className="mr-2 relative -top-px" /> Help
               </a>
             </li>
           </ul>
@@ -82,7 +100,7 @@ export const AppNavigationSidebar = () => {
 
       <div>
         <button 
-          className="flex items-center p-[10px]"
+          className="flex items-center p-2.5"
           onClick={() => location.href = '/'}>
           <LogOut size={18} className="mr-2" /> Exit
         </button>
