@@ -18,10 +18,10 @@
     "@types/wicg-file-system-access": "^2023.10.7",
     "@vitejs/plugin-react": "^6.0.1",
     "tailwindcss": "^4.2.2",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "vite": "^8.0.2",
     "vite-plugin-babel-macros": "^1.0.6",
-    "vite-plugin-static-copy": "^3.4.0"
+    "vite-plugin-static-copy": "^4.0.0"
   },
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.4.0",
