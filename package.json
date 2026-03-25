@@ -92,10 +92,5 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "zod": "^4.3.6"
-  },
-  "overrides": {
-    "@tailwindcss/vite": {
-      "vite": "^8"
-    }
   }
 }
