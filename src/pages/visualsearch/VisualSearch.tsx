@@ -1,16 +1,19 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Cog, ShieldAlert, ShieldX } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
 import { useStore } from '@/store';
-import { useVisualSearch } from './use-visual-search';
+import { Indexing } from './indexing';
+import { useVisualSearch } from './useVisualSearch';
 
 export const VisualSearch = () => {
 
   const store = useStore();
 
-  const { status, index } = useVisualSearch();
+  const vs = useVisualSearch();
+
+  const [isIndexing, setIsIndexing] = useState(false);
 
   const count = useMemo(() => {
     if (!store) return 0;
@@ -28,7 +31,11 @@ export const VisualSearch = () => {
       <AppNavigationSidebar />
 
       <main className="page about px-12 py-6 flex items-center justify-center">
-        {status === 'index_missing' ? (
+        {isIndexing ? (
+          <Indexing 
+            vs={vs} 
+            onDone={() => setIsIndexing(false)} />
+        ) : vs.indexStatus === 'index_missing' ? (
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-1.5 text-red-600 font-medium">
               <ShieldX className="size-5" /> Indexing required
@@ -39,11 +46,13 @@ export const VisualSearch = () => {
               have currently {count.toLocaleString()} images that require indexing.
             </p>
 
-            <Button className="mt-6">
+            <Button
+              className="mt-6"
+              onClick={() => setIsIndexing(true)}>
               <Cog className="size-5 mr-2" /> Start Indexing Now
             </Button>
           </div>
-        ): status === 'index_incomplete' ? (
+        ) : vs.indexStatus === 'index_incomplete' ? (
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-1.5 text-red-600 font-medium">
               <ShieldAlert className="size-5" /> Index incomplete
@@ -53,12 +62,14 @@ export const VisualSearch = () => {
               Your index is outdated. There are {count.toLocaleString()} images that need indexing.
             </p>
 
-            <Button className="mt-6">
+            <Button
+              className="mt-6"
+              onClick={() => setIsIndexing(true)}>
               <Cog className="size-5 mr-2" /> Indexing Missing Images
             </Button>
           </div>
-        ) : status === 'index_complete' ? (
-          <div></div>
+        ) : vs.indexStatus === 'index_complete' ? (
+          <div>Index Complete</div>
         ) : null}
       </main>
     </div>

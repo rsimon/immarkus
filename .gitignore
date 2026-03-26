@@ -1,5 +1,6 @@
 .vscode/
 dist/
 node_modules/
+*.onnx
 .DS_Store
 .env
