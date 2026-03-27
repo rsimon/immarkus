@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
+import { FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { AnnotationMode, Tool } from '../AnnotationMode';
@@ -16,6 +16,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { useVisualSearchAvailable, VisualSearch } from './VisualSearch';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -46,6 +47,8 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const [tab, setTab] = useState<SmartTool>('smart-scissors');
+
+  const visualSearchAvailable = useVisualSearchAvailable();
 
   const { 
     plugin, 
@@ -207,6 +210,21 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               </AccordionContent>
             </AccordionItem>
           )}
+
+          <AccordionItem value="visual-search" className="border-b-0">
+            <AccordionTrigger
+              disabled={!visualSearchAvailable}
+              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 disabled:text-muted-foreground/30">
+              <span className="flex grow items-center gap-2 justify-start">
+                <Images className="size-4" /> Visual Search
+              </span>
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
+              <VisualSearch 
+                images={props.images} />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       ) : (
         <div className="p-5">
