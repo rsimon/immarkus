@@ -112,7 +112,7 @@ const loadDirectory = async (
 
         const nextPath = [...path, id ];
         await loadDirectory(subDirHandle, nextPath, images, iiifResources, folders);
-      } else {
+      } else if (entry.kind === 'file') {
         const fileHandle = await dirHandle.getFileHandle(entry.name);
         const file = await fileHandle.getFile();
 
