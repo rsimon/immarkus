@@ -6,6 +6,7 @@ import { Button } from '@/ui/Button';
 import { useStore } from '@/store';
 import { Indexing } from './indexing';
 import { useVisualSearch } from './useVisualSearch';
+import { IndexStats } from './indexstats';
 
 export const VisualSearch = () => {
 
@@ -69,7 +70,7 @@ export const VisualSearch = () => {
             </Button>
           </div>
         ) : vs.indexStatus === 'index_complete' ? (
-          <div>Index Complete</div>
+          <IndexStats vs={vs} />
         ) : null}
       </main>
     </div>

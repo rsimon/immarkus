@@ -102,7 +102,7 @@ const loadDirectory = async (
 
   for await (const entry of dirHandle.values()) {
     try {
-      if (entry.kind === 'directory') {
+      if (entry.kind === 'directory' && entry.name !== '.visual-search') {
         const subDirHandle = await dirHandle.getDirectoryHandle(entry.name);
 
         const { name } = subDirHandle;
