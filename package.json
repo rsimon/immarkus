@@ -16,12 +16,12 @@
     "@types/react-autosuggest": "^10.1.11",
     "@types/react-dom": "^19.2.3",
     "@types/wicg-file-system-access": "^2023.10.7",
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^5.1.4",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
-    "vite": "^8.0.5",
+    "vite": "^7.3.2",
     "vite-plugin-babel-macros": "^1.0.6",
-    "vite-plugin-static-copy": "^4.0.1"
+    "vite-plugin-static-copy": "^3.4.0"
   },
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.4.0",
