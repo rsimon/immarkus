@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CopyPlus, Info } from 'lucide-react';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
@@ -32,7 +32,11 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
 
   const { id, definition } = props;
 
-  const { authorities } = useRuntimeConfig();
+  const { authorities: allAuthorities } = useRuntimeConfig();
+
+  const authorities = useMemo(() =>
+    allAuthorities.filter(a => (props.definition.authorities || []).includes(a.name))
+  , [allAuthorities, props.definition]);
   
   const [values, setValues] = useState<(string | undefined)[]>(Array.isArray(props.value) ? props.value : [props.value]);
 
@@ -113,7 +117,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
           
         <div className="flex text-muted-foreground">
           <ExternalAuthoritySelector
-            authorities={authorities.filter(a => (props.definition.authorities || []).includes(a.name))} 
+            authorities={authorities} 
             onCloseDialog={onCloseDialog} />  
 
           <div className="flex relative -top-px">

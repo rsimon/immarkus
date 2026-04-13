@@ -25,3 +25,17 @@ export const formatIdentifier = (id: string, authorities: ExternalAuthority[]) =
 
   return matchedId || id;
 }
+
+export const expandIdentifier = (value: string, authorities: ExternalAuthority[]) => {
+  // Trivial case: empty
+  if (!value) return;
+
+  // Trivial case: value is already a URI
+  if (/^https?:\/\//.test(value)) return value; 
+
+  // Can't resolve a plain string if there are more than one authorities in this field
+  if (authorities.length !== 1) return value; 
+
+  const pattern = authorities[0].canonical_id_pattern;
+  return pattern ? pattern.replace('{{id}}', value) : value; 
+}

@@ -1,9 +1,8 @@
-import { useRef } from 'react';
 import { Pen } from 'lucide-react';
 import { ExternalAuthority } from '@/model';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
-import { formatIdentifier } from './util';
+import { formatIdentifier, expandIdentifier } from './util';
 
 interface ExternalAuthorityFieldInputProps {
 
@@ -23,7 +22,9 @@ interface ExternalAuthorityFieldInputProps {
 
 export const ExternalAuthorityFieldInput = (props: ExternalAuthorityFieldInputProps) => {
 
-  const isURI = props.value ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(props.value) : false;
+  const expanded = expandIdentifier(props.value, props.authorities);
+
+  const isURI = expanded ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(expanded) : false;
 
   return props.editable ? (
     <Input
@@ -34,10 +35,14 @@ export const ExternalAuthorityFieldInput = (props: ExternalAuthorityFieldInputPr
       onBlur={() => props.onSetEditable(!isURI)} />
   ) : (
     <div className={cn('flex h-9 w-full overflow-hidden shadow-xs bg-muted rounded-md border border-input pl-2.5 pr-1 items-center', props.className)}>
-      <a 
-        href={props.value} 
-        className="grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
-        target="_blank">{formatIdentifier(props.value, props.authorities)}</a>
+      {isURI ? (
+        <a 
+          href={expanded} 
+          className="grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
+          target="_blank">{formatIdentifier(props.value, props.authorities)}</a>
+      ) : (
+        <span className="grow overflow-hidden text-ellipsis pr-1">{props.value}</span>
+      )}
 
       <button 
         onClick={() => props.onSetEditable(true)}
