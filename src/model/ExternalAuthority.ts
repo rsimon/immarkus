@@ -8,7 +8,7 @@ export interface ExternalAuthority {
 
   search_pattern?: string | Object;
 
-  external_url_pattern?: string;
+  external_url_pattern?: string | Object;
 
   canonical_id_pattern?: string;
 
