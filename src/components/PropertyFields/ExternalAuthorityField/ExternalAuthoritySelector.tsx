@@ -27,7 +27,6 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
   const [open, setOpen] = useState<ExternalAuthority | undefined>();
 
   const onOpen = (name: string) => {
-    console.log('opening', authorities.find(a => a.name === name));
     setValue(name);
     setOpen(authorities.find(a => a.name === name));
   }
