@@ -4,7 +4,10 @@
     "description": "China Historical GIS placename database",
     "type": "IFRAME",
     "search_pattern": "https://dhumanities.github.io/markus/gis/index.html?n={{query}}",
-    "external_url_pattern": "https://chgis.hudci.org/tgaz/placename?n={{query}}",
+    "external_url_pattern": {
+      "/^hvd_.*/": "https://chgis.hudci.org/tgaz/placename/{{query}}",
+      "*": "https://chgis.hudci.org/tgaz/placename?n={{query}}"
+    },
     "canonical_id_pattern": "https://chgis.hudci.org/tgaz/placename/{{id}}"
   }, {
     "name": "Wikipedia",
