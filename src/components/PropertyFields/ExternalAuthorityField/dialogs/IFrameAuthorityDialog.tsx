@@ -29,6 +29,13 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   useEffect(() => {
     const onMessage = (evt: MessageEvent) => {
       const { data } = evt;
+
+      // Protects against a regression with https://github.com/YuzuJS/setImmediate, 
+      // which isn't actualyl used in IMMARKUS but, unfortunately, pulled in as a 
+      // transitive dependency by ExcelJS
+      // console.log({data});
+      if (typeof data === 'string' && data.startsWith('setImmediate$')) return;
+      
       if (data) {
         if (authority.canonical_id_pattern)
           props.onClose(authority.canonical_id_pattern.replace('{{id}}', data));
