@@ -29,7 +29,8 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   useEffect(() => {
     const onMessage = (evt: MessageEvent) => {
       const { data } = evt;
-      // Protectes against a regression with https://github.com/YuzuJS/setImmediate, 
+
+      // Protects against a regression with https://github.com/YuzuJS/setImmediate, 
       // which isn't actualyl used in IMMARKUS but, unfortunately, pulled in as a 
       // transitive dependency by ExcelJS
       // console.log({data});
