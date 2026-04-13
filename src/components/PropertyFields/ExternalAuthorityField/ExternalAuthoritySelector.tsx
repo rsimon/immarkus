@@ -27,6 +27,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
   const [open, setOpen] = useState<ExternalAuthority | undefined>();
 
   const onOpen = (name: string) => {
+    console.log('opening', authorities.find(a => a.name === name));
     setValue(name);
     setOpen(authorities.find(a => a.name === name));
   }
@@ -53,7 +54,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
           onValueChange={onOpen}>
           <div 
             role="button"
-            className="flex items-center text-xs rounded-md mr-1.5 relative -top-[1px]">
+            className="flex items-center text-xs rounded-md mr-1.5 relative -top-px">
             
             <button 
               onClick={() => onOpen(value)}
@@ -65,7 +66,7 @@ export const ExternalAuthoritySelector = (props: ExternalAuthoritySelectorProps)
 
             <SelectTrigger
               className="text-black shadow-none flex border-none pr-1 -ml-1 pl-0 py-1 bg-transparent hover:bg-muted 
-                outline-black/70 -outline-offset-[2px] h-auto"/>
+                outline-black/70 -outline-offset-2 h-auto"/>
           </div>
           
           <SelectContent
