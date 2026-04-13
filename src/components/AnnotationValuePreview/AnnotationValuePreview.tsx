@@ -3,7 +3,7 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { ExternalAuthority, PropertyDefinition } from '@/model';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { useDataModel } from '@/store';
-import { formatIdentifier } from '@/components/PropertyFields/ExternalAuthorityField/util';
+import { formatIdentifier, expandIdentifier} from '@/components/PropertyFields/ExternalAuthorityField/util';
 import { serializePropertyValue } from '@/utils/serialize';
 
 interface AnnotationValuePreviewProps {
@@ -17,21 +17,37 @@ interface AnnotationValuePreviewProps {
 const getValuePreviews = (
   schema: PropertyDefinition[], 
   body: W3CAnnotationBody, 
-  authorities: ExternalAuthority[]
+  allAuthorities: ExternalAuthority[]
 ) => {
   if ('properties' in body) {
     return schema.reduce<ReactNode[]>((previews, definition) => {
       const value = body.properties[definition.name];
+
+      const authorities = definition.type === 'external_authority' 
+        ? allAuthorities.filter(a => (definition.authorities || []).includes(a.name))
+        : [];
+
       if (value) {
         const serialized = serializePropertyValue(definition, value);
 
-        const nodes = serialized.map(str =>
-          definition.type === 'uri' ? 
-            (<a href={str} target="_blank" className="text-sky-700 hover:underline">{str}</a>) :
-          definition.type === 'external_authority' 
-            ? (<a href={str} target="_blank" className="text-sky-700 hover:underline">{formatIdentifier(str, authorities)}</a>)
-            : (<span>{str}</span>)
-        );
+        const nodes = serialized.map(str => {
+          if (definition.type === 'uri') {
+            return (
+              <a href={str} target="_blank" className="text-sky-700 hover:underline">{str}</a>
+            );
+          } else if (definition.type === 'external_authority') {
+            const expanded = expandIdentifier(str, authorities);
+            const isURI = expanded ? /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(expanded) : false;
+
+            return isURI ? (
+              <a href={expanded} target="_blank" className="text-sky-700 hover:underline">
+                {formatIdentifier(str, authorities)}
+              </a>
+            ) : str;
+          } else {
+            return (<span>{str}</span>)
+          }
+        });
 
         return [...previews, ...nodes];
       } else {
