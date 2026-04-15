@@ -28,7 +28,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
 
   return (
     <div className="px-4">
-      <p className="pt-4 font-medium leading-relaxed">
+      <p className="pt-4 font-medium leading-relaxed text-center">
         Search your collection for visually similar elements.
       </p>
 
@@ -39,7 +39,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
             to <span><Images className="size-3.5 inline-block" /> <Link to="/visual-search" className="font-semibold hover:underline">Visual Search</Link></span> to learn more.
           </Alert>
         ) : selected.length === 1 ? (
-          <div className="space-y-3">
+          <div className="space-y-3 pt-1.5">
             <div>
               <Button 
                 className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 tracking-wide"
