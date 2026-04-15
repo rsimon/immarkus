@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { Ban, CircleX, FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, ShieldX, Sparkles, X } from 'lucide-react';
+import { CircleX, FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { useVisualSearchAvailable, VisualSearch } from './VisualSearch';
@@ -11,7 +11,6 @@ import { SmartScissors } from './SmartScissors';
 import { Transcribe } from './Transcribe';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import {
   Accordion,
   AccordionContent,
@@ -222,14 +221,9 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
                   <Images className="size-4" /> Visual Search
                 </span>
               ) : (
-                <Tooltip>
-                  <TooltipTrigger className="flex text-destructive grow items-center gap-2 justify-start">
-                    <CircleX className="size-4" /> Visual Search
-                  </TooltipTrigger>
-                  <TooltipContent align="start">
-                    asdfasdf
-                  </TooltipContent>
-                </Tooltip>
+                <span className="flex grow items-center gap-2 justify-start text-destructive">
+                  <CircleX className="size-4" /> Visual Search
+                </span>
               )}
             </AccordionTrigger>
 
@@ -251,7 +245,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </div>
 
             <p className="pt-4 text-xs text-muted-foreground font-light leading-relaxed">
-              Smart selection uses experimental WebGPU technology not 
+              Smart Tools use experimental WebGPU technology not 
               available in your browser. Please switch to a recent version 
               of Chrome or Edge to use this 
               feature. <a 
