@@ -40,7 +40,7 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
         <img
           src={'src' in snippet 
             ? snippet.src
-            : URL.createObjectURL(new Blob([snippet.data]))}
+            : URL.createObjectURL(new Blob([snippet.data as BlobPart]))}
           className={clsImg} />
       ) : (
         <Skeleton className={clsSkeleton} /> 
