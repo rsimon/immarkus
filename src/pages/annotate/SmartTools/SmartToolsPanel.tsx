@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
+import { Ban, CircleX, FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, ShieldX, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
+import { useVisualSearchAvailable, VisualSearch } from './VisualSearch';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { AutoSelect } from './AutoSelect';
 import { EdgeSnap } from './EdgeSnap';
@@ -10,13 +11,13 @@ import { SmartScissors } from './SmartScissors';
 import { Transcribe } from './Transcribe';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { useVisualSearchAvailable, VisualSearch } from './VisualSearch';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -36,7 +37,7 @@ interface SmartToolsPanelProps {
 
 }
 
-type SmartTool = 'auto-select' | 'edge-snap' | 'smart-scissors' | 'transcribe'; 
+type SmartTool = 'smart-scissors' | 'edge-snap' | 'auto-select' | 'transcribe' | 'visual-search'; 
 
 export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
@@ -83,6 +84,8 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
       props.onChangeMode('draw');
     } else if (tab === 'transcribe') {
       stopPluginIfRunning();
+      props.onChangeMode('move');
+    } else if (tab === 'visual-search') {
       props.onChangeMode('move');
     } else {
       pluginRunning.current = true;
@@ -213,11 +216,21 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
           <AccordionItem value="visual-search" className="border-b-0">
             <AccordionTrigger
-              disabled={!visualSearchAvailable}
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 disabled:text-muted-foreground/30">
-              <span className="flex grow items-center gap-2 justify-start">
-                <Images className="size-4" /> Visual Search
-              </span>
+              {visualSearchAvailable ? (
+                <span className="flex grow items-center gap-2 justify-start">
+                  <Images className="size-4" /> Visual Search
+                </span>
+              ) : (
+                <Tooltip>
+                  <TooltipTrigger className="flex text-destructive grow items-center gap-2 justify-start">
+                    <CircleX className="size-4" /> Visual Search
+                  </TooltipTrigger>
+                  <TooltipContent align="start">
+                    asdfasdf
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </AccordionTrigger>
 
             <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
