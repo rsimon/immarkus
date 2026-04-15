@@ -27,7 +27,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
   }
 
   return (
-    <div className="px-3">
+    <div className="px-4">
       <p className="pt-4 font-medium leading-relaxed">
         Search your collection for visually similar elements.
       </p>
