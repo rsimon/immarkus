@@ -73,6 +73,7 @@
     "fuse.js": "^7.3.0",
     "localforage": "^1.10.0",
     "lucide-react": "^1.8.0",
+    "masonic": "^4.1.0",
     "motion": "^12.38.0",
     "murmurhash": "^2.0.1",
     "openai": "^6.34.0",

@@ -48,7 +48,7 @@ export const useVisualSearch = (): VisualSearch => {
     return imageCount + canvasCount;
   }, [store]);
 
-  const [status, setStatus] = useState<IndexStatus>('loading');
+  const [indexStatus, setIndexStatus] = useState<IndexStatus>('loading');
 
   const [index, setIndex] = useState<VisualSearchIndex>();
 
@@ -63,18 +63,18 @@ export const useVisualSearch = (): VisualSearch => {
         // TODO just a hack for testing - need to compare actual images later!
         const indexImageCount = index.images.length;
         if (indexImageCount === 0) {
-          setStatus('index_missing');
+          setIndexStatus('index_missing');
         } else if (indexImageCount < totalImageCount) {
-          setStatus('index_incomplete');
+          setIndexStatus('index_incomplete');
         } else {
-          setStatus('index_complete');
+          setIndexStatus('index_complete');
         }
 
         setIndex(index);
       })
       .catch(error => {
         // Should never happen (due to `create: true`)
-        setStatus('index_missing');
+        setIndexStatus('index_missing');
         console.error(error);
       });
   }, [store, totalImageCount]);
@@ -118,6 +118,6 @@ export const useVisualSearch = (): VisualSearch => {
     onProgress?.({ phase: 'done', total });
   }, [index, store]);
 
-  return { index, runIndexing, indexStatus: status };
+  return useMemo(() => ({ index, runIndexing, indexStatus }), [index, runIndexing, indexStatus]);
 
 }
