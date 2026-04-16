@@ -11,6 +11,11 @@ import { SearchResult } from 'browser-visual-search';
 import { ImageSearchResult } from './ImageSearchResult';
 import { useStore } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
+import { Grid2X2, Grid3X3, Square, X } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
+import { Separator } from '@/ui/Separator';
+import { Button } from '@/ui/Button';
+import { Label } from '@/ui/Label';
 
 interface ImageSearchDialogProps {
 
@@ -28,6 +33,10 @@ export interface ResolvedSearchResult extends SearchResult {
 
 }
 
+type IconSize = 'lg' | 'md' | 'sm';
+
+type SearchScope = 'all' | 'this' | 'other';
+
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const { selected } = useSelection();
@@ -35,6 +44,10 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const store = useStore();
 
   const vs = useVisualSearch();
+
+  const [searchScope, setSearchScope] = useState<SearchScope>('all');
+
+  const [iconsSize, setIconSize] = useState<IconSize>('sm');
 
   const [querySnippet, setQuerySnippet] = useState<Blob | undefined>();
 
@@ -84,6 +97,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       <DialogContent 
         closeIcon={false}
         className="flex flex-col gap-0 h-11/12 w-11/12 max-w-11/12 p-0 overflow-hidden relative">
+
         <DialogHeader className="flex flex-row justify-between border-b">
           <DialogTitle className="m-0 p-2">
             <div className="flex items-start gap-2">
@@ -105,22 +119,79 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
             </div>
           </DialogTitle>
 
-          <div className="flex">
-            Search inside 
-            <ToggleGroup
-              type="single">
-              <ToggleGroupItem value="this">
-                this image
-              </ToggleGroupItem>
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            className="shadow-none! mb-0"
+            value={searchScope}
+            onValueChange={value => setSearchScope(value as SearchScope)}>
+            <ToggleGroupItem 
+              value="all"
+              className="text-xs font-normal">
+              All images
+            </ToggleGroupItem>
 
-              <ToggleGroupItem value="other">
-                other images
-              </ToggleGroupItem>
+            <ToggleGroupItem
+              value="this"
+              className="text-xs font-normal">
+              This image only
+            </ToggleGroupItem>
 
-              <ToggleGroupItem value="all">
-                all images
-              </ToggleGroupItem>
+            <ToggleGroupItem 
+              value="other"
+              className="text-xs font-normal">
+              Other images only
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          <div className="flex gap-1 items-center pr-2">
+            <ToggleGroup 
+              type="single"
+              className="gap-1"
+              value={iconsSize}
+              onValueChange={value => setIconSize(value as IconSize)}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <ToggleGroupItem value="sm" size="sm">
+                      <Grid3X3 className="size-4" />
+                    </ToggleGroupItem>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Small Thumbnails</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <ToggleGroupItem value="md" size="sm">
+                      <Grid2X2 className="size-4" />
+                    </ToggleGroupItem>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Medium Thumbnails</TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <ToggleGroupItem value="lg" size="sm">
+                      <Square className="size-4" />
+                    </ToggleGroupItem>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Large Thumbnails</TooltipContent>
+              </Tooltip>
             </ToggleGroup>
+
+            <Separator orientation="vertical" className="h-4" />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={props.onClose}>
+              <X className="size-4" />
+            </Button>
           </div>
         </DialogHeader>
 
@@ -129,7 +200,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
             <Masonry 
               items={results}
               columnGutter={4}
-              columnWidth={240}
+              columnWidth={iconsSize === 'sm' ? 90 : iconsSize === 'md' ? 160 : 280}
               render={ImageSearchResult} />
           )}
         </div>
