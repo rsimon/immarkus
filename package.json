@@ -58,6 +58,7 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
+    "@radix-ui/react-visually-hidden": "^1.2.4",
     "@react-spring/web": "^10.0.3",
     "ajv": "^8.18.0",
     "browser-image-compression": "^2.0.2",

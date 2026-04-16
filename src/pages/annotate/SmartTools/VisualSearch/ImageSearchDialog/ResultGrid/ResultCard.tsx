@@ -1,20 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
-import { ResolvedSearchResult } from './ImageSearchDialog';
+import { ResolvedSearchResult } from '../ImageSearchDialog';
+import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
 
-interface ImageSearchResultProps {
+interface ResultCardProps {
 
   data: ResolvedSearchResult;
 
 }
 
-export const ImageSearchResult = (props: ImageSearchResultProps) => {
+export const ResultCard = (props: ResultCardProps) => {
 
-  const { bbox, image, score } = props.data;
+  const { bbox, image, isQueryImage, score } = props.data;
 
   const [snippet, setSnippet] = useState<ImageSnippet | undefined>();
+
+  const backgroundColor = isQueryImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
 
   useEffect(() => {
     if (!('data' in image)) return;
@@ -64,16 +67,23 @@ export const ImageSearchResult = (props: ImageSearchResultProps) => {
     });
   }, [image, bbox]);
 
-  return (
-    <div className="w-full rounded-sm overflow-hidden border">
-      {(snippet && 'data' in snippet) ? (
-        <img
-          className="w-full"
-          src={URL.createObjectURL(new Blob([snippet.data as BlobPart]))} />
-      ) : (
-        <div className="size-8 bg-red-300 border-green-300" />
-      )}
+  return snippet && 'data' in snippet ? (
+    <div className="w-full rounded-xs overflow-hidden relative shadow-xs">
+      <img
+        className="w-full"
+        src={URL.createObjectURL(new Blob([snippet.data as BlobPart]))} />
+
+      <div 
+        className="size-3 absolute inset-0.75 rounded-full border border-white" 
+        style={{ backgroundColor }} />
+
+      <div
+        className="absolute bottom-0 left-0 text-white text-[10px] bg-black/60 py-0.5 px-1.5 rounded-tr-xs">
+        {Math.round(score * 100) / 100}
+      </div>
     </div>
+  ) : (
+    <div />
   )
 
 }

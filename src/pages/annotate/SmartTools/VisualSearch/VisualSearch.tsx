@@ -3,7 +3,7 @@ import { useSelection } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
-import { ImageSearchDialog } from './image-search';
+import { ImageSearchDialog } from './ImageSearchDialog';
 import { Alert } from '@/ui/Alert';
 import { Link } from 'react-router-dom';
 import { Images, TriangleAlert } from 'lucide-react';
