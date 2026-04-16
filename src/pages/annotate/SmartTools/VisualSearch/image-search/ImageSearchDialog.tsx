@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { Separator } from '@/ui/Separator';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { ImageSearchLegend } from './ImageSearchLegend';
 
 interface ImageSearchDialogProps {
 
@@ -195,14 +196,26 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
           </div>
         </DialogHeader>
 
-        <div className="grow relative p-2 overflow-x-hidden overflow-y-auto">
-          {results && (
-            <Masonry 
-              items={results}
-              columnGutter={4}
-              columnWidth={iconsSize === 'sm' ? 90 : iconsSize === 'md' ? 160 : 280}
-              render={ImageSearchResult} />
-          )}
+        <div className="grow relative">
+          <div className="flex h-full">
+            <div className="sticky top-0 w-48 shrink-0 self-start">
+              {results && (
+                <ImageSearchLegend 
+                  queryImageId={selected[0]?.annotatorId}
+                  results={results} />
+              )}
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-2 border-l bg-muted">
+              {results && (
+              <Masonry 
+                items={results}
+                columnGutter={6}
+                columnWidth={iconsSize === 'sm' ? 90 : iconsSize === 'md' ? 160 : 280}
+                render={ImageSearchResult} />
+              )}
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
