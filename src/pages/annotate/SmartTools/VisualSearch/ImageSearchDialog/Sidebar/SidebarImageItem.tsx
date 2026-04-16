@@ -19,28 +19,27 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
 
   return (
     <div className="text-xs">
-      {'data' in image ? (
-        <div className="flex items-end gap-2">
-          <div className="relative">
-            <img
-              loading="lazy"
-              className="rounded size-12 object-cover"
-              src={URL.createObjectURL(image.data)}
-              alt={image.name} />
-          </div>
+      <div className="flex items-end gap-2">
+        <div className="relative">
+          <img
+            loading="lazy"
+            className="rounded size-12 object-cover"
+            src={'data' in image ? URL.createObjectURL(image.data) : image.canvas.getThumbnailURL(120)}
+            alt={image.name} />
+        </div>
 
-          <div className="flex flex-col justify-center">
-            <span className="font-semibold">{image.name}</span>
-            <div className="text-muted-foreground flex gap-1 items-center">
-              <div 
-                className="size-2.5 rounded-full" 
-                style={{ backgroundColor }} /> {props.matches} results
-            </div>
+        <div className="flex flex-col justify-center">
+          <span className="font-semibold">
+            {'data' in image ? image.name : image.canvas.getLabel()}
+          </span>
+          <div className="text-muted-foreground flex gap-1 items-center">
+            <div 
+              className="size-2.5 rounded-full" 
+              style={{ backgroundColor }} /> {props.matches} results
           </div>
         </div>
-      ) : (
-        <div></div>
-      )}
+      </div>
+
     </div>
   )
 

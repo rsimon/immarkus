@@ -22,9 +22,11 @@ export const Sidebar = (props: SidebarProps) => {
 
   return (
     <div className="p-2">
-      <ul>
+      <ul className="space-y-1.5">
         {items.map(({ image, matches }) => (
-          <li key={image.id}>
+          <li 
+            key={image.id}
+            className="border p-1.5 rounded bg-white">
             <SidebarImageItem 
               isQueryImage={image.id === props.queryImageId}
               image={image} 

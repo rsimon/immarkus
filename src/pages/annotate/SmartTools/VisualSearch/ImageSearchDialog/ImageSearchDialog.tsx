@@ -4,7 +4,7 @@ import { useSelection } from '@annotorious/react-manifold';
 import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
 import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
-import { useStore } from '@/store';
+import { loadImages, useStore } from '@/store';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { FileImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
 import { Sidebar } from './Sidebar';
@@ -66,7 +66,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
     if (!queryBaseImage) return;
 
-    // Reset color coding index
+    setResults(undefined);
     resetPalette();
 
     getImageSnippet(
@@ -81,7 +81,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       vs.index.query(blob, null, { topK: 50 }).then(results => {
         const uniqueImages = [...new Set(results.map(r => r.imageId))];
 
-        Promise.all(uniqueImages.map(id => store.loadImage(id))).then(loaded => {
+        loadImages(uniqueImages, store).then(loaded => {
           const resolved = results.map(result => {
             const image = loaded.find(l => l.id === result.imageId);
             return {...result, image, isQueryImage: image.id === queryBaseImage.id };
@@ -119,7 +119,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               )}
             </div>
             
-            <div className="flex-1 overflow-y-auto p-3 border-l">
+            <div className="flex-1 overflow-y-auto p-2.5 border-l">
               {results && (
                 <ResultGrid
                   queryImageId={queryImageId}

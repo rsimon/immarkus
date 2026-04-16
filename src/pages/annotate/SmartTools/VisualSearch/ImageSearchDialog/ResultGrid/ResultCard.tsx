@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
+import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
+import { Skeleton } from '@/ui/Skeleton';
 
 interface ResultCardProps {
 
@@ -13,65 +13,45 @@ interface ResultCardProps {
 
 export const ResultCard = (props: ResultCardProps) => {
 
-  const { bbox, image, isQueryImage, score } = props.data;
+  const { pxBounds, normalizedBounds, image, isQueryImage, score } = props.data;
+
+  const aspectRatio = pxBounds[2] / pxBounds[3];
 
   const [snippet, setSnippet] = useState<ImageSnippet | undefined>();
 
   const backgroundColor = isQueryImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
 
   useEffect(() => {
-    if (!('data' in image)) return;
-    
-    // bbox coordinates are normalized [0, 1] - note that
-    // this code is an inefficent hack!
-    createImageBitmap(image.data).then(bitmap => {
-      const { width, height } = bitmap;
-      bitmap.close();
+    const [x, y, w, h] = pxBounds;
 
-      const x = bbox[0] * width;
-      const y = bbox[1] * height;
-      const w = bbox[2] * width;
-      const h = bbox[3] * height;
+    console.log(pxBounds, normalizedBounds);
 
-      // Create a dummy annotation, so we can re-use 
-      // the getImageSnippet function
-      const selector: Rectangle = {
-        type: ShapeType.RECTANGLE,
-        geometry: {
-          x,
-          y,
-          w,
-          h,
-          bounds: {
-            minX: x,
-            minY: y,
-            maxX: x + w,
-            maxY: y + h
-          }
-        }
-      };
-
-      const id = uuidv4();
-
-      const annotation: ImageAnnotation = {
-        id,
-        bodies: [],
-        target: {
-          annotation: id,
-          selector
-        }
-      };
-
-      getImageSnippet(image, annotation, true, 'jpg')
-        .then(setSnippet);
+    const annotation = boundsToAnnotation({
+      minX: x, 
+      minY: y,
+      maxX: x + w,
+      maxY: y + h
     });
-  }, [image, bbox]);
 
-  return snippet && 'data' in snippet ? (
-    <div className="w-full rounded-xs overflow-hidden relative shadow-xs">
-      <img
-        className="w-full"
-        src={URL.createObjectURL(new Blob([snippet.data as BlobPart]))} />
+    getImageSnippet(image, annotation, true, 'jpg')
+      .then(setSnippet);
+  }, [image, pxBounds, normalizedBounds]);
+
+  return (
+    <div className="w-full relative rounded-xs overflow-hidden shadow-xs">
+      <Skeleton
+        className="bg-white w-full" 
+        style={{ aspectRatio }}/>
+
+      {snippet && (
+        <img
+          className="absolute inset-0 w-full"
+          src={'data' in snippet 
+            ? URL.createObjectURL(new Blob([snippet.data as BlobPart]))
+            : snippet.src
+          } 
+          style={{ aspectRatio }} />
+      )}
 
       <div 
         className="size-3 absolute inset-0.75 rounded-full border border-white" 
@@ -82,8 +62,6 @@ export const ResultCard = (props: ResultCardProps) => {
         {Math.round(score * 100) / 100}
       </div>
     </div>
-  ) : (
-    <div />
   )
 
 }

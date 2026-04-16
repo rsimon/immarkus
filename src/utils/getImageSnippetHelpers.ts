@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { approximateAsPolygon, ShapeType } from '@annotorious/annotorious';
 import type { 
   Bounds,
@@ -5,8 +6,37 @@ import type {
   ImageAnnotation, 
   MultiPolygonGeometry, 
   PolygonGeometry, 
-  PolylineGeometry
+  PolylineGeometry,
+  Rectangle
 } from '@annotorious/annotorious';
+
+/**
+ * Helper to create a dummy annotation from xywh bounds,
+ * so that it's easier to reuse the getImageSnippet method.
+ */
+export const boundsToAnnotation = (bounds: Bounds): ImageAnnotation => {
+  const selector: Rectangle = {
+    type: ShapeType.RECTANGLE,
+    geometry: {
+      x: bounds.minX,
+      y: bounds.minY,
+      w: bounds.maxX - bounds.minX,
+      h: bounds.maxY - bounds.minY,
+      bounds
+    }
+  };
+
+  const id = uuidv4();
+
+  return {
+    id,
+    bodies: [],
+    target: {
+      annotation: id,
+      selector
+    }
+  };
+}
 
 const detectImageFormat = (uint8Array: Uint8Array<ArrayBuffer>) => {
   const header = uint8Array.slice(0, 4);
