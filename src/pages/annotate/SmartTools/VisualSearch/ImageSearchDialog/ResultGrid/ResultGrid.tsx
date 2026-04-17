@@ -21,6 +21,7 @@ export const ResultGrid = (props: ResultGridProps) => {
       items={results}
       columnGutter={6}
       columnWidth={iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280}
+      overscanBy={Infinity}
       render={ResultCard} />
   )
 

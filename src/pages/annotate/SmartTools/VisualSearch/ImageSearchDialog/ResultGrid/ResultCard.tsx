@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
@@ -19,9 +20,13 @@ export const ResultCard = (props: ResultCardProps) => {
 
   const [snippet, setSnippet] = useState<ImageSnippet | undefined>();
 
-  const backgroundColor = isQueryImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
+  const { ref, inView } = useInView();
 
+  const backgroundColor = isQueryImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
+  
   useEffect(() => {
+    if (!inView) return;
+
     const [x, y, w, h] = pxBounds;
 
     const annotation = boundsToAnnotation({
@@ -33,10 +38,10 @@ export const ResultCard = (props: ResultCardProps) => {
 
     getImageSnippet(image, annotation, true, 'jpg')
       .then(setSnippet);
-  }, [image, pxBounds]);
+  }, [image, pxBounds, inView]);
 
   return (
-    <div className="w-full relative rounded-xs overflow-hidden shadow-xs">
+    <div ref={ref} className="w-full relative rounded-xs overflow-hidden shadow-xs">
       <Skeleton
         className="bg-white w-full" 
         style={{ aspectRatio }}/>

@@ -48,7 +48,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const [searchScope, setSearchScope] = useState<SearchScope>('all');
 
-  const [iconSize, setIconSize] = useState<IconSize>('sm');
+  const [iconSize, setIconSize] = useState<IconSize>('md');
 
   const [queryImage, setQueryImage] = useState<Blob | undefined>();
 
@@ -82,7 +82,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       const blob = new Blob([snippet.data as BlobPart], { type: 'image/png' });
       setQueryImage(blob);
 
-      vs.index.query(blob, null, { topK: 200 }).then(results => {
+      vs.index.query(blob, null, { topK: 1000 }).then(results => {
         const uniqueImages = [...new Set(results.map(r => r.imageId))];
 
         loadImages(uniqueImages, store).then(loaded => {
@@ -94,7 +94,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         });
       });
     });
-  }, [props.open, selected, props.images, vs, store]);
+  }, [props.open, selected, props.images, store]);
 
   return (
     <Dialog
