@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { LoadedImage } from '@/model';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { SidebarImageItem } from './SidebarImageItem';
+import { cn } from '@/ui/utils';
 
 interface SidebarProps {
 
@@ -9,7 +10,9 @@ interface SidebarProps {
 
   results: ResolvedSearchResult[];
 
-  onOpenPreview(image: LoadedImage): void;
+  currentPreview?: string;
+
+  onSetPreview(image?: LoadedImage): void;
 
 }
 
@@ -24,18 +27,29 @@ export const Sidebar = (props: SidebarProps) => {
     }).sort((a, b) => b.matches - a.matches);
   }, [props.results]);
 
+  const onTogglePreview = (image: LoadedImage) => {
+    if (props.currentPreview === image.id)
+      props.onSetPreview(undefined);
+    else
+      props.onSetPreview(image);
+  }
+
   return (
     <div className="p-2 h-full overflow-y-auto">
       <ul className="space-y-1.5">
         {items.map(({ image, matches }) => (
           <li 
             key={image.id}>
-            <div className="p-2 hover:bg-muted rounded cursor-pointer">
+            <div className={cn(
+              'p-2 group hover:bg-muted rounded cursor-pointer',
+              image.id === props.currentPreview && 'bg-muted'
+              )}>
               <SidebarImageItem 
+                isCurrentPreview={image.id === props.currentPreview}
                 isQueryImage={image.id === props.queryImageId}
                 image={image} 
                 matches={matches} 
-                onOpenPreview={() => props.onOpenPreview(image)} />
+                onTogglePreview={() => onTogglePreview(image)} />
             </div>
           </li>
         ))}

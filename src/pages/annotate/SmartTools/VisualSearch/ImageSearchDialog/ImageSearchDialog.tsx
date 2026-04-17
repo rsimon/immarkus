@@ -142,9 +142,10 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
             <div className="sticky top-0 w-72 h-full shrink-0 self-start bg-white">
               {filteredResults && (
                 <Sidebar 
+                  currentPreview={previewImage?.id}
                   queryImageId={selected[0]?.annotatorId}
                   results={filteredResults} 
-                  onOpenPreview={setPreviewImage} />
+                  onSetPreview={setPreviewImage} />
               )}
             </div>
 
