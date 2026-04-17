@@ -83,10 +83,11 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       setQueryImage(blob);
 
       vs.index.query(blob, null, { topK: 1000 }).then(results => {
-        const uniqueImages = [...new Set(results.map(r => r.imageId))];
+        const clipped = results.filter(r => r.score >= 0.81);
+        const uniqueImages = [...new Set(clipped.map(r => r.imageId))];
 
         loadImages(uniqueImages, store).then(loaded => {
-          const resolved = results.map(result => {
+          const resolved = clipped.map(result => {
             const image = loaded.find(l => l.id === result.imageId);
             return {...result, image, isQueryImage: image.id === queryBaseImage.id };
           });
