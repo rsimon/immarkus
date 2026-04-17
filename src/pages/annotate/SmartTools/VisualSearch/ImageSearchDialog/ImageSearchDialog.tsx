@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
 import { SearchResult } from 'browser-visual-search';
@@ -52,9 +52,18 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const [queryImage, setQueryImage] = useState<Blob | undefined>();
 
-  const [results, setResults] = useState<ResolvedSearchResult[] | undefined>();
-
   const [previewImage, setPreviewImage] = useState<LoadedImage | undefined>();
+
+  const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
+
+  const filteredResults = useMemo(() => {
+    if (searchScope === 'all') 
+      return allResults;
+    else if (searchScope === 'this')
+      return allResults.filter(r => r.imageId === queryImageId);
+    else 
+      return allResults.filter(r => r.imageId !== queryImageId);
+  }, [allResults, searchScope, queryImageId]);
 
   const onOpenChange = (open: boolean) => {
     if (!open)
@@ -70,7 +79,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
     if (!queryBaseImage) return;
 
-    setResults(undefined);
+    setAllResults(undefined);
+    setPreviewImage(undefined);
     resetPalette();
 
     getImageSnippet(
@@ -91,7 +101,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
             const image = loaded.find(l => l.id === result.imageId);
             return {...result, image, isQueryImage: image.id === queryBaseImage.id };
           });
-          setResults(resolved);
+          setAllResults(resolved);
         });
       });
     });
@@ -107,7 +117,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <Toolbar
           queryImage={queryImage}
-          results={results}
+          results={filteredResults}
           searchScope={searchScope}
           iconSize={iconSize}
           onChangeSearchScope={setSearchScope}
@@ -117,29 +127,34 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
             <div className="sticky top-0 w-60 h-full shrink-0 self-start">
-              {results && (
+              {filteredResults && (
                 <Sidebar 
                   queryImageId={selected[0]?.annotatorId}
-                  results={results} 
+                  results={filteredResults} 
                   onOpenPreview={setPreviewImage} />
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto p-2.5 border-l">
-              {(results && previewImage) ? (
+              {(filteredResults && previewImage) ? (
                 <Annotorious>
                   <ImagePreview 
                     image={previewImage} 
-                    results={results} />
+                    results={filteredResults} />
                 </Annotorious>
-              ) : results ? (
-                <ResultGrid
-                  queryImageId={queryImageId}
-                  iconSize={iconSize}
-                  results={results} />
+              ) : filteredResults ? (
+                // Note: Masonry component breaks if the items array chnages!
+                // Using `key` to remount the component is the canonical recommended
+                // way to mutate Masonry layout dynamically. 
+                <div key={`${selected[0].annotation.id}:${searchScope}`}>
+                  <ResultGrid
+                    queryImageId={queryImageId}
+                    iconSize={iconSize}
+                    results={filteredResults} />
+                </div>
               ) : (
                 <div className="size-full flex items-center justify-center">
-                  <Spinner className="size-8 text-gray-900/25" />
+                  <Spinner className="size-5 text-gray-900/25" />
                 </div>
               )}
               </div>

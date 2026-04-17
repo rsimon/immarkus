@@ -17,7 +17,7 @@ export const ResultGrid = (props: ResultGridProps) => {
   const { results, iconSize } = props;
 
   return (
-    <Masonry 
+    <Masonry
       items={results}
       columnGutter={6}
       columnWidth={iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280}
