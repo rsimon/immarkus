@@ -12,6 +12,7 @@ import { ResultGrid } from './ResultGrid';
 import { Toolbar } from './Toolbar';
 import { resetPalette } from './ImageSearchPalette';
 import { ImagePreview } from './ImagePreview';
+import { Spinner } from '@/components/Spinner';
 
 interface ImageSearchDialogProps {
 
@@ -135,7 +136,11 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                   queryImageId={queryImageId}
                   iconSize={iconSize}
                   results={results} />
-              ) : null}
+              ) : (
+                <div className="size-full flex items-center justify-center">
+                  <Spinner className="size-8 text-gray-900/25" />
+                </div>
+              )}
               </div>
           </div>
         </div>

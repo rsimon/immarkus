@@ -17,10 +17,11 @@ export const Sidebar = (props: SidebarProps) => {
 
   const items = useMemo(() => {
     const distinctImages = [...new Set(props.results.map(r => r.image))];
+    
     return distinctImages.map(image => {
       const matches = props.results.filter(r => r.imageId === image.id).length;
       return { image, matches };
-    });
+    }).sort((a, b) => b.matches - a.matches);
   }, [props.results]);
 
   return (
