@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { ImageAnnotation } from '@annotorious/react';
+import { Annotorious, type ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
 import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
@@ -11,6 +11,7 @@ import { Sidebar } from './Sidebar';
 import { ResultGrid } from './ResultGrid';
 import { Toolbar } from './Toolbar';
 import { resetPalette } from './ImageSearchPalette';
+import { ImagePreview } from './ImagePreview';
 
 interface ImageSearchDialogProps {
 
@@ -51,6 +52,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [queryImage, setQueryImage] = useState<Blob | undefined>();
 
   const [results, setResults] = useState<ResolvedSearchResult[] | undefined>();
+
+  const [previewImage, setPreviewImage] = useState<LoadedImage | undefined>();
 
   const onOpenChange = (open: boolean) => {
     if (!open)
@@ -111,22 +114,29 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
-            <div className="sticky top-0 w-60 h-full shrink-0 self-start bg-white">
+            <div className="sticky top-0 w-60 h-full shrink-0 self-start">
               {results && (
                 <Sidebar 
                   queryImageId={selected[0]?.annotatorId}
-                  results={results} />
+                  results={results} 
+                  onOpenPreview={setPreviewImage} />
               )}
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-2.5 border-l">
-              {results && (
+              {(results && previewImage) ? (
+                <Annotorious>
+                  <ImagePreview 
+                    image={previewImage} 
+                    results={results} />
+                </Annotorious>
+              ) : results ? (
                 <ResultGrid
                   queryImageId={queryImageId}
                   iconSize={iconSize}
                   results={results} />
-              )}
-            </div>
+              ) : null}
+              </div>
           </div>
         </div>
       </DialogContent>

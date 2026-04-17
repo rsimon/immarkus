@@ -9,6 +9,8 @@ interface SidebarImageItemProps {
 
   matches: number;
 
+  onOpenPreview(): void;
+
 }
 
 export const SidebarImageItem = (props: SidebarImageItemProps) => {
@@ -20,7 +22,9 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
   return (
     <div className="text-xs">
       <div className="flex items-end gap-2">
-        <div className="relative">
+        <div 
+          className="relative shrink-0"
+          onClick={props.onOpenPreview}>
           <img
             loading="lazy"
             className="rounded size-12 object-cover"

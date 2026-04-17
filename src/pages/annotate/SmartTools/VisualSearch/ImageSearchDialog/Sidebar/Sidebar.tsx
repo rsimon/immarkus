@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { LoadedImage } from '@/model';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { SidebarImageItem } from './SidebarImageItem';
 
@@ -7,6 +8,8 @@ interface SidebarProps {
   queryImageId: string;
 
   results: ResolvedSearchResult[];
+
+  onOpenPreview(image: LoadedImage): void;
 
 }
 
@@ -30,7 +33,8 @@ export const Sidebar = (props: SidebarProps) => {
             <SidebarImageItem 
               isQueryImage={image.id === props.queryImageId}
               image={image} 
-              matches={matches} />
+              matches={matches} 
+              onOpenPreview={() => props.onOpenPreview(image)} />
           </li>
         ))}
       </ul>
