@@ -57,6 +57,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
   const filteredResults = useMemo(() => {
+    if (!allResults) return;
+
     if (searchScope === 'all') 
       return allResults;
     else if (searchScope === 'this')
@@ -64,6 +66,17 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
     else 
       return allResults.filter(r => r.imageId !== queryImageId);
   }, [allResults, searchScope, queryImageId]);
+
+  useEffect(() => {
+    if (
+      (searchScope !== 'this') ||
+      (filteredResults || []).length === 0
+    ) {
+      setPreviewImage(undefined);
+    } else {
+      setPreviewImage(filteredResults[0].image);
+    }
+  }, [searchScope, filteredResults]);
 
   const onOpenChange = (open: boolean) => {
     if (!open)
@@ -126,7 +139,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
-            <div className="sticky top-0 w-60 h-full shrink-0 self-start">
+            <div className="sticky top-0 w-72 h-full shrink-0 self-start bg-white">
               {filteredResults && (
                 <Sidebar 
                   queryImageId={selected[0]?.annotatorId}
@@ -135,7 +148,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               )}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-2.5 border-l">
+            <div className="flex-1 overflow-y-auto">
               {(filteredResults && previewImage) ? (
                 <Annotorious>
                   <ImagePreview 
@@ -146,14 +159,16 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                 // Note: Masonry component breaks if the items array chnages!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
-                <div key={`${selected[0].annotation.id}:${searchScope}`}>
+                <div 
+                  key={`${selected[0]?.annotation.id}:${searchScope}`}
+                  className="p-2.5">
                   <ResultGrid
                     queryImageId={queryImageId}
                     iconSize={iconSize}
                     results={filteredResults} />
                 </div>
               ) : (
-                <div className="size-full flex items-center justify-center">
+                <div className="size-full flex items-center justify-center border-l">
                   <Spinner className="size-5 text-gray-900/25" />
                 </div>
               )}

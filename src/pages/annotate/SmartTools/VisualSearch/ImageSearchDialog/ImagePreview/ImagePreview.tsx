@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { OpenSeadragonAnnotator, OpenSeadragonViewer, useAnnotator } from '@annotorious/react';
+import { OpenSeadragonAnnotator, OpenSeadragonViewer, useAnnotator, UserSelectAction } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { getOSDTilesets } from '@/utils/iiif';
@@ -54,12 +54,15 @@ export const ImagePreview = (props: ImagePreviewProps) => {
   }, [anno, image, results]);
 
   return (
-    <div className="relative h-full w-full">
-      <OpenSeadragonAnnotator>
-        <OpenSeadragonViewer
-          className="h-full w-full"
-          options={options} />
-      </OpenSeadragonAnnotator>
+    <div className="relative size-full bg-white p-2">
+      <div className="bg-muted size-full rounded border">
+        <OpenSeadragonAnnotator
+          userSelectAction={UserSelectAction.SELECT}>
+          <OpenSeadragonViewer
+            className="h-full w-full"
+            options={options} />
+        </OpenSeadragonAnnotator>
+      </div>
     </div> 
   )
 

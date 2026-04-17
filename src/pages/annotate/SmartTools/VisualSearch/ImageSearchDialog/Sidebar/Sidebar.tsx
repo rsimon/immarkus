@@ -25,17 +25,18 @@ export const Sidebar = (props: SidebarProps) => {
   }, [props.results]);
 
   return (
-    <div className="p-2">
+    <div className="p-2 h-full overflow-y-auto">
       <ul className="space-y-1.5">
         {items.map(({ image, matches }) => (
           <li 
-            key={image.id}
-            className="border p-1.5 rounded bg-white">
-            <SidebarImageItem 
-              isQueryImage={image.id === props.queryImageId}
-              image={image} 
-              matches={matches} 
-              onOpenPreview={() => props.onOpenPreview(image)} />
+            key={image.id}>
+            <div className="p-2 hover:bg-muted rounded cursor-pointer">
+              <SidebarImageItem 
+                isQueryImage={image.id === props.queryImageId}
+                image={image} 
+                matches={matches} 
+                onOpenPreview={() => props.onOpenPreview(image)} />
+            </div>
           </li>
         ))}
       </ul>

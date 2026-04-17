@@ -19,7 +19,7 @@ export const ResultGrid = (props: ResultGridProps) => {
   return (
     <Masonry
       items={results}
-      columnGutter={6}
+      columnGutter={12}
       columnWidth={iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280}
       overscanBy={Infinity}
       render={ResultCard} />

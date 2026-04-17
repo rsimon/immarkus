@@ -41,14 +41,14 @@ export const ResultCard = (props: ResultCardProps) => {
   }, [image, pxBounds, inView]);
 
   return (
-    <div ref={ref} className="w-full relative rounded-xs overflow-hidden shadow-xs">
+    <div ref={ref} className="w-full relative rounded border border-gray-300 overflow-hidden">
       <Skeleton
         className="bg-white w-full" 
         style={{ aspectRatio }}/>
 
       {snippet && (
         <img
-          className="absolute inset-0 w-full"
+          className="absolute inset-0 w-full border-gray-300"
           src={'data' in snippet 
             ? URL.createObjectURL(new Blob([snippet.data as BlobPart]))
             : snippet.src
@@ -57,7 +57,7 @@ export const ResultCard = (props: ResultCardProps) => {
       )}
 
       <div 
-        className="size-3 absolute inset-0.75 rounded-full border border-white" 
+        className="size-3.5 absolute inset-1 rounded-full border border-white" 
         style={{ backgroundColor }} />
 
       <div
