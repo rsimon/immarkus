@@ -78,7 +78,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       const blob = new Blob([snippet.data as BlobPart], { type: 'image/png' });
       setQueryImage(blob);
 
-      vs.index.query(blob, null, { topK: 50 }).then(results => {
+      vs.index.query(blob, null, { topK: 200 }).then(results => {
         const uniqueImages = [...new Set(results.map(r => r.imageId))];
 
         loadImages(uniqueImages, store).then(loaded => {

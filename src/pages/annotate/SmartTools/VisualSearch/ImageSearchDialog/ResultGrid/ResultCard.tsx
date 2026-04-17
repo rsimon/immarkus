@@ -13,7 +13,7 @@ interface ResultCardProps {
 
 export const ResultCard = (props: ResultCardProps) => {
 
-  const { pxBounds, normalizedBounds, image, isQueryImage, score } = props.data;
+  const { pxBounds, image, isQueryImage, score } = props.data;
 
   const aspectRatio = pxBounds[2] / pxBounds[3];
 
@@ -24,8 +24,6 @@ export const ResultCard = (props: ResultCardProps) => {
   useEffect(() => {
     const [x, y, w, h] = pxBounds;
 
-    console.log(pxBounds, normalizedBounds);
-
     const annotation = boundsToAnnotation({
       minX: x, 
       minY: y,
@@ -35,7 +33,7 @@ export const ResultCard = (props: ResultCardProps) => {
 
     getImageSnippet(image, annotation, true, 'jpg')
       .then(setSnippet);
-  }, [image, pxBounds, normalizedBounds]);
+  }, [image, pxBounds]);
 
   return (
     <div className="w-full relative rounded-xs overflow-hidden shadow-xs">
