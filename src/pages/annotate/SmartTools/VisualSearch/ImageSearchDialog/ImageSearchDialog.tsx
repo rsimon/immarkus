@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
-import { useSelection } from '@annotorious/react-manifold';
 import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
 import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
@@ -16,7 +15,9 @@ import { Spinner } from '@/components/Spinner';
 
 interface ImageSearchDialogProps {
 
-  images: LoadedImage[];
+  selected: ImageAnnotation;
+
+  image: LoadedImage;
 
   open: boolean;
 
@@ -37,14 +38,10 @@ export type IconSize = 'lg' | 'md' | 'sm';
 export type SearchScope = 'all' | 'this' | 'other';
 
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
-  
+
   const store = useStore();
 
   const vs = useVisualSearch();
-
-  const { selected } = useSelection();
-
-  const queryImageId = selected[0]?.annotatorId;
 
   const [searchScope, setSearchScope] = useState<SearchScope>('all');
 
@@ -57,15 +54,15 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
   const filteredResults = useMemo(() => {
-    if (!allResults) return;
+    if (!allResults || !props.image) return;
 
     if (searchScope === 'all') 
       return allResults;
     else if (searchScope === 'this')
-      return allResults.filter(r => r.imageId === queryImageId);
+      return allResults.filter(r => r.imageId === props.image.id);
     else 
-      return allResults.filter(r => r.imageId !== queryImageId);
-  }, [allResults, searchScope, queryImageId]);
+      return allResults.filter(r => r.imageId !== props.image.id);
+  }, [allResults, searchScope, props.image]);
 
   useEffect(() => {
     if (
@@ -84,21 +81,17 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   }
 
   useEffect(() => {
-    if (!props.open || selected.length !== 1 || props.images.length === 0) return;
+    if (!props.open) return;
 
-    const { annotation, annotatorId } = selected[0]; 
-
-    const queryBaseImage = props.images.find(i => i.id === annotatorId);
-
-    if (!queryBaseImage) return;
+    if (!props.image) return;
 
     setAllResults(undefined);
     setPreviewImage(undefined);
     resetPalette();
 
     getImageSnippet(
-      queryBaseImage, 
-      annotation as ImageAnnotation, 
+      props.image, 
+      props.selected, 
       true, // if IIIF -> download
       'png'
     ).then((snippet: FileImageSnippet) => {
@@ -112,13 +105,13 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         loadImages(uniqueImages, store).then(loaded => {
           const resolved = clipped.map(result => {
             const image = loaded.find(l => l.id === result.imageId);
-            return {...result, image, isQueryImage: image.id === queryBaseImage.id };
+            return {...result, image, isQueryImage: image.id === props.image.id };
           });
           setAllResults(resolved);
         });
       });
     });
-  }, [props.open, selected, props.images, store]);
+  }, [props.open, props.selected, props.image, store]);
 
   return (
     <Dialog
@@ -143,7 +136,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               {filteredResults && (
                 <Sidebar 
                   currentPreview={previewImage?.id}
-                  queryImageId={selected[0]?.annotatorId}
+                  queryImageId={props.image.id}
                   results={filteredResults} 
                   onSetPreview={setPreviewImage} />
               )}
@@ -154,17 +147,18 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                 <Annotorious>
                   <ImagePreview 
                     image={previewImage} 
-                    results={filteredResults} />
+                    results={filteredResults} 
+                    queryAnnotation={props.selected} />
                 </Annotorious>
               ) : filteredResults ? (
                 // Note: Masonry component breaks if the items array chnages!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
                 <div 
-                  key={`${selected[0]?.annotation.id}:${searchScope}`}
+                  key={`${props.selected.id}:${searchScope}`}
                   className="p-2.5">
                   <ResultGrid
-                    queryImageId={queryImageId}
+                    queryImageId={props.image.id}
                     iconSize={iconSize}
                     results={filteredResults} />
                 </div>

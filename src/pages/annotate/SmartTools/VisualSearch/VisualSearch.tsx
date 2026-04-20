@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Images, TriangleAlert } from 'lucide-react';
+import { ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
+import { Alert } from '@/ui/Alert';
 import { Button } from '@/ui/Button';
 import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
 import { ImageSearchDialog } from './ImageSearchDialog';
-import { Alert } from '@/ui/Alert';
-import { Link } from 'react-router-dom';
-import { Images, TriangleAlert } from 'lucide-react';
 
 interface VisualSearchProps {
 
@@ -16,11 +17,14 @@ interface VisualSearchProps {
 
 export const VisualSearch = (props: VisualSearchProps) => {
 
-  const { selected } = useSelection();
+  const { selected } = useSelection<ImageAnnotation>();
+
+  const [frozenSelection, setFrozenSelection] = useState<typeof selected[0] | null>(null);
 
   const { indexStatus } = useVisualSearch();
 
-  const [isSearchDialogOpen, setIsSearchDialogOpen] = useState(false);
+  // Freeze the selection at the time the dialog opens
+  const onOpenSearchDialog = () => setFrozenSelection(selected[0]);
 
   const onSearchAnnotations = () => {
     console.warn('Not implemented');
@@ -43,7 +47,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
             <div>
               <Button 
                 className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 tracking-wide"
-                onClick={() => setIsSearchDialogOpen(true)}>
+                onClick={onOpenSearchDialog}>
                 Search Inside Images
               </Button>
 
@@ -83,9 +87,10 @@ export const VisualSearch = (props: VisualSearchProps) => {
       </div>
 
       <ImageSearchDialog 
-        images={props.images}
-        open={isSearchDialogOpen}
-        onClose={() => setIsSearchDialogOpen(false)} />
+        selected={frozenSelection?.annotation}
+        image={props.images.find(i => i.id === frozenSelection?.annotatorId)}
+        open={Boolean(frozenSelection)}
+        onClose={() => setFrozenSelection(null)} />
     </div>
   )
 
