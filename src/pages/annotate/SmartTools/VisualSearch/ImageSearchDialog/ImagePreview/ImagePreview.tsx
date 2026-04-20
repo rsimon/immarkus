@@ -106,7 +106,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     const w3c = toImport.map(i => adapter.serialize(i) as W3CImageAnnotation);
 
     store.bulkUpsertAnnotation(image.id, w3c).then(() => {
-      console.log('Done');
+      // console.log('Done');
     });
   }
 
