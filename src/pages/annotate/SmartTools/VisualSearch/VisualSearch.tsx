@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Images, TriangleAlert } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
@@ -17,11 +17,18 @@ interface VisualSearchProps {
 
 export const VisualSearch = (props: VisualSearchProps) => {
 
+  const vs = useVisualSearch();
+
   const { selected } = useSelection<ImageAnnotation>();
 
   const [frozenSelection, setFrozenSelection] = useState<typeof selected[0] | null>(null);
 
   const { indexStatus } = useVisualSearch();
+
+  const image = useMemo(() => {
+    if (!frozenSelection) return;
+    return props.images.find(i => i.id === frozenSelection.annotatorId)
+  }, [props.images.map(i => i.id).join(''), frozenSelection?.annotatorId]);
 
   // Freeze the selection at the time the dialog opens
   const onOpenSearchDialog = () => setFrozenSelection(selected[0]);
@@ -29,6 +36,10 @@ export const VisualSearch = (props: VisualSearchProps) => {
   const onSearchAnnotations = () => {
     console.warn('Not implemented');
   }
+
+  const onCloseDialog = useCallback(() => {
+    setFrozenSelection(null)
+  }, []);
 
   return (
     <div className="px-4">
@@ -87,10 +98,11 @@ export const VisualSearch = (props: VisualSearchProps) => {
       </div>
 
       <ImageSearchDialog 
+        vs={vs}
         selected={frozenSelection?.annotation}
-        image={props.images.find(i => i.id === frozenSelection?.annotatorId)}
+        image={image}
         open={Boolean(frozenSelection)}
-        onClose={() => setFrozenSelection(null)} />
+        onClose={onCloseDialog} />
     </div>
   )
 

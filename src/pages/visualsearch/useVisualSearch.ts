@@ -77,7 +77,7 @@ export const useVisualSearch = (): VisualSearch => {
         setIndexStatus('index_missing');
         console.error(error);
       });
-  }, [store, totalImageCount]);
+  }, [totalImageCount]);
 
   const runIndexing = useCallback(async (onProgress?: (progress: IndexingProgress) => void): Promise<void> => {
     if (!index || !store) return;
@@ -116,7 +116,7 @@ export const useVisualSearch = (): VisualSearch => {
     await index.save();
     
     onProgress?.({ phase: 'done', total });
-  }, [index, store]);
+  }, [index]);
 
   return useMemo(() => ({ index, runIndexing, indexStatus }), [index, runIndexing, indexStatus]);
 

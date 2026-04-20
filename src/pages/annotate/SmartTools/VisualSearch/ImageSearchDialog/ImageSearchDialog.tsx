@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
 import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
-import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
+import { VisualSearch } from '@/pages/visualsearch/useVisualSearch';
 import { loadImages, useStore } from '@/store';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { FileImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';
@@ -14,6 +14,8 @@ import { ImagePreview } from './ImagePreview';
 import { Spinner } from '@/components/Spinner';
 
 interface ImageSearchDialogProps {
+
+  vs: VisualSearch;
 
   selected: ImageAnnotation;
 
@@ -40,8 +42,6 @@ export type SearchScope = 'all' | 'this' | 'other';
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
 
   const store = useStore();
-
-  const vs = useVisualSearch();
 
   const [searchScope, setSearchScope] = useState<SearchScope>('all');
 
@@ -98,7 +98,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       const blob = new Blob([snippet.data as BlobPart], { type: 'image/png' });
       setQueryImage(blob);
 
-      vs.index.query(blob, null, { topK: 1000 }).then(results => {
+      props.vs.index.query(blob, null, { topK: 1000 }).then(results => {
         const clipped = results.filter(r => r.score >= 0.81);
         const uniqueImages = [...new Set(clipped.map(r => r.imageId))];
 
@@ -111,7 +111,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         });
       });
     });
-  }, [props.open, props.selected, props.image, store]);
+  }, [props.open, props.selected, props.image, props.vs]);
 
   return (
     <Dialog
