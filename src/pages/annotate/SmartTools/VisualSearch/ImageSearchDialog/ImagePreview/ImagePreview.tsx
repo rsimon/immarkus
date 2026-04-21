@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Scan, Trash2 } from 'lucide-react';
-import { W3CImageRelationFormat } from '@annotorious/plugin-wires-react';
+import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -9,7 +9,9 @@ import { getOSDTilesets } from '@/utils/iiif';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import {
+  AnnotationState,
   AnnotoriousOpenSeadragonAnnotator, 
+  createBody, 
   DrawingStyle, 
   ImageAnnotation, 
   OpenSeadragonAnnotator, 
@@ -27,6 +29,13 @@ interface ImagePreviewProps {
 
   queryAnnotation: ImageAnnotation;
 
+}
+
+const selectAction = (annotation: ImageAnnotation): UserSelectAction => {
+  const isSearchResult = 
+    annotation.bodies.find(b => b.purpose === 'tagging' && b.value === 'search-result');
+
+  return isSearchResult ? UserSelectAction.SELECT : UserSelectAction.NONE;
 }
 
 export const ImagePreview = (props: ImagePreviewProps) => {
@@ -54,9 +63,31 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     maxZoomLevel: 100
   }), [image.id]);
 
-  const style = useCallback((annotation: ImageAnnotation): DrawingStyle => {
-    if (selectedAnnotations.some(a => a.id === annotation.id)) {
-      return { stroke: '#00ff00' };
+  const style = useCallback((annotation: ImageAnnotation, state: AnnotationState): DrawingStyle => {
+    const isSearchResult = 
+      annotation.bodies.find(b => b.purpose === 'tagging' && b.value === 'search-result');
+
+    const isSelected = selectedAnnotations.some(a => a.id === annotation.id);
+
+    if (isSearchResult) {
+      return isSelected ? {
+        fill: '#ff1493',
+        fillOpacity: 0.2,
+        stroke: '#ff1493',
+        strokeOpacity: 0.75
+      } : {
+        fill: state?.hovered ? '#ff1493' : '#fff',
+        fillOpacity: state?.hovered ? 0.25 : 0.1,
+        stroke: state?.hovered ? '#ff1493' : '#fff',
+        strokeOpacity: 0.75
+      }
+    } else {
+      return {
+        fillOpacity: 0,
+        stroke: '#1a1a1a',
+        strokeWidth: 1.5,
+        strokeOpacity: 0.9
+      }
     }
   }, [selectedAnnotations]);
 
@@ -68,12 +99,20 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       .map(r => {
         const [ x, y, w, h] = r.pxBounds;
         
-        return boundsToAnnotation({
+        const annotation = boundsToAnnotation({
           minX: x, 
           minY: y,
           maxX: x + w,
           maxY: y + h
         });
+
+        return {
+          ...annotation,
+          bodies: [createBody(annotation.id, {
+            purpose: 'tagging',
+            value: 'search-result'
+          })]
+        }
       });
 
     anno.setAnnotations(annotations, true);
@@ -95,6 +134,32 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     }
   }, [anno, image, results]);
 
+  useEffect(() => {
+    if (!anno) return;
+
+    store.getAnnotations(image.id).then(annotations => {
+      const adapter = W3CImageRelationFormat('canvas' in image ? image.id : image.name);
+      const { parsed } = adapter.parseAll(annotations);
+
+      const existingAnnotations: ImageAnnotation[] = parsed
+        .filter(a => !isConnectionAnnotation(a))
+        .map((a: ImageAnnotation) => ({
+          ...a,
+          bodies: [createBody(a.id, {
+            purpose: 'tagging',
+            value: 'user-annotation'
+          })]
+        }));
+
+      anno.setAnnotations(existingAnnotations, false);
+      console.log(parsed);
+    });
+
+    return () => {
+      anno.clearAnnotations();
+    }
+  }, [anno, store, image]);
+
   const onImportSelection = () => {
     if (!store || selectedAnnotations.length === 0) return; // Should never happen
     
@@ -114,7 +179,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     <div className="relative size-full bg-white p-2">
       <div className="bg-muted size-full rounded border">
         <OpenSeadragonAnnotator
-          userSelectAction={UserSelectAction.SELECT}
+          userSelectAction={selectAction}
           style={style}>
           <OpenSeadragonViewer
             className="h-full w-full"
