@@ -38,7 +38,8 @@
     "name": "DILA (Place)",
     "description": "Buddhist Studies Authority Database Project (Place Search)",
     "type": "IFRAME",
-    "search_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}"
+    "search_pattern": "https://authority.dila.edu.tw/place/search.php?ml={{query}}",
+    "canonical_id_pattern": "https://authority.dila.edu.tw/place/?fromInner={{id}}"
   },{
     "name": "Manchu",
     "description": "Manchu texts and objects",
