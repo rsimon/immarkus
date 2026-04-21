@@ -77,7 +77,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
   const linkURL = useMemo(() => {
     if (typeof authority.external_url_pattern === 'string') {
       return authority.external_url_pattern?.replace('{{query}}', debounced) || searchURL
-    } else {
+    } else if (authority.external_url_pattern) {
       const destination = findMatchingPattern(authority.external_url_pattern, debounced);
       return destination.replace('{{query}}', debounced);
     }
