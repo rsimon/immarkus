@@ -115,6 +115,9 @@ export const ImagePreview = (props: ImagePreviewProps) => {
         }
       });
 
+    // All search results are added to the annotator,
+    // including those that may already have been imported.
+    // Why is this not a problem? See below!
     anno.setAnnotations(annotations, true);
 
     const onClick = (annotation: ImageAnnotation) => {
@@ -131,11 +134,14 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
     return () => {
       anno?.off('clickAnnotation', onClick);
+      anno?.state.store.bulkDeleteAnnotations(annotations);
     }
-  }, [anno, image, results]);
+  }, [anno, store, image, results]);
 
   useEffect(() => {
     if (!anno) return;
+
+    const existing: ImageAnnotation[] = [];
 
     store.getAnnotations(image.id).then(annotations => {
       const adapter = W3CImageRelationFormat('canvas' in image ? image.id : image.name);
@@ -151,12 +157,17 @@ export const ImagePreview = (props: ImagePreviewProps) => {
           })]
         }));
 
+      existing.push(...existingAnnotations);
+
+      // Note that a bit of "magic" happens here. Existing annotations
+      // Will silently overwrite search results with the same ID, which is
+      // why we don't have to manually remove search results that were
+      // already imported (see note above).
       anno.setAnnotations(existingAnnotations, false);
-      console.log(parsed);
     });
 
     return () => {
-      anno.clearAnnotations();
+      anno.state.store.bulkDeleteAnnotations(existing);
     }
   }, [anno, store, image]);
 
@@ -170,9 +181,9 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     const toImport = selectedAnnotations.map(s => ({...s, bodies: [...props.queryAnnotation.bodies] }));
     const w3c = toImport.map(i => adapter.serialize(i) as W3CImageAnnotation);
 
-    store.bulkUpsertAnnotation(image.id, w3c).then(() => {
-      // console.log('Done');
-    });
+    setSelectAnnotations([]);
+
+    store.bulkUpsertAnnotation(image.id, w3c);
   }
 
   return (
