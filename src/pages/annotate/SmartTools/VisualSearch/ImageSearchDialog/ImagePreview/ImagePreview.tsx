@@ -31,13 +31,6 @@ interface ImagePreviewProps {
 
 }
 
-const selectAction = (annotation: ImageAnnotation): UserSelectAction => {
-  const isSearchResult = 
-    annotation.bodies.find(b => b.purpose === 'tagging' && b.value === 'search-result');
-
-  return isSearchResult ? UserSelectAction.SELECT : UserSelectAction.NONE;
-}
-
 export const ImagePreview = (props: ImagePreviewProps) => {
 
   const { image, results } = props;
@@ -67,7 +60,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     const isSearchResult = 
       annotation.bodies.find(b => b.purpose === 'tagging' && b.value === 'search-result');
 
-    const isSelected = selectedAnnotations.some(a => a.id === annotation.id);
+    const isSelected = isSearchResult && selectedAnnotations.some(a => a.id === annotation.id);
 
     if (isSearchResult) {
       return isSelected ? {
@@ -190,7 +183,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     <div className="relative size-full bg-white p-2">
       <div className="bg-muted size-full rounded border">
         <OpenSeadragonAnnotator
-          userSelectAction={selectAction}
+          userSelectAction={UserSelectAction.NONE}
           style={style}>
           <OpenSeadragonViewer
             className="h-full w-full"
