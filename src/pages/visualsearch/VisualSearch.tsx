@@ -3,10 +3,12 @@ import { Cog, ShieldAlert, ShieldX } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
+import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
 import { Indexing } from './indexing';
-import { useVisualSearch } from './useVisualSearch';
 import { IndexStats } from './indexstats';
+import { IndexReady } from './IndexReady';
+import { NoIndex } from './NoIndex';
 
 export const VisualSearch = () => {
 
@@ -70,7 +72,8 @@ export const VisualSearch = () => {
             </Button>
           </div>
         ) : vs.indexStatus === 'index_complete' ? (
-          <IndexStats vs={vs} />
+          <NoIndex 
+            imageCount={count}/>  // <IndexReady vs={vs} />
         ) : null}
       </main>
     </div>

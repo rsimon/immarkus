@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
 import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
-import { VisualSearch } from '@/pages/visualsearch/useVisualSearch';
+import { VisualSearch } from '@/utils/useVisualSearch';
 import { loadImages, useStore } from '@/store';
 import { Dialog, DialogContent } from '@/ui/Dialog';
 import { FileImageSnippet, getImageSnippet } from '@/utils/getImageSnippet';

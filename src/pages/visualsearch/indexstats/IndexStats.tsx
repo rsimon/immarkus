@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { VisualSearch } from '../useVisualSearch';
+import { VisualSearch } from '../../../utils/useVisualSearch';
 
 interface IndexStatsProps {
 

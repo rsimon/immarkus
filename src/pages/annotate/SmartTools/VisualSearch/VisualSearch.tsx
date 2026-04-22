@@ -6,7 +6,7 @@ import { useSelection } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { Alert } from '@/ui/Alert';
 import { Button } from '@/ui/Button';
-import { useVisualSearch } from '@/pages/visualsearch/useVisualSearch';
+import { useVisualSearch } from '@/utils/useVisualSearch';
 import { ImageSearchDialog } from './ImageSearchDialog';
 
 interface VisualSearchProps {

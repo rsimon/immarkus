@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IndexingProgress, VisualSearch } from '../useVisualSearch';
+import { IndexingProgress, VisualSearch } from '../../../utils/useVisualSearch';
 
 interface IndexingProps {
 
