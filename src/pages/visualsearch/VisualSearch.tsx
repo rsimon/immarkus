@@ -20,7 +20,7 @@ export const VisualSearch = () => {
     if (!store) return 0;
 
     const imageCount = store.images.length;
-    
+
     const canvasCount = store.iiifResources.reduce<number>((total, resource) => {
       return total + (resource as IIIFManifestResource).canvases.length;
     }, 0);

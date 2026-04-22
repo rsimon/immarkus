@@ -45,6 +45,7 @@ export const useVisualSearch = (): VisualSearch => {
       return total + (resource as IIIFManifestResource).canvases.length;
     }, 0);
 
+    console.log({ imageCount, canvasCount });
     return imageCount + canvasCount;
   }, [store]);
 
@@ -135,7 +136,7 @@ export const useVisualSearch = (): VisualSearch => {
     await index.save();
     
     setIndexStatus('index_complete');
-    
+
     onProgress?.({ phase: 'done', total });
   }, [index]);
 
