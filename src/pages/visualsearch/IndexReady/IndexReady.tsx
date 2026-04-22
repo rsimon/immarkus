@@ -1,6 +1,5 @@
-import { useMemo } from 'react';
+import { BadgeCheck, Images } from 'lucide-react';
 import { VisualSearch } from '@/utils/useVisualSearch';
-import { BadgeCheck } from 'lucide-react';
 
 interface IndexReadyProps {
 
@@ -12,26 +11,27 @@ export const IndexReady = (props: IndexReadyProps) => {
 
   const { images, embeddings } = props.vs.index;
 
-  const segments = useMemo(() => 
-    images.flatMap(i => i.segments).length, [images]);
-
   return (
-    <div className="border border-green-700 p-4 rounded space-y-2">
-      <div className="flex gap-2 items-start text-green-700 font-medium">
-        <BadgeCheck className="size-5" strokeWidth={2.25}/>
+    <div className="rounded-lg relative p-6 border border-green-700/35 bg-green-600/5 space-y-6 max-w-xl">
+      <div className="flex gap-2 items-center text-green-700 font-medium">
+        <BadgeCheck className="size-5" />
         <p>
-          Your work folder is ready for visual search.
+          Your images are ready to search
         </p>
       </div>
 
-      <p className="text-muted-foreground text-sm">
-        The images in your collection are indexed for visual search. You can 
+      <div className="text-sm leading-loose text-green-700 space-y-3">
+        <p>
+          IMMARKUS has analyzed your images and made them searchable.
+          Pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
+          Search</strong> smart tool in the annotation view to search 
+          for visually similar matches.
+        </p>
+      </div>
+
+      <p className="text-xs text-green-900/60 leading-relaxed">
+        {images.length.toLocaleString()} images indexed · {embeddings.length.toLocaleString()} objects detected
       </p>
-      <ul>
-        <li>{images.length.toLocaleString()} images</li>
-        <li>{embeddings.length.toLocaleString()} embedding vectors</li>
-        <li>{segments.toLocaleString()} segments</li>
-      </ul>
     </div>
   )
 

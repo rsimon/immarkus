@@ -1,14 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Cog, ShieldAlert, ShieldX } from 'lucide-react';
+import { Cog, ShieldAlert } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
 import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
-import { Indexing } from './indexing';
-import { IndexStats } from './indexstats';
 import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
+import { IndexingProgress } from './IndexingProgress';
 
 export const VisualSearch = () => {
 
@@ -34,27 +33,12 @@ export const VisualSearch = () => {
       <AppNavigationSidebar />
 
       <main className="page about px-12 py-6 flex items-center justify-center">
-        {isIndexing ? (
-          <Indexing 
+        {true ? (
+          <IndexingProgress 
             vs={vs} 
             onDone={() => setIsIndexing(false)} />
         ) : vs.indexStatus === 'index_missing' ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-1.5 text-red-600 font-medium">
-              <ShieldX className="size-5" /> Indexing required
-            </div>
-
-            <p className="text-sm max-w-md text-center leading-loose font-light">
-              To use visual search, you must first index your collection. You
-              have currently {count.toLocaleString()} images that require indexing.
-            </p>
-
-            <Button
-              className="mt-6"
-              onClick={() => setIsIndexing(true)}>
-              <Cog className="size-5 mr-2" /> Start Indexing Now
-            </Button>
-          </div>
+          <NoIndex imageCount={count} />
         ) : vs.indexStatus === 'index_incomplete' ? (
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-1.5 text-red-600 font-medium">
@@ -72,8 +56,7 @@ export const VisualSearch = () => {
             </Button>
           </div>
         ) : vs.indexStatus === 'index_complete' ? (
-          <NoIndex 
-            imageCount={count}/>  // <IndexReady vs={vs} />
+          <IndexReady vs={vs} />
         ) : null}
       </main>
     </div>
