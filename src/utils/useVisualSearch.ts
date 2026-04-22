@@ -9,7 +9,7 @@ export type IndexStatus = 'loading' | 'index_missing' | 'index_incomplete' | 'in
 
 export type IndexingProgress = 
   | { phase: 'initializing' }
-  | { phase: 'fetching', url: string, id: string, progress: number, total: number }
+  | { phase: 'fetching', url: string, progress: number, total: number }
   | { phase: 'indexing', id: string, progress: number, total: number }
   | { phase: 'done', total: number };
 
@@ -90,6 +90,9 @@ export const useVisualSearch = (): VisualSearch => {
     const total = images.length + manifests.flatMap(m => m.canvases).length;
 
     // Index image files
+    if (images.length > 0)
+      onProgress?.({ phase: 'indexing', progress: 0, total, id: images[0].id });
+
     await images.reduce<Promise<void>>((promise, image, idx) => promise.then(() => {
       return index.addToIndex(image.file, image.id).then(() => {
         onProgress?.({ phase: 'indexing', id: image.id, progress: idx + 1, total })
@@ -100,12 +103,28 @@ export const useVisualSearch = (): VisualSearch => {
 
     // Resolve IIIF manifests
     await manifests.reduce<Promise<void>>((promise, manifest) => promise.then(async () => {
+      onProgress?.({ 
+        phase: 'fetching',
+        url: manifest.uri,
+        progress,
+        total
+      });
+
       const resolved = await fetchManifest(manifest.uri);
+      
       return resolved.canvases.reduce<Promise<void>>((p, canvas, idx) => p.then(() => {
         return fetchImage(canvas).then(file => {
+          const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
+
+          onProgress?.({ 
+            phase: 'indexing',
+            progress,
+            total,
+            id
+          });
+
           progress++;
 
-          const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
           return index.addToIndex(file, id).then(() => {
             onProgress?.({ phase: 'indexing', id, progress, total });
           })

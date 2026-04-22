@@ -7,7 +7,7 @@ import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
 import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
-import { IndexingProgress } from './IndexingProgress';
+import { IndexingInProgress } from './IndexingInProgress';
 
 export const VisualSearch = () => {
 
@@ -33,12 +33,14 @@ export const VisualSearch = () => {
       <AppNavigationSidebar />
 
       <main className="page about px-12 py-6 flex items-center justify-center">
-        {true ? (
-          <IndexingProgress 
+        {isIndexing ? (
+          <IndexingInProgress 
             vs={vs} 
             onDone={() => setIsIndexing(false)} />
         ) : vs.indexStatus === 'index_missing' ? (
-          <NoIndex imageCount={count} />
+          <NoIndex 
+            imageCount={count} 
+            onStartIndexing={() => setIsIndexing(true)} />
         ) : vs.indexStatus === 'index_incomplete' ? (
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-1.5 text-red-600 font-medium">

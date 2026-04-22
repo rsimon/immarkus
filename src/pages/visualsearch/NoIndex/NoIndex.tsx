@@ -5,6 +5,8 @@ interface NoIndexProps {
 
   imageCount: number;
 
+  onStartIndexing(): void;
+
 }
 
 export const NoIndex = (props: NoIndexProps) => {
@@ -36,7 +38,8 @@ export const NoIndex = (props: NoIndexProps) => {
       <div className="flex flex-col items-center mt-11 mb-6 gap-10">
         <Button
           size="lg"
-          className="relative bg-orange-900 tracking-wide hover:bg-orange-900/90">
+          className="relative bg-orange-900 tracking-wide hover:bg-orange-900/90"
+          onClick={props.onStartIndexing}>
           Start indexing {props.imageCount} images
         </Button>
 
