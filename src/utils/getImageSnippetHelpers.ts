@@ -14,7 +14,7 @@ import type {
  * Helper to create a dummy annotation from xywh bounds,
  * so that it's easier to reuse the getImageSnippet method.
  */
-export const boundsToAnnotation = (bounds: Bounds): ImageAnnotation => {
+export const boundsToAnnotation = (bounds: Bounds, id?: string): ImageAnnotation => {
   const selector: Rectangle = {
     type: ShapeType.RECTANGLE,
     geometry: {
@@ -26,13 +26,13 @@ export const boundsToAnnotation = (bounds: Bounds): ImageAnnotation => {
     }
   };
 
-  const id = uuidv4();
+  const annotationId = id || uuidv4();
 
   return {
-    id,
+    id: annotationId,
     bodies: [],
     target: {
-      annotation: id,
+      annotation: annotationId,
       selector
     }
   };

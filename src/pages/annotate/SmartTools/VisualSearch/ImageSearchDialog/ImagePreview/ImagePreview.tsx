@@ -1,16 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { v5 as uuidv5 } from 'uuid';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
-import { getOSDTilesets } from '@/utils/iiif';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { ImagePreviewToolbar } from './ImagePreviewToolbar';
+import { useImagePreview } from './useImagePreview';
 import {
-  AnnotationState,
   AnnotoriousOpenSeadragonAnnotator, 
   createBody, 
-  DrawingStyle, 
   ImageAnnotation, 
   OpenSeadragonAnnotator, 
   OpenSeadragonViewer, 
@@ -33,87 +32,76 @@ interface ImagePreviewProps {
 
 }
 
+// Random UUID v5 namespace for deterministic IDs
+const NAMESPACE = 'a7cb2652-a967-405c-bcee-a08ba86ab6c1';
+
+const getDeterministicId = (imageId: string, bounds: [number, number, number, number]) =>
+  uuidv5(`${imageId}-${bounds.join(',')}`, NAMESPACE);
+
 export const ImagePreview = (props: ImagePreviewProps) => {
 
   const { image, results } = props;
-
-  const [selectedAnnotations, setSelectAnnotations] = useState<ImageAnnotation[]>([]);
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
   const store = useStore();
 
-  const options: OpenSeadragon.Options = useMemo(() => ({
-    tileSources: 'data' in image ? {
-      type: 'image',
-      url: URL.createObjectURL(image.data)
-    } as object : getOSDTilesets(image.canvas),
-    gestureSettingsMouse: {
-      clickToZoom: false,
-      dblClickToZoom: false
-    },
-    crossOriginPolicy: 'Anonymous',
-    showNavigationControl: false,
-    minZoomLevel: 0.1,
-    maxZoomLevel: 100
-  }), [image.id]);
+  const [selectedAnnotations, setSelectAnnotations] = useState<ImageAnnotation[]>([]);
 
-  const style = useCallback((annotation: ImageAnnotation, state: AnnotationState): DrawingStyle => {
-    const isSearchResult = 
-      annotation.bodies.find(b => b.purpose === 'tagging' && b.value === 'search-result');
+  const [disambiguatedResults, setDisambiguatedResults] = useState<ImageAnnotation[]>([]);
 
-    const isSelected = isSearchResult && selectedAnnotations.some(a => a.id === annotation.id);
-
-    if (isSearchResult) {
-      return isSelected ? {
-        fill: '#ff1493',
-        fillOpacity: 0.2,
-        stroke: '#ff1493',
-        strokeOpacity: 0.75
-      } : {
-        fill: state?.hovered ? '#ff1493' : '#fff',
-        fillOpacity: state?.hovered ? 0.25 : 0.1,
-        stroke: state?.hovered ? '#ff1493' : '#fff',
-        strokeOpacity: 0.75
-      }
-    } else {
-      return {
-        fillOpacity: 0,
-        stroke: '#1a1a1a',
-        strokeWidth: 1.5,
-        strokeOpacity: 0.9
-      }
-    }
-  }, [selectedAnnotations]);
+  const { options, style } = useImagePreview(image, selectedAnnotations);
 
   useEffect(() => {
     if (!anno) return;
 
-    const annotations = results
-      .filter(r => r.imageId === image.id)
-      .map(r => {
-        const [ x, y, w, h] = r.pxBounds;
-        
-        const annotation = boundsToAnnotation({
-          minX: x, 
-          minY: y,
-          maxX: x + w,
-          maxY: y + h
+    // Add existing annotations first
+    store.getAnnotations(image.id).then(annotations => {
+      const adapter = W3CImageRelationFormat('canvas' in image ? image.id : image.name);
+      const { parsed } = adapter.parseAll(annotations);
+
+      const existingAnnotations: ImageAnnotation[] = parsed
+        .filter(a => !isConnectionAnnotation(a))
+        .map((a: ImageAnnotation) => ({
+          ...a,
+          bodies: [createBody(a.id, {
+            purpose: 'tagging',
+            value: 'user-annotation'
+          })]
+        }));
+
+      anno.setAnnotations(existingAnnotations, true);
+    }).then(() => {
+      // Next, convert results to annotations...
+      const allAnnotations = results
+        .filter(r => r.imageId === image.id)
+        .map(r => {
+          const [ x, y, w, h] = r.pxBounds;
+          
+          const annotation = boundsToAnnotation({
+            minX: x, 
+            minY: y,
+            maxX: x + w,
+            maxY: y + h
+          }, getDeterministicId(r.imageId, r.pxBounds));
+
+          return {
+            ...annotation,
+            bodies: [createBody(annotation.id, {
+              purpose: 'tagging',
+              value: 'search-result'
+            })]
+          }
         });
 
-        return {
-          ...annotation,
-          bodies: [createBody(annotation.id, {
-            purpose: 'tagging',
-            value: 'search-result'
-          })]
-        }
-      });
+      // ...and remove all that were already imported by the user
+      const toAdd = allAnnotations.filter(a => !anno.getAnnotationById(a.id));
+      setDisambiguatedResults(toAdd);
 
-    // All search results are added to the annotator,
-    // including those that may already have been imported.
-    // Why is this not a problem? See below!
-    anno.setAnnotations(annotations, true);
+      // Reset the annotator with all search results that were 
+      // not imported by the user yet.
+      anno.setAnnotations(toAdd, false);
+    });
 
     const onClick = (annotation: ImageAnnotation) => {
       setSelectAnnotations(current => {
@@ -129,47 +117,14 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
     return () => {
       anno?.off('clickAnnotation', onClick);
-      anno?.state.store.bulkDeleteAnnotations(annotations);
     }
   }, [anno, store, image, results]);
 
-  useEffect(() => {
-    if (!anno) return;
-
-    const existing: ImageAnnotation[] = [];
-
-    store.getAnnotations(image.id).then(annotations => {
-      const adapter = W3CImageRelationFormat('canvas' in image ? image.id : image.name);
-      const { parsed } = adapter.parseAll(annotations);
-
-      const existingAnnotations: ImageAnnotation[] = parsed
-        .filter(a => !isConnectionAnnotation(a))
-        .map((a: ImageAnnotation) => ({
-          ...a,
-          bodies: [createBody(a.id, {
-            purpose: 'tagging',
-            value: 'user-annotation'
-          })]
-        }));
-
-      existing.push(...existingAnnotations);
-
-      // Note that a bit of "magic" happens here. Existing annotations
-      // Will silently overwrite search results with the same ID, which is
-      // why we don't have to manually remove search results that were
-      // already imported (see note above).
-      anno.setAnnotations(existingAnnotations, false);
-    });
-
-    return () => {
-      anno.state.store.bulkDeleteAnnotations(existing);
-    }
-  }, [anno, store, image]);
-
   const onClickSelectAll = () => {
-    if (selectedAnnotations.length === 0) {
-      // Select all
-    } // TODO
+    if (selectedAnnotations.length === disambiguatedResults.length)
+      setSelectAnnotations([]);
+    else
+      setSelectAnnotations([...disambiguatedResults]);
   }
 
   const onImportSelection = () => {
@@ -198,6 +153,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
             options={options} />
 
           <ImagePreviewToolbar 
+            isAllSelected={selectedAnnotations.length === disambiguatedResults.length}
             isClosable={props.isClosable}
             selected={selectedAnnotations} 
             onClickSelectAll={onClickSelectAll}

@@ -1,10 +1,12 @@
-import { ImageUp, Square, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { ImageUp, Square, SquareCheckBig, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { ImageAnnotation, useViewer } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { cn } from '@/ui/utils';
 
 interface ImagePreviewToolbarProps {
+
+  isAllSelected: boolean;
 
   isClosable: boolean;
 
@@ -49,8 +51,13 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
           className="h-4 opacity-35" />
 
         <button 
-          className="flex gap-1.5 text-xs items-center rounded p-2 hover:bg-white/25">
-          <Square className="size-4" /> Select All
+          className="flex gap-1.5 text-xs items-center rounded p-2 hover:bg-white/25"
+          onClick={props.onClickSelectAll}>
+          {props.isAllSelected ? (
+            <SquareCheckBig className="size-4" /> 
+          ) : (
+            <Square className="size-4" /> 
+          )} Select All
         </button>
 
         <Button
