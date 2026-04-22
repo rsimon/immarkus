@@ -37,13 +37,15 @@ export const VisualSearch = () => {
           <IndexingInProgress 
             vs={vs} 
             onDone={() => setIsIndexing(false)} />
-        ) : vs.indexStatus === 'index_missing' ? (
+        ) : vs.indexStatus.state === 'index_missing' ? (
           <NoIndex 
             imageCount={count} 
             onStartIndexing={() => setIsIndexing(true)} />
-        ) : vs.indexStatus === 'index_incomplete' ? (
-          <IndexOutdated />
-        ) : vs.indexStatus === 'index_complete' ? (
+        ) : vs.indexStatus.state === 'index_incomplete' ? (
+          <IndexOutdated 
+            toAdd={vs.indexStatus.toAdd} 
+            onReindex={() => setIsIndexing(true)} />
+        ) : vs.indexStatus.state === 'index_complete' ? (
           <IndexReady vs={vs} />
         ) : null}
       </main>

@@ -1,7 +1,12 @@
-import { Images, ShieldAlert } from 'lucide-react';
+import { ShieldAlert } from 'lucide-react';
 import { Button } from '@/ui/Button';
+import { VisualSearch } from '@/utils/useVisualSearch';
 
 interface IndexOutdatedProps {
+
+  toAdd: number;
+
+  onReindex(): void;
 
 }
 
@@ -28,8 +33,8 @@ export const IndexOutdated = (props: IndexOutdatedProps) => {
           size="lg"
           variant="outline"
           className="relative border-red-700/30 bg-red-700/90 hover:bg-red-700/80 tracking-wide text-white hover:text-white"
-          >
-          Index new images
+          onClick={props.onReindex}>
+          Index {props.toAdd} new image{props.toAdd > 1 && 's'}
         </Button>
 
         <p className="text-xs text-red-800/60 leading-relaxed text-center max-w-lg">

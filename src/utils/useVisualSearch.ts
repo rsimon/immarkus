@@ -5,7 +5,11 @@ import { useStore } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { CozyCanvas } from 'cozy-iiif';
 
-export type IndexStatus = 'loading' | 'index_missing' | 'index_incomplete' | 'index_complete'; 
+export type IndexStatus = 
+  | { state: 'loading' }
+  | { state: 'index_missing' } 
+  | { state: 'index_incomplete', toAdd: number, toRemove: number }
+  | { state: 'index_complete' };
 
 export type IndexingProgress = 
   | { phase: 'initializing' }
@@ -37,19 +41,19 @@ export const useVisualSearch = (): VisualSearch => {
 
   const store = useStore();
 
-  const totalImageCount = useMemo(() => {
-    if (!store) return 0;
+  const storedImageIds = useMemo(() => {
+    if (!store) return [];
 
-    const imageCount = store.images.length;
-    const canvasCount = store.iiifResources.reduce<number>((total, resource) => {
-      return total + (resource as IIIFManifestResource).canvases.length;
-    }, 0);
+    const images = store.images.map(i => i.id);
+    const canvasIds = store.iiifResources.flatMap(resource => {
+      const canvases = (resource as IIIFManifestResource).canvases;
+      return canvases.map(c => `iiif:${c.manifestId}:${c.id}`);
+    }, []);
 
-    console.log({ imageCount, canvasCount });
-    return imageCount + canvasCount;
+    return [...images, ...canvasIds];
   }, [store]);
 
-  const [indexStatus, setIndexStatus] = useState<IndexStatus>('loading');
+  const [indexStatus, setIndexStatus] = useState<IndexStatus>({ state: 'loading' });
 
   const [index, setIndex] = useState<VisualSearchIndex>();
 
@@ -61,26 +65,29 @@ export const useVisualSearch = (): VisualSearch => {
       embedderUrl: '/clip-vit-b32-visual.onnx', 
       create: true 
     }).then(index => {
-        // TODO just a hack for testing - need to compare actual images later!
-        const indexImageCount = index.images.length;
-        if (indexImageCount === 0) {
-          setIndexStatus('index_missing');
-        } else if (indexImageCount < totalImageCount) {
-          setIndexStatus('index_incomplete');
-        } else {
-          setIndexStatus('index_complete');
-        }
+      const indexedImageIds = index.images.map(i => i.imageId);
 
-        setIndex(index);
-      })
-      .catch(error => {
-        // Should never happen (due to `create: true`)
-        setIndexStatus('index_missing');
-        console.error(error);
-      });
-  }, [totalImageCount]);
+      const toAdd = storedImageIds.filter(id => !indexedImageIds.includes(id));
+      const toRemove = indexedImageIds.filter(id => !storedImageIds.includes(id));
 
-  const runIndexing = useCallback(async (onProgress?: (progress: IndexingProgress) => void): Promise<void> => {
+      if (indexedImageIds.length === 0 && toAdd.length > 0) {
+        setIndexStatus({ state: 'index_missing' });
+      } else if (toAdd.length > 0) {
+        setIndexStatus({ state: 'index_incomplete', toAdd: toAdd.length, toRemove: toRemove.length });
+      } else {
+        setIndexStatus({ state: 'index_complete' });
+      }
+
+      setIndex(index);
+    })
+    .catch(error => {
+      // Should never happen (due to `create: true`)
+      setIndexStatus({ state: 'index_missing' });
+      console.error(error);
+    });
+  }, [storedImageIds]);
+
+  const runIndexing = useCallback(async (onProgress?: (progress: IndexingProgress) => void, skipExisting = true): Promise<void> => {
     if (!index || !store) return;
 
     onProgress?.({ phase: 'initializing' });
@@ -95,7 +102,9 @@ export const useVisualSearch = (): VisualSearch => {
       onProgress?.({ phase: 'indexing', progress: 0, total, id: images[0].id });
 
     await images.reduce<Promise<void>>((promise, image, idx) => promise.then(() => {
-      return index.addToIndex(image.file, image.id).then(() => {
+      const skip = skipExisting && index.images.some(i => i.imageId === image.id);
+
+      return skip ? Promise.resolve() : index.addToIndex(image.file, image.id).then(() => {
         onProgress?.({ phase: 'indexing', id: image.id, progress: idx + 1, total })
       });
     }), Promise.resolve());
@@ -114,9 +123,10 @@ export const useVisualSearch = (): VisualSearch => {
       const resolved = await fetchManifest(manifest.uri);
       
       return resolved.canvases.reduce<Promise<void>>((p, canvas, idx) => p.then(() => {
-        return fetchImage(canvas).then(file => {
-          const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
-
+        const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
+        
+        const skip = skipExisting && index.images.some(i => i.imageId === id);
+        return skip ? Promise.resolve() : fetchImage(canvas).then(file => {
           onProgress?.({ 
             phase: 'indexing',
             progress,
@@ -135,10 +145,10 @@ export const useVisualSearch = (): VisualSearch => {
     
     await index.save();
     
-    setIndexStatus('index_complete');
+    setIndexStatus({ state: 'index_complete' });
 
     onProgress?.({ phase: 'done', total });
-  }, [index]);
+  }, [index, storedImageIds]);
 
   return useMemo(() => ({ index, runIndexing, indexStatus }), [index, runIndexing, indexStatus]);
 
