@@ -6,7 +6,7 @@ interface ResultGridProps {
 
   iconSize: IconSize
 
-  queryImageId: string;
+  sourceImageId: string;
   
   results: ResolvedSearchResult[];
 

@@ -5,7 +5,7 @@ import { cn } from '@/ui/utils';
 
 interface SidebarImageItemProps {
 
-  isQueryImage?: boolean;
+  isSourceImage?: boolean;
 
   isCurrentPreview: boolean;
 
@@ -19,9 +19,9 @@ interface SidebarImageItemProps {
 
 export const SidebarImageItem = (props: SidebarImageItemProps) => {
   
-  const { image, isCurrentPreview, isQueryImage } = props;
+  const { image, isCurrentPreview, isSourceImage } = props;
 
-  const backgroundColor = isQueryImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
+  const backgroundColor = isSourceImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
 
   return (
     <button 

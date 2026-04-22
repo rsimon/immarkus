@@ -7,7 +7,9 @@ import { cn } from '@/ui/utils';
 
 interface SidebarProps {
 
-  queryImageId: string;
+  sourceImageId: string;
+
+  imagesInWorkspace: LoadedImage[];
 
   results: ResolvedSearchResult[];
 
@@ -27,11 +29,13 @@ export const Sidebar = (props: SidebarProps) => {
       return { image, matches };
     }).sort((a, b) => b.matches - a.matches);
 
-    const thisItem = allItems.find(t => t.image.id === props.queryImageId);
-    const otherItems = allItems.filter(t => t.image.id !== props.queryImageId);
+    const thisItem = allItems.find(t => t.image.id === props.sourceImageId);
+    const otherItems = allItems.filter(t => t.image.id !== props.sourceImageId);
 
     return { thisItem, otherItems };
-  }, [props.results, props.queryImageId]);
+  }, [props.results, props.sourceImageId]);
+
+  const isInWorkspace = (image: LoadedImage) => props.imagesInWorkspace.some(i => i.id === image.id);
 
   const onTogglePreview = (image: LoadedImage) => {
     if (props.currentPreview === image.id)
@@ -47,14 +51,11 @@ export const Sidebar = (props: SidebarProps) => {
           <li>
             <div 
               className={cn(
-                'p-2 group bg-blue-50 hover:bg-muted rounded cursor-pointer border relative',
-                thisItem.image.id === props.currentPreview && 'bg-muted'
-              )}
-              style={{
-                borderColor: THIS_IMAGE_COLOR
-              }}>
+                'p-2 group hover:bg-blue-50 hover:border-blue-900/25 rounded cursor-pointer border border-transparent relative',
+                thisItem.image.id === props.currentPreview && 'bg-blue-50 border border-blue-900/25'
+              )}>
               <SidebarImageItem 
-                isQueryImage
+                isSourceImage
                 isCurrentPreview={thisItem.image.id === props.currentPreview}
                 image={thisItem.image} 
                 matches={thisItem.matches} 
@@ -65,7 +66,7 @@ export const Sidebar = (props: SidebarProps) => {
                 style={{
                   backgroundColor: THIS_IMAGE_COLOR
                 }}>
-                This Image
+                Source Image
               </div>
             </div>
           </li>
@@ -74,7 +75,7 @@ export const Sidebar = (props: SidebarProps) => {
           <li 
             key={image.id}>
             <div className={cn(
-              'p-2 group hover:bg-muted rounded cursor-pointer',
+              'p-2 group hover:bg-muted rounded cursor-pointer relative',
               image.id === props.currentPreview && 'bg-muted'
               )}>
               <SidebarImageItem 
@@ -82,6 +83,13 @@ export const Sidebar = (props: SidebarProps) => {
                 image={image} 
                 matches={matches} 
                 onTogglePreview={() => onTogglePreview(image)} />
+
+              {isInWorkspace(image) && (
+                <div 
+                  className="absolute top-1 right-1 rounded-xs text-[10px] text-white bg-orange-400 py-px px-1">
+                  Currently Open
+                </div>
+              )}
             </div>
           </li>
         ))}

@@ -19,7 +19,9 @@ interface ImageSearchDialogProps {
 
   selected: ImageAnnotation;
 
-  image: LoadedImage;
+  sourceImage: LoadedImage;
+
+  imagesInWorkspace: LoadedImage[];
 
   open: boolean;
 
@@ -35,15 +37,18 @@ export interface ResolvedSearchResult extends SearchResult {
 
 }
 
-export type IconSize = 'lg' | 'md' | 'sm';
+export type IconSize = 'sm' | 'md' | 'lg';
 
-export type SearchScope = 'all' | 'this' | 'workspace';
+export type SearchScope = 'this' | 'workspace' | 'all';
 
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
 
+  const { sourceImage, imagesInWorkspace } = props;
+
   const store = useStore();
 
-  const [searchScope, setSearchScope] = useState<SearchScope>('all');
+  const [searchScope, setSearchScope] = 
+    useState<SearchScope>(props.imagesInWorkspace.length === 1 ? 'this' : 'workspace');
 
   const [iconSize, setIconSize] = useState<IconSize>('md');
 
@@ -54,15 +59,16 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
   const filteredResults = useMemo(() => {
-    if (!allResults || !props.image) return;
+    if (!allResults) return;
 
-    if (searchScope === 'all') 
+    if (searchScope === 'this') {
+      return allResults.filter(r => r.imageId === sourceImage.id);
+    } else if (searchScope === 'workspace') {
+      return allResults.filter(r => imagesInWorkspace.some(i => i.id === r.imageId));
+    } else {
       return allResults;
-    else if (searchScope === 'this')
-      return allResults.filter(r => r.imageId === props.image.id);
-    else 
-      return allResults.filter(r => r.imageId !== props.image.id);
-  }, [allResults, searchScope, props.image]);
+    }
+  }, [allResults, searchScope, imagesInWorkspace, sourceImage]);
 
   useEffect(() => {
     if (
@@ -83,14 +89,12 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   useEffect(() => {
     if (!props.open) return;
 
-    if (!props.image) return;
-
     setAllResults(undefined);
     setPreviewImage(undefined);
     resetPalette();
 
     getImageSnippet(
-      props.image, 
+      sourceImage, 
       props.selected, 
       true, // if IIIF -> download
       'png'
@@ -105,13 +109,13 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         loadImages(uniqueImages, store).then(loaded => {
           const resolved = clipped.map(result => {
             const image = loaded.find(l => l.id === result.imageId);
-            return {...result, image, isQueryImage: image.id === props.image.id };
+            return {...result, image, isQueryImage: image.id === sourceImage.id };
           });
           setAllResults(resolved);
         });
       });
     });
-  }, [props.open, props.selected, props.image, props.vs]);
+  }, [props.open, props.selected, sourceImage, props.vs]);
 
   return (
     <Dialog
@@ -133,10 +137,11 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
             <div className="sticky top-0 w-72 h-full shrink-0 self-start bg-white">
-              {filteredResults && (
+              {(filteredResults && sourceImage) && (
                 <Sidebar 
                   currentPreview={previewImage?.id}
-                  queryImageId={props.image.id}
+                  sourceImageId={sourceImage.id}
+                  imagesInWorkspace={props.imagesInWorkspace}
                   results={filteredResults} 
                   onSetPreview={setPreviewImage} />
               )}
@@ -152,7 +157,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     queryAnnotation={props.selected} 
                     onClosePreview={() => setPreviewImage(undefined)} />
                 </Annotorious>
-              ) : filteredResults ? (
+              ) : (filteredResults && sourceImage) ? (
                 // Note: Masonry component breaks if the items array chnages!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
@@ -160,7 +165,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                   key={`${props.selected.id}:${searchScope}`}
                   className="p-2.5">
                   <ResultGrid
-                    queryImageId={props.image.id}
+                    sourceImageId={sourceImage.id}
                     iconSize={iconSize}
                     results={filteredResults} />
                 </div>

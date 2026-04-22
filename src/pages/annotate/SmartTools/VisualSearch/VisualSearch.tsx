@@ -25,7 +25,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
 
   const { indexStatus } = useVisualSearch();
 
-  const image = useMemo(() => {
+  const sourceImage = useMemo(() => {
     if (!frozenSelection) return;
     return props.images.find(i => i.id === frozenSelection.annotatorId)
   }, [props.images.map(i => i.id).join(''), frozenSelection?.annotatorId]);
@@ -100,7 +100,8 @@ export const VisualSearch = (props: VisualSearchProps) => {
       <ImageSearchDialog 
         vs={vs}
         selected={frozenSelection?.annotation}
-        image={image}
+        sourceImage={sourceImage}
+        imagesInWorkspace={props.images}
         open={Boolean(frozenSelection)}
         onClose={onCloseDialog} />
     </div>
