@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { IconSize, ResolvedSearchResult, SearchScope } from '../ImageSearchDialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { Label } from '@/ui/Label';
 
 interface ToolbarProps {
 
@@ -57,30 +58,36 @@ export const Toolbar = (props: ToolbarProps) => {
         </DialogDescription>
       </VisuallyHidden>
 
-      <ToggleGroup
-        type="single"
-        variant="outline"
-        className="shadow-none! mb-0"
-        value={props.searchScope}
-        onValueChange={value => props.onChangeSearchScope(value as SearchScope)}>
-        <ToggleGroupItem 
-          value="all"
-          className="text-xs font-normal">
-          All images
-        </ToggleGroupItem>
+      <div className="flex gap-2.5 items-center">
+        <Label className="text-xs font-normal">
+          Search inside
+        </Label>
 
-        <ToggleGroupItem
-          value="this"
-          className="text-xs font-normal">
-          This image only
-        </ToggleGroupItem>
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          className="shadow-none! mb-0"
+          value={props.searchScope}
+          onValueChange={value => props.onChangeSearchScope(value as SearchScope)}>
+          <ToggleGroupItem 
+            value="this"
+            className="text-xs font-normal">
+            Source Image
+          </ToggleGroupItem>
 
-        <ToggleGroupItem 
-          value="other"
-          className="text-xs font-normal">
-          Other images only
-        </ToggleGroupItem>
-      </ToggleGroup>
+          <ToggleGroupItem
+            value="workspace"
+            className="text-xs font-normal">
+            Currently Open Images
+          </ToggleGroupItem>
+
+          <ToggleGroupItem
+            value="all"
+            className="text-xs font-normal">
+            All Images
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
 
       <div className="flex gap-1 items-center pr-2">
         <ToggleGroup 

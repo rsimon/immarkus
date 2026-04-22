@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Scan, Trash2 } from 'lucide-react';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
-import { Button } from '@/ui/Button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { getOSDTilesets } from '@/utils/iiif';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
+import { ImagePreviewToolbar } from './ImagePreviewToolbar';
 import {
   AnnotationState,
   AnnotoriousOpenSeadragonAnnotator, 
@@ -23,11 +21,15 @@ import {
 
 interface ImagePreviewProps {
 
+  isClosable: boolean;
+
   image: LoadedImage;
 
   results: ResolvedSearchResult[];
 
   queryAnnotation: ImageAnnotation;
+
+  onClosePreview(): void;
 
 }
 
@@ -164,6 +166,12 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     }
   }, [anno, store, image]);
 
+  const onClickSelectAll = () => {
+    if (selectedAnnotations.length === 0) {
+      // Select all
+    } // TODO
+  }
+
   const onImportSelection = () => {
     if (!store || selectedAnnotations.length === 0) return; // Should never happen
     
@@ -188,46 +196,14 @@ export const ImagePreview = (props: ImagePreviewProps) => {
           <OpenSeadragonViewer
             className="h-full w-full"
             options={options} />
+
+          <ImagePreviewToolbar 
+            isClosable={props.isClosable}
+            selected={selectedAnnotations} 
+            onClickSelectAll={onClickSelectAll}
+            onImportSelected={onImportSelection} 
+            onClosePreview={props.onClosePreview} />
         </OpenSeadragonAnnotator>
-
-        {selectedAnnotations.length > 0 && (
-          <div 
-            className="absolute bottom-2 right-2 z-10 bg-black text-white py-1.5 pl-3 pr-2 rounded-md shadow-md flex gap-4 items-center">
-        
-            <div className="flex gap-2 text-sm items-center font-light whitespace-nowrap">
-              <Scan className="size-4.5" />
-              {selectedAnnotations.length.toLocaleString()} Selected
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button 
-                    className="rounded p-2 hover:bg-white/25 -ml-1"
-                    onClick={() => setSelectAnnotations([])}>
-                    <Trash2 className="size-4" strokeWidth={1.5} />
-                  </button>
-                </TooltipTrigger>
-
-                <TooltipContent>
-                  Clear Selection
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="h-8 rounded-sm bg-green-600 whitespace-nowrap"
-                  onClick={onImportSelection}>
-                  Import to IMMARKUS
-                </Button>
-              </TooltipTrigger>
-
-              <TooltipContent>
-                Import all selected annotations
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        )}
       </div>
     </div> 
   )

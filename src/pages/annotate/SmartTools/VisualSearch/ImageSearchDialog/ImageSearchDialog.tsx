@@ -37,7 +37,7 @@ export interface ResolvedSearchResult extends SearchResult {
 
 export type IconSize = 'lg' | 'md' | 'sm';
 
-export type SearchScope = 'all' | 'this' | 'other';
+export type SearchScope = 'all' | 'this' | 'workspace';
 
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
 
@@ -146,9 +146,11 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               {(filteredResults && previewImage) ? (
                 <Annotorious>
                   <ImagePreview 
+                    isClosable={searchScope !== 'this'}
                     image={previewImage} 
                     results={filteredResults} 
-                    queryAnnotation={props.selected} />
+                    queryAnnotation={props.selected} 
+                    onClosePreview={() => setPreviewImage(undefined)} />
                 </Annotorious>
               ) : filteredResults ? (
                 // Note: Masonry component breaks if the items array chnages!
