@@ -134,6 +134,8 @@ export const useVisualSearch = (): VisualSearch => {
     
     await index.save();
     
+    setIndexStatus('index_complete');
+    
     onProgress?.({ phase: 'done', total });
   }, [index]);
 

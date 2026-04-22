@@ -22,16 +22,17 @@ export const NoIndex = (props: NoIndexProps) => {
 
       <div className="text-sm leading-relaxed text-orange-900 space-y-3">
         <p>
-          With IMMARKUS Visual Search, you can find objects across your 
-          images by example. Select an annotation in the annotation view
-          and pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
-          Search</strong> smart tool to search for visually similar matches.
+          With IMMARKUS Visual Search, you can find objects inside your 
+          images based on example.
+          Pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
+          Search</strong> smart tool in the annotation view, select an annotation, and find visually 
+          similar matches across your collection.
         </p>
 
         <p>
           Before you can use visual search, your images need to be indexed. 
-          IMMARKUS analyzes your images to detect objects and make them 
-          searchable – no annotations required.
+          IMMARKUS analyzes your images, detects objects, and makes them 
+          searchable. You only need to do this once.
         </p>
       </div>
 

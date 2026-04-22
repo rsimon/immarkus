@@ -22,7 +22,7 @@ export const IndexReady = (props: IndexReadyProps) => {
 
       <div className="text-sm leading-loose text-green-700 space-y-3">
         <p>
-          IMMARKUS has analyzed your images and made them searchable.
+          IMMARKUS has successfully analyzed your images and made them searchable.
           Pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
           Search</strong> smart tool in the annotation view to search 
           for visually similar matches.

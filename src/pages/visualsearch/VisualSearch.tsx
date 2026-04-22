@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Cog, ShieldAlert } from 'lucide-react';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { IIIFManifestResource } from '@/model';
-import { Button } from '@/ui/Button';
 import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
 import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
 import { IndexingInProgress } from './IndexingInProgress';
+import { IndexOutdated } from './IndexOutdated';
 
 export const VisualSearch = () => {
 
@@ -21,6 +20,7 @@ export const VisualSearch = () => {
     if (!store) return 0;
 
     const imageCount = store.images.length;
+    
     const canvasCount = store.iiifResources.reduce<number>((total, resource) => {
       return total + (resource as IIIFManifestResource).canvases.length;
     }, 0);
@@ -42,21 +42,7 @@ export const VisualSearch = () => {
             imageCount={count} 
             onStartIndexing={() => setIsIndexing(true)} />
         ) : vs.indexStatus === 'index_incomplete' ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-1.5 text-red-600 font-medium">
-              <ShieldAlert className="size-5" /> Index incomplete
-            </div>
-
-            <p className="text-sm max-w-md text-center leading-loose font-light">
-              Your index is outdated. There are {count.toLocaleString()} images that need indexing.
-            </p>
-
-            <Button
-              className="mt-6"
-              onClick={() => setIsIndexing(true)}>
-              <Cog className="size-5 mr-2" /> Indexing Missing Images
-            </Button>
-          </div>
+          <IndexOutdated />
         ) : vs.indexStatus === 'index_complete' ? (
           <IndexReady vs={vs} />
         ) : null}
