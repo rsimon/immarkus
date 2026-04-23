@@ -12,6 +12,7 @@ import { Toolbar } from './Toolbar';
 import { resetPalette } from './ImageSearchPalette';
 import { ImagePreview } from './ImagePreview';
 import { Spinner } from '@/components/Spinner';
+import { Progress } from '@/ui/Progress';
 
 interface ImageSearchDialogProps {
 
@@ -41,11 +42,19 @@ export type IconSize = 'sm' | 'md' | 'lg';
 
 export type SearchScope = 'this' | 'workspace' | 'all';
 
+type ModelDownloadStatus = 
+  | { state: 'pending' }
+  | { state: 'downloading', progress: number }
+  | { state: 'ready' };
+
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
 
   const { sourceImage, imagesInWorkspace } = props;
 
   const store = useStore();
+
+  const [downloadStatus, setDownloadProgress] = 
+    useState<ModelDownloadStatus>({ state: 'pending' });
 
   const [searchScope, setSearchScope] = 
     useState<SearchScope>(props.imagesInWorkspace.length === 1 ? 'this' : 'workspace');
@@ -69,6 +78,22 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       return allResults;
     }
   }, [allResults, searchScope, imagesInWorkspace, sourceImage]);
+
+  useEffect(() => {
+    if (!props.vs.index || !open) return;
+
+    console.log('dowladong')
+
+    // Download embedding model on mount (if necessary)
+    props.vs.index.dowloadEmbeddingModel(progress => {
+      if (progress.status === 'downloading') {
+        const percentage = progress.total ? Math.round(100 * progress.loaded / progress.total) : 0;
+        setDownloadProgress({ state: 'downloading', progress: percentage });
+      } else if (progress.status === 'ready' || progress.status === 'cached') {
+        setDownloadProgress({ state: 'ready' });
+      }
+    })
+  }, [props.vs.index, open]);
 
   useEffect(() => {
     if (
@@ -168,6 +193,15 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     sourceImageId={sourceImage.id}
                     iconSize={iconSize}
                     results={filteredResults} />
+                </div>
+              ) : downloadStatus.state === 'downloading' ? (
+                <div className="size-full flex items-center justify-center border-l">
+                  <div className="text-xs flex flex-col items-center gap-2">
+                    <Progress 
+                      value={downloadStatus.progress} 
+                      className="bg-white [&>div]:bg-orange-400 h-1 w-40" />
+                    <span>Dowloading embedding model</span>
+                  </div>
                 </div>
               ) : (
                 <div className="size-full flex items-center justify-center border-l">

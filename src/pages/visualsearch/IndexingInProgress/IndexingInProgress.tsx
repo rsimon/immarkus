@@ -31,7 +31,7 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
   }, []);
 
   useEffect(() => {
-    if ('progress' in progress)
+    if (progress.phase === 'indexing')
       setPercentage(Math.round(100 * progress.progress / progress.total)); 
 
     if (progress.phase === 'done')
@@ -55,6 +55,8 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
 
           {progress.phase === 'initializing' ? (
             <p>Initializing...</p>
+          ) : progress.phase === 'downloading_model' ? (
+            <p>Downloading model: {formatURL(progress.model, 60)}</p>
           ) : progress.phase === 'indexing' ? (
             <p>Processed {progress.progress.toLocaleString()} of {progress.total.toLocaleString()} images</p>
           ) : progress.phase === 'fetching' ? (

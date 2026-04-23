@@ -62,7 +62,7 @@
     "@react-spring/web": "^10.0.3",
     "ajv": "^8.18.0",
     "browser-image-compression": "^2.0.2",
-    "browser-visual-search": "^0.5.0",
+    "browser-visual-search": "^0.5.2",
     "chroma-js": "^3.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

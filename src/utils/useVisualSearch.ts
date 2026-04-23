@@ -15,6 +15,7 @@ export type IndexStatus =
 
 export type IndexingProgress = 
   | { phase: 'initializing' }
+  | { phase: 'downloading_model', model: string, progress: number}
   | { phase: 'fetching', url: string, progress: number, total: number }
   | { phase: 'indexing', id: string, progress: number, total: number }
   | { phase: 'done', total: number };
@@ -105,6 +106,26 @@ export const useVisualSearch = (): VisualSearch => {
     if (!index || !store) return;
 
     onProgress?.({ phase: 'initializing' });
+
+    await index.dowloadSegmentationModel(progress => {
+      if (progress.status === 'downloading') {
+        onProgress?.({ 
+          phase: 'downloading_model', 
+          model: config.segmenter_url, 
+          progress: progress.total ? Math.round(100 * progress.loaded / progress.total) : 0
+        });
+      }
+    });
+
+    await index.dowloadEmbeddingModel(progress => {
+      if (progress.status === 'downloading') {
+        onProgress?.({ 
+          phase: 'downloading_model', 
+          model: config.embedder_url, 
+          progress: progress.total ? Math.round(100 * progress.loaded / progress.total) : 0
+        });
+      }
+    });
 
     const images = store.images;
     const manifests = store.iiifResources as IIIFManifestResource[];

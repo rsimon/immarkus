@@ -33,10 +33,6 @@ export const VisualSearch = (props: VisualSearchProps) => {
   // Freeze the selection at the time the dialog opens
   const onOpenSearchDialog = () => setFrozenSelection(selected[0]);
 
-  const onSearchAnnotations = () => {
-    console.warn('Not implemented');
-  }
-
   const onCloseDialog = useCallback(() => {
     setFrozenSelection(null)
   }, []);
