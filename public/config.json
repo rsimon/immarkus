@@ -64,5 +64,9 @@
     "type": "IMAGE_SCHEMAS",
     "name": "Basics",
     "url": "/models/image-presets-27062024.json"
-  }]
+  }],
+  "visual_search": {
+    "segmenter_url": "https://huggingface.co/aboutgeo/immarkus/resolve/main/fastsam-s.onnx",
+    "embedder_url": "https://huggingface.co/aboutgeo/immarkus/resolve/main/clip-vit-b32-visual.onnx"
+  }
 }

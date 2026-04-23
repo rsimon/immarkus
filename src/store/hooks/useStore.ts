@@ -36,8 +36,12 @@ export const useStore = () => {
     meta: W3CRelationMetaAnnotation
   ) => set(store.upsertRelation(link, meta)), []);
 
+  const bulkUpsertAnnotation = useCallback((imageId: string, annotations: W3CAnnotation[]) =>
+    set(store.bulkUpsertAnnotation(imageId, annotations)), []);
+
   const reactive = useMemo(() => store ? {
     ...store,
+    bulkUpsertAnnotation,
     deleteAnnotation,
     deleteRelation,
     importIIIFResource,

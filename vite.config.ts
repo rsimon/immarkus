@@ -21,6 +21,9 @@ export default defineConfig({
       },{
         src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
         dest: 'assets'
+      },{
+        src: 'node_modules/onnxruntime-web/dist/*.wasm',
+        dest: 'node_modules/.vite/deps'
       }]
     })
   ],

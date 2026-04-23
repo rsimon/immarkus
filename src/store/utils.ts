@@ -134,7 +134,7 @@ export const hasSelector = (annotation: W3CAnnotation) => {
     return false;
 
   const targets = Array.isArray(annotation.target) ? annotation.target : [annotation.target]
-  return targets.some(t => t.selector);
+  return targets.some(t => typeof t !== 'string' && t.selector);
 }
 
 

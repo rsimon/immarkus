@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDraggable } from '@neodrag/react';
-import { FlaskConical, Grip, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
+import { CircleX, FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
+import { useVisualSearchAvailable, VisualSearch } from './VisualSearch';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import { AutoSelect } from './AutoSelect';
 import { EdgeSnap } from './EdgeSnap';
@@ -35,7 +36,7 @@ interface SmartToolsPanelProps {
 
 }
 
-type SmartTool = 'auto-select' | 'edge-snap' | 'smart-scissors' | 'transcribe'; 
+type SmartTool = 'smart-scissors' | 'edge-snap' | 'auto-select' | 'transcribe' | 'visual-search'; 
 
 export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
@@ -46,6 +47,8 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const [tab, setTab] = useState<SmartTool>('smart-scissors');
+
+  const visualSearchAvailable = useVisualSearchAvailable();
 
   const { 
     plugin, 
@@ -80,6 +83,8 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
       props.onChangeMode('draw');
     } else if (tab === 'transcribe') {
       stopPluginIfRunning();
+      props.onChangeMode('move');
+    } else if (tab === 'visual-search') {
       props.onChangeMode('move');
     } else {
       pluginRunning.current = true;
@@ -207,6 +212,26 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               </AccordionContent>
             </AccordionItem>
           )}
+
+          <AccordionItem value="visual-search" className="border-b-0">
+            <AccordionTrigger
+              className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 disabled:text-muted-foreground/30">
+              {visualSearchAvailable ? (
+                <span className="flex grow items-center gap-2 justify-start">
+                  <Images className="size-4" /> Visual Search
+                </span>
+              ) : (
+                <span className="flex grow items-center gap-2 justify-start text-destructive">
+                  <CircleX className="size-4" /> Visual Search
+                </span>
+              )}
+            </AccordionTrigger>
+
+            <AccordionContent className="bg-stone-700/5 border-stone-200 border-t text-xs pt-0" asChild>
+              <VisualSearch 
+                images={props.images} />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       ) : (
         <div className="p-5">
@@ -220,7 +245,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </div>
 
             <p className="pt-4 text-xs text-muted-foreground font-light leading-relaxed">
-              Smart selection uses experimental WebGPU technology not 
+              Smart Tools use experimental WebGPU technology not 
               available in your browser. Please switch to a recent version 
               of Chrome or Edge to use this 
               feature. <a 

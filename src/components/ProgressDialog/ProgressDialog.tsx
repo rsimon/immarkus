@@ -1,4 +1,3 @@
-import { Table2 } from 'lucide-react';
 import { Dialog, DialogTitle, DialogContent } from '@/ui/Dialog';
 import { Progress } from '@/ui/Progress';
 import { DialogDescription } from '@radix-ui/react-dialog';

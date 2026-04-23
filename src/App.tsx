@@ -1,7 +1,17 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AppNavigationSidebar } from './components/AppNavigationSidebar';
-import { About, Annotate, Export, KnowledgeGraph, Images, Markus, Start, Vocabulary } from './pages';
 import { useStore } from './store';
+import { 
+  About, 
+  Annotate, 
+  Export, 
+  KnowledgeGraph, 
+  Images, 
+  Markus, 
+  Start, 
+  VisualSearch,
+  Vocabulary 
+} from './pages';
 
 import './App.css';
 
@@ -27,6 +37,8 @@ export const App = () => {
         <Route path="model" element={<Vocabulary />} />
 
         <Route path="graph" element={<KnowledgeGraph />} />
+
+        <Route path="visual-search" element={<VisualSearch />} />
 
         <Route path="export">
           <Route index element={<Navigate to="/export/annotations" />} />

@@ -1,10 +1,9 @@
-import { v4 as uuidv4 } from 'uuid';
 import imageCompression from 'browser-image-compression';
 import { DynamicImageServiceResource } from 'cozy-iiif';
-import { ImageAnnotation, Rectangle, ShapeType } from '@annotorious/react';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { PageTransform, Point, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
+import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { rotateImage } from '@/utils/rotateImage';
 import { ProcessingState } from '../Types';
 
@@ -107,29 +106,12 @@ export const preprocess = (
 
     // Create a dummy annotation, so we can re-use 
     // the getImageSnippet function
-    const selector: Rectangle = {
-      type: ShapeType.RECTANGLE,
-      geometry: {
-        bounds: {
-          minX: region.x,
-          minY: region.y,
-          maxX: region.x + region.w,
-          maxY: region.y + region.h
-        },
-        ...region
-      }
-    }
-
-    const id = uuidv4();
-
-    const annotation: ImageAnnotation = {
-      id,
-      bodies: [],
-      target: {
-        annotation: id,
-        selector
-      }
-    };
+    const annotation = boundsToAnnotation({
+      minX: region.x,
+      minY: region.y,
+      maxX: region.x + region.w,
+      maxY: region.y + region.h
+    });
 
     const getRegionTransform = (snippetWidth: number, snippetHeight: number) => ((input: Point | Region) => {
       const rot = rotation ?? 0;

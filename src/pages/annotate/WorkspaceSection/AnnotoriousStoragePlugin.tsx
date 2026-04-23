@@ -59,7 +59,6 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
           });
         } else {
           // No previous tags to delete - just insert
-          
           return store.bulkUpsertAnnotation(imageId, relation);
         }
       });
@@ -97,7 +96,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         });
       });
     }
-  }, [anno]);
+  }, [anno, store]);
 
   return null;
 

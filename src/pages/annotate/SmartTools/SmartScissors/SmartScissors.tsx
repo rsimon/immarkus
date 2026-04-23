@@ -18,7 +18,7 @@ export const SmartScissors = (props: SmartScissorsProps) => {
           <Toggle
             pressed={props.enabled}
             onPressedChange={props.onSetEnabled}
-            className="!rounded-md aspect-square h-12 hover:border-orange-400 hover:[&+*]:text-orange-400 border border-orange-500/40 text-orange-400/60 hover:text-orange-400 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
+            className="rounded-md! aspect-square h-12 hover:border-orange-400 hover:[&+*]:text-orange-400 border border-orange-500/40 text-orange-400/60 hover:text-orange-400 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             <ScissorsLineDashed className="size-6" strokeWidth={1.5}/> 
           </Toggle>
         </div>
