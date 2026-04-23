@@ -100,17 +100,17 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
           <span 
             className="absolute top-0 right-0 h-full bg-muted border rounded-r">
-            {debounced ? (
-              <a 
-                className="px-4 h-full flex items-center 
-                hover:bg-slate-200/80 hover:disabled:bg-muted"
-                href={linkURL}
-                target="_blank">
-                <ExternalLink className="h-4 w-4" />
-              </a>
+            {(debounced && linkURL) ? (
+                <a 
+                  className="px-4 h-full flex items-center hover:bg-slate-200/80"
+                  href={linkURL}
+                  target="_blank">
+                  <ExternalLink className="h-4 w-4" />
+                </a>
             ) : (
-              <div className="px-4 h-full flex items-center">
-                <ExternalLink className="h-4 w-4 text-muted-foreground/60" />
+              <div
+                className="px-4 h-full flex items-center opacity-30">
+                <ExternalLink className="size-4" />
               </div>
             )}
           </span>
