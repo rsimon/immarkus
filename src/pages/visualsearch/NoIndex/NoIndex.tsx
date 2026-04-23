@@ -1,5 +1,6 @@
 import { Images, WandSparkles } from 'lucide-react';
 import { Button } from '@/ui/Button';
+import { Separator } from '@/ui/Separator';
 
 interface NoIndexProps {
 
@@ -12,15 +13,10 @@ interface NoIndexProps {
 export const NoIndex = (props: NoIndexProps) => {
 
   return (
-    <div className="rounded-lg relative p-6 border border-orange-200 bg-orange-50 space-y-6 max-w-2xl">
-      <div className="flex gap-2 items-center text-orange-900 font-medium">
-        <WandSparkles className="size-5" />
-        <p>
-          Visual Search
-        </p>
-      </div>
-
-      <div className="text-sm leading-relaxed text-orange-900 space-y-3">
+    <div className="text-sm">
+      <Separator />
+    
+      <div className="leading-relaxed space-y-3 mt-6 font-light">
         <p>
           With IMMARKUS Visual Search, you can find objects inside your 
           images based on example.
@@ -39,12 +35,12 @@ export const NoIndex = (props: NoIndexProps) => {
       <div className="flex flex-col items-center mt-11 mb-6 gap-10">
         <Button
           size="lg"
-          className="relative bg-orange-900 tracking-wide hover:bg-orange-900/90"
+          className="w-full"
           onClick={props.onStartIndexing}>
           Start indexing {props.imageCount} images
         </Button>
 
-        <p className="text-xs text-orange-900/60 leading-relaxed text-center max-w-lg">
+        <p className="text-xs font-light text-muted-foreground leading-relaxed">
           Indexing runs directly in your browser and does not upload your 
           images to external services. Processing time depends on your 
           collection and computer, and may take up to a minute per image. 
