@@ -1,4 +1,4 @@
-import { Images, WandSparkles } from 'lucide-react';
+import { Images } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 
