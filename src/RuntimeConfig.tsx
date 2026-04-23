@@ -7,6 +7,14 @@ export interface RuntimeConfiguration {
   
   model_presets?: ModelPreset[];
 
+  visual_search?: {
+    
+    segmenter_url: string;
+
+    embedder_url: string;
+
+  }
+
 }
 
 export interface ModelPreset {

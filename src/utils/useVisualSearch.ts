@@ -4,8 +4,10 @@ import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { CozyCanvas } from 'cozy-iiif';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 
 export type IndexStatus = 
+  | { state: 'not_supported'}
   | { state: 'loading' }
   | { state: 'index_missing' } 
   | { state: 'index_incomplete', toAdd: number, toRemove: number }
@@ -41,6 +43,18 @@ export const useVisualSearch = (): VisualSearch => {
 
   const store = useStore();
 
+  const { visual_search: config } = useRuntimeConfig();
+
+  if (!config?.segmenter_url || !config.embedder_url) {
+    return { 
+      index: undefined as VisualSearchIndex, 
+      indexStatus: { state: 'not_supported' }, 
+      runIndexing: () => { throw new Error('Models missing') }
+    };
+  }
+
+  const { segmenter_url, embedder_url } = config;
+
   const storedImageIds = useMemo(() => {
     if (!store) return [];
 
@@ -61,8 +75,8 @@ export const useVisualSearch = (): VisualSearch => {
     if (!store) return;
 
     openIndex(store.getRootFolder().handle, { 
-      segmenterUrl: 'fastsam-s.onnx',
-      embedderUrl: '/clip-vit-b32-visual.onnx', 
+      segmenterUrl: segmenter_url,
+      embedderUrl: embedder_url, 
       create: true 
     }).then(index => {
       const indexedImageIds = index.images.map(i => i.imageId);

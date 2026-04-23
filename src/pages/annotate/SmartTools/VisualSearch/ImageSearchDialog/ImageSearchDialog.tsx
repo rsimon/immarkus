@@ -59,7 +59,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
   const filteredResults = useMemo(() => {
-    if (!allResults) return;
+    if (!allResults || !sourceImage) return;
 
     if (searchScope === 'this') {
       return allResults.filter(r => r.imageId === sourceImage.id);
