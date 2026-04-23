@@ -48,7 +48,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
       </p>
 
       <div className="pt-3">
-        {indexStatus === 'index_missing' ? (
+        {indexStatus.state === 'index_missing' ? (
           <Alert variant="destructive" className="rounded-sm py-1.5 px-2 leading-relaxed">
             Your collection is not indexed. Go 
             to <span><Images className="size-3.5 inline-block" /> <Link to="/visual-search" className="font-semibold hover:underline">Visual Search</Link></span> to learn more.
@@ -66,19 +66,6 @@ export const VisualSearch = (props: VisualSearchProps) => {
                 Discover similar patterns across all images.
               </p>
             </div>
-
-            <div>
-              <Button 
-                disabled
-                className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 tracking-wide"
-                onClick={onSearchAnnotations}>
-                Search Annotations
-              </Button>
-
-              <p className="font-light text-center py-1.5 px-2">
-                Find matches in your existing annotations.
-              </p>
-            </div>
           </div>
         ) : (
           <p className="p-1.5 text-center font-light leading-relaxed rounded border border-dashed border-gray-500">
@@ -86,7 +73,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
           </p>
         )}
 
-        {indexStatus === 'index_incomplete' && (
+        {indexStatus.state === 'index_incomplete' && (
           <div className="text-amber-600 mt-4 flex gap-1.5 items-start">
             <TriangleAlert className="inline size-4 shrink-0" /> 
             <p>
