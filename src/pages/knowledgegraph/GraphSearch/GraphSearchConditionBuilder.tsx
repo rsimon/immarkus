@@ -134,7 +134,8 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             ConditionType: t as ConditionType,
             Attribute: undefined,
             Comparator: undefined,
-            Value: undefined          
+            Value: undefined,
+            SubConditions: []         
           })}>
 
           <SelectTrigger className={`${selectStyle} border-l`}>

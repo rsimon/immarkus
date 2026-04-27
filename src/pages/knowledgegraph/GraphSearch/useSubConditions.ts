@@ -19,7 +19,7 @@ export const useSubConditions = (
 
   const type = useMemo(() => model.getEntityType(subjectId, true), [subjectId]);
 
-  const properties = useMemo(() => (type.properties || []), [type]);
+  const properties = useMemo(() => (type?.properties || []), [type]);
 
   const values = useMemo(() => {
     if (!attribute) return [];
