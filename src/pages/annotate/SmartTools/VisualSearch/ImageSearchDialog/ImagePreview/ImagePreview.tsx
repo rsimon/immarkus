@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v5 as uuidv5 } from 'uuid';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
@@ -14,8 +15,7 @@ import {
   OpenSeadragonAnnotator, 
   OpenSeadragonViewer, 
   useAnnotator, 
-  UserSelectAction,
-  W3CImageAnnotation
+  UserSelectAction
 } from '@annotorious/react';
 
 interface ImagePreviewProps {
@@ -43,6 +43,8 @@ export const ImagePreview = (props: ImagePreviewProps) => {
   const { image, results } = props;
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
+
+  const manifold = useAnnotoriousManifold();
 
   const store = useStore();
 
@@ -128,18 +130,18 @@ export const ImagePreview = (props: ImagePreviewProps) => {
   }
 
   const onImportSelection = () => {
-    if (!store || selectedAnnotations.length === 0) return; // Should never happen
-    
-    // Import current selection as W3C image annotation
-    const adapter = W3CImageRelationFormat('canvas' in image ? image.id : image.name);
-      
+    if (selectedAnnotations.length === 0) return; // Should never happen
+
     // Copy bodies from the query annotation
     const toImport = selectedAnnotations.map(s => ({...s, bodies: [...props.queryAnnotation.bodies] }));
-    const w3c = toImport.map(i => adapter.serialize(i) as W3CImageAnnotation);
-
     setSelectAnnotations([]);
 
-    store.bulkUpsertAnnotation(image.id, w3c);
+    // Update the local annotator instance of the preview
+    anno.state.store.bulkUpsertAnnotations(toImport);
+
+    // Update the main image annotator in the workspace
+    const annotator = manifold.getAnnotator(image.id);
+    annotator.state.store.bulkUpsertAnnotations(toImport);
   }
 
   return (

@@ -30,7 +30,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
     // called appropriately 
     const withSaveStatus = (fn: () => Promise<void>) => {
       props.onSaving();
-      
+
       const minWait = new Promise(resolve => 
         setTimeout(() => resolve(undefined), MIN_SAVE_WAIT));
 
@@ -76,8 +76,9 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
           anno.setAnnotations(annotations);
         }
 
-        anno.on('createAnnotation', annotation =>
-          withSaveStatus(() => store.upsertAnnotation(imageId, annotation)));
+        anno.on('createAnnotation', annotation => {
+          withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
+        });
   
         anno.on('deleteAnnotation', annotation => {
           if (Array.isArray(annotation))
@@ -96,7 +97,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         });
       });
     }
-  }, [anno, store]);
+  }, [anno]);
 
   return null;
 
