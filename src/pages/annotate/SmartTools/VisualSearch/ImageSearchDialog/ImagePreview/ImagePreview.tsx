@@ -48,7 +48,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
   const store = useStore();
 
-  const [selectedAnnotations, setSelectAnnotations] = useState<ImageAnnotation[]>([]);
+  const [selectedAnnotations, setSelectedAnnotations] = useState<ImageAnnotation[]>([]);
 
   const [disambiguatedResults, setDisambiguatedResults] = useState<ImageAnnotation[]>([]);
 
@@ -56,6 +56,8 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
   useEffect(() => {
     if (!anno) return;
+
+    setSelectedAnnotations([]);
 
     // Add existing annotations first
     store.getAnnotations(image.id).then(annotations => {
@@ -106,7 +108,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     });
 
     const onClick = (annotation: ImageAnnotation) => {
-      setSelectAnnotations(current => {
+      setSelectedAnnotations(current => {
         if (current.some(a => a.id === annotation.id)) {
           return current.filter(a => a.id !== annotation.id);
         } else {
@@ -124,9 +126,9 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
   const onClickSelectAll = () => {
     if (selectedAnnotations.length === disambiguatedResults.length)
-      setSelectAnnotations([]);
+      setSelectedAnnotations([]);
     else
-      setSelectAnnotations([...disambiguatedResults]);
+      setSelectedAnnotations([...disambiguatedResults]);
   }
 
   const onImportSelection = () => {
@@ -134,7 +136,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
     // Copy bodies from the query annotation
     const toImport = selectedAnnotations.map(s => ({...s, bodies: [...props.queryAnnotation.bodies] }));
-    setSelectAnnotations([]);
+    setSelectedAnnotations([]);
 
     // Update the local annotator instance of the preview
     anno.state.store.bulkUpsertAnnotations(toImport);
