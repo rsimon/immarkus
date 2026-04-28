@@ -7,12 +7,13 @@ import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
 import { useImageDimensions } from '@/utils/useImageDimensions';
+import { GraphNode } from '../../Types';
+import { useManifest } from '../useManifest';
+import { FilePreviewImage, IIIFPreviewImage } from './PreviewImage';
 import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
-import { GraphNode } from '../../Types';
-import { FilePreviewImage, IIIFPreviewImage } from './PreviewImage';
-import { useManifestLabel } from '../useManifestLabel';
+import { CopyManifestURLButton } from '../ImageTitle';
 
 interface SelectedImageProps {
 
@@ -45,7 +46,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
     }
   }, [loaded, fileImageDimensions]);
 
-  const manifestLabel = useManifestLabel(loaded);
+  const manifest = useManifest(loaded);
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
@@ -98,8 +99,11 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
             <div className="overflow-hidden py-1 leading-relaxed">
               <h2 className="whitespace-nowrap overflow-hidden text-ellipsis font-medium">
                 {image.label}
-                {manifestLabel && (
-                  <div className="text-xs font-normal">{manifestLabel}</div>
+                {manifest && (
+                  <div className="text-xs font-normal flex gap-1 items-center">
+                    {manifest.name}
+                    <CopyManifestURLButton url={manifest.uri} />
+                  </div>
                 )}
               </h2>
               
