@@ -12,6 +12,7 @@ import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
 import { GraphNode } from '../../Types';
 import { FilePreviewImage, IIIFPreviewImage } from './PreviewImage';
+import { useManifestLabel } from '../useManifestLabel';
 
 interface SelectedImageProps {
 
@@ -44,12 +45,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
     }
   }, [loaded, fileImageDimensions]);
 
-  const manifestLabel = useMemo(() => {
-    if (!isIIIF) return;
-
-    const { manifestId } = (loaded as LoadedIIIFImage);
-    return store.getIIIFResource(manifestId).name;
-  }, [isIIIF, loaded, store]);
+  const manifestLabel = useManifestLabel(loaded);
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
