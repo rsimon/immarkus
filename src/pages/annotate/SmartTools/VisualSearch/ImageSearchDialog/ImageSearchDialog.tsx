@@ -80,20 +80,18 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   }, [allResults, searchScope, imagesInWorkspace, sourceImage]);
 
   useEffect(() => {
-    if (!props.vs.index || !open) return;
-
-    console.log('dowladong')
+    if (!props.vs.index || !props.open) return;
 
     // Download embedding model on mount (if necessary)
-    props.vs.index.dowloadEmbeddingModel(progress => {
+    props.vs.index.downloadEmbeddingModel(progress => {
       if (progress.status === 'downloading') {
         const percentage = progress.total ? Math.round(100 * progress.loaded / progress.total) : 0;
         setDownloadProgress({ state: 'downloading', progress: percentage });
-      } else if (progress.status === 'ready' || progress.status === 'cached') {
+      } else if (progress.status === 'model_ready') {
         setDownloadProgress({ state: 'ready' });
       }
     })
-  }, [props.vs.index, open]);
+  }, [props.vs.index, props.open]);
 
   useEffect(() => {
     if (
@@ -113,6 +111,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   useEffect(() => {
     if (!props.open) return;
+    if (downloadStatus.state !== 'ready') return;
 
     setAllResults(undefined);
     setPreviewImage(undefined);
@@ -140,7 +139,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         });
       });
     });
-  }, [props.open, props.selected, sourceImage, props.vs]);
+  }, [props.open, props.selected, sourceImage, props.vs.index, downloadStatus.state]);
 
   return (
     <Dialog
