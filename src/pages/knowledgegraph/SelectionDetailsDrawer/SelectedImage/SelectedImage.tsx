@@ -29,6 +29,8 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
 
   const loaded = useImages(image.id) as LoadedImage;
 
+  const isIIIF = loaded?.id.startsWith('iiif:');
+
   const { onLoad, dimensions: fileImageDimensions } = useImageDimensions();
 
   const dimensions = useMemo(() => {
@@ -37,10 +39,17 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
     if (fileImageDimensions) return fileImageDimensions;
 
     if (loaded.id.startsWith('iiif:')) {
-      const { canvas }= (loaded as LoadedIIIFImage);
+      const { canvas } = (loaded as LoadedIIIFImage);
       return [canvas.width!, canvas.height!];
     }
-  }, [loaded, fileImageDimensions])
+  }, [loaded, fileImageDimensions]);
+
+  const manifestLabel = useMemo(() => {
+    if (!isIIIF) return;
+
+    const { manifestId } = (loaded as LoadedIIIFImage);
+    return store.getIIIFResource(manifestId).name;
+  }, [isIIIF, loaded, store]);
 
   const [annotations, setAnnotations] = useState<W3CImageAnnotation[]>([]);
 
@@ -67,7 +76,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
           <header>
             <div className="relative h-48 basis-48 shrink-0 overflow-hidden border-b">
               {loaded && (
-                loaded.id.startsWith('iiif:') ? (
+                isIIIF ? (
                   <IIIFPreviewImage 
                     image={loaded as LoadedIIIFImage} />
                 ) : (
@@ -93,11 +102,14 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
             <div className="overflow-hidden py-1 leading-relaxed">
               <h2 className="whitespace-nowrap overflow-hidden text-ellipsis font-medium">
                 {image.label}
+                {manifestLabel && (
+                  <div className="text-xs font-normal">{manifestLabel}</div>
+                )}
               </h2>
               
               {dimensions && (
                 <div 
-                  className="flex items-center text-muted-foreground gap-1 text-xs">
+                  className="flex items-center leading-relaxed text-muted-foreground gap-1 text-xs">
                   <MoveDiagonal className="h-3.5 w-3.5" />
                   <span>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()} px</span>
                 </div>

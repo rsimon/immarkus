@@ -120,7 +120,7 @@ export const KnowledgeGraph = () => {
 
           <div className="absolute top-0 right-0 h-full flex">
             <div className="relative">
-              <div className="absolute right-2 bottom-16 w-[360px] p-4 overflow-hidden pointer-events-none z-10">
+              <div className="absolute right-2 bottom-16 w-90 p-4 overflow-hidden pointer-events-none z-10">
                 <SettingsPanel 
                   open={showSettingsPanel} 
                   settings={settings}

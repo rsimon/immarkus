@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { v5 as uuidv5 } from 'uuid';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
@@ -28,6 +28,10 @@ interface ImagePreviewProps {
 
   queryAnnotation: ImageAnnotation;
 
+  selectedForImport: ImageAnnotation[];
+
+  onSelectForImport: Dispatch<SetStateAction<ImageAnnotation[]>>;
+
   onClosePreview(): void;
 
 }
@@ -40,7 +44,7 @@ const getDeterministicId = (imageId: string, bounds: [number, number, number, nu
 
 export const ImagePreview = (props: ImagePreviewProps) => {
 
-  const { image, results } = props;
+  const { image, results, selectedForImport } = props;
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
@@ -48,16 +52,14 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
   const store = useStore();
 
-  const [selectedAnnotations, setSelectedAnnotations] = useState<ImageAnnotation[]>([]);
-
   const [disambiguatedResults, setDisambiguatedResults] = useState<ImageAnnotation[]>([]);
 
-  const { options, style } = useImagePreview(image, selectedAnnotations);
+  const { options, style } = useImagePreview(image, selectedForImport);
 
   useEffect(() => {
     if (!anno) return;
 
-    setSelectedAnnotations([]);
+    props.onSelectForImport([]);
 
     // Add existing annotations first
     store.getAnnotations(image.id).then(annotations => {
@@ -108,7 +110,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     });
 
     const onClick = (annotation: ImageAnnotation) => {
-      setSelectedAnnotations(current => {
+      props.onSelectForImport(current => {
         if (current.some(a => a.id === annotation.id)) {
           return current.filter(a => a.id !== annotation.id);
         } else {
@@ -125,18 +127,18 @@ export const ImagePreview = (props: ImagePreviewProps) => {
   }, [anno, store, image, results]);
 
   const onClickSelectAll = () => {
-    if (selectedAnnotations.length === disambiguatedResults.length)
-      setSelectedAnnotations([]);
+    if (selectedForImport.length === disambiguatedResults.length)
+      props.onSelectForImport([]);
     else
-      setSelectedAnnotations([...disambiguatedResults]);
+      props.onSelectForImport([...disambiguatedResults]);
   }
 
   const onImportSelection = () => {
-    if (selectedAnnotations.length === 0) return; // Should never happen
+    if (selectedForImport.length === 0) return; // Should never happen
 
     // Copy bodies from the query annotation
-    const toImport = selectedAnnotations.map(s => ({...s, bodies: [...props.queryAnnotation.bodies] }));
-    setSelectedAnnotations([]);
+    const toImport = selectedForImport.map(s => ({...s, bodies: [...props.queryAnnotation.bodies] }));
+    props.onSelectForImport([]);
 
     // Update the local annotator instance of the preview
     anno.state.store.bulkUpsertAnnotations(toImport);
@@ -157,9 +159,9 @@ export const ImagePreview = (props: ImagePreviewProps) => {
             options={options} />
 
           <ImagePreviewToolbar 
-            isAllSelected={selectedAnnotations.length === disambiguatedResults.length}
+            isAllSelected={selectedForImport.length === disambiguatedResults.length}
             isClosable={props.isClosable}
-            selected={selectedAnnotations} 
+            selected={selectedForImport} 
             onClickSelectAll={onClickSelectAll}
             onImportSelected={onImportSelection} 
             onClosePreview={props.onClosePreview} />

@@ -13,6 +13,16 @@ import { resetPalette } from './ImageSearchPalette';
 import { ImagePreview } from './ImagePreview';
 import { Spinner } from '@/components/Spinner';
 import { Progress } from '@/ui/Progress';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/ui/AlertDialog';
 
 interface ImageSearchDialogProps {
 
@@ -79,21 +89,42 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
     }
   }, [allResults, searchScope, imagesInWorkspace, sourceImage]);
 
-  useEffect(() => {
-    if (!props.vs.index || !open) return;
+  const [selectedForImport, setSelectedForImport] = useState<ImageAnnotation[]>([]);
 
-    console.log('dowladong')
+  // Defer UI state changes and allow for a warning prompt if the user
+  // is about to close a preview image with active selection
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
+  const guardedAction = (action: () => void) => {
+    if (selectedForImport.length > 0) {
+      setPendingAction(() => action);
+    } else {
+      action();
+    }
+  };
+
+  const onConfirmDiscard = () => {
+    pendingAction?.();
+    setPendingAction(null);
+  };
+
+  const onCancelDiscard = () => {
+    setPendingAction(null);
+  };
+
+  useEffect(() => {
+    if (!props.vs.index || !props.open) return;
 
     // Download embedding model on mount (if necessary)
-    props.vs.index.dowloadEmbeddingModel(progress => {
+    props.vs.index.downloadEmbeddingModel(progress => {
       if (progress.status === 'downloading') {
         const percentage = progress.total ? Math.round(100 * progress.loaded / progress.total) : 0;
         setDownloadProgress({ state: 'downloading', progress: percentage });
-      } else if (progress.status === 'ready' || progress.status === 'cached') {
+      } else if (progress.status === 'model_ready') {
         setDownloadProgress({ state: 'ready' });
       }
     })
-  }, [props.vs.index, open]);
+  }, [props.vs.index, props.open]);
 
   useEffect(() => {
     if (
@@ -108,11 +139,12 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const onOpenChange = (open: boolean) => {
     if (!open)
-      props.onClose();
+      guardedAction(props.onClose);
   }
 
   useEffect(() => {
     if (!props.open) return;
+    if (downloadStatus.state !== 'ready') return;
 
     setAllResults(undefined);
     setPreviewImage(undefined);
@@ -140,7 +172,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         });
       });
     });
-  }, [props.open, props.selected, sourceImage, props.vs]);
+  }, [props.open, props.selected, sourceImage, props.vs.index, downloadStatus.state]);
 
   return (
     <Dialog
@@ -155,9 +187,9 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
           results={filteredResults}
           searchScope={searchScope}
           iconSize={iconSize}
-          onChangeSearchScope={setSearchScope}
+          onChangeSearchScope={scope => guardedAction(() => setSearchScope(scope))}
           onChangeIconSize={setIconSize} 
-          onClose={props.onClose} />
+          onClose={() => guardedAction(props.onClose)} />
 
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
@@ -168,7 +200,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                   sourceImageId={sourceImage.id}
                   imagesInWorkspace={props.imagesInWorkspace}
                   results={filteredResults} 
-                  onSetPreview={setPreviewImage} />
+                  onSetPreview={image => guardedAction(() => setPreviewImage(image))} />
               )}
             </div>
 
@@ -179,8 +211,10 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     isClosable={searchScope !== 'this'}
                     image={previewImage} 
                     results={filteredResults} 
-                    queryAnnotation={props.selected} 
-                    onClosePreview={() => setPreviewImage(undefined)} />
+                    queryAnnotation={props.selected}
+                    selectedForImport={selectedForImport} 
+                    onSelectForImport={setSelectedForImport}
+                    onClosePreview={() => guardedAction(() => setPreviewImage(undefined))} />
                 </Annotorious>
               ) : (filteredResults && sourceImage) ? (
                 // Note: Masonry component breaks if the items array chnages!
@@ -212,6 +246,26 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
           </div>
         </div>
       </DialogContent>
+
+      <AlertDialog open={Boolean(pendingAction)} onOpenChange={onCancelDiscard}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Discard selected results?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="leading-relaxed">
+              You have selected {selectedForImport.length} result{selectedForImport.length !== 1 ? 's' : ''} for import.
+              If you continue, your selection will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={onConfirmDiscard}>
+              Discard Selection
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   )
 
