@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Image, SquareArrowOutUpRight } from 'lucide-react';
+import { SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Button } from '@/ui/Button';
-import { cn } from '@/ui/utils';
-import { useManifestLabel } from '../../useManifestLabel';
 import { ImageRelationshipCardItem } from './ImageRelationshipCardItem';
+import { ImageTitle } from '../../ImageTitle';
 
 interface ImageRelationshipCardProps {
 
@@ -29,8 +28,6 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
   const isIntra = props.selectedImage.id === otherImageId;
 
   const loaded = isIntra ? selectedImage : useImages(inView && props.otherImageId) as LoadedImage;
-
-  const manifestLabel = useManifestLabel(loaded);
   
   return (
     <article 
@@ -39,20 +36,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
       {loaded && (
         <>
           <div className="flex justify-between items-top p-1 pl-3">
-            <h3 className="py-1 space-y-0.5 flex flex-col justify-center items-start">
-              <div className={cn(
-                'flex gap-1.5 pr-1 text-xs whitespace-nowrap overflow-hidden',
-                manifestLabel ? 'items-start' : 'items-center'
-                )}>
-                <Image className="h-3.5 w-3.5" />
-                <span className="overflow-hidden text-ellipsis">{loaded.name}</span>
-              </div>
-              {manifestLabel && (
-                <div className="text-xs font-normal">
-                  {manifestLabel}
-                </div>
-              )}
-            </h3>
+            <ImageTitle image={loaded} />
 
             <Button
               asChild

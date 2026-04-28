@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Image, SquareArrowOutUpRight } from 'lucide-react';
+import { SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
@@ -9,8 +9,7 @@ import { Button } from '@/ui/Button';
 import { GraphNode } from '../../../Types';
 import { AnnotationThumbnail } from '../../AnnotationThumbnail';
 import { Skeleton } from '@/ui/Skeleton';
-import { useManifestLabel } from '../../useManifestLabel';
-import { cn } from '@/ui/utils';
+import { ImageTitle } from '../../ImageTitle';
 
 interface LazyAnnotatedImageProps extends AnnotatedImageProps {
 
@@ -29,25 +28,10 @@ const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
     return bodies.filter(b => b.source === props.entityType.id);
   }
 
-  const manifestLabel = useManifestLabel(loadedImage);
-
   return (
     <article className="bg-white shadow-xs rounded border mt-1.5">
       <div className="flex justify-between items-top p-1 pl-3">
-        <h3 className="py-1 space-y-0.5 flex flex-col justify-center items-start">
-          <div className={cn(
-            'flex gap-1.5 pr-1 text-xs whitespace-nowrap overflow-hidden',
-            manifestLabel ? 'items-start' : 'items-center'
-            )}>
-            <Image className="h-3.5 w-3.5" />
-            <span className="overflow-hidden text-ellipsis">{node.label}</span>
-          </div>
-          {manifestLabel && (
-            <div className="text-xs font-normal">
-              {manifestLabel}
-            </div>
-          )}
-        </h3>
+        <ImageTitle image={loadedImage} />
 
         <Button
           asChild
