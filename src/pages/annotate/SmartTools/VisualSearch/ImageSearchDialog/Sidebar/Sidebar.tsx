@@ -1,9 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { LoadedImage } from '@/model';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { THIS_IMAGE_COLOR } from '../ImageSearchPalette';
 import { SidebarImageItem } from './SidebarImageItem';
 import { cn } from '@/ui/utils';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
+import { Label } from '@/ui/Label';
 
 interface SidebarProps {
 
@@ -19,21 +21,41 @@ interface SidebarProps {
 
 }
 
+type ResultSorting = 'hits' | 'score';
+
 export const Sidebar = (props: SidebarProps) => {
 
+  const [sorting, setSorting] = useState<ResultSorting>('score');
+
   const { thisItem, otherItems } = useMemo(() => {
-    const distinctImages = [...new Set(props.results.map(r => r.image))];
-    
+    // Collect images into a list, in the order they first appear in `results`
+    const distinctImages = props.results.reduce<LoadedImage[]>((distinct, result) => {
+      if (distinct.some(i => i.id === result.imageId)) {
+        return distinct;
+      } else {
+        return [...distinct, result.image];
+      }
+    }, []);
+
     const allItems = distinctImages.map(image => {
       const matches = props.results.filter(r => r.imageId === image.id).length;
       return { image, matches };
-    }).sort((a, b) => b.matches - a.matches);
+    });
 
     const thisItem = allItems.find(t => t.image.id === props.sourceImageId);
     const otherItems = allItems.filter(t => t.image.id !== props.sourceImageId);
 
     return { thisItem, otherItems };
   }, [props.results, props.sourceImageId]);
+
+  const sortedOtherItems = useMemo(() => {
+    if (sorting === 'hits') {
+      return [...otherItems].sort((a, b) => b.matches - a.matches);
+    } else {
+      // Already sorted according to score
+      return otherItems;
+    }
+  }, [otherItems, sorting]);
 
   const isInWorkspace = (image: LoadedImage) => props.imagesInWorkspace.some(i => i.id === image.id);
 
@@ -46,6 +68,28 @@ export const Sidebar = (props: SidebarProps) => {
 
   return (
     <div className="p-2 h-full overflow-y-auto">
+      <div className="flex items-center justify-end pt-0 -mt-1 pb-3">
+        <Label className="text-xs text-muted-foreground">Sort by</Label>
+
+        <Select 
+          value={sorting}
+          onValueChange={v => setSorting(v as ResultSorting)}>
+          <SelectTrigger
+            className="px-0.5 border-none shadow-none font-medium text-xs hover:underline bg-transparent h-auto ml-1.5">
+            <SelectValue />
+          </SelectTrigger>
+          
+          <SelectContent>
+            <SelectItem value="hits">
+              number of matches
+            </SelectItem>
+
+            <SelectItem value="score">
+              best match
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <ul className="space-y-1.5">
         {thisItem && (
           <li>
@@ -71,7 +115,7 @@ export const Sidebar = (props: SidebarProps) => {
             </div>
           </li>
         )}
-        {otherItems.map(({ image, matches }) => (
+        {sortedOtherItems.map(({ image, matches }) => (
           <li 
             key={image.id}>
             <div className={cn(
