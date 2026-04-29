@@ -3,7 +3,7 @@ import { LoadedImage } from '@/model';
 
 const KEY_BOOKMARKS = 'immarkus:annotate:bookmarks';
 
-type SavedWorkspace = { images: string[], current?: boolean };
+type SavedWorkspace = { name: string, images: string[], current?: boolean };
 
 const hasSameValues = (a: string[], b: string[]) => {
   if (a.length !== b.length) return false;
@@ -19,8 +19,9 @@ export const useSavedWorkspaces = (images: LoadedImage[]) => {
     // Load from localStorage and set 'current' flag if applicable
     const str = localStorage.getItem(KEY_BOOKMARKS);
     if (str) {
-      const saved: string[][] = JSON.parse(str);
-      setSavedWorkspaces(saved.map(ids => ({ 
+      const saved: { name: string; images: string[] }[] = JSON.parse(str);
+      setSavedWorkspaces(saved.map(({ name, images: ids }) => ({ 
+        name,
         images: ids, 
         current: hasSameValues(ids, images.map(i => i.id))
       })));
@@ -29,7 +30,7 @@ export const useSavedWorkspaces = (images: LoadedImage[]) => {
 
   const isCurrentSaved = savedWorkspaces.some(w => w.current);
 
-  const saveCurrentWorkspace = useCallback(() => {
+  const saveCurrentWorkspace = useCallback((name: string) => {
     const currentIds = images.map(i => i.id);
 
     setSavedWorkspaces(current => {
@@ -37,10 +38,10 @@ export const useSavedWorkspaces = (images: LoadedImage[]) => {
 
       const next: SavedWorkspace[] = [
         ...current, 
-        { images: currentIds, current: true }
+        { name, images: currentIds, current: true }
       ];
 
-      localStorage.setItem(KEY_BOOKMARKS, JSON.stringify(next.map(w => w.images)));
+      localStorage.setItem(KEY_BOOKMARKS, JSON.stringify(next.map(w => ({ name: w.name, images: w.images }))));
 
       return next;
     });
