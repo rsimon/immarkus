@@ -7,6 +7,7 @@ import { ToolbarButton } from '../ToolbarButton';
 import { AnnotationMode } from '../AnnotationMode';
 import { RelationEditor } from '../RelationEditor';
 import { AddImage } from './AddImage';
+import { BookmarkWorkspace } from './BookmarkWorkspace';
 import { CopyToClipboard } from './CopyToClipboard';
 import { 
   EllipsisVertical,
@@ -72,6 +73,9 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
           <AddImage 
             current={props.images} 
             onAddImage={onAddImage} />
+
+          <BookmarkWorkspace 
+            images={props.images} />
 
           <Separator orientation="vertical" className="h-4" />
 
