@@ -10,6 +10,8 @@ interface ResultCardProps {
 
   data: ResolvedSearchResult;
 
+  onClick(): void;
+
 }
 
 export const ResultCard = (props: ResultCardProps) => {
@@ -41,7 +43,10 @@ export const ResultCard = (props: ResultCardProps) => {
   }, [image, pxBounds, inView]);
 
   return (
-    <div ref={ref} className="w-full relative rounded border border-gray-300 overflow-hidden">
+    <button 
+      ref={ref} 
+      className="w-full relative rounded border border-gray-300 overflow-hidden"
+      onClick={props.onClick}>
       <Skeleton
         className="bg-white w-full" 
         style={{ aspectRatio }}/>
@@ -64,7 +69,7 @@ export const ResultCard = (props: ResultCardProps) => {
         className="absolute bottom-0 left-0 text-white text-[10px] bg-black/60 py-0.5 px-1.5 rounded-tr-xs">
         {Math.round(score * 100) / 100}
       </div>
-    </div>
+    </button>
   )
 
 }

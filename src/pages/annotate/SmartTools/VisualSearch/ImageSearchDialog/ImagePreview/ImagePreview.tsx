@@ -28,6 +28,8 @@ interface ImagePreviewProps {
 
   queryAnnotation: ImageAnnotation;
 
+  emphasizedResult?: ResolvedSearchResult; 
+
   selectedForImport: ImageAnnotation[];
 
   onSelectForImport: Dispatch<SetStateAction<ImageAnnotation[]>>;
@@ -44,7 +46,7 @@ const getDeterministicId = (imageId: string, bounds: [number, number, number, nu
 
 export const ImagePreview = (props: ImagePreviewProps) => {
 
-  const { image, results, selectedForImport } = props;
+  const { image, results, selectedForImport, emphasizedResult } = props;
 
   const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
 
@@ -79,6 +81,8 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       anno.setAnnotations(existingAnnotations, true);
     }).then(() => {
       // Next, convert results to annotations...
+      let emphasizedAnnotationId: string;
+
       const allAnnotations = results
         .filter(r => r.imageId === image.id)
         .map(r => {
@@ -91,13 +95,21 @@ export const ImagePreview = (props: ImagePreviewProps) => {
             maxY: y + h
           }, getDeterministicId(r.imageId, r.pxBounds));
 
-          return {
-            ...annotation,
-            bodies: [createBody(annotation.id, {
-              purpose: 'tagging',
-              value: 'search-result'
-            })]
+          const bodies = [createBody(annotation.id, {
+            purpose: 'tagging',
+            value: 'search-result'
+          })];
+
+          if (r === emphasizedResult) {
+            bodies.push(createBody(annotation.id, {
+              purpose: 'classifying',
+              value: 'emphasized'
+            }));
+
+            emphasizedAnnotationId = annotation.id;
           }
+
+          return { ...annotation, bodies };
         });
 
       // ...and remove all that were already imported by the user
@@ -107,6 +119,12 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       // Reset the annotator with all search results that were 
       // not imported by the user yet.
       anno.setAnnotations(toAdd, false);
+
+      if (emphasizedAnnotationId) {
+        setTimeout(() => {
+          anno.fitBounds(emphasizedAnnotationId, { padding: 80 });
+        }, 250);
+      }
     });
 
     const onClick = (annotation: ImageAnnotation) => {
@@ -124,7 +142,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     return () => {
       anno?.off('clickAnnotation', onClick);
     }
-  }, [anno, store, image, results]);
+  }, [anno, store, image, results, emphasizedResult]);
 
   const onClickSelectAll = () => {
     if (selectedForImport.length === disambiguatedResults.length)

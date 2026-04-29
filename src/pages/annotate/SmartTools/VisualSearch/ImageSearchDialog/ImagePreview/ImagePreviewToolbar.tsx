@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ImageUp, Square, SquareCheckBig, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { ImageAnnotation, useViewer } from '@annotorious/react';
 import { Button } from '@/ui/Button';
@@ -26,8 +27,17 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
 
   const viewer = useViewer();
 
+  // When closing the preview, the search result UI takes noticably long
+  // to render. We want to provide immediate feedback!
+  const [isClosing, setIsClosing] = useState(false);
+
+  const onClose = () => {
+    setIsClosing(true);
+    setTimeout(() => setIsClosing(false), 500);
+    setTimeout(() => props.onClosePreview(), 10);
+  }
+
   const onZoom = (inc: number) => () => {
-    console.log('zoom', inc, viewer);
     viewer?.viewport.zoomBy(inc);
   }
 
@@ -77,8 +87,9 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
 
         {props.isClosable && (
           <button 
-            className="rounded p-2 hover:bg-white/25"
-            onClick={props.onClosePreview}>
+            disabled={isClosing}
+            className="rounded p-2 hover:bg-white/25 disabled:opacity-50"
+            onClick={onClose}>
             <X className="size-4" />
           </button>
         )}

@@ -75,6 +75,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const [previewImage, setPreviewImage] = useState<LoadedImage | undefined>();
 
+  const [emphasizedResult, setEmphasizedResult] = useState<ResolvedSearchResult | undefined>();
+
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
@@ -139,11 +141,6 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
     }
   }, [searchScope, filteredByScope]);
 
-  const onOpenChange = (open: boolean) => {
-    if (!open)
-      guardedAction(props.onClose);
-  }
-
   useEffect(() => {
     if (!props.open) return;
     if (downloadStatus.state !== 'ready') return;
@@ -175,6 +172,16 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       });
     });
   }, [props.open, props.selected, sourceImage, props.vs.index, downloadStatus.state]);
+
+  const onOpenChange = (open: boolean) => {
+    if (!open)
+      guardedAction(props.onClose);
+  }
+
+  const onSelectSearchResult = (result: ResolvedSearchResult) => {
+    setPreviewImage(result.image);
+    setEmphasizedResult(result);
+  }
 
   return (
     <Dialog
@@ -216,6 +223,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     image={previewImage} 
                     results={filteredByScope} 
                     queryAnnotation={props.selected}
+                    emphasizedResult={emphasizedResult}
                     selectedForImport={selectedForImport} 
                     onSelectForImport={setSelectedForImport}
                     onClosePreview={() => guardedAction(() => setPreviewImage(undefined))} />
@@ -230,7 +238,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                   <ResultGrid
                     sourceImageId={sourceImage.id}
                     iconSize={iconSize}
-                    results={filteredByScopeAndFacets} />
+                    results={filteredByScopeAndFacets} 
+                    onSelectResult={onSelectSearchResult} />
                 </div>
               ) : downloadStatus.state === 'downloading' ? (
                 <div className="size-full flex items-center justify-center border-l">
