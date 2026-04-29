@@ -1,4 +1,5 @@
 import { Grid2X2, Grid3X3, Square, X } from 'lucide-react';
+import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { DialogHeader, DialogTitle } from '@/ui/Dialog';
 import { Separator } from '@/ui/Separator';
@@ -13,6 +14,8 @@ import { Label } from '@/ui/Label';
 interface ToolbarProps {
 
   queryImage?: Blob;
+
+  imagesInWorkspace: LoadedImage[];
 
   searchScope: SearchScope;
 
@@ -76,6 +79,7 @@ export const Toolbar = (props: ToolbarProps) => {
           </ToggleGroupItem>
 
           <ToggleGroupItem
+            disabled={props.imagesInWorkspace.length < 2}
             value="workspace"
             className="text-xs font-normal">
             Currently Open Images

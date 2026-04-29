@@ -178,9 +178,16 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       guardedAction(props.onClose);
   }
 
-  const onSelectSearchResult = (result: ResolvedSearchResult) => {
+  const onSelectSearchResult = (result: ResolvedSearchResult) => {
     setPreviewImage(result.image);
     setEmphasizedResult(result);
+  }
+
+  const onTogglePreview = (image: LoadedImage) => {
+    if (previewImage?.id === image.id)
+      guardedAction(() => setPreviewImage(undefined));
+    else
+      guardedAction(() => setPreviewImage(image))
   }
 
   return (
@@ -193,6 +200,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <Toolbar
           queryImage={queryImage}
+          imagesInWorkspace={imagesInWorkspace}
           results={filteredByScope}
           searchScope={searchScope}
           iconSize={iconSize}
@@ -211,7 +219,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                   results={filteredByScope} 
                   selectedImages={selectedImages}
                   onSetSelectedImages={setSelectedImages}
-                  onSetPreview={image => guardedAction(() => setPreviewImage(image))} />
+                  onTogglePreview={onTogglePreview} />
               )}
             </div>
 

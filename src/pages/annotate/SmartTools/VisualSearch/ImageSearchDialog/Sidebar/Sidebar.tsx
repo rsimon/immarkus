@@ -22,7 +22,7 @@ interface SidebarProps {
 
   currentPreview?: string;
 
-  onSetPreview(image?: LoadedImage): void;
+  onTogglePreview(image?: LoadedImage): void;
 
 }
 
@@ -152,7 +152,7 @@ export const Sidebar = (props: SidebarProps) => {
                 topScore={getTopScore(thisItem.image)}
                 matches={thisItem.matches} 
                 onSetSelected={selected => onSetSelected(thisItem.image, selected)} 
-                onOpenInPreview={() => props.onSetPreview(thisItem.image)} />
+                onTogglePreview={() => props.onTogglePreview(thisItem.image)} />
             </div>
           </li>
         )}
@@ -172,7 +172,7 @@ export const Sidebar = (props: SidebarProps) => {
                 topScore={getTopScore(image)}
                 matches={matches} 
                 onSetSelected={selected => onSetSelected(image, selected)} 
-                onOpenInPreview={() => props.onSetPreview(image)} />
+                onTogglePreview={() => props.onTogglePreview(image)} />
             </div>
           </li>
         ))}

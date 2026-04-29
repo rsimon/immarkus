@@ -26,7 +26,7 @@ interface SidebarImageItemProps {
 
   onSetSelected(selected: boolean): void;
 
-  onOpenInPreview(): void;
+  onTogglePreview(): void;
 
 }
 
@@ -51,7 +51,7 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
 
       <button
         className="flex items-center gap-2 text-left overflow-hidden"
-        onClick={props.onOpenInPreview}>
+        onClick={props.onTogglePreview}>
         <div 
           className="relative shrink-0 rounded-md border-2 p-px"
           style={{
@@ -94,7 +94,7 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
               <>· <Tooltip>
                 <TooltipTrigger asChild>
                   <Badge 
-                    className="text-[11px] font-medium rounded-md py-px px-1.25 bg-orange-400">
+                    className="text-[11px] font-medium rounded-md py-px px-1.25 bg-orange-400 hover:bg-orange-400">
                     Open
                   </Badge>
                 </TooltipTrigger>
