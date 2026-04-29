@@ -6,13 +6,14 @@ import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
 import { AnnotationMode, Tool } from '../AnnotationMode';
+import { RelationEditor } from '../RelationEditor';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
 import { BackButton } from './BackButton';
+import { BookmarkWorkspace } from './BookmarkWorkspace';
 import { CopyToClipboard } from './CopyToClipboard';
 import { ToolSelector } from './ToolSelector';
 import { MoreToolsPanel } from './MoreToolsPanel';
-import { RelationEditor } from '../RelationEditor';
 import { SmartToolsButton } from './SmartToolsButton';
 import { useCollapsibleToolbar } from './useCollapsibleToolbar';
 import {
@@ -159,6 +160,9 @@ export const HeaderSection = (props: HeaderSectionProps) => {
                 <AddImage 
                   current={props.images} 
                   onAddImage={props.onAddImage} />
+
+                <BookmarkWorkspace 
+                  images={props.images} />
 
                 <Separator orientation="vertical" className="h-4" />
 
