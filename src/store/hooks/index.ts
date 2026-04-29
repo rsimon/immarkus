@@ -10,4 +10,5 @@ export * from './useImageSnippet';
 export * from './useManifestAnnotations';
 export * from './useManifestMetadata';
 export * from './useRelationshipSearch';
+export * from './useSettings';
 export * from './useStore';

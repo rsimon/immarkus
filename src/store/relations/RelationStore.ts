@@ -32,9 +32,7 @@ export const loadRelationStore = (
   handle: FileSystemDirectoryHandle,
   store: AnnotationStore
 ): Promise<RelationStore> => new Promise(async resolve => {
-
   const fileHandle = await handle.getFileHandle('_immarkus.relations.json', { create: true });
-  
   const file = await fileHandle.getFile();
 
   // For safety, let's assume these relationships may contain integrity issues,

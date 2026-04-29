@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { LoadedImage } from '@/model';
+import { type WorkspaceBookmark, useSettings } from '@/store';
 
-const KEY_BOOKMARKS = 'immarkus:annotate:bookmarks';
-
-export type WorkspaceBookmark = { name: string, images: string[], current?: boolean };
+type LoadedBookmark = WorkspaceBookmark & { current: boolean };
 
 const hasSameValues = (a: string[], b: string[]) => {
   if (a.length !== b.length) return false;
@@ -13,57 +12,43 @@ const hasSameValues = (a: string[], b: string[]) => {
 }
 
 export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
-  const [bookmarks, setBookmarks] = useState<WorkspaceBookmark[]>([]);
-  
-  useEffect(() => {
-    // Load from localStorage and set 'current' flag if applicable
-    const str = localStorage.getItem(KEY_BOOKMARKS);
-    if (str) {
-      const saved: { name: string; images: string[] }[] = JSON.parse(str);
-      setBookmarks(saved.map(({ name, images: ids }) => ({ 
-        name,
-        images: ids, 
-        current: hasSameValues(ids, images.map(i => i.id))
-      })));
-    }
-  }, [images]);
+  const { settings, updateSettings } = useSettings();
 
+  const bookmarks: LoadedBookmark[] = useMemo(() => {
+    return (settings.bookmarks || []).map(({ name, images: ids }) => ({ 
+      name,
+      images: ids, 
+      current: hasSameValues(ids, images.map(i => i.id))
+    }))
+  }, [settings, images]);
+ 
   const isCurrentBookmarked = bookmarks.some(w => w.current);
 
   const bookmarkCurrentWorkspace = useCallback((name: string) => {
     const currentIds = images.map(i => i.id);
 
-    setBookmarks(prev => {
-      if (prev.some(w => hasSameValues(w.images, currentIds))) return prev;
+    updateSettings(prev => {
+      const prevBookmarks = prev.bookmarks || [];
+      if (prevBookmarks.some(w => hasSameValues(w.images, currentIds))) return {};
 
-      const next: WorkspaceBookmark[] = [
-        ...prev, 
-        { name, images: currentIds, current: true }
+      const nextBookmarks: WorkspaceBookmark[] = [
+        ...prevBookmarks, 
+        { name, images: currentIds }
       ];
 
-      localStorage.setItem(
-        KEY_BOOKMARKS, 
-        JSON.stringify(next.map(w => ({ name: w.name, images: w.images })))
-      );
-
-      return next;
+      return { bookmarks: nextBookmarks };
     });
   }, [images]);
 
   const removeCurrentBookmark = useCallback(() => {
     const currentIds = images.map(i => i.id);
 
-    setBookmarks(prev => {
-      if (!prev.some(w => hasSameValues(w.images, currentIds))) return prev;
+    updateSettings(prev => {
+      const prevBookmarks = prev.bookmarks || [];
+      if (!prevBookmarks.some(w => hasSameValues(w.images, currentIds))) return {};
 
-      const next = prev.filter(w => !hasSameValues(w.images, currentIds));
-
-      localStorage.setItem(
-        KEY_BOOKMARKS, 
-        JSON.stringify(next.map(w => ({ name: w.name, images: w.images })))
-      );
-
-      return next;
+      const nextBookmarks = prevBookmarks.filter(w => !hasSameValues(w.images, currentIds));
+      return { bookmarks: nextBookmarks };
     });
   }, [images]);
 

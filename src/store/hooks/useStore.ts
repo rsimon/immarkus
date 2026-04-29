@@ -4,6 +4,7 @@ import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorio
 import { loadStore } from '../Store';
 import { StoreContext } from '../StoreProvider';
 import { IIIFResource, IIIFResourceInformation } from '@/model';
+import { loadSettingsStore } from '../settings';
 
 export const useStore = () => {
   const { store, setStore } = useContext(StoreContext);
@@ -54,11 +55,16 @@ export const useStore = () => {
 }
 
 export const useInitStore = () => {
-  const { setStore, setModel } = useContext(StoreContext);
+  const { setStore, setModel, setSettings } = useContext(StoreContext);
 
-  return (handle: FileSystemDirectoryHandle) =>
+  return (handle: FileSystemDirectoryHandle) => Promise.all([
     loadStore(handle).then(store => {
       setStore(store);
       setModel(store.getDataModel());
-    });
+    }),
+
+    loadSettingsStore(handle).then(settings => {
+      setSettings(settings);
+    })
+  ]);
 }

@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useState } from 'react';
 import { Store } from './Store';
 import { DataModelStore } from './datamodel';
+import { SettingsStore } from './settings';
 
 interface StoreContextState {
 
@@ -11,6 +12,10 @@ interface StoreContextState {
   model: DataModelStore;
 
   setModel: React.Dispatch<React.SetStateAction<DataModelStore>>;
+
+  settings?: SettingsStore;
+
+  setSettings: React.Dispatch<React.SetStateAction<SettingsStore>>;
 
 }
 
@@ -28,8 +33,11 @@ export const StoreProvider = (props: StoreProviderProps) => {
 
   const [model, setModel] = useState<DataModelStore>(undefined);
 
+  const [settings, setSettings] = useState<SettingsStore>(undefined);
+
   return (
-    <StoreContext.Provider value={{ store, setStore, model, setModel }}>
+    <StoreContext.Provider 
+      value={{ store, setStore, model, setModel, settings, setSettings }}>
       {props.children}
     </StoreContext.Provider>
   )
