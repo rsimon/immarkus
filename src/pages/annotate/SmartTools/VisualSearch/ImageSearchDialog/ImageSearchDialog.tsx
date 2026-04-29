@@ -77,17 +77,19 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
-  const filteredResults = useMemo(() => {
+  const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
+
+  const filteredByScope = useMemo(() => {
     if (!allResults || !sourceImage) return;
 
-    if (searchScope === 'this') {
-      return allResults.filter(r => r.imageId === sourceImage.id);
-    } else if (searchScope === 'workspace') {
-      return allResults.filter(r => imagesInWorkspace.some(i => i.id === r.imageId));
-    } else {
-      return allResults;
-    }
+    return searchScope === 'this' ? allResults.filter(r => r.imageId === sourceImage.id) :
+      searchScope === 'workspace' ? allResults.filter(r => imagesInWorkspace.some(i => i.id === r.imageId)) :
+      allResults;
   }, [allResults, searchScope, imagesInWorkspace, sourceImage]);
+
+  const filteredByScopeAndFacets = useMemo(() => (
+    filteredByScope?.filter(i => selectedImages.has(i.imageId))
+  ), [filteredByScope, selectedImages]);
 
   const [selectedForImport, setSelectedForImport] = useState<ImageAnnotation[]>([]);
 
@@ -129,13 +131,13 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   useEffect(() => {
     if (
       (searchScope !== 'this') ||
-      (filteredResults || []).length === 0
+      (filteredByScope || []).length === 0
     ) {
       setPreviewImage(undefined);
     } else {
-      setPreviewImage(filteredResults[0].image);
+      setPreviewImage(filteredByScope[0].image);
     }
-  }, [searchScope, filteredResults]);
+  }, [searchScope, filteredByScope]);
 
   const onOpenChange = (open: boolean) => {
     if (!open)
@@ -184,7 +186,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <Toolbar
           queryImage={queryImage}
-          results={filteredResults}
+          results={filteredByScope}
           searchScope={searchScope}
           iconSize={iconSize}
           onChangeSearchScope={scope => guardedAction(() => setSearchScope(scope))}
@@ -193,40 +195,42 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
 
         <div className="grow relative overflow-hidden">
           <div className="flex h-full">
-            <div className="sticky top-0 w-72 h-full shrink-0 self-start bg-white">
-              {(filteredResults && sourceImage) && (
+            <div className="sticky top-0 w-80 h-full shrink-0 self-start bg-white">
+              {(filteredByScope && sourceImage) && (
                 <Sidebar 
                   currentPreview={previewImage?.id}
                   sourceImageId={sourceImage.id}
                   imagesInWorkspace={props.imagesInWorkspace}
-                  results={filteredResults} 
+                  results={filteredByScope} 
+                  selectedImages={selectedImages}
+                  onSetSelectedImages={setSelectedImages}
                   onSetPreview={image => guardedAction(() => setPreviewImage(image))} />
               )}
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {(filteredResults && previewImage) ? (
+              {(filteredByScope && previewImage) ? (
                 <Annotorious>
                   <ImagePreview 
                     isClosable={searchScope !== 'this'}
                     image={previewImage} 
-                    results={filteredResults} 
+                    results={filteredByScope} 
                     queryAnnotation={props.selected}
                     selectedForImport={selectedForImport} 
                     onSelectForImport={setSelectedForImport}
                     onClosePreview={() => guardedAction(() => setPreviewImage(undefined))} />
                 </Annotorious>
-              ) : (filteredResults && sourceImage) ? (
-                // Note: Masonry component breaks if the items array chnages!
+              ) : (filteredByScopeAndFacets && sourceImage) ? (
+                // Note: Masonry component breaks if the items array changes!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
                 <div 
-                  key={`${props.selected.id}:${searchScope}`}
+                  key={`${props.selected.id}::${searchScope}::${[...selectedImages].join(':')}`}
                   className="p-2.5">
                   <ResultGrid
                     sourceImageId={sourceImage.id}
                     iconSize={iconSize}
-                    results={filteredResults} />
+                    results={filteredByScopeAndFacets} />
                 </div>
               ) : downloadStatus.state === 'downloading' ? (
                 <div className="size-full flex items-center justify-center border-l">
