@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen, Trash2 } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
-import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
+// import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
 import { Folder, IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
