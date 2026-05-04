@@ -49,8 +49,8 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
           <IIIFOpenInViewerAction manifest={props.resource as IIIFManifestResource} />
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
-              <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
-              <span className="text-red-700 hover:text-red-700">Delete</span>
+            <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
+            <span className="text-red-700 hover:text-red-700">Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

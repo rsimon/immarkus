@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen, Trash2 } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
 import { Folder, IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { OverviewItem } from '../../Types';
+import { IIIFOpenInViewerAction } from '../IIIFOpenInViewerAction';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +19,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/ui/DropdownMenu';
-import { IIIFOpenInViewerAction } from '../IIIFOpenInViewerAction';
 
 interface ItemTableRowActions {
 
@@ -167,11 +168,16 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           )}
 
           {isManifest && (
-            <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
-                <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
-                <span className="text-red-700 hover:text-red-700">Delete</span>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
+                  <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
+                  <span className="text-red-700 hover:text-red-700">Delete</span>
+              </DropdownMenuItem>
+              
+              <FixRelocatedManifest manifest={props.data as IIIFManifestResource}/>
+            </>
           )}
+
         </DropdownMenuContent>
       </DropdownMenu>
 
