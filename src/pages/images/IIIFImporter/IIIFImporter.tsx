@@ -146,7 +146,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         <Button
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded">
-          <CloudDownload className="size-[18px] pt-px" /> Import IIIF
+          <CloudDownload className="size-4.5 pt-px" /> Import IIIF
         </Button>
       </DialogTrigger>
 
@@ -188,7 +188,7 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
               <div className="font-semibold mb-2 flex gap-1.5">
-                <Ban className="size-3.5 mt-[3px]" /> Already Imported
+                <Ban className="size-3.5 mt-0.75" /> Already Imported
               </div>
 
               <div>
