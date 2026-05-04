@@ -22,7 +22,10 @@ export const FixRelocatedManifest = (props: FixRelocatedManifestProps) => {
 
   return (
     <>
-      <DropdownMenuItem onSelect={() => setIsRepairDialogOpen(true)}>
+      <DropdownMenuItem onSelect={e => {
+        e.preventDefault();
+        setIsRepairDialogOpen(true)
+      }}>
         Fix Relocated Manifest
       </DropdownMenuItem>
 

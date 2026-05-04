@@ -174,7 +174,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
                   <span className="text-red-700 hover:text-red-700">Delete</span>
               </DropdownMenuItem>
               
-              <FixRelocatedManifest manifest={props.data as IIIFManifestResource}/>
+              {/* <FixRelocatedManifest manifest={props.data as IIIFManifestResource}/> */}
             </>
           )}
 
