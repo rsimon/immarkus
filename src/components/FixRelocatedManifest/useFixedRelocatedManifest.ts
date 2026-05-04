@@ -9,7 +9,7 @@ import { getCanvasLabelWithFallback } from '../../utils/iiif';
 export const useFixRelocatedManifest = () => {
   const store = useStore();
 
-  const fixRelocatedManifest = (
+  const fixRelocatedManifest = async (
     manifest: IIIFManifestResource, 
     newUrl: string
   ) => {
@@ -17,69 +17,71 @@ export const useFixRelocatedManifest = () => {
     console.log('Downloading manifest...');
 
     const idSeed = folder ? `${folder}/${manifest.uri}` : manifest.uri;
-    generateShortId(idSeed).then(id  => {
-      Cozy.parseURL(newUrl)
-        .then(result => {
-          if (result.type !== 'manifest')
-            throw new Error('Not a manifest');
+    const id = await generateShortId(idSeed);
 
-          const newManifest = result.resource;
+    const result = await  Cozy.parseURL(newUrl);
+    if (result.type !== 'manifest')
+      throw new Error('Not a manifest');
 
-          const info: IIIFResourceInformation = {
-            id,
-            name: newManifest.getLabel() || `IIIF Presentation API v${newManifest.majorVersion}`,
-            uri: newUrl,
-            importedAt: manifest.importedAt,
-            type: 'PRESENTATION_MANIFEST',
-            majorVersion: newManifest.majorVersion,
-            canvases: newManifest.canvases.map(canvas => ({
-              id: murmur.v3(canvas.id).toString(),
-              uri: canvas.id,
-              name: getCanvasLabelWithFallback(canvas),
-              manifestId: id
-            }))
+    const newManifest = result.resource;
+
+    const info: IIIFResourceInformation = {
+      id,
+      name: newManifest.getLabel() || `IIIF Presentation API v${newManifest.majorVersion}`,
+      uri: newUrl,
+      importedAt: manifest.importedAt,
+      type: 'PRESENTATION_MANIFEST',
+      majorVersion: newManifest.majorVersion,
+      canvases: newManifest.canvases.map(canvas => ({
+        id: murmur.v3(canvas.id).toString(),
+        uri: canvas.id,
+        name: getCanvasLabelWithFallback(canvas),
+        manifestId: id
+      }))
+    }
+
+    const mappedMeta = await store.getAnnotations(`iiif:${manifest.id}`, { type: 'metadata' }).then(annotations => {
+      const meta = annotations.filter(a => (a.target as any).source === `iiif:${manifest.id}`);
+      return meta.map(a => ({
+        ...a,
+        target: {
+          // @ts-ignore
+          ...a.target,
+          source: `iiif:${id}`
+        }
+      }))
+    });
+
+    const mappedAnnotations = await manifest.canvases.reduce<Promise<Record<string, W3CAnnotation[]>>>((p, canvas, idx) => p.then(all => {
+      const oldId = `iiif:${manifest.id}:${canvas.id}`;
+      const newId = `iiif:${id}:${info.canvases[idx].id}`;
+
+      return store.getAnnotations(oldId).then(onThisCanvas => {
+        const mapped = onThisCanvas.map(a => ({
+          ...a, 
+          target: {
+            // @ts-ignore
+            ...a.target,
+            source: newId
           }
+        }));
+        return {...all, [newId]: mapped };
+      });
+    }), Promise.resolve({}));
 
-          // console.log('Previous ID was: ' + manifest.id);
-          // console.log('New manifest ID is: ' + id);
+    console.log('Importing new manifest');
 
-          const p = manifest.canvases.reduce<Promise<Record<string, W3CAnnotation[]>>>((p, canvas, idx) => p.then(all => {
-            const oldId = `iiif:${manifest.id}:${canvas.id}`;
-            const newId = `iiif:${id}:${info.canvases[idx].id}`;
+    await store.importIIIFResource(info, folder);
 
-            return store.getAnnotations(oldId).then(onThisCanvas => {
-              const mapped = onThisCanvas.map(a => ({
-                ...a, 
-                target: {
-                  // @ts-ignore
-                  ...a.target,
-                  source: newId
-                }
-              }));
-              return {...all, [newId]: mapped };
-            });
-          }), Promise.resolve({}));
+    console.log('Transferring annotations');  
+    const canvasAnnotations = Object.values(mappedAnnotations).flat();
+    const merged = [...mappedMeta, ...canvasAnnotations];
 
-          p.then(mappedAnnotations => {
-            console.log('Importing new manifest');
-            return store.importIIIFResource(info, folder).then(() => {
-              console.log(`Transferring ${Object.values(mappedAnnotations).reduce<number>((a, b) => a + b.length, 0)} annotations`);
-              console.log(mappedAnnotations);
-              return Object.entries(mappedAnnotations).reduce<Promise<void>>((p, [imageId, annotations]) => p.then(() => {
-                return annotations.length > 0 ? store.bulkUpsertAnnotation(imageId, annotations) : Promise.resolve();
-              }), Promise.resolve());
-            })
-          }).then(() => {
-            console.log('Removing outdated manifest');
-            store.removeIIIFResource(manifest).then(() => console.log('Done.'));
-          });
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    })
+    console.log(merged);
+    await store.bulkUpsertAnnotation(`iiif:${id}`, merged);
 
-    console.log('repairing', manifest, newUrl);
+    console.log('Removing outdated manifest');
+    await store.removeIIIFResource(manifest).then(() => console.log('Done.'));
   }
 
   return { fixRelocatedManifest };
