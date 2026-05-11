@@ -1,112 +1,123 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { 
+  ChevronDown,
   Download, 
-  HelpCircle, 
-  Image, 
-  Images, 
-  Info, 
+  Images,
+  InfoIcon, 
   LogOut, 
-  Plug,
+  PenLine,
+  Settings2,
   ToyBrick, 
   Waypoints 
 } from 'lucide-react';
+import { 
+  Sidebar,
+  SidebarContent, 
+  SidebarFooter, 
+  SidebarHeader,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from '@/ui/Sidebar';
 
-import './AppNavigationSidebar.css';
+const NAV_ITEMS = [
+  { to: '/images',   icon: Images,   label: 'Images'   },
+  { to: '/graph',    icon: Waypoints, label: 'Knowledge Graph' },
+  { to: '/annotate', icon: PenLine, label: 'Workspace' },
+  { to: '/model',    icon: ToyBrick,  label: 'Data Model' },
+  { to: '/export',   icon: Download,  label: 'Export'   },
+  { to: '/settings', icon: Settings2, label: 'Settings' },
+];
 
-export const AppNavigationSidebar = () => {
+const ABOUT_ITEMS = [
+  { to: '/about',  label: 'IMMARKUS' },
+  { to: '/markus', label: 'X-MARKUS' },
+  { href: 'https://github.com/rsimon/immarkus/wiki', label: 'Help' },
+];
 
+interface Props {
+  openImageCount?: number;
+}
+
+export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
   const { pathname } = useLocation();
 
-  const active = 
-    `rounded-md text-sm font-medium ring-offset-background transition-colors 
-     focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring 
-     focus-visible:ring-offset-2 bg-primary text-primary-foreground 
-     hover:bg-primary/90 h-10 px-4 py-2`; 
-
   return (
-    <aside className="main-nav flex flex-col justify-between">
-      <div>
-        <h1 className="text-imarkus font-[Lexend] font-medium text-xl mb-6 mt-1 ml-3">
-          <button onClick={() => location.href = '/'}>IMMARKUS</button>
-        </h1>
+    <Sidebar className="main-nav relative min-w-62 [&>div]:bg-[#f1f5f9]">
+      <SidebarHeader className="text-imarkus font-medium text-xl p-4">
+        <button
+          className="font-[Lexend] text-left"
+          onClick={() => location.href = '/'}>
+          IMMARKUS
+        </button>
+      </SidebarHeader>
 
-        <nav>
-          <ul>
-            <li>
-            <Link 
-                className={pathname.startsWith('/images') ? active : undefined} 
-                to="/images">
-                <Image size={18} className="mr-2" /> Images
-              </Link>
-            </li>
+      <SidebarContent className="p-1">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+                <SidebarMenuItem key={to}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.startsWith(to)}>
+                    <Link to={to}>
+                      <Icon />
+                      {label}
+                      {label === 'Workspace' && openImageCount > -1 && (
+                        <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
+                      )}
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
 
-            <li>
-              <Link 
-                className={pathname === '/model' ? active : undefined} 
-                to="/model">
-                <ToyBrick size={18} className="mr-2" />  Data Model
-              </Link>
-            </li>
+              <Collapsible className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton>
+                      <InfoIcon />
+                      About
+                      <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
 
-            <li>
-              <Link 
-                className={pathname === '/graph' ? active : undefined} 
-                to="/graph">
-                <Waypoints size={18} className="mr-2" />  Knowledge Graph
-              </Link>
-            </li>
-            
-            <li>
-              <Link
-                className={pathname === '/visual-search' ? active : undefined}
-                to="/visual-search">
-                <Images size={18} className="mr-2" /> Visual Search
-              </Link>
-            </li>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {ABOUT_ITEMS.map(({ to, href, label }) => (
+                        <SidebarMenuSubItem key={label}>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={to ? pathname === to : false}>
+                            {href
+                              ? <a href={href} target="_blank" rel="noreferrer">{label}</a>
+                              : <Link to={to!}>{label}</Link>}
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
-            <li>
-              <Link 
-                className={pathname.startsWith('/export') ? active : undefined} 
-                to="/export">
-                <Download size={18} className="mr-2 relative -top-0.5" /> Export
-              </Link>
-            </li>
-
-            <li>
-              <Link 
-                className={pathname === '/markus' ? active : undefined} 
-                to="/markus">
-                <Plug size={18} className="mr-2 relative -top-0.5" /> X-MARKUS
-              </Link>
-            </li>
-
-            <li>
-              <Link 
-                className={pathname === '/about' ? active : undefined} 
-                to="/about">
-                <Info size={18} className="mr-2 relative -top-px" /> About
-              </Link>
-            </li>
-
-            <li>
-              <a
-                href="https://github.com/rsimon/immarkus/wiki" target="_blank">
-                <HelpCircle size={18} className="mr-2 relative -top-px" /> Help
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-
-      <div>
-        <button 
+      <SidebarFooter>
+        <button
           className="flex items-center p-2.5"
           onClick={() => location.href = '/'}>
           <LogOut size={18} className="mr-2" /> Exit
         </button>
-      </div>
-    </aside>
-  )
-
-}
-
+      </SidebarFooter>
+    </Sidebar>
+  );
+};

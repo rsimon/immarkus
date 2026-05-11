@@ -7,6 +7,7 @@ import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segme
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { TooltipProvider } from '@/ui/Tooltip';
+import { useAnnotationViewState } from './AnnotationViewState';
 import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
@@ -29,7 +30,7 @@ export const Annotate = () => {
 
   const navigate = useNavigate();
 
-  const [imageIds, setImageIds] = useState(params.images.split('&'));
+  const { imageIds, setImageIds } = useAnnotationViewState();
 
   const images = useImages(imageIds) as LoadedImage[];
 
@@ -45,27 +46,18 @@ export const Annotate = () => {
 
   const [initError, setInitError] = useState<Error | undefined>();
 
-  const onCloseSmartPanel = useCallback(() => {
-    setMode('move');
-    setIsSmartPanelOpen(false);
+  // Populate context from URL on mount - but only if it's empty!
+  useEffect(() => {
+    const fromUrl = params.images.split('&').filter(Boolean);
+    if (imageIds.length === 0 && fromUrl.length > 0)
+      setImageIds(fromUrl);
   }, []);
 
   useEffect(() => {
-    // Update the imagesIds in case the params change
-    const next = params.images.split('&');
+    if (imageIds.length === 0) return;
 
-    if (imageIds.join() !== next.join())
-      setImageIds(next);
-  }, [params]);
-
-  useEffect(() => {
-    const { pathname } = location;
-
-    // Update the URL in response to image change
     const url = `/annotate/${imageIds.join('&')}`;
-
-    if (pathname !== url)
-      navigate(url);
+    if (location.pathname !== url) navigate(url, { replace: true });
   }, [imageIds]);
 
   const onAddImage = (imageId: string) =>
@@ -73,6 +65,11 @@ export const Annotate = () => {
 
   const onChangeImage = (previousId: string, nextId: string) =>
     setImageIds(ids => ids.map(id => id === previousId ? nextId : id));
+  
+  const onCloseSmartPanel = useCallback(() => {
+    setMode('move');
+    setIsSmartPanelOpen(false);
+  }, []);
 
   return (
     <div className="page annotate h-full w-full">
