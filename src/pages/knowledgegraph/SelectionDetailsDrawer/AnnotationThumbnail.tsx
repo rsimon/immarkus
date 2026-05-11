@@ -5,6 +5,7 @@ import { LoadedImage } from '@/model';
 import { getImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { cn } from '@/ui/utils';
 import { Skeleton } from '@/ui/Skeleton';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/ui/HoverCard';
 
 interface AnnotationThumbnailProps {
 
@@ -37,11 +38,27 @@ export const AnnotationThumbnail = (props: AnnotationThumbnailProps) => {
   return (
     <div ref={ref} key={props.annotation.id}>
       {snippet ? (
-        <img
-          src={'src' in snippet 
-            ? snippet.src
-            : URL.createObjectURL(new Blob([snippet.data as BlobPart]))}
-          className={clsImg} />
+        <HoverCard
+          openDelay={150}>
+          <HoverCardTrigger>
+            <img
+              src={'src' in snippet 
+                ? snippet.src
+                : URL.createObjectURL(new Blob([snippet.data as BlobPart]))}
+              className={clsImg} />
+          </HoverCardTrigger>
+
+          <HoverCardContent 
+            className="p-0 shadow-xl border-none overflow-hidden min-w-0 w-auto"
+            align="center"
+            side="left"
+            collisionPadding={20}>
+            <img src={'src' in snippet 
+                ? snippet.src
+                : URL.createObjectURL(new Blob([snippet.data as BlobPart]))} 
+                className="rounded max-w-70 max-h-70" />
+          </HoverCardContent>
+        </HoverCard>
       ) : (
         <Skeleton className={clsSkeleton} /> 
       )}
