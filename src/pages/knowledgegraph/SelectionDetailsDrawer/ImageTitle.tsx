@@ -18,13 +18,13 @@ export const ImageTitle = (props: ImageTitleProps) => {
   const manifest = useManifest(props.image);
 
   return (
-    <h3 className="py-1 space-y-0.5 flex flex-col justify-center items-start">
+    <h3 className="py-1 space-y-0.5 flex flex-col justify-center items-start overflow-hidden">
       <div className={cn(
-        'flex gap-1.5 pr-1 text-xs whitespace-nowrap overflow-hidden',
+        'flex gap-1.5 pr-1 text-xs whitespace-nowrap overflow-hidden min-w-0 w-full',
         manifest ? 'items-start' : 'items-center'
         )}>
-        <Image className="h-3.5 w-3.5" />
-        <span className="overflow-hidden text-ellipsis">{props.image?.name}</span>
+        <Image className="size-3.5 shrink-0" />
+        <span className="truncate min-w-0 overflow-hidden">{props.image?.name}</span>
       </div>
       {manifest && (
         <div className="text-xs font-normal flex gap-1 items-center">

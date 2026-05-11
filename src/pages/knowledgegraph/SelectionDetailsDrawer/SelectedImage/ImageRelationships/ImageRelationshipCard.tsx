@@ -35,7 +35,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
       className="bg-white border shadow-xs rounded">
       {loaded && (
         <>
-          <div className="flex justify-between items-top p-1 pl-3">
+          <div className="flex justify-between items-top p-1 pl-3 overflow-hidden">
             <ImageTitle image={loaded} />
 
             <Button
