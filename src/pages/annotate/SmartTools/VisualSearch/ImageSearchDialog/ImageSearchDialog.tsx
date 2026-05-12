@@ -199,6 +199,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         className="flex flex-col gap-0 h-11/12 w-11/12 max-w-11/12 p-0 overflow-hidden relative bg-muted">
 
         <Toolbar
+          disabled={Boolean(previewImage)}
           queryImage={queryImage}
           imagesInWorkspace={imagesInWorkspace}
           results={filteredByScope}

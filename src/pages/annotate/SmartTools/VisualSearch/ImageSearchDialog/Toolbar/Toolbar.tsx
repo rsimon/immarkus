@@ -10,8 +10,11 @@ import { IconSize, ResolvedSearchResult, SearchScope } from '../ImageSearchDialo
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Label } from '@/ui/Label';
+import { cn } from '@/ui/utils';
 
 interface ToolbarProps {
+  
+  disabled: boolean;
 
   queryImage?: Blob;
 
@@ -61,12 +64,16 @@ export const Toolbar = (props: ToolbarProps) => {
         </DialogDescription>
       </VisuallyHidden>
 
-      <div className="flex gap-2.5 items-center">
-        <Label className="text-xs font-normal">
+      <div className="flex gap-2.5 items-center mb-0">
+        <Label className={cn(
+          'text-xs font-normal',
+          props.disabled && 'opacity-50'
+        )}>
           Search inside
         </Label>
 
         <ToggleGroup
+          disabled={props.disabled}
           type="single"
           variant="outline"
           className="shadow-none! mb-0"
@@ -95,6 +102,7 @@ export const Toolbar = (props: ToolbarProps) => {
 
       <div className="flex gap-1 items-center pr-2">
         <ToggleGroup 
+          disabled={props.disabled}
           type="single"
           className="gap-1"
           value={props.iconSize}
