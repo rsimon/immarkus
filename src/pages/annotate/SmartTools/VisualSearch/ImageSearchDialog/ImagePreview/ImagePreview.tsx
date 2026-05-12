@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { v5 as uuidv5 } from 'uuid';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
@@ -13,6 +13,7 @@ import {
   createBody, 
   ImageAnnotation, 
   OpenSeadragonAnnotator, 
+  OpenSeadragonHoverTooltip, 
   OpenSeadragonViewer, 
   useAnnotator, 
   UserSelectAction
@@ -98,6 +99,9 @@ export const ImagePreview = (props: ImagePreviewProps) => {
           const bodies = [createBody(annotation.id, {
             purpose: 'tagging',
             value: 'search-result'
+          }), createBody(annotation.id, {
+            purpose: 'assessing',
+            value: r.score
           })];
 
           if (r === emphasizedResult) {
@@ -166,15 +170,27 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     annotator.state.store.bulkUpsertAnnotations(toImport);
   }
 
+  const getScore = useCallback((annotation: ImageAnnotation) => {
+    const score = parseFloat(annotation.bodies.find(b => b.purpose === 'assessing')?.value) || 0;
+    return Math.round(100 * score) / 100;
+  }, []);
+
   return (
     <div className="relative size-full bg-white p-2">
-      <div className="bg-muted size-full rounded border">
+      <div className="bg-muted size-full overflow-hidden rounded border">
         <OpenSeadragonAnnotator
           userSelectAction={UserSelectAction.NONE}
           style={style}>
           <OpenSeadragonViewer
             className="h-full w-full"
             options={options} />
+
+          <OpenSeadragonHoverTooltip
+            tooltip={({ annotation }) => annotation.bodies.find(b => b.purpose === 'assessing') ? (
+              <div className="bg-black text-white text-xs rounded px-2 py-1.5 font-mono">
+                {getScore(annotation)}
+              </div>
+            ): undefined} />
 
           <ImagePreviewToolbar 
             isAllSelected={selectedForImport.length === disambiguatedResults.length}
