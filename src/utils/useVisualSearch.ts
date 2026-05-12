@@ -107,7 +107,7 @@ export const useVisualSearch = (): VisualSearch => {
 
     onProgress?.({ phase: 'initializing' });
 
-    await index.dowloadSegmentationModel(progress => {
+    await index.downloadSegmentationModel(progress => {
       if (progress.status === 'downloading') {
         onProgress?.({ 
           phase: 'downloading_model', 
@@ -117,7 +117,7 @@ export const useVisualSearch = (): VisualSearch => {
       }
     });
 
-    await index.dowloadEmbeddingModel(progress => {
+    await index.downloadEmbeddingModel(progress => {
       if (progress.status === 'downloading') {
         onProgress?.({ 
           phase: 'downloading_model', 
