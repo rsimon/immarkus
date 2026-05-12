@@ -15,7 +15,6 @@
     "@types/react": "^19.2.14",
     "@types/react-autosuggest": "^10.1.11",
     "@types/react-dom": "^19.2.3",
-    "@types/wicg-file-system-access": "^2023.10.7",
     "@vitejs/plugin-react": "^5.2.0",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3",

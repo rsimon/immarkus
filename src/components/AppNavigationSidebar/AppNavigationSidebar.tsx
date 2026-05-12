@@ -82,7 +82,9 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
                   </SidebarMenuItem>
                 ))}
 
-                <Collapsible className="group/collapsible">
+                <Collapsible 
+                  defaultOpen
+                  className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton>

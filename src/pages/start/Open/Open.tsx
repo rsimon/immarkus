@@ -21,8 +21,8 @@ export const Open = (props: OpenProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full">
-      <main className="flex items-center justify-center">
+    <div className="h-dvh flex flex-col w-full">
+      <main className="grow flex items-center justify-center">
         <div className="cta pt-20 text-center">
           <h1 className="font-medium mb-4 text-lg">Welcome to IMMARKUS</h1>
           <div className="buttons flex justify-center gap-2">
