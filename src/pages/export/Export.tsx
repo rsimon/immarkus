@@ -25,10 +25,10 @@ const NavListItem = (props: { path: string, label: string, active?: boolean }) =
 export const Export = (props: ExportProps) => {
 
   return (
-    <div className="page-root">
+    <>
       <AppNavigationSidebar />
 
-      <main className="page export px-12 py-6">
+      <main className="grow page export px-12 py-6">
         <div>
           <h1 className="text-xl font-semibold tracking-tight mb-2">Export</h1>
 
@@ -79,6 +79,6 @@ export const Export = (props: ExportProps) => {
           </section>
         </div>
       </main>
-    </div>
+    </>
   )
 }

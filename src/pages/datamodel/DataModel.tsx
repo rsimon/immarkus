@@ -11,7 +11,7 @@ import './DataModel.css';
 export const Vocabulary = () => {
 
   return (
-    <div className="page-root">
+    <>
       <AppNavigationSidebar />
 
       <main className="page data-model px-12 py-6">
@@ -53,7 +53,7 @@ export const Vocabulary = () => {
           </TabsContent>
         </Tabs>
       </main>
-    </div>
+    </>
   )
 
 }

@@ -3,10 +3,10 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 export const Markus = () => {
 
   return (
-    <div className="page-root">
+    <>
       <AppNavigationSidebar />
 
-      <main className="page markus px-12 py-6">
+      <main className="grow page markus px-12 py-6">
         <h1 className="text-xl font-semibold tracking-tight mb-4">X-MARKUS</h1>
 
         <div className="max-w-2xl leading-relaxed text-sm space-y-6">
@@ -108,6 +108,6 @@ export const Markus = () => {
           </p>
         </div>
       </main>
-    </div>
+    </>
   )
 }

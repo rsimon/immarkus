@@ -72,95 +72,93 @@ export const KnowledgeGraph = () => {
 
   return (
     <TooltipProvider>
-      <div className="page-root">
+      {transition((style, fullscreen) => !fullscreen && (
+        <animated.div style={style} className="flex">
+          <AppNavigationSidebar />
+        </animated.div>
+      ))}
+
+      <main className="grow page graph relative overflow-x-hidden overflow-hidden!">
         {transition((style, fullscreen) => !fullscreen && (
-          <animated.div style={style} className="flex">
-            <AppNavigationSidebar />
+          <animated.div 
+            style={{ opacity: style.opacity }}
+            className="absolute top-4 left-6 z-10">
+            <h1 className="text-xl font-semibold tracking-tight mb-1">
+              <span className="bg-white/80 backdrop-blur-xs rounded px-1 py-0.5">
+                Knowledge Graph
+              </span>
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-lg leading-6">
+              <span className="bg-white/80 backdrop-blur-xs box-decoration-clone px-1 py-0.5 rounded">
+                Explore connections between images and entities. Zoom and pan the graph with your mouse.
+                Grab and pull a node to re-arrange the graph. Click a node to see more information.
+              </span>
+            </p>
           </animated.div>
         ))}
 
-        <main className="page graph relative overflow-x-hidden overflow-hidden!">
-          {transition((style, fullscreen) => !fullscreen && (
-            <animated.div 
-              style={{ opacity: style.opacity }}
-              className="absolute top-4 left-6 z-10">
-              <h1 className="text-xl font-semibold tracking-tight mb-1">
-                <span className="bg-white/80 backdrop-blur-xs rounded px-1 py-0.5">
-                  Knowledge Graph
-                </span>
-              </h1>
-              <p className="text-sm text-muted-foreground max-w-lg leading-6">
-                <span className="bg-white/80 backdrop-blur-xs box-decoration-clone px-1 py-0.5 rounded">
-                  Explore connections between images and entities. Zoom and pan the graph with your mouse.
-                  Grab and pull a node to re-arrange the graph. Click a node to see more information.
-                </span>
-              </p>
-            </animated.div>
-          ))}
-
-          {graph ? (
-            <GraphView 
-              graph={graph}
-              transitionProgress={transitionProgress}
-              isFullscreen={isFullscreen}
-              settings={settings}
-              selected={selectedNodes}
-              pinned={pinnedNodes}
-              query={query}
-              onBackgroundClick={() => setShowSettingsPanel(false)}
-              onPin={node => setPinnedNodes(n => ([...n, node]))}
-              onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Spinner className="w-6 h-6 text-muted-foreground/60" />
-              </div>
-            )}
-
-          <Legend />
-
-          <div className="absolute top-0 right-0 h-full flex">
-            <div className="relative">
-              <div className="absolute right-2 bottom-16 w-90 p-4 overflow-hidden pointer-events-none z-10">
-                <SettingsPanel 
-                  open={showSettingsPanel} 
-                  settings={settings}
-                  onClose={() => setShowSettingsPanel(false)}
-                  onChangeSettings={setSettings} />
-              </div>
-                
-              <GraphControls 
-                hasPinnedNodes={pinnedNodes.length > 0} 
-                isFullScreen={isFullscreen} 
-                isSearchOpen={showGraphSearch}
-                isSettingsOpen={showSettingsPanel}
-                onToggleFullscreen={() => setIsFullscreen(fullscreen => !fullscreen)}
-                onToggleSearch={onToggleSearch}
-                onToggleSettings={() => setShowSettingsPanel(open => !open)}
-                onUnpinAllNodes={() => setPinnedNodes([])} />
+        {graph ? (
+          <GraphView 
+            graph={graph}
+            transitionProgress={transitionProgress}
+            isFullscreen={isFullscreen}
+            settings={settings}
+            selected={selectedNodes}
+            pinned={pinnedNodes}
+            query={query}
+            onBackgroundClick={() => setShowSettingsPanel(false)}
+            onPin={node => setPinnedNodes(n => ([...n, node]))}
+            onSelect={node => node ? setSelectedNodes([node]) : setSelectedNodes([])} />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Spinner className="w-6 h-6 text-muted-foreground/60" />
             </div>
+          )}
 
-            {graph && (
-              <SelectionDetailsDrawer 
-                graph={graph}
-                selected={selectedNodes[0]}
-                settings={settings} 
-                skipInitialAnimation={skipSidebarAnimation}
-                onClose={onCloseSelectionDetails} />
-            )}
+        <Legend />
+
+        <div className="absolute top-0 right-0 h-full flex">
+          <div className="relative">
+            <div className="absolute right-2 bottom-16 w-90 p-4 overflow-hidden pointer-events-none z-10">
+              <SettingsPanel 
+                open={showSettingsPanel} 
+                settings={settings}
+                onClose={() => setShowSettingsPanel(false)}
+                onChangeSettings={setSettings} />
+            </div>
+              
+            <GraphControls 
+              hasPinnedNodes={pinnedNodes.length > 0} 
+              isFullScreen={isFullscreen} 
+              isSearchOpen={showGraphSearch}
+              isSettingsOpen={showSettingsPanel}
+              onToggleFullscreen={() => setIsFullscreen(fullscreen => !fullscreen)}
+              onToggleSearch={onToggleSearch}
+              onToggleSettings={() => setShowSettingsPanel(open => !open)}
+              onUnpinAllNodes={() => setPinnedNodes([])} />
           </div>
 
-          {(graph && showGraphSearch) && (
-            <GraphSearch 
-              annotations={annotations}
-              graph={graph} 
-              isFullscreen={isFullscreen}
-              query={query}
-              settings={settings}
-              onChangeQuery={query => setQuery(() => query)}
-              onClose={onCloseSearch} />
+          {graph && (
+            <SelectionDetailsDrawer 
+              graph={graph}
+              selected={selectedNodes[0]}
+              settings={settings} 
+              skipInitialAnimation={skipSidebarAnimation}
+              onClose={onCloseSelectionDetails} />
           )}
-        </main> 
-      </div>
+        </div>
+
+        {(graph && showGraphSearch) && (
+          <GraphSearch 
+            annotations={annotations}
+            graph={graph} 
+            isFullscreen={isFullscreen}
+            query={query}
+            settings={settings}
+            onChangeQuery={query => setQuery(() => query)}
+            onClose={onCloseSearch} />
+        )}
+      </main>
     </TooltipProvider>
   )
   

@@ -3,16 +3,15 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collap
 import { 
   ChevronDown,
   Download, 
-  Images,
+  Image,
   InfoIcon, 
   LogOut, 
-  PenLine,
+  PanelsTopLeft, 
   Settings2,
   ToyBrick, 
   Waypoints 
 } from 'lucide-react';
 import { 
-  Sidebar,
   SidebarContent, 
   SidebarFooter, 
   SidebarHeader,
@@ -27,10 +26,12 @@ import {
   SidebarMenuSubItem,
 } from '@/ui/Sidebar';
 
+import './AppNavigationSidebar.css';
+
 const NAV_ITEMS = [
-  { to: '/images',   icon: Images,   label: 'Images'   },
+  { to: '/images',   icon: Image,   label: 'Images'   },
+  { to: '/annotate', icon: PanelsTopLeft, label: 'Workspace' },
   { to: '/graph',    icon: Waypoints, label: 'Knowledge Graph' },
-  { to: '/annotate', icon: PenLine, label: 'Workspace' },
   { to: '/model',    icon: ToyBrick,  label: 'Data Model' },
   { to: '/export',   icon: Download,  label: 'Export'   },
   { to: '/settings', icon: Settings2, label: 'Settings' },
@@ -50,66 +51,69 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
   const { pathname } = useLocation();
 
   return (
-    <Sidebar className="main-nav relative min-w-62 [&>div]:bg-[#f1f5f9]">
-      <SidebarHeader className="text-imarkus font-medium text-xl p-4">
-        <button
-          className="font-[Lexend] text-left"
-          onClick={() => location.href = '/'}>
-          IMMARKUS
-        </button>
-      </SidebarHeader>
+    <aside
+      className="main-nav flex flex-col justify-between relative min-w-62 [&>div]:bg-[#f1f5f9]">
+      <div>
+        <SidebarHeader className="text-imarkus font-medium text-xl p-4">
+          <button
+            className="font-[Lexend] text-left px-1.5"
+            onClick={() => location.href = '/'}>
+            IMMARKUS
+          </button>
+        </SidebarHeader>
 
-      <SidebarContent className="p-1">
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
-                <SidebarMenuItem key={to}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname.startsWith(to)}>
-                    <Link to={to}>
-                      <Icon />
-                      {label}
-                      {label === 'Workspace' && openImageCount > -1 && (
-                        <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-
-              <Collapsible className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <InfoIcon />
-                      About
-                      <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+        <SidebarContent className="p-1">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
+                  <SidebarMenuItem key={to}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname.startsWith(to)}>
+                      <Link to={to}>
+                        <Icon />
+                        {label}
+                        {label === 'Workspace' && openImageCount > -1 && (
+                          <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
+                        )}
+                      </Link>
                     </SidebarMenuButton>
-                  </CollapsibleTrigger>
+                  </SidebarMenuItem>
+                ))}
 
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {ABOUT_ITEMS.map(({ to, href, label }) => (
-                        <SidebarMenuSubItem key={label}>
-                          <SidebarMenuSubButton
-                            asChild
-                            isActive={to ? pathname === to : false}>
-                            {href
-                              ? <a href={href} target="_blank" rel="noreferrer">{label}</a>
-                              : <Link to={to!}>{label}</Link>}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+                <Collapsible className="group/collapsible">
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton>
+                        <InfoIcon />
+                        About
+                        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {ABOUT_ITEMS.map(({ to, href, label }) => (
+                          <SidebarMenuSubItem key={label}>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={to ? pathname === to : false}>
+                              {href
+                                ? <a href={href} target="_blank" rel="noreferrer">{label}</a>
+                                : <Link to={to!}>{label}</Link>}
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </div>
 
       <SidebarFooter>
         <button
@@ -118,6 +122,6 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
           <LogOut size={18} className="mr-2" /> Exit
         </button>
       </SidebarFooter>
-    </Sidebar>
+    </aside>
   );
 };

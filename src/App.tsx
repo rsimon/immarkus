@@ -23,7 +23,7 @@ export const App = () => {
   const { pathname } = useLocation();
   
   return store ? (
-    <SidebarProvider>
+    <SidebarProvider className="h-dvh">
       <Routes>
         <Route path="/">
           <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
@@ -67,13 +67,13 @@ export const App = () => {
 const NotFound = () => {
 
   return (
-    <div className="page-root">
+    <>
       <AppNavigationSidebar />
 
-      <main className="page not-found">
+      <main className="grow page not-found p-8">
         <h2>Nothing to see here.</h2>
       </main>
-    </div>
+    </>
   )
 
 }

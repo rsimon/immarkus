@@ -49,37 +49,35 @@ export const Images = () => {
   const onShowFolderMetadata = () => setSelected({ type: 'folder', ...currentFolder });
 
   return store && (
-    <div className="page-root">
-      <TooltipProvider>
-        <AppNavigationSidebar />
+    <TooltipProvider>
+      <AppNavigationSidebar />
 
-        <main className="page images flex flex-row p-0 overflow-x-hidden">
-          <div className="grow px-12 py-6 overflow-y-auto">
-            {isPresentationManifest(currentFolder) ? (
-              <IIIFManifestOverview 
-                manifest={currentFolder} 
-                hideUnannotated={hideUnannotated}
-                selected={selected}
-                onShowMetadata={onShowFolderMetadata}
-                onChangeHideUnannotated={setHideUnannotated}
-                onSelect={setSelected} />
-            ) : (            
-              <ItemOverview 
-                folder={currentFolder}
-                hideUnannotated={hideUnannotated}
-                selected={selected}
-                onShowMetadata={onShowFolderMetadata} 
-                onChangeHideUnannotated={setHideUnannotated}
-                onSelect={setSelected} />
-            )}
-          </div>
+      <main className="grow images flex flex-row p-0 overflow-x-hidden">
+        <div className="grow px-12 py-6   overflow-y-auto ">
+          {isPresentationManifest(currentFolder) ? (
+            <IIIFManifestOverview 
+              manifest={currentFolder} 
+              hideUnannotated={hideUnannotated}
+              selected={selected}
+              onShowMetadata={onShowFolderMetadata}
+              onChangeHideUnannotated={setHideUnannotated}
+              onSelect={setSelected} />
+          ) : (            
+            <ItemOverview 
+              folder={currentFolder}
+              hideUnannotated={hideUnannotated}
+              selected={selected}
+              onShowMetadata={onShowFolderMetadata} 
+              onChangeHideUnannotated={setHideUnannotated}
+              onSelect={setSelected} />
+          )}
+        </div>
 
-          <MetadataDrawer 
-            item={selected}
-            onClose={() => setSelected(undefined)}/>
-        </main>
-      </TooltipProvider>
-    </div>
+        <MetadataDrawer 
+          item={selected}
+          onClose={() => setSelected(undefined)}/>
+      </main>
+    </TooltipProvider>
   )
 
 }
