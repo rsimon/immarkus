@@ -1,12 +1,16 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { ArrowDownWideNarrow, Search, Square, SquareCheckBig, SquareDot, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
-import { ResolvedSearchResult } from '../ImageSearchDialog';
-import { SidebarImageItem } from './SidebarImageItem';
 import { cn } from '@/ui/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
 import { Label } from '@/ui/Label';
 import { Button } from '@/ui/Button';
-import { Square, SquareCheckBig, SquareDot } from 'lucide-react';
+import { Separator } from '@/ui/Separator';
+import { useDebounce } from '@/utils/useDebounce';
+import { ResolvedSearchResult } from '../ImageSearchDialog';
+import { SidebarImageItem } from './SidebarImageItem';
+import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
+import { Input } from '@/ui/Input';
 
 interface SidebarProps {
 
@@ -34,6 +38,10 @@ export const Sidebar = (props: SidebarProps) => {
 
   const [sorting, setSorting] = useState<ResultSorting>('score');
 
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 150);
+
   const distinctImages = useMemo(() => {
     // Collect images into a list, in the order they first appear in `results`
     return props.results.reduce<LoadedImage[]>((distinct, result) => {
@@ -45,13 +53,18 @@ export const Sidebar = (props: SidebarProps) => {
     }, []);
   }, [props.results]);
 
+  const filteredImages = useMemo(() => debouncedSearch 
+    ? distinctImages.filter(i => i.name.toLocaleLowerCase().includes(debouncedSearch))
+    : distinctImages
+  , [distinctImages, debouncedSearch]);
+
   useEffect(() => {
     // When results change -> select all
-    props.onSetSelectedImages(new Set(distinctImages.map(i => i.id)));
-  }, [distinctImages, props.onSetSelectedImages]);
+    props.onSetSelectedImages(new Set(filteredImages.map(i => i.id)));
+  }, [filteredImages, props.onSetSelectedImages]);
 
   const { thisItem, otherItems } = useMemo(() => {
-    const allItems = distinctImages.map(image => {
+    const allItems = filteredImages.map(image => {
       const matches = props.results.filter(r => r.imageId === image.id).length;
       return { image, matches };
     });
@@ -60,7 +73,7 @@ export const Sidebar = (props: SidebarProps) => {
     const otherItems = allItems.filter(t => t.image.id !== props.sourceImageId);
 
     return { thisItem, otherItems };
-  }, [props.results, distinctImages, props.sourceImageId]);
+  }, [props.results, filteredImages, props.sourceImageId]);
 
   const sortedOtherItems = useMemo(() => {
     if (sorting === 'hits') {
@@ -71,15 +84,15 @@ export const Sidebar = (props: SidebarProps) => {
     }
   }, [otherItems, sorting]);
 
-  const onToggleSelectAll = () => {
-    if (selectedImages.size === distinctImages.length)
+  const onToggleSelectAll = useCallback(() => {
+    if (selectedImages.size === filteredImages.length)
       // All selected -> select none
       props.onSetSelectedImages(new Set());
     else
-      props.onSetSelectedImages(new Set(distinctImages.map(i => i.id)));
-  }
+      props.onSetSelectedImages(new Set(filteredImages.map(i => i.id)));
+  }, [selectedImages.size, filteredImages, props.onSetSelectedImages]);
 
-  const onSetSelected = (image: LoadedImage, selected: boolean) => 
+  const onSetSelected = useCallback((image: LoadedImage, selected: boolean) => 
     props.onSetSelectedImages(current => {
       if (current.has(image.id) && !selected) {
         return new Set([...current].filter(id => id !== image.id));
@@ -88,11 +101,15 @@ export const Sidebar = (props: SidebarProps) => {
       } else {
         return current;
       }
-    });
+    }), [props.onSetSelectedImages]);
 
-  const isInWorkspace = (image: LoadedImage) => props.imagesInWorkspace.some(i => i.id === image.id);
+  const isInWorkspace = useCallback((image: LoadedImage) => 
+    props.imagesInWorkspace.some(i => i.id === image.id)
+  , [props.imagesInWorkspace]);
 
-  const getTopScore = (image: LoadedImage) => props.results.find(r => r.imageId === image.id)?.score;
+  const getTopScore = useCallback((image: LoadedImage) => 
+    props.results.find(r => r.imageId === image.id)?.score,
+  [props.results]);
 
   return (
     <div className="h-full overflow-y-auto">
@@ -111,24 +128,68 @@ export const Sidebar = (props: SidebarProps) => {
           Select All
         </Button>
 
-        <div className="flex items-center">
-          <Label className="text-muted-foreground text-xs">Sort by</Label>
+        <div className="flex items-center text-muted-foreground">
+          <Popover
+            open={searchOpen}
+            onOpenChange={setSearchOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                disabled={distinctImages.length < 2}
+                variant="ghost"
+                size="icon"
+                className="size-7 relative">
+                <Search className="size-3.5" />
+         
+                {search && (
+                  <div className="size-2 border border-white rounded-full bg-orange-400 absolute top-1 right-1" />
+                )}
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent 
+              align="start"
+              sideOffset={0}
+              className="p-1 w-48 relative">
+              <Input 
+                value={search} 
+                className="rounded-sm pr-8"
+                onChange={e => setSearch(e.target.value)} 
+                onKeyDown={e => (e.key === 'Enter') && setSearchOpen(false)} />
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-0 bottom-0 right-0 h-auto bg-transparent text-muted-foreground hover:text-primary hover:bg-transparent"
+                onClick={() => {
+                  if (!search) setSearchOpen(false);
+                  setSearch('');
+                }}>
+                <X className="size-4" />
+              </Button>
+            </PopoverContent>
+          </Popover>
+
+          <Separator orientation="vertical" className="h-4 ml-1 mr-2" />
+
+          <Label className="text-xs">
+            <ArrowDownWideNarrow className="size-3.5" />
+          </Label>
 
           <Select 
             value={sorting}
             onValueChange={v => setSorting(v as ResultSorting)}>
             <SelectTrigger
-              className="px-0.5 border-none shadow-none font-medium text-xs hover:underline bg-transparent h-auto ml-1.5">
+              className="pl-0 pr-0.5 border-none shadow-none font-medium text-xs hover:underline bg-transparent h-auto ml-1.5">
               <SelectValue />
             </SelectTrigger>
             
             <SelectContent>
               <SelectItem value="hits">
-                number of matches
+                Number of matches
               </SelectItem>
 
               <SelectItem value="score">
-                best match
+                Best match
               </SelectItem>
             </SelectContent>
           </Select>
