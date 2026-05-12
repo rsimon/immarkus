@@ -73,7 +73,6 @@ export const Toolbar = (props: ToolbarProps) => {
         </Label>
 
         <ToggleGroup
-          disabled={props.disabled}
           type="single"
           variant="outline"
           className="shadow-none! mb-0"
