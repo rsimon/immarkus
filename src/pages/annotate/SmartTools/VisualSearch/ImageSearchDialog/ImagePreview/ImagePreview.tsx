@@ -5,7 +5,7 @@ import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plu
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
-import { ResolvedSearchResult } from '../ImageSearchDialog';
+import { ResolvedSearchResult } from '../Types';
 import { ImagePreviewToolbar } from './ImagePreviewToolbar';
 import { useImagePreview } from './useImagePreview';
 import {
@@ -187,7 +187,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
 
           <OpenSeadragonHoverTooltip
             tooltip={({ annotation }) => annotation.bodies.find(b => b.purpose === 'assessing') ? (
-              <div className="bg-black text-white text-xs rounded px-2 py-1.5 font-mono">
+              <div className="bg-black text-white text-[11px] rounded px-1.5 py-1 font-mono">
                 {getScore(annotation)}
               </div>
             ): undefined} />
