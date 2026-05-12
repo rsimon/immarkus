@@ -39,7 +39,7 @@ export const Toolbar = (props: ToolbarProps) => {
   return (
     <DialogHeader className="flex flex-row justify-between border-b bg-white">
       <DialogTitle className="m-0 p-2">
-        <div className="flex items-start gap-2">
+        <div className="flex items-center gap-2">
           {props.queryImage ? (
             <img
               className="size-12 rounded-sm object-cover"
@@ -50,7 +50,7 @@ export const Toolbar = (props: ToolbarProps) => {
           
           <div className="p-0.5 text-xs font-normal text-muted-foreground">
             {props.results ? (
-              <span>Showing {props.results.length} matches</span>
+              <span>Showing {props.results.length.toLocaleString()} matches</span>
             ) : (
               <span>Searching...</span>
             )}

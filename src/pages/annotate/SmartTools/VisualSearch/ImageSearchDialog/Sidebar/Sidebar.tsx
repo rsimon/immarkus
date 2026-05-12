@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowDownWideNarrow, Search, Square, SquareCheckBig, SquareDot, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { cn } from '@/ui/utils';
@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/ui/Label';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
+import { useDebounce } from '@/utils/useDebounce';
 import { ResolvedSearchResult } from '../ImageSearchDialog';
 import { SidebarImageItem } from './SidebarImageItem';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
@@ -39,6 +40,7 @@ export const Sidebar = (props: SidebarProps) => {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 150);
 
   const distinctImages = useMemo(() => {
     // Collect images into a list, in the order they first appear in `results`
@@ -51,10 +53,10 @@ export const Sidebar = (props: SidebarProps) => {
     }, []);
   }, [props.results]);
 
-  const filteredImages = useMemo(() => search 
-    ? distinctImages.filter(i => i.name.toLocaleLowerCase().includes(search))
+  const filteredImages = useMemo(() => debouncedSearch 
+    ? distinctImages.filter(i => i.name.toLocaleLowerCase().includes(debouncedSearch))
     : distinctImages
-  , [distinctImages, search]);
+  , [distinctImages, debouncedSearch]);
 
   useEffect(() => {
     // When results change -> select all
@@ -82,15 +84,15 @@ export const Sidebar = (props: SidebarProps) => {
     }
   }, [otherItems, sorting]);
 
-  const onToggleSelectAll = () => {
-    if (selectedImages.size === distinctImages.length)
+  const onToggleSelectAll = useCallback(() => {
+    if (selectedImages.size === filteredImages.length)
       // All selected -> select none
       props.onSetSelectedImages(new Set());
     else
-      props.onSetSelectedImages(new Set(distinctImages.map(i => i.id)));
-  }
+      props.onSetSelectedImages(new Set(filteredImages.map(i => i.id)));
+  }, [selectedImages.size, filteredImages, props.onSetSelectedImages]);
 
-  const onSetSelected = (image: LoadedImage, selected: boolean) => 
+  const onSetSelected = useCallback((image: LoadedImage, selected: boolean) => 
     props.onSetSelectedImages(current => {
       if (current.has(image.id) && !selected) {
         return new Set([...current].filter(id => id !== image.id));
@@ -99,11 +101,15 @@ export const Sidebar = (props: SidebarProps) => {
       } else {
         return current;
       }
-    });
+    }), [props.onSetSelectedImages]);
 
-  const isInWorkspace = (image: LoadedImage) => props.imagesInWorkspace.some(i => i.id === image.id);
+  const isInWorkspace = useCallback((image: LoadedImage) => 
+    props.imagesInWorkspace.some(i => i.id === image.id)
+  , [props.imagesInWorkspace]);
 
-  const getTopScore = (image: LoadedImage) => props.results.find(r => r.imageId === image.id)?.score;
+  const getTopScore = useCallback((image: LoadedImage) => 
+    props.results.find(r => r.imageId === image.id)?.score,
+  [props.results]);
 
   return (
     <div className="h-full overflow-y-auto">

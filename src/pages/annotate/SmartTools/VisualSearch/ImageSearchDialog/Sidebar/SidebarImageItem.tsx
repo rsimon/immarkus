@@ -1,10 +1,12 @@
+import { useEffect, useMemo } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { TooltipPortal } from '@radix-ui/react-tooltip';
 import { LoadedImage } from '@/model';
 import { Checkbox } from '@/ui/Checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { TooltipPortal } from '@radix-ui/react-tooltip';
 import { Badge } from '@/ui/Badge';
-import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
 import { cn } from '@/ui/utils';
+import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
 
 interface SidebarImageItemProps {
 
@@ -36,10 +38,26 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
 
   const isDisabled = props.isPreviewOpen && !props.isCurrentPreview;
 
+  const { ref, inView } = useInView();
+
   const borderColor = isSourceImage ? THIS_IMAGE_COLOR : getImageColor(image.id);
 
+  const src = useMemo(() => {
+    if (!inView) return;
+
+    return 'data' in image
+      ? URL.createObjectURL(image.data)
+      : image.canvas.getThumbnailURL(120);
+  }, [image, inView]);
+
+  useEffect(() => {
+    if ('data' in image) return () => URL.revokeObjectURL(src);
+  }, [src, image]);
+
   return (
-    <div className={cn(
+    <div 
+      ref={ref}
+      className={cn(
       'flex items-center gap-2 w-full relative',
       isDisabled && 'opacity-30'
       )}>
@@ -60,7 +78,7 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
           <img
             loading="lazy"
             className="rounded size-8 object-cover"
-            src={'data' in image ? URL.createObjectURL(image.data) : image.canvas.getThumbnailURL(120)}
+            src={src}
             alt={image.name} />
         </div>
 
