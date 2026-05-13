@@ -28,7 +28,7 @@ export const Export = (props: ExportProps) => {
     <>
       <AppNavigationSidebar />
 
-      <main className="grow page export px-12 py-6">
+      <main className="grow page export px-12 py-6 overflow-auto">
         <div>
           <h1 className="text-xl font-semibold tracking-tight mb-2">Export</h1>
 

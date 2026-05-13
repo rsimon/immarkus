@@ -52,7 +52,7 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
 
   return (
     <aside
-      className="main-nav flex flex-col justify-between relative min-w-62 [&>div]:bg-[#f1f5f9]">
+      className="main-nav flex flex-col justify-between relative min-w-62 [&>div]:bg-[#f1f5f9] overflow-y-auto">
       <div>
         <SidebarHeader className="text-imarkus font-medium text-xl p-4">
           <button

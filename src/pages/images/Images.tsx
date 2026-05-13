@@ -53,7 +53,7 @@ export const Images = () => {
       <AppNavigationSidebar />
 
       <main className="grow images flex flex-row p-0 overflow-x-hidden">
-        <div className="grow px-12 py-6   overflow-y-auto ">
+        <div className="grow px-12 py-6 overflow-y-auto">
           {isPresentationManifest(currentFolder) ? (
             <IIIFManifestOverview 
               manifest={currentFolder} 
