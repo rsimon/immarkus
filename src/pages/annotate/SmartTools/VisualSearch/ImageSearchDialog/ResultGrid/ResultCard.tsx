@@ -45,8 +45,10 @@ export const ResultCard = (props: ResultCardProps) => {
       maxY: y + h
     });
 
-    getImageSnippet(image, annotation, true, 'jpg')
-      .then(setSnippet);
+    requestAnimationFrame(() => {
+      getImageSnippet(image, annotation, true, 'jpg')
+        .then(setSnippet);
+    });
   }, [image, pxBounds, inView]);
 
   const src = useMemo(() => {
@@ -61,14 +63,14 @@ export const ResultCard = (props: ResultCardProps) => {
     <button 
       ref={ref} 
       className={cn(
-        'w-full flex relative rounded border border-gray-300 overflow-hidden',
+        'w-full flex relative p-1',
         (hasEmphasis && !isEmphasized) && 'opacity-20'
       )}
       onClick={props.onClick}
       onPointerEnter={props.onPointerEnter}
       onPointerLeave={props.onPointerLeave}>
       
-      <div className="w-full relative" style={{ aspectRatio }}>
+      <div className="w-full overflow-hidden relative rounded border border-gray-300" style={{ aspectRatio }}>
         {src ? (
           <img
             className="absolute inset-0 w-full border-gray-300"
@@ -78,15 +80,15 @@ export const ResultCard = (props: ResultCardProps) => {
           <Skeleton
             className="bg-white size-full" />
         )}
-      </div>
 
-      <div 
+        <div 
         className="size-3.5 absolute inset-1 rounded-full border border-white" 
         style={{ backgroundColor }} />
 
-      <div
-        className="absolute bottom-0 left-0 text-white text-[10px] bg-black/60 py-0.5 px-1.5 rounded-tr-xs">
-        {Math.round(score * 100) / 100}
+        <div
+          className="absolute bottom-0 left-0 text-white text-[10px] bg-black/60 py-0.5 px-1.5 rounded-tr-xs">
+          {Math.round(score * 100) / 100}
+        </div>
       </div>
     </button>
   )

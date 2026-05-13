@@ -60,6 +60,11 @@ const SnippetScheduler = () => {
 
   const inProgress: Map<string, Promise<FileImageSnippet>> = new Map();
 
+  const throttleWorker = pThrottle({
+    limit: 2, // Allow max 2 concurrent worker operations
+    interval: 100
+  });
+
   const purgeCache = () => {
     [...cache.entries()].forEach(([id, snippet]) => {
       const age = new Date().getTime() - snippet.time.getTime();
@@ -87,11 +92,12 @@ const SnippetScheduler = () => {
       return inProgress.get(cacheKey)!;
 
     // If not, start processing and store the promise
-    const snippetPromise = new Promise<FileImageSnippet>((resolve, reject) => {
+    const snippetPromise = throttleWorker(() => new Promise<FileImageSnippet>((resolve, reject) => {
       const worker = new Worker();
 
       const messageHandler = (e: MessageEvent) => {
         worker.removeEventListener('message', messageHandler);
+        worker.terminate(); // Clean up the worker
         if (e.data.error) {
           reject(new Error(e.data.error));
         } else {
@@ -106,7 +112,7 @@ const SnippetScheduler = () => {
       worker.addEventListener('message', messageHandler);
 
       worker.postMessage({ blob, annotation, format, applyMask });
-    });
+    }));
 
     inProgress.set(cacheKey, snippetPromise);
 

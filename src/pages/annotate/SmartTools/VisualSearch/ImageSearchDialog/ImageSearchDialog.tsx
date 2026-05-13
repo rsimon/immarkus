@@ -175,6 +175,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       guardedAction(() => setPreviewImage(image))
   }
 
+  // useEffect(() => console.log(previewImage, filteredByScope), [previewImage, filteredByScope]);
+
   return (
     <Dialog
       open={props.open} 
@@ -211,10 +213,11 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               )}
             </div>
 
-            <div className="flex-1 overflow-y-auto">
-              {(filteredByScope && previewImage) ? (
+            <div className="flex-1 relative h-full overflow-hidden">
+              {(filteredByScope && previewImage) && (
                 <Annotorious>
                   <ImagePreview 
+                    className="absolute size-full z-20"
                     isClosable={searchScope !== 'this'}
                     image={previewImage} 
                     results={filteredByScope} 
@@ -224,13 +227,15 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     onSelectForImport={setSelectedForImport}
                     onClosePreview={() => guardedAction(() => setPreviewImage(undefined))} />
                 </Annotorious>
-              ) : (filteredByScopeAndFacets && sourceImage) ? (
+              )}
+              
+              {(filteredByScopeAndFacets && sourceImage) ? (
                 // Note: Masonry component breaks if the items array changes!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
                 <div 
                   key={`${props.selected.id}::${searchScope}::${[...selectedImages].join(':')}`}
-                  className="p-2.5">
+                  className="p-1 relative h-full z-10 overflow-y-auto">
                   <ResultGrid
                     hoveredImage={isLoadedImage(hoveredItem) ? hoveredItem : undefined}
                     sourceImageId={sourceImage.id}

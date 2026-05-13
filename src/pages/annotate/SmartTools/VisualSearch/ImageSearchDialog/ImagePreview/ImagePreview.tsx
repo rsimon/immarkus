@@ -4,6 +4,7 @@ import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
+import { cn } from '@/ui/utils';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../Types';
 import { ImagePreviewToolbar } from './ImagePreviewToolbar';
@@ -20,6 +21,8 @@ import {
 } from '@annotorious/react';
 
 interface ImagePreviewProps {
+
+  className?: string;
 
   isClosable: boolean;
 
@@ -176,7 +179,10 @@ export const ImagePreview = (props: ImagePreviewProps) => {
   }, []);
 
   return (
-    <div className="relative size-full bg-white p-2">
+    <div className={cn(
+        'bg-white p-2',
+        props.className
+      )}>
       <div className="bg-muted size-full overflow-hidden rounded border">
         <OpenSeadragonAnnotator
           userSelectAction={UserSelectAction.NONE}

@@ -24,6 +24,8 @@ interface ResultGridProps {
 export const ResultGrid = (props: ResultGridProps) => {
   const { hoveredImage, results, iconSize, onSelectResult, onHover } = props;
 
+  const columnWidth = iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280;
+
   const onSelectResultRef = useRef(onSelectResult);
   onSelectResultRef.current = onSelectResult;
 
@@ -40,20 +42,24 @@ export const ResultGrid = (props: ResultGridProps) => {
   ), []);
 
   const avgHeight = useMemo(() => {
-    const total = results.reduce<number>((total, r) => total + r.pxBounds[3], 0);
+    if (results.length === 0) return 300;
+    const total = results.reduce<number>((total, r) => {
+      const [, , w, h] = r.pxBounds;
+      return total + (h / w) * columnWidth;
+    }, 0);
     return total / results.length;
-  }, [results]);
+  }, [results, columnWidth]);
 
   return (
     <HoveredImageIdProvider 
       hoveredId={hoveredImage?.id}>
       <Masonry
         items={results}
-        columnGutter={12}
-        columnWidth={iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280}
-        overscanBy={1000}
+        columnGutter={0}
+        columnWidth={columnWidth}
+        overscanBy={20}
         itemHeightEstimate={avgHeight}
-        rowGutter={12}
+        rowGutter={0}
         render={renderCard} />
     </HoveredImageIdProvider>
   )
