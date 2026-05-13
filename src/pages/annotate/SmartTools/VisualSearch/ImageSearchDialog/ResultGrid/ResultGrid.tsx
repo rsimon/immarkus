@@ -39,9 +39,9 @@ export const ResultGrid = (props: ResultGridProps) => {
     />
   ), []);
 
-  const maxHeight = useMemo(() => {
-    const heights = results.map(r => r.pxBounds[3]);
-    return Math.max(...heights);
+  const avgHeight = useMemo(() => {
+    const total = results.reduce<number>((total, r) => total + r.pxBounds[3], 0);
+    return total / results.length;
   }, [results]);
 
   return (
@@ -51,8 +51,8 @@ export const ResultGrid = (props: ResultGridProps) => {
         items={results}
         columnGutter={12}
         columnWidth={iconSize === 'sm' ? 90 : iconSize === 'md' ? 160 : 280}
-        overscanBy={10}
-        itemHeightEstimate={maxHeight}
+        overscanBy={1000}
+        itemHeightEstimate={avgHeight}
         rowGutter={12}
         render={renderCard} />
     </HoveredImageIdProvider>
