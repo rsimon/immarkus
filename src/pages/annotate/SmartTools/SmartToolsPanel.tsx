@@ -60,11 +60,6 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
   } = useSAMPlugin();
 
   useEffect(() => {
-    // Not sure why this is needed since neodrag v2.3...
-    setTimeout(() => el.current.style.translate = null, 0);
-  }, []);
-
-  useEffect(() => {
     if (!plugin) return;
 
     const stopPluginIfRunning = () => {
