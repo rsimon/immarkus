@@ -74,11 +74,11 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
                       <Link to={to}>
                         <Icon />
                         {label}
-                        {label === 'Workspace' && openImageCount > -1 && (
-                          <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
-                        )}
                       </Link>
                     </SidebarMenuButton>
+                    {label === 'Workspace' && openImageCount > -1 && (
+                      <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
+                    )}
                   </SidebarMenuItem>
                 ))}
 
