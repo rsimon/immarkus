@@ -67,11 +67,11 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     if (!serviceConfig) return false;
 
     // Check if all required params are filled
-    const required = (serviceConfig?.parameters || []).filter(p => p.required);
+    const required = (parameters || []).filter(p => p.required);
     const allRequiredFilled = required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
 
     return serviceConfig.requiresRegion ? allRequiredFilled && props.region : allRequiredFilled;
-  }, [serviceConfig, props.options, props.region]);
+  }, [parameters, props.options, props.region]);
 
   useEffect(() => {
     // Show processing state instead of submit button
