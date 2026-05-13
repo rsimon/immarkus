@@ -60,10 +60,35 @@ const SnippetScheduler = () => {
 
   const inProgress: Map<string, Promise<FileImageSnippet>> = new Map();
 
-  const throttleWorker = pThrottle({
-    limit: 2, // Allow max 2 concurrent worker operations
-    interval: 100
-  });
+  // Limit how many workers can run at the same time.
+  const WORKER_CONCURRENCY = 2;
+  let activeWorkers = 0;
+  const workerQueue: Array<() => void> = [];
+
+  const scheduleWorker = <T>(task: () => Promise<T>): Promise<T> => {
+    return new Promise<T>((resolve, reject) => {
+      const run = () => {
+        activeWorkers += 1;
+        task()
+          .then(resolve)
+          .catch(reject)
+          .finally(() => {
+            activeWorkers -= 1;
+            const next = workerQueue.shift();
+            console.log('active workers', activeWorkers, 'next?', Boolean(next));
+            if (next) {
+              next();
+            }
+          });
+      };
+
+      if (activeWorkers < WORKER_CONCURRENCY) {
+        run();
+      } else {
+        workerQueue.push(run);
+      }
+    });
+  };
 
   const purgeCache = () => {
     [...cache.entries()].forEach(([id, snippet]) => {
@@ -92,7 +117,7 @@ const SnippetScheduler = () => {
       return inProgress.get(cacheKey)!;
 
     // If not, start processing and store the promise
-    const snippetPromise = throttleWorker(() => new Promise<FileImageSnippet>((resolve, reject) => {
+    const snippetPromise = scheduleWorker<FileImageSnippet>(() => new Promise<FileImageSnippet>((resolve, reject) => {
       const worker = new Worker();
 
       const messageHandler = (e: MessageEvent) => {

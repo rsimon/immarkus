@@ -175,8 +175,6 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
       guardedAction(() => setPreviewImage(image))
   }
 
-  // useEffect(() => console.log(previewImage, filteredByScope), [previewImage, filteredByScope]);
-
   return (
     <Dialog
       open={props.open} 
