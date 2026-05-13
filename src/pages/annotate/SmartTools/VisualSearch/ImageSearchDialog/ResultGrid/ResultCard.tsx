@@ -61,7 +61,7 @@ export const ResultCard = (props: ResultCardProps) => {
     <button 
       ref={ref} 
       className={cn(
-        'w-full relative rounded border border-gray-300 overflow-hidden',
+        'w-full flex relative rounded border border-gray-300 overflow-hidden',
         (hasEmphasis && !isEmphasized) && 'opacity-20'
       )}
       onClick={props.onClick}
