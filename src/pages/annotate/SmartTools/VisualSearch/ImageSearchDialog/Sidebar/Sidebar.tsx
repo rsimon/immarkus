@@ -7,12 +7,16 @@ import { Label } from '@/ui/Label';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 import { useDebounce } from '@/utils/useDebounce';
-import { ResolvedSearchResult } from '../ImageSearchDialog';
+import type { ResolvedSearchResult } from '../Types';
 import { SidebarImageItem } from './SidebarImageItem';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Input } from '@/ui/Input';
 
 interface SidebarProps {
+
+  currentPreview?: string;
+
+  hoveredResult?: ResolvedSearchResult;
 
   sourceImageId: string;
 
@@ -24,9 +28,9 @@ interface SidebarProps {
 
   onSetSelectedImages: Dispatch<SetStateAction<Set<string>>>;
 
-  currentPreview?: string;
-
   onTogglePreview(image?: LoadedImage): void;
+
+  onHover(image?: LoadedImage): void;
 
 }
 
@@ -108,8 +112,12 @@ export const Sidebar = (props: SidebarProps) => {
   , [props.imagesInWorkspace]);
 
   const getTopScore = useCallback((image: LoadedImage) => 
-    props.results.find(r => r.imageId === image.id)?.score,
-  [props.results]);
+    props.results.find(r => r.imageId === image.id)?.score
+  , [props.results]);
+
+  const isEmphasized = useCallback((image: LoadedImage) =>
+    image.id === props.currentPreview || image.id === props.hoveredResult?.imageId
+  , [props.results, props.hoveredResult, props.currentPreview])
 
   return (
     <div className="h-full overflow-y-auto">
@@ -202,8 +210,10 @@ export const Sidebar = (props: SidebarProps) => {
             <div 
               className={cn(
                 'p-2 group hover:bg-blue-50/90 hover:border-blue-900/15 rounded cursor-pointer border border-transparent relative',
-                thisItem.image.id === props.currentPreview && 'bg-blue-50 border border-blue-900/25'
-              )}>
+                isEmphasized(thisItem.image) && 'bg-blue-50 border border-blue-900/25'
+              )}
+              onPointerEnter={() => props.onHover(thisItem.image)}
+              onPointerLeave={() => props.onHover(undefined)}>
               <SidebarImageItem 
                 isSourceImage
                 isSelected={selectedImages.has(thisItem.image.id)}
@@ -222,8 +232,10 @@ export const Sidebar = (props: SidebarProps) => {
             key={image.id}>
             <div className={cn(
               'p-2 group hover:bg-blue-50/90 hover:border-blue-900/15 border border-transparent rounded cursor-pointer relative overflow-hidden',
-              image.id === props.currentPreview && 'bg-blue-50 border-blue-900/25'
-              )}>
+              isEmphasized(image) && 'bg-blue-50 border-blue-900/25'
+              )}
+              onPointerEnter={() => props.onHover(image)}
+              onPointerLeave={() => props.onHover(undefined)}>
               <SidebarImageItem 
                 isInWorkspace={isInWorkspace(image)}
                 isSelected={selectedImages.has(image.id)}

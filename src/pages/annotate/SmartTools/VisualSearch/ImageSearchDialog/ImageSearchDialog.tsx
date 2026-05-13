@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
-import { SearchResult } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
 import { VisualSearch } from '@/utils/useVisualSearch';
 import { loadImages, useStore } from '@/store';
@@ -13,6 +12,7 @@ import { resetPalette } from './ImageSearchPalette';
 import { ImagePreview } from './ImagePreview';
 import { Spinner } from '@/components/Spinner';
 import { Progress } from '@/ui/Progress';
+import { IconSize, isLoadedImage, isResolveSearchResult, ModelDownloadStatus, ResolvedSearchResult, SearchScope } from './Types';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -40,23 +40,6 @@ interface ImageSearchDialogProps {
 
 }
 
-export interface ResolvedSearchResult extends SearchResult {
-
-  isQueryImage: boolean;
-
-  image: LoadedImage;
-
-}
-
-export type IconSize = 'sm' | 'md' | 'lg';
-
-export type SearchScope = 'this' | 'workspace' | 'all';
-
-type ModelDownloadStatus = 
-  | { state: 'pending' }
-  | { state: 'downloading', progress: number }
-  | { state: 'ready' };
-
 export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
 
   const { sourceImage, imagesInWorkspace } = props;
@@ -76,6 +59,8 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
   const [previewImage, setPreviewImage] = useState<LoadedImage | undefined>();
 
   const [emphasizedResult, setEmphasizedResult] = useState<ResolvedSearchResult | undefined>();
+
+  const [hoveredItem, setHoveredItem] = useState<LoadedImage | ResolvedSearchResult | undefined>();
 
   const [allResults, setAllResults] = useState<ResolvedSearchResult[] | undefined>();
 
@@ -215,19 +200,22 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
               {(filteredByScope && sourceImage) && (
                 <Sidebar 
                   currentPreview={previewImage?.id}
+                  hoveredResult={isResolveSearchResult(hoveredItem) ? hoveredItem : undefined}
                   sourceImageId={sourceImage.id}
                   imagesInWorkspace={props.imagesInWorkspace}
                   results={filteredByScope} 
                   selectedImages={selectedImages}
                   onSetSelectedImages={setSelectedImages}
-                  onTogglePreview={onTogglePreview} />
+                  onTogglePreview={onTogglePreview}
+                  onHover={setHoveredItem} />
               )}
             </div>
 
-            <div className="flex-1 overflow-y-auto">
-              {(filteredByScope && previewImage) ? (
+            <div className="flex-1 relative h-full overflow-hidden">
+              {(filteredByScope && previewImage) && (
                 <Annotorious>
                   <ImagePreview 
+                    className="absolute size-full z-20"
                     isClosable={searchScope !== 'this'}
                     image={previewImage} 
                     results={filteredByScope} 
@@ -237,18 +225,22 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     onSelectForImport={setSelectedForImport}
                     onClosePreview={() => guardedAction(() => setPreviewImage(undefined))} />
                 </Annotorious>
-              ) : (filteredByScopeAndFacets && sourceImage) ? (
+              )}
+              
+              {(filteredByScopeAndFacets && sourceImage) ? (
                 // Note: Masonry component breaks if the items array changes!
                 // Using `key` to remount the component is the canonical recommended
                 // way to mutate Masonry layout dynamically. 
                 <div 
                   key={`${props.selected.id}::${searchScope}::${[...selectedImages].join(':')}`}
-                  className="p-2.5">
+                  className="p-1 relative h-full z-10 overflow-y-auto">
                   <ResultGrid
+                    hoveredImage={isLoadedImage(hoveredItem) ? hoveredItem : undefined}
                     sourceImageId={sourceImage.id}
                     iconSize={iconSize}
                     results={filteredByScopeAndFacets} 
-                    onSelectResult={onSelectSearchResult} />
+                    onSelectResult={onSelectSearchResult} 
+                    onHover={setHoveredItem} />
                 </div>
               ) : downloadStatus.state === 'downloading' ? (
                 <div className="size-full flex items-center justify-center border-l">

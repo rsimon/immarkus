@@ -5,6 +5,7 @@ import { LoadedImage } from '@/model';
 import { Checkbox } from '@/ui/Checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { Badge } from '@/ui/Badge';
+import { Skeleton } from '@/ui/Skeleton';
 import { cn } from '@/ui/utils';
 import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
 
@@ -75,11 +76,15 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
           style={{
             borderColor
           }}>
-          <img
-            loading="lazy"
-            className="rounded size-8 object-cover"
-            src={src}
-            alt={image.name} />
+          {src ? (
+            <img
+              loading="lazy"
+              className="rounded size-8 object-cover"
+              src={src}
+              alt={image.name} />
+          ) : (
+            <Skeleton className="rounded size-8" />
+          )}
         </div>
 
         <div className="flex overflow-hidden text-xs flex-col gap-0.5 justify-center pb-px whitespace-nowrap">
