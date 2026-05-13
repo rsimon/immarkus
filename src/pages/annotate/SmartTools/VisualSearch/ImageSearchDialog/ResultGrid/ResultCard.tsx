@@ -45,10 +45,21 @@ export const ResultCard = (props: ResultCardProps) => {
       maxY: y + h
     });
 
+    const controller = new AbortController();
+
     requestAnimationFrame(() => {
-      getImageSnippet(image, annotation, true, 'jpg')
-        .then(setSnippet);
+      getImageSnippet(image, annotation, true, 'jpg', false, controller.signal)
+        .then(setSnippet)
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            console.error('Failed to get image snippet:', err);
+          }
+        });
     });
+
+    return () => {
+      controller.abort();
+    }
   }, [image, pxBounds, inView]);
 
   const src = useMemo(() => {

@@ -65,21 +65,24 @@ const SnippetScheduler = () => {
   let activeWorkers = 0;
   const workerQueue: Array<() => void> = [];
 
-  const scheduleWorker = <T>(task: () => Promise<T>): Promise<T> => {
+  const scheduleWorker = <T>(task: () => Promise<T>, signal?: AbortSignal): Promise<T> => {
     return new Promise<T>((resolve, reject) => {
       const run = () => {
-        activeWorkers += 1;
-        task()
-          .then(resolve)
-          .catch(reject)
-          .finally(() => {
-            activeWorkers -= 1;
-            const next = workerQueue.shift();
-            console.log('active workers', activeWorkers, 'next?', Boolean(next));
-            if (next) {
-              next();
-            }
-          });
+        if (signal?.aborted) {
+          reject(new DOMException('Aborted', 'AbortError'));
+          const next = workerQueue.shift();
+          if (next) next();
+        } else {
+          activeWorkers += 1;
+          task()
+            .then(resolve)
+            .catch(reject)
+            .finally(() => {
+              activeWorkers -= 1;
+              const next = workerQueue.shift();
+              if (next) next();
+            });
+        }
       };
 
       if (activeWorkers < WORKER_CONCURRENCY) {
@@ -104,7 +107,8 @@ const SnippetScheduler = () => {
     blob: Blob, 
     annotation: ImageAnnotation,
     format = 'image/jpeg',
-    applyMask = false
+    applyMask = false,
+    signal?: AbortSignal
   ): Promise<FileImageSnippet> => {
     const cacheKey = `${imageId}-${annotation.id}-${format}-${applyMask}`;
 
@@ -116,13 +120,30 @@ const SnippetScheduler = () => {
     if (inProgress.has(cacheKey))
       return inProgress.get(cacheKey)!;
 
+    // If aborted, reject immediately
+    if (signal?.aborted)
+      return Promise.reject(new DOMException('Aborted', 'AbortError'));
+
     // If not, start processing and store the promise
     const snippetPromise = scheduleWorker<FileImageSnippet>(() => new Promise<FileImageSnippet>((resolve, reject) => {
+      const abortHandler = () => {
+        worker.terminate();
+        reject(new DOMException('Aborted', 'AbortError'));
+      };
+
+      if (signal?.aborted) {
+        reject(new DOMException('Aborted', 'AbortError'));
+        return;
+      }
+
       const worker = new Worker();
 
       const messageHandler = (e: MessageEvent) => {
         worker.removeEventListener('message', messageHandler);
-        worker.terminate(); // Clean up the worker
+
+        if (signal) signal.removeEventListener('abort', abortHandler);
+        worker.terminate();
+        
         if (e.data.error) {
           reject(new Error(e.data.error));
         } else {
@@ -135,9 +156,10 @@ const SnippetScheduler = () => {
       };
 
       worker.addEventListener('message', messageHandler);
+      if (signal) signal.addEventListener('abort', abortHandler);
 
       worker.postMessage({ blob, annotation, format, applyMask });
-    }));
+    }), signal);
 
     inProgress.set(cacheKey, snippetPromise);
 
@@ -174,8 +196,13 @@ export const getImageSnippet = (
   annotation: ImageAnnotation | W3CImageAnnotation,
   downloadIIIF = false,
   format: 'png' | 'jpg' = 'jpg',
-  applyMask = false
+  applyMask = false,
+  signal?: AbortSignal
 ): Promise<ImageSnippet> => {
+  if (signal?.aborted) {
+    return Promise.reject(new DOMException('Aborted', 'AbortError'));
+  }
+
   if (format === 'jpg' && applyMask)
     return Promise.reject('Cannot apply mask to JPEG image');
 
@@ -243,7 +270,7 @@ export const getImageSnippet = (
       // IIIF static image - fetch blob and crop
       return fetch(firstImage.url)
         .then(res => res.blob())
-        .then(blob => scheduler.getSnippet(canvas.id, blob, a, type, applyMask));
+        .then(blob => scheduler.getSnippet(canvas.id, blob, a, type, applyMask, signal));
     } else if (firstImage.type === 'level0') {
       return cropRegion(firstImage, region).then(blob => {
         return blob.arrayBuffer().then(buffer => {
@@ -266,7 +293,7 @@ export const getImageSnippet = (
     }
   } else {
     const blob = new Blob([(image as LoadedFileImage).data])
-    return scheduler.getSnippet(image.id, blob, a, type, applyMask);
+    return scheduler.getSnippet(image.id, blob, a, type, applyMask, signal);
   }
 }
 
