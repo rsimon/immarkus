@@ -125,7 +125,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <BackButton images={props.images} />
 
           <TruncatedLabel
-            value={props.images.length === 1 ? props.images[0].name : 'Back to Gallery'} />
+            value={props.images.length === 1 ? props.images[0].name : 'Back'} />
         </div>
 
         <SavingState.Indicator />

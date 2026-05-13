@@ -34,7 +34,7 @@ export const App = () => {
 
           <Route path="images/:folder" element={<Images />} />
 
-          <Route path="annotate/:images" element={store ? <Annotate /> : <Start />} />
+          <Route path="annotate/:images?" element={store ? <Annotate /> : <Start />} />
 
           <Route path="model" element={<Vocabulary />} />
 

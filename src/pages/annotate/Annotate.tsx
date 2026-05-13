@@ -48,7 +48,7 @@ export const Annotate = () => {
 
   // Populate context from URL on mount - but only if it's empty!
   useEffect(() => {
-    const fromUrl = params.images.split('&').filter(Boolean);
+    const fromUrl = (params.images || '').split('&').filter(Boolean);
     if (imageIds.length === 0 && fromUrl.length > 0)
       setImageIds(fromUrl);
   }, []);
