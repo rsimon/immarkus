@@ -42,10 +42,10 @@ export const useImagePreview = (image: LoadedImage, selected: ImageAnnotation[])
         strokeWidth: 3,
         strokeOpacity: state?.hovered ? 0.9 : 0.75        
       } : {
-        fill: '#000',
-        fillOpacity: state?.hovered ? 0.35 : 0.1,
+        fill: '#111',
+        fillOpacity: state?.hovered ? 0.5 : 0.25,
         stroke: '#fff',
-        strokeOpacity: state?.hovered ? 0.9 : 0.75
+        strokeOpacity: state?.hovered ? 0.95 : 0.8
       }
     } else {
       return {
