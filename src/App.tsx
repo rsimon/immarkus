@@ -9,8 +9,8 @@ import {
   KnowledgeGraph, 
   Images, 
   Markus, 
-  Start, 
-  VisualSearch,
+  Settings,
+  Start,
   Vocabulary 
 } from './pages';
 
@@ -40,7 +40,7 @@ export const App = () => {
 
           <Route path="graph" element={<KnowledgeGraph />} />
 
-          <Route path="visual-search" element={<VisualSearch />} />
+          <Route path="settings" element={<Settings />} />
 
           <Route path="export">
             <Route index element={<Navigate to="/export/annotations" />} />

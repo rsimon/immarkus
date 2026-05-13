@@ -39,7 +39,7 @@ export const Export = (props: ExportProps) => {
           <Separator className="mt-7 w-full mb-2" />
         </div>
 
-        <div className="flex flex-row">
+        <div className="flex">
           <aside className="py-4">
             <nav className="w-44">
               <ol>

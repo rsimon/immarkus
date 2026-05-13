@@ -5,5 +5,5 @@ export * from './export';
 export * from './knowledgegraph';
 export * from './images';
 export * from './markus';
+export * from './settings';
 export * from './start';
-export * from './visualsearch';
