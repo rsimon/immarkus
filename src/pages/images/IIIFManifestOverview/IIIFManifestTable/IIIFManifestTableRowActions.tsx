@@ -20,6 +20,8 @@ interface IIIFManifestTableRowActionsProps {
   data: CanvasItem | CozyRange;
 
   onSelectCanvas(item: CanvasItem): void;
+
+  onOpenCanvas(item: CanvasItem): void;
   
 }
 
@@ -27,15 +29,12 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
 
   const isCanvas = 'type' in props.data && props.data.type === 'canvas';
 
-  const url = useMemo(() => {
-    if (isCanvas) {
-      const { info } = props.data as CanvasItem;
-      return `/annotate/iiif:${info.manifestId}:${info.id}`;
-    } else {
-      const range = props.data as CozyRange;
-      const id = murmur.v3(range.id);
-      return `/images/${props.manifest.id}@${id}`;
-    }
+  const rangeURL = useMemo(() => {
+    if (isCanvas) return;
+
+    const range = props.data as CozyRange;
+    const id = murmur.v3(range.id);
+    return `/images/${props.manifest.id}@${id}`;
   }, [props.data, isCanvas]);
 
   return (
@@ -61,14 +60,12 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
         )}
 
         {isCanvas ? (
-          <DropdownMenuItem asChild>
-            <Link to={url}>
-              <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
-            </Link>
+          <DropdownMenuItem onSelect={() => props.onOpenCanvas(props.data as CanvasItem)}>
+            <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem asChild>
-            <Link to={url}>
+            <Link to={rangeURL}>
               <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
             </Link>
           </DropdownMenuItem>

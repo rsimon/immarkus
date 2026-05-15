@@ -34,10 +34,10 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
 
   return (
     <div ref={ref}>
-      <div className="flex items-center justify-center w-[180px] h-[200px]">
+      <div className="flex items-center justify-center w-45 h-50">
         <div 
           data-selected={props.selected ? true : undefined}
-          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-44.5 h-44.5">
           {inView ? (
             <img
               src={src}

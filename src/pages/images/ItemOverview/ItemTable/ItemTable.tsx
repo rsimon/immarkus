@@ -120,6 +120,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     <ItemTableRowActions 
       data={row.data} 
       onOpenFolder={props.onOpenFolder}
+      onOpenImage={props.onOpenImage}
       onSelectFolder={props.onSelectFolder} 
       onSelectImage={props.onSelectImage}
       onSelectItem={props.onSelectItem} />

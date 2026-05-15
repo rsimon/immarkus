@@ -26,18 +26,14 @@ interface ItemTableRowActions {
 
   onOpenFolder(folder: Folder): void;
 
+  onOpenImage(imageId: string): void;
+
   onSelectFolder(folder: Folder): void;
 
   onSelectImage(image: Image): void;
 
   onSelectItem(item: OverviewItem): void;
 
-}
-
-// Shorthand
-const getSingleCanvasURL = (manifest: IIIFManifestResource) => {
-  const info = manifest.canvases[0];
-  return `/annotate/iiif:${info.manifestId}:${info.id}`;
 }
 
 const SingleCanvasMetadataMenu = (props: ItemTableRowActions) => {
@@ -106,6 +102,16 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     }
   }
 
+  const onOpen=  () => {
+    if (isImage) {
+      props.onOpenImage(props.data.id);
+    } else if (isSingleCanvas) {
+      const info = (props.data as IIIFManifestResource).canvases[0];
+      const id = `iiif:${info.manifestId}:${info.id}`;
+      props.onOpenImage(id);
+    }
+  }
+
   const onDeleteManifest = () => store.removeIIIFResource(props.data as IIIFManifestResource);
 
   return (
@@ -134,10 +140,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           )}
 
           {isImage ? (
-            <DropdownMenuItem asChild>
-              <Link to={`/annotate/${props.data.id}`}>
-                <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open Image
-              </Link>
+            <DropdownMenuItem onSelect={onOpen}>
+              <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open Image
             </DropdownMenuItem>
           ) : isFolder ? (
             <DropdownMenuItem asChild>
@@ -147,10 +151,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
             </DropdownMenuItem>
           ) : isSingleCanvas ? (
             <>
-              <DropdownMenuItem asChild>
-                <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
-                  <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
-                </Link>
+              <DropdownMenuItem onSelect={onOpen}>
+                <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
