@@ -155,15 +155,15 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
         {collapseLevel === 0 && (
           <>
+            <AddImage 
+              current={props.images} 
+              onAddImage={props.onAddImage} />
+
+            <BookmarkWorkspace 
+              images={props.images} />
+
             {props.images.length > 0 && (
               <>
-                <AddImage 
-                  current={props.images} 
-                  onAddImage={props.onAddImage} />
-
-                <BookmarkWorkspace 
-                  images={props.images} />
-
                 <Separator orientation="vertical" className="h-4" />
 
                 <PaginationWidget 

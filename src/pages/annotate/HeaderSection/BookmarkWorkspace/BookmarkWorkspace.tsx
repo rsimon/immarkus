@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { LoadedImage } from '@/model';
+import { WorkspaceBookmark } from '@/store';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { ToolbarButton } from '../../ToolbarButton';
-import { type WorkspaceBookmark, useWorkspaceBookmarks } from './useWorkspaceBookmarks';
+import { useWorkspaceBookmarks } from './useWorkspaceBookmarks';
 import { 
   Dialog, 
   DialogContent, 
@@ -79,6 +80,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
+              disabled={props.images.length === 0}
               onSelect={() => setDialogOpen(true)}
               className="text-xs">
               Bookmark this workspace...
@@ -88,7 +90,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
           <DropdownMenuSub>
             <DropdownMenuSubTrigger
               disabled={bookmarks.length === 0}
-              className="data-disabled:opacity-30 text-xs">
+              className="data-disabled:opacity-50 text-xs">
               <span className="pr-2">Open workspace</span>
             </DropdownMenuSubTrigger>
 
