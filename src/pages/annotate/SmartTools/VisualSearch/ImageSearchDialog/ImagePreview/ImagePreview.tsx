@@ -42,6 +42,22 @@ interface ImagePreviewProps {
 
 }
 
+const getBounds = (image: LoadedImage, result: ResolvedSearchResult) => {
+  if ('canvas' in image) {
+    const { width, height} = image.canvas;
+    const [ nx, ny, nw, nh ] = result.normalizedBounds;
+
+    const x = nx * width;
+    const y = ny * height;
+    const w = nw * width;
+    const h = nh * height;
+
+    return [x, y, w, h];
+  } else {
+    return result.pxBounds;
+  }
+}
+
 // Random UUID v5 namespace for deterministic IDs
 const NAMESPACE = 'a7cb2652-a967-405c-bcee-a08ba86ab6c1';
 
@@ -90,7 +106,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       const allAnnotations = results
         .filter(r => r.imageId === image.id)
         .map(r => {
-          const [ x, y, w, h] = r.pxBounds;
+          const [x, y, w, h] = getBounds(image, r);
           
           const annotation = boundsToAnnotation({
             minX: x, 
