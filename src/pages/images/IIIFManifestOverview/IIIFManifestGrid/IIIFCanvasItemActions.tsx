@@ -18,6 +18,8 @@ interface IIIFCanvasItemActionsProps {
 
   onSelect(): void;
 
+  onOpen(): void;
+
 }
 
 export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
@@ -42,10 +44,8 @@ export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
           <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link to={url}>
-            <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
-          </Link>
+        <DropdownMenuItem onSelect={props.onOpen}>
+          <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

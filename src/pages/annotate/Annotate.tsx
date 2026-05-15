@@ -6,6 +6,7 @@ import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operat
 import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
+import { Alert, AlertTitle } from '@/ui/Alert';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { useAnnotationViewState } from './AnnotationViewState';
 import { HeaderSection } from './HeaderSection';
@@ -21,7 +22,6 @@ import { GPUDisabledError } from './GPUDisabledError';
 import './Annotate.css';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
-import { Alert, AlertDescription, AlertTitle } from '@/ui/Alert';
 
 export const Annotate = () => {
 
@@ -50,8 +50,9 @@ export const Annotate = () => {
   // Populate context from URL on mount - but only if it's empty!
   useEffect(() => {
     const fromUrl = (params.images || '').split('&').filter(Boolean);
-    if (imageIds.length === 0 && fromUrl.length > 0)
+    if (imageIds.length === 0 && fromUrl.length > 0) {
       setImageIds(fromUrl);
+    }
   }, []);
 
   useEffect(() => {

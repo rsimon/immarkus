@@ -59,13 +59,14 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
               <IIIFCanvasItemActions 
                 canvas={canvas}
                 canvasInfo={props.canvasInfo} 
-                onSelect={props.onSelect}/>
+                onSelect={props.onSelect}
+                onOpen={props.onOpen} />
             </div>
           </div>
         </div>
       </div>
       
-      <div className="text-sm ml-1 max-w-[190px] overflow-hidden">
+      <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
         <h3 
           className="overflow-hidden whitespace-nowrap text-ellipsis">
           {label}

@@ -8,6 +8,7 @@ import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
+import { useAnnotationViewState } from '@/pages/annotate';
 
 interface ItemOverviewProps {
 
@@ -30,6 +31,10 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const { hideUnannotated } = props;
 
   const store = useStore();
+
+  const navigate = useNavigate();
+
+  const { setImageIds } = useAnnotationViewState();
 
   const [layout, setLayout] = usePersistentState<OverviewLayout>('immarkus:images:layout', 'grid');
   
@@ -63,13 +68,16 @@ export const ItemOverview = (props: ItemOverviewProps) => {
     folderAnnotations.then(a => setAnnotations(current => ({...current, folders: a })));
   }, [folders, iiifResources, images]);
 
-  const navigate = useNavigate();
-
   const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (imageId: string) =>
-    navigate(`/annotate/${imageId}`);
+  const onOpenImage = (imageId: string) => {
+    setImageIds([imageId]);
+
+    requestAnimationFrame(() => {
+      navigate(`/annotate/${imageId}`);
+    });
+  }
   
   const onSelectFolder = (folder: Folder) =>
     props.onSelect({ type: 'folder', ...folder });

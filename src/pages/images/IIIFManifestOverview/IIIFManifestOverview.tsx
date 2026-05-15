@@ -10,6 +10,7 @@ import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
 import { IIIFManifestTable } from './IIIFManifestTable';
+import { useAnnotationViewState } from '@/pages/annotate';
 
 interface IIIFManifestOverviewProps {
 
@@ -37,6 +38,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   
   const navigate = useNavigate();
 
+  const { setImageIds } = useAnnotationViewState();
+
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const annotations = useManifestAnnotations(props.manifest.id, { 
@@ -48,7 +51,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
     const getAnnotationsOnCanvas = (canvas: CanvasInformation) => {
       const sourceId = `iiif:${props.manifest.id}:${canvas.id}`;
       return annotations.filter(a => 
-        !Array.isArray(a.target) && a.target.source === sourceId);
+        !Array.isArray(a.target) && (a.target as any).source === sourceId);
     }
 
    return Object.fromEntries(props.manifest.canvases.map(canvas => 
@@ -56,8 +59,14 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   }, [annotations, props.manifest]);
 
   const onOpenCanvas = useCallback((canvas: CozyCanvas) => {
-    const id = murmur.v3(canvas.id);
-    navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
+    const canvasId = murmur.v3(canvas.id);
+    const id = `iiif:${props.manifest.id}:${canvasId}`;
+
+    setImageIds([id]);
+    
+    requestAnimationFrame(() => {
+      navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
+    });
   }, []);
 
   const onOpenRange = useCallback((range: CozyRange) => {

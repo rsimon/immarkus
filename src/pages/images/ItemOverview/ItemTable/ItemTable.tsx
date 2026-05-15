@@ -193,5 +193,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           body={actionsTemplate} />
       </DataTable>
     </div>
-  );
-};
+  )
+
+}

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Image } from '@/model';
 import { ImageIcon, MoreVertical, NotebookPen } from 'lucide-react';
 import {
@@ -15,6 +14,8 @@ interface ImageItemActionProps {
   image: Image;
 
   onSelect(): void;
+
+  onOpen(): void;
 
 }
 
@@ -34,10 +35,8 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
           <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link to={`/annotate/${props.image.id}`}>
-            <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
-          </Link>
+        <DropdownMenuItem onSelect={props.onOpen}>
+          <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

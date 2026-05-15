@@ -36,8 +36,7 @@ export const ImageItem = (props: ImageItemProps) => {
             src={URL.createObjectURL(image.data)}
             alt={image.name}
             onClick={props.onOpen}
-            className="h-full w-full object-cover object-center transition-all aspect-square"
-          />
+            className="h-full w-full object-cover object-center transition-all aspect-square" />
 
           <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full pointer-events-auto">
             <div className="text-white text-sm">
@@ -50,7 +49,8 @@ export const ImageItem = (props: ImageItemProps) => {
             <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
               <ImageItemActions 
                 image={image} 
-                onSelect={props.onSelect}/>
+                onSelect={props.onSelect}
+                onOpen={props.onOpen} />
             </div>
           </div>
         </div>
