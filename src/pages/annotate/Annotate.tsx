@@ -117,7 +117,7 @@ export const Annotate = () => {
                         onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
                     ) : imageIds.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-muted-foreground bg-muted">
-                        <Alert className="max-w-lg p-6 text-muted-foreground">
+                        <Alert className="bg-transparent border-none max-w-lg p-6 text-primary/60">
                           <AlertTitle className="text-lg">Your workspace is empty</AlertTitle>
 
                           <div className="text-sm leading-relaxed mt-4 space-y-4">
