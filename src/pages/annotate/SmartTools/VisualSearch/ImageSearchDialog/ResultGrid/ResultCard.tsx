@@ -6,6 +6,7 @@ import { Skeleton } from '@/ui/Skeleton';
 import { cn } from '@/ui/utils';
 import type { ResolvedSearchResult } from '../Types';
 import { getImageColor, THIS_IMAGE_COLOR } from '../ImageSearchPalette';
+import { getBounds } from '../utils';
 import { useEmphasized } from './useEmphasized';
 
 interface ResultCardProps {
@@ -36,7 +37,7 @@ export const ResultCard = (props: ResultCardProps) => {
   useEffect(() => {
     if (!inView) return;
 
-    const [x, y, w, h] = pxBounds;
+    const [x, y, w, h] = getBounds(props.data);
 
     const annotation = boundsToAnnotation({
       minX: x, 

@@ -7,6 +7,7 @@ import { useStore } from '@/store';
 import { cn } from '@/ui/utils';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../Types';
+import { getBounds } from '../utils';
 import { ImagePreviewToolbar } from './ImagePreviewToolbar';
 import { useImagePreview } from './useImagePreview';
 import {
@@ -40,22 +41,6 @@ interface ImagePreviewProps {
 
   onClosePreview(): void;
 
-}
-
-const getBounds = (image: LoadedImage, result: ResolvedSearchResult) => {
-  if ('canvas' in image) {
-    const { width, height} = image.canvas;
-    const [ nx, ny, nw, nh ] = result.normalizedBounds;
-
-    const x = nx * width;
-    const y = ny * height;
-    const w = nw * width;
-    const h = nh * height;
-
-    return [x, y, w, h];
-  } else {
-    return result.pxBounds;
-  }
 }
 
 // Random UUID v5 namespace for deterministic IDs
@@ -106,7 +91,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       const allAnnotations = results
         .filter(r => r.imageId === image.id)
         .map(r => {
-          const [x, y, w, h] = getBounds(image, r);
+          const [x, y, w, h] = getBounds(r);
           
           const annotation = boundsToAnnotation({
             minX: x, 
