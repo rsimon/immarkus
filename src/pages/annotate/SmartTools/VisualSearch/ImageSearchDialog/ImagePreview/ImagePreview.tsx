@@ -7,6 +7,7 @@ import { useStore } from '@/store';
 import { cn } from '@/ui/utils';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../Types';
+import { getBounds } from '../utils';
 import { ImagePreviewToolbar } from './ImagePreviewToolbar';
 import { useImagePreview } from './useImagePreview';
 import {
@@ -90,7 +91,7 @@ export const ImagePreview = (props: ImagePreviewProps) => {
       const allAnnotations = results
         .filter(r => r.imageId === image.id)
         .map(r => {
-          const [ x, y, w, h] = r.pxBounds;
+          const [x, y, w, h] = getBounds(r);
           
           const annotation = boundsToAnnotation({
             minX: x, 

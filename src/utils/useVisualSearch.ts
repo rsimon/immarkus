@@ -31,7 +31,7 @@ export interface VisualSearch {
 }
 
 const fetchImage = (canvas: CozyCanvas): Promise<File> => {
-  const url = canvas.getImageURL(800);
+  const url = canvas.getImageURL(1024);
   return fetch(url)
     .then(res => res.blob())
     .then(async blob => {
@@ -161,7 +161,7 @@ export const useVisualSearch = (): VisualSearch => {
         const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
         
         const skip = skipExisting && index.images.some(i => i.imageId === id);
-        return skip ? Promise.resolve() : fetchImage(canvas).then(file => {
+        return skip ? Promise.resolve() : fetchImage(canvas).then(file => {        
           onProgress?.({ 
             phase: 'indexing',
             progress,
@@ -173,7 +173,7 @@ export const useVisualSearch = (): VisualSearch => {
 
           return index.addToIndex(file, id).then(() => {
             onProgress?.({ phase: 'indexing', id, progress, total });
-          })
+          });
         })
       }), Promise.resolve());
     }), Promise.resolve());
