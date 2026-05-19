@@ -61,14 +61,18 @@ export const useOpenInAnnotationView = () => {
   const addToAnnotationView = useCallback((imageIdOrIds: string | string[], open = false) => {
     const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
 
-    const next = [...new Set([...imageIds, ...ids])];
-    
-    if (open) {
-      requestAnimationFrame(() => {
-        navigate(`/annotate/${next.join('&')}`);
-      });
-    }
-  }, [imageIds, navigate]);
+    setImageIds(prev => {
+      const next = [...new Set([...prev, ...ids])];
+
+      if (open) {
+        requestAnimationFrame(() => {
+          navigate(`/annotate/${next.join('&')}`);
+        });
+      }
+
+      return next;
+    });
+  }, [setImageIds, navigate]);
 
   return { openInAnnotationView, addToAnnotationView };
 

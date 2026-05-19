@@ -28,6 +28,8 @@ interface ItemTableRowActions {
 
   onOpenImage(imageId: string): void;
 
+  onAddToWorkspace(imageId: string): void;
+
   onSelectFolder(folder: Folder): void;
 
   onSelectImage(image: Image): void;
@@ -102,15 +104,14 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     }
   }
 
-  const onOpen=  () => {
+  const imageId = useMemo(() => {
     if (isImage) {
-      props.onOpenImage(props.data.id);
+      return props.data.id;
     } else if (isSingleCanvas) {
       const info = (props.data as IIIFManifestResource).canvases[0];
-      const id = `iiif:${info.manifestId}:${info.id}`;
-      props.onOpenImage(id);
+      return `iiif:${info.manifestId}:${info.id}`;
     }
-  }
+  }, [isImage, isSingleCanvas, props.data]);
 
   const onDeleteManifest = () => store.removeIIIFResource(props.data as IIIFManifestResource);
 
@@ -140,19 +141,29 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           )}
 
           {isImage ? (
-            <DropdownMenuItem onSelect={onOpen}>
-              <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open Image
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem onSelect={() => props.onOpenImage(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open image
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
+                <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
+              </DropdownMenuItem>
+            </>
           ) : isFolder ? (
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
-                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open Folder
+                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
               </Link>
             </DropdownMenuItem>
           ) : isSingleCanvas ? (
             <>
-              <DropdownMenuItem onSelect={onOpen}>
-                <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
+              <DropdownMenuItem onSelect={() => props.onOpenImage(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open canvas
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
@@ -161,7 +172,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
             <>
               <DropdownMenuItem asChild>
                 <Link to={`/images/${props.data.id}`}>
-                  <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
+                  <Images className="size-4 text-muted-foreground mr-2" /> Open manifest
                 </Link>
               </DropdownMenuItem>
 

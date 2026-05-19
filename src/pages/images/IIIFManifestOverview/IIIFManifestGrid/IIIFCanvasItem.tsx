@@ -18,6 +18,8 @@ interface IIIFCanvasItemProps {
 
   onOpen(): void;
 
+  onAddToWorkspace(): void;
+
   onSelect(): void;
 
 }
@@ -60,7 +62,8 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
                 canvas={canvas}
                 canvasInfo={props.canvasInfo} 
                 onSelect={props.onSelect}
-                onOpen={props.onOpen} />
+                onOpen={props.onOpen} 
+                onAddToWorkspace={props.onAddToWorkspace} />
             </div>
           </div>
         </div>

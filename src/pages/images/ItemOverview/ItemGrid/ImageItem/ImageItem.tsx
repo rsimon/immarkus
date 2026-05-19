@@ -14,6 +14,8 @@ interface ImageItemProps {
 
   onOpen(): void;
 
+  onAddToWorkspace(): void;
+
   onSelect(): void;
 
 }
@@ -50,7 +52,8 @@ export const ImageItem = (props: ImageItemProps) => {
               <ImageItemActions 
                 image={image} 
                 onSelect={props.onSelect}
-                onOpen={props.onOpen} />
+                onOpen={props.onOpen} 
+                onAddToWorkspace={props.onAddToWorkspace} />
             </div>
           </div>
         </div>

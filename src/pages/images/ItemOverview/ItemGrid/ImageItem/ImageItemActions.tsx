@@ -1,5 +1,5 @@
 import { Image } from '@/model';
-import { ImageIcon, MoreVertical, NotebookPen } from 'lucide-react';
+import { ImageIcon, Images, MoreVertical, NotebookPen } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,8 @@ interface ImageItemActionProps {
 
   onOpen(): void;
 
+  onAddToWorkspace(): void;
+
 }
 
 export const ImageItemActions = (props: ImageItemActionProps) => {
@@ -32,11 +34,15 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
 
       <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+          <NotebookPen className="size-4 text-muted-foreground mr-2" /> Metadata
         </DropdownMenuItem>
 
         <DropdownMenuItem onSelect={props.onOpen}>
-          <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
+          <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open image
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={props.onAddToWorkspace}>
+          <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

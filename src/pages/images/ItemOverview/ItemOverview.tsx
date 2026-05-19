@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
-import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface ItemOverviewProps {
 
@@ -121,6 +121,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
           onOpenImage={openInAnnotationView} 
+          onAddToWorkspace={addToAnnotationView}
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
           onSelectItem={onSelectItem} />
@@ -133,6 +134,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           images={filteredImages} 
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
+          onAddToWorkspace={addToAnnotationView}
           onOpenImage={openInAnnotationView} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 

@@ -62,6 +62,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
         canvasInfo={info}
         annotationCount={annotationCount}
         onOpen={() => props.onOpenCanvas(canvas)} 
+        onAddToWorkspace={() => props.onAddToWorkspace(canvas)}
         onSelect={() => props.onSelect(item)} />
     );
   }

@@ -38,7 +38,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   
   const navigate = useNavigate();
 
-  const { openInAnnotationView } = useOpenInAnnotationView();
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
@@ -58,11 +58,10 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
       ([ canvas.id, getAnnotationsOnCanvas(canvas)])));
   }, [annotations, props.manifest]);
 
-  const onOpenCanvas = useCallback((canvas: CozyCanvas) => {
+  const getImageId = useCallback((canvas: CozyCanvas) => {
     const canvasId = murmur.v3(canvas.id);
-    const id = `iiif:${props.manifest.id}:${canvasId}`;
-    openInAnnotationView(id);
-  }, []);
+    return `iiif:${props.manifest.id}:${canvasId}`;
+  }, [props.manifest.id]);
 
   const onOpenRange = useCallback((range: CozyRange) => {
     const id = murmur.v3(range.id);
@@ -130,7 +129,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           loading={loading}
           manifest={props.manifest}
           selected={props.selected}
-          onOpenCanvas={onOpenCanvas}
+          onOpenCanvas={canvas => openInAnnotationView(getImageId(canvas))}
+          onAddToWorkspace={canvas => addToAnnotationView(getImageId(canvas))}
           onOpenRange={onOpenRange}
           onSelect={props.onSelect} />
       ) : (
@@ -142,7 +142,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           loading={loading}
           manifest={props.manifest}
           selected={props.selected} 
-          onOpenCanvas={onOpenCanvas} 
+          onOpenCanvas={canvas => openInAnnotationView(getImageId(canvas))}
+          onAddToWorkspace={canvas => addToAnnotationView(getImageId(canvas))}
           onOpenRange={onOpenRange} 
           onSelect={props.onSelect} />
       )}

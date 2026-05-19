@@ -22,6 +22,8 @@ interface IIIFManifestTableRowActionsProps {
   onSelectCanvas(item: CanvasItem): void;
 
   onOpenCanvas(item: CanvasItem): void;
+
+  onAddToWorkspace(item: CanvasItem): void;
   
 }
 
@@ -55,18 +57,24 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
         onClick={evt => evt.stopPropagation()}>
         {isCanvas && (
           <DropdownMenuItem onSelect={() => props.onSelectCanvas(props.data as CanvasItem)}>
-            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+            <NotebookPen className="size-4 text-muted-foreground mr-2" /> Metadata
           </DropdownMenuItem>
         )}
 
         {isCanvas ? (
-          <DropdownMenuItem onSelect={() => props.onOpenCanvas(props.data as CanvasItem)}>
-            <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem onSelect={() => props.onOpenCanvas(props.data as CanvasItem)}>
+              <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open canvas
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => props.onAddToWorkspace(props.data as CanvasItem)}>
+              <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
+            </DropdownMenuItem>
+          </>
         ) : (
           <DropdownMenuItem asChild>
             <Link to={rangeURL}>
-              <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
+              <FolderOpen className="size-4 text-muted-foreground mr-2" /> Open folder
             </Link>
           </DropdownMenuItem>
         )}

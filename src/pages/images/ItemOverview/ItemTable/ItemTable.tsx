@@ -121,6 +121,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
       data={row.data} 
       onOpenFolder={props.onOpenFolder}
       onOpenImage={props.onOpenImage}
+      onAddToWorkspace={props.onAddToWorkspace}
       onSelectFolder={props.onSelectFolder} 
       onSelectImage={props.onSelectImage}
       onSelectItem={props.onSelectItem} />

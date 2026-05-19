@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { Images, MoreVertical, NotebookPen } from 'lucide-react';
+import { Image, Images, MoreVertical, NotebookPen } from 'lucide-react';
 import { CanvasInformation } from '@/model';
 import { CozyCanvas } from 'cozy-iiif';
 import {
@@ -19,6 +18,8 @@ interface IIIFCanvasItemActionsProps {
   onSelect(): void;
 
   onOpen(): void;
+
+  onAddToWorkspace(): void;
 
 }
 
@@ -45,7 +46,11 @@ export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
         </DropdownMenuItem>
 
         <DropdownMenuItem onSelect={props.onOpen}>
-          <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
+          <Image className="size-4 text-muted-foreground mr-2" /> Open canvas
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={props.onAddToWorkspace}>
+          <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
