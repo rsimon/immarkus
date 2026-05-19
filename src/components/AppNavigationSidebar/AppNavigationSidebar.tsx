@@ -75,7 +75,7 @@ export const AppNavigationSidebar = () => {
                         {label}
                       </Link>
                     </SidebarMenuButton>
-                    {label === 'Workspace' && imageIds.length > 0 && (
+                    {label === 'Workspace' && (
                       <SidebarMenuBadge>{imageIds.length}</SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
