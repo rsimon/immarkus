@@ -27,6 +27,7 @@ import {
 } from '@/ui/Sidebar';
 
 import './AppNavigationSidebar.css';
+import { useAnnotationViewState } from '@/pages';
 
 const NAV_ITEMS = [
   { to: '/images',   icon: Image,   label: 'Images'   },
@@ -43,11 +44,9 @@ const ABOUT_ITEMS = [
   { href: 'https://github.com/rsimon/immarkus/wiki', label: 'Help' },
 ];
 
-interface Props {
-  openImageCount?: number;
-}
+export const AppNavigationSidebar = () => {
+  const { imageIds } = useAnnotationViewState();
 
-export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
   const { pathname } = useLocation();
 
   return (
@@ -76,8 +75,8 @@ export const AppNavigationSidebar = ({ openImageCount = 0 }: Props) => {
                         {label}
                       </Link>
                     </SidebarMenuButton>
-                    {label === 'Workspace' && openImageCount > 0 && (
-                      <SidebarMenuBadge>{openImageCount}</SidebarMenuBadge>
+                    {label === 'Workspace' && imageIds.length > 0 && (
+                      <SidebarMenuBadge>{imageIds.length}</SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
                 ))}
