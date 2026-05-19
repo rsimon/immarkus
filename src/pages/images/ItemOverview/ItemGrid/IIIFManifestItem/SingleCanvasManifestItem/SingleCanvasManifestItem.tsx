@@ -1,9 +1,9 @@
 import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFThumbnail } from '@/components/IIIFThumbnail';
 import { IIIFManifestResource } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';
@@ -26,7 +26,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
 
   const { ref, inView } = useInView();
 
-  const navigate = useNavigate();
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const info = props.resource.canvases[0];
 
@@ -39,9 +39,6 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
 
   const canvas = useCanvas(id);
 
-  const onOpen = () =>
-    navigate(`/annotate/iiif:${info.manifestId}:${info.id}`);
-
   const onSelectCanvas = () =>
     props.onSelect({ type: 'canvas', canvas, info });
 
@@ -51,14 +48,14 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
     <div ref={ref}>
       {(inView && canvas) ? (
         <div>
-          <div className="relative flex items-center justify-center w-[180px] h-[200px]">
+          <div className="relative flex items-center justify-center w-45 h-50">
             <div 
-              className="image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+              className="image-item cursor-pointer relative overflow-hidden rounded-md border w-44.5 h-44.5">
               {inView ? (
                 <IIIFThumbnail
                   canvas={canvas}
                   className="h-full w-full object-cover object-center transition-all aspect-square" 
-                  onClick={onOpen} />
+                  onClick={() => openInAnnotationView(id)} />
               ) :(
                 <div className="h-full w-full bg-muted" />
               )}
@@ -80,6 +77,8 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
                     manifest={props.resource}
                     canvas={info}
                     onDelete={props.onDelete}
+                    onOpen={() => openInAnnotationView(id)}
+                    onAddToWorkspace={() => addToAnnotationView(id)}
                     onSelectCanvas={onSelectCanvas} 
                     onSelectManifest={onSelectManifest} />
                 </div>
@@ -87,7 +86,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
             </div>
           </div>
 
-          <div className="text-sm ml-1 max-w-[190px] overflow-hidden">
+          <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
             <h3 
               className="overflow-hidden whitespace-nowrap text-ellipsis">
               {props.resource.name}
@@ -98,8 +97,8 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
           </div>
         </div>
       ) : (
-        <div className="relative flex items-center justify-center w-[180px] h-[200px]">
-          <Skeleton className="size-[178px] rounded-md shadow-sm" />
+        <div className="relative flex items-center justify-center w-45 h-50">
+          <Skeleton className="size-44.5 rounded-md shadow-sm" />
         </div>
       )}
     </div>

@@ -25,12 +25,6 @@ interface IIIFCanvasItemActionsProps {
 
 export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
 
-  const info = props.canvasInfo;
-
-  const url = useMemo(() => {
-    return `/annotate/iiif:${info.manifestId}:${info.id}`;
-  }, [info]);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

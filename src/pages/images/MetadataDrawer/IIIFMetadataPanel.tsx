@@ -1,6 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
-import { Braces, NotebookPen, PanelTop } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { SubmitEvent, useEffect, useMemo, useState } from 'react';
+import { Braces, ImagePlus, NotebookPen, PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { FolderMetadataForm, hasChanges, ImageMetadataForm } from '@/components/MetadataForm';
@@ -13,6 +12,7 @@ import { Annotation, CozyMetadata } from 'cozy-iiif';
 import { getCanvasAnnotations } from '@/utils/iiif';
 import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasItem } from '../Types';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface MetadataListProps {
 
@@ -26,7 +26,9 @@ interface MetadataListProps {
 
   onUpdateMetadata(body: W3CAnnotationBody): void;
 
-  onOpen(): void;
+  onOpen?(): void;
+
+  onAddToWorkspace?(): void;
 
 }
 
@@ -42,7 +44,7 @@ const MetadataList = (props: MetadataListProps) => {
     setFormState(props.customMetadata);    
   }, [props.customMetadata]);
 
-  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (evt: SubmitEvent<HTMLFormElement>) => {
     evt.preventDefault();
     props.onUpdateMetadata(formState);
   }
@@ -95,10 +97,10 @@ const MetadataList = (props: MetadataListProps) => {
               )}
             </div>
 
-            <div className="pt-2 pb-2">        
+            <div className="pt-2 pb-2 space-y-2">        
               <Button 
                 disabled={!hasChanges(customMetadata, formState)} 
-                className="w-full mb-2"
+                className="w-full"
                 type="submit">
                 Save
               </Button>
@@ -108,7 +110,15 @@ const MetadataList = (props: MetadataListProps) => {
                 className="w-full"
                 type="button"
                 onClick={props.onOpen}>
-                <PanelTop className="h-4 w-4 mr-2" /> Open Image
+                <PanelTop className="size-4 mr-2" /> Open Image
+              </Button>
+
+              <Button 
+                variant="outline"
+                className="w-full"
+                type="button"
+                onClick={props.onAddToWorkspace}>
+                <ImagePlus className="size-4 mr-2" /> Add to Workspace
               </Button>
             </div>
           </form>
@@ -136,8 +146,7 @@ export const IIIFManifestMetadataPanel = ({ item }: { item: IIIFManifestResource
         folder
         customMetadata={metadata}
         iiifMetadata={iiifMetadata} 
-        onUpdateMetadata={updateMetadata} 
-        onOpen={() => {}} />
+        onUpdateMetadata={updateMetadata} />
     </div>
   )
   
@@ -151,9 +160,7 @@ export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasItem }) => {
 
   const canvas = useCanvas(id);
 
-  const navigate = useNavigate();
-
-  const onOpen = () => navigate(`/annotate/${id}`);
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const annotations = useMemo(() => {
     if (!canvas) return [];
@@ -167,7 +174,8 @@ export const IIIFCanvasMetadataPanel = ({ item }: { item: CanvasItem }) => {
         iiifAnnotations={annotations}
         iiifMetadata={item.canvas.getMetadata()} 
         onUpdateMetadata={updateMetadata} 
-        onOpen={onOpen} />
+        onOpen={() => openInAnnotationView(id)} 
+        onAddToWorkspace={() => addToAnnotationView(id)} />
     </div>
   )
 

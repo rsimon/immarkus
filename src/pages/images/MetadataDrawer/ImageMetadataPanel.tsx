@@ -1,12 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { SubmitEvent, useEffect, useState } from 'react';
 import { useImageMetadata } from '@/store';
 import { PropertyValidation } from '@/components/PropertyFields';
 import { Button } from '@/ui/Button';
-import { PanelTop } from 'lucide-react';
+import { ImagePlus, PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { Image } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface ImageMetadataPanelProps {
 
@@ -16,22 +16,20 @@ interface ImageMetadataPanelProps {
 
 export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
 
-  const navigate = useNavigate();
-
   const { metadata, updateMetadata } = useImageMetadata(props.image?.id);
 
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
+
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   useEffect(() => {
     setFormState(metadata);    
   }, [metadata]);
 
-  const onSubmit = (evt: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (evt: SubmitEvent<HTMLFormElement>) => {
     evt.preventDefault();
     updateMetadata(formState);
   }
-
-  const onOpen = () => navigate(`/annotate/${props.image.id}`);
 
   return (
     <PropertyValidation>
@@ -48,10 +46,10 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
             onChange={setFormState} />
         </div>
 
-        <div className="pt-2 pb-4">        
+        <div className="pt-2 pb-4 space-y-2">        
           <Button 
             disabled={!hasChanges(metadata, formState)} 
-            className="w-full mb-2"
+            className="w-full"
             type="submit">
             Save
           </Button>
@@ -60,8 +58,16 @@ export const ImageMetadataPanel = (props: ImageMetadataPanelProps) => {
             variant="outline"
             className="w-full"
             type="button"
-            onClick={onOpen}>
-            <PanelTop className="h-4 w-4 mr-2" /> Open Image
+            onClick={() => openInAnnotationView(props.image.id)}>
+            <PanelTop className="size-4 mr-2" /> Open Image
+          </Button>
+
+          <Button 
+            variant="outline"
+            className="w-full"
+            type="button"
+            onClick={() => addToAnnotationView(props.image.id)}>
+            <ImagePlus className="size-4 mr-2" /> Add to Workspace
           </Button>
         </div>
       </form>

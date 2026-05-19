@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Image, Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { IIIFOpenInViewerAction } from '../../../IIIFOpenInViewerAction';
@@ -22,6 +21,10 @@ interface SingleCanvasManifestItemActionsProps {
 
   onDelete(): void;
 
+  onOpen(): void;
+
+  onAddToWorkspace(): void;
+
   onSelectCanvas(): void;
 
   onSelectManifest(): void;
@@ -30,11 +33,7 @@ interface SingleCanvasManifestItemActionsProps {
 
 export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemActionsProps) => {
 
-  const { canvas } = props;
-
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  const url = `/annotate/iiif:${canvas.manifestId}:${canvas.id}`;
 
   return (
     <>
@@ -53,19 +52,21 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               <DropdownMenuItem onSelect={props.onSelectManifest}>
-                <Images className="size-4 text-muted-foreground mr-2" /> Manifest Metadata
+                <Images className="size-4 text-muted-foreground mr-2" /> Manifest metadata
               </DropdownMenuItem>
 
               <DropdownMenuItem onSelect={props.onSelectCanvas}>
-                <Image className="size-4 text-muted-foreground mr-2" /> Canvas Metadata
+                <Image className="size-4 text-muted-foreground mr-2" /> Canvas metadata
               </DropdownMenuItem>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
 
-          <DropdownMenuItem asChild>
-            <Link to={url}>
-              <Image className="size-4 text-muted-foreground mr-2" /> Open Canvas
-            </Link>
+          <DropdownMenuItem onSelect={props.onOpen}>
+            <Image className="size-4 text-muted-foreground mr-2" /> Open canvas
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onSelect={props.onAddToWorkspace}>
+            <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
           </DropdownMenuItem>
 
           <IIIFOpenInViewerAction manifest={props.manifest} />

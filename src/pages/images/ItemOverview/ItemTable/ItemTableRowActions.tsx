@@ -163,7 +163,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               </DropdownMenuItem>
 
               <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
-                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
+                <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />

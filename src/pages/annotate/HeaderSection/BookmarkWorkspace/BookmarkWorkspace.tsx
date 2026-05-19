@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { LoadedImage } from '@/model';
-import { WorkspaceBookmark } from '@/store';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
+import { useOpenInAnnotationView } from '../../AnnotationViewState';
 import { ToolbarButton } from '../../ToolbarButton';
 import { useWorkspaceBookmarks } from './useWorkspaceBookmarks';
 import { 
@@ -31,7 +30,8 @@ interface BookmarkWorkspaceProps {
 }
 
 export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
-  const navigate = useNavigate();
+
+  const { openInAnnotationView } = useOpenInAnnotationView();
 
   const { 
     bookmarks, 
@@ -50,9 +50,6 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
     setWorkspaceName('');
     setDialogOpen(false);
   }
-
-  const onOpenBookmark = (bookmark: WorkspaceBookmark) =>
-    navigate(`/annotate/${bookmark.images.join('&')}`);
 
   return (
     <>
@@ -99,7 +96,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
               {bookmarks.map(bookmark => (
                 <DropdownMenuItem
                   key={bookmark.images.join(':')}
-                  onSelect={() => onOpenBookmark(bookmark)}
+                  onSelect={() => openInAnnotationView(bookmark.images)}
                   className="text-xs">
                   {bookmark.name}
                 </DropdownMenuItem>

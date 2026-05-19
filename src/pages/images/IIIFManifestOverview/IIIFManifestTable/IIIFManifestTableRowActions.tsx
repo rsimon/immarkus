@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import murmur from 'murmurhash';
-import { FolderOpen, ImageIcon, MoreHorizontal, NotebookPen } from 'lucide-react';
+import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen } from 'lucide-react';
 import { CozyRange } from 'cozy-iiif';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
@@ -68,7 +68,7 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
             </DropdownMenuItem>
 
             <DropdownMenuItem onSelect={() => props.onAddToWorkspace(props.data as CanvasItem)}>
-              <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
+              <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
             </DropdownMenuItem>
           </>
         ) : (
