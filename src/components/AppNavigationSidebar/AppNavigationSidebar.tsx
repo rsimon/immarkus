@@ -124,5 +124,6 @@ export const AppNavigationSidebar = () => {
         </button>
       </SidebarFooter>
     </aside>
-  );
-};
+  )
+
+}
