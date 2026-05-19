@@ -94,7 +94,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
                 value="annotations" 
                 className="flex gap-1.5 transition-none px-2.5 py-1 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white"
                 disabled={annotations === 0}>
-                <MessagesSquare className="w-3.5 h-3.5 -mt-[1px]" /> 
+                <MessagesSquare className="w-3.5 h-3.5 -mt-px" /> 
                 <span>
                   {annotations} {tab === 'annotations' && (
                     <>
@@ -108,7 +108,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
                 value="relations" 
                 className="flex gap-1.5 transition-none px-2.5 py-1 pr-3 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white"
                 disabled={entityRelationships.length === 0}>
-                <Spline className="w-3.5 h-3.5 -mt-[1px]" /> 
+                <Spline className="w-3.5 h-3.5 -mt-px" /> 
                 <span>
                   {entityRelationships.length} {tab === 'relations' && (
                     <>
