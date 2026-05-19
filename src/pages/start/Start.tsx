@@ -54,7 +54,7 @@ export const Start = (props: StartProps) => {
       .format(new Date(process.env.BUILD_DATE));
 
   return ( 
-    <div className="page-root">
+    <div>
       <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
         v{process.env.PACKAGE_VERSION} · Build {buildDate}
       </div>

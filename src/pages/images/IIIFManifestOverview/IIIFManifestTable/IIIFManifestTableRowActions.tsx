@@ -20,6 +20,10 @@ interface IIIFManifestTableRowActionsProps {
   data: CanvasItem | CozyRange;
 
   onSelectCanvas(item: CanvasItem): void;
+
+  onOpenCanvas(item: CanvasItem): void;
+
+  onAddToWorkspace(item: CanvasItem): void;
   
 }
 
@@ -27,15 +31,12 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
 
   const isCanvas = 'type' in props.data && props.data.type === 'canvas';
 
-  const url = useMemo(() => {
-    if (isCanvas) {
-      const { info } = props.data as CanvasItem;
-      return `/annotate/iiif:${info.manifestId}:${info.id}`;
-    } else {
-      const range = props.data as CozyRange;
-      const id = murmur.v3(range.id);
-      return `/images/${props.manifest.id}@${id}`;
-    }
+  const rangeURL = useMemo(() => {
+    if (isCanvas) return;
+
+    const range = props.data as CozyRange;
+    const id = murmur.v3(range.id);
+    return `/images/${props.manifest.id}@${id}`;
   }, [props.data, isCanvas]);
 
   return (
@@ -56,20 +57,24 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
         onClick={evt => evt.stopPropagation()}>
         {isCanvas && (
           <DropdownMenuItem onSelect={() => props.onSelectCanvas(props.data as CanvasItem)}>
-            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+            <NotebookPen className="size-4 text-muted-foreground mr-2" /> Metadata
           </DropdownMenuItem>
         )}
 
         {isCanvas ? (
-          <DropdownMenuItem asChild>
-            <Link to={url}>
-              <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
-            </Link>
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem onSelect={() => props.onOpenCanvas(props.data as CanvasItem)}>
+              <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open canvas
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onSelect={() => props.onAddToWorkspace(props.data as CanvasItem)}>
+              <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
+            </DropdownMenuItem>
+          </>
         ) : (
           <DropdownMenuItem asChild>
-            <Link to={url}>
-              <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
+            <Link to={rangeURL}>
+              <FolderOpen className="size-4 text-muted-foreground mr-2" /> Open folder
             </Link>
           </DropdownMenuItem>
         )}

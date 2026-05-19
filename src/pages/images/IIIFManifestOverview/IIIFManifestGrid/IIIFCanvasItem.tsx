@@ -18,6 +18,8 @@ interface IIIFCanvasItemProps {
 
   onOpen(): void;
 
+  onAddToWorkspace(): void;
+
   onSelect(): void;
 
 }
@@ -34,10 +36,10 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
 
   return (
     <div ref={ref}>
-      <div className="flex items-center justify-center w-[180px] h-[200px]">
+      <div className="flex items-center justify-center w-45 h-50">
         <div 
           data-selected={props.selected ? true : undefined}
-          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-[178px] h-[178px]">
+          className="data-selected:outline-2 outline-offset-2 image-item cursor-pointer relative overflow-hidden rounded-md border w-44.5 h-44.5">
           {inView ? (
             <img
               src={src}
@@ -59,13 +61,15 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
               <IIIFCanvasItemActions 
                 canvas={canvas}
                 canvasInfo={props.canvasInfo} 
-                onSelect={props.onSelect}/>
+                onSelect={props.onSelect}
+                onOpen={props.onOpen} 
+                onAddToWorkspace={props.onAddToWorkspace} />
             </div>
           </div>
         </div>
       </div>
       
-      <div className="text-sm ml-1 max-w-[190px] overflow-hidden">
+      <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
         <h3 
           className="overflow-hidden whitespace-nowrap text-ellipsis">
           {label}

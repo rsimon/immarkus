@@ -21,6 +21,8 @@ export interface IIIFManifestOverviewLayoutProps {
 
   onOpenCanvas(canvas: CozyCanvas): void;
 
+  onAddToWorkspace(canvas: CozyCanvas): void;
+
   onOpenRange(range: CozyRange): void;
 
   onSelect(item: CanvasItem): void;

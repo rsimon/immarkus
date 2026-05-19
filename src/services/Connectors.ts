@@ -12,7 +12,7 @@ import { config as VolcanoEngine } from './connectors/volcano-engine/config';
 
 export const Connectors: ServiceConnectorConfig[] = [
   AnthropicClaude,
-  AzureCV,
+  // AzureCV,
   GoogleGemini, 
   GoogleVision,
   HuggingFaceInference,

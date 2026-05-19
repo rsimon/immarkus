@@ -35,9 +35,7 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['Qwen/Qwen2.5-VL-7B-Instruct', 'Qwen2.5-VL-7B-Instruct'],
-        ['Qwen/Qwen2.5-VL-32B-Instruct', 'Qwen2.5-VL-32B-Instruct'],
-        ['meta-llama/Llama-4-Maverick-17B-128E-Instruct', 'Meta Llama-4-Maverick-17B-128E-Instruct'],
+        ['Qwen/Qwen3-VL-8B-Instruct:novita', 'Qwen3-VL-8B-Instruct'],
         ['google/gemma-3-27b-it', 'Gemma-3-27b-it']
       ]
     }]

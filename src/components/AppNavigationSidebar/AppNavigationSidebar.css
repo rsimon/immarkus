@@ -3,7 +3,6 @@ aside.main-nav {
   border-right: 1px solid #e2e8f0;
   font-size: var(--font-small);
   min-width: 250px;
-  padding: 10px;
 }
 
 aside.main-nav li + li {

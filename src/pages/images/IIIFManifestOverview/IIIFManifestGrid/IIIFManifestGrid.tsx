@@ -62,6 +62,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
         canvasInfo={info}
         annotationCount={annotationCount}
         onOpen={() => props.onOpenCanvas(canvas)} 
+        onAddToWorkspace={() => props.onAddToWorkspace(canvas)}
         onSelect={() => props.onSelect(item)} />
     );
   }
@@ -97,7 +98,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
         <ul>
           {Array.from({ length: Math.max(20, props.manifest.canvases.length) }).map((_, idx) => (
             <li key={idx}>
-              <Skeleton className="size-[178px] rounded-md shadow-sm" />
+              <Skeleton className="size-44.5 rounded-md shadow-sm" />
             </li>
           ))}
         </ul>

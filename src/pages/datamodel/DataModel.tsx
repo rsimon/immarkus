@@ -11,10 +11,10 @@ import './DataModel.css';
 export const Vocabulary = () => {
 
   return (
-    <div className="page-root">
+    <>
       <AppNavigationSidebar />
 
-      <main className="page data-model px-12 py-6">
+      <main className="page grow data-model px-12 py-6 overflow-auto">
         <h1 className="text-xl font-semibold tracking-tight mb-4">Data Model</h1>
 
         <Tabs defaultValue="entityTypes" className="mt-2">
@@ -53,7 +53,7 @@ export const Vocabulary = () => {
           </TabsContent>
         </Tabs>
       </main>
-    </div>
+    </>
   )
 
 }

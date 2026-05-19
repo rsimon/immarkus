@@ -191,7 +191,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
                 onValueChange={setKeepExisting}>
                 <div className="flex items-start gap-4 mb-0.5 pl-1">
                   <RadioGroupItem 
-                    className="mt-[4px]"
+                    className="mt-1"
                     value="keep" 
                     id="keep" />
 
@@ -206,7 +206,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
                 <div className="flex items-start gap-4 pl-1">
                   <RadioGroupItem 
-                    className="mt-[4px]"
+                    className="mt-1"
                     value="replace" 
                     id="replace" />
 

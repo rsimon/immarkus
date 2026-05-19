@@ -19,6 +19,8 @@ export interface ItemOverviewLayoutProps {
 
   onOpenImage(imageId: string): void;
 
+  onAddToWorkspace(imageId: string): void;
+
   onSelectFolder(folder: Folder): void;
 
   onSelectImage(image: Image): void;

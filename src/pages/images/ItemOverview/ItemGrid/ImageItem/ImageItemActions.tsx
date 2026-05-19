@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
 import { Image } from '@/model';
-import { ImageIcon, MoreVertical, NotebookPen } from 'lucide-react';
+import { ImageIcon, Images, MoreVertical, NotebookPen } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +14,10 @@ interface ImageItemActionProps {
   image: Image;
 
   onSelect(): void;
+
+  onOpen(): void;
+
+  onAddToWorkspace(): void;
 
 }
 
@@ -31,13 +34,15 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
 
       <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+          <NotebookPen className="size-4 text-muted-foreground mr-2" /> Metadata
         </DropdownMenuItem>
 
-        <DropdownMenuItem asChild>
-          <Link to={`/annotate/${props.image.id}`}>
-            <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open image
-          </Link>
+        <DropdownMenuItem onSelect={props.onOpen}>
+          <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open image
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={props.onAddToWorkspace}>
+          <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

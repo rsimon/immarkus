@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { FolderHeader } from './FolderHeader';
@@ -30,6 +31,10 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const { hideUnannotated } = props;
 
   const store = useStore();
+
+  const navigate = useNavigate();
+
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const [layout, setLayout] = usePersistentState<OverviewLayout>('immarkus:images:layout', 'grid');
   
@@ -63,14 +68,9 @@ export const ItemOverview = (props: ItemOverviewProps) => {
     folderAnnotations.then(a => setAnnotations(current => ({...current, folders: a })));
   }, [folders, iiifResources, images]);
 
-  const navigate = useNavigate();
-
   const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (imageId: string) =>
-    navigate(`/annotate/${imageId}`);
-  
   const onSelectFolder = (folder: Folder) =>
     props.onSelect({ type: 'folder', ...folder });
 
@@ -120,7 +120,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           images={filteredImages} 
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
-          onOpenImage={onOpenImage} 
+          onOpenImage={openInAnnotationView} 
+          onAddToWorkspace={addToAnnotationView}
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
           onSelectItem={onSelectItem} />
@@ -133,7 +134,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           images={filteredImages} 
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
-          onOpenImage={onOpenImage} 
+          onAddToWorkspace={addToAnnotationView}
+          onOpenImage={openInAnnotationView} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
           onSelectItem={onSelectItem} />

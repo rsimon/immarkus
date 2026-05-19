@@ -125,7 +125,9 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     <IIIFManifestTableRowActions 
       manifest={props.manifest}
       data={row.data} 
-      onSelectCanvas={props.onSelect} />
+      onSelectCanvas={props.onSelect} 
+      onOpenCanvas={item => props.onOpenCanvas(item.canvas)} 
+      onAddToWorkspace={item => props.onAddToWorkspace(item.canvas)} />
   );
 
   const onRowClick = (evt: DataTableRowClickEvent) => {

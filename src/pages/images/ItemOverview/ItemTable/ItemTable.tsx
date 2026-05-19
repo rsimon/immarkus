@@ -120,6 +120,8 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     <ItemTableRowActions 
       data={row.data} 
       onOpenFolder={props.onOpenFolder}
+      onOpenImage={props.onOpenImage}
+      onAddToWorkspace={props.onAddToWorkspace}
       onSelectFolder={props.onSelectFolder} 
       onSelectImage={props.onSelectImage}
       onSelectItem={props.onSelectItem} />
@@ -193,5 +195,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
           body={actionsTemplate} />
       </DataTable>
     </div>
-  );
-};
+  )
+
+}

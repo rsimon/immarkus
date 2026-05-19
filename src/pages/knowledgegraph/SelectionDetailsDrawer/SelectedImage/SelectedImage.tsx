@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRight, X } from 'lucide-react';
+import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
@@ -14,6 +14,7 @@ import { Annotations } from './Annotations';
 import { Metadata } from './Metadata';
 import { ImageRelationships } from './ImageRelationships';
 import { CopyManifestURLButton } from '../ImageTitle';
+import { AnnotationViewLink } from '../AnnotationViewLink';
 
 interface SelectedImageProps {
 
@@ -116,15 +117,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
               )}
             </div>
 
-            <Button
-              asChild
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8 rounded">
-              <a href={`#/annotate/${image.id}`}>
-                <SquareArrowOutUpRight className="h-4 w-4" />
-              </a>
-            </Button>
+            <AnnotationViewLink id={image.id} />
           </div>
         
           <div className="px-1.5 pb-2.5">

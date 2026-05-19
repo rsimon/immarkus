@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Bookmark, Image, ImagePlus, Loader2, Waypoints } from 'lucide-react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
 import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
+import { Alert, AlertTitle } from '@/ui/Alert';
 import { TooltipProvider } from '@/ui/Tooltip';
+import { useAnnotationViewState } from './AnnotationViewState';
 import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
@@ -29,7 +31,7 @@ export const Annotate = () => {
 
   const navigate = useNavigate();
 
-  const [imageIds, setImageIds] = useState(params.images.split('&'));
+  const { imageIds, setImageIds } = useAnnotationViewState();
 
   const images = useImages(imageIds) as LoadedImage[];
 
@@ -45,27 +47,19 @@ export const Annotate = () => {
 
   const [initError, setInitError] = useState<Error | undefined>();
 
-  const onCloseSmartPanel = useCallback(() => {
-    setMode('move');
-    setIsSmartPanelOpen(false);
+  // Populate context from URL on mount - but only if it's empty!
+  useEffect(() => {
+    const fromUrl = (params.images || '').split('&').filter(Boolean);
+    if (imageIds.length === 0 && fromUrl.length > 0) {
+      setImageIds(fromUrl);
+    }
   }, []);
 
   useEffect(() => {
-    // Update the imagesIds in case the params change
-    const next = params.images.split('&');
+    if (imageIds.length === 0) return;
 
-    if (imageIds.join() !== next.join())
-      setImageIds(next);
-  }, [params]);
-
-  useEffect(() => {
-    const { pathname } = location;
-
-    // Update the URL in response to image change
     const url = `/annotate/${imageIds.join('&')}`;
-
-    if (pathname !== url)
-      navigate(url);
+    if (location.pathname !== url) navigate(url, { replace: true });
   }, [imageIds]);
 
   const onAddImage = (imageId: string) =>
@@ -73,6 +67,11 @@ export const Annotate = () => {
 
   const onChangeImage = (previousId: string, nextId: string) =>
     setImageIds(ids => ids.map(id => id === previousId ? nextId : id));
+  
+  const onCloseSmartPanel = useCallback(() => {
+    setMode('move');
+    setIsSmartPanelOpen(false);
+  }, []);
 
   return (
     <div className="page annotate h-full w-full">
@@ -117,6 +116,27 @@ export const Annotate = () => {
                         onChangeImages={imageIds => setImageIds(imageIds)}
                         onInitError={error => setInitError(error)}
                         onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                    ) : imageIds.length === 0 ? (
+                      <div className="flex items-center justify-center h-full text-muted-foreground bg-muted">
+                        <Alert className="bg-transparent border-none max-w-lg p-6 text-primary/60">
+                          <AlertTitle className="text-lg">Your workspace is empty</AlertTitle>
+
+                          <div className="text-sm leading-relaxed mt-4 space-y-4">
+                            <p>
+                              Start by opening an image from 
+                              the <span className="font-semibold"><Image className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Images</span> gallery.
+                              You can also send images here from 
+                              the <span className="font-semibold"><Waypoints className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Knowledge Graph</span>, or
+                              use the <span className="font-semibold"><ImagePlus className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Add image</span> button 
+                              in the toolbar.
+                            </p>
+                            <p> 
+                              Save and restore workspace layouts using 
+                              the <span className="font-semibold"><Bookmark className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> bookmark</span> tool in the toolbar.
+                            </p> 
+                          </div>
+                        </Alert>
+                      </div>
                     ) : (
                       <div className="flex items-center justify-center h-full bg-muted">
                         <Loader2 className="animate-spin size-5 opacity-50" />

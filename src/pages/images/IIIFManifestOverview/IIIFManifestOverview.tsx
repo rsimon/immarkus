@@ -10,6 +10,7 @@ import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
 import { IIIFManifestTable } from './IIIFManifestTable';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface IIIFManifestOverviewProps {
 
@@ -37,6 +38,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   
   const navigate = useNavigate();
 
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
+
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const annotations = useManifestAnnotations(props.manifest.id, { 
@@ -48,17 +51,17 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
     const getAnnotationsOnCanvas = (canvas: CanvasInformation) => {
       const sourceId = `iiif:${props.manifest.id}:${canvas.id}`;
       return annotations.filter(a => 
-        !Array.isArray(a.target) && a.target.source === sourceId);
+        !Array.isArray(a.target) && (a.target as any).source === sourceId);
     }
 
    return Object.fromEntries(props.manifest.canvases.map(canvas => 
       ([ canvas.id, getAnnotationsOnCanvas(canvas)])));
   }, [annotations, props.manifest]);
 
-  const onOpenCanvas = useCallback((canvas: CozyCanvas) => {
-    const id = murmur.v3(canvas.id);
-    navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
-  }, []);
+  const getImageId = useCallback((canvas: CozyCanvas) => {
+    const canvasId = murmur.v3(canvas.id);
+    return `iiif:${props.manifest.id}:${canvasId}`;
+  }, [props.manifest.id]);
 
   const onOpenRange = useCallback((range: CozyRange) => {
     const id = murmur.v3(range.id);
@@ -126,7 +129,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           loading={loading}
           manifest={props.manifest}
           selected={props.selected}
-          onOpenCanvas={onOpenCanvas}
+          onOpenCanvas={canvas => openInAnnotationView(getImageId(canvas))}
+          onAddToWorkspace={canvas => addToAnnotationView(getImageId(canvas))}
           onOpenRange={onOpenRange}
           onSelect={props.onSelect} />
       ) : (
@@ -138,7 +142,8 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           loading={loading}
           manifest={props.manifest}
           selected={props.selected} 
-          onOpenCanvas={onOpenCanvas} 
+          onOpenCanvas={canvas => openInAnnotationView(getImageId(canvas))}
+          onAddToWorkspace={canvas => addToAnnotationView(getImageId(canvas))}
           onOpenRange={onOpenRange} 
           onSelect={props.onSelect} />
       )}

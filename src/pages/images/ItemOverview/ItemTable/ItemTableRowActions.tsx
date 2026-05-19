@@ -26,18 +26,16 @@ interface ItemTableRowActions {
 
   onOpenFolder(folder: Folder): void;
 
+  onOpenImage(imageId: string): void;
+
+  onAddToWorkspace(imageId: string): void;
+
   onSelectFolder(folder: Folder): void;
 
   onSelectImage(image: Image): void;
 
   onSelectItem(item: OverviewItem): void;
 
-}
-
-// Shorthand
-const getSingleCanvasURL = (manifest: IIIFManifestResource) => {
-  const info = manifest.canvases[0];
-  return `/annotate/iiif:${info.manifestId}:${info.id}`;
 }
 
 const SingleCanvasMetadataMenu = (props: ItemTableRowActions) => {
@@ -106,6 +104,15 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     }
   }
 
+  const imageId = useMemo(() => {
+    if (isImage) {
+      return props.data.id;
+    } else if (isSingleCanvas) {
+      const info = (props.data as IIIFManifestResource).canvases[0];
+      return `iiif:${info.manifestId}:${info.id}`;
+    }
+  }, [isImage, isSingleCanvas, props.data]);
+
   const onDeleteManifest = () => store.removeIIIFResource(props.data as IIIFManifestResource);
 
   return (
@@ -134,23 +141,29 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           )}
 
           {isImage ? (
-            <DropdownMenuItem asChild>
-              <Link to={`/annotate/${props.data.id}`}>
-                <ImageIcon className="h-4 w-4 text-muted-foreground mr-2" /> Open Image
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem onSelect={() => props.onOpenImage(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open image
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
+                <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
+              </DropdownMenuItem>
+            </>
           ) : isFolder ? (
             <DropdownMenuItem asChild>
               <Link to={`/images/${props.data.id}`}>
-                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open Folder
+                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
               </Link>
             </DropdownMenuItem>
           ) : isSingleCanvas ? (
             <>
-              <DropdownMenuItem asChild>
-                <Link to={getSingleCanvasURL(props.data as IIIFManifestResource)}>
-                  <Images className="size-4 text-muted-foreground mr-2" /> Open Canvas
-                </Link>
+              <DropdownMenuItem onSelect={() => props.onOpenImage(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Open canvas
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
+                <ImageIcon className="size-4 text-muted-foreground mr-2" /> Add to workspace
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
@@ -159,7 +172,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
             <>
               <DropdownMenuItem asChild>
                 <Link to={`/images/${props.data.id}`}>
-                  <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
+                  <Images className="size-4 text-muted-foreground mr-2" /> Open manifest
                 </Link>
               </DropdownMenuItem>
 
@@ -170,8 +183,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
           {isManifest && (
             <>
               <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
-                  <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
-                  <span className="text-red-700 hover:text-red-700">Delete</span>
+                <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
+                <span className="text-red-700 hover:text-red-700">Delete</span>
               </DropdownMenuItem>
               
               {/* <FixRelocatedManifest manifest={props.data as IIIFManifestResource}/> */}
