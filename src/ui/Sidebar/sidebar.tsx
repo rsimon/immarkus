@@ -646,8 +646,7 @@ const SidebarMenuBadge = React.forwardRef<
     )}
     {...props}>
     <span 
-      className="border border-sidebar-foreground px-1.25 py-px rounded
-        group-hover/menu-item:border-white group-hover/menu-item:text-white group-hover:text-white">{children}</span>
+      className="px-1.25 py-px rounded group-hover/menu-item:text-white">{children}</span>
   </div>
 ))
 SidebarMenuBadge.displayName = "SidebarMenuBadge"
