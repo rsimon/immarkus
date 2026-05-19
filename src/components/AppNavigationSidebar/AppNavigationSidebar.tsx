@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useAnnotationViewState } from '@/pages';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { 
   ChevronDown,
@@ -27,7 +28,6 @@ import {
 } from '@/ui/Sidebar';
 
 import './AppNavigationSidebar.css';
-import { useAnnotationViewState } from '@/pages';
 
 const NAV_ITEMS = [
   { to: '/images',   icon: Image,   label: 'Images'   },
