@@ -3,6 +3,7 @@ import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, SquareArrowOutUpRigh
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedFileImage, LoadedIIIFImage, LoadedImage } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/ui/Tabs';
@@ -30,6 +31,8 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
   const store = useStore();
 
   const loaded = useImages(image.id) as LoadedImage;
+
+  const { openInAnnotationView } = useOpenInAnnotationView();
 
   const isIIIF = loaded?.id.startsWith('iiif:');
 
@@ -120,10 +123,9 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
               asChild
               size="icon"
               variant="ghost"
-              className="h-8 w-8 rounded">
-              <a href={`#/annotate/${image.id}`}>
-                <SquareArrowOutUpRight className="h-4 w-4" />
-              </a>
+              className="h-8 w-8 rounded"
+              onClick={() => openInAnnotationView(image.id)}>
+              <SquareArrowOutUpRight className="h-4 w-4" />
             </Button>
           </div>
         

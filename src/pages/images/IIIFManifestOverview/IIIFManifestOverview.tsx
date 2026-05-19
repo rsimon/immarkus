@@ -10,7 +10,7 @@ import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
 import { IIIFManifestTable } from './IIIFManifestTable';
-import { useAnnotationViewState } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface IIIFManifestOverviewProps {
 
@@ -38,7 +38,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   
   const navigate = useNavigate();
 
-  const { setImageIds } = useAnnotationViewState();
+  const { openInAnnotationView } = useOpenInAnnotationView();
 
   const parsedManifest = useIIIFResource(props.manifest.id);
 
@@ -61,12 +61,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   const onOpenCanvas = useCallback((canvas: CozyCanvas) => {
     const canvasId = murmur.v3(canvas.id);
     const id = `iiif:${props.manifest.id}:${canvasId}`;
-
-    setImageIds([id]);
-    
-    requestAnimationFrame(() => {
-      navigate(`/annotate/iiif:${props.manifest.id}:${id}`);
-    });
+    openInAnnotationView(id);
   }, []);
 
   const onOpenRange = useCallback((range: CozyRange) => {

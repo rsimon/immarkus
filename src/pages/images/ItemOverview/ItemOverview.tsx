@@ -8,7 +8,7 @@ import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
 import { ItemTable } from './ItemTable';
 import { AnnotationMap, OverviewItem, OverviewLayout } from '../Types';
-import { useAnnotationViewState } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 
 interface ItemOverviewProps {
 
@@ -34,7 +34,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
 
   const navigate = useNavigate();
 
-  const { setImageIds } = useAnnotationViewState();
+  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const [layout, setLayout] = usePersistentState<OverviewLayout>('immarkus:images:layout', 'grid');
   
@@ -71,14 +71,6 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
     navigate(`/images/${folder.id}`);
 
-  const onOpenImage = (imageId: string) => {
-    setImageIds([imageId]);
-
-    requestAnimationFrame(() => {
-      navigate(`/annotate/${imageId}`);
-    });
-  }
-  
   const onSelectFolder = (folder: Folder) =>
     props.onSelect({ type: 'folder', ...folder });
 
@@ -128,7 +120,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           images={filteredImages} 
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
-          onOpenImage={onOpenImage} 
+          onOpenImage={openInAnnotationView} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
           onSelectItem={onSelectItem} />
@@ -141,7 +133,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           images={filteredImages} 
           selected={props.selected}
           onOpenFolder={onOpenFolder} 
-          onOpenImage={onOpenImage} 
+          onOpenImage={openInAnnotationView} 
           onSelectFolder={onSelectFolder} 
           onSelectImage={onSelectImage} 
           onSelectItem={onSelectItem} />

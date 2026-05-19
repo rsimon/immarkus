@@ -4,6 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { EntityType, LoadedImage } from '@/model';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 import { GraphNode } from '../../../Types';
@@ -23,6 +24,8 @@ const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
 
   const loadedImage = useImages(node.id) as LoadedImage;
 
+  const { openInAnnotationView } = useOpenInAnnotationView();
+
   const getEntityBodies = (annotation: W3CImageAnnotation) => {
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
     return bodies.filter(b => b.source === props.entityType.id);
@@ -37,8 +40,9 @@ const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
           asChild
           size="icon"
           variant="ghost"
-          className="h-8 w-8 shrink-0">
-          <a href={`#/annotate/${node.id}`}><SquareArrowOutUpRight className="h-3.5 w-3.5" /></a>
+          className="h-8 w-8 shrink-0"
+          onClick={() => openInAnnotationView(node.id)}>
+          <SquareArrowOutUpRight className="h-3.5 w-3.5" />
         </Button>
       </div>      
 

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { 
   createContext, 
   type Dispatch, 
@@ -7,6 +8,7 @@ import {
   useContext, 
   useState 
 } from 'react';
+
 
 interface AnnotationViewStateContextValue {
 
@@ -40,4 +42,34 @@ export const useAnnotationViewState = () => {
   }), []);
 
   return { imageIds, setImageIds, addImageToView };
+}
+
+export const useOpenInAnnotationView = () => {
+  const navigate = useNavigate();
+  
+  const { imageIds, setImageIds } = useContext(AnnotationViewStateContext);
+
+  const openInAnnotationView = useCallback((imageIdOrIds: string | string[]) => {
+    const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
+    setImageIds(ids);
+
+    requestAnimationFrame(() => {
+      navigate(`/annotate/${ids.join('&')}`);
+    });
+  }, [setImageIds, navigate]);
+
+  const addToAnnotationView = useCallback((imageIdOrIds: string | string[], open = false) => {
+    const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
+
+    const next = [...new Set([...imageIds, ...ids])];
+    
+    if (open) {
+      requestAnimationFrame(() => {
+        navigate(`/annotate/${next.join('&')}`);
+      });
+    }
+  }, [imageIds, navigate]);
+
+  return { openInAnnotationView, addToAnnotationView };
+
 }
