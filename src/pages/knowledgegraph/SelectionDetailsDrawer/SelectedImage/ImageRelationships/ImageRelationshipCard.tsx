@@ -1,12 +1,10 @@
-import { SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
-import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages } from '@/store';
-import { Button } from '@/ui/Button';
 import { ImageRelationshipCardItem } from './ImageRelationshipCardItem';
 import { ImageTitle } from '../../ImageTitle';
+import { AnnotationViewLink } from '../../AnnotationViewLink';
 
 interface ImageRelationshipCardProps {
 
@@ -24,8 +22,6 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
 
   const { ref, inView } = useInView();
 
-  const { openInAnnotationView } = useOpenInAnnotationView();
-
   // Is this a card for intra-image relations?
   const isIntra = props.selectedImage.id === otherImageId;
 
@@ -39,15 +35,7 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
         <>
           <div className="flex justify-between items-top p-1 pl-3 overflow-hidden">
             <ImageTitle image={loaded} />
-
-            <Button
-              asChild
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8 shrink-0 rounded-full"
-              onClick={() => openInAnnotationView(loaded.id)}>
-              <SquareArrowOutUpRight className="h-3.5 w-3.5" />
-            </Button>
+            <AnnotationViewLink id={loaded.id} />
           </div>  
 
           <ul>

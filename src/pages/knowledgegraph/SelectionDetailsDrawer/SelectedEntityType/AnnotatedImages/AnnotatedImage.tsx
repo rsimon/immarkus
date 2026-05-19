@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-import { SquareArrowOutUpRight } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { W3CAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { EntityType, LoadedImage } from '@/model';
-import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
-import { Button } from '@/ui/Button';
+import { Skeleton } from '@/ui/Skeleton';
 import { GraphNode } from '../../../Types';
 import { AnnotationThumbnail } from '../../AnnotationThumbnail';
-import { Skeleton } from '@/ui/Skeleton';
 import { ImageTitle } from '../../ImageTitle';
+import { AnnotationViewLink } from '../../AnnotationViewLink';
 
 interface LazyAnnotatedImageProps extends AnnotatedImageProps {
 
@@ -24,8 +22,6 @@ const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
 
   const loadedImage = useImages(node.id) as LoadedImage;
 
-  const { openInAnnotationView } = useOpenInAnnotationView();
-
   const getEntityBodies = (annotation: W3CImageAnnotation) => {
     const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
     return bodies.filter(b => b.source === props.entityType.id);
@@ -35,15 +31,7 @@ const LazyLoadingAnnotatedImage = (props: LazyAnnotatedImageProps) => {
     <article className="bg-white shadow-xs rounded border mt-1.5">
       <div className="flex justify-between items-top p-1 pl-3">
         <ImageTitle image={loadedImage} />
-
-        <Button
-          asChild
-          size="icon"
-          variant="ghost"
-          className="h-8 w-8 shrink-0"
-          onClick={() => openInAnnotationView(node.id)}>
-          <SquareArrowOutUpRight className="h-3.5 w-3.5" />
-        </Button>
+        <AnnotationViewLink id={node.id} />
       </div>      
 
       <ul>
