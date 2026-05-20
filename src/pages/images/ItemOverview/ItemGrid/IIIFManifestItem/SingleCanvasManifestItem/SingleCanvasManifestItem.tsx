@@ -9,6 +9,7 @@ import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
 import { OverviewItem } from '../../../../Types';
+import { CurrentlyInWorkspace } from '../../CurrentlyInWorkspace';
 
 interface SingleCanvasManifestItemProps {
 
@@ -60,10 +61,12 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
                 <div className="h-full w-full bg-muted" />
               )}
 
+              <CurrentlyInWorkspace imageId={id} />
+
               <IIIFIcon
                 light
-                className="iiif-logo text-white transition-all absolute top-2.5 left-2.5 size-5" />
-
+                className="drop-shadow iiif-logo text-white transition-all absolute top-2.5 left-2.5 size-5" />
+                
               <div className="image-wrapper absolute bottom-0 px-3 pt-10 pb-3 left-0 w-full pointer-events-auto">
                 <div className="text-white text-sm">
                   <MessagesSquare 
@@ -72,7 +75,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
                     {annotations.length}
                 </div>
 
-                <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
+                <div className="drop-shadow absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
                   <SingleCanvasManifestItemActions
                     manifest={props.resource}
                     canvas={info}

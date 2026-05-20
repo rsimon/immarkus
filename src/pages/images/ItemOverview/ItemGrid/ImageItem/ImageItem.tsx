@@ -1,8 +1,9 @@
-import { MessagesSquare } from 'lucide-react';
+import { MessagesSquare, PanelsTopLeft } from 'lucide-react';
 import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { LoadedFileImage } from '@/model';
-import { ImageItemActions } from './ImageItemActions';
 import { useImageDimensions } from '@/utils/useImageDimensions';
+import { CurrentlyInWorkspace } from '../CurrentlyInWorkspace';
+import { ImageItemActions } from './ImageItemActions';
 
 interface ImageItemProps {
 
@@ -56,6 +57,8 @@ export const ImageItem = (props: ImageItemProps) => {
                 onAddToWorkspace={props.onAddToWorkspace} />
             </div>
           </div>
+
+          <CurrentlyInWorkspace imageId={image.id} />
         </div>
       </div>
       
