@@ -74,6 +74,6 @@ export const useOpenInAnnotationView = () => {
     });
   }, [setImageIds, navigate]);
 
-  return { openInAnnotationView, addToAnnotationView };
+  return { imageIds, openInAnnotationView, addToAnnotationView };
 
 }

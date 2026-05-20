@@ -1,6 +1,7 @@
-import { SquareArrowOutUpRight } from 'lucide-react';
+import { PanelsTopLeft, SquareArrowOutUpRight } from 'lucide-react';
 import { useOpenInAnnotationView } from '@/pages/annotate';
 import { Button } from '@/ui/Button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -16,9 +17,23 @@ interface AnnotationViewLinkProps {
 
 export const AnnotationViewLink = (props: AnnotationViewLinkProps) => {
   
-  const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
+  const { imageIds, openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
-  return (
+  const isOpen = imageIds.includes(props.id);
+
+  return isOpen ? (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className="bg-green-500 self-start p-1 mt-px ml-1.5 text-white rounded">
+          <PanelsTopLeft className="size-4" />
+        </div>
+      </TooltipTrigger>
+
+      <TooltipContent>
+        Currently open in workspace
+      </TooltipContent>
+    </Tooltip>
+  ) : (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
