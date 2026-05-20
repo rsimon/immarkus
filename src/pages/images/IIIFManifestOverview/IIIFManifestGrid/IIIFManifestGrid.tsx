@@ -58,7 +58,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
     return (
       <IIIFCanvasItem
         selected={isSelected}
-        canvas={canvas} 
+        item={item} 
         canvasInfo={info}
         annotationCount={annotationCount}
         onOpen={() => props.onOpenCanvas(canvas)} 

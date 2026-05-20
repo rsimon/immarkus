@@ -2,7 +2,7 @@ import { MessagesSquare, PanelsTopLeft } from 'lucide-react';
 import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
-import { IsInWorkspaceBadge } from '../IsInWorkspaceBadge';
+import { IsInWorkspaceIndicatorBadge } from '../../../IsInWorkspaceIndicator';
 import { ImageItemActions } from './ImageItemActions';
 
 interface ImageItemProps {
@@ -58,7 +58,7 @@ export const ImageItem = (props: ImageItemProps) => {
             </div>
           </div>
 
-          <IsInWorkspaceBadge imageId={image.id} />
+          <IsInWorkspaceIndicatorBadge imageId={image.id} />
         </div>
       </div>
       

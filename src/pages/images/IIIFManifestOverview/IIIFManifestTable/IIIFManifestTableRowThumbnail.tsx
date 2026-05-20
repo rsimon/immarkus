@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
-import { CozyCanvas } from 'cozy-iiif';
 import { useInView } from 'react-intersection-observer';
+import { IsInWorkspaceIndicatorPip } from '../../IsInWorkspaceIndicator';
+import { CanvasItem } from '../../Types';
 
 interface IIIFManifestTableRowThumbnailProps {
 
-  canvas: CozyCanvas;
+  item: CanvasItem;
 
 }
 
@@ -12,10 +13,14 @@ export const IIIFManifestTableRowThumbnail = (props: IIIFManifestTableRowThumbna
 
   const { ref, inView } = useInView();
 
-  const src = useMemo(() => props.canvas.getThumbnailURL(), [props.canvas]);
+  const { canvas, info } = props.item;
+
+  const src = useMemo(() => canvas.getThumbnailURL(), [canvas]);
+
+  const id = `iiif:${info.manifestId}:${info.id}`;
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="relative">
       {inView ? (
         <img
           src={src}
@@ -23,6 +28,8 @@ export const IIIFManifestTableRowThumbnail = (props: IIIFManifestTableRowThumbna
       ) : (
         <div className="size-10 bg-muted rounded-[2px] border" />
       )}
+
+      <IsInWorkspaceIndicatorPip imageId={id} />
     </div>
   )
 }

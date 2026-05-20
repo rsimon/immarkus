@@ -115,7 +115,7 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
           </div>
         ) : (
           <IIIFManifestTableRowThumbnail 
-            canvas={item.canvas} />
+            item={item} />
         )}
       </div>
     );

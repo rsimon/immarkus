@@ -1,7 +1,7 @@
 import { IIIFThumbnail } from '@/components/IIIFThumbnail';
 import { IIIFManifestResource } from '@/model';
 import { useCanvas } from '@/utils/iiif/hooks';
-import { IsInWorkspacePip } from './IsInWorkspacePip';
+import { IsInWorkspaceIndicatorPip } from '../../IsInWorkspaceIndicator';
 
 interface ItemTableRowCanvasThumbnailProps {
 
@@ -27,7 +27,7 @@ export const ItemTableRowCanvasThumbnail = (props: ItemTableRowCanvasThumbnailPr
         <div className="size-10 bg-muted rounded-[2px] border" />
       )}
 
-      <IsInWorkspacePip imageId={id} />
+      <IsInWorkspaceIndicatorPip imageId={id} />
     </div>
   )
 

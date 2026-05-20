@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
-import { IsInWorkspacePip } from './IsInWorkspacePip';
+import { IsInWorkspaceIndicatorPip } from '../../IsInWorkspaceIndicator';
 
 interface ItemTableRowImageThumbnailProps {
 
@@ -29,7 +29,7 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
         className="size-10 bg-muted object-cover object-center aspect-square rounded-[2px] border"
       />
 
-      <IsInWorkspacePip imageId={props.image.id} />
+      <IsInWorkspaceIndicatorPip imageId={props.image.id} />
     </div>
   )
   

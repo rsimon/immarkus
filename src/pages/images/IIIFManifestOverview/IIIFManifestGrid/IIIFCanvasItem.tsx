@@ -1,16 +1,17 @@
 import { useMemo } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
-import { CozyCanvas } from 'cozy-iiif';
 import { getCanvasLabelWithFallback } from '@/utils/iiif';
 import { CanvasInformation } from '@/model';
 import { IIIFCanvasItemActions } from './IIIFCanvasItemActions';
+import { IsInWorkspaceIndicatorBadge } from '../../IsInWorkspaceIndicator';
+import { CanvasItem } from '../../Types';
 
 interface IIIFCanvasItemProps {
 
   annotationCount: number;
 
-  canvas: CozyCanvas;
+  item: CanvasItem;
 
   canvasInfo: CanvasInformation;
 
@@ -26,13 +27,15 @@ interface IIIFCanvasItemProps {
 
 export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
 
-  const { canvas } = props;
+  const { canvas, info } = props.item;
 
   const { ref, inView } = useInView();
   
-  const src = useMemo(() => props.canvas.getThumbnailURL(), [props.canvas]);
+  const src = useMemo(() => canvas.getThumbnailURL(), [canvas]);
 
-  const label = useMemo(() => getCanvasLabelWithFallback(props.canvas), [props.canvas]);
+  const label = useMemo(() => getCanvasLabelWithFallback(canvas), [canvas]);
+
+  const id = `iiif:${info.manifestId}:${info.id}`;
 
   return (
     <div ref={ref}>
@@ -66,6 +69,8 @@ export const IIIFCanvasItem = (props: IIIFCanvasItemProps) => {
                 onAddToWorkspace={props.onAddToWorkspace} />
             </div>
           </div>
+
+          <IsInWorkspaceIndicatorBadge imageId={id} />
         </div>
       </div>
       
