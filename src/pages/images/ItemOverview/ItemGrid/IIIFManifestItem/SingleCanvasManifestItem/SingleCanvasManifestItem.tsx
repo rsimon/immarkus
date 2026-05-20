@@ -9,7 +9,7 @@ import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { SingleCanvasManifestItemActions } from './SingleCanvasManifestItemActions';
 import { OverviewItem } from '../../../../Types';
-import { CurrentlyInWorkspace } from '../../CurrentlyInWorkspace';
+import { IsInWorkspaceBadge } from '../../IsInWorkspaceBadge';
 
 interface SingleCanvasManifestItemProps {
 
@@ -61,7 +61,7 @@ export const SingleCanvasManifestItem = (props: SingleCanvasManifestItemProps) =
                 <div className="h-full w-full bg-muted" />
               )}
 
-              <CurrentlyInWorkspace imageId={id} />
+              <IsInWorkspaceBadge imageId={id} />
 
               <IIIFIcon
                 light

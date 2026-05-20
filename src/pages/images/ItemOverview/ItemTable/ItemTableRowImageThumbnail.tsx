@@ -1,6 +1,7 @@
+import { useEffect } from 'react';
 import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
-import { useEffect } from 'react';
+import { IsInWorkspacePip } from './IsInWorkspacePip';
 
 interface ItemTableRowImageThumbnailProps {
 
@@ -19,13 +20,17 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
   }, [dimensions]);
 
   return (
-    <img
-      onLoad={onLoad}
-      loading="lazy"
-      src={URL.createObjectURL(props.image.data)}
-      alt={props.image.name}
-      className="size-10 bg-muted object-cover object-center aspect-square rounded-[2px] border"
-    />
+    <div className="relative inline-block">
+      <img
+        onLoad={onLoad}
+        loading="lazy"
+        src={URL.createObjectURL(props.image.data)}
+        alt={props.image.name}
+        className="size-10 bg-muted object-cover object-center aspect-square rounded-[2px] border"
+      />
+
+      <IsInWorkspacePip imageId={props.image.id} />
+    </div>
   )
   
 }

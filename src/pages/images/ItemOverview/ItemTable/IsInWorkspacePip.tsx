@@ -1,14 +1,13 @@
-import { PanelsTopLeft } from 'lucide-react';
 import { useAnnotationViewState } from '@/pages/annotate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
-interface CurrentlyInWorkspaceProps {
+interface IsInWorkspacePipProps {
 
   imageId: string;
 
 }
 
-export const CurrentlyInWorkspace = (props: CurrentlyInWorkspaceProps) => {
+export const IsInWorkspacePip = (props: IsInWorkspacePipProps) => {
 
   const {imageIds } = useAnnotationViewState();
   
@@ -17,9 +16,7 @@ export const CurrentlyInWorkspace = (props: CurrentlyInWorkspaceProps) => {
   return isInWorkspace ? (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="absolute top-2 right-2 bg-green-500 p-1 text-white rounded">
-          <PanelsTopLeft className="size-4" />
-        </div>
+        <div className="absolute border border-white -top-0.5 -left-0.75 size-3 bg-green-500 rounded-full" />
       </TooltipTrigger>
 
       <TooltipContent>
