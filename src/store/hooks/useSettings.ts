@@ -4,16 +4,13 @@ import { Settings } from '../settings';
 
 export const useSettings = () => {
 
-  const { settings, setSettings } = useContext(StoreContext);
-
-  const setAsync = (p: Promise<void>) =>
-    p.then(() => setSettings({...settings}));
+  const { settings: settingsStore, setSettings } = useContext(StoreContext);
 
   const updateSettings = (fn: (current: Settings) => Partial<Settings>) =>
-    setAsync(settings.updateSettings(fn));
+    settingsStore.updateSettings(fn).then(settings => setSettings({...settingsStore, settings }));
 
   return { 
-    ...settings,
+    ...settingsStore,
     updateSettings
   };
 

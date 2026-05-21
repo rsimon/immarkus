@@ -4,7 +4,7 @@ export interface SettingsStore {
 
   settings: Settings;
 
-  updateSettings(fn: (current: Settings) => Partial<Settings>): Promise<void>;
+  updateSettings(fn: (current: Settings) => Partial<Settings>): Promise<Settings>;
 
 }
 
@@ -28,14 +28,15 @@ export const loadSettingsStore = (
 
   const save = () => writeJSONFile(fileHandle, settings);
 
-  const updateSettings = (fn: (current: Settings) => Partial<Settings>): Promise<void> => {
+  const updateSettings = (fn: (current: Settings) => Partial<Settings>): Promise<Settings> => {
     const patch = fn(settings);
+
     settings = {
       ...settings,
       ...patch
     };
 
-    return save();
+    return save().then(() => settings);
   }
 
   resolve({
