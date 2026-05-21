@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
-import { CirclePlus, Grip, Trash2, X } from 'lucide-react';
+import { CirclePlus, Grip, PanelsTopLeft, Trash2, X } from 'lucide-react';
+import { useOpenInAnnotationView } from '@/pages/annotate';
 import { Button } from '@/ui/Button';
-import { ExportSelector } from './export';
-import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearchDialogPos, useSearchState } from '../KnowledgeGraphState';
+import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
+import { ExportSelector } from './export';
 import { 
   Condition, 
   Graph, 
@@ -52,6 +54,16 @@ export const GraphSearch = (props: GraphSearchProps) => {
   const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 10 : 260, y: 10 });
 
   const { objectType, setObjectType, conditions, setConditions } = useSearchState();
+
+  const { openInAnnotationView } = useOpenInAnnotationView();
+
+  const matchedImages = useMemo(() => {
+    if (objectType !== 'IMAGE' || !props.query) return [];
+    
+    return props.graph.nodes
+      .filter(n => props.query!(n))
+      .map(m => m.id);
+  }, [props.query, props.graph, objectType]);
 
   useEffect(() => {
     // Not sure why this is needed since neodrag v2.3...
@@ -151,7 +163,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
   return createPortal(
     <div 
       ref={el}
-      className="bg-white min-w-[510px] min-h-[80px] backdrop-blur-xs border absolute top-0 left-0 rounded shadow-lg z-30">
+      className="bg-white min-w-127.5 min-h-20 backdrop-blur-xs border absolute top-0 left-0 rounded shadow-lg z-30">
     
       <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
@@ -168,7 +180,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
         </Button>
       </div>
 
-      <div className="px-3 pr-6 pb-2">
+      <div className="px-3 pr-5 pb-2">
         <div className="text-xs flex items-center gap-2">
           <span className="w-14 text-right">
             Find
@@ -254,7 +266,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
                 size="sm"
                 className="flex items-center text-xs py-0 px-0 font-normal"
                 onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-                <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-[2px]" /> Add Condition
+                <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-0.5" /> Add Condition
               </Button>
 
               <Button 
@@ -262,15 +274,34 @@ export const GraphSearch = (props: GraphSearchProps) => {
                 size="sm"
                 className="flex items-center text-xs py-0 px-0 font-normal"
                 onClick={onClearAll}>
-                <Trash2 className="h-3.5 w-3.5 mr-1 mb-[1px]" /> Clear All
+                <Trash2 className="h-3.5 w-3.5 mr-1 mb-px" /> Clear All
               </Button>
             </div>
 
             {props.query && (
-              <ExportSelector 
-                objectType={objectType}
-                graph={props.graph} 
-                query={props.query} />
+              <div className="flex items-center gap-2">
+                <ExportSelector 
+                  objectType={objectType}
+                  graph={props.graph} 
+                  query={props.query} />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      disabled={matchedImages.length === 0}
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 text-xs font-normal px-1.5"
+                      onClick={() => openInAnnotationView(matchedImages)}>
+                      {matchedImages.length} <PanelsTopLeft className="size-3.5" />
+                    </Button>
+                  </TooltipTrigger>
+
+                  <TooltipContent>
+                    Open in workspace
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             )}
           </div>
         ) : (
