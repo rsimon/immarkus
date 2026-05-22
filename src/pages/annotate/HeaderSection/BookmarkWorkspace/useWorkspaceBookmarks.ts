@@ -19,7 +19,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
       name,
       images: ids, 
       current: hasSameValues(ids, images.map(i => i.id))
-    }))
+    })).sort((a, b) => a.name.localeCompare(b.name));
   }, [settings, images]);
  
   const isCurrentBookmarked = bookmarks.some(w => w.current);
