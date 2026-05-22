@@ -13,9 +13,7 @@ interface NoIndexProps {
 export const NoIndex = (props: NoIndexProps) => {
 
   return (
-    <div className="text-sm">
-      <Separator />
-    
+    <div className="text-sm">    
       <div className="leading-relaxed space-y-3 mt-6 font-light">
         <p>
           With IMMARKUS Visual Search, you can find objects inside your 

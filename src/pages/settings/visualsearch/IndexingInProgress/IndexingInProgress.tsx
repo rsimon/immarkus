@@ -39,7 +39,7 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
   }, [progress]);
 
   return (
-    <div className="text-sm space-y-6">
+    <div className="text-sm space-y-6 py-1.5">
       <div className="rounded-lg relative p-4 border border-sky-600 bg-sky-600/5 text-sm space-y-10">
         <div className="flex gap-2 items-center text-sky-700 font-medium">
           <Disc3 className="size-5 animate-spin duration-2000" />

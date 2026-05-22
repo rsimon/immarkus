@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { IIIFManifestResource } from '@/model';
 import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
@@ -7,7 +6,6 @@ import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
 import { IndexingInProgress } from './IndexingInProgress';
 import { IndexOutdated } from './IndexOutdated';
-import { Separator } from '@/ui/Separator';
 
 export const VisualSearch = () => {
 
@@ -30,30 +28,22 @@ export const VisualSearch = () => {
   }, [store]);
 
   return (
-    <div className="mt-7">
-      <h2 className="text-xl font-semibold tracking-tight mb-2">Visual Search</h2>
-
-      <p className="mt-1 text-sm leading-6 mb-6">
-        Find objects inside your images based on example.
-      </p>
-      
-      <div className="mt-4">
-        {isIndexing ? (
-          <IndexingInProgress 
-            vs={vs} 
-            onDone={() => setIsIndexing(false)} />
-        ) : vs.indexStatus.state === 'index_missing' ? (
-          <NoIndex 
-            imageCount={count} 
-            onStartIndexing={() => setIsIndexing(true)} />
-        ) : vs.indexStatus.state === 'index_incomplete' ? (
-          <IndexOutdated 
-            toAdd={vs.indexStatus.toAdd} 
-            onReindex={() => setIsIndexing(true)} />
-        ) : vs.indexStatus.state === 'index_complete' ? (
-          <IndexReady vs={vs} />
-        ) : null}
-      </div>
+    <div className="mt-4 max-w-xl">
+      {isIndexing ? (
+        <IndexingInProgress 
+          vs={vs} 
+          onDone={() => setIsIndexing(false)} />
+      ) : vs.indexStatus.state === 'index_missing' ? (
+        <NoIndex 
+          imageCount={count} 
+          onStartIndexing={() => setIsIndexing(true)} />
+      ) : vs.indexStatus.state === 'index_incomplete' ? (
+        <IndexOutdated 
+          toAdd={vs.indexStatus.toAdd} 
+          onReindex={() => setIsIndexing(true)} />
+      ) : vs.indexStatus.state === 'index_complete' ? (
+        <IndexReady vs={vs} />
+      ) : null}
     </div>
   )
 
