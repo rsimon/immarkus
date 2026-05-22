@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
 import { useImages } from '@/store';
+import { cn } from '@/ui/utils';
 import { Spinner } from '../Spinner';
 
 interface ThumbnailProps {
@@ -8,6 +10,10 @@ interface ThumbnailProps {
   image: FileImage | CanvasInformation;
 
   delay?: number;
+
+  size?: number;
+
+  className?: string;
   
 }
 
@@ -19,16 +25,19 @@ const ThumbnailImage = (props: ThumbnailProps) => {
 
   const loaded = useImages(id, delay) as LoadedImage;
 
-  const url = loaded && (
+  const url = useMemo(() => loaded && (
     'data' in loaded 
       ? URL.createObjectURL(loaded.data) 
-      : loaded.canvas.getThumbnailURL(112));
+      : loaded.canvas.getThumbnailURL(props.size || 112)), [loaded, props.size]);
 
   return loaded ? (
     <img
       src={url}
       alt={image.name}
-      className="w-14 h-14 object-cover aspect-square rounded-sm shadow-sm border border-black/20" />
+      className={cn(
+        'size-full object-cover aspect-square rounded-sm shadow-sm border border-black/20',
+        props.className
+      )} />
   ) : (
     <Spinner className="w-3 h-3 text-muted-foreground/80" />
   )
@@ -40,7 +49,12 @@ export const Thumbnail = (props: ThumbnailProps) => {
   const { ref, inView } = useInView();
 
   return (
-    <div ref={ref} className="w-14 h-14 aspect-square bg-muted rounded-md flex justify-center items-center">
+    <div 
+      ref={ref} 
+      className={cn(
+        'w-14 h-14 aspect-square bg-muted rounded-md flex justify-center items-center relative',
+        props.className
+      )}>
       {inView && (
         <ThumbnailImage {...props} />
       )}
