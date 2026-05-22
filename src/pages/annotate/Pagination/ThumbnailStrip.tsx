@@ -122,7 +122,7 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
 
                         <HoverCardContent 
                           sideOffset={8}
-                          className="z-999 p-1 border shadow-xl overflow-hidden min-w-0 w-auto"
+                          className="z-999 p-0 border border-white shadow-xl overflow-hidden min-w-0 w-auto"
                           collisionPadding={20}>
                           <Thumbnail 
                             image={image} 
