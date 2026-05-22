@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/ui/HoverCard';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import {
   ContextMenu,
@@ -105,22 +106,36 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
             className="shrink-0 inline-block mx-1.5">
             <ContextMenu>
               <ContextMenuTrigger>
-                <Tooltip>
+                <Tooltip delayDuration={50}>
                   <TooltipTrigger asChild>
                     <button
                       className={isSelected(image)  
                         ? 'block outline-2 outline-offset-2 rounded-sm outline-black' 
                         : 'block hover:outline-2 outline-offset-2 rounded-sm outline-black'}
                       onClick={() => onSelect(image)}>
-                      <Thumbnail 
-                        image={image} 
-                        delay={160} />
+                      <HoverCard>
+                        <HoverCardTrigger>
+                          <Thumbnail 
+                            image={image} 
+                            delay={160} />
+                        </HoverCardTrigger>
+
+                        <HoverCardContent 
+                          sideOffset={8}
+                          className="z-999 p-1 border shadow-xl overflow-hidden min-w-0 w-auto"
+                          collisionPadding={20}>
+                          <Thumbnail 
+                            image={image} 
+                            size={600}
+                            className="h-auto w-auto aspect-auto max-w-100 max-h-100 border-0"/>
+                        </HoverCardContent>
+                      </HoverCard>
                     </button>
                   </TooltipTrigger>
 
                   <TooltipContent
-                    side="bottom"
-                    sideOffset={6}>
+                    side="top"
+                    sideOffset={8}>
                     {image.name}
                   </TooltipContent>
                 </Tooltip>
