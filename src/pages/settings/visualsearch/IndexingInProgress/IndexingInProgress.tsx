@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Disc3 } from 'lucide-react';
 import { Progress } from '@/ui/Progress';
 import { IndexingProgress, VisualSearch } from '@/utils/useVisualSearch';
-import { Separator } from '@/ui/Separator';
-
 
 interface IndexingInProgressProps {
 

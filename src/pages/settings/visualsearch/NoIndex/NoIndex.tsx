@@ -1,4 +1,4 @@
-import { Images } from 'lucide-react';
+import { Images, PanelsTopLeft } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
 
@@ -18,9 +18,9 @@ export const NoIndex = (props: NoIndexProps) => {
         <p>
           With IMMARKUS Visual Search, you can find objects inside your 
           images based on example.
-          Pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
-          Search</strong> smart tool in the annotation view, select an annotation, and find visually 
-          similar matches across your collection.
+          Pick the <strong className="font-semibold">Visual Search</strong> smart tool 
+          in the <strong className="font-semibold"><PanelsTopLeft className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Workspace</strong>, select 
+          an annotation, and find visually similar matches across your collection.
         </p>
 
         <p>

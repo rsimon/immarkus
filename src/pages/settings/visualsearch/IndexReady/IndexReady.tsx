@@ -1,4 +1,4 @@
-import { BadgeCheck, Images } from 'lucide-react';
+import { BadgeCheck, PanelsTopLeft } from 'lucide-react';
 import { VisualSearch } from '@/utils/useVisualSearch';
 
 interface IndexReadyProps {
@@ -24,9 +24,9 @@ export const IndexReady = (props: IndexReadyProps) => {
         <div>
           <p className="text-green-700 leading-relaxed">
             IMMARKUS has successfully analyzed your images and made them searchable.
-            Pick the <strong className="font-semibold"><Images className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Visual 
-            Search</strong> smart tool in the annotation view to search 
-            for visually similar matches.
+            Pick the <strong className="font-semibold">Visual Search</strong> smart 
+            tool in the <strong className="font-semibold"><PanelsTopLeft className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Workspace</strong> to 
+            search for visually similar matches.
           </p>
           
           <p className="text-xs text-green-800/50 mt-1">

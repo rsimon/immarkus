@@ -24,7 +24,7 @@ export const IndexOutdated = (props: IndexOutdatedProps) => {
         <div className="text-sm leading-relaxed text-red-700 space-y-3">
           <p>
             Your image collection has changed since the last indexing run. Update the 
-            index to include new or modified images in visual search.
+            index to include new or modified images in Visual Search.
           </p>
         </div>
 
