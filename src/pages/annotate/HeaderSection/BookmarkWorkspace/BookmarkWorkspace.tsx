@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Bookmark, BookmarkCheck } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Check, Trash2 } from 'lucide-react';
 import { LoadedImage } from '@/model';
+import { WorkspaceBookmark } from '@/store';
 import { Button } from '@/ui/Button';
+import { Command, CommandInput, CommandItem, CommandList } from '@/ui/Command';
 import { Input } from '@/ui/Input';
 import { useOpenInAnnotationView } from '../../AnnotationViewState';
 import { ToolbarButton } from '../../ToolbarButton';
@@ -17,9 +19,7 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuSub, 
-  DropdownMenuSubContent, 
-  DropdownMenuSubTrigger, 
+  DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
 
@@ -36,7 +36,8 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const { 
     bookmarks, 
     isCurrentBookmarked, 
-    bookmarkCurrentWorkspace,
+    createBookmark,
+    updateBookmark,
     removeCurrentBookmark
   } = useWorkspaceBookmarks(props.images);
 
@@ -46,7 +47,13 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const onSaveBookmark = () => {
     const trimmed = workspaceName.trim();
     if (!trimmed) return;
-    bookmarkCurrentWorkspace(trimmed);
+    createBookmark(trimmed);
+    setWorkspaceName('');
+    setDialogOpen(false);
+  }
+
+  const onUpdateBookmark = (bookmark: WorkspaceBookmark) => {
+    updateBookmark(bookmark);
     setWorkspaceName('');
     setDialogOpen(false);
   }
@@ -56,7 +63,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <ToolbarButton
-            tooltip="Saved workspaces">
+            tooltip="Workspace bookmarks">
             {isCurrentBookmarked ? (
               <BookmarkCheck className="size-8.5 p-2" />
             ) : (
@@ -66,59 +73,78 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent 
-          align="start"
-          sideOffset={0}
           className="min-w-50">
           {isCurrentBookmarked ? (
             <DropdownMenuItem
-              className="text-xs"
+              className="text-xs items-center flex gap-1.5"
               onSelect={() => removeCurrentBookmark()}>
-              Remove bookmark
+              <Trash2 className="size-3.5 mb-px" /> Delete bookmark
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
               disabled={props.images.length === 0}
               onSelect={() => setDialogOpen(true)}
-              className="text-xs">
-              Bookmark this workspace...
+              className="text-xs items-center flex gap-1.5">
+              <Bookmark className="size-3.5 mb-px" /> Save bookmark...
             </DropdownMenuItem>
           )}
 
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              disabled={bookmarks.length === 0}
-              className="data-disabled:opacity-50 text-xs">
-              <span className="pr-2">Open workspace</span>
-            </DropdownMenuSubTrigger>
+          <DropdownMenuSeparator />
 
-            <DropdownMenuSubContent 
-              className="min-w-50">
-              {bookmarks.map(bookmark => (
-                <DropdownMenuItem
-                  key={bookmark.images.join(':')}
-                  onSelect={() => openInAnnotationView(bookmark.images)}
-                  className="text-xs">
-                  {bookmark.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+          {bookmarks.length === 0 ? (
+            <div className="text-muted-foreground text-xs px-2 py-1.25 font-light text-center">
+              No saved bookmarks
+            </div>
+          ) : bookmarks.map(bookmark => (
+            <DropdownMenuItem
+              key={bookmark.images.join(':')}
+              onSelect={() => openInAnnotationView(bookmark.images)}
+              className="text-xs pl-7 relative">
+              {bookmark.current && (
+                <Check className="absolute left-1.5 size-4" />
+              )}
+              {bookmark.name}
+            </DropdownMenuItem>
+          ))}        
         </DropdownMenuContent>
       </DropdownMenu>
 
       <Dialog 
         open={dialogOpen} 
         onOpenChange={setDialogOpen}>
-        <DialogContent >
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save workspace</DialogTitle>
+            <DialogTitle>Save current workspace</DialogTitle>
           </DialogHeader>
 
           <Input
-            placeholder="Workspace name"
+            placeholder="New bookmark name"
             value={workspaceName}
             onChange={e => setWorkspaceName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && onSaveBookmark()} />
+
+          {bookmarks.length > 0 && (
+            <div className="space-y-4">
+              <div className="text-muted-foreground text-xs font-light">– or update an existing bookmark –</div>
+
+              <Command className="h-auto rounded-none">
+                <div className="[&>div]:border [&>div]:rounded-t">
+                  <CommandInput
+                    className="h-9" />
+                </div>
+
+                <CommandList className="max-h-60 border px-1 border-t-0 rounded-b pb-1">
+                  {bookmarks.map(bookmark => (
+                    <CommandItem 
+                      className="mt-1"
+                      onSelect={() => onUpdateBookmark(bookmark)}>
+                      {bookmark.name}
+                    </CommandItem>
+                  ))}
+                </CommandList>
+              </Command>
+            </div>
+          )}
 
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>

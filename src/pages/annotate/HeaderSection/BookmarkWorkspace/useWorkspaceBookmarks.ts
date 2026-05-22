@@ -24,7 +24,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
  
   const isCurrentBookmarked = bookmarks.some(w => w.current);
 
-  const bookmarkCurrentWorkspace = useCallback((name: string) => {
+  const createBookmark = useCallback((name: string) => {
     const currentIds = images.map(i => i.id);
 
     updateSettings(prev => {
@@ -36,7 +36,24 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
         { name, images: currentIds }
       ];
 
-      return { bookmarks: nextBookmarks };
+      return { 
+        ...prev,
+        bookmarks: nextBookmarks 
+      };
+    });
+  }, [images]);
+
+  const updateBookmark = useCallback((bookmark: WorkspaceBookmark) => {
+    updateSettings(prev => {
+      const nextBookmarks = (prev.bookmarks || []).map(b => b.name === bookmark.name ? {
+        name: b.name,
+        images: images.map(i => i.id)
+      } : b); 
+
+      return { 
+        ...prev,
+        bookmarks: nextBookmarks
+      }
     });
   }, [images]);
 
@@ -52,6 +69,6 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
     });
   }, [images]);
 
-  return { bookmarks, isCurrentBookmarked, bookmarkCurrentWorkspace, removeCurrentBookmark };
+  return { bookmarks, isCurrentBookmarked, createBookmark, updateBookmark, removeCurrentBookmark };
 
 }
