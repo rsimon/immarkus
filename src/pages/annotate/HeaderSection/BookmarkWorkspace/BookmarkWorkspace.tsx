@@ -153,7 +153,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
 
           {bookmarks.length > 0 && (
             <div className="space-y-4">
-              <div className="text-muted-foreground text-xs font-light">– or update an existing bookmark –</div>
+              <div className="text-muted-foreground text-xs font-light">– or overwrite an existing bookmark –</div>
 
               <Command className="h-auto rounded-none">
                 <div className="[&>div]:border [&>div]:rounded-t">
