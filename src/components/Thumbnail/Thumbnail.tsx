@@ -1,9 +1,9 @@
+import { useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Spinner } from '../Spinner';
 import { cn } from '@/ui/utils';
-import { useMemo } from 'react';
 
 interface ThumbnailProps {
 
