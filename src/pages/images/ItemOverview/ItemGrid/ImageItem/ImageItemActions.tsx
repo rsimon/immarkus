@@ -60,7 +60,7 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
 
           {hasVisualSearch && (
             <DropdownMenuItem onSelect={onOpenVSDebug}>
-              <Bug className="size-4 text-muted-foreground mr-2" /> Inspect visual search segments
+              <Bug className="size-4 text-muted-foreground mr-2" /> Inspect visual search index
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>

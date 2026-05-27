@@ -69,27 +69,13 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
     };
   }, []);
 
-  const annotations = useMemo(() => {
-    if (!vs.index) return;
-    const image = vs.index.getImage(props.image.id);
-    return image?.segments.map(segment => {
-      const [x, y, w, h] = getBounds(segment, props.image);
-      return boundsToAnnotation({
-        minX: x, 
-        minY: y,
-        maxX: x + w,
-        maxY: y + h
-      });
-    })
-  }, [vs, props.image]);
-
   useEffect(() => {
     if (!vs.index || !anno) return;
 
     const image = vs.index.getImage(props.image.id);
     if (!image) return;
 
-    const annotatios = image?.segments.map(segment => {
+    const annotations = image?.segments.map(segment => {
       const [x, y, w, h] = getBounds(segment, props.image);
       return boundsToAnnotation({
         minX: x, 
@@ -111,7 +97,7 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
       style={style}>
       <OpenSeadragonViewer
         options={options} 
-        className="size-full bg-muted border rounded" />
+        className="size-full bg-muted border rounded [&_div]:outline-none" />
     </OpenSeadragonAnnotator>
   )
 
