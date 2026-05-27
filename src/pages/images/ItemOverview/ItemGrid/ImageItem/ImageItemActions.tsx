@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Bug, ImageIcon, Images, MoreVertical, NotebookPen } from 'lucide-react';
 import { VisualSearchDebugDialog } from '@/components/VisualSearchDebugView';
 import { LoadedImage } from '@/model';
-import { useVisualSearchAvailable } from '@/pages/annotate/SmartTools/VisualSearch';
+import { useVisualSearchAvailable } from '@/utils/useVisualSearch';
 import {
   DropdownMenu,
   DropdownMenuContent,
