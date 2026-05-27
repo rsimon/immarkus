@@ -1,24 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { IndexedImageSegment } from 'browser-visual-search';
 import { Annotorious, OpenSeadragonAnnotator, OpenSeadragonViewer, useAnnotator } from '@annotorious/react';
 import type { AnnotationState, DrawingStyleExpression, ImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { Dialog, DialogContent, DialogTitle } from '@/ui/Dialog';
 import { getOSDTilesets } from '@/utils/iiif';
-import { useVisualSearch } from '@/utils/useVisualSearch';
+import { useVisualSearch, useVisualSearchAvailable } from '@/utils/useVisualSearch';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
+import { DropdownMenuItem } from '@/ui/DropdownMenu';
+import { Bug } from 'lucide-react';
 
-export interface VisualSearchDebugDialogProps {
-
-  image: LoadedImage;
-
-  open: boolean;
-
-  onOpenChange(open: boolean): void;
-
-}
-
-interface VisualSearchDebugViewerProps {
+interface VisualSearchDebugActionProps {
 
   image: LoadedImage;
 
@@ -40,7 +32,7 @@ export const getBounds = (segment: IndexedImageSegment, image: LoadedImage) => {
   }
 }
 
-const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
+const VisualSearchDebugViewer = (props: VisualSearchDebugActionProps) => {
   const vs = useVisualSearch();
 
   const anno = useAnnotator();
@@ -103,25 +95,43 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
 
 }
 
-export const VisualSearchDebugDialog = (props: VisualSearchDebugDialogProps) => {
+export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => {
+  const hasVisualSearch = useVisualSearchAvailable();
+  const [showVisualSearchDebug, setShowVisualSearchDebug] = useState(false);
 
-  return (
-    <Dialog
-      open={props.open}
-      onOpenChange={props.onOpenChange}>
-      <DialogContent className="h-11/12 w-11/12 max-w-11/12 flex flex-col">
-        <DialogTitle>
-          {props.image.name}
-        </DialogTitle>
+  const onOpenVSDebug = (e: Event) => {
+    e.preventDefault();
+    setShowVisualSearchDebug(true);
+  }
 
-        <div className="grow relative">
-          <Annotorious>
-            <VisualSearchDebugViewer
-              image={props.image} />
-          </Annotorious>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
+  if (!hasVisualSearch) {
+    return null;
+  }
 
+  return hasVisualSearch ? (
+    <>
+      <DropdownMenuItem onSelect={onOpenVSDebug}>
+        <Bug className="size-4 text-muted-foreground mr-2" />
+        Inspect visual search index
+      </DropdownMenuItem>
+
+      <Dialog
+        open={showVisualSearchDebug}
+        onOpenChange={setShowVisualSearchDebug}>
+        <DialogContent className="h-11/12 w-11/12 max-w-11/12 flex flex-col">
+          <DialogTitle>
+            {props.image.name}
+          </DialogTitle>
+
+          <div className="grow relative">
+            <Annotorious>
+              <VisualSearchDebugViewer
+                image={props.image} />
+            </Annotorious>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  ) : null;
+  
 }
