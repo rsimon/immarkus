@@ -46,7 +46,9 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
           <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
         </DropdownMenuItem>
 
-        <VisualSearchDebugAction image={props.image} />
+        <VisualSearchDebugAction 
+          title={props.image.name}
+          imageId={props.image.id} />
       </DropdownMenuContent>
     </DropdownMenu>
   )

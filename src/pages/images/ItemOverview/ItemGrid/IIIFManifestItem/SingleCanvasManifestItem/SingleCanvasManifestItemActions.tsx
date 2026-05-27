@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Image, Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { IIIFOpenInViewerAction } from '../../../IIIFOpenInViewerAction';
 import {
@@ -32,8 +33,9 @@ interface SingleCanvasManifestItemActionsProps {
 }
 
 export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemActionsProps) => {
-
   const [confirmDelete, setConfirmDelete] = useState(false);
+  
+  const id = `iiif:${props.canvas.manifestId}:${props.canvas.id}`;
 
   return (
     <>
@@ -70,6 +72,10 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
           </DropdownMenuItem>
 
           <IIIFOpenInViewerAction manifest={props.manifest} />
+
+          <VisualSearchDebugAction
+            imageId={id}
+            title={props.canvas.name} />
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
               <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />

@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Bug } from 'lucide-react';
 import type { IndexedImageSegment } from 'browser-visual-search';
 import { Annotorious, OpenSeadragonAnnotator, OpenSeadragonViewer, useAnnotator } from '@annotorious/react';
 import type { AnnotationState, DrawingStyleExpression, ImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
+import { useImages } from '@/store';
 import { Dialog, DialogContent, DialogTitle } from '@/ui/Dialog';
 import { getOSDTilesets } from '@/utils/iiif';
 import { useVisualSearch, useVisualSearchAvailable } from '@/utils/useVisualSearch';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { DropdownMenuItem } from '@/ui/DropdownMenu';
-import { Bug } from 'lucide-react';
 
 interface VisualSearchDebugActionProps {
 
-  image: LoadedImage;
+  title: string;
+
+  imageId: string;
 
 }
 
@@ -32,25 +35,37 @@ export const getBounds = (segment: IndexedImageSegment, image: LoadedImage) => {
   }
 }
 
-const VisualSearchDebugViewer = (props: VisualSearchDebugActionProps) => {
+interface VisualSearchDebugViewerProps {
+
+  imageId: string;
+
+}
+
+const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
+  const image = useImages(props.imageId) as LoadedImage;
+
   const vs = useVisualSearch();
 
   const anno = useAnnotator();
 
-  const options: OpenSeadragon.Options = useMemo(() => ({
-    tileSources: 'data' in props.image ? {
-      type: 'image',
-      url: URL.createObjectURL(props.image.data)
-    } as object : getOSDTilesets(props.image.canvas),
-    gestureSettingsMouse: {
-      clickToZoom: false,
-      dblClickToZoom: false
-    },
-    crossOriginPolicy: 'Anonymous',
-    showNavigationControl: false,
-    minZoomLevel: 0.1,
-    maxZoomLevel: 100
-  }), [props.image]);
+  const options: OpenSeadragon.Options = useMemo(() => {
+    if (!image) return;
+
+    return {
+      tileSources: 'data' in image ? {
+        type: 'image',
+        url: URL.createObjectURL(image.data)
+      } as object : getOSDTilesets(image.canvas),
+      gestureSettingsMouse: {
+        clickToZoom: false,
+        dblClickToZoom: false
+      },
+      crossOriginPolicy: 'Anonymous',
+      showNavigationControl: false,
+      minZoomLevel: 0.1,
+      maxZoomLevel: 100
+    }
+  }, [image]);
 
   const style: DrawingStyleExpression = useMemo(() => (_: ImageAnnotation, state: AnnotationState) => {
     return {
@@ -62,13 +77,13 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugActionProps) => {
   }, []);
 
   useEffect(() => {
-    if (!vs.index || !anno) return;
+    if (!vs.index || !anno || !image) return;
 
-    const image = vs.index.getImage(props.image.id);
-    if (!image) return;
+    const indexedImage = vs.index.getImage(image.id);
+    if (!indexedImage) return;
 
-    const annotations = image?.segments.map(segment => {
-      const [x, y, w, h] = getBounds(segment, props.image);
+    const annotations = indexedImage.segments.map(segment => {
+      const [x, y, w, h] = getBounds(segment, image);
       return boundsToAnnotation({
         minX: x, 
         minY: y,
@@ -82,16 +97,16 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugActionProps) => {
     return () => {
       anno.clearAnnotations();
     }
-  }, [vs, anno, props.image]);
+  }, [vs, anno, image]);
 
-  return (
+  return image ? (
     <OpenSeadragonAnnotator
       style={style}>
       <OpenSeadragonViewer
         options={options} 
         className="size-full bg-muted border rounded [&_div]:outline-none" />
     </OpenSeadragonAnnotator>
-  )
+  ) : null;
 
 }
 
@@ -115,23 +130,24 @@ export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => 
         Inspect visual search index
       </DropdownMenuItem>
 
+
       <Dialog
         open={showVisualSearchDebug}
         onOpenChange={setShowVisualSearchDebug}>
         <DialogContent className="h-11/12 w-11/12 max-w-11/12 flex flex-col">
           <DialogTitle>
-            {props.image.name}
+            {props.title}
           </DialogTitle>
 
           <div className="grow relative">
             <Annotorious>
               <VisualSearchDebugViewer
-                image={props.image} />
+                imageId={props.imageId} />
             </Annotorious>
           </div>
         </DialogContent>
       </Dialog>
     </>
   ) : null;
-  
+
 }
