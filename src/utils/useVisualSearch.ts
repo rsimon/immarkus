@@ -26,6 +26,8 @@ export interface VisualSearch {
 
   index: VisualSearchIndex;
 
+  deleteIndex(): Promise<void>;
+
   runIndexing(onProgress?: (progress: IndexingProgress) => void): Promise<void>;
 
 }
@@ -50,6 +52,7 @@ export const useVisualSearch = (): VisualSearch => {
     return { 
       index: undefined as VisualSearchIndex, 
       indexStatus: { state: 'not_supported' }, 
+      deleteIndex: () => { throw new Error('Models missing') },
       runIndexing: () => { throw new Error('Models missing') }
     };
   }
@@ -185,7 +188,29 @@ export const useVisualSearch = (): VisualSearch => {
     onProgress?.({ phase: 'done', total });
   }, [index, storedImageIds]);
 
-  return useMemo(() => ({ index, runIndexing, indexStatus }), [index, runIndexing, indexStatus]);
+  const deleteIndex = useCallback(async () => {
+    if (!store) return;
+
+    try {
+      const rootHandle = store.getRootFolder().handle;
+      await rootHandle.removeEntry('.visual-search', { recursive: true });
+
+      cachedResult = null;
+      pendingPromise = null;
+
+      setIndex(undefined);
+      setIndexStatus({ state: 'index_missing' });
+    } catch (error) {
+      console.error('Failed to delete visual search index:', error);
+    }
+  }, [store]);
+
+  return useMemo(() => ({ 
+    index, 
+    indexStatus,
+    deleteIndex,
+    runIndexing
+  }), [index, indexStatus, deleteIndex, runIndexing]);
 
 }
 
