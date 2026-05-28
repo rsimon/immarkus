@@ -28,7 +28,7 @@ export const VisualSearch = () => {
   }, [store]);
 
   return (
-    <div className="mt-4 max-w-xl">
+    <div className="mt-4 max-w-2xl">
       {isIndexing ? (
         <IndexingInProgress 
           vs={vs} 
