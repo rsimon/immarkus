@@ -72,7 +72,7 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
       fill: '#ff1493',
       fillOpacity: state?.hovered ? 0.2 : 0.02,
       stroke: '#ff1493',
-      strokeOpacity: state?.hovered ? 0.7 : 0.2
+      strokeOpacity: state?.hovered ? 0.9 : 0.65
     };
   }, []);
 

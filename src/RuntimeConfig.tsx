@@ -9,7 +9,7 @@ export interface RuntimeConfiguration {
 
   visual_search?: {
     
-    segmenter_url: string;
+    segmenter_url: string | string[];
 
     embedder_url: string;
 

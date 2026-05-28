@@ -1,14 +1,24 @@
-import { Images, PanelsTopLeft } from 'lucide-react';
+import { ChevronDown, PanelsTopLeft } from 'lucide-react';
 import { Button } from '@/ui/Button';
-import { Separator } from '@/ui/Separator';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
 
 interface NoIndexProps {
 
   imageCount: number;
 
+  availableSegmenters: string[];
+
+  selectedSegmenter: string;
+
   onStartIndexing(): void;
 
+  onChangeSegmenter(url?: string): void;
+
 }
+
+const getModelName = (url: string) =>
+  url.split('/').pop()?.replace(/\.onnx$/, '') ?? '';
 
 export const NoIndex = (props: NoIndexProps) => {
 
@@ -30,13 +40,54 @@ export const NoIndex = (props: NoIndexProps) => {
         </p>
       </div>
 
-      <div className="flex flex-col items-center mt-11 mb-6 gap-10">
-        <Button
-          size="lg"
-          className="w-full"
-          onClick={props.onStartIndexing}>
-          Start indexing {props.imageCount} images
-        </Button>
+      <div className="flex flex-col mt-11 mb-2 gap-8">
+        <div>
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={() => props.onStartIndexing()}>
+            Start indexing {props.imageCount} images
+          </Button>
+
+          {props.availableSegmenters.length > 1 && (
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button variant="link" className="px-0.5 mt-1 font-light group w-full flex justify-start gap-1">
+                  Advanced Options
+                  <ChevronDown 
+                    className="size-4 group-data-[state=open]:rotate-180"/>
+                </Button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="rounded-md bg-muted p-4 text-xs">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+                  <div className="sm:self-center space-y-1">
+                    <p className="font-medium text-foreground">Segmentation model</p>
+                    <p className="text-muted-foreground">
+                      Controls how images are divided into searchable regions
+                    </p>
+                  </div>
+
+                  <Select 
+                    value={props.selectedSegmenter} 
+                    onValueChange={props.onChangeSegmenter}>
+                    <SelectTrigger className="w-full bg-background gap-1">
+                      <SelectValue />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {props.availableSegmenters.map(url => (
+                        <SelectItem key={url} value={url}>
+                          {getModelName(url)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+        </div>
 
         <p className="text-xs font-light text-muted-foreground leading-relaxed">
           Indexing runs directly in your browser and does not upload your 
