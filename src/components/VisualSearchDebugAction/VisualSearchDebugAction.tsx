@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/ui/Dialog';
 import { getOSDTilesets } from '@/utils/iiif';
 import { useVisualSearch, useVisualSearchAvailable } from '@/utils/useVisualSearch';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
-import { DropdownMenuItem } from '@/ui/DropdownMenu';
+import { DropdownMenuItem, DropdownMenuSeparator } from '@/ui/DropdownMenu';
 
 interface VisualSearchDebugActionProps {
 
@@ -125,9 +125,11 @@ export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => 
 
   return hasVisualSearch ? (
     <>
+      <DropdownMenuSeparator />
+
       <DropdownMenuItem onSelect={onOpenVSDebug}>
-        <Bug className="size-4 text-muted-foreground mr-2" />
-        Inspect visual search index
+        <Bug className="size-4 mr-2 text-amber-500" />
+        Inspect indexed patches
       </DropdownMenuItem>
 
 
