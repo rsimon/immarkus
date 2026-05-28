@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { openIndex, VisualSearchIndex } from 'browser-visual-search';
+import { indexExists, openIndex, VisualSearchIndex } from 'browser-visual-search';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
@@ -186,5 +186,41 @@ export const useVisualSearch = (): VisualSearch => {
   }, [index, storedImageIds]);
 
   return useMemo(() => ({ index, runIndexing, indexStatus }), [index, runIndexing, indexStatus]);
+
+}
+
+/**
+ * A faster, cached shortcut that provides "index exists" info with minimal overhead
+ */
+let cachedResult: boolean | null = null;
+let pendingPromise: Promise<boolean> | null = null;
+
+const getVisualSearchAvailable = (handle: FileSystemDirectoryHandle) => {
+  if (cachedResult !== null)
+    return Promise.resolve(cachedResult);
+
+  if (pendingPromise)
+    return pendingPromise;
+
+  pendingPromise = indexExists(handle).then(result => {
+    cachedResult = result;
+    return result;
+  });
+
+  return pendingPromise;
+}
+
+export const useVisualSearchAvailable = () => {
+
+  const store = useStore();
+
+  const [available, setAvailable] = useState(cachedResult);
+
+  useEffect(() => {
+    if (!store) return;
+    getVisualSearchAvailable(store.getRootFolder().handle).then(setAvailable);
+  }, [store]);
+
+  return available;
 
 }

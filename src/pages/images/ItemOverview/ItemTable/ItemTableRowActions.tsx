@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen, Trash2 } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
+import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 // import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
 import { Folder, IIIFManifestResource, Image } from '@/model';
 import { useStore } from '@/store';
@@ -149,6 +150,10 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               <DropdownMenuItem onSelect={() => props.onAddToWorkspace(imageId)}>
                 <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
               </DropdownMenuItem>
+
+              <VisualSearchDebugAction 
+                imageId={imageId}
+                title={props.data.name} />
             </>
           ) : isFolder ? (
             <DropdownMenuItem asChild>
@@ -167,6 +172,10 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
+
+              <VisualSearchDebugAction 
+                imageId={imageId}
+                title={props.data.name} />
             </>
           ) : (
             <>

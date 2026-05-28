@@ -1,4 +1,3 @@
-import { LoadedImage } from '@/model';
 import { ResolvedSearchResult } from './Types';
 
 export const getBounds = (result: ResolvedSearchResult) => {

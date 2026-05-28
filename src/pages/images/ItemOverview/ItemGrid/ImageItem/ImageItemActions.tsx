@@ -1,5 +1,6 @@
-import { Image } from '@/model';
 import { ImageIcon, Images, MoreVertical, NotebookPen } from 'lucide-react';
+import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
+import { LoadedImage } from '@/model';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +12,7 @@ interface ImageItemActionProps {
 
   className?: string;
 
-  image: Image;
+  image: LoadedImage;
 
   onSelect(): void;
 
@@ -44,6 +45,10 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
         <DropdownMenuItem onSelect={props.onAddToWorkspace}>
           <Images className="size-4 text-muted-foreground mr-2" /> Add to workspace
         </DropdownMenuItem>
+
+        <VisualSearchDebugAction 
+          title={props.image.name}
+          imageId={props.image.id} />
       </DropdownMenuContent>
     </DropdownMenu>
   )
