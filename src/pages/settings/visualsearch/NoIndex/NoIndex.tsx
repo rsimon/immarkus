@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { ChevronDown, PanelsTopLeft } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
-import { useRuntimeConfig } from '@/RuntimeConfig';
 
 interface NoIndexProps {
 
