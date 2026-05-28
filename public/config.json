@@ -72,7 +72,7 @@
   "visual_search": {
     "segmenter_url": [
       "https://huggingface.co/aboutgeo/immarkus/resolve/main/fastsam-s.onnx",
-      "/yolo8_shapes_only.onnx"
+      "https://huggingface.co/aboutgeo/immarkus/resolve/main/yolo8_shapes_only.onnx"
     ],
     "embedder_url": "https://huggingface.co/aboutgeo/immarkus/resolve/main/clip-vit-b32-visual.onnx"
   }
