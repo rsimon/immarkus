@@ -116,9 +116,6 @@ export const useVisualSearch = (segmenterUrl?: string): VisualSearch => {
   const runIndexing = useCallback(async (onProgress?: (progress: IndexingProgress) => void, skipExisting = true): Promise<void> => {
     if (!index || !store) return;
 
-    console.log(`Starting indexing process - segmenter:`);
-    console.log(currentSegmenterUrl);
-
     onProgress?.({ phase: 'initializing' });
 
     await index.downloadSegmentationModel(progress => {

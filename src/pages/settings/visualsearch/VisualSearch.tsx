@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { IIIFManifestResource } from '@/model';
 import { useVisualSearch } from '@/utils/useVisualSearch';
 import { useStore } from '@/store';
+import { useRuntimeConfig } from '@/RuntimeConfig';
 import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
 import { IndexingInProgress } from './IndexingInProgress';
@@ -13,9 +14,15 @@ export const VisualSearch = () => {
 
   const [isIndexing, setIsIndexing] = useState(false);
 
-  const [segmenterUrl, setSegmenterUrl] = useState<string | undefined>(undefined);
+  const { visual_search } = useRuntimeConfig();
 
-  const vs = useVisualSearch(segmenterUrl);
+  const availableSegmenters = visual_search.segmenter_url ?
+    Array.isArray(visual_search.segmenter_url) ? visual_search.segmenter_url : [visual_search.segmenter_url] :
+    [];
+
+  const [selectedSegmenter, setSelectedSegmenter] = useState(availableSegmenters[0]);
+
+  const vs = useVisualSearch(selectedSegmenter);
 
   const count = useMemo(() => {
     if (!store) return 0;
@@ -29,21 +36,19 @@ export const VisualSearch = () => {
     return imageCount + canvasCount;
   }, [store]);
 
-  const onStartIndexing = (segmenterUrl: string) => {
-    setSegmenterUrl(segmenterUrl);
-    setIsIndexing(true);
-  }
-
   return (
     <div className="mt-4 max-w-2xl">
-      {(isIndexing && segmenterUrl) ? (
+      {isIndexing ? (
         <IndexingInProgress 
           vs={vs} 
           onDone={() => setIsIndexing(false)} />
       ) : vs.indexStatus.state === 'index_missing' ? (
         <NoIndex 
           imageCount={count} 
-          onStartIndexing={onStartIndexing} />
+          availableSegmenters={availableSegmenters}
+          selectedSegmenter={selectedSegmenter}
+          onStartIndexing={() => setIsIndexing(true)} 
+          onChangeSegmenter={setSelectedSegmenter} />
       ) : vs.indexStatus.state === 'index_incomplete' ? (
         <IndexOutdated 
           toAdd={vs.indexStatus.toAdd} 

@@ -9,7 +9,13 @@ interface NoIndexProps {
 
   imageCount: number;
 
-  onStartIndexing(segmenterUrl?: string): void;
+  availableSegmenters: string[];
+
+  selectedSegmenter: string;
+
+  onStartIndexing(): void;
+
+  onChangeSegmenter(url?: string): void;
 
 }
 
@@ -17,19 +23,6 @@ const getModelName = (url: string) =>
   url.split('/').pop()?.replace(/\.onnx$/, '') ?? '';
 
 export const NoIndex = (props: NoIndexProps) => {
-
-  const { visual_search } = useRuntimeConfig();
-
-  const segmenterOptions = visual_search.segmenter_url ?
-    Array.isArray(visual_search.segmenter_url) ? visual_search.segmenter_url : [visual_search.segmenter_url] :
-    [];
-
-  const defaultSegmenter = segmenterOptions[0];
-
-  const [segmenterUrl, setSegmenterUrl] = useState<string>(defaultSegmenter);
-
-  const onStartIndexing = () =>
-    props.onStartIndexing(segmenterUrl !== defaultSegmenter ? segmenterUrl : undefined);
 
   return (
     <div className="text-sm">    
@@ -54,11 +47,11 @@ export const NoIndex = (props: NoIndexProps) => {
           <Button
             size="lg"
             className="w-full"
-            onClick={onStartIndexing}>
+            onClick={() => props.onStartIndexing()}>
             Start indexing {props.imageCount} images
           </Button>
 
-          {segmenterOptions.length > 1 && (
+          {props.availableSegmenters.length > 1 && (
             <Collapsible>
               <CollapsibleTrigger asChild>
                 <Button variant="link" className="px-0.5 mt-1 font-light group w-full flex justify-start gap-1">
@@ -78,14 +71,14 @@ export const NoIndex = (props: NoIndexProps) => {
                   </div>
 
                   <Select 
-                    value={segmenterUrl} 
-                    onValueChange={setSegmenterUrl}>
+                    value={props.selectedSegmenter} 
+                    onValueChange={props.onChangeSegmenter}>
                     <SelectTrigger className="w-full bg-background gap-1">
                       <SelectValue />
                     </SelectTrigger>
 
                     <SelectContent>
-                      {segmenterOptions.map(url => (
+                      {props.availableSegmenters.map(url => (
                         <SelectItem key={url} value={url}>
                           {getModelName(url)}
                         </SelectItem>
