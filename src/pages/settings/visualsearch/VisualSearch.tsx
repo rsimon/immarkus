@@ -11,9 +11,11 @@ export const VisualSearch = () => {
 
   const store = useStore();
 
-  const vs = useVisualSearch();
-
   const [isIndexing, setIsIndexing] = useState(false);
+
+  const [segmenterUrl, setSegmenterUrl] = useState<string | undefined>(undefined);
+
+  const vs = useVisualSearch(segmenterUrl);
 
   const count = useMemo(() => {
     if (!store) return 0;
@@ -27,16 +29,21 @@ export const VisualSearch = () => {
     return imageCount + canvasCount;
   }, [store]);
 
+  const onStartIndexing = (segmenterUrl: string) => {
+    setSegmenterUrl(segmenterUrl);
+    setIsIndexing(true);
+  }
+
   return (
     <div className="mt-4 max-w-2xl">
-      {isIndexing ? (
+      {(isIndexing && segmenterUrl) ? (
         <IndexingInProgress 
           vs={vs} 
           onDone={() => setIsIndexing(false)} />
       ) : vs.indexStatus.state === 'index_missing' ? (
         <NoIndex 
           imageCount={count} 
-          onStartIndexing={() => setIsIndexing(true)} />
+          onStartIndexing={onStartIndexing} />
       ) : vs.indexStatus.state === 'index_incomplete' ? (
         <IndexOutdated 
           toAdd={vs.indexStatus.toAdd} 

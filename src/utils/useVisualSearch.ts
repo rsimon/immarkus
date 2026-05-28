@@ -42,13 +42,21 @@ const fetchImage = (canvas: CozyCanvas): Promise<File> => {
     });
 }
 
-export const useVisualSearch = (): VisualSearch => {
+export const useVisualSearch = (segmenterUrl?: string): VisualSearch => {
 
   const store = useStore();
 
   const { visual_search: config } = useRuntimeConfig();
 
-  if (!config?.segmenter_url || !config.embedder_url) {
+  const currentEmbedderUrl: string | undefined = config?.embedder_url;
+
+  const currentSegmenterUrl: string | undefined = segmenterUrl || (
+    config?.segmenter_url 
+      ? Array.isArray(config.segmenter_url) ? config.segmenter_url[0] : config.segmenter_url 
+      : undefined
+  );
+
+  if (!currentEmbedderUrl || !currentSegmenterUrl) {
     return { 
       index: undefined as VisualSearchIndex, 
       indexStatus: { state: 'not_supported' }, 
@@ -56,8 +64,6 @@ export const useVisualSearch = (): VisualSearch => {
       runIndexing: () => { throw new Error('Models missing') }
     };
   }
-
-  const { segmenter_url, embedder_url } = config;
 
   const storedImageIds = useMemo(() => {
     if (!store) return [];
@@ -78,9 +84,11 @@ export const useVisualSearch = (): VisualSearch => {
   useEffect(() => {
     if (!store) return;
 
+    setIndexStatus({ state: 'loading' });
+
     openIndex(store.getRootFolder().handle, { 
-      segmenterUrl: segmenter_url,
-      embedderUrl: embedder_url, 
+      segmenterUrl: currentSegmenterUrl,
+      embedderUrl: currentEmbedderUrl, 
       create: true 
     }).then(index => {
       const indexedImageIds = index.images.map(i => i.imageId);
@@ -103,10 +111,13 @@ export const useVisualSearch = (): VisualSearch => {
       setIndexStatus({ state: 'index_missing' });
       console.error(error);
     });
-  }, [storedImageIds]);
+  }, [storedImageIds, currentSegmenterUrl, currentEmbedderUrl]);
 
   const runIndexing = useCallback(async (onProgress?: (progress: IndexingProgress) => void, skipExisting = true): Promise<void> => {
     if (!index || !store) return;
+
+    console.log(`Starting indexing process - segmenter:`);
+    console.log(currentSegmenterUrl);
 
     onProgress?.({ phase: 'initializing' });
 
@@ -114,7 +125,7 @@ export const useVisualSearch = (): VisualSearch => {
       if (progress.status === 'downloading') {
         onProgress?.({ 
           phase: 'downloading_model', 
-          model: config.segmenter_url, 
+          model: currentSegmenterUrl, 
           progress: progress.total ? Math.round(100 * progress.loaded / progress.total) : 0
         });
       }
@@ -124,7 +135,7 @@ export const useVisualSearch = (): VisualSearch => {
       if (progress.status === 'downloading') {
         onProgress?.({ 
           phase: 'downloading_model', 
-          model: config.embedder_url, 
+          model: currentEmbedderUrl, 
           progress: progress.total ? Math.round(100 * progress.loaded / progress.total) : 0
         });
       }
@@ -186,7 +197,7 @@ export const useVisualSearch = (): VisualSearch => {
     setIndexStatus({ state: 'index_complete' });
 
     onProgress?.({ phase: 'done', total });
-  }, [index, storedImageIds]);
+  }, [index, storedImageIds, currentEmbedderUrl, currentSegmenterUrl]);
 
   const deleteIndex = useCallback(async () => {
     if (!store) return;
