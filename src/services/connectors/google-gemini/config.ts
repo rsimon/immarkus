@@ -29,7 +29,7 @@ You need an API key to use Google Gemini. To get your own key:
       options: [
         ['gemini-2.0-flash', 'Google Gemini (gemini-2.0-flash)'],
         ['gemini-2.5-flash', 'Google Gemini (gemini-2.5-flash)'],
-        ['gemini-3-pro-preview', 'Google Gemini (gemini-3-pro-preview)'],
+        ['gemini-3.1-pro-preview', 'Google Gemini (gemini-3.1-pro-preview)'],
       ]
     }]
   },{
