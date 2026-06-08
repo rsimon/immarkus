@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
+import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { resolveManifestsWithId } from '@/utils/iiif';
@@ -21,8 +22,6 @@ import {
   toImageNode,
   toManifestNodes
 } from './graphBuilderUtils';
-import { CozyManifest } from 'cozy-iiif';
-
 
 export const useGraph = (settings: KnowledgeGraphSettings) => {
 

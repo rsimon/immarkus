@@ -113,20 +113,17 @@ export const getManifestStructurePrimitives = ({ id, manifest }: { id: string, m
         type: 'FOLDER_CONTAINS_SUBFOLDER'
       }))
   } else {
-    // No ToC structure
     return [];
   }
 }
 
 export const getCanvasManifestPrimitives = ({ id, manifest }: { id: string, manifest: CozyManifest }): GraphLinkPrimitive[] => {
   const toc = manifest.getTableOfContents();
-
   const getId = (node: CozyTOCNode) => `iiif:${id}@${murmur.v3(node.id)}`;
 
   return manifest.canvases.map(canvas => {
     // Find the ToC node that this canvas belongs to
-    const tocNode = toc.getNode(canvas.id);
-   
+    const tocNode = toc.getNode(canvas.id);   
     if (tocNode) {
       const source = 
         tocNode.parent?.navItems.length > 1 ? getId(tocNode.parent) :
@@ -143,8 +140,8 @@ export const getCanvasManifestPrimitives = ({ id, manifest }: { id: string, mani
     } else {
       // IIIF manifest without ToC
       return {
-        source: `iiif:${manifest.id}`,
-        target: `iiif:${manifest.id}:${canvas.id}`,
+        source: `iiif:${id}`,
+        target: `iiif:${id}:${murmur.v3(canvas.id)}`,
         type: 'FOLDER_CONTAINS_IMAGE'
       } as GraphLinkPrimitive;
     }
@@ -175,7 +172,7 @@ export const getEntityAnnotationPrimitives = (annotatedImages: { sourceId: strin
   annotatedImages.reduce<GraphLinkPrimitive[]>((all, { sourceId, annotations }) => {
       // n annotations on this image, each carrying 0 to m entity links
       const entityLinks = annotations.reduce<GraphLinkPrimitive[]>((all, annotation) => {
-        if ('selector' in annotation.target) {
+        if (typeof annotation.target !== 'string' && ('selector' in annotation.target)) {
           const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
 
           const source = sourceId.startsWith('iiif:') ? annotation.target.source : sourceId;
