@@ -1,5 +1,5 @@
 import { useMemo, useState, type MouseEvent } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { CopyPlus, SquarePen, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
 import { DraggableAttributes } from '@dnd-kit/core';
@@ -10,9 +10,9 @@ import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityBadge } from '@/components/EntityBadge';
 import { useDataModel, useStore } from '@/store';
-import { Button } from '@/ui/Button';
 import { AnnotationListItemRelation } from './AnnotationListItemRelation';
 import { cn } from '@/ui/utils';
+import { TooltippedButton } from '@/components/TooltippedButton';
 
 interface AnnotationListItemProps {
 
@@ -21,6 +21,8 @@ interface AnnotationListItemProps {
   isSelected?: boolean;
 
   onEdit(): void;
+
+  onDuplicate(): void;
 
   onDelete(): void;
 
@@ -92,7 +94,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           className="w-full text-left"
           onClick={evt => onClick(evt, props.annotation.id)}
           {...(props.dragAttributes || {})}
-          {...(props.dragListeners || {})}>
+          {...(props.dragListeners || {})}>
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">
@@ -148,21 +150,32 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           )}
 
           <div className="flex">
-            <Button 
+            <TooltippedButton 
               variant="ghost" 
               size="icon" 
-              className="rounded-full h-8 w-8 text-gray-400 hover:text-black"
+              className="h-8 w-8 text-gray-400 hover:text-black"
+              tooltip="Edit"
               onClick={props.onEdit}>
-              <Pencil className="h-3.5 w-3.5" />
-            </Button>
+              <SquarePen className="size-4" />
+            </TooltippedButton>
 
-            <Button 
+            <TooltippedButton 
               variant="ghost" 
               size="icon" 
-              className="rounded-full h-8 w-8 -ml-1.5 text-gray-400 hover:text-red-600"
+              className="h-8 w-8 text-gray-400 hover:text-black"
+              tooltip="Duplicate this annotation"
+              onClick={props.onDuplicate}>
+              <CopyPlus className="size-4" />
+            </TooltippedButton>
+
+            <TooltippedButton 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-gray-400 hover:text-red-600"
+              tooltip="Delete"
               onClick={() => setConfirmDelete(true)}>
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
+              <Trash2 className="size-4" />
+            </TooltippedButton>
           </div>
         </div>
       </div>

@@ -1,10 +1,12 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+import { ImageAnnotation, parseW3CImageAnnotation } from '@annotorious/react';
 import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
-import { AnnotationListItem } from './AnnotationListItem';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
 import { Separator } from '@/ui/Separator';
+import { AnnotationListItem } from './AnnotationListItem';
 import { SelectFilter } from './SelectFilter';
 import { SortableAnnotationList } from './sortable';
 import { SelectAll } from './SelectAll';
@@ -20,17 +22,34 @@ import {
 
 interface AnnotationListProps {
 
+  filterState?: FilterState;
+
   onEdit(): void;
 
-  filterState?: FilterState;
-  
   onChangeFilterState(filter?: FilterState): void;
 
 }
 
+const cloneAnnotation = (annotation: ImageAnnotation): ImageAnnotation => {
+  const id = uuidv4();
+
+  return {
+    id,
+    bodies: annotation.bodies.map(b => ({
+      ...b,
+      annotation: id
+    })),
+    target: {
+      ...annotation.target,
+      created: new Date(),
+      annotation: id
+    }
+  }
+}
+
 export const AnnotationList = (props: AnnotationListProps) => {
 
-  const manifold = useAnnotoriousManifold();
+  const manifold = useAnnotoriousManifold<ImageAnnotation, W3CImageAnnotation>();
 
   const { selected } = useSelection();
 
@@ -50,10 +69,20 @@ export const AnnotationList = (props: AnnotationListProps) => {
   const onEdit = (annotation: W3CImageAnnotation) => {
     manifold.setSelected(annotation.id);
 
-    const annotator = manifold.findAnnotator(annotation.id);
-    (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
+    const annotator = manifold.findAnnotator(annotation.id) as AnnotoriousOpenSeadragonAnnotator<ImageAnnotation, W3CImageAnnotation>;
+    annotator.fitBounds(annotation, { padding: 200});
 
     props.onEdit();
+  }
+
+  const onDuplicate = (annotation: W3CImageAnnotation) => {
+    const anno = manifold.findAnnotator(annotation.id);
+    const parsed = parseW3CImageAnnotation(annotation).parsed;
+
+    if (!anno || !parsed) return; // Should never happen
+
+    const clone = cloneAnnotation(parsed);
+    anno.state.store.addAnnotation(clone);
   }
 
   const onDelete = (annotation: W3CImageAnnotation) =>
@@ -166,6 +195,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                     annotation={annotation} 
                     isSelected={isSelected(annotation)}
                     onEdit={() => onEdit(annotation)}
+                    onDuplicate={() => onDuplicate(annotation)}
                     onDelete={() => onDelete(annotation)} />
                 </li>
               ))) : (
@@ -201,6 +231,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                           annotation={annotation} 
                           isSelected={isSelected(annotation)}
                           onEdit={() => onEdit(annotation)}
+                          onDuplicate={() => onDuplicate(annotation)}
                           onDelete={() => onDelete(annotation)} />
                       </li>
                     ))) : (
