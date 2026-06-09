@@ -40,6 +40,9 @@ export const useStore = () => {
   const bulkUpsertAnnotation = useCallback((imageId: string, annotations: W3CAnnotation[]) =>
     set(store.bulkUpsertAnnotation(imageId, annotations)), []);
 
+  const upsertAnnotation = useCallback((imageId: string, annotation: W3CAnnotation) =>
+    set(store.upsertAnnotation(imageId, annotation)), []);
+
   const reactive = useMemo(() => store ? {
     ...store,
     bulkUpsertAnnotation,
@@ -47,6 +50,7 @@ export const useStore = () => {
     deleteRelation,
     importIIIFResource,
     removeIIIFResource,
+    upsertAnnotation,
     upsertRelation
   } : undefined, [store]);
 

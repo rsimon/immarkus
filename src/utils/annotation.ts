@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 
 /** Returns the 'classifying' bodies with the given Entity Type, if any **/
@@ -53,3 +54,10 @@ export const getLastEdit = (annotations: W3CAnnotation[]): Date | undefined => {
       ? new Date(Math.max(...timestamps.map(t => t.getTime())))
       : undefined
 }
+
+export const cloneAnnotation = (annotation: W3CAnnotation): W3CAnnotation => ({
+  ...annotation,
+  id: uuidv4(),
+  body: Array.isArray(annotation.body) ? [...annotation.body] : [annotation.body],
+  target: Array.isArray(annotation.target) ? [...annotation.target] : annotation.target
+});

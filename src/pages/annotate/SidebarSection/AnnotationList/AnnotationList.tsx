@@ -1,10 +1,11 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
-import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
-import { AnnotationListItem } from './AnnotationListItem';
+import { ImageAnnotation, type AnnotoriousOpenSeadragonAnnotator, type W3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
+import { cloneAnnotation } from '@/utils/annotation';
 import { Separator } from '@/ui/Separator';
+import { AnnotationListItem } from './AnnotationListItem';
 import { SelectFilter } from './SelectFilter';
 import { SortableAnnotationList } from './sortable';
 import { SelectAll } from './SelectAll';
@@ -20,17 +21,17 @@ import {
 
 interface AnnotationListProps {
 
+  filterState?: FilterState;
+
   onEdit(): void;
 
-  filterState?: FilterState;
-  
   onChangeFilterState(filter?: FilterState): void;
 
 }
 
 export const AnnotationList = (props: AnnotationListProps) => {
 
-  const manifold = useAnnotoriousManifold();
+  const manifold = useAnnotoriousManifold<ImageAnnotation, W3CImageAnnotation>();
 
   const { selected } = useSelection();
 
@@ -50,10 +51,18 @@ export const AnnotationList = (props: AnnotationListProps) => {
   const onEdit = (annotation: W3CImageAnnotation) => {
     manifold.setSelected(annotation.id);
 
-    const annotator = manifold.findAnnotator(annotation.id);
-    (annotator as AnnotoriousOpenSeadragonAnnotator).fitBounds(annotation, { padding: 200});
+    const annotator = manifold.findAnnotator(annotation.id) as AnnotoriousOpenSeadragonAnnotator<ImageAnnotation, W3CImageAnnotation>;
+    annotator.fitBounds(annotation, { padding: 200});
 
     props.onEdit();
+  }
+
+  const onDuplicate = (annotation: W3CImageAnnotation) => {
+    const anno = manifold.findAnnotator(annotation.id);
+    if (!anno) return; // Should never happen
+
+    const clone = cloneAnnotation(annotation) as W3CImageAnnotation;
+    anno.addAnnotation(clone);
   }
 
   const onDelete = (annotation: W3CImageAnnotation) =>
@@ -166,6 +175,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                     annotation={annotation} 
                     isSelected={isSelected(annotation)}
                     onEdit={() => onEdit(annotation)}
+                    onDuplicate={() => onDuplicate(annotation)}
                     onDelete={() => onDelete(annotation)} />
                 </li>
               ))) : (
@@ -201,6 +211,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                           annotation={annotation} 
                           isSelected={isSelected(annotation)}
                           onEdit={() => onEdit(annotation)}
+                          onDuplicate={() => onDuplicate(annotation)}
                           onDelete={() => onDelete(annotation)} />
                       </li>
                     ))) : (
