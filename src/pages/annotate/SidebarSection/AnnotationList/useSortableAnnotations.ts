@@ -23,10 +23,7 @@ export const useSortableAnnotations = () => {
       )
     , Promise.resolve([]));
 
-    p.then(arr => {
-      console.log('setting', new Map(arr));
-      setAnnotations(new Map(arr))
-    });
+    p.then(arr => setAnnotations(new Map(arr)));
   }, [store, unsortedAnnotations]);
 
   const updateOrder = useCallback((sourceId: string, ids: string[]) => {

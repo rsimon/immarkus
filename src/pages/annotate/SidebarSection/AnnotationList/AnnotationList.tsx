@@ -1,9 +1,10 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
-import { ImageAnnotation, type AnnotoriousOpenSeadragonAnnotator, type W3CImageAnnotation } from '@annotorious/react';
+import { v4 as uuidv4 } from 'uuid';
+import { ImageAnnotation, parseW3CImageAnnotation } from '@annotorious/react';
+import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
-import { cloneAnnotation } from '@/utils/annotation';
 import { Separator } from '@/ui/Separator';
 import { AnnotationListItem } from './AnnotationListItem';
 import { SelectFilter } from './SelectFilter';
@@ -27,6 +28,23 @@ interface AnnotationListProps {
 
   onChangeFilterState(filter?: FilterState): void;
 
+}
+
+const cloneAnnotation = (annotation: ImageAnnotation): ImageAnnotation => {
+  const id = uuidv4();
+
+  return {
+    id,
+    bodies: annotation.bodies.map(b => ({
+      ...b,
+      annotation: id
+    })),
+    target: {
+      ...annotation.target,
+      created: new Date(),
+      annotation: id
+    }
+  }
 }
 
 export const AnnotationList = (props: AnnotationListProps) => {
@@ -59,10 +77,12 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const onDuplicate = (annotation: W3CImageAnnotation) => {
     const anno = manifold.findAnnotator(annotation.id);
-    if (!anno) return; // Should never happen
+    const parsed = parseW3CImageAnnotation(annotation).parsed;
 
-    const clone = cloneAnnotation(annotation) as W3CImageAnnotation;
-    anno.addAnnotation(clone);
+    if (!anno || !parsed) return; // Should never happen
+
+    const clone = cloneAnnotation(parsed);
+    anno.state.store.addAnnotation(clone);
   }
 
   const onDelete = (annotation: W3CImageAnnotation) =>
