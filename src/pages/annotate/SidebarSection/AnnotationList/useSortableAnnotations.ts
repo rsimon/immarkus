@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { W3CImageAnnotation } from '@annotorious/react';
-import { useAnnotations, useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { useStore } from '@/store';
 
 export const useSortableAnnotations = () => {
@@ -8,8 +8,6 @@ export const useSortableAnnotations = () => {
   const { sources } = useAnnotoriousManifold();
 
   const store = useStore();
-
-  const unsortedAnnotations = useAnnotations();
 
   const [annotations, setAnnotations] = useState<Map<string, W3CImageAnnotation[]>>(new Map());
 
@@ -24,7 +22,7 @@ export const useSortableAnnotations = () => {
     , Promise.resolve([]));
 
     p.then(arr => setAnnotations(new Map(arr)));
-  }, [store, unsortedAnnotations]);
+  }, [sources.join(':'), store]);
 
   const updateOrder = useCallback((sourceId: string, ids: string[]) => {
     const before = [...annotations.get(sourceId)];
