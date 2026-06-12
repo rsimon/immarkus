@@ -1,9 +1,24 @@
+import { Sorting } from '@/utils/useImageSorting';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
 import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
+import { useMemo } from 'react';
 
-export const ItemGrid = (props: ItemOverviewLayoutProps) => {
+interface ItemGridProps extends ItemOverviewLayoutProps {
+
+  sorting?: Sorting;
+
+}
+
+export const ItemGrid = (props: ItemGridProps) => {
+
+  const sortedFolders = useMemo(() => {
+    if (!props.sorting?.sortField || !props.sorting?.sortOrder) return props.folders;
+ 
+    // TODO
+    return props.folders;
+  }, [props.folders, props.sorting]);
 
   return (
     <div className="item-grid">

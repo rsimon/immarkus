@@ -124,6 +124,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
           selected={props.selected}
+          sorting={sorting}
           onOpenFolder={onOpenFolder} 
           onOpenImage={openInAnnotationView} 
           onAddToWorkspace={addToAnnotationView}
