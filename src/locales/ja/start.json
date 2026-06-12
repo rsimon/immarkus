@@ -1,0 +1,12 @@
+{
+  "open": {
+    "welcome": "IMMARKUS へようこそ",
+    "openNewFolder": "新しいフォルダを開く",
+    "hint": "既存の作業フォルダ、または画像ファイルの入った新しいフォルダを開いてください。IMMARKUS は初めてですか? <wikiLink>詳しくはこちら</wikiLink>"
+  },
+  "loading": "読み込み中...",
+  "unsupportedBrowser": {
+    "title": "サポート対象外のブラウザ",
+    "description": "IMMARKUS は<featuresLink>実験的なブラウザ機能</featuresLink>を使用しているため、Firefox、Safari、モバイル端末では現在ご利用いただけません。デスクトップ版の Chrome または Edge をお使いください。"
+  }
+}

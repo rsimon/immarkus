@@ -7,6 +7,7 @@ import { Toaster } from '@/ui/Toaster';
 import { App } from '@/App';
 import { RuntimeConfig } from './RuntimeConfig';
 
+import './i18n';
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('app')!).render(

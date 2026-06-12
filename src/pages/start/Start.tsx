@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useInitStore } from '@/store';
 import { Loading } from './Loading';
 import { Open } from './Open';
@@ -53,8 +54,12 @@ export const Start = (props: StartProps) => {
     new Intl.DateTimeFormat('de', { day: '2-digit', month: '2-digit', year: 'numeric' })
       .format(new Date(process.env.BUILD_DATE));
 
-  return ( 
+  return (
     <div>
+      <div className="absolute top-2 left-2">
+        <LanguageSwitcher />
+      </div>
+
       <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
         v{process.env.PACKAGE_VERSION} · Build {buildDate}
       </div>

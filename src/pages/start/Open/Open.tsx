@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Folder } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { getStoredHandles } from '../storedHandles';
 
@@ -13,7 +14,9 @@ interface OpenProps {
 
 export const Open = (props: OpenProps) => {
 
-  const [storedHandles, setStoredHandles] = 
+  const { t } = useTranslation('start');
+
+  const [storedHandles, setStoredHandles] =
     useState<FileSystemDirectoryHandle[]>([]);
 
   useEffect(() => {
@@ -24,11 +27,11 @@ export const Open = (props: OpenProps) => {
     <div className="h-dvh flex flex-col w-full">
       <main className="grow flex items-center justify-center">
         <div className="cta pt-20 text-center">
-          <h1 className="font-medium mb-4 text-lg">Welcome to IMMARKUS</h1>
+          <h1 className="font-medium mb-4 text-lg">{t('open.welcome')}</h1>
           <div className="buttons flex justify-center gap-2">
             <Button 
               onClick={() => props.onOpenFolder()}>
-              <Folder size={18} className="mr-2" /> Open New Folder
+              <Folder size={18} className="mr-2" /> {t('open.openNewFolder')}
             </Button>
 
             {storedHandles.length > 0 && (
@@ -41,8 +44,12 @@ export const Open = (props: OpenProps) => {
           </div>
           
           <p className="text-xs text-muted-foreground mt-4 leading-relaxed max-w-sm mx-auto">
-            Open an existing work folder, or a new folder with image files. New to
-            IMMARKUS? <a className="text-sky-700 underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank">Learn more</a>.
+            <Trans
+              ns="start"
+              i18nKey="open.hint"
+              components={{
+                wikiLink: <a className="text-sky-700 underline" href="https://github.com/rsimon/immarkus/wiki" target="_blank" />
+              }} />
           </p>
         </div>
       </main>

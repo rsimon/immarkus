@@ -1,0 +1,12 @@
+{
+  "open": {
+    "welcome": "Welcome to IMMARKUS",
+    "openNewFolder": "Open New Folder",
+    "hint": "Open an existing work folder, or a new folder with image files. New to IMMARKUS? <wikiLink>Learn more</wikiLink>."
+  },
+  "loading": "Loading...",
+  "unsupportedBrowser": {
+    "title": "Unsupported Browser",
+    "description": "IMMARKUS uses <featuresLink>experimental browser features</featuresLink> currently unavailable on Firefox, Safari and mobile devices. Please use Chrome or Edge on the Desktop to access this site."
+  }
+}
