@@ -4,13 +4,20 @@ import { useSearchParams } from 'react-router-dom';
 import { CanvasInformation } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { Sorting } from '@/utils/useImageSorting';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { IIIFRangeItem } from './IIIFRangeItem';
 import { CanvasItem } from '../../Types';
 import { IIIFManifestOverviewLayoutProps } from '../IIIFManifestOverviewLayoutProps';
 import { getAnnotationsInRange } from '../../ImagesUtils';
 
-export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
+interface IIIFManifestGridProps extends IIIFManifestOverviewLayoutProps {
+
+  sorting?: Sorting;
+
+}
+
+export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
   const { annotations, canvases, folders, hideUnannotated } = props;
 

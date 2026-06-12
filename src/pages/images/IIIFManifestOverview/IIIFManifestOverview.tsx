@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CozyCanvas, CozyRange } from 'cozy-iiif';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { useImageSorting } from '@/utils/useImageSorting';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { useManifestAnnotations } from '@/store/hooks';
 import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
@@ -39,7 +40,9 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
   const navigate = useNavigate();
 
   const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
-
+  
+  const { sorting, onSort } = useImageSorting();
+  
   const parsedManifest = useIIIFResource(props.manifest.id);
 
   const annotations = useManifestAnnotations(props.manifest.id, { 
@@ -116,7 +119,9 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
         manifest={props.manifest} 
         breadcrumbs={breadcrumbs}
         hideUnannotated={props.hideUnannotated} 
+        sorting={sorting}
         onChangeHideUnannotated={props.onChangeHideUnannotated}
+        onChangeSorting={onSort}
         onSetLayout={setLayout}
         onShowMetadata={props.onShowMetadata} />
 
@@ -129,6 +134,7 @@ export const IIIFManifestOverview = (props: IIIFManifestOverviewProps) => {
           loading={loading}
           manifest={props.manifest}
           selected={props.selected}
+          sorting={sorting}
           onOpenCanvas={canvas => openInAnnotationView(getImageId(canvas))}
           onAddToWorkspace={canvas => addToAnnotationView(getImageId(canvas))}
           onOpenRange={onOpenRange}

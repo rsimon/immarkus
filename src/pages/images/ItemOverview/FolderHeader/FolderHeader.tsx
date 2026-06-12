@@ -7,8 +7,7 @@ import { Button } from '@/ui/Button';
 import { Sorting } from '@/utils/useImageSorting';
 import { isRootFolder, OverviewLayout } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
-import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
-import { GridSorting } from './GridSorting';
+import { FilterByAnnotations, GridSorting, ToggleLayout } from '../../HeaderControls';
 
 interface FolderHeaderProps {
 

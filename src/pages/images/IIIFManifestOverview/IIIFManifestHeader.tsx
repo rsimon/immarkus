@@ -7,8 +7,14 @@ import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
-import { FilterByAnnotations, IIIFOpenOtherViewer, ToggleLayout } from '../HeaderControls';
+import { Sorting } from '@/utils/useImageSorting';
 import { OverviewLayout } from '../Types';
+import { 
+  FilterByAnnotations, 
+  GridSorting, 
+  IIIFOpenOtherViewer, 
+  ToggleLayout 
+} from '../HeaderControls';
 
 interface IIIFManifestHeaderProps {
   
@@ -19,8 +25,12 @@ interface IIIFManifestHeaderProps {
   layout: OverviewLayout;
 
   manifest: IIIFManifestResource;
+
+  sorting: Sorting;
   
   onChangeHideUnannotated(hide: boolean): void;
+
+  onChangeSorting(sorting: Sorting): void;
 
   onSetLayout(layout: OverviewLayout): void;
 
@@ -106,6 +116,12 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
         <ToggleLayout 
           layout={props.layout} 
           onSetLayout={props.onSetLayout} />
+
+        {props.layout === 'grid' && (
+          <GridSorting 
+            sorting={props.sorting} 
+            onChange={props.onChangeSorting} />
+        )}
       </p>
     </div>
   )
