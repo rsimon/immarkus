@@ -1,37 +1,17 @@
+import { useMemo } from 'react';
+import { IIIFManifestResource } from '@/model';
 import { Sorting } from '@/utils/useImageSorting';
+import { isSingleImageManifest } from '@/utils/iiif';
+import { sortGridItems } from '../../ImagesUtils';
+import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
 import { FolderItem } from './FolderItem';
 import { IIIFManifestItem } from './IIIFManifestItem';
 import { ImageItem } from './ImageItem';
-import { ItemOverviewLayoutProps } from '../ItemOverviewLayoutProps';
-import { useMemo } from 'react';
-import { isSingleImageManifest } from '@/utils/iiif';
-import { IIIFManifestResource } from '@/model';
 
 interface ItemGridProps extends ItemOverviewLayoutProps {
 
   sorting?: Sorting;
 
-}
-
-const sortItems = <T extends { id: string; name: string }>(
-  items: T[],
-  sorting: Sorting | undefined,
-  getAnnotationCount: (item: T) => number
-): T[] => {
-  if (!sorting?.sortField || !sorting?.sortOrder) {
-    return items;
-  }
-
-  return [...items].sort((a, b) => {
-    if (sorting.sortField === 'name') {
-      return sorting.sortOrder * a.name.localeCompare(b.name);
-    } else if (sorting.sortField === 'annotations') {
-      const annotationsA = getAnnotationCount(a);
-      const annotationsB = getAnnotationCount(b);
-      return (annotationsA - annotationsB) * sorting.sortOrder;
-    }
-    return 0;
-  });
 }
 
 export const ItemGrid = (props: ItemGridProps) => {
@@ -52,8 +32,11 @@ export const ItemGrid = (props: ItemGridProps) => {
       ...folderLikeManifests
     ];
 
-    return sortItems(unsorted, props.sorting, item => 
-      (props.annotations.folders[item.id] || []).length);
+    return sortGridItems(
+      unsorted, 
+      props.sorting, 
+      item => (props.annotations.folders[item.id] || []).length, 
+      item => item.name);
   }, [props.folders, props.sorting, props.annotations.folders, folderLikeManifests]);
 
   const sortedImages = useMemo(() => {
@@ -62,8 +45,11 @@ export const ItemGrid = (props: ItemGridProps) => {
       ...singleImageManifests
     ];
 
-    return sortItems(unsorted, props.sorting, item => 
-      (props.annotations.images[item.id] || []).length);
+    return sortGridItems(
+      unsorted, 
+      props.sorting, 
+      item => (props.annotations.images[item.id] || []).length, 
+      item => item.name);
   }, [props.images, singleImageManifests, props.sorting, props.annotations.images]);
 
   return (

@@ -4,6 +4,7 @@ import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
 import { Skeleton } from '@/ui/Skeleton';
+import { Sorting } from '@/utils/useImageSorting';
 import { ItemTableRow } from './Types';
 import { 
   ArrowDownNarrowWide, 
@@ -108,4 +109,25 @@ export const getAnnotationsInRange = (range: CozyRange, annotations: Record<stri
   }, []);
 
   return [...annotationsOnCanvases, ...annotationsOnSubRanges];
+}
+
+export const sortGridItems = <T extends any>(
+  items: T[],
+  sorting: Sorting | undefined,
+  getAnnotationCount: (item: T) => number,
+  getName: (item: T) => string
+): T[] => {
+  if (!sorting?.sortField || !sorting?.sortOrder)
+    return items;
+
+  return [...items].sort((a, b) => {
+    if (sorting.sortField === 'name') {
+      return sorting.sortOrder * getName(a).localeCompare(getName(b));
+    } else if (sorting.sortField === 'annotations') {
+      const annotationsA = getAnnotationCount(a);
+      const annotationsB = getAnnotationCount(b);
+      return (annotationsA - annotationsB) * sorting.sortOrder;
+    }
+    return 0;
+  });
 }
