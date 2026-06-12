@@ -2,21 +2,25 @@ import { transcribeOpenAICompatible } from '@/services/utils';
 
 export const transcribe = (image: File | string, options?: Record<string, any>) => {
   const apiKey = options['api-key'];
+  const model = options['model'];
 
   // Should never happen
   if (!apiKey)
     throw new Error('Missing API key');
 
+  const generator = {
+    id: model,
+    name: `Claude (${model})`,
+    homepage: 'https://www.anthropic.com/api'
+  };
+
   return transcribeOpenAICompatible(
     image,
     apiKey,
     'https://api.anthropic.com/v1',
-    'claude-opus-4-20250514',
+    model,
+    generator, 
     { 
-      id: 'claude-opus-4-20250514',
-      name: 'OpenAI Claude Opus 4 (claude-opus-4-20250514)',
-      homepage: 'https://www.anthropic.com/api'
-    }, { 
       'anthropic-dangerous-direct-browser-access': 'true' 
     }
   );

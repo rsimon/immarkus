@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
-import { HeadersLike } from 'node_modules/openai/internal/headers.mjs';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { Generator, PageTransform, Region, TranscriptionServiceResponse, TranslationServiceResponse } from './Types';
@@ -51,7 +50,7 @@ export const transcribeOpenAICompatible = (
   baseURL: string,
   model: string,
   generator: Generator,
-  defaultHeaders?: HeadersLike
+  defaultHeaders?: any
 ): Promise<TranscriptionServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
@@ -64,7 +63,7 @@ export const transcribeOpenAICompatible = (
     return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      temperature: 0.1, // Low temperature for consistent JSON
+      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{
@@ -163,7 +162,7 @@ export const translateOpenAICompatible = (
   model: string,
   generator: Generator,
   language?: string,
-  defaultHeaders?: HeadersLike
+  defaultHeaders?: any
 ): Promise<TranslationServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
@@ -177,7 +176,7 @@ export const translateOpenAICompatible = (
   return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      temperature: 0.1, // Low temperature for consistent JSON
+      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{

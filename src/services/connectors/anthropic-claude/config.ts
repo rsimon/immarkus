@@ -9,7 +9,17 @@ export const config: ServiceConnectorConfig = {
     type: 'credential',
     id: 'api-key',
     displayName: 'Your API Key',
-    required: true
+    required: true,
+  }, {
+    type: 'string',
+    id: 'model',
+    displayName: 'Model',
+    required: true,
+    persist: true,
+    options: [
+      ['claude-opus-4-20250514', 'Claude Opus 4'],
+      ['claude-fable-5', 'Claude Fable 5'],
+    ]
   }],
   services: [{
     type: 'TRANSCRIPTION',
