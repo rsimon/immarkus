@@ -1,4 +1,5 @@
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';
+import { SortOrder } from 'primereact/datatable';
 import { Sorting } from '@/utils/useImageSorting';
 import { 
   DropdownMenu, 
@@ -8,24 +9,37 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { SortOrder } from 'primereact/datatable';
 
 interface GridSortingProps {
 
+  allowUnsorted?: boolean;
+
   sorting: Sorting;
 
-  onChange(sorting:Sorting): void;
+  onChange(sorting?: Sorting): void;
 
 }
 
 const LABELS = {
   'name': 'Name',
   'annotations': 'Annotations',
-  undefined: 'Unsorted'
+  undefined: 'Manifest Order'
 };
 
+const UNSORTED = 'unsorted';
+
 export const GridSorting = (props: GridSortingProps) => {
-  const { sorting, onChange } = props;
+  const { allowUnsorted, sorting, onChange } = props;
+  
+  const isUnsorted = !(sorting?.sortField && sorting?.sortOrder);
+
+  const onSortFieldChange = (sortField: string) => {
+    if (sortField === UNSORTED) {
+      onChange(undefined);
+    } else {
+      onChange({ sortOrder: sorting?.sortOrder || 1 as SortOrder, sortField });
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -43,9 +57,14 @@ export const GridSorting = (props: GridSortingProps) => {
 
       <DropdownMenuContent>
         <DropdownMenuRadioGroup
-          value={sorting?.sortField}
-          onValueChange={sortField => 
-            onChange({ sortOrder: sorting?.sortOrder || 1 as SortOrder, sortField })}>
+          value={sorting?.sortField || UNSORTED}
+          onValueChange={onSortFieldChange}>
+          {allowUnsorted && (
+            <DropdownMenuRadioItem value={UNSORTED}>
+              Manifest order
+            </DropdownMenuRadioItem>
+          )}
+
           <DropdownMenuRadioItem value="name">
             Name
           </DropdownMenuRadioItem>
@@ -62,13 +81,15 @@ export const GridSorting = (props: GridSortingProps) => {
           onValueChange={value => onChange({ ...sorting, sortOrder: Number(value) as SortOrder })}>
           <DropdownMenuRadioItem 
             value="1"
-            className="gap-1.5">
+            className="gap-1.5"
+            disabled={isUnsorted}>
             <ArrowDownNarrowWide className="size-4" /> Ascending
           </DropdownMenuRadioItem>
 
           <DropdownMenuRadioItem 
             value="-1"
-            className="gap-1.5">
+            className="gap-1.5"
+            disabled={isUnsorted}>
             <ArrowUpNarrowWide className="size-4" /> Descending
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>

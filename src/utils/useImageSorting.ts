@@ -13,18 +13,25 @@ export interface Sorting {
 
 export const useImageSorting = () => {
 
-  const [sorting, setSorting] = useState<Sorting>(() => {
+  const [sorting, setSorting] = useState<Sorting | null>(() => {
     const saved = localStorage.getItem(KEY_IMAGE_SORTING);
     return saved ? JSON.parse(saved) : null;
   });
 
   useEffect(() => {
-    localStorage.setItem(KEY_IMAGE_SORTING, JSON.stringify(sorting));
+    if (sorting)
+      localStorage.setItem(KEY_IMAGE_SORTING, JSON.stringify(sorting));
+    else
+      localStorage.removeItem(KEY_IMAGE_SORTING);
   }, [sorting, KEY_IMAGE_SORTING]);
 
-  const onSort = (sorting: Sorting) => {
-    const { sortField, sortOrder } = sorting;
-    setSorting({ sortField, sortOrder });
+  const onSort = (sorting?: Sorting) => {
+    if (sorting) {
+      const { sortField, sortOrder } = sorting;
+      setSorting({ sortField, sortOrder });
+    } else {
+      setSorting(null);
+    }
   }
 
   return {

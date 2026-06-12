@@ -118,9 +118,13 @@ export const IIIFManifestHeader = (props: IIIFManifestHeaderProps) => {
           onSetLayout={props.onSetLayout} />
 
         {props.layout === 'grid' && (
-          <GridSorting 
-            sorting={props.sorting} 
-            onChange={props.onChangeSorting} />
+          <>
+            <span>·</span>
+            <GridSorting 
+              allowUnsorted
+              sorting={props.sorting} 
+              onChange={props.onChangeSorting} />
+          </>
         )}
       </p>
     </div>
