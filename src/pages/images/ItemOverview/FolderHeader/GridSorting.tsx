@@ -44,7 +44,8 @@ export const GridSorting = (props: GridSortingProps) => {
       <DropdownMenuContent>
         <DropdownMenuRadioGroup
           value={sorting?.sortField}
-          onValueChange={sortField => onChange({ ...sorting, sortField })}>
+          onValueChange={sortField => 
+            onChange({ sortOrder: sorting?.sortOrder || 1 as SortOrder, sortField })}>
           <DropdownMenuRadioItem value="name">
             Name
           </DropdownMenuRadioItem>
