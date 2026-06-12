@@ -19,12 +19,12 @@ export const IIIFRangeItem = (props: IIIFRangeItemProps) => {
     <div>
       <div 
         className="folder-item cursor-pointer relative rounded-md 
-          w-[200px] h-[200px] flex justify-center items-center">
+          w-50 h-50 flex justify-center items-center">
 
         <button 
           onClick={props.onOpen}>
           <FolderIcon 
-            className="scale w-[190px] h-[190px] transition-all drop-shadow-md" />
+            className="scale w-47.5 h-47.5 transition-all drop-shadow-md" />
 
           <IIIFIcon
             light
@@ -41,7 +41,7 @@ export const IIIFRangeItem = (props: IIIFRangeItemProps) => {
 
       <div className="ml-2">
         <h3
-          className="text-sm max-w-[200px] overflow-hidden text-ellipsis">
+          className="text-sm max-w-50 overflow-hidden text-ellipsis">
           {props.range.getLabel()}
         </h3>
       </div>

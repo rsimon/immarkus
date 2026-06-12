@@ -4,6 +4,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
 import { useOpenInAnnotationView } from '@/pages/annotate';
 import { useImages, useStore } from '@/store';
+import { useImageSorting } from '@/utils/useImageSorting';
 import { usePersistentState } from '@/utils/usePersistentState';
 import { FolderHeader } from './FolderHeader';
 import { ItemGrid } from './ItemGrid';
@@ -33,6 +34,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
   const store = useStore();
 
   const navigate = useNavigate();
+
+  const { sorting, onSort } = useImageSorting();
 
   const { openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
@@ -107,6 +110,8 @@ export const ItemOverview = (props: ItemOverviewProps) => {
         folder={props.folder} 
         hideUnannotated={props.hideUnannotated}
         layout={layout}
+        sorting={sorting}
+        onChangeSorting={onSort}
         onSetLayout={setLayout}
         onShowMetadata={props.onShowMetadata} 
         onChangeHideUnannotated={props.onChangeHideUnannotated} />
@@ -119,6 +124,7 @@ export const ItemOverview = (props: ItemOverviewProps) => {
           iiifResources={filteredIIIFResources}
           images={filteredImages} 
           selected={props.selected}
+          sorting={sorting}
           onOpenFolder={onOpenFolder} 
           onOpenImage={openInAnnotationView} 
           onAddToWorkspace={addToAnnotationView}

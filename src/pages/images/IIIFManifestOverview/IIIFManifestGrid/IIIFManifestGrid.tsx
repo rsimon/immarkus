@@ -4,13 +4,20 @@ import { useSearchParams } from 'react-router-dom';
 import { CanvasInformation } from '@/model';
 import { Skeleton } from '@/ui/Skeleton';
 import { useIIIFResource } from '@/utils/iiif/hooks';
+import { Sorting } from '@/utils/useImageSorting';
 import { IIIFCanvasItem } from './IIIFCanvasItem';
 import { IIIFRangeItem } from './IIIFRangeItem';
 import { CanvasItem } from '../../Types';
 import { IIIFManifestOverviewLayoutProps } from '../IIIFManifestOverviewLayoutProps';
-import { getAnnotationsInRange } from '../../ImagesUtils';
+import { getAnnotationsInRange, sortGridItems } from '../../ImagesUtils';
 
-export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
+interface IIIFManifestGridProps extends IIIFManifestOverviewLayoutProps {
+
+  sorting?: Sorting;
+
+}
+
+export const IIIFManifestGrid = (props: IIIFManifestGridProps) => {
 
   const { annotations, canvases, folders, hideUnannotated } = props;
 
@@ -35,6 +42,22 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
 
     return hideUnannotated ? canvases.filter(hasAnnotation) : canvases;
   }, [hideUnannotated, canvases, annotations]);
+
+  const sortedFolders = useMemo(() => (
+    sortGridItems(
+      filteredFolders, 
+      props.sorting,
+      folder => annotationsPerFolder[folder.id] || 0, 
+      folder => folder.getLabel() || '')
+  ), [filteredFolders, props.sorting, annotationsPerFolder]);
+
+  const sortedCanvases = useMemo(() => (
+    sortGridItems(
+      filteredCanvases, 
+      props.sorting,
+      canvas => (annotations[canvas.id] || []).length,
+      canvas => canvas.name)
+  ), [filteredCanvases, props.sorting, annotations]);
 
   useLayoutEffect(() => {
     const canvasId = queryParams.get('canvas');
@@ -71,9 +94,9 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
     <div className="item-grid">
       {parsedManifest ? (
         <>
-          {filteredFolders.length > 0 && (
+          {sortedFolders.length > 0 && (
             <ul>
-              {filteredFolders.map((folder, idx) => (
+              {sortedFolders.map((folder, idx) => (
                 <li key={`${folder.id}:${idx}`}>
                   <IIIFRangeItem 
                     annotationCount={annotationsPerFolder[folder.id]}
@@ -85,7 +108,7 @@ export const IIIFManifestGrid = (props: IIIFManifestOverviewLayoutProps) => {
           )}
 
           <ul>
-            {filteredCanvases.map((canvas, idx) => (
+            {sortedCanvases.map((canvas, idx) => (
               <li 
                 key={`${canvas.id}:${idx}`}
                 id={canvas.id}>

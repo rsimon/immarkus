@@ -42,8 +42,6 @@ export const FolderItem = (props: FolderItemProps) => {
     }
   }, [images.length, folders.length, iiifResources.length]);
 
-  const isEmpty = (images.length + folders.length + iiifResources.length) === 0;
-
   return (
     <div>
       <div 
