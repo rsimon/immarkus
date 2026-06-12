@@ -1,12 +1,14 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, NotebookPen } from 'lucide-react';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
 import { Button } from '@/ui/Button';
+import { Sorting } from '@/utils/useImageSorting';
 import { isRootFolder, OverviewLayout } from '../../Types';
 import { IIIFImporter } from '../../IIIFImporter';
 import { FilterByAnnotations, ToggleLayout } from '../../HeaderControls';
+import { GridSorting } from './GridSorting';
 
 interface FolderHeaderProps {
 
@@ -16,11 +18,15 @@ interface FolderHeaderProps {
 
   layout: OverviewLayout;
 
+  sorting: Sorting;
+
   onSetLayout(layout: OverviewLayout): void;
 
   onShowMetadata(): void;
 
   onChangeHideUnannotated(hide: boolean): void;
+
+  onChangeSorting(sorting: Sorting): void;
 
 }
 
@@ -29,10 +35,6 @@ export const FolderHeader = (props: FolderHeaderProps) => {
   const { folder } = props;
 
   const store = useStore();
-
-  const images = useMemo(() => {
-    return store.getFolderContents(folder.handle)?.images.length || 0;
-  }, [folder, store]);
 
   return (
     <div className="space-y-1 grow">
@@ -84,6 +86,12 @@ export const FolderHeader = (props: FolderHeaderProps) => {
         <ToggleLayout 
           layout={props.layout} 
           onSetLayout={props.onSetLayout} />
+
+        {props.layout === 'grid' && (
+          <GridSorting 
+            sorting={props.sorting} 
+            onChange={props.onChangeSorting} />
+        )}
       </p>
     </div>
   )

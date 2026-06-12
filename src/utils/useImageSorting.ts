@@ -30,6 +30,7 @@ export const useImageSorting = () => {
   return {
     sortField: sorting?.sortField,
     sortOrder: sorting?.sortOrder,
+    sorting,
     onSort  
   };
 
