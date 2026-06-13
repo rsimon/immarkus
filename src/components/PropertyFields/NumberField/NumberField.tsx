@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
@@ -31,6 +32,8 @@ const toString = (value?: number | number[]) => {
 
 export const NumberField = (props: NumberFieldProps) => {
 
+  const { t } = useTranslation('common');
+
   const { id, definition } = props;
 
   const [value, setValue] = useState<string | string[]>(toString(props.value));
@@ -61,8 +64,8 @@ export const NumberField = (props: NumberFieldProps) => {
     }
   }, [value]);
 
-  const error = (showErrors && !isValid) 
-    ? value ? 'must be a number' : 'required' : '';
+  const error = (showErrors && !isValid)
+    ? value ? t('propertyFields.mustBeNumber') : t('propertyFields.required') : '';
 
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 

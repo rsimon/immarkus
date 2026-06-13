@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { EnumPropertyDefinition, PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { 
@@ -23,6 +24,8 @@ interface PropertyPreviewProps {
 
 export const PropertyPreview = (props: PropertyPreviewProps) => {
 
+  const { t } = useTranslation('common');
+
   const stub = props.property;
 
   const preview = {
@@ -33,7 +36,7 @@ export const PropertyPreview = (props: PropertyPreviewProps) => {
   return (
     <div className="bg-muted px-8 py-4 border-l col-span-2">
       <h2 className="font-medium">
-        Property Preview
+        {t('propertyDefinitionEditor.previewTitle')}
       </h2>
 
       <p className="text-left text-xs leading-relaxed mt-1 mb-12">

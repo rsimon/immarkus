@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EntityType } from '@/model';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { Editor } from './Editor';
@@ -17,6 +18,8 @@ interface EntityTypeDialogProps {
 }
 
 export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
+
+  const { t } = useTranslation('common');
 
   const { toast } = useToast();
 
@@ -39,9 +42,9 @@ export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
     toast({
       variant: 'destructive',
       // @ts-ignore
-      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-      description: 'Something went wrong. Could not save entity type.'
-    });   
+      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> {t('entityTypeEditor.errorTitle')}</ToastTitle>,
+      description: t('entityTypeEditor.saveError')
+    });
   }
 
   return (
@@ -57,11 +60,11 @@ export const EntityTypeEditor = (props: EntityTypeDialogProps) => {
 
       <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
         <DialogTitle className="hidden">
-          Entity Class Editor
+          {t('entityTypeEditor.dialogTitle')}
         </DialogTitle>
-        
+
         <DialogDescription className="hidden">
-          Edit your entity class definition.
+          {t('entityTypeEditor.dialogDescription')}
         </DialogDescription>
 
         <Editor 

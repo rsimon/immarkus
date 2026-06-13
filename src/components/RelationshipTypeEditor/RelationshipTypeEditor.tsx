@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -23,6 +24,8 @@ interface RelationshipTypeEditorProps {
 }
 
 export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
+
+  const { t } = useTranslation('common');
 
   const { relationshipType } = props;
 
@@ -62,9 +65,9 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
           toast({
             variant: 'destructive',
             // @ts-ignore
-            title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-            description: 'Something went wrong. Could not save entity type.'
-          });  
+            title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> {t('relationshipTypeEditor.errorTitle')}</ToastTitle>,
+            description: t('relationshipTypeEditor.saveError')
+          });
         });
     }
 
@@ -111,17 +114,17 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
       <DialogContent className="px-8 py-3 max-md my-8 rounded-lg">
         <DialogTitle className="hidden">
-          New Relationship Type
+          {t('relationshipTypeEditor.dialogTitle')}
         </DialogTitle>
-        
+
         <DialogDescription className="hidden">
-          Create a new relationship type below.
+          {t('relationshipTypeEditor.dialogDescription')}
         </DialogDescription>
 
         <fieldset className="mt-6">
           <Label 
             htmlFor="relationship-name"
-            className="inline-block mb-1.5 ml-0.5">Relationship Name
+            className="inline-block mb-1.5 ml-0.5">{t('relationshipTypeEditor.relationshipName')}
           </Label>
 
           <Input
@@ -141,12 +144,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
             <div>
               <Label htmlFor="directionality">
-                Directed Relation
+                {t('relationshipTypeEditor.directedRelation')}
               </Label>
 
               <p className="text-muted-foreground text-xs mt-1">
-                Enable this option if the relationship is meant to be directional, 
-                in the sense that source and target roles are relevant.
+                {t('relationshipTypeEditor.directedHint')}
               </p>
             </div>
           </div>
@@ -155,7 +157,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
         <fieldset className="mt-4">
           <Label 
             htmlFor="relationship-description"
-            className="inline-block text-xs mb-1.5 ml-0.5">Relationship Type Description</Label>
+            className="inline-block text-xs mb-1.5 ml-0.5">{t('relationshipTypeEditor.typeDescription')}</Label>
 
           <Textarea 
             id="relationship-description"
@@ -175,12 +177,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
             <div>
               <Label htmlFor="restrict-source">
-                Restrict source entity class
+                {t('relationshipTypeEditor.restrictSource')}
               </Label>
 
               <p className="text-muted-foreground text-xs mt-1">
-                The relationship can only start on annotations 
-                with this entity class.
+                {t('relationshipTypeEditor.restrictSourceHint')}
               </p>
 
               <EntityTypeSelector 
@@ -200,12 +201,11 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
 
             <div>
               <Label htmlFor="restrict-source">
-                Restrict target entity class
+                {t('relationshipTypeEditor.restrictTarget')}
               </Label>
 
               <p className="text-muted-foreground text-xs mt-1">
-                The relationship can only end on annotations 
-                with this entity class.
+                {t('relationshipTypeEditor.restrictTargetHint')}
               </p>
 
               <EntityTypeSelector 
@@ -219,7 +219,7 @@ export const RelationshipTypeEditor = (props: RelationshipTypeEditorProps) => {
           className="w-full mt-2 mb-3"
           disabled={!relationship.name}
           onClick={onSave}>
-          Save
+          {t('relationshipTypeEditor.save')}
         </Button>
       </DialogContent>
     </Dialog>

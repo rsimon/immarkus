@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import TextareaAutosize from 'react-textarea-autosize';
 import { FontSize, FontSizeButton } from '@/components/FontSize';
 import { TranslateButton, Translation, TranslationArgs, TranslationSettings } from '@/components/Translation';
@@ -24,6 +25,8 @@ interface TextFieldInputProps {
 }
 
 export const TextFieldInput = (props: TextFieldInputProps) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -81,7 +84,7 @@ export const TextFieldInput = (props: TextFieldInputProps) => {
             className="flex gap-1 items-center text-xs text-muted-foreground ml-1"
             onClick={props.onAppendField}
             type="button">
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

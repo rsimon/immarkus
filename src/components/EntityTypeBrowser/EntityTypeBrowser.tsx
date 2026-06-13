@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactAutosuggest from 'react-autosuggest';
 import type { EntityType } from '@/model';
 import { useDataModel } from '@/store';
@@ -16,6 +17,8 @@ interface EntityTypeBrowserProps {
 }
 
 export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
+
+  const { t } = useTranslation('common');
 
   const datamodel = useDataModel();
 
@@ -106,7 +109,7 @@ export const EntityTypeBrowser = (props: EntityTypeBrowserProps) => {
             </div>
           ) : (
             <div className="flex justify-center items-center p-6 text-sm text-muted-foreground">
-              No results
+              {t('entityTypeBrowser.noResults')}
             </div>
           )}
           renderInputComponent={inputProps => (

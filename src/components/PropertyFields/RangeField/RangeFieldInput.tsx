@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
 import { PropertyDefinition } from '@/model';
@@ -19,6 +20,8 @@ interface RangeFieldInputProps {
 
 export const RangeFieldInput = (props: RangeFieldInputProps) => {
 
+  const { t } = useTranslation('common');
+
   const [startStr, endStr] = props.value ? props.value : ['', ''];
 
   const className = cn(props.className, (props.error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
@@ -27,7 +30,7 @@ export const RangeFieldInput = (props: RangeFieldInputProps) => {
     <div className="flex items-center gap-2.5">
       <Input 
         className={className} 
-        placeholder="Start..."
+        placeholder={t('propertyFields.startPlaceholder')}
         value={startStr} 
         onChange={evt => props.onChange([evt.target.value, endStr])} />
 
@@ -35,7 +38,7 @@ export const RangeFieldInput = (props: RangeFieldInputProps) => {
 
       <Input 
         className={className} 
-        placeholder="End..."
+        placeholder={t('propertyFields.endPlaceholder')}
         value={endStr} 
         onChange={evt => props.onChange([startStr, evt.target.value])} />
     </div>

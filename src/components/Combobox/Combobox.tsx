@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCommandState } from 'cmdk';
 import { cn } from '@/ui/utils';
 import { Button } from '@/ui/Button';
@@ -86,6 +87,8 @@ const ComboBoxStateListener = (props: ComboboxStateListenerProps) => {
 
 export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: ComboboxProps<T>) => {
 
+  const { t } = useTranslation('common');
+
   const { value, placeholder } = props;
 
   const [open, setOpen] = useState(false);
@@ -127,12 +130,12 @@ export const Combobox = <T extends ComboboxOption = ComboboxOption>(props: Combo
         <Command>
           <CommandInput 
             className="h-auto py-2 text-xs"
-            placeholder="Search..." />
+            placeholder={t('combobox.searchPlaceholder')} />
           
           <CommandList className="p-1">
             <CommandEmpty 
               className="text-xs font-normal flex justify-center py-2 text-muted-foreground">
-              No matches
+              {t('combobox.noMatches')}
             </CommandEmpty>
 
             {props.options.map(option => (

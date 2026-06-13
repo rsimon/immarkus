@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAnnotationViewState } from '@/pages';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { 
@@ -30,21 +31,23 @@ import {
 import './AppNavigationSidebar.css';
 
 const NAV_ITEMS = [
-  { to: '/images',   icon: Image,   label: 'Images'   },
-  { to: '/annotate', icon: PanelsTopLeft, label: 'Workspace' },
-  { to: '/graph',    icon: Waypoints, label: 'Knowledge Graph' },
-  { to: '/model',    icon: ToyBrick,  label: 'Data Model' },
-  { to: '/export',   icon: Download,  label: 'Export'   },
-  { to: '/settings', icon: Settings2, label: 'Settings' },
+  { to: '/images',   icon: Image,   label: 'appNavigationSidebar.images'   },
+  { to: '/annotate', icon: PanelsTopLeft, label: 'appNavigationSidebar.workspace' },
+  { to: '/graph',    icon: Waypoints, label: 'appNavigationSidebar.knowledgeGraph' },
+  { to: '/model',    icon: ToyBrick,  label: 'appNavigationSidebar.dataModel' },
+  { to: '/export',   icon: Download,  label: 'appNavigationSidebar.export'   },
+  { to: '/settings', icon: Settings2, label: 'appNavigationSidebar.settings' },
 ];
 
 const ABOUT_ITEMS = [
-  { to: '/about',  label: 'IMMARKUS' },
-  { to: '/markus', label: 'X-MARKUS' },
-  { href: 'https://github.com/rsimon/immarkus/wiki', label: 'Help' },
+  { to: '/about',  label: 'appNavigationSidebar.immarkus' },
+  { to: '/markus', label: 'appNavigationSidebar.xmarkus' },
+  { href: 'https://github.com/rsimon/immarkus/wiki', label: 'appNavigationSidebar.help' },
 ];
 
 export const AppNavigationSidebar = () => {
+  const { t } = useTranslation('common');
+
   const { imageIds } = useAnnotationViewState();
 
   const { pathname } = useLocation();
@@ -72,10 +75,10 @@ export const AppNavigationSidebar = () => {
                       isActive={pathname.startsWith(to)}>
                       <Link to={to}>
                         <Icon />
-                        {label}
+                        {t(label)}
                       </Link>
                     </SidebarMenuButton>
-                    {label === 'Workspace' && (
+                    {to === '/annotate' && (
                       <SidebarMenuBadge>{imageIds.length}</SidebarMenuBadge>
                     )}
                   </SidebarMenuItem>
@@ -88,7 +91,7 @@ export const AppNavigationSidebar = () => {
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton>
                         <InfoIcon />
-                        About
+                        {t('appNavigationSidebar.about')}
                         <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
@@ -101,8 +104,8 @@ export const AppNavigationSidebar = () => {
                               asChild
                               isActive={to ? pathname === to : false}>
                               {href
-                                ? <a href={href} target="_blank" rel="noreferrer">{label}</a>
-                                : <Link to={to!}>{label}</Link>}
+                                ? <a href={href} target="_blank" rel="noreferrer">{t(label)}</a>
+                                : <Link to={to!}>{t(label)}</Link>}
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
@@ -120,7 +123,7 @@ export const AppNavigationSidebar = () => {
         <button
           className="flex items-center p-2.5"
           onClick={() => location.href = '/'}>
-          <LogOut size={18} className="mr-2" /> Exit
+          <LogOut size={18} className="mr-2" /> {t('appNavigationSidebar.exit')}
         </button>
       </SidebarFooter>
     </aside>

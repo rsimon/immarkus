@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Bug } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { IndexedImageSegment } from 'browser-visual-search';
 import { Annotorious, OpenSeadragonAnnotator, OpenSeadragonViewer, useAnnotator } from '@annotorious/react';
 import type { AnnotationState, DrawingStyleExpression, ImageAnnotation } from '@annotorious/react';
@@ -111,6 +112,8 @@ const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
 }
 
 export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => {
+  const { t } = useTranslation('common');
+
   const hasVisualSearch = useVisualSearchAvailable();
   const [showVisualSearchDebug, setShowVisualSearchDebug] = useState(false);
 
@@ -129,7 +132,7 @@ export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => 
 
       <DropdownMenuItem onSelect={onOpenVSDebug}>
         <Bug className="size-4 mr-2 text-amber-500" />
-        Inspect indexed patches
+        {t('visualSearchDebug.inspectIndexedPatches')}
       </DropdownMenuItem>
 
 

@@ -1,0 +1,219 @@
+{
+  "appNavigationSidebar": {
+    "images": "画像",
+    "workspace": "ワークスペース",
+    "knowledgeGraph": "ナレッジグラフ",
+    "dataModel": "データモデル",
+    "export": "エクスポート",
+    "settings": "設定",
+    "about": "情報",
+    "immarkus": "IMMARKUS",
+    "xmarkus": "X-MARKUS",
+    "help": "ヘルプ",
+    "exit": "終了"
+  },
+  "combobox": {
+    "searchPlaceholder": "検索...",
+    "noMatches": "該当なし"
+  },
+  "confirmedDelete": {
+    "title": "本当に削除しますか?",
+    "cancel": "キャンセル",
+    "delete": "削除"
+  },
+  "copyManifestURL": {
+    "label": "マニフェスト URL をコピー"
+  },
+  "dataModelImport": {
+    "title": {
+      "entityTypes": "エンティティクラスをインポート",
+      "relationshipTypes": "リレーションタイプをインポート",
+      "folderSchemas": "フォルダスキーマをインポート",
+      "imageSchemas": "画像スキーマをインポート"
+    },
+    "itemsClasses": "エンティティクラス",
+    "itemsSchemas": "スキーマ",
+    "success": "成功",
+    "error": "エラー",
+    "warning": "警告",
+    "entityClassesImported_other": "{{count}} 件のエンティティクラスをインポートしました。",
+    "schemasImported_other": "{{count}} 件のスキーマをインポートしました。",
+    "importError": "データモデルへのインポート中にエラーが発生しました",
+    "replaceCurrentModel": "現在のモデルを置き換える",
+    "replaceHint": "既存のモデルを削除して置き換えるか、インポートした{{items}}を現在のモデルに追加するかを選択できます。",
+    "replaceWarning": {
+      "entityTypes": "現在のエンティティクラスはすべてモデルから削除されます。",
+      "schemas": "現在のスキーマはすべてモデルから削除されます。"
+    },
+    "duplicatesTitle": {
+      "entityTypes": "重複するクラスの扱い",
+      "schemas": "重複するスキーマの扱い"
+    },
+    "duplicatesHint": "モデル内に既に存在する{{items}}をインポート時にどのようにマージするかを選択してください。",
+    "keepExisting": "既存を残す",
+    "keepExistingHint": "モデル内に既に存在する{{items}}がインポートに含まれる場合、既存のものを残し、インポートされた{{items}}を破棄します。",
+    "keepImported": "インポートを優先",
+    "keepImportedHint": "モデル内に既に存在する{{items}}がインポートに含まれる場合、既存のものを破棄し、インポートされた{{items}}を残します。",
+    "importFromPreset": "プリセットからインポート",
+    "orSeparator": "— または —",
+    "uploadButton": "データモデルファイルをアップロード",
+    "invalidFormat": "データモデルの形式が不正です",
+    "couldNotOpenFile": "データファイルを開けませんでした",
+    "useExportedFiles": "<exportLink>エクスポート / データモデル</exportLink>からダウンロードしたファイルを使用してください。"
+  },
+  "entityBadge": {
+    "error": "エラー"
+  },
+  "entityTypeBrowser": {
+    "noResults": "該当する結果がありません",
+    "searchPlaceholder": "検索...",
+    "searchInPlaceholder": "{{name}}内を検索...",
+    "children_other": "子クラス {{count}} 件",
+    "dialogTitle": "検索",
+    "dialogDescription": "エンティティクラスを検索して選択します。",
+    "createNewEntityClass": "新しいエンティティクラスを作成",
+    "cancel": "キャンセル",
+    "ok": "OK"
+  },
+  "entityTypeEditor": {
+    "dialogTitle": "エンティティクラスエディター",
+    "dialogDescription": "エンティティクラスの定義を編集します。",
+    "errorTitle": "エラー",
+    "saveError": "問題が発生しました。エンティティタイプを保存できませんでした。",
+    "entityClass": "エンティティクラス *",
+    "required": "必須",
+    "idExists": "この ID は既に存在します",
+    "idAvailable": "{{id}} は使用可能です",
+    "color": "カラー",
+    "displayName": "表示名",
+    "parentClass": "親クラス",
+    "cannotBeOwnParent": "{{id}} を自身の親にすることはできません",
+    "noEntityClassCalled": "{{id}} というエンティティクラスはありません",
+    "validParent": "{{id}} は有効な親クラスです",
+    "description": "エンティティクラスの説明",
+    "save": "エンティティクラスを保存",
+    "previewTitle": "エンティティプレビュー",
+    "previewHint": "アノテーションビューでこのエンティティの入力フォームがどのように表示されるかのプレビューです。"
+  },
+  "propertyDefinitions": {
+    "editorHint": "プロパティを使うと、重さ・素材・年代など、アノテーションに具体的な詳細を記録できます。",
+    "previewHint": "アノテーション画面でエンティティを編集する際に、このプロパティがどのように表示されるかのプレビューです。",
+    "noProperties": "プロパティなし",
+    "propertyCount_other": "プロパティ {{count}} 件",
+    "emptyHint": "プロパティを使うと、アノテーション対象のエンティティについて、重さ・素材・年代などの具体的な詳細を記録できます。",
+    "addProperty": "プロパティを追加"
+  },
+  "fixRelocatedManifest": {
+    "menuItem": "移動したマニフェストを修復",
+    "ok": "OK"
+  },
+  "fontSize": {
+    "changeFontSize": "文字サイズを変更"
+  },
+  "iiifMetadataList": {
+    "noMetadata": "IIIF メタデータがありません"
+  },
+  "metadataForm": {
+    "noSchemaDefined": "スキーマが定義されていません。<br/><modelLink><icon></icon> データモデル</modelLink>で定義してください。",
+    "schema": "スキーマ"
+  },
+  "metadataSchemaEditor": {
+    "dialogTitle": "スキーマを編集",
+    "schemaName": "スキーマ名",
+    "required": "必須",
+    "schemaExists": "このスキーマ名は既に存在します",
+    "nameAvailable": "{{name}} は使用可能です",
+    "schemaDescription": "スキーマの説明",
+    "addProperty": "プロパティを追加",
+    "saveSchema": "スキーマを保存",
+    "previewTitle": "プレビュー",
+    "previewHint": "このメタデータスキーマの入力フォームがどのように表示されるかのプレビューです。"
+  },
+  "metadataTable": {
+    "schema": "スキーマ",
+    "description": "説明",
+    "properties": "プロパティ",
+    "noSchemas": "スキーマが定義されていません",
+    "editSchema": "スキーマを編集",
+    "deleteSchema": "スキーマを削除",
+    "deleteMessage": "この操作はスキーマを完全に削除します。"
+  },
+  "progressDialog": {
+    "processing": "処理中"
+  },
+  "propertyDefinitionEditor": {
+    "dialogTitle": "プロパティ定義エディター",
+    "add": "追加",
+    "addAtLeastOneOption": "少なくとも 1 つの選択肢を追加してください。",
+    "authorityMisconfigured": "典拠が正しく設定されていません",
+    "selectAtLeastOneAuthority": "少なくとも 1 つの典拠を選択してください",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "edit": "編集",
+    "delete": "削除",
+    "propertyName": "プロパティ名",
+    "propertyNameExists": "このプロパティ名は既に存在します",
+    "dataType": "データ型",
+    "typeText": "テキスト",
+    "typeNumber": "数値",
+    "typeOptions": "選択肢",
+    "typeNumberRange": "数値範囲",
+    "typeUri": "URI",
+    "typeGeoCoordinates": "地理座標",
+    "typeMeasurement": "計測値",
+    "typeColor": "カラー",
+    "typeExternalAuthority": "外部典拠",
+    "allowMultipleValues": "複数の値を許可",
+    "propertyDescription": "プロパティの説明",
+    "saveProperty": "プロパティを保存",
+    "previewTitle": "プロパティプレビュー",
+    "multiLine": "複数行のテキストフィールドとして表示"
+  },
+  "propertyFields": {
+    "addValue": "値を追加",
+    "invalidColor": "無効なカラーコードです",
+    "pickColor": "色を選択...",
+    "invalidCoordinates": "有効な座標を入力してください",
+    "latPlaceholder": "緯度...",
+    "lngPlaceholder": "経度...",
+    "searchAuthorityPlaceholder": "{{name}}を検索...",
+    "inheritedFrom": "継承元",
+    "measurementRequired": "数値と単位は必須です",
+    "valuePlaceholder": "値...",
+    "unitPlaceholder": "単位...",
+    "mustBeNumber": "数値を入力してください",
+    "required": "必須",
+    "invalidRange": "有効な範囲を入力してください",
+    "startPlaceholder": "開始...",
+    "endPlaceholder": "終了...",
+    "mustBeURI": "URI を入力してください"
+  },
+  "relationshipTypeEditor": {
+    "dialogTitle": "新しいリレーションタイプ",
+    "dialogDescription": "新しいリレーションタイプを作成します。",
+    "errorTitle": "エラー",
+    "saveError": "問題が発生しました。リレーションタイプを保存できませんでした。",
+    "relationshipName": "リレーション名",
+    "directedRelation": "有向リレーション",
+    "directedHint": "ソースとターゲットの役割が意味を持つ、方向性のあるリレーションの場合に有効にしてください。",
+    "typeDescription": "リレーションタイプの説明",
+    "restrictSource": "ソースのエンティティクラスを制限",
+    "restrictSourceHint": "このエンティティクラスを持つアノテーションからのみリレーションを開始できます。",
+    "restrictTarget": "ターゲットのエンティティクラスを制限",
+    "restrictTargetHint": "このエンティティクラスを持つアノテーションでのみリレーションを終了できます。",
+    "save": "保存"
+  },
+  "translation": {
+    "serviceError": "翻訳サービスでエラーが発生しました",
+    "copyToClipboard": "クリップボードにコピー",
+    "hideTranslation": "翻訳を隠す",
+    "showTranslation": "翻訳を表示",
+    "services": "サービス",
+    "language": "言語",
+    "searchLanguagePlaceholder": "言語を検索...",
+    "noLanguageFound": "対応する言語が見つかりません。"
+  },
+  "visualSearchDebug": {
+    "inspectIndexedPatches": "インデックス済みパッチを確認"
+  }
+}

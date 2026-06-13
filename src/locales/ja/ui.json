@@ -1,0 +1,13 @@
+{
+  "dialog": {
+    "close": "閉じる"
+  },
+  "sheet": {
+    "close": "閉じる"
+  },
+  "sidebar": {
+    "title": "サイドバー",
+    "description": "モバイル用サイドバーを表示します。",
+    "toggle": "サイドバーを切り替え"
+  }
+}

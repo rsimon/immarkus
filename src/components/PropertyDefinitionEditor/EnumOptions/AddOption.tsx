@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 
@@ -9,6 +10,8 @@ interface AddOptionProps {
 }
 
 export const AddOption = (props: AddOptionProps) => {
+
+  const { t } = useTranslation('common');
 
   const [value, setValue] = useState('');
 
@@ -36,7 +39,7 @@ export const AddOption = (props: AddOptionProps) => {
         variant="outline"
         onClick={onAddOption}
         type="button">
-        Add
+        {t('propertyDefinitionEditor.add')}
       </Button>
     </>
   )

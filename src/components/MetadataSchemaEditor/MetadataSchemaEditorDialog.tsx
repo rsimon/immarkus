@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/ui/Dialog';
 import { MetadataSchemaEditor } from './MetadataSchemaEditor';
 import { MetadataSchema } from '@/model';
@@ -24,6 +25,8 @@ interface MetadataSchemaEditorDialogProps {
 }
 
 export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProps) => {
+
+  const { t } = useTranslation('common');
 
   const [open, setOpen] = useState(props.open);
 
@@ -56,7 +59,7 @@ export const MetadataSchemaEditorDialog = (props: MetadataSchemaEditorDialogProp
 
       <DialogContent className="p-0 max-w-3xl my-8 rounded-lg">
         <DialogTitle className="sr-only">
-          Edit Schema
+          {t('metadataSchemaEditor.dialogTitle')}
         </DialogTitle>
 
         <DialogDescription className="sr-only">

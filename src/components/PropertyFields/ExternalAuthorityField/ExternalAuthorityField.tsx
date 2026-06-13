@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { CopyPlus, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { ExternalAuthorityPropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
@@ -29,6 +30,8 @@ interface ExternalAuthorityFieldProps {
 }
 
 export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { id, definition } = props;
 
@@ -143,7 +146,7 @@ export const ExternalAuthorityField = (props: ExternalAuthorityFieldProps) => {
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             type="button"
             onClick={onAppendField}>
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

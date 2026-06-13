@@ -1,5 +1,6 @@
 import { Cuboid, ListTree, Search, X } from 'lucide-react';
 import { forwardRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RenderInputComponentProps } from 'react-autosuggest';
 import { EntityType } from '@/model';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
@@ -14,6 +15,8 @@ interface EntityTypeBrowserInputProps extends RenderInputComponentProps {
 }
 
 export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputProps, ref: React.Ref<HTMLDivElement>) => {
+
+  const { t } = useTranslation('common');
 
   const { selected, onClearSearch, ...inputProps } = props;
 
@@ -38,7 +41,9 @@ export const EntityTypeBrowserInput = forwardRef((props: EntityTypeBrowserInputP
         <input 
           autoFocus
           {...inputProps}
-          placeholder={selected ? `Search in ${selected.label || selected.id}...` : 'Search...'}
+          placeholder={selected
+            ? t('entityTypeBrowser.searchInPlaceholder', { name: selected.label || selected.id })
+            : t('entityTypeBrowser.searchPlaceholder')}
           className="relative top-[1px] py-1 outline-hidden px-0.5 grow" />
       </div>
 

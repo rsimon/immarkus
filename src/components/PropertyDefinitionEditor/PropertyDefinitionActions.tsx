@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowUp, ArrowDown, MoreHorizontal, Pencil, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinitionEditorDialog } from '@/components/PropertyDefinitionEditor';
 import { PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
@@ -30,7 +31,9 @@ interface PropertyDefinitionActionsProps {
 
 }
 
-export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps) => {  
+export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps) => {
+
+  const { t } = useTranslation('common');
 
   const [open, setOpen] = useState(false);
 
@@ -53,11 +56,11 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
       <DropdownMenuContent
         onEscapeKeyDown={() => setOpen(false)}>
         <DropdownMenuItem className="text-xs" onSelect={andClose(props.onMoveUp)}>
-          <ArrowUp className="h-4 w-4 mr-2 text-muted-foreground" /> Move up
+          <ArrowUp className="h-4 w-4 mr-2 text-muted-foreground" /> {t('propertyDefinitionEditor.moveUp')}
         </DropdownMenuItem>
 
         <DropdownMenuItem className="text-xs" onSelect={andClose(props.onMoveDown)}>
-          <ArrowDown className="h-4 w-4 mr-2 text-muted-foreground" /> Move down
+          <ArrowDown className="h-4 w-4 mr-2 text-muted-foreground" /> {t('propertyDefinitionEditor.moveDown')}
         </DropdownMenuItem>
 
         <PropertyDefinitionEditorDialog
@@ -69,12 +72,12 @@ export const PropertyDefinitionActions = (props: PropertyDefinitionActionsProps)
           onClose={() => setOpen(false)}>
 
           <DropdownMenuItem className="text-xs">
-            <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> Edit
+            <Pencil className="h-4 w-4 mr-2 text-muted-foreground" /> {t('propertyDefinitionEditor.edit')}
           </DropdownMenuItem>
         </PropertyDefinitionEditorDialog>
 
         <DropdownMenuItem className="text-xs" onSelect={andClose(props.onDeleteProperty)}>
-          <X className="h-4 w-4 mr-2 text-red-500" /> <span className="text-red-500">Delete</span>
+          <X className="h-4 w-4 mr-2 text-red-500" /> <span className="text-red-500">{t('propertyDefinitionEditor.delete')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

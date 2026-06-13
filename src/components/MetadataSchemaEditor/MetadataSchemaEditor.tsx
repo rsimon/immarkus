@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinitionEditorDialog, moveArrayItem } from '@/components/PropertyDefinitionEditor';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { Button } from '@/ui/Button';
@@ -25,6 +26,8 @@ interface MetadataSchemaEditorProps {
 }
 
 export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
+
+  const { t } = useTranslation('common');
 
   const [schema, setSchema] = useState<Partial<MetadataSchema>>(props.schema || {});
 
@@ -84,10 +87,10 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
           <div className="mt-6">
             <Label 
               htmlFor="name"
-              className="inline-block text-xs mb-1.5 ml-0.5">Schema Name
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('metadataSchemaEditor.schemaName')}
             </Label>
 
-            {errors.name_missing && (<span className="text-xs text-red-600 ml-1">required</span>)}
+            {errors.name_missing && (<span className="text-xs text-red-600 ml-1">{t('metadataSchemaEditor.required')}</span>)}
 
             <Input
               id="name"
@@ -97,11 +100,11 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
 
             {schema.name && (!isNameAvailable ? (
               <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
-                <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> Schema already exists
+                <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {t('metadataSchemaEditor.schemaExists')}
               </span>
             ) : ((props.schema && isNameAvailable) || !props.schema) && (
               <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {schema.name} is available
+                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {t('metadataSchemaEditor.nameAvailable', { name: schema.name })}
               </span>
             ))}
           </div>
@@ -109,7 +112,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
           <div className="mt-6">
             <Label 
               htmlFor="description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Schema Description</Label>
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('metadataSchemaEditor.schemaDescription')}</Label>
 
             <Textarea 
               id="description"
@@ -127,7 +130,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
                 schema={schema.properties || []}
                 onSave={addProperty}>
                 <Button className="flex items-center" variant="ghost">
-                  <PlusCircle className="h-4 w-4 mr-1.5" /> Add Property
+                  <PlusCircle className="h-4 w-4 mr-1.5" /> {t('metadataSchemaEditor.addProperty')}
                 </Button>
               </PropertyDefinitionEditorDialog>
             </div>
@@ -158,7 +161,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
                   <Button 
                     variant="outline" 
                     className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
-                    Add Property
+                    {t('metadataSchemaEditor.addProperty')}
                   </Button>
                 </PropertyDefinitionEditorDialog>
               </div>
@@ -166,7 +169,7 @@ export const MetadataSchemaEditor = (props: MetadataSchemaEditorProps) => {
           )}
 
           <Button className="w-full mt-7" onClick={onSave}>
-            <Rows3 className="w-4 h-4 mr-2" /> Save Schema
+            <Rows3 className="w-4 h-4 mr-2" /> {t('metadataSchemaEditor.saveSchema')}
           </Button>
         </div>
 

@@ -1,0 +1,223 @@
+{
+  "appNavigationSidebar": {
+    "images": "Images",
+    "workspace": "Workspace",
+    "knowledgeGraph": "Knowledge Graph",
+    "dataModel": "Data Model",
+    "export": "Export",
+    "settings": "Settings",
+    "about": "About",
+    "immarkus": "IMMARKUS",
+    "xmarkus": "X-MARKUS",
+    "help": "Help",
+    "exit": "Exit"
+  },
+  "combobox": {
+    "searchPlaceholder": "Search...",
+    "noMatches": "No matches"
+  },
+  "confirmedDelete": {
+    "title": "Are you sure?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "copyManifestURL": {
+    "label": "Copy Manifest URL"
+  },
+  "dataModelImport": {
+    "title": {
+      "entityTypes": "Import Entity Classes",
+      "relationshipTypes": "Import Relationship Types",
+      "folderSchemas": "Import Folder Schemas",
+      "imageSchemas": "Import Image Schemas"
+    },
+    "itemsClasses": "classes",
+    "itemsSchemas": "schemas",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "entityClassesImported_one": "{{count}} entity class imported successfully.",
+    "entityClassesImported_other": "{{count}} entity classes imported successfully.",
+    "schemasImported_one": "{{count}} schema imported successfully.",
+    "schemasImported_other": "{{count}} schemas imported successfully.",
+    "importError": "Error importing to data model",
+    "replaceCurrentModel": "Replace Current Model",
+    "replaceHint": "You can either delete and replace your existing model, or add the imported {{items}} to your current model.",
+    "replaceWarning": {
+      "entityTypes": "All current Entity Classes will be deleted from your model.",
+      "schemas": "All current schemas will be deleted from your model."
+    },
+    "duplicatesTitle": {
+      "entityTypes": "How to Handle Duplicate Classes",
+      "schemas": "How to Handle Duplicate Schemas"
+    },
+    "duplicatesHint": "Select how the import should merge {{items}} that already exist in your model.",
+    "keepExisting": "Keep Existing",
+    "keepExistingHint": "If the import contains {{items}} that already exist in your model, keep the existing ones and discard the imported {{items}}.",
+    "keepImported": "Keep Imported",
+    "keepImportedHint": "If the import contains {{items}} that already exist in your model, discard the existing ones and keep the imported {{items}}.",
+    "importFromPreset": "Import from Preset",
+    "orSeparator": "— or —",
+    "uploadButton": "Upload Datamodel File",
+    "invalidFormat": "Invalid data model format",
+    "couldNotOpenFile": "Could not open the data file",
+    "useExportedFiles": "Use files downloaded from <exportLink>Export / Data Model</exportLink>."
+  },
+  "entityBadge": {
+    "error": "error"
+  },
+  "entityTypeBrowser": {
+    "noResults": "No results",
+    "searchPlaceholder": "Search...",
+    "searchInPlaceholder": "Search in {{name}}...",
+    "children_one": "{{count}} child",
+    "children_other": "{{count}} children",
+    "dialogTitle": "Search",
+    "dialogDescription": "Search and select an entity class.",
+    "createNewEntityClass": "Create New Entity Class",
+    "cancel": "Cancel",
+    "ok": "OK"
+  },
+  "entityTypeEditor": {
+    "dialogTitle": "Entity Class Editor",
+    "dialogDescription": "Edit your entity class definition.",
+    "errorTitle": "Error",
+    "saveError": "Something went wrong. Could not save entity type.",
+    "entityClass": "Entity Class *",
+    "required": "required",
+    "idExists": "ID already exists",
+    "idAvailable": "{{id}} is available",
+    "color": "Color",
+    "displayName": "Display Name",
+    "parentClass": "Parent Class",
+    "cannotBeOwnParent": "{{id}} cannot be its own parent",
+    "noEntityClassCalled": "No Entity Class called {{id}}",
+    "validParent": "{{id}} is a valid parent",
+    "description": "Entity Class Description",
+    "save": "Save Entity Class",
+    "previewTitle": "Entity Preview",
+    "previewHint": "This is how the data entry form for your Entity will appear in the annotation view."
+  },
+  "propertyDefinitions": {
+    "editorHint": "Use Properties to record specific details in your annotations, such as weight, material, age, etc.",
+    "previewHint": "This is how your property will appear when editing an entity in the annotation interface.",
+    "noProperties": "No Properties",
+    "propertyCount_one": "{{count}} Property",
+    "propertyCount_other": "{{count}} Properties",
+    "emptyHint": "Use Properties to record specific details for an annotated Entity, such as weight, material, age, etc.",
+    "addProperty": "Add Property"
+  },
+  "fixRelocatedManifest": {
+    "menuItem": "Fix Relocated Manifest",
+    "ok": "OK"
+  },
+  "fontSize": {
+    "changeFontSize": "Change font size"
+  },
+  "iiifMetadataList": {
+    "noMetadata": "No IIIF Metadata"
+  },
+  "metadataForm": {
+    "noSchemaDefined": "No schema defined.<br/>Go to <modelLink><icon></icon> Data Model</modelLink> to define one.",
+    "schema": "Schema"
+  },
+  "metadataSchemaEditor": {
+    "dialogTitle": "Edit Schema",
+    "schemaName": "Schema Name",
+    "required": "required",
+    "schemaExists": "Schema already exists",
+    "nameAvailable": "{{name}} is available",
+    "schemaDescription": "Schema Description",
+    "addProperty": "Add Property",
+    "saveSchema": "Save Schema",
+    "previewTitle": "Preview",
+    "previewHint": "This is how the data entry form for your metadata schema will appear."
+  },
+  "metadataTable": {
+    "schema": "Schema",
+    "description": "Description",
+    "properties": "Properties",
+    "noSchemas": "No schemas defined",
+    "editSchema": "Edit schema",
+    "deleteSchema": "Delete schema",
+    "deleteMessage": "This action will delete the schema permanently."
+  },
+  "progressDialog": {
+    "processing": "Processing"
+  },
+  "propertyDefinitionEditor": {
+    "dialogTitle": "Property Definition Editor",
+    "add": "Add",
+    "addAtLeastOneOption": "Add at least one option.",
+    "authorityMisconfigured": "Authority is not configured correctly",
+    "selectAtLeastOneAuthority": "Select at least one authority",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "edit": "Edit",
+    "delete": "Delete",
+    "propertyName": "Property Name",
+    "propertyNameExists": "Property name already exists",
+    "dataType": "Data Type",
+    "typeText": "Text",
+    "typeNumber": "Number",
+    "typeOptions": "Options",
+    "typeNumberRange": "Number Range",
+    "typeUri": "URI",
+    "typeGeoCoordinates": "Geo-coordinates",
+    "typeMeasurement": "Measurement",
+    "typeColor": "Color",
+    "typeExternalAuthority": "External Authority",
+    "allowMultipleValues": "Allow multiple values",
+    "propertyDescription": "Property Description",
+    "saveProperty": "Save Property",
+    "previewTitle": "Property Preview",
+    "multiLine": "Display as multi-line text field"
+  },
+  "propertyFields": {
+    "addValue": "Add value",
+    "invalidColor": "invalid color code",
+    "pickColor": "Pick a color...",
+    "invalidCoordinates": "must be valid coordinates",
+    "latPlaceholder": "Lat...",
+    "lngPlaceholder": "Lng...",
+    "searchAuthorityPlaceholder": "Search {{name}}...",
+    "inheritedFrom": "Inherited from",
+    "measurementRequired": "number value and unit required",
+    "valuePlaceholder": "Value...",
+    "unitPlaceholder": "Unit...",
+    "mustBeNumber": "must be a number",
+    "required": "required",
+    "invalidRange": "must be valid range",
+    "startPlaceholder": "Start...",
+    "endPlaceholder": "End...",
+    "mustBeURI": "must be a URI"
+  },
+  "relationshipTypeEditor": {
+    "dialogTitle": "New Relationship Type",
+    "dialogDescription": "Create a new relationship type below.",
+    "errorTitle": "Error",
+    "saveError": "Something went wrong. Could not save entity type.",
+    "relationshipName": "Relationship Name",
+    "directedRelation": "Directed Relation",
+    "directedHint": "Enable this option if the relationship is meant to be directional, in the sense that source and target roles are relevant.",
+    "typeDescription": "Relationship Type Description",
+    "restrictSource": "Restrict source entity class",
+    "restrictSourceHint": "The relationship can only start on annotations with this entity class.",
+    "restrictTarget": "Restrict target entity class",
+    "restrictTargetHint": "The relationship can only end on annotations with this entity class.",
+    "save": "Save"
+  },
+  "translation": {
+    "serviceError": "Translation service error",
+    "copyToClipboard": "Copy to clipboard",
+    "hideTranslation": "Hide translation",
+    "showTranslation": "Show translation",
+    "services": "Services",
+    "language": "Language",
+    "searchLanguagePlaceholder": "Search language...",
+    "noLanguageFound": "No supported language found."
+  },
+  "visualSearchDebug": {
+    "inspectIndexedPatches": "Inspect indexed patches"
+  }
+}

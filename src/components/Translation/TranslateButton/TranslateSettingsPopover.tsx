@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, CloudCog, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ServiceConnectorConfig } from '@/services';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/Tabs';
@@ -25,6 +26,8 @@ interface TranslateSettingsPopoverProps {
 }
 
 export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) => {
+
+  const { t } = useTranslation('common');
 
   const [open, setOpen] = useState(false);
 
@@ -61,14 +64,14 @@ export const TranslateSettingsPopover = (props: TranslateSettingsPopoverProps) =
               value="service"
               className="flex border-b-2 border-r border-r-input border-transparent shadow-none rounded-none rounded-tl-md text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-b-black">
               <CloudCog className="size-4" />
-              Services
+              {t('translation.services')}
             </TabsTrigger>
 
             <TabsTrigger 
               value="language" 
               className="flex border-b-2 border-transparent shadow-none rounded-none rounded-tr-md text-xs p-2 font-normal items-center gap-2 opacity-50 data-[state=active]:bg-white data-[state=active]:opacity-100 data-[state=active]:border-black">
               <Globe className="size-3.5" />
-              Language
+              {t('translation.language')}
             </TabsTrigger>
           </TabsList>
 

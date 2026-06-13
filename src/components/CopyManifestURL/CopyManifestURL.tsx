@@ -1,5 +1,6 @@
 import { type MouseEvent, useState } from 'react';
 import { ClipboardCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { IIIFManifestResource } from '@/model';
 import { IIIFIcon } from '../IIIFIcon';
 
@@ -10,6 +11,8 @@ interface CopyManifestURLProps {
 }
 
 export const CopyManifestURL = (props: CopyManifestURLProps) => {
+
+  const { t } = useTranslation('common');
 
   const [copied, setCopied] = useState(false);
 
@@ -30,7 +33,7 @@ export const CopyManifestURL = (props: CopyManifestURLProps) => {
         <ClipboardCheck className="size-4 text-green-700" /> 
       ) : (
         <IIIFIcon color className="size-4" />
-      )} <span className="mt-px">Copy Manifest URL</span>
+      )} <span className="mt-px">{t('copyManifestURL.label')}</span>
     </button>
   )
 

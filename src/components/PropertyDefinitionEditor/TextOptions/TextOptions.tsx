@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TextPropertyDefinition } from '@/model';
 import { Switch } from '@/ui/Switch';
 
@@ -11,6 +12,8 @@ interface TextOptionsProps {
 
 export const TextOptions = (props: TextOptionsProps) => {
 
+  const { t } = useTranslation('common');
+
   const { definition, onUpdate } = props;
 
   const onToggleSize = (large: boolean) => large 
@@ -21,9 +24,9 @@ export const TextOptions = (props: TextOptionsProps) => {
     <div className="text-xs flex items-center pt-4 px-0.5 gap-3">
       <Switch 
         checked={props.definition.size === 'L'}
-        onCheckedChange={onToggleSize} /> 
+        onCheckedChange={onToggleSize} />
 
-      Display as multi-line text field
+      {t('propertyDefinitionEditor.multiLine')}
     </div>
   )
 

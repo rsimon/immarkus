@@ -2,6 +2,7 @@ import { Dialog, DialogTitle, DialogContent } from '@/ui/Dialog';
 import { Progress } from '@/ui/Progress';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { ReactElement } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ProgressDialogProps {
 
@@ -19,11 +20,13 @@ interface ProgressDialogProps {
 
 export const ProgressDialog = (props: ProgressDialogProps) => {
 
+  const { t } = useTranslation('common');
+
   return (
     <Dialog open={props.open}>
       <DialogContent closeIcon={false}>
         <DialogTitle className="flex items-center gap-2">
-          {props.icon} {props.title || 'Processing'}
+          {props.icon} {props.title || t('progressDialog.processing')}
         </DialogTitle>
 
         <div className="pb-4">

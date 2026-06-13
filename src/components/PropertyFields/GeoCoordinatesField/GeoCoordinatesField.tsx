@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CopyPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from '../InfoTooltip';
@@ -37,6 +38,8 @@ const stringify = (coords?: [number, number] | [number, number][]): [string, str
 
 
 export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -76,7 +79,7 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
     }
   }, [values, isValid]);
 
-  const error = showErrors && !isValid && 'must be valid coordinates';
+  const error = showErrors && !isValid && t('propertyFields.invalidCoordinates');
 
   const onChange = (idx: number, updated: [string, string]) =>
     setValues(current => current.map((v, i) => i === idx ? updated : v));
@@ -120,7 +123,7 @@ export const GeoCoordinatesField = (props: GeoCoordinatesFieldProps) => {
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             type="button"
             onClick={onAppendField}>
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

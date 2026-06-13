@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Button } from '@/ui/Button';
 import { 
@@ -19,6 +20,8 @@ interface MetadataTableActionsProps {
 
 export const MetadataTableActions = (props: MetadataTableActionsProps) => {
 
+  const { t } = useTranslation('common');
+
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
@@ -32,19 +35,19 @@ export const MetadataTableActions = (props: MetadataTableActionsProps) => {
 
         <DropdownMenuContent sideOffset={-10}>
           <DropdownMenuItem className="text-xs" onSelect={props.onEditSchema}>
-            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit schema
+            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />{t('metadataTable.editSchema')}
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs" onSelect={() => setConfirmDelete(true)}>
             <Trash2 size={16} className="inline text-red-400 relative -top-px mr-2" />
-            <span className="text-red-500">Delete schema</span>
+            <span className="text-red-500">{t('metadataTable.deleteSchema')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <ConfirmedDelete
         open={confirmDelete}
-        message="This action will delete the schema permanently."
+        message={t('metadataTable.deleteMessage')}
         onConfirm={props.onDeleteSchema}
         onOpenChange={setConfirmDelete} />
     </>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DropdownMenuItem } from '@/ui/DropdownMenu';
 import { IIIFManifestResource } from '@/model';
 import { useFixRelocatedManifest } from './useFixedRelocatedManifest';
@@ -11,6 +12,8 @@ interface FixRelocatedManifestProps {
 }
 
 export const FixRelocatedManifest = (props: FixRelocatedManifestProps) => {
+
+  const { t } = useTranslation('common');
 
   const { fixRelocatedManifest } = useFixRelocatedManifest();
 
@@ -26,7 +29,7 @@ export const FixRelocatedManifest = (props: FixRelocatedManifestProps) => {
         e.preventDefault();
         setIsRepairDialogOpen(true)
       }}>
-        Fix Relocated Manifest
+        {t('fixRelocatedManifest.menuItem')}
       </DropdownMenuItem>
 
       <Dialog
@@ -36,7 +39,7 @@ export const FixRelocatedManifest = (props: FixRelocatedManifestProps) => {
           <input 
             value={newUrl}
             onChange={evt => setNewUrl(evt.target.value) }/>
-          <button onClick={() => onRepair()}>Ok</button>
+          <button onClick={() => onRepair()}>{t('fixRelocatedManifest.ok')}</button>
         </DialogContent>
       </Dialog>
     </>

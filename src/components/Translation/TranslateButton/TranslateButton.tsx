@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Languages } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
 import { cn } from '@/ui/utils';
@@ -53,6 +54,8 @@ const setPersistedService = (connectorId: string, index: number) =>
   localStorage.setItem(KEY_SERVICE, `${connectorId}::${index}`);
 
 export const TranslateButton = (props: TranslateButtonProps) => {
+
+  const { t } = useTranslation('common');
 
   const availableConnectors = useMemo(() => connectors.filter(connector => {
     if (!connector.requiresKey) return true;
@@ -117,7 +120,7 @@ export const TranslateButton = (props: TranslateButtonProps) => {
       </TooltipTrigger>
 
       <TooltipContent>
-        Show translation
+        {t('translation.showTranslation')}
       </TooltipContent>
     </Tooltip>
   ) : null;

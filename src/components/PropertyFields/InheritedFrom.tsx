@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Replace } from 'lucide-react';
 import { useDataModel } from '@/store';
@@ -19,6 +20,8 @@ interface InheritedFromProps {
 
 export const InheritedFrom = (props: InheritedFromProps) => {
 
+  const { t } = useTranslation('common');
+
   const model = useDataModel();
 
   const inheritedFrom = model.getEntityType(props.definition.inheritedFrom, false);
@@ -38,7 +41,7 @@ export const InheritedFrom = (props: InheritedFromProps) => {
           align="end" 
           alignOffset={-10}
           sideOffset={-6}>
-          <span className="text-white/70">Inherited from</span> <span>{inheritedFrom.label || inheritedFrom.id}</span>
+          <span className="text-white/70">{t('propertyFields.inheritedFrom')}</span> <span>{inheritedFrom.label || inheritedFrom.id}</span>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

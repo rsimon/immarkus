@@ -1,4 +1,5 @@
 import { Annotation, CozyMetadata } from 'cozy-iiif';
+import { useTranslation } from 'react-i18next';
 import { IIIFCanvasAnnotationCard } from './IIIFCanvasAnnotationCard';
 
 interface IIIFMetadataListProps {
@@ -13,13 +14,15 @@ interface IIIFMetadataListProps {
 
 export const IIIFMetadataList = (props: IIIFMetadataListProps) => {
 
+  const { t } = useTranslation('common');
+
   const { annotations, metadata } = props;
 
   const isEmpty = ((annotations || []).length + props.metadata.length) === 0;
 
   return isEmpty ? (
     <div className="flex items-center justify-center h-full min-h-16 text-muted-foreground text-sm">
-      {props.emptyMessage || 'No IIIF Metadata'}
+      {props.emptyMessage || t('iiifMetadataList.noMetadata')}
     </div>
   ) : (
     <div>

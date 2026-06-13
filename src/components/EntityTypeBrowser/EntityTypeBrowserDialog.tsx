@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Cuboid } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
@@ -17,6 +18,8 @@ interface EntityTypeBrowserDialogProps {
 }
 
 export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => {
+
+  const { t } = useTranslation('common');
 
   const [selected, setSelected] = useState<EntityType | undefined>();
 
@@ -40,17 +43,17 @@ export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => 
           onConfirm={props.onAddEntityType} />
 
         <DialogTitle className="hidden">
-          Search
+          {t('entityTypeBrowser.dialogTitle')}
         </DialogTitle>
-    
+
         <DialogDescription className="hidden">
-          Search and select an entity class.
+          {t('entityTypeBrowser.dialogDescription')}
         </DialogDescription>
 
         <div className="p-1 pt-1.5 border-t flex justify-between text-muted-foreground">
           <EntityTypeEditor>
             <Button variant="ghost" className="text-xs h-8 px-2 rounded-sm mr-2">
-              <Cuboid className="h-3.5 w-3.5 mr-1.5" /> Create New Entity Class
+              <Cuboid className="h-3.5 w-3.5 mr-1.5" /> {t('entityTypeBrowser.createNewEntityClass')}
             </Button>
           </EntityTypeEditor>
 
@@ -58,14 +61,14 @@ export const EntityTypeBrowserDialog = (props: EntityTypeBrowserDialogProps) => 
             <Button 
               onClick={props.onCancel}
               variant="ghost" className="text-xs h-8 px-2 rounded-sm">
-              Cancel
+              {t('entityTypeBrowser.cancel')}
             </Button>
 
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="text-xs h-8 rounded-sm"
               onClick={onOk}>
-              OK
+              {t('entityTypeBrowser.ok')}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CaseSensitive, ChevronsLeftRightEllipsis, Database, Hash, Link2, List, MapPin, Palette, Ruler, Spline } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
@@ -34,6 +35,8 @@ interface PropertyDefinitionEditorProps {
 }
 
 export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) => {
+
+  const { t } = useTranslation('common');
 
   const [edited, setEdited] = useState<Partial<PropertyDefinition>>(props.property || {});
 
@@ -84,10 +87,10 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <Label 
               htmlFor="name"
               className="inline-block text-xs mb-1.5 ml-0.5">
-              Property Name
+              {t('propertyDefinitionEditor.propertyName')}
             </Label>
 
-            {nameError && (<span className="text-xs text-red-600 ml-2">Property name already exists</span>)}
+            {nameError && (<span className="text-xs text-red-600 ml-2">{t('propertyDefinitionEditor.propertyNameExists')}</span>)}
 
             <Input 
               id="name" 
@@ -100,7 +103,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
             <Label 
               htmlFor="type"
               className="inline-block text-xs mb-1.5 ml-0.5">
-              Data Type
+              {t('propertyDefinitionEditor.dataType')}
             </Label>
 
             <Select
@@ -112,31 +115,31 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
               <SelectContent>
                 <SelectItem value="text">
-                  <CaseSensitive className="inline w-4 h-4 mr-1" /> Text
+                  <CaseSensitive className="inline w-4 h-4 mr-1" /> {t('propertyDefinitionEditor.typeText')}
                 </SelectItem>
                 <SelectItem value="number">
-                  <Hash className="inline w-4 h-4 mr-1.5 mb-0.5" /> Number
+                  <Hash className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeNumber')}
                 </SelectItem>
                 <SelectItem value="enum">
-                  <List className="inline w-4 h-4 mr-1.5 mb-0.5" /> Options
+                  <List className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeOptions')}
                 </SelectItem>
                 <SelectItem value="range">
-                  <ChevronsLeftRightEllipsis className="inline w-4 h-4 mr-1.5 mb-0.5" /> Number Range
+                  <ChevronsLeftRightEllipsis className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeNumberRange')}
                 </SelectItem>
                 <SelectItem value="uri">
-                  <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" /> URI
+                  <Link2 className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeUri')}
                 </SelectItem>
                 <SelectItem value="geocoordinate">
-                  <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> Geo-coordinates
+                  <MapPin className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeGeoCoordinates')}
                 </SelectItem>
                 <SelectItem value="measurement">
-                  <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> Measurement
+                  <Ruler className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeMeasurement')}
                 </SelectItem>
                 <SelectItem value="color">
-                  <Palette className="inline w-4 h-4 mr-1.5 mb-0.5" /> Color
+                  <Palette className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeColor')}
                 </SelectItem>
                 <SelectItem value="external_authority">
-                  <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> External Authority
+                  <Database className="inline w-4 h-4 mr-1.5 mb-0.5" /> {t('propertyDefinitionEditor.typeExternalAuthority')}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -159,13 +162,13 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           <div className="text-xs flex items-center pt-4 pb-4 px-0.5 gap-3">
             <Switch 
               checked={Boolean(edited.multiple)}
-              onCheckedChange={onCheckMultiple}/> Allow multiple values
+              onCheckedChange={onCheckMultiple}/> {t('propertyDefinitionEditor.allowMultipleValues')}
           </div>
 
           <div className="mt-3">
             <Label 
               htmlFor="description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Property Description</Label>
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('propertyDefinitionEditor.propertyDescription')}</Label>
 
             <Textarea 
               id="description"
@@ -176,7 +179,7 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           </div>
 
           <div className="mt-5 mb-3 sm:justify-start">
-            <Button type="button" onClick={onSubmit}>Save Property</Button>
+            <Button type="button" onClick={onSubmit}>{t('propertyDefinitionEditor.saveProperty')}</Button>
           </div>
         </form>
       </div>

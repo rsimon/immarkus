@@ -1,4 +1,5 @@
 import { ListTree } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
@@ -12,6 +13,8 @@ interface EntityTypeBrowserSuggestionProps {
 }
 
 export const EntityTypeBrowserSuggestion = (props: EntityTypeBrowserSuggestionProps) => {
+
+  const { t } = useTranslation('common');
 
   const { type, highlighted } = props;
 
@@ -55,7 +58,7 @@ export const EntityTypeBrowserSuggestion = (props: EntityTypeBrowserSuggestionPr
               <ListTree className="w-3.5 h-3.5" />
 
               <span className="ml-0.5 mt-[0.5px] mr-1">
-                {children.length} child{children.length > 1 && 'ren'}
+                {t('entityTypeBrowser.children', { count: children.length })}
               </span>
             </div>
           )}

@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { BASE_LANGUAGES } from './Languages';
 import { 
   Command, 
@@ -20,19 +21,21 @@ interface LanguagesTabProps {
 
 export const LanguagesTab = (props: LanguagesTabProps) => {
 
+  const { t } = useTranslation('common');
+
   return (
     <Command>
       <div className="p-1.5 border-b">
         <div className="language-filter bg-muted/70 rounded">
-          <CommandInput 
-            placeholder="Search language..." 
+          <CommandInput
+            placeholder={t('translation.searchLanguagePlaceholder')}
             className="text-xs" />
         </div>
       </div>
 
       <CommandList 
         className="p-1.5">
-        <CommandEmpty>No supported language found.</CommandEmpty>
+        <CommandEmpty>{t('translation.noLanguageFound')}</CommandEmpty>
         {BASE_LANGUAGES.map(({ iso, label}) => (
           <CommandItem
             key={iso}
