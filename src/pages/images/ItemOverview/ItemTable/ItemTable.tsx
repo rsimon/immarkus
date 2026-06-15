@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -69,6 +70,8 @@ const imageToRow = (
 });
 
 export const ItemTable = (props: ItemOverviewLayoutProps) => {
+
+  const { t } = useTranslation('images');
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
 
@@ -155,39 +158,39 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
         onSort={onSort}
         emptyMessage={TABLE_EMPTY_MESSAGE}>
         <Column
-          field="type" 
-          header="Type" 
+          field="type"
+          header={t('table.type')}
           headerClassName={TABLE_HEADER_CLASS}
           body={typeTemplate} />
 
-        <Column 
+        <Column
           sortable
           sortFunction={sortByName}
-          field="name" 
-          header="Name" 
-          headerClassName={TABLE_HEADER_CLASS} 
+          field="name"
+          header={t('table.name')}
+          headerClassName={TABLE_HEADER_CLASS}
           body={NAME_COLUMN_TEMPLATE} />
 
         <Column
           field="dimensions"
-          header="Dimensions"
+          header={t('table.dimensions')}
           headerClassName={TABLE_HEADER_CLASS}
           body={DIMENSIONS_COLUMN_TEMPLATE} />
 
         <Column
           sortable
           sortFunction={sortByLastEdit}
-          field="lastEdit" 
-          header="Last Edit" 
+          field="lastEdit"
+          header={t('table.lastEdit')}
           headerClassName={TABLE_HEADER_CLASS}
           body={LAST_EDIT_COLUMN_TEMPLATE} />
 
         <Column
           sortable
           sortFunction={sortByAnnotations}
-          field="annotations" 
-          header="Annotations" 
-          headerClassName={TABLE_HEADER_CLASS} 
+          field="annotations"
+          header={t('table.annotations')}
+          headerClassName={TABLE_HEADER_CLASS}
           body={ANNOTATIONS_COLUMN_TEMPLATE} />
 
         <Column 

@@ -1,4 +1,5 @@
 import { MessagesSquare } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { TruncatedLabel } from '@/components/TruncatedLabel';
@@ -22,6 +23,8 @@ interface IIIFManifestItemProps {
 }
 
 export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
+
+  const { t } = useTranslation('images');
 
   const resource = props.resource as IIIFManifestResource;
 
@@ -70,7 +73,7 @@ export const IIIFManifestItem = (props: IIIFManifestItemProps) => {
         <div className="text-sm ml-1 max-w-47.5 overflow-hidden">
           <TruncatedLabel value={resource.name} />
           <p className="pt-1 text-xs text-muted-foreground">
-            {`${resource.canvases.length.toLocaleString()} Canvas${resource.canvases.length === 1 ? '' : 'es'}`}
+            {t('manifestItem.canvasCount', { count: resource.canvases.length })}
           </p>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { SortOrder } from 'primereact/datatable';
 import { Sorting } from '@/utils/useImageSorting';
 import { 
@@ -20,17 +21,19 @@ interface GridSortingProps {
 
 }
 
-const LABELS = {
-  'name': 'Name',
-  'annotations': 'Annotations',
-  undefined: 'Manifest Order'
-};
-
 const UNSORTED = 'unsorted';
 
 export const GridSorting = (props: GridSortingProps) => {
   const { allowUnsorted, sorting, onChange } = props;
-  
+
+  const { t } = useTranslation('images');
+
+  const LABELS = {
+    'name': t('headerControls.sorting.name'),
+    'annotations': t('headerControls.sorting.annotations'),
+    undefined: t('headerControls.sorting.manifestOrder')
+  };
+
   const isUnsorted = !(sorting?.sortField && sorting?.sortOrder);
 
   const onSortFieldChange = (sortField: string) => {
@@ -61,16 +64,16 @@ export const GridSorting = (props: GridSortingProps) => {
           onValueChange={onSortFieldChange}>
           {allowUnsorted && (
             <DropdownMenuRadioItem value={UNSORTED}>
-              Manifest order
+              {t('headerControls.sorting.manifestOrder')}
             </DropdownMenuRadioItem>
           )}
 
           <DropdownMenuRadioItem value="name">
-            Name
+            {t('headerControls.sorting.name')}
           </DropdownMenuRadioItem>
 
           <DropdownMenuRadioItem value="annotations">
-            Annotations
+            {t('headerControls.sorting.annotations')}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
 
@@ -83,14 +86,14 @@ export const GridSorting = (props: GridSortingProps) => {
             value="1"
             className="gap-1.5"
             disabled={isUnsorted}>
-            <ArrowDownNarrowWide className="size-4" /> Ascending
+            <ArrowDownNarrowWide className="size-4" /> {t('headerControls.sorting.ascending')}
           </DropdownMenuRadioItem>
 
           <DropdownMenuRadioItem 
             value="-1"
             className="gap-1.5"
             disabled={isUnsorted}>
-            <ArrowUpNarrowWide className="size-4" /> Descending
+            <ArrowUpNarrowWide className="size-4" /> {t('headerControls.sorting.descending')}
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

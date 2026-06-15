@@ -1,0 +1,105 @@
+{
+  "common": {
+    "metadata": "Metadata",
+    "openFolder": "Open folder",
+    "openImage": "Open image",
+    "openCanvas": "Open canvas",
+    "openManifest": "Open manifest",
+    "manifestMetadata": "Manifest metadata",
+    "canvasMetadata": "Canvas metadata",
+    "addToWorkspace": "Add to workspace",
+    "otherIIIFViewers": "Other IIIF Viewers",
+    "breadcrumbs": "Breadcrumbs",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close",
+    "confirmDeleteManifest": "This will remove the manifest and will permanently delete all its annotations from your computer."
+  },
+  "folderHeader": {
+    "folder": "Folder"
+  },
+  "headerControls": {
+    "showUnannotated": "Show unannotated",
+    "hideUnannotated": "Hide unannotated",
+    "grid": "Grid",
+    "table": "Table",
+    "sorting": {
+      "name": "Name",
+      "annotations": "Annotations",
+      "manifestOrder": "Manifest order",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    }
+  },
+  "folderItem": {
+    "empty": "Empty",
+    "imageCount_one": "{{count}} Image",
+    "imageCount_other": "{{count}} Images",
+    "iiifCount": "{{count}} IIIF",
+    "subfolderCount_one": "{{count}} Subfolder",
+    "subfolderCount_other": "{{count}} Subfolders"
+  },
+  "manifestItem": {
+    "canvasCount_one": "{{count}} Canvas",
+    "canvasCount_other": "{{count}} Canvases"
+  },
+  "workspaceIndicator": {
+    "currentlyOpen": "Currently open in workspace"
+  },
+  "table": {
+    "type": "Type",
+    "name": "Name",
+    "dimensions": "Dimensions",
+    "lastEdit": "Last Edit",
+    "annotations": "Annotations",
+    "noData": "No data"
+  },
+  "metadataPanel": {
+    "iiifTab": "IIIF",
+    "myTab": "My"
+  },
+  "iiifImporter": {
+    "importIIIF": "Import IIIF",
+    "title": "Import IIIF Manifest",
+    "description": "Paste the URL to a <strong1>IIIF Presentation Manifest</strong1>. The following links will <strong2>not</strong2> work:",
+    "linkTypeViewerPages": "viewer pages – e.g. pages that embed Mirador or Universal Viewer.",
+    "linkTypeImageFiles": "links to image files – <code1>jpg</code1>, <code2>png</code2>, etc.",
+    "linkTypeImageApi": "IIIF Image API endpoints – ending with <code1>info.json</code1>.",
+    "urlPlaceholder": "IIIF Presentation API URL",
+    "fetching": "Fetching...",
+    "alreadyImportedTitle": "Already Imported",
+    "alreadyImportedMessage": "This manifest already exists in the current subfolder. IMMARKUS allows you to import the same manifest multiple times, but each import must be placed in a different subfolder. To proceed, please select another subfolder and import the manifest there.",
+    "presentationApiFallback": "Presentation API v{{version}}",
+    "annotationCount_one": "{{count}} annotation",
+    "annotationCount_other": "{{count}} annotations",
+    "canvasAnnotationCount_one": "{{count}} non-region annotation (canvas metadata)",
+    "canvasAnnotationCount_other": "{{count}} non-region annotations (canvas metadata)",
+    "failedAnnotationCount_one": "Failed to parse {{count}} annotation - skipping",
+    "failedAnnotationCount_other": "Failed to parse {{count}} annotations - skipping",
+    "noAnnotations": "Manifest includes no annotations",
+    "resolvingAnnotations": "Resolving annotations",
+    "mayTakeAWhile": "(this may take a while)",
+    "collectionDetected": "This is a IIIF Collection Manifest with multiple items. <selectButton>Select items to import</selectButton>.",
+    "import": "Import",
+    "errors": {
+      "fetchFailed": "Failed to fetch. Server may restrict access.",
+      "fetchFailedWithMessage": "Failed to fetch. {{message}}",
+      "imageApiUnsupported": "Image API URLs are currently unsupported",
+      "invalidUrlWebPage": "Invalid URL: web page",
+      "invalidUrlImageFile": "Invalid URL: image file",
+      "help": "IMMARKUS could not import from this URL. See our <troubleshootingLink>troubleshooting guide</troubleshootingLink> for information on common import problems and possible solutions."
+    }
+  },
+  "importFromCollection": {
+    "title": "Import from IIIF Collection",
+    "description": "This collection contains multiple presentation manifests. Choose which items to import into your workspace.",
+    "selectAll": "Select All",
+    "importWithCount": "Import ({{count}})",
+    "importingTitle": "Importing",
+    "importingMessage_one": "Importing {{count}} IIIF manifest",
+    "importingMessage_other": "Importing {{count}} IIIF manifests",
+    "importErrorTitle": "Import Error",
+    "alreadyExists": "{{name}} already exists in the current subfolder. IMMARKUS allows multiple imports of the same manifest, but each one must be placed in a different subfolder. To continue, please remove this manifest from the list or choose a different subfolder."
+  }
+}

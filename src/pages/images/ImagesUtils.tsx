@@ -1,5 +1,7 @@
 import murmur from 'murmurhash';
+import { useTranslation } from 'react-i18next';
 import { formatDistanceToNow } from 'date-fns';
+import { getDateLocale } from '@/i18n/dateLocale';
 import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { ColumnSortEvent } from 'primereact/column';
@@ -15,10 +17,18 @@ import {
 
 export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
 
+const TableEmptyMessage = () => {
+  const { t } = useTranslation('images');
+
+  return (
+    <div className="flex justify-center p-5 text-muted-foreground/60">
+      {t('table.noData')}
+    </div>
+  );
+}
+
 export const TABLE_EMPTY_MESSAGE = (
-  <div className="flex justify-center p-5 text-muted-foreground/60">
-    No data
-  </div>
+  <TableEmptyMessage />
 );
 
 export const TABLE_SKELETON = (
@@ -80,7 +90,7 @@ export const DIMENSIONS_COLUMN_TEMPLATE = (row: ItemTableRow) =>
 export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) => 
   row.lastEdit ? (
     <div className="text-muted-foreground">
-      {formatDistanceToNow(row.lastEdit, { addSuffix: true })}
+      {formatDistanceToNow(row.lastEdit, { addSuffix: true, locale: getDateLocale() })}
     </div>
   ) : null;
 

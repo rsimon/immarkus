@@ -1,4 +1,5 @@
 import { SubmitEvent, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Braces, ImagePlus, NotebookPen, PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { PropertyValidation } from '@/components/PropertyFields';
@@ -34,6 +35,8 @@ interface MetadataListProps {
 
 const MetadataList = (props: MetadataListProps) => {
 
+  const { t } = useTranslation('images');
+
   const { customMetadata, iiifMetadata } = props;
 
   const [tab, setTab] = useState<string>('embedded'); 
@@ -58,13 +61,13 @@ const MetadataList = (props: MetadataListProps) => {
         <TabsTrigger 
           value="embedded"
           className="text-xs py-1 px-2 flex gap-1.5"> 
-          <Braces className="size-3.5" />IIIF
+          <Braces className="size-3.5" />{t('metadataPanel.iiifTab')}
         </TabsTrigger>
 
-        <TabsTrigger 
-          value="custom" 
+        <TabsTrigger
+          value="custom"
           className="text-xs py-1 px-2 flex gap-1.5">
-          <NotebookPen className="size-3.5" /> My
+          <NotebookPen className="size-3.5" /> {t('metadataPanel.myTab')}
         </TabsTrigger>
       </TabsList>
 
@@ -102,7 +105,7 @@ const MetadataList = (props: MetadataListProps) => {
                 disabled={!hasChanges(customMetadata, formState)} 
                 className="w-full"
                 type="submit">
-                Save
+                {t('common.save')}
               </Button>
 
               <Button 
@@ -110,7 +113,7 @@ const MetadataList = (props: MetadataListProps) => {
                 className="w-full"
                 type="button"
                 onClick={props.onOpen}>
-                <PanelTop className="size-4 mr-2" /> Open Image
+                <PanelTop className="size-4 mr-2" /> {t('common.openImage')}
               </Button>
 
               <Button 
@@ -118,7 +121,7 @@ const MetadataList = (props: MetadataListProps) => {
                 className="w-full"
                 type="button"
                 onClick={props.onAddToWorkspace}>
-                <ImagePlus className="size-4 mr-2" /> Add to Workspace
+                <ImagePlus className="size-4 mr-2" /> {t('common.addToWorkspace')}
               </Button>
             </div>
           </form>

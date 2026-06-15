@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessagesSquare } from 'lucide-react';
 import { Folder } from '@/model';
 import { useStore } from '@/store';
@@ -20,6 +21,8 @@ interface FolderItemProps {
 
 export const FolderItem = (props: FolderItemProps) => {
 
+  const { t } = useTranslation('images');
+
   const store = useStore();
 
   const { images, folders, iiifResources } = store.getFolderContents(props.folder.handle);
@@ -30,17 +33,17 @@ export const FolderItem = (props: FolderItemProps) => {
     const m = iiifResources.length;
 
     if ((i + f + m) === 0) {
-      return 'Empty';
+      return t('folderItem.empty');
     } else {
       const tokens = [
-        i > 0 ? `${i} Image${i > 1 ? 's' : ''}` : undefined,
-        m > 0 ? `${m} IIIF` : undefined,
-        f > 0 ? `${f} Subfolder${f > 1 ? 's' : ''}` : undefined,
+        i > 0 ? t('folderItem.imageCount', { count: i }) : undefined,
+        m > 0 ? t('folderItem.iiifCount', { count: m }) : undefined,
+        f > 0 ? t('folderItem.subfolderCount', { count: f }) : undefined,
       ].filter(Boolean);
 
       return tokens.join(' · ')
     }
-  }, [images.length, folders.length, iiifResources.length]);
+  }, [images.length, folders.length, iiifResources.length, t]);
 
   return (
     <div>
