@@ -56,12 +56,8 @@ export const Start = (props: StartProps) => {
 
   return (
     <div>
-      <div className="absolute top-2 left-2">
-        <LanguageSwitcher />
-      </div>
-
-      <div className="absolute top-2 right-2 text-xs text-muted-foreground/50" aria-hidden={true}>
-        v{process.env.PACKAGE_VERSION} · Build {buildDate}
+      <div className="absolute top-2 right-2 text-xs text-muted-foreground/50 flex gap-2" aria-hidden={true}>
+        <span>v{process.env.PACKAGE_VERSION}</span> · <span>Build {buildDate}</span> · <LanguageSwitcher />
       </div>
 
       {!window.showDirectoryPicker ? (

@@ -17,6 +17,7 @@
     "skipLibCheck": true,
     "strict": false,
     "target": "ES6",
+    "types": ["wicg-file-system-access"],
     "useDefineForClassFields": true
   },
   "include": ["src"],

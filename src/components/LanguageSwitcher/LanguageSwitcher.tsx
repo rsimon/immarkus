@@ -21,7 +21,7 @@ export const LanguageSwitcher = () => {
       value={current.code}
       onValueChange={lang => i18n.changeLanguage(lang)}>
       <SelectTrigger
-        className="h-8 w-auto gap-1.5 border-none shadow-none text-xs text-muted-foreground hover:text-foreground"
+        className="h-auto bg-transparent gap-1.5 p-0 border-none rounded-none underline underline-offset-2 text-muted-foreground shadow-none text-xs hover:text-foreground"
         aria-label="Language">
         <Globe size={14} />
         <SelectValue />
