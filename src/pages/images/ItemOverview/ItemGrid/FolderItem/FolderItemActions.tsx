@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Folder } from '@/model';
 import { FolderOpen, MoreVertical, NotebookPen } from 'lucide-react';
 import {
@@ -20,6 +21,8 @@ interface FolderItemActionProps {
 
 export const FolderItemActions = (props: FolderItemActionProps) => {
 
+  const { t } = useTranslation('images');
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -31,12 +34,12 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
 
       <DropdownMenuContent align="start">
         <DropdownMenuItem onSelect={props.onSelect}>
-          <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+          <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> {t('common.metadata')}
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link to={`/images/${props.folder.id}`}>
-            <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> Open folder
+            <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> {t('common.openFolder')}
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

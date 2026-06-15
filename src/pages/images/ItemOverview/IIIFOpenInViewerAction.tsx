@@ -1,4 +1,5 @@
 import { Share2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { IIIFManifestResource } from '@/model';
 import { 
   DropdownMenuItem,
@@ -18,10 +19,12 @@ interface IIIFOpenInViewerActionProps {
 
 export const IIIFOpenInViewerAction = (props: IIIFOpenInViewerActionProps) => {
 
+  const { t } = useTranslation('images');
+
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>
-        <Share2 className="size-4 text-muted-foreground mr-2"  /> Other IIIF Viewers
+        <Share2 className="size-4 text-muted-foreground mr-2"  /> {t('common.otherIIIFViewers')}
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>

@@ -1,0 +1,98 @@
+{
+  "common": {
+    "metadata": "メタデータ",
+    "openFolder": "フォルダを開く",
+    "openImage": "画像を開く",
+    "openCanvas": "キャンバスを開く",
+    "openManifest": "マニフェストを開く",
+    "manifestMetadata": "マニフェストのメタデータ",
+    "canvasMetadata": "キャンバスのメタデータ",
+    "addToWorkspace": "ワークスペースに追加",
+    "otherIIIFViewers": "その他の IIIF ビューア",
+    "breadcrumbs": "パンくずリスト",
+    "delete": "削除",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "close": "閉じる",
+    "confirmDeleteManifest": "マニフェストを削除し、そのすべてのアノテーションをコンピュータから完全に削除します。"
+  },
+  "folderHeader": {
+    "folder": "フォルダ"
+  },
+  "headerControls": {
+    "showUnannotated": "未アノテーションを表示",
+    "hideUnannotated": "未アノテーションを非表示",
+    "grid": "グリッド",
+    "table": "テーブル",
+    "sorting": {
+      "name": "名前",
+      "annotations": "アノテーション",
+      "manifestOrder": "マニフェスト順",
+      "ascending": "昇順",
+      "descending": "降順"
+    }
+  },
+  "folderItem": {
+    "empty": "空",
+    "imageCount_other": "画像 {{count}} 件",
+    "iiifCount": "IIIF {{count}} 件",
+    "subfolderCount_other": "サブフォルダ {{count}} 件"
+  },
+  "manifestItem": {
+    "canvasCount_other": "キャンバス {{count}} 件"
+  },
+  "workspaceIndicator": {
+    "currentlyOpen": "現在ワークスペースで開いています"
+  },
+  "table": {
+    "type": "種類",
+    "name": "名前",
+    "dimensions": "寸法",
+    "lastEdit": "最終編集",
+    "annotations": "アノテーション",
+    "noData": "データがありません"
+  },
+  "metadataPanel": {
+    "iiifTab": "IIIF",
+    "myTab": "マイ"
+  },
+  "iiifImporter": {
+    "importIIIF": "IIIF をインポート",
+    "title": "IIIF マニフェストをインポート",
+    "description": "<strong1>IIIF プレゼンテーションマニフェスト</strong1>の URL を貼り付けてください。次のリンクは<strong2>機能しません</strong2>:",
+    "linkTypeViewerPages": "ビューアページ – Mirador や Universal Viewer を埋め込んだページなど。",
+    "linkTypeImageFiles": "画像ファイルへのリンク – <code1>jpg</code1>、<code2>png</code2> など。",
+    "linkTypeImageApi": "IIIF Image API エンドポイント – <code1>info.json</code1> で終わる URL。",
+    "urlPlaceholder": "IIIF Presentation API の URL",
+    "fetching": "取得中...",
+    "alreadyImportedTitle": "インポート済み",
+    "alreadyImportedMessage": "このマニフェストは現在のサブフォルダに既に存在します。IMMARKUS では同じマニフェストを複数回インポートできますが、それぞれ別のサブフォルダに配置する必要があります。続行するには、別のサブフォルダを選択してそこにインポートしてください。",
+    "presentationApiFallback": "Presentation API v{{version}}",
+    "annotationCount_other": "アノテーション {{count}} 件",
+    "canvasAnnotationCount_other": "非領域アノテーション {{count}} 件 (キャンバスメタデータ)",
+    "failedAnnotationCount_other": "アノテーション {{count}} 件を解析できませんでした - スキップします",
+    "noAnnotations": "マニフェストにアノテーションは含まれていません",
+    "resolvingAnnotations": "アノテーションを解決しています",
+    "mayTakeAWhile": "(時間がかかる場合があります)",
+    "collectionDetected": "これは複数のアイテムを含む IIIF コレクションマニフェストです。<selectButton>インポートするアイテムを選択</selectButton>",
+    "import": "インポート",
+    "errors": {
+      "fetchFailed": "取得に失敗しました。サーバーがアクセスを制限している可能性があります。",
+      "fetchFailedWithMessage": "取得に失敗しました。{{message}}",
+      "imageApiUnsupported": "Image API の URL は現在サポートされていません",
+      "invalidUrlWebPage": "無効な URL: ウェブページ",
+      "invalidUrlImageFile": "無効な URL: 画像ファイル",
+      "help": "IMMARKUS はこの URL からインポートできませんでした。一般的なインポートの問題と解決策については<troubleshootingLink>トラブルシューティングガイド</troubleshootingLink>をご覧ください。"
+    }
+  },
+  "importFromCollection": {
+    "title": "IIIF コレクションからインポート",
+    "description": "このコレクションには複数のプレゼンテーションマニフェストが含まれています。ワークスペースにインポートするアイテムを選択してください。",
+    "selectAll": "すべて選択",
+    "importWithCount": "インポート ({{count}})",
+    "importingTitle": "インポート中",
+    "importingMessage_other": "IIIF マニフェスト {{count}} 件をインポートしています",
+    "importErrorTitle": "インポートエラー",
+    "alreadyExists": "{{name}} は現在のサブフォルダに既に存在します。IMMARKUS では同じマニフェストを複数回インポートできますが、それぞれ別のサブフォルダに配置する必要があります。続行するには、このマニフェストをリストから削除するか、別のサブフォルダを選択してください。"
+  }
+}

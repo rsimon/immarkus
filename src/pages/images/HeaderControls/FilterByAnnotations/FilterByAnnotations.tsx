@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { MessageCircle, MessageCircleOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Toggle } from '@/ui/Toggle';
 
 interface FilterByAnnotationsProps {
@@ -12,6 +13,8 @@ interface FilterByAnnotationsProps {
 
 export const FilterByAnnotations = (props: FilterByAnnotationsProps) => {
 
+  const { t } = useTranslation('images');
+
   const { hideUnannotated } = props;
 
   return (
@@ -22,11 +25,11 @@ export const FilterByAnnotations = (props: FilterByAnnotationsProps) => {
 
       {hideUnannotated ? (
         <>
-          <MessageCircle className="size-4" /> Show unannotated
+          <MessageCircle className="size-4" /> {t('headerControls.showUnannotated')}
         </>
       ) : (
         <>
-          <MessageCircleOff className="size-4" /> Hide unannotated
+          <MessageCircleOff className="size-4" /> {t('headerControls.hideUnannotated')}
         </>
       )}
     </Toggle> 

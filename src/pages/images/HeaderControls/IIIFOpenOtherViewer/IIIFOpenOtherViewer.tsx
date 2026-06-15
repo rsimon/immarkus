@@ -1,4 +1,5 @@
 import { MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, Share2 } from 'lucide-react';
 import { CopyManifestURL } from '@/components/CopyManifestURL';
 import { IIIFManifestResource } from '@/model';
@@ -19,6 +20,8 @@ interface IIIFOpenOtherViewerProps {
 
 export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
+  const { t } = useTranslation('images');
+
   const [copied, setCopied] = useState(false);
 
   const onCopyManifestURL = (evt: MouseEvent) => {
@@ -36,7 +39,7 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
         <Button 
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal">
-          <Share2 className="size-4" strokeWidth={2.2}/> Other IIIF Viewers <ChevronDown className="size-4 opacity-50" />
+          <Share2 className="size-4" strokeWidth={2.2}/> {t('common.otherIIIFViewers')} <ChevronDown className="size-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
 

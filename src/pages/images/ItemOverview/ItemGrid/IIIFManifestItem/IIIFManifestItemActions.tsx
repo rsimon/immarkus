@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Images, MoreVertical, NotebookPen, Trash2 } from 'lucide-react';
 import { IIIFManifestResource, IIIFResource } from '@/model';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
@@ -23,6 +24,8 @@ interface IIIFManifestItemActionsProps {
 
 export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => {
 
+  const { t } = useTranslation('images');
+
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
@@ -37,12 +40,12 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
 
         <DropdownMenuContent align="start">
           <DropdownMenuItem onSelect={props.onSelect}>
-            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> Metadata
+            <NotebookPen className="h-4 w-4 text-muted-foreground mr-2" /> {t('common.metadata')}
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
             <Link to={`/images/${props.resource.id}`}>
-              <Images className="size-4 text-muted-foreground mr-2" /> Open Manifest
+              <Images className="size-4 text-muted-foreground mr-2" /> {t('common.openManifest')}
             </Link>
           </DropdownMenuItem>
 
@@ -50,14 +53,14 @@ export const IIIFManifestItemActions = (props: IIIFManifestItemActionsProps) => 
 
           <DropdownMenuItem onSelect={() => setConfirmDelete(true)}>          
             <Trash2 className="size-4 mr-2 mb-px text-red-700/70" />
-            <span className="text-red-700 hover:text-red-700">Delete</span>
+            <span className="text-red-700 hover:text-red-700">{t('common.delete')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <ConfirmedDelete
         open={confirmDelete}
-        message="This will remove the manifest and will permanently delete all its annotations from your computer."
+        message={t('common.confirmDeleteManifest')}
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

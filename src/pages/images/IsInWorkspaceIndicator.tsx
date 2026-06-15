@@ -1,4 +1,5 @@
 import { PanelsTopLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAnnotationViewState } from '@/pages/annotate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
@@ -9,6 +10,8 @@ interface IsInWorkspaceIndicatorPipProps {
 }
 
 export const IsInWorkspaceIndicatorPip = (props: IsInWorkspaceIndicatorPipProps) => {
+
+  const { t } = useTranslation('images');
 
   const {imageIds } = useAnnotationViewState();
   
@@ -21,7 +24,7 @@ export const IsInWorkspaceIndicatorPip = (props: IsInWorkspaceIndicatorPipProps)
       </TooltipTrigger>
 
       <TooltipContent>
-        Currently open in workspace
+        {t('workspaceIndicator.currentlyOpen')}
       </TooltipContent>
     </Tooltip>
   ) : null;
@@ -36,6 +39,8 @@ interface IsInWorkspaceIndicatorBadgeProps {
 
 export const IsInWorkspaceIndicatorBadge = (props: IsInWorkspaceIndicatorBadgeProps) => {
 
+  const { t } = useTranslation('images');
+
   const {imageIds } = useAnnotationViewState();
   
   const isInWorkspace = imageIds.includes(props.imageId);
@@ -49,7 +54,7 @@ export const IsInWorkspaceIndicatorBadge = (props: IsInWorkspaceIndicatorBadgePr
       </TooltipTrigger>
 
       <TooltipContent>
-        Currently open in workspace
+        {t('workspaceIndicator.currentlyOpen')}
       </TooltipContent>
     </Tooltip>
   ) : null;

@@ -1,7 +1,8 @@
 import { Ban } from 'lucide-react';
+import { Trans } from 'react-i18next';
 
 interface ErrorAlertProps {
-  
+
   message: string;
 
 }
@@ -14,11 +15,17 @@ export const ErrorAlert = (props: ErrorAlertProps) => {
       </div>
 
       <div>
-        IMMARKUS could not import from this URL. See our <a 
-          className="underline"
-          href="https://github.com/rsimon/immarkus/wiki/Troubleshooting-IIIF-Manifest-Imports" 
-          target="_blank">troubleshooting 
-        guide</a> for information on common import problems and possible solutions.
+        <Trans
+          ns="images"
+          i18nKey="iiifImporter.errors.help"
+          components={{
+            troubleshootingLink: (
+              <a
+                className="underline"
+                href="https://github.com/rsimon/immarkus/wiki/Troubleshooting-IIIF-Manifest-Imports"
+                target="_blank" />
+            )
+          }} />
       </div>
     </div>
   )

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import murmur from 'murmurhash';
 import { FileX, LibrarySquare } from 'lucide-react';
 import { Cozy, CozyCollection, CozyCollectionItem, CozyParseResult } from 'cozy-iiif';
@@ -46,6 +47,8 @@ interface ImportFromCollectionProps {
 type ParseResult = { id: string, parsed: CozyParseResult };
 
 export const ImportFromCollection = (props: ImportFromCollectionProps) => {
+
+  const { t } = useTranslation('images');
 
   const store = useStore();
 
@@ -96,7 +99,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
       return generateShortId(idSeed).then(id => {
         const exists = Boolean(store.getIIIFResource(id));
         if (exists) {
-          return Promise.reject(new Error(`${manifest.getLabel()} already exists in the current subfolder. IMMARKUS allows multiple imports of the same manifest, but each one must be placed in a different subfolder. To continue, please remove this manifest from the list or choose a different subfolder.`));
+          return Promise.reject(new Error(t('importFromCollection.alreadyExists', { name: manifest.getLabel() })));
         } else {
           return Cozy.parseURL(manifest.id).then(parsed => ({ id, parsed }));
         }
@@ -162,11 +165,10 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
         onOpenChange={open => !open && props.onCancel()}>
         <DialogContent>
           <DialogTitle>
-            Import from IIIF Collection
+            {t('importFromCollection.title')}
           </DialogTitle>
           <DialogDescription className="leading-relaxed">
-            This collection contains multiple presentation manifests. Choose 
-            which items to import into your workspace.
+            {t('importFromCollection.description')}
           </DialogDescription>
 
           <div className="mt-4 mb-4 overflow-hidden">
@@ -175,7 +177,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
                 checked={isIndeterminate ? 'indeterminate' : isAllSelected}
                 onCheckedChange={onSelectAll} />
               <span className="text-xs">
-                Select All
+                {t('importFromCollection.selectAll')}
               </span>
             </div>
 
@@ -201,7 +203,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
             <Button
               variant="ghost" 
               onClick={props.onCancel}>
-              Cancel
+              {t('common.cancel')}
             </Button>
 
             <Button 
@@ -211,7 +213,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
               {importing ? (
                 <Spinner className="size-4" />
               ) : (
-                <span>Import ({selected.length})</span>
+                <span>{t('importFromCollection.importWithCount', { count: selected.length })}</span>
               )}
             </Button>
           </DialogFooter>
@@ -221,8 +223,8 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
       <ProgressDialog
         icon={<LibrarySquare className="h-5 w-5" />}
         open={importing}
-        title="Importing"
-        message={`Importing ${selected.length} IIIF manifests`}
+        title={t('importFromCollection.importingTitle')}
+        message={t('importFromCollection.importingMessage', { count: selected.length })}
         progress={importProgress} />
 
       <AlertDialog 
@@ -233,7 +235,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
           <AlertDialogHeader>
             <AlertDialogTitle
               className="flex gap-2 items-center text-destructive">
-              <FileX className="size-5 -ml-0.5" />  Import Error
+              <FileX className="size-5 -ml-0.5" />  {t('importFromCollection.importErrorTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription
               className="my-2 leading-relaxed text-primary">
@@ -244,7 +246,7 @@ export const ImportFromCollection = (props: ImportFromCollectionProps) => {
           <AlertDialogFooter>
             <AlertDialogCancel
               className="bg-destructive border-destructive text-destructive-foreground hover:text-destructive-foreground hover:bg-destructive/90">
-              Close
+              {t('common.close')}
             </AlertDialogCancel>
           </AlertDialogFooter>
         </AlertDialogContent>

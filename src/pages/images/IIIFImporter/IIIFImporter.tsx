@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import murmur from 'murmurhash';
 import { type CozyParseResult, Cozy } from 'cozy-iiif';
 import { Ban, Check, CloudDownload, Loader2, MessageSquareX, MessagesSquare, SquareLibrary } from 'lucide-react';
@@ -24,6 +25,8 @@ interface IIIFImporterProps {
 export type ImportableIIIFResource = Omit<IIIFResource, 'path' | 'folder'>;
 
 export const IIIFImporter = (props: IIIFImporterProps) => {
+
+  const { t } = useTranslation('images');
 
   const store = useStore();
 
@@ -146,137 +149,161 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
         <Button
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded">
-          <CloudDownload className="size-4.5 pt-px" /> Import IIIF
+          <CloudDownload className="size-4.5 pt-px" /> {t('iiifImporter.importIIIF')}
         </Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl">
         <DialogTitle>
-          Import IIIF Manifest
+          {t('iiifImporter.title')}
         </DialogTitle>
-        
-        <DialogDescription asChild> 
+
+        <DialogDescription asChild>
           <div className="leading-relaxed space-y-1 mb-2">
             <p>
-            Paste the URL to a <strong className="font-semibold">IIIF Presentation Manifest</strong>. The 
-            following links will <strong className="font-semibold">not</strong> work:
+              <Trans
+                ns="images"
+                i18nKey="iiifImporter.description"
+                components={{
+                  strong1: <strong className="font-semibold" />,
+                  strong2: <strong className="font-semibold" />
+                }} />
             </p>
 
             <ul className="list-disc pl-5">
-              <li>viewer pages – e.g. pages that embed Mirador or Universal Viewer.</li>
-              <li>links to image files – <code className="text-xs">jpg</code>, <code className="text-xs">png</code>, etc.</li>
-              <li>IIIF Image API endpoints – ending with <code className="text-xs">info.json</code>.</li>
+              <li>{t('iiifImporter.linkTypeViewerPages')}</li>
+              <li>
+                <Trans
+                  ns="images"
+                  i18nKey="iiifImporter.linkTypeImageFiles"
+                  components={{
+                    code1: <code className="text-xs" />,
+                    code2: <code className="text-xs" />
+                  }} />
+              </li>
+              <li>
+                <Trans
+                  ns="images"
+                  i18nKey="iiifImporter.linkTypeImageApi"
+                  components={{
+                    code1: <code className="text-xs" />
+                  }} />
+              </li>
             </ul>
           </div>
         </DialogDescription>
 
-        <form 
+        <form
           className="text-xs space-y-2"
           onSubmit={onSubmit}>
-          <Input 
+          <Input
             autoFocus
             value={uri}
-            placeholder="IIIF Presentation API URL"
+            placeholder={t('iiifImporter.urlPlaceholder')}
             onChange={evt => setURI(evt.target.value)} />
 
           {busy ? (
             <div className="flex items-center gap-1.5 pl-0.5">
-              <Loader2 className="animate-spin size-3.5 mb-px" /> Fetching...
+              <Loader2 className="animate-spin size-3.5 mb-px" /> {t('iiifImporter.fetching')}
             </div>
           ) : alreadyImported ? (
-            <div 
+            <div
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
               <div className="font-semibold mb-2 flex gap-1.5">
-                <Ban className="size-3.5 mt-0.75" /> Already Imported
+                <Ban className="size-3.5 mt-0.75" /> {t('iiifImporter.alreadyImportedTitle')}
               </div>
 
               <div>
-                This manifest already exists in the current subfolder. IMMARKUS allows you to import the 
-                same manifest multiple times, but each import must be placed in a different subfolder.
-                To proceed, please select another subfolder and import the manifest there.
+                {t('iiifImporter.alreadyImportedMessage')}
               </div>
             </div>
           ) : parseResult?.type === 'error' ? (
-            <div 
+            <div
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
 
               {parseResult.code === 'FETCH_ERROR' ? (
-                <ErrorAlert message="Failed to fetch. Server may restrict access." />
+                <ErrorAlert message={t('iiifImporter.errors.fetchFailed')} />
               ) : parseResult.code === 'INVALID_HTTP_RESPONSE' ? (
-                <ErrorAlert message={`Failed to fetch. ${parseResult.message}`} />
+                <ErrorAlert message={t('iiifImporter.errors.fetchFailedWithMessage', { message: parseResult.message })} />
               ) : (
                 <ErrorAlert message={parseResult.message} />
               )}
             </div>
           ) : parseResult?.type === 'iiif-image' ? (
             <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
-              <Ban className="size-3.5 mb-px" /> Image API URLs are currently unsupported
+              <Ban className="size-3.5 mb-px" /> {t('iiifImporter.errors.imageApiUnsupported')}
             </div>
           ) : parseResult?.type === 'manifest' ? (
             <>
               <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-                <Check className="size-4" /> {parseResult.resource.getLabel() || `Presentation API v${parseResult.resource.majorVersion}`}
+                <Check className="size-4" /> {parseResult.resource.getLabel() || t('iiifImporter.presentationApiFallback', { version: parseResult.resource.majorVersion })}
               </div>
 
               {validationResult && validationResult.total > 0 ? (
                 <>
                   {validationResult.shapeAnnotations > 0 && (
                     <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-                      <MessagesSquare className="size-4" /> 
-                      {validationResult.shapeAnnotations} annotation{validationResult.shapeAnnotations > 1 ? 's' : ''}
+                      <MessagesSquare className="size-4" />
+                      {t('iiifImporter.annotationCount', { count: validationResult.shapeAnnotations })}
                     </div>
                   )}
 
                   {validationResult.canvasAnnotations > 0 && (
                     <div className="flex items-center gap-1.5 pl-0.5 text-green-600">
-                      <MessagesSquare className="size-4" /> 
-                      {validationResult.canvasAnnotations} non-region annotation{validationResult.canvasAnnotations > 1 ? 's' : ''} (canvas metadata)
+                      <MessagesSquare className="size-4" />
+                      {t('iiifImporter.canvasAnnotationCount', { count: validationResult.canvasAnnotations })}
                     </div>
                   )}
 
                   {validationResult.failed > 0 && (
                     <div className="flex items-center gap-1.5 pl-0.5 text-red-600">
-                      <MessageSquareX className="size-4" /> 
-                      Failed to parse {validationResult.failed} annotation{validationResult.failed > 1 ? 's' : ''} - skipping
+                      <MessageSquareX className="size-4" />
+                      {t('iiifImporter.failedAnnotationCount', { count: validationResult.failed })}
                     </div>
                   )}
                 </>
               ) :validationResult ? (
                   <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
-                    <MessagesSquare className="size-4" /> 
-                    Manifest includes no annotations
+                    <MessagesSquare className="size-4" />
+                    {t('iiifImporter.noAnnotations')}
                   </div>
               ) : validatingAnnotations && (
                 <div className="flex items-center gap-1.5 pl-0.5 text-gray-600">
-                  <Spinner className="size-4" /> 
-                  Resolving annotations {validatingSlow && (<span>(this may take a while)</span>)}
+                  <Spinner className="size-4" />
+                  {t('iiifImporter.resolvingAnnotations')} {validatingSlow && (<span>{t('iiifImporter.mayTakeAWhile')}</span>)}
                 </div>
               )}
             </>
           ) : parseResult?.type === 'webpage' ? (
-            <div 
+            <div
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
-              <ErrorAlert message="Invalid URL: web page" />
+              <ErrorAlert message={t('iiifImporter.errors.invalidUrlWebPage')} />
             </div>
           ) : parseResult?.type === 'collection' ? (
             <div className="flex items-center gap-1 pl-0.5 mt-1 text-amber-600">
-              <SquareLibrary className="size-4.5 mb-0.5" /> 
+              <SquareLibrary className="size-4.5 mb-0.5" />
               <div>
-                This is a IIIF Collection Manifest with multiple items. 
-                <Button 
-                  variant="link"
-                  className="ml-1 p-0 h-auto text-xs text-amber-600 underline"
-                  onClick={() => setShowCollectionImporter(true)}>Select items to import</Button>.
+                <Trans
+                  ns="images"
+                  i18nKey="iiifImporter.collectionDetected"
+                  components={{
+                    selectButton: (
+                      <Button
+                        variant="link"
+                        className="ml-1 p-0 h-auto text-xs text-amber-600 underline"
+                        onClick={() => setShowCollectionImporter(true)} />
+                    )
+                  }} />
               </div>
             </div>
           ) : parseResult?.type === 'plain-image' ? (
-            <div 
+            <div
               className="p-3 mt-6 items-start leading-relaxed
                 rounded text-destructive border border-destructive">
-              <ErrorAlert message="Invalid URL: image file" />
+              <ErrorAlert message={t('iiifImporter.errors.invalidUrlImageFile')} />
             </div>
           ) : (
             <div className="flex items-center gap-1.5 pl-0.5">{'\u00A0'}</div>
@@ -291,16 +318,16 @@ export const IIIFImporter = (props: IIIFImporterProps) => {
 
           <div className="flex justify-end gap-2 pt-4">
             <DialogClose asChild>
-              <Button 
+              <Button
                 type="button"
                 variant="ghost">
-                Cancel
+                {t('common.cancel')}
               </Button>
             </DialogClose>
 
             <Button
               disabled={!parseResult || parseResult?.type !== 'manifest'}>
-              Import
+              {t('iiifImporter.import')}
             </Button>
           </div>
         </form>

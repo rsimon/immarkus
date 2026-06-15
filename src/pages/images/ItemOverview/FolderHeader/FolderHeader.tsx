@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, NotebookPen } from 'lucide-react';
 import { Folder, RootFolder } from '@/model';
 import { useStore } from '@/store';
@@ -31,6 +32,8 @@ interface FolderHeaderProps {
 
 export const FolderHeader = (props: FolderHeaderProps) => {
 
+  const { t } = useTranslation('images');
+
   const { folder } = props;
 
   const store = useStore();
@@ -39,9 +42,9 @@ export const FolderHeader = (props: FolderHeaderProps) => {
     <div className="space-y-1 grow">
       <h1 className="text-sm text-muted-foreground tracking-tight">
         {isRootFolder(folder) ? (
-          <span>Folder</span>
+          <span>{t('folderHeader.folder')}</span>
         ) : (
-          <nav className="breadcrumbs" aria-label="Breadcrumbs">
+          <nav className="breadcrumbs" aria-label={t('common.breadcrumbs')}>
             <ol className="flex items-center gap-0.5">
               <li>
                 <Link className="hover:underline" to={`/images`}>{store.getRootFolder().name}</Link>
@@ -72,7 +75,7 @@ export const FolderHeader = (props: FolderHeaderProps) => {
           variant="link"
           className="text-muted-foreground flex items-center gap-1.5 p-0 h-auto font-normal ring-offset-2 rounded"
           onClick={props.onShowMetadata}>
-          <NotebookPen className="size-4" /> Metadata
+          <NotebookPen className="size-4" /> {t('common.metadata')}
         </Button>
 
         <IIIFImporter 

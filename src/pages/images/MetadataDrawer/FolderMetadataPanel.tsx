@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { useFolderMetadata } from '@/store';
 import { PropertyValidation } from '@/components/PropertyFields';
@@ -13,6 +14,8 @@ interface FolderMetadataPanelProps {
 }
 
 export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
+
+  const { t } = useTranslation('images');
 
   const { metadata, updateMetadata } = useFolderMetadata(props.folder);
 
@@ -47,7 +50,7 @@ export const FolderMetadataPanel = (props: FolderMetadataPanelProps) => {
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
             type="submit">
-            Save
+            {t('common.save')}
           </Button>
         </div>
       </form>
