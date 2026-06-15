@@ -1,0 +1,60 @@
+{
+  "title": "データモデル",
+  "tabs": {
+    "entityClasses": "エンティティクラス",
+    "relationships": "リレーション",
+    "imageMetadata": "画像メタデータ",
+    "folderMetadata": "フォルダメタデータ"
+  },
+  "entityTypes": {
+    "description": "エンティティクラスを使って、アノテーションで特定の概念や事物を表し、物の素材や動物の脚の数などの詳細を記録できます。",
+    "createNew": "新規エンティティクラスを作成",
+    "importModel": "モデルをインポート",
+    "errorTitle": "エラー",
+    "errorCouldNotDelete": "エンティティを削除できませんでした"
+  },
+  "entityTypesTable": {
+    "headerEntityClass": "エンティティクラス",
+    "headerDisplayName": "表示名",
+    "headerDescription": "説明",
+    "headerProperties": "プロパティ",
+    "empty": "エンティティクラスがありません"
+  },
+  "entityTypeActions": {
+    "edit": "エンティティクラスを編集",
+    "delete": "エンティティクラスを削除",
+    "confirmDelete": "この操作により、エンティティクラスが語彙から削除されます。",
+    "confirmDeleteWithChildren_other": "この操作により、エンティティクラスが語彙から削除されます。{{count}} 件の子クラスはデータモデルのルートに移動されます。"
+  },
+  "imageMetadata": {
+    "description": "スキーマを使って、タイトル・作者・出典など、画像に関する構造化された情報を記録できます。「美術品」「歴史的印刷図版」「考古学画像」など、画像の種類ごとに複数のスキーマを作成できます。",
+    "editorHint": "プロパティを追加して、タイトル・出典・日付など、画像の詳細を記録できます。",
+    "previewHint": "画像ギャラリーでメタデータを編集する際に、プロパティはこのように表示されます。",
+    "newSchema": "新規画像スキーマ",
+    "importModel": "モデルをインポート"
+  },
+  "folderMetadata": {
+    "description": "スキーマを使って、フォルダに関する構造化された情報を記録できます。「美術品」「歴史的印刷テキスト」「雑誌論文」「現代の単行本」など、フォルダの種類ごとに複数のスキーマを作成できます。",
+    "editorHint": "プロパティを追加して、タイトル・出典・日付など、フォルダの詳細を記録できます。",
+    "previewHint": "画像ギャラリーでメタデータを編集する際に、プロパティはこのように表示されます。",
+    "newSchema": "新規フォルダスキーマ",
+    "importModel": "モデルをインポート"
+  },
+  "relationships": {
+    "description": "2 つのアノテーションはリレーションで結び付けられます。リレーションには名前(例:「〜の隣にある」「〜の一部である」)があり、有向・無向を選べます。",
+    "headerName": "リレーション名",
+    "headerDescription": "説明",
+    "headerDirected": "有向",
+    "headerSourceClass": "ソースクラス",
+    "headerTargetClass": "ターゲットクラス",
+    "empty": "リレーションタイプが定義されていません",
+    "deletedClass": "削除されたクラス",
+    "addType": "リレーションタイプを追加",
+    "importModel": "モデルをインポート"
+  },
+  "relationshipActions": {
+    "edit": "編集",
+    "delete": "削除",
+    "confirmDelete": "この操作により、リレーションタイプがデータモデルから削除されます。"
+  }
+}

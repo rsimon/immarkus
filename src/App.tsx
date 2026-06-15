@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AppNavigationSidebar } from './components/AppNavigationSidebar';
 import { SidebarProvider } from './ui/Sidebar';
 import { useStore } from './store';
@@ -70,12 +71,14 @@ export const App = () => {
 
 const NotFound = () => {
 
+  const { t } = useTranslation('app');
+
   return (
     <>
       <AppNavigationSidebar />
 
       <main className="grow page not-found p-8">
-        <h2>Nothing to see here.</h2>
+        <h2>{t('notFound')}</h2>
       </main>
     </>
   )

@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 
 export const Markus = () => {
+
+  const { t } = useTranslation('markus');
 
   return (
     <>
@@ -11,7 +14,7 @@ export const Markus = () => {
 
         <div className="max-w-2xl leading-relaxed text-sm space-y-6">
           <p className="text-muted-foreground">
-            IMMARKUS is part of X-MARKUS, a cross-media annotation environment consisting of:
+            {t('intro')}
           </p>
 
           <ul className="mb-8 space-y-6">
@@ -66,8 +69,7 @@ export const Markus = () => {
           </ul>
 
           <p className="text-muted-foreground mt-8">
-            All platforms feature instructional materials. For a discussion of design principles 
-            and use cases:
+            {t('materials')}
           </p>
 
           <p>

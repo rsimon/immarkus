@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MetadataTable } from '@/components/MetadataTable';
 import { MetadataSchema } from '@/model';
 import { useDataModel, useStore } from '@/store';
@@ -10,17 +11,17 @@ import { DataModelImport } from '@/components/DataModelImport';
 
 export const FolderMetadata = () => {
 
+  const { t } = useTranslation('datamodel');
+
   const store = useStore();
 
   const model = useDataModel();
 
   const [edited, setEdited] = useState<MetadataSchema | undefined>();
 
-  const editorHint = 
-    'Add Properties to record specific details for your folders, such as title, source, date, etc.';
+  const editorHint = t('folderMetadata.editorHint');
 
-  const previewHint =
-    'This is how your property will appear when editing metadata in the image gallery.';
+  const previewHint = t('folderMetadata.previewHint');
 
   const onSave = (updated: MetadataSchema, previous?: MetadataSchema) => {
     if (previous && previous.name === updated.name) {
@@ -44,10 +45,7 @@ export const FolderMetadata = () => {
   return (
     <div>
       <p className="p-1 mt-4 text-sm max-w-2xl leading-6">
-        Use schemas to record structured information about your folders.
-        Create multiple schemas to describe different folder types,
-        e.g. 'artwork', 'historical printed text', 'journal article', or 'modern 
-        monograph'.
+        {t('folderMetadata.description')}
       </p>
 
       <MetadataTable
@@ -62,13 +60,13 @@ export const FolderMetadata = () => {
           existingSchemas={model.folderSchemas}
           onSave={onSave}>
           <Button>
-            <Rows3 className="w-4 h-4 mr-2" /> New Folder Schema
+            <Rows3 className="w-4 h-4 mr-2" /> {t('folderMetadata.newSchema')}
           </Button>
         </MetadataSchemaEditorDialog>
 
         <DataModelImport type="FOLDER_SCHEMAS">
           <Button variant="outline">
-            <Import className="h-4 w-4 mr-2" /> Import Model
+            <Import className="h-4 w-4 mr-2" /> {t('folderMetadata.importModel')}
           </Button>
         </DataModelImport>
       </div>

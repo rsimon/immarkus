@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityType } from '@/model';
 import { useDataModel } from '@/store';
@@ -23,6 +24,8 @@ interface EntityTypeActionsProps {
 
 export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
+  const { t } = useTranslation('datamodel');
+
   const datamodel = useDataModel();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -30,8 +33,8 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
   const children = datamodel.getChildTypes(props.entityType.id);
 
   const message = children.length > 0
-    ? `This action will delete the entity class from the vocabulary. ${children.length} child class${children.length > 1 ? 'es' : ''} will be moved to the root of your data model.` 
-    : "This action will delete the entity class from the vocabulary."
+    ? t('entityTypeActions.confirmDeleteWithChildren', { count: children.length })
+    : t('entityTypeActions.confirmDelete');
 
   return (
     <>
@@ -44,12 +47,12 @@ export const EntityTypeActions = (props: EntityTypeActionsProps) => {
 
         <DropdownMenuContent sideOffset={-10}>
           <DropdownMenuItem className="text-xs" onSelect={props.onEditEntityType}>
-            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit Entity Class
+            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />{t('entityTypeActions.edit')}
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs" onSelect={() => setConfirmDelete(true)}>
             <Trash2 size={16} className="inline text-red-400 relative -top-px mr-2" />
-            <span className="text-red-500">Delete Entity Class</span>
+            <span className="text-red-500">{t('entityTypeActions.delete')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
