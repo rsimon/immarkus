@@ -1,4 +1,5 @@
 import { FileChartColumn, FileJson, ScissorsLineDashed, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/Spinner';
 import { exportAnnotationsAsJSONLD, useStore } from '@/store';
 import { Button } from '@/ui/Button';
@@ -8,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useState } from 'react';
 
 export const ExportAnnotations = () => {
+
+  const { t } = useTranslation('export');
 
   const store = useStore();
 
@@ -25,14 +28,18 @@ export const ExportAnnotations = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
-              Annotation Data
+              {t('annotations.dataTitle')}
             </h3>
 
             <p className="text-sm pt-3 pb-5 leading-relaxed">
-              All annotations, on all images in your current work folder, as a flat list
-              in <a 
-                className="underline underline-offset-4 hover:text-primary" 
-                href="https://www.w3.org/TR/annotation-model/" target="_blank">W3C Web Annotation</a> JSON-LD format.
+              <Trans
+                ns="export"
+                i18nKey="annotations.dataDescription"
+                components={{
+                  w3cLink: <a
+                    className="underline underline-offset-4 hover:text-primary"
+                    href="https://www.w3.org/TR/annotation-model/" target="_blank" />
+                }} />
             </p>
 
             <div className="flex justify-end pt-3">
@@ -48,27 +55,29 @@ export const ExportAnnotations = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
-              Annotations and Images
+              {t('annotations.imagesTitle')}
             </h3>
 
             <p className="text-sm pt-3 leading-relaxed">
-              All annotations, on all images in your current work folder, as an Excel file. 
-              Each top-level Entity Class will appear on a separate worksheet. 
+              {t('annotations.imagesDescription')}
             </p>
 
             <p className="text-sm pt-3 leading-relaxed">
-              Image snippets are included as a spreadsheet column. Choose your 
-              preferred format:
+              {t('annotations.snippetsIntro')}
             </p>
 
             <ul className="list-disc text-sm leading-relaxed pt-1 pb-5 space-y-1">
               <li className="ml-5">
-                <strong>Bounding box snippets</strong>: rectangular images showing the full 
-                area around each annotation.
+                <Trans
+                  ns="export"
+                  i18nKey="annotations.snippetsBoundingBox"
+                  components={{ b: <strong /> }} />
               </li>
               <li className="ml-5">
-                <strong>Exact shape snippets</strong>: images clipped precisely to the annotated 
-                shape (applies to polygons and ellipses).
+                <Trans
+                  ns="export"
+                  i18nKey="annotations.snippetsExactShape"
+                  components={{ b: <strong /> }} />
               </li>
             </ul>
 
@@ -84,14 +93,14 @@ export const ExportAnnotations = () => {
                 <SelectContent>
                   <SelectItem value="unmasked">
                     <div className="flex items-center gap-1.5 whitespace-nowrap">
-                      <SquareDashed className="size-4" /> Export bounding box snippets
+                      <SquareDashed className="size-4" /> {t('annotations.exportBoundingBox')}
                     </div>
                   </SelectItem>
 
                   <SelectItem 
                     value="masked">
                     <div className="flex items-center gap-2 whitespace-nowrap">
-                      <TriangleDashed className="size-4 rotate-[-15deg]" /> Export exact shape snippets
+                      <TriangleDashed className="size-4 rotate-[-15deg]" /> {t('annotations.exportExactShape')}
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -114,7 +123,7 @@ export const ExportAnnotations = () => {
 
       <ProgressDialog
         icon={<Table2 className="h-5 w-5" />}
-        message="Exporting XLSX. This may take a while."
+        message={t('exportingXlsx')}
         open={busy}
         progress={progress} />
     </>

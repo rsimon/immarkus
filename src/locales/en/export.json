@@ -1,0 +1,47 @@
+{
+  "title": "Export",
+  "description": "Export your data in different export formats.",
+  "nav": {
+    "annotations": "Annotations",
+    "relationships": "Relationships",
+    "dataModel": "Data Model",
+    "metadata": "Metadata"
+  },
+  "exportingXlsx": "Exporting XLSX. This may take a while.",
+  "annotations": {
+    "dataTitle": "Annotation Data",
+    "dataDescription": "All annotations, on all images in your current work folder, as a flat list in <w3cLink>W3C Web Annotation</w3cLink> JSON-LD format.",
+    "imagesTitle": "Annotations and Images",
+    "imagesDescription": "All annotations, on all images in your current work folder, as an Excel file. Each top-level Entity Class will appear on a separate worksheet.",
+    "snippetsIntro": "Image snippets are included as a spreadsheet column. Choose your preferred format:",
+    "snippetsBoundingBox": "<b>Bounding box snippets</b>: rectangular images showing the full area around each annotation.",
+    "snippetsExactShape": "<b>Exact shape snippets</b>: images clipped precisely to the annotated shape (applies to polygons and ellipses).",
+    "exportBoundingBox": "Export bounding box snippets",
+    "exportExactShape": "Export exact shape snippets"
+  },
+  "dataModel": {
+    "entityClassesTitle": "Entity Classes",
+    "entityClassesDescription": "Your Entity Class model, in proprietary IMMARKUS JSON Format.",
+    "relationshipTypesTitle": "Relationship Types",
+    "relationshipTypesDescription": "Your Relationship Type model, in proprietary IMMARKUS JSON Format.",
+    "imageSchemasTitle": "Image Metadata Schemas",
+    "imageSchemasDescription": "Your Image Metadata schemas, in proprietary IMMARKUS JSON Format.",
+    "folderSchemasTitle": "Folder Metadata Schemas",
+    "folderSchemasDescription": "Your Folder Metadata schemas, in proprietary IMMARKUS JSON Format.",
+    "fullModelTitle": "Full IMMARKUS Data Model",
+    "fullModelDescription": "All of the above - Entity Classes, Relationship Types, Image and Folder metadata schemas. This export is the same file you will find in your work folder as <fileName>_immarkus.model.json</fileName>. It is re-published here for convenience."
+  },
+  "metadata": {
+    "imageTitle": "Image Metadata",
+    "imageDescription": "Image metadata, available in two versions: as a flattened CSV with one row per image and one column per metadata schema field, or an Excel spreadsheet. The Excel spreadsheet has separate worksheets for each image metadata schema.",
+    "folderTitle": "Folder Metadata",
+    "folderDescription1": "Folder metadata, available in two versions: as a flattened CSV with one row per folder and one column per metadata schema field, or an Excel spreadsheet.",
+    "folderDescription2": "The Excel spreadsheet has separate worksheets for each folder metadata schema, and will also include IIIF manifest metadata, if any."
+  },
+  "relationships": {
+    "dataTitle": "Relationship Data",
+    "dataDescription": "All relationships, on all images in your current work folder, as a flat list in <w3cLink>W3C Web Annotation</w3cLink> JSON-LD format.",
+    "imagesTitle": "Relationships and Images",
+    "imagesDescription": "All relationships, on all images in your current work folder, as an Excel file. Image snippets for the start- and end-annotation of each relationship are included as spreadsheet columns."
+  }
+}

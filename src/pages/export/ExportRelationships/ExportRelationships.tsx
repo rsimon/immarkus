@@ -1,10 +1,13 @@
 import { FileChartColumn, FileJson, Table2 } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Spinner } from '@/components/Spinner';
 import { exportRelationshipsAsJSONLD, useExcelRelationshipExport, useStore } from '@/store';
 import { Button } from '@/ui/Button';
 
 export const ExportRelationships = () => {
+
+  const { t } = useTranslation('export');
 
   const store = useStore();
 
@@ -25,14 +28,18 @@ export const ExportRelationships = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
-              Relationship Data
+              {t('relationships.dataTitle')}
             </h3>
 
             <p className="text-sm pt-3 pb-5 leading-relaxed">
-              All relationships, on all images in your current work folder, as a flat list
-              in <a 
-                className="underline underline-offset-4 hover:text-primary" 
-                href="https://www.w3.org/TR/annotation-model/" target="_blank">W3C Web Annotation</a> JSON-LD format.
+              <Trans
+                ns="export"
+                i18nKey="relationships.dataDescription"
+                components={{
+                  w3cLink: <a
+                    className="underline underline-offset-4 hover:text-primary"
+                    href="https://www.w3.org/TR/annotation-model/" target="_blank" />
+                }} />
             </p>
 
             <div className="flex justify-end pt-3">
@@ -48,13 +55,11 @@ export const ExportRelationships = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium leading-relaxed">
-              Relationships and Images
+              {t('relationships.imagesTitle')}
             </h3>
 
             <p className="text-sm pt-3 pb-5 leading-relaxed">
-              All relationships, on all images in your current work folder, as an Excel file. 
-              Image snippets for the start- and end-annotation of each relationship are included 
-              as spreadsheet columns.
+              {t('relationships.imagesDescription')}
             </p>
 
             <div className="flex justify-end pt-3">
@@ -75,7 +80,7 @@ export const ExportRelationships = () => {
 
       <ProgressDialog
         icon={<Table2 className="h-5 w-5" />}
-        message="Exporting XLSX. This may take a while."
+        message={t('exportingXlsx')}
         open={busy}
         progress={progress} />
     </>

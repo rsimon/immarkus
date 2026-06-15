@@ -1,0 +1,47 @@
+{
+  "title": "エクスポート",
+  "description": "データをさまざまな形式でエクスポートできます。",
+  "nav": {
+    "annotations": "アノテーション",
+    "relationships": "リレーション",
+    "dataModel": "データモデル",
+    "metadata": "メタデータ"
+  },
+  "exportingXlsx": "XLSX をエクスポートしています。しばらくお待ちください。",
+  "annotations": {
+    "dataTitle": "アノテーションデータ",
+    "dataDescription": "現在の作業フォルダ内の全画像のアノテーションを、<w3cLink>W3C Web Annotation</w3cLink> JSON-LD 形式のフラットなリストとして出力します。",
+    "imagesTitle": "アノテーションと画像",
+    "imagesDescription": "現在の作業フォルダ内の全画像のアノテーションを Excel ファイルとして出力します。トップレベルのエンティティクラスごとに別のワークシートに分かれます。",
+    "snippetsIntro": "画像スニペットはスプレッドシートの列として含まれます。形式を選択してください。",
+    "snippetsBoundingBox": "<b>バウンディングボックススニペット</b>: 各アノテーション周辺の領域全体を含む矩形画像です。",
+    "snippetsExactShape": "<b>正確な形状のスニペット</b>: アノテーションの形状どおりに切り抜いた画像です(ポリゴンと楕円に適用されます)。",
+    "exportBoundingBox": "バウンディングボックススニペットをエクスポート",
+    "exportExactShape": "正確な形状のスニペットをエクスポート"
+  },
+  "dataModel": {
+    "entityClassesTitle": "エンティティクラス",
+    "entityClassesDescription": "エンティティクラスのモデルを、IMMARKUS 独自の JSON 形式で出力します。",
+    "relationshipTypesTitle": "リレーションタイプ",
+    "relationshipTypesDescription": "リレーションタイプのモデルを、IMMARKUS 独自の JSON 形式で出力します。",
+    "imageSchemasTitle": "画像メタデータスキーマ",
+    "imageSchemasDescription": "画像メタデータスキーマを、IMMARKUS 独自の JSON 形式で出力します。",
+    "folderSchemasTitle": "フォルダメタデータスキーマ",
+    "folderSchemasDescription": "フォルダメタデータスキーマを、IMMARKUS 独自の JSON 形式で出力します。",
+    "fullModelTitle": "IMMARKUS データモデル全体",
+    "fullModelDescription": "上記すべて(エンティティクラス、リレーションタイプ、画像・フォルダのメタデータスキーマ)を含みます。このエクスポートは、作業フォルダにある <fileName>_immarkus.model.json</fileName> と同じファイルです。便宜のためここでも提供しています。"
+  },
+  "metadata": {
+    "imageTitle": "画像メタデータ",
+    "imageDescription": "画像メタデータは 2 種類の形式で出力できます。画像 1 件につき 1 行、メタデータスキーマのフィールドごとに 1 列のフラットな CSV、または Excel スプレッドシートです。Excel スプレッドシートでは、画像メタデータスキーマごとに別のワークシートに分かれます。",
+    "folderTitle": "フォルダメタデータ",
+    "folderDescription1": "フォルダメタデータは 2 種類の形式で出力できます。フォルダ 1 件につき 1 行、メタデータスキーマのフィールドごとに 1 列のフラットな CSV、または Excel スプレッドシートです。",
+    "folderDescription2": "Excel スプレッドシートでは、フォルダメタデータスキーマごとに別のワークシートに分かれ、IIIF マニフェストのメタデータがあればそれも含まれます。"
+  },
+  "relationships": {
+    "dataTitle": "リレーションデータ",
+    "dataDescription": "現在の作業フォルダ内の全画像のリレーションを、<w3cLink>W3C Web Annotation</w3cLink> JSON-LD 形式のフラットなリストとして出力します。",
+    "imagesTitle": "リレーションと画像",
+    "imagesDescription": "現在の作業フォルダ内の全画像のリレーションを Excel ファイルとして出力します。各リレーションの開始・終了アノテーションの画像スニペットがスプレッドシートの列として含まれます。"
+  }
+}

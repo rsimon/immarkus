@@ -7,9 +7,11 @@ import enAnnotate from '../locales/en/annotate.json';
 import enApp from '../locales/en/app.json';
 import enCommon from '../locales/en/common.json';
 import enDatamodel from '../locales/en/datamodel.json';
+import enExport from '../locales/en/export.json';
 import enImages from '../locales/en/images.json';
 import enKnowledgegraph from '../locales/en/knowledgegraph.json';
 import enMarkus from '../locales/en/markus.json';
+import enSettings from '../locales/en/settings.json';
 import enSmartTools from '../locales/en/smartTools.json';
 import enStart from '../locales/en/start.json';
 import enUi from '../locales/en/ui.json';
@@ -19,9 +21,11 @@ import jaAnnotate from '../locales/ja/annotate.json';
 import jaApp from '../locales/ja/app.json';
 import jaCommon from '../locales/ja/common.json';
 import jaDatamodel from '../locales/ja/datamodel.json';
+import jaExport from '../locales/ja/export.json';
 import jaImages from '../locales/ja/images.json';
 import jaKnowledgegraph from '../locales/ja/knowledgegraph.json';
 import jaMarkus from '../locales/ja/markus.json';
+import jaSettings from '../locales/ja/settings.json';
 import jaSmartTools from '../locales/ja/smartTools.json';
 import jaStart from '../locales/ja/start.json';
 import jaUi from '../locales/ja/ui.json';
@@ -42,9 +46,11 @@ i18n
         app: enApp,
         common: enCommon,
         datamodel: enDatamodel,
+        export: enExport,
         images: enImages,
         knowledgegraph: enKnowledgegraph,
         markus: enMarkus,
+        settings: enSettings,
         smartTools: enSmartTools,
         start: enStart,
         ui: enUi
@@ -55,9 +61,11 @@ i18n
         app: jaApp,
         common: jaCommon,
         datamodel: jaDatamodel,
+        export: jaExport,
         images: jaImages,
         knowledgegraph: jaKnowledgegraph,
         markus: jaMarkus,
+        settings: jaSettings,
         smartTools: jaSmartTools,
         start: jaStart,
         ui: jaUi

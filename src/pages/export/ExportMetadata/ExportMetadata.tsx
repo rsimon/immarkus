@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FileChartColumn, FileSpreadsheet, Table2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { 
@@ -11,6 +12,8 @@ import {
 } from '@/store';
 
 export const ExportMetadata = () => {
+
+  const { t } = useTranslation('export');
 
   const store = useStore();
 
@@ -29,13 +32,11 @@ export const ExportMetadata = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium mb-1 leading-relaxed">
-              Image Metadata
+              {t('metadata.imageTitle')}
             </h3>
 
             <p className="text-sm pt-3 pb-5 leading-relaxed">
-              Image metadata, available in two versions: as a flattened CSV with one row per image and one column per metadata 
-              schema field, or an Excel spreadsheet. The Excel spreadsheet has separate worksheets for each image
-              metada schema.
+              {t('metadata.imageDescription')}
             </p>
 
             <div className="flex justify-end pt-3 gap-2">
@@ -58,16 +59,14 @@ export const ExportMetadata = () => {
         <li>
           <div className="max-w-2xl py-4 px-6 bg-white border rounded">
             <h3 className="font-medium mb-1 leading-relaxed">
-              Folder Metadata
+              {t('metadata.folderTitle')}
             </h3>
 
             <p className="text-sm pt-3 pb-2 leading-relaxed">
-              Folder metadata, available in two versions: as a flattened CSV with one row per folder and one column per metadata 
-              schema field, or an Excel spreadsheet. 
+              {t('metadata.folderDescription1')}
             </p>
             <p className="text-sm pb-5 leading-relaxed">
-              The Excel spreadsheet has separate worksheets for each folder
-              metada schema, and will also include IIIF manifest metadata, if any.
+              {t('metadata.folderDescription2')}
             </p>
 
             <div className="flex justify-end pt-3 gap-2">
@@ -90,7 +89,7 @@ export const ExportMetadata = () => {
 
       <ProgressDialog
         icon={<Table2 className="h-5 w-5" />}
-        message="Exporting XLSX. This may take a while."
+        message={t('exportingXlsx')}
         open={progress !== undefined}
         progress={progress} />
     </>

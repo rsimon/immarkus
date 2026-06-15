@@ -1,8 +1,11 @@
 import { FileJson } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
 
 export const ExportDataModel = () => {
+
+  const { t } = useTranslation('export');
 
   const datamodel = useDataModel();
 
@@ -24,11 +27,11 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-2xl py-4 px-6 bg-white border rounded">
           <h3 className="font-medium leading-relaxed">
-            Entity Classes
+            {t('dataModel.entityClassesTitle')}
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
-            Your Entity Class model, in proprietary IMMARKUS JSON Format.
+            {t('dataModel.entityClassesDescription')}
           </p>
 
           <div className="flex justify-end pt-3">
@@ -44,11 +47,11 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-2xl py-4 px-6 bg-white border rounded">
           <h3 className="font-medium leading-relaxed">
-            Relationship Types
+            {t('dataModel.relationshipTypesTitle')}
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
-            Your Relationship Type model, in proprietary IMMARKUS JSON Format.
+            {t('dataModel.relationshipTypesDescription')}
           </p>
 
           <div className="flex justify-end pt-3">
@@ -64,11 +67,11 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-2xl py-4 px-6 bg-white border rounded">
           <h3 className="font-medium leading-relaxed">
-            Image Metadata Schemas
+            {t('dataModel.imageSchemasTitle')}
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
-            Your Image Metadata schemas, in proprietary IMMARKUS JSON Format.
+            {t('dataModel.imageSchemasDescription')}
           </p>
 
           <div className="flex justify-end pt-3">
@@ -84,11 +87,11 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-2xl py-4 px-6 bg-white border rounded">
           <h3 className="font-medium leading-relaxed">
-            Folder Metadata Schemas
+            {t('dataModel.folderSchemasTitle')}
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
-            Your Folder Metadata schemas, in proprietary IMMARKUS JSON Format.
+            {t('dataModel.folderSchemasDescription')}
           </p>
 
           <div className="flex justify-end pt-3">
@@ -104,13 +107,16 @@ export const ExportDataModel = () => {
       <li>
         <div className="max-w-2xl py-4 px-6 bg-white border rounded">
           <h3 className="font-medium leading-relaxed">
-            Full IMMARKUS Data Model
+            {t('dataModel.fullModelTitle')}
           </h3>
 
           <p className="text-sm pt-3 pb-5 leading-relaxed">
-            All of the above - Entity Classes, Relationship Types, Image and Folder metadata schemas. This export is the same
-            file you will find in your work folder as <code className="text-muted-foreground">_immarkus.model.json</code>.  
-            It is re-published here for convenience.
+            <Trans
+              ns="export"
+              i18nKey="dataModel.fullModelDescription"
+              components={{
+                fileName: <code className="text-muted-foreground" />
+              }} />
           </p>
 
           <div className="flex justify-end pt-3">

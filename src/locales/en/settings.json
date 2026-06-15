@@ -1,0 +1,52 @@
+{
+  "title": "Settings",
+  "description": "Application-wide settings and configuration.",
+  "nav": {
+    "general": "General",
+    "visualSearch": "Visual Search"
+  },
+  "general": {
+    "title": "General Settings",
+    "description": "General application and user interface settings.",
+    "language": {
+      "label": "Language",
+      "description": "The user interface language."
+    }
+  },
+  "indexing": {
+    "title": "Indexing your images",
+    "initializing": "Initializing...",
+    "downloadingModel": "Downloading model: {{model}}",
+    "processed": "Processed {{progress}} of {{total}} images",
+    "fetchingIIIF": "Fetching IIIF: {{url}}",
+    "success": "Successfully processed {{total}} images",
+    "keepOpen": "<b>Keep this page open while indexing completes.</b> Indexing runs locally in your browser and may take up to a minute per image."
+  },
+  "indexOutdated": {
+    "title": "Your index is out of date",
+    "description": "Your image collection has changed since the last indexing run. Update the index to include new or modified images in Visual Search.",
+    "reindexButton_one": "Index {{count}} new image",
+    "reindexButton_other": "Index {{count}} new images",
+    "footnote": "Visual search only includes indexed images until you update. Processing time depends on your collection and computer, and may take up to a minute per image."
+  },
+  "indexReady": {
+    "title": "Your images are ready to search",
+    "description": "IMMARKUS has successfully analyzed your images and made them searchable. Pick the <b>Visual Search</b> smart tool in the <b><wsIcon /> Workspace</b> to search for visually similar matches.",
+    "stats": "{{images}} images indexed · {{objects}} objects detected",
+    "dangerZone": "Danger Zone",
+    "deleteIndexTitle": "Delete visual search index",
+    "deleteIndexDescription": "Remove all indexed patches and embeddings. Visual search will be unavailable until the index is rebuilt.",
+    "deleteIndexConfirm": "This action will delete the visual search index permanently. Visual search will be unavailable until the index is rebuilt.",
+    "deleteIndexButton": "Delete index"
+  },
+  "noIndex": {
+    "intro1": "With IMMARKUS Visual Search, you can find objects inside your images based on example. Pick the <b>Visual Search</b> smart tool in the <b><wsIcon /> Workspace</b>, select an annotation, and find visually similar matches across your collection.",
+    "intro2": "Before you can use visual search, your images need to be indexed. IMMARKUS analyzes your images, detects objects, and makes them searchable. You only need to do this once.",
+    "startButton_one": "Start indexing {{count}} image",
+    "startButton_other": "Start indexing {{count}} images",
+    "advancedOptions": "Advanced Options",
+    "segmentationModel": "Segmentation model",
+    "segmentationModelDescription": "Controls how images are divided into searchable regions",
+    "footnote": "Indexing runs directly in your browser and does not upload your images to external services. Processing time depends on your collection and computer, and may take up to a minute per image."
+  }
+}
