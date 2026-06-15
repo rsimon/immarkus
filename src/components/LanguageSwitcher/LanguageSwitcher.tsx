@@ -1,6 +1,7 @@
 import { Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LANGUAGES } from '@/i18n';
+import { cn } from '@/ui/utils';
 import {
   Select,
   SelectContent,
@@ -9,7 +10,13 @@ import {
   SelectValue
 } from '@/ui/Select';
 
-export const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+
+  className?: string;
+
+}
+
+export const LanguageSwitcher = (props: LanguageSwitcherProps) => {
 
   const { i18n } = useTranslation();
 
@@ -21,7 +28,9 @@ export const LanguageSwitcher = () => {
       value={current.code}
       onValueChange={lang => i18n.changeLanguage(lang)}>
       <SelectTrigger
-        className="h-auto bg-transparent gap-1.5 p-0 border-none rounded-none underline underline-offset-2 text-muted-foreground shadow-none text-xs hover:text-foreground"
+        className={cn(
+          'h-auto bg-transparent gap-1.5 p-0 border-0 rounded-none underline underline-offset-2 text-muted-foreground shadow-none text-xs hover:text-foreground',
+          props.className)}
         aria-label="Language">
         <Globe size={14} />
         <SelectValue />

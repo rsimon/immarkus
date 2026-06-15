@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
+import { NavTabItem } from '@/components/NavTabItem';
 import { Separator } from '@/ui/Separator';
 import { ExportAnnotations } from './ExportAnnotations';
 import { ExportDataModel } from './ExportDataModel';
@@ -8,19 +8,9 @@ import { ExportRelationships } from './ExportRelationships';
 
 interface ExportProps {
   
-  tab: 'annotations' | 'relationships' | 'model' | 'metadata'
+  tab: 'annotations' | 'relationships' | 'model' | 'metadata';
 
 }
-
-const NavListItem = (props: { path: string, label: string, active?: boolean }) => (
-  <li>
-    <Link 
-      to={props.path}
-      className={props.active 
-        ? 'block bg-muted px-3 py-1.5 rounded w-full my-2'
-        : 'block px-3 py-1.5 rounded w-full my-2'}>{props.label}</Link>
-  </li>
-)
 
 export const Export = (props: ExportProps) => {
 
@@ -43,22 +33,22 @@ export const Export = (props: ExportProps) => {
           <aside className="py-4">
             <nav className="w-44">
               <ol>
-                <NavListItem 
+                <NavTabItem 
                   path="/export/annotations" 
                   label="Annotations" 
                   active={props.tab === 'annotations'} />
 
-                <NavListItem 
+                <NavTabItem 
                   path="/export/relationships" 
                   label="Relationships" 
                   active={props.tab === 'relationships'} />
 
-                <NavListItem 
+                <NavTabItem 
                   path="/export/model" 
                   label="Data Model" 
                   active={props.tab === 'model'} />
 
-                <NavListItem
+                <NavTabItem
                   path="/export/metadata"
                   label="Metadata"
                   active={props.tab === 'metadata'} />
