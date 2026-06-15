@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Cuboid } from 'lucide-react';
 import { Separator } from '@/ui/Separator';
 import { getBrightness } from '@/utils/color';
@@ -25,6 +26,8 @@ interface EntityPreviewProps {
 
 export const EntityPreview = (props: EntityPreviewProps) => {
 
+  const { t } = useTranslation('common');
+
   const { entityType } = props;
 
   const { parentId } = entityType;
@@ -50,11 +53,11 @@ export const EntityPreview = (props: EntityPreviewProps) => {
   return (
     <div className="bg-muted px-12 py-6 border-l rounded-r-lg">
       <h2>
-        Entity Preview
+        {t('entityTypeEditor.previewTitle')}
       </h2>
 
       <p className="text-left text-xs leading-relaxed mt-1 mb-6">
-        This is how the data entry form for your Entity will appear in the annotation view.
+        {t('entityTypeEditor.previewHint')}
       </p>
 
       <div className="flex mb-1">
@@ -65,7 +68,7 @@ export const EntityPreview = (props: EntityPreviewProps) => {
             color: brightness > 0.5 ? '#000' : '#fff' 
           }}>
           <Cuboid className="inline h-3.5 w-3.5 mr-1.5" />
-          {entityType.label || entityType.id || 'Entity Preview'}
+          {entityType.label || entityType.id || t('entityTypeEditor.previewTitle')}
         </h3>
       </div>
 

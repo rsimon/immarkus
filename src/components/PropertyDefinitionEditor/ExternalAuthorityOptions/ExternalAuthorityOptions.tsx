@@ -1,4 +1,5 @@
 import { AlertCircle, AlertTriangle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ExternalAuthority } from '@/model/ExternalAuthority';
 import { useRuntimeConfig } from '@/RuntimeConfig';
 import { Checkbox } from '@/ui/Checkbox';
@@ -13,6 +14,8 @@ interface ExternalAuthorityOptionsProps {
 }
 
 export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) => {
+
+  const { t } = useTranslation('common');
 
   const { authorities } = useRuntimeConfig();
 
@@ -61,7 +64,7 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
                   {authority.name}
 
                   {!hasValidConfiguration(authority) && (
-                    <span title="Autority is not configured correctly">
+                    <span title={t('propertyDefinitionEditor.authorityMisconfigured')}>
                       <AlertTriangle 
                         className="ml-1 h-4 w-4 text-orange-500" />
                     </span>
@@ -82,7 +85,7 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
       {(props.definition.authorities || []).length === 0 && (
         <span className="inline-flex ml-1.5 text-xs text-red-600
           font-medium mt-3 mb-1">
-          <AlertCircle className="h-3.5 w-3.5 mr-2.5" />  Select at least one authority
+          <AlertCircle className="h-3.5 w-3.5 mr-2.5" />  {t('propertyDefinitionEditor.selectAtLeastOneAuthority')}
         </span>
       )}
     </div>

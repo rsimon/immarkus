@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import {
   AlertDialog,
@@ -38,6 +39,8 @@ interface DeleteButtonProps {
 
 export const ConfirmedDelete = (props: DeleteButtonProps) => {
 
+  const { t } = useTranslation('common');
+
   const isControlled = props.open !== undefined;
 
   return (
@@ -61,18 +64,18 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
       
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{props.title || 'Are you sure?'}</AlertDialogTitle>
+          <AlertDialogTitle>{props.title || t('confirmedDelete.title')}</AlertDialogTitle>
           <AlertDialogDescription>
             {props.message}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{t('confirmedDelete.cancel')}</AlertDialogCancel>
 
-          <AlertDialogAction 
+          <AlertDialogAction
             className="bg-destructive hover:bg-destructive/90"
             onClick={props.onConfirm}>
-            <Trash2 className="w-4 h-4 mr-2" /> Delete
+            <Trash2 className="w-4 h-4 mr-2" /> {t('confirmedDelete.delete')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

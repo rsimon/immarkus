@@ -1,4 +1,5 @@
 import { ALargeSmall } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useState } from 'react';
@@ -13,6 +14,8 @@ interface FontSizeButtonProps {
 }
 
 export const FontSizeButton = (props: FontSizeButtonProps) => {
+
+  const { t } = useTranslation('common');
 
   const [currentSize, setCurrentSize] = useState<FontSize>('base');
 
@@ -40,7 +43,7 @@ export const FontSizeButton = (props: FontSizeButtonProps) => {
       </TooltipTrigger>
 
       <TooltipContent>
-        Change font size
+        {t('fontSize.changeFontSize')}
       </TooltipContent>
     </Tooltip>
   )

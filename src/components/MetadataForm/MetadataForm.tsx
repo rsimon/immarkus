@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ToyBrick } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { Separator } from '@/ui/Separator';
@@ -45,6 +46,8 @@ const parseBody = (body?: W3CAnnotationBody, properties?: PropertyDefinition[]) 
 }
 
 export const MetadataForm = (props: MetadataFormProps) => {
+
+  const { t } = useTranslation('common');
 
   const { metadata, schemas } = props;
 
@@ -93,9 +96,13 @@ export const MetadataForm = (props: MetadataFormProps) => {
   return (schemas.length === 0) ? (
     <div className="flex flex-col text-sm items-center px-2 justify-center text-center grow leading-loose text-muted-foreground">
       <span>
-        No schema defined.<br/>
-        Go to <Link to="/model" className="inline-block text-black hover:bg-muted px-1 rounded-sm"><ToyBrick className="inline h-4 w-4 align-text-top" /> Data Model</Link> to 
-        define one.
+        <Trans
+          ns="common"
+          i18nKey="metadataForm.noSchemaDefined"
+          components={{
+            modelLink: <Link to="/model" className="inline-block text-black hover:bg-muted px-1 rounded-sm" />,
+            icon: <ToyBrick className="inline h-4 w-4 align-text-top" />
+          }} />
       </span>
     </div>
   ) : metadata && (
@@ -103,7 +110,7 @@ export const MetadataForm = (props: MetadataFormProps) => {
       {(schemas.length > 1) && (
         <>
           <div className="flex gap-4 items-center">
-            <span className="font-medium">Schema</span>
+            <span className="font-medium">{t('metadataForm.schema')}</span>
     
             <Select value={selectedSchema?.name || ''} onValueChange={onChangeSchema}>
               <SelectTrigger className="grow whitespace-nowrap overflow-hidden">

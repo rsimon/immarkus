@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { isValidColor } from '@/utils/color';
 import { BasePropertyField } from '../BasePropertyField';
@@ -23,6 +24,8 @@ interface ColorFieldProps {
 }
 
 export const ColorField = (props: ColorFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { id, definition } = props;
 
@@ -52,7 +55,7 @@ export const ColorField = (props: ColorFieldProps) => {
   const onSample = (isSampling: boolean) =>
     setSamplingCount(prev => isSampling ? prev + 1 : Math.max(0, prev - 1));
 
-  const error = showErrors && !isValid && 'invalid color code';
+  const error = showErrors && !isValid && t('propertyFields.invalidColor');
 
   return (
     <BasePropertyField

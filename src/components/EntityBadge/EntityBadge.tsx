@@ -1,4 +1,5 @@
 import { Cuboid } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { EntityType } from '@/model';
 import { DEFAULT_COLOR, getForegroundColor } from '@/utils/color';
 import { cn } from '@/ui/utils';
@@ -19,6 +20,8 @@ interface BadgeEntityProps {
 
 export const EntityBadge = (props: BadgeEntityProps) => {
 
+  const { t } = useTranslation('common');
+
   const { entityType } = props;
 
   const backgroundColor = entityType?.color || DEFAULT_COLOR;
@@ -31,7 +34,7 @@ export const EntityBadge = (props: BadgeEntityProps) => {
         color: getForegroundColor(backgroundColor)
       }}>
 
-      <Cuboid className="h-3.5 w-3.5 mr-1"/> <span className="truncate">{entityType?.label || entityType?.id || 'error'}</span>
+      <Cuboid className="h-3.5 w-3.5 mr-1"/> <span className="truncate">{entityType?.label || entityType?.id || t('entityBadge.error')}</span>
     </span>
   )
 

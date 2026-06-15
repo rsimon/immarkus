@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Database, ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
 import { ExternalAuthority, findMatchingPattern } from '@/model/ExternalAuthority';
@@ -15,6 +16,8 @@ interface IFrameAuthorityDialogProps {
 } 
 
 export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
+
+  const { t } = useTranslation('common');
 
   const iframe = useRef<HTMLIFrameElement>(null);
 
@@ -94,7 +97,7 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
         <div className="relative mt-2">
           <Input
             className="h-9"
-            placeholder={`Search ${authority.name}...`} 
+            placeholder={t('propertyFields.searchAuthorityPlaceholder', { name: authority.name })}
             value={query}
             onChange={evt => setQuery(evt.target.value)} />
 

@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import { AlertCircle, Check, XCircle } from 'lucide-react';
 import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
@@ -36,6 +37,8 @@ interface DataModelImportProps {
 }
 
 export const DataModelImport = (props: DataModelImportProps) => {
+
+  const { t } = useTranslation('common');
 
   const [open, setOpen] = useState(props.open);
 
@@ -93,15 +96,15 @@ export const DataModelImport = (props: DataModelImportProps) => {
       .then(() => {
         toast({
           // @ts-ignore
-          title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> Success</ToastTitle>,
-          description: props.type === 'ENTITY_TYPES' 
-            ? `${items.length} entity classe${items.length > 1 ? 's' : ''} imported successfully.`
-            : `${items.length} schema${items.length > 1 ? 's' : ''} imported successfully.`
+          title: <ToastTitle className="flex"><Check size={18} className="mr-2" /> {t('dataModelImport.success')}</ToastTitle>,
+          description: props.type === 'ENTITY_TYPES'
+            ? t('dataModelImport.entityClassesImported', { count: items.length })
+            : t('dataModelImport.schemasImported', { count: items.length })
         });
       })
       .catch(error => {
         console.error(error);
-        onError('Error importing to data model');
+        onError(t('dataModelImport.importError'));
       });
   }
 
@@ -115,11 +118,13 @@ export const DataModelImport = (props: DataModelImportProps) => {
     toast({
       variant: 'destructive',
       // @ts-ignore
-      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
+      title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> {t('dataModelImport.error')}</ToastTitle>,
       description: error
     });
 
-  const items = props.type === 'ENTITY_TYPES' ? 'classes' : 'schemas';
+  const items = props.type === 'ENTITY_TYPES'
+    ? t('dataModelImport.itemsClasses')
+    : t('dataModelImport.itemsSchemas');
 
   const isEmpty = 
     props.type === 'ENTITY_TYPES' ? model.entityTypes.length === 0 :
@@ -140,16 +145,16 @@ export const DataModelImport = (props: DataModelImportProps) => {
       <DialogContent className="p-0 my-8 rounded-lg">
         <div className="px-7 pt-6 pb-8 leading-relaxed">
           <h2 className="mb-2 font-semibold">
-            Import {props.type === 'ENTITY_TYPES' 
-              ? 'Entity Classes' : props.type === 'FOLDER_SCHEMAS' 
-              ? 'Folder Schemas' : props.type === 'IMAGE_SCHEMAS'
-              ? 'Image Schemas' : 'Relationship Types'}
+            {props.type === 'ENTITY_TYPES'
+              ? t('dataModelImport.title.entityTypes') : props.type === 'FOLDER_SCHEMAS'
+              ? t('dataModelImport.title.folderSchemas') : props.type === 'IMAGE_SCHEMAS'
+              ? t('dataModelImport.title.imageSchemas') : t('dataModelImport.title.relationshipTypes')}
           </h2>
 
           <div className="py-4">
             <div className="flex items-center gap-2 justify-between">
               <Label htmlFor="replace-existing">
-                Replace Current Model
+                {t('dataModelImport.replaceCurrentModel')}
               </Label>
 
               <Switch 
@@ -159,17 +164,17 @@ export const DataModelImport = (props: DataModelImportProps) => {
             </div>
 
             <p className="text-muted-foreground text-xs mt-1 pr-20">
-              You can either delete and replace your existing model, or add the 
-              imported {items} to your current model.
+              {t('dataModelImport.replaceHint', { items })}
             </p>
 
             {replace && !isEmpty && (
               <Alert variant="destructive" className="my-4">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle className="text-sm">Warning</AlertTitle>
+                <AlertTitle className="text-sm">{t('dataModelImport.warning')}</AlertTitle>
                 <AlertDescription className="text-sm leading-relaxed">
-                  All current {props.type === 'ENTITY_TYPES' ? 'Entity Classes' : 'schemas'} will
-                  be deleted from your model.
+                  {props.type === 'ENTITY_TYPES'
+                    ? t('dataModelImport.replaceWarning.entityTypes')
+                    : t('dataModelImport.replaceWarning.schemas')}
                 </AlertDescription>
               </Alert>
             )}
@@ -177,12 +182,13 @@ export const DataModelImport = (props: DataModelImportProps) => {
 
           <div className={replace ? 'import-duplicates disabled my-2' : 'import-duplicates my-2'}>
             <Label htmlFor="replace-existing">
-              How to Handle Duplicate {props.type === 'ENTITY_TYPES' ? 'Classes' : 'Schemas'}
+              {props.type === 'ENTITY_TYPES'
+                ? t('dataModelImport.duplicatesTitle.entityTypes')
+                : t('dataModelImport.duplicatesTitle.schemas')}
             </Label>
 
             <p className="text-muted-foreground text-xs mt-1 mb-2">
-              Select how the import should merge {items} that 
-              already exist in your model.
+              {t('dataModelImport.duplicatesHint', { items })}
             </p>
 
             <div className="py-1">
@@ -196,10 +202,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
                     id="keep" />
 
                   <div>
-                    <Label htmlFor="keep">Keep Existing</Label>
+                    <Label htmlFor="keep">{t('dataModelImport.keepExisting')}</Label>
                     <p className="text-xs text-muted-foreground">
-                      If the import contains {items} that 
-                      already exist in your model, keep the existing ones and discard the imported {items}.
+                      {t('dataModelImport.keepExistingHint', { items })}
                     </p>
                   </div>
                 </div>
@@ -211,10 +216,9 @@ export const DataModelImport = (props: DataModelImportProps) => {
                     id="replace" />
 
                   <div>
-                    <Label htmlFor="replace">Keep Imported</Label>
+                    <Label htmlFor="replace">{t('dataModelImport.keepImported')}</Label>
                     <p className="text-xs text-muted-foreground">
-                      If the import contains {items} that already exist in 
-                      your model, discard the existing ones and keep the imported {items}.
+                      {t('dataModelImport.keepImportedHint', { items })}
                     </p>
                   </div>
                 </div>
@@ -230,7 +234,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
                 <Label 
                   htmlFor="presets"
                   className="inline-block text-xs mb-1.5 ml-0.5">
-                  Import from Preset
+                  {t('dataModelImport.importFromPreset')}
                 </Label>
 
                 <Select 
@@ -252,7 +256,7 @@ export const DataModelImport = (props: DataModelImportProps) => {
               </div>
 
               <p className="w-full text-xs py-4 text-center text-muted-foreground">
-                — or —
+                {t('dataModelImport.orSeparator')}
               </p>
             </>
           ) : (
@@ -265,8 +269,12 @@ export const DataModelImport = (props: DataModelImportProps) => {
             onUpload={importToModel} />
 
           <div className="text-center text-muted-foreground text-xs pt-2">
-            Use files downloaded 
-            from <Link className="text-black hover:underline" to="/export/model">Export / Data Model</Link>. 
+            <Trans
+              ns="common"
+              i18nKey="dataModelImport.useExportedFiles"
+              components={{
+                exportLink: <Link className="text-black hover:underline" to="/export/model" />
+              }} />
           </div>
         </div>
       </DialogContent>

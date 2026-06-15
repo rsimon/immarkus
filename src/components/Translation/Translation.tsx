@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Ban, Check, Copy, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { TranslationServiceResponse, useService } from '@/services';
 import { Separator } from '@/ui/Separator';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
@@ -16,6 +17,8 @@ interface TranslationProps {
 }
 
 export const Translation = (props: TranslationProps) => {
+
+  const { t } = useTranslation('common');
 
   const { connector, connectorConfig, serviceConfig } = useService(props.args.connector.id, props.args.service);
 
@@ -52,7 +55,7 @@ export const Translation = (props: TranslationProps) => {
         console.error(error);
 
         setBusy(false);
-        setError('Translation service error');
+        setError(t('translation.serviceError'));
       });
   }, [connectorConfig, serviceConfig, connector, props.args]);
 
@@ -91,7 +94,7 @@ export const Translation = (props: TranslationProps) => {
               </TooltipTrigger>
 
               <TooltipContent>
-                Copy to clipboard
+                {t('translation.copyToClipboard')}
               </TooltipContent>
             </Tooltip>
 
@@ -106,7 +109,7 @@ export const Translation = (props: TranslationProps) => {
               </TooltipTrigger>
 
               <TooltipContent>
-                Hide translation
+                {t('translation.hideTranslation')}
               </TooltipContent>
             </Tooltip>
           </div>

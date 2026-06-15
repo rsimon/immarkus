@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
 
@@ -15,6 +16,8 @@ interface MeasurementFieldInputProps {
 
 export const MeasurementFieldInput = (props: MeasurementFieldInputProps) => {
 
+  const { t } = useTranslation('common');
+
   const [valueStr, unit] = props.value ? props.value : ['', ''];
 
   const className = cn(props.className, (props.error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
@@ -24,7 +27,7 @@ export const MeasurementFieldInput = (props: MeasurementFieldInputProps) => {
       <div className="col-span-3">
         <Input 
           className={className} 
-          placeholder="Value..."
+          placeholder={t('propertyFields.valuePlaceholder')}
           value={valueStr} 
           onChange={evt => props.onChange([evt.target.value, unit])} />
       </div>
@@ -32,7 +35,7 @@ export const MeasurementFieldInput = (props: MeasurementFieldInputProps) => {
       <div>
         <Input 
           className={className} 
-          placeholder="Unit..."
+          placeholder={t('propertyFields.unitPlaceholder')}
           value={unit} 
           onChange={evt => props.onChange([valueStr, evt.target.value])} />
       </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { MetadataSchema } from '@/model';
 import { EnumField, ExternalAuthorityField, GeoCoordinatesField, MeasurementField, NumberField, PropertyValidation, RangeField, TextField, URIField } from '../PropertyFields';
 
@@ -9,15 +10,17 @@ interface MetadataSchemaPreviewProps {
 
 export const MetadataSchemaPreview = (props: MetadataSchemaPreviewProps) => {
 
+  const { t } = useTranslation('common');
+
   return (
     <PropertyValidation>
       <div className="bg-muted px-12 py-6 border-l rounded-r-lg">
         <h2>
-          Preview
+          {t('metadataSchemaEditor.previewTitle')}
         </h2>
 
         <p className="text-left text-xs leading-relaxed mt-1 mb-6">
-          This is how the data entry form for your metadata schema will appear.
+          {t('metadataSchemaEditor.previewHint')}
         </p>
 
         <div>

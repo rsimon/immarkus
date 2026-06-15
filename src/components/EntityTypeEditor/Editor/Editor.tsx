@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AlertCircle, CheckCircle2, Cuboid, RefreshCcw } from 'lucide-react';
 import { EntityTypeSearchSimple } from '@/components/EntityTypeSearchSimple';
 import { EntityType } from '@/model';
@@ -31,6 +32,8 @@ interface ValidationErrors {
 }
 
 export const Editor = (props: EditorProps) => {
+
+  const { t } = useTranslation('common');
 
   const model = useDataModel();
 
@@ -111,10 +114,10 @@ export const Editor = (props: EditorProps) => {
             <div>
               <Label 
                 htmlFor="identifier"
-                className="inline-block text-xs mb-1.5 ml-0.5">Entity Class *
+                className="inline-block text-xs mb-1.5 ml-0.5">{t('entityTypeEditor.entityClass')}
               </Label>
-              
-              {errors?.invalidId && (<span className="text-xs text-red-600 ml-1">required</span>)}
+
+              {errors?.invalidId && (<span className="text-xs text-red-600 ml-1">{t('entityTypeEditor.required')}</span>)}
 
               <Input 
                 disabled={Boolean(props.entityType)}
@@ -125,11 +128,11 @@ export const Editor = (props: EditorProps) => {
 
               {entityType.id && (!isIdAvailable ? (
                 <span className="flex items-center text-xs mt-3 text-red-600 whitespace-nowrap">
-                  <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> ID already exists
+                  <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {t('entityTypeEditor.idExists')}
                 </span>
               ) : (props.entityType && !(props.entityType.id === entityType.id)) || !props.entityType && (
                 <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-                  <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.id} is available
+                  <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {t('entityTypeEditor.idAvailable', { id: entityType.id })}
                 </span>
               ))}
             </div>
@@ -137,7 +140,7 @@ export const Editor = (props: EditorProps) => {
             <div>
               <Label 
                 htmlFor="color"
-                className="inline-block text-xs mb-1.5 ml-0.5">Color</Label>
+                className="inline-block text-xs mb-1.5 ml-0.5">{t('entityTypeEditor.color')}</Label>
 
               <div className="grid grid-cols-4">
                 <Button 
@@ -163,7 +166,7 @@ export const Editor = (props: EditorProps) => {
           <div className="mt-6">
             <Label 
               htmlFor="label"
-              className="inline-block text-xs mb-1.5 ml-0.5">Display Name
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('entityTypeEditor.displayName')}
             </Label>
 
             <Input
@@ -176,7 +179,7 @@ export const Editor = (props: EditorProps) => {
           <div className="mt-6">
             <Label 
               htmlFor="parent"
-              className="inline-block text-xs mb-1.5 ml-0.5">Parent Class
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('entityTypeEditor.parentClass')}
             </Label>
 
             <EntityTypeSearchSimple
@@ -189,14 +192,14 @@ export const Editor = (props: EditorProps) => {
               <span className="flex items-center text-xs mt-2 text-red-600 whitespace-nowrap">
                 <AlertCircle className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> 
                   {entityType.parentId === entityType.id ? (
-                    <>{entityType.id} cannot be its own parent</>
+                    <>{t('entityTypeEditor.cannotBeOwnParent', { id: entityType.id })}</>
                   ) : (
-                    <>No Entity Class called {entityType.parentId}</>
+                    <>{t('entityTypeEditor.noEntityClassCalled', { id: entityType.parentId })}</>
                   )}
               </span>
             ) : entityType.parentId && entityType.parentId !== props.entityType?.parentId && isValidParent && (
               <span className="flex items-center text-xs mt-2 text-green-600 whitespace-nowrap">
-                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {entityType.parentId} is a valid parent
+                <CheckCircle2 className="shrink-0 h-3.5 w-3.5 mb-0.5 ml-0.5 mr-1" /> {t('entityTypeEditor.validParent', { id: entityType.parentId })}
               </span>
             )}
           </div>
@@ -204,7 +207,7 @@ export const Editor = (props: EditorProps) => {
           <div className="mt-6">
             <Label 
               htmlFor="description"
-              className="inline-block text-xs mb-1.5 ml-0.5">Entity Class Description</Label>
+              className="inline-block text-xs mb-1.5 ml-0.5">{t('entityTypeEditor.description')}</Label>
 
             <Textarea 
               id="description"
@@ -222,7 +225,7 @@ export const Editor = (props: EditorProps) => {
           </div>
 
           <Button className="w-full mt-7 mb-3" onClick={onSave}>
-            <Cuboid className="w-5 h-5 mr-2" /> Save Entity Class
+            <Cuboid className="w-5 h-5 mr-2" /> {t('entityTypeEditor.save')}
           </Button>
         </div>
 

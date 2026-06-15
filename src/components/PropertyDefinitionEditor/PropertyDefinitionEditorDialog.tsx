@@ -1,4 +1,5 @@
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { PropertyDefinition } from '@/model';
 import { PropertyDefinitionEditor } from './PropertyDefinitionEditor';
@@ -28,6 +29,8 @@ interface PropertyEditorDialogProps {
 
 export const PropertyDefinitionEditorDialog = (props: PropertyEditorDialogProps) => {
 
+  const { t } = useTranslation('common');
+
   const [open, setOpen] = useState(false);
 
   const onUpdate = (property: PropertyDefinition) => {
@@ -54,7 +57,7 @@ export const PropertyDefinitionEditorDialog = (props: PropertyEditorDialogProps)
 
       <DialogContent className="p-0 max-w-4xl my-8 rounded-lg">
         <DialogTitle className="hidden">
-          Property Definition Editor
+          {t('propertyDefinitionEditor.dialogTitle')}
         </DialogTitle>
 
         <PropertyDefinitionEditor 

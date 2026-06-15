@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Pen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Input } from '@/ui/Input';
 import { BasePropertyField } from '../BasePropertyField';
@@ -22,6 +23,8 @@ interface URIFieldProps {
 }
 
 export const URIField = (props: URIFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { id, definition } = props;
 
@@ -50,7 +53,7 @@ export const URIField = (props: URIFieldProps) => {
     }
   }, [props.value]);
 
-  const error = showErrors && props.value && !isValid && 'must be a URI';
+  const error = showErrors && props.value && !isValid && t('propertyFields.mustBeURI');
 
   const className = cn(props.className, (error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
 

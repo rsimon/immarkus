@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Input } from '@/ui/Input';
 import { cn } from '@/ui/utils';
 import { PropertyDefinition } from '@/model';
@@ -21,6 +22,8 @@ interface GeoCoordinatesFieldInputProps {
 
 export const GeoCoordinatesFieldInput = (props: GeoCoordinatesFieldInputProps) => {
 
+  const { t } = useTranslation('common');
+
   const [latStr, lngStr] = props.value ? props.value : ['', ''];
 
   const className = cn(props.className, (props.error ? 'mt-0.5 outline-red-500 border-red-500' : 'mt-0.5'));
@@ -29,7 +32,7 @@ export const GeoCoordinatesFieldInput = (props: GeoCoordinatesFieldInputProps) =
     <div className="flex items-center gap-2.5">
       <Input 
         className={className} 
-        placeholder="Lat..."
+        placeholder={t('propertyFields.latPlaceholder')}
         value={latStr} 
         onChange={evt => props.onChange([evt.target.value, lngStr])} />
 
@@ -37,7 +40,7 @@ export const GeoCoordinatesFieldInput = (props: GeoCoordinatesFieldInputProps) =
 
       <Input 
         className={className} 
-        placeholder="Lng..."
+        placeholder={t('propertyFields.lngPlaceholder')}
         value={lngStr} 
         onChange={evt => props.onChange([latStr, evt.target.value])} />
     </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { X } from 'lucide-react';
 import { AddOption } from './AddOption';
@@ -12,6 +13,8 @@ interface EnumOptionsProps {
 }
 
 export const EnumOptions = (props: EnumOptionsProps) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -35,7 +38,7 @@ export const EnumOptions = (props: EnumOptionsProps) => {
       <div className="mt-1 mb-2 col-span-5">
         {!(definition.values?.length > 0) ? (
           <div className="flex py-3 text-muted-foreground text-xs justify-center">
-            Add at least one option.
+            {t('propertyDefinitionEditor.addAtLeastOneOption')}
           </div>
         ) : (
           <ul className="px-2 text-xs text-muted-foreground">

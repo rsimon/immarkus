@@ -1,4 +1,5 @@
 import { ChangeEvent, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { EntityType } from '@/model';
 
@@ -13,6 +14,8 @@ interface UploadButtonProps {
 }
 
 export const UploadButton = (props: UploadButtonProps) => {
+
+  const { t } = useTranslation('common');
 
   const inputEl = useRef<HTMLInputElement>(null);
 
@@ -29,9 +32,9 @@ export const UploadButton = (props: UploadButtonProps) => {
           if (props.validation(content))
             props.onUpload(content);
           else
-            props.onError('Invalid data model format');
+            props.onError(t('dataModelImport.invalidFormat'));
         } catch (error) {
-          props.onError('Could not open the data file');
+          props.onError(t('dataModelImport.couldNotOpenFile'));
         }
       };
 
@@ -51,7 +54,7 @@ export const UploadButton = (props: UploadButtonProps) => {
 
       <Button 
         className="w-full"
-        onClick={() => inputEl.current.click()}>Upload Datamodel File</Button>
+        onClick={() => inputEl.current.click()}>{t('dataModelImport.uploadButton')}</Button>
     </>
   )
 

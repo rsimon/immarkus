@@ -1,4 +1,5 @@
 import { CaseSensitive, ChevronsLeftRightEllipsis, Database, Hash, Link2, List, MapPin, Ruler } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { MetadataSchema, PropertyDefinition } from '@/model';
 import { MetadataTableActions } from './MetadataTableActions';
@@ -24,14 +25,16 @@ interface MetadataTableProps {
 
 export const MetadataTable = (props: MetadataTableProps) => {
 
+  const { t } = useTranslation('common');
+
   return (
     <div className="rounded-md border mt-6">
       <Table>
         <TableHeader className="text-xs">
           <TableRow>
-            <TableHead className="px-3 whitespace-nowrap">Schema</TableHead>
-            <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>
-            <TableHead className="px-2 whitespace-nowrap w-[340px]">Properties</TableHead>
+            <TableHead className="px-3 whitespace-nowrap">{t('metadataTable.schema')}</TableHead>
+            <TableHead className="px-2 whitespace-nowrap w-[280px]">{t('metadataTable.description')}</TableHead>
+            <TableHead className="px-2 whitespace-nowrap w-[340px]">{t('metadataTable.properties')}</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
@@ -42,7 +45,7 @@ export const MetadataTable = (props: MetadataTableProps) => {
               <TableCell
                 colSpan={6}
                 className="h-24 text-center text-muted-foreground">
-                No schemas defined
+                {t('metadataTable.noSchemas')}
               </TableCell>
             </TableRow>
           ) : props.schemas.map(schema => (

@@ -1,5 +1,6 @@
 import { useState, ReactNode, useEffect } from 'react';
 import { CopyPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from './InfoTooltip';
@@ -24,6 +25,8 @@ interface BasePropertyFieldProps <T extends unknown> {
 }
 
 export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldProps<T>) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -80,7 +83,7 @@ export const BasePropertyField = <T extends unknown>(props: BasePropertyFieldPro
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             onClick={onAppendField}
             type="button">
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
@@ -27,7 +28,9 @@ interface PropertyDefinitionsProps {
 
 export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
 
-  const { entityType, properties } = props; 
+  const { t } = useTranslation('common');
+
+  const { entityType, properties } = props;
 
   const datamodel = useDataModel();
 
@@ -50,11 +53,9 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
   const deleteProperty = (property: PropertyDefinition) => () =>
     props.onChange(properties.filter(p => p !== property));
 
-  const editorHint = 
-    'Use Properties to record specific details in your annotations, such as weight, material, age, etc.';
+  const editorHint = t('propertyDefinitions.editorHint');
 
-  const previewHint =
-    'This is how your property will appear when editing an entity in the annotation interface.';
+  const previewHint = t('propertyDefinitions.previewHint');
 
   return (
     <Accordion
@@ -66,9 +67,9 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
           className="rounded-md p-3 m-0 hover:no-underline">
           <div className="flex flex-col items-start">
             <h3 className="text-xs">
-              {properties.length === 0 
-                ? 'No Properties' 
-                : `${properties.length} Propert${properties.length === 1 ? 'y' : 'ies'}`}
+              {properties.length === 0
+                ? t('propertyDefinitions.noProperties')
+                : t('propertyDefinitions.propertyCount', { count: properties.length })}
             </h3>
           </div>
         </AccordionTrigger>
@@ -80,8 +81,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                 className="text-center flex text-muted-foreground 
                   px-3 pb-2 justify-center text-xs
                   leading-relaxed">
-                Use Properties to record specific details for an annotated Entity,
-                such as weight, material, age, etc. 
+                {t('propertyDefinitions.emptyHint')}
               </p>
             ) : (
               <ul>
@@ -124,7 +124,7 @@ export const PropertyDefinitions = (props: PropertyDefinitionsProps) => {
                 <Button 
                   variant="outline" 
                   className="text-xs mt-3 h-9 pl-2 px-3 font-medium hover:bg-muted-foreground/5">
-                  Add Property
+                  {t('propertyDefinitions.addProperty')}
                 </Button>
               </PropertyDefinitionEditorDialog>
             </div>

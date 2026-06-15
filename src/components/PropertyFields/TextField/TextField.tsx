@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CopyPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { TextPropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from '../InfoTooltip';
@@ -22,6 +23,8 @@ interface TextFieldProps {
 }
 
 export const TextField = (props: TextFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -77,7 +80,7 @@ export const TextField = (props: TextFieldProps) => {
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             onClick={onAppendField}
             type="button">
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

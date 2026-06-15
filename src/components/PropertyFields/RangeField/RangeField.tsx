@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CopyPlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PropertyDefinition } from '@/model';
 import { Label } from '@/ui/Label';
 import { InfoTooltip } from '../InfoTooltip';
@@ -37,6 +38,8 @@ const stringify = (ranges?: [number, number] | [number, number][]): [string, str
 
 
 export const RangeField = (props: RangeFieldProps) => {
+
+  const { t } = useTranslation('common');
 
   const { definition } = props;
 
@@ -86,7 +89,7 @@ export const RangeField = (props: RangeFieldProps) => {
     }
   }, [values, isValid]);
 
-  const error = showErrors && !isValid && 'must be valid range';
+  const error = showErrors && !isValid && t('propertyFields.invalidRange');
 
   const onChange = (idx: number, updated: [string, string]) =>
     setValues(current => current.map((v, i) => i === idx ? updated : v));
@@ -129,7 +132,7 @@ export const RangeField = (props: RangeFieldProps) => {
             className="self-end flex gap-1 items-center text-xs text-muted-foreground mt-0.5 mr-0.5"
             type="button"
             onClick={onAppendField}>
-            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> Add value
+            <CopyPlus className="h-3.5 w-3.5 mb-0.5 mr-0.5" /> {t('propertyFields.addValue')}
           </button>
         )}
       </div>

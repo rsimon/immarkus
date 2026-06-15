@@ -1,0 +1,13 @@
+{
+  "dialog": {
+    "close": "Close"
+  },
+  "sheet": {
+    "close": "Close"
+  },
+  "sidebar": {
+    "title": "Sidebar",
+    "description": "Displays the mobile sidebar.",
+    "toggle": "Toggle Sidebar"
+  }
+}

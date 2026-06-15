@@ -1,4 +1,5 @@
 import { CSSProperties, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import chroma from 'chroma-js';
 import { X } from 'lucide-react';
 import { Button } from '@/ui/Button';
@@ -21,6 +22,8 @@ interface ColorFieldInputProps {
 }
 
 export const ColorFieldInput = (props: ColorFieldInputProps) => {
+
+  const { t } = useTranslation('common');
 
   const value = props.onChange ? props.value || '' : props.value;
 
@@ -63,7 +66,7 @@ export const ColorFieldInput = (props: ColorFieldInputProps) => {
           <div 
             className="h-9 bg-transparent text-muted-foreground rounded-md items-center text-sm flex justify-center border border-input border-dashed"
             style={{ backgroundColor: value }}>
-            Pick a color...
+            {t('propertyFields.pickColor')}
           </div>
         ) : ( 
           <Input 
