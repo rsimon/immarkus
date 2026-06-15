@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandItem, CommandList } from '@/ui/Command';
 import { Spinner } from '@/components/Spinner';
@@ -18,6 +19,8 @@ interface IIIFMetadataSearchProps {
 }
 
 export const IIIFMetadataSearch = (props: IIIFMetadataSearchProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { loading, search } = useManifestMetadataSearch(props.objectType);
 
@@ -66,7 +69,7 @@ export const IIIFMetadataSearch = (props: IIIFMetadataSearchProps) => {
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
             <input 
               className="flex h-auto w-full rounded-md bg-transparent py-3 text-sm outline-hidden placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder="Search..." 
+              placeholder={t('graphSearch.searchPlaceholder')}
               value={query}
               onChange={evt => setQuery(evt.target.value)} />
           </div>
@@ -74,7 +77,7 @@ export const IIIFMetadataSearch = (props: IIIFMetadataSearchProps) => {
           <CommandList className="p-1">
             <CommandEmpty 
               className="text-xs font-normal flex justify-center py-2 text-muted-foreground">
-              No matches
+              {t('graphSearch.noMatches')}
             </CommandEmpty>
 
             {options.map(option => (

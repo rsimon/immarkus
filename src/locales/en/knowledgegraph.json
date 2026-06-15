@@ -1,0 +1,154 @@
+{
+  "knowledgeGraph": {
+    "title": "Knowledge Graph",
+    "description": "Explore connections between images and entities. Zoom and pan the graph with your mouse. Grab and pull a node to re-arrange the graph. Click a node to see more information."
+  },
+  "graphControls": {
+    "toggleFullscreen": "Toggle fullscreen",
+    "unpinAllNodes": "Un-pin all pinned nodes",
+    "graphSearch": "Graph search",
+    "graphSettings": "Graph settings",
+    "settings": "Settings"
+  },
+  "settingsPanel": {
+    "graphType": {
+      "title": "Graph Type",
+      "description": "Select how you want to visualize your data.",
+      "hierarchy": "Hierarchy & Annotations",
+      "hierarchyDescription": "Visualize the data model hierarchy, folder structure and entity annotations.",
+      "relations": "Relationships",
+      "relationsDescription": "Visualize the Relationships between annotations. Data model hierarchy and entity annotations are shown on hover."
+    },
+    "hideLabels": "Hide labels",
+    "hideLabelsDescription": "Don't show text labels for graph nodes. A hover tooltip will be used instead.",
+    "hideForSpecificNodeTypes": "Hide for specific node types",
+    "imageLabels": "Image labels",
+    "subFolderLabels": "Sub-folder labels",
+    "entityClassLabels": "Entity class labels",
+    "showSubFolders": "Show sub-folders as nodes",
+    "showSubFoldersDescription": "Include sub-folders inside your workfolder as nodes in the graph.",
+    "hideUnconnectedNodes": "Hide unconnected nodes",
+    "hideUnconnectedNodesDescription": "Remove nodes without any connections from the graph."
+  },
+  "legend": {
+    "nodes": "Nodes",
+    "edges": "Edges",
+    "entityClass": "Entity Class",
+    "subFolder": "Sub-Folder",
+    "image": "Image",
+    "relationship": {
+      "title": "Relationship",
+      "description": "Connections based on Relationships between your annotations."
+    },
+    "entityClassHierarchy": {
+      "title": "Entity class hierarchy",
+      "description": "Links between parent- and child Entity Classes in your data model."
+    },
+    "folderStructure": {
+      "title": "Folder structure",
+      "description": "File structure of sub-folders and image files in your project directory."
+    },
+    "entityAnnotations": {
+      "title": "Entity Annotations",
+      "description": "Connections between images and Entity Classes, based on the tags in your annotations."
+    }
+  },
+  "graphView": {
+    "linkLabels": {
+      "subFolder": "Sub-Folder",
+      "imageInSubFolder": "Image is in Sub-Folder",
+      "entityClassHierarchy": "Entity Class Hierarchy",
+      "hasEntityAnnotations_one": "Image has {{count}} entity annotation",
+      "hasEntityAnnotations_other": "Image has {{count}} entity annotations",
+      "relationshipsInsideImage_one": "{{count}} Relationship inside this image ({{relations}})",
+      "relationshipsInsideImage_other": "{{count}} Relationships inside this image ({{relations}})",
+      "relationshipsBetweenImages_one": "{{count}} Relationship between these images ({{relations}})",
+      "relationshipsBetweenImages_other": "{{count}} Relationships between these images ({{relations}})",
+      "relationshipsBetweenEntities_one": "{{count}} Relationship between entities of this class ({{relations}})",
+      "relationshipsBetweenEntities_other": "{{count}} Relationships between entities of this class ({{relations}})",
+      "connectedViaRelationships_one": "Connected via {{count}} Relationship ({{relations}})",
+      "connectedViaRelationships_other": "Connected via {{count}} Relationships ({{relations}})"
+    }
+  },
+  "graphSearch": {
+    "title": "Graph Search",
+    "find": "Find",
+    "selectNodeType": "select node type...",
+    "objectTypes": {
+      "entityClasses": "entity classes",
+      "subFolders": "sub-folders",
+      "images": "images"
+    },
+    "operators": {
+      "and": "and",
+      "or": "or"
+    },
+    "conditionTypes": {
+      "where": "where",
+      "withRelationship": "with relationship",
+      "withEntity": "with entity",
+      "withNote": "with note",
+      "withIiifMetadata": "with IIIF metadata"
+    },
+    "comparators": {
+      "is": "is",
+      "isEmpty": "is empty",
+      "isNotEmpty": "is not empty"
+    },
+    "builtInAttributes": {
+      "folderName": "folder name",
+      "imageFilename": "image filename"
+    },
+    "attributePrefix": {
+      "folder": "folder",
+      "image": "image"
+    },
+    "addCondition": "Add Condition",
+    "clearAll": "Clear All",
+    "subCondition": "Sub-Condition",
+    "where": "where",
+    "noMatches": "No matches",
+    "openInWorkspace": "Open in workspace",
+    "searchPlaceholder": "Search...",
+    "export": {
+      "export": "Export",
+      "metadata": "Export metadata",
+      "annotations": "Export annotations",
+      "relationships": "Export relationships",
+      "exporting": "Exporting XLSX. This may take a while."
+    }
+  },
+  "selectionDetails": {
+    "annotationViewLink": {
+      "currentlyOpen": "Currently open in workspace",
+      "openImage": "Open image",
+      "addToWorkspace": "Add to workspace"
+    },
+    "copyManifestUrl": "Copy manifest URL to clipboard",
+    "entityType": {
+      "noDescription": "No description",
+      "annotationsLabel_one": "Annotation",
+      "annotationsLabel_other": "Annotations",
+      "relationshipsLabel_one": "Relationship",
+      "relationshipsLabel_other": "Relationships"
+    },
+    "image": {
+      "annotationsTab": "Annotations",
+      "relationshipsTab": "Relationships",
+      "metadataTab": "Metadata",
+      "dimensions": "{{width}} x {{height}} px"
+    },
+    "folder": {
+      "imageCount_one": "{{count}} Image",
+      "imageCount_other": "{{count}} Images",
+      "subFolderCount_one": "{{count}} Sub-Folder",
+      "subFolderCount_other": "{{count}} Sub-Folders",
+      "open": "Open"
+    },
+    "metadata": {
+      "save": "Save",
+      "iiifTab": "IIIF",
+      "myTab": "My"
+    }
+  }
+}

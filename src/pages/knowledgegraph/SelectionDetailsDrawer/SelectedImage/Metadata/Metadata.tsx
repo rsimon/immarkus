@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Braces, NotebookPen } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { IIIFMetadataList } from '@/components/IIIFMetadataList';
@@ -16,6 +17,8 @@ interface MetadataProps {
 }
 
 const MyMetadata = (props: MetadataProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { metadata, updateMetadata } = useImageMetadata(props.imageId);
 
@@ -44,7 +47,7 @@ const MyMetadata = (props: MetadataProps) => {
             disabled={!hasChanges(metadata, formState)} 
             className="w-full mb-2"
             type="submit">
-            Save
+            {t('selectionDetails.metadata.save')}
           </Button>
         </div>
       </form>
@@ -70,6 +73,8 @@ const IIIFMetadata = (props: MetadataProps) => {
 
 export const Metadata = (props: MetadataProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   return  props.imageId.startsWith('iiif:') ? (
     <div className="bg-white shadow-xs rounded border px-4 py-3">
       <Tabs 
@@ -78,13 +83,13 @@ export const Metadata = (props: MetadataProps) => {
           <TabsTrigger 
             value="iiif"
             className="text-xs py-1 flex gap-1.5">
-            <Braces className="size-3.5" /> IIIF
+            <Braces className="size-3.5" /> {t('selectionDetails.metadata.iiifTab')}
           </TabsTrigger>
 
-          <TabsTrigger 
+          <TabsTrigger
             value="my"
             className="text-xs py-1 px-2 flex gap-1.5">
-            <NotebookPen className="size-3.5" /> My
+            <NotebookPen className="size-3.5" /> {t('selectionDetails.metadata.myTab')}
           </TabsTrigger>
         </TabsList>
 

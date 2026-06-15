@@ -1,21 +1,24 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDataModel } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
 import { DropdownOption } from '../Types';
 
-const comparatorOptions = [
-  { label: 'is', value: 'IS' }, 
-  { label: 'is empty', value: 'IS_EMPTY' },
-  { label: 'is not empty', value: 'IS_NOT_EMPTY'}
-];
-
 export const useSubConditions = (
   annotations: W3CAnnotation[],
-  subjectId: string, 
+  subjectId: string,
   attribute?: DropdownOption,
 ) => {
   const model = useDataModel();
+
+  const { t } = useTranslation('knowledgegraph');
+
+  const comparatorOptions = useMemo(() => ([
+    { label: t('graphSearch.comparators.is'), value: 'IS' },
+    { label: t('graphSearch.comparators.isEmpty'), value: 'IS_EMPTY' },
+    { label: t('graphSearch.comparators.isNotEmpty'), value: 'IS_NOT_EMPTY' }
+  ]), [t]);
 
   const type = useMemo(() => model.getEntityType(subjectId, true), [subjectId]);
 

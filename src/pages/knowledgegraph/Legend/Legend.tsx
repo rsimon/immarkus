@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useSpring, animated } from '@react-spring/web';
 import { Button } from '@/ui/Button';
@@ -6,6 +7,8 @@ import { NODE_COLORS, LINK_COLORS } from '../Styles';
 import { useKnowledgeGraphSettings } from '../KnowledgeGraphState';
 
 export const Legend = () => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { settings, setSettings } = useKnowledgeGraphSettings();
 
@@ -76,14 +79,14 @@ export const Legend = () => {
       </Button>
 
       <div>
-        {expanded && (<h3 className="font-medium pb-1.5">Nodes</h3>)}
+        {expanded && (<h3 className="font-medium pb-1.5">{t('legend.nodes')}</h3>)}
 
         <ul className="flex gap-6 text-muted-foreground text-xs">
           <li className="flex gap-2 items-center">
             <span 
               style={{ backgroundColor: NODE_COLORS['ENTITY_TYPE']}} 
               className="block w-[12px] h-[12px] rounded-full" />
-            <span>Entity Class</span>
+            <span>{t('legend.entityClass')}</span>
           </li>
 
           {settings.includeFolders && (
@@ -91,7 +94,7 @@ export const Legend = () => {
               <span 
                 style={{ backgroundColor: NODE_COLORS['FOLDER']}} 
                 className="block w-[12px] h-[12px] rounded-full" />
-              <span>Sub-Folder</span>
+              <span>{t('legend.subFolder')}</span>
             </li>
           )}
 
@@ -99,7 +102,7 @@ export const Legend = () => {
             <span 
               style={{ backgroundColor: NODE_COLORS['IMAGE']}} 
               className="block w-[12px] h-[12px] rounded-full"/>
-            <span>Image</span>
+            <span>{t('legend.image')}</span>
           </li>
         </ul>
       </div>
@@ -107,7 +110,7 @@ export const Legend = () => {
       <animated.div style={edgeLegendSpring}>
         <div ref={edgeLegendEl}>
           <div className="pt-8">
-            <h3 className="font-medium py-0.5">Edges</h3>
+            <h3 className="font-medium py-0.5">{t('legend.edges')}</h3>
             <ul>
               {settings.graphMode === 'RELATIONS' && (
                 <li className="flex gap-3 items-start py-2">
@@ -117,11 +120,11 @@ export const Legend = () => {
 
                   <div>
                     <h4 className="font-medium">
-                      Relationship
+                      {t('legend.relationship.title')}
                     </h4>
 
                     <p className="text-muted-foreground text-xs">
-                      Connections based on Relationships between your annotations.
+                      {t('legend.relationship.description')}
                     </p>
                   </div>
                 </li>
@@ -134,11 +137,11 @@ export const Legend = () => {
 
                 <div>
                   <h4 className="font-medium">
-                    Entity class hierarchy
+                    {t('legend.entityClassHierarchy.title')}
                   </h4>
 
                   <p className="text-muted-foreground text-xs">
-                    Links between parent- and child Entity Classes in your data model.
+                    {t('legend.entityClassHierarchy.description')}
                   </p>
                 </div>
               </li>
@@ -150,10 +153,9 @@ export const Legend = () => {
                     style={{ borderColor: LINK_COLORS.FOLDER_CONTAINS_SUBFOLDER }} />
 
                   <div>
-                    <h4 className="font-medium">Folder structure</h4>
+                    <h4 className="font-medium">{t('legend.folderStructure.title')}</h4>
                     <p className="text-muted-foreground text-xs">
-                      File structure of sub-folders and image files in your 
-                      project directory.
+                      {t('legend.folderStructure.description')}
                     </p>
                   </div>
                 </li>
@@ -165,10 +167,9 @@ export const Legend = () => {
                   style={{ borderColor: LINK_COLORS.HAS_ENTITY_ANNOTATION }} />
 
                 <div>
-                  <h4 className="font-medium">Entity Annotations</h4>
+                  <h4 className="font-medium">{t('legend.entityAnnotations.title')}</h4>
                   <p className="text-muted-foreground text-xs">
-                    Connections between images and Entity Classes, based on 
-                    the tags in your annotations.
+                    {t('legend.entityAnnotations.description')}
                   </p>
                 </div>
               </li>

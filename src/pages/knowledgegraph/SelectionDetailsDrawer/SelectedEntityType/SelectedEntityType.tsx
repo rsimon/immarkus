@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Cuboid, MessagesSquare, Spline, X} from 'lucide-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
@@ -20,6 +21,8 @@ interface SelectedEntityTypeProps {
 }
 
 export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { entityTypes } = useDataModel();
 
@@ -83,7 +86,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
               </p>
             ) : (
               <p className="font-light mt-3 text-xs text-muted-foreground/50 py-6 px-1">
-                No description
+                {t('selectionDetails.entityType.noDescription')}
               </p>
             )}
           </div>
@@ -98,7 +101,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
                 <span>
                   {annotations} {tab === 'annotations' && (
                     <>
-                      Annotation{annotations === 0 || annotations > 1 ? 's' : ''}
+                      {t('selectionDetails.entityType.annotationsLabel', { count: annotations })}
                     </>
                   )}
                 </span>
@@ -112,7 +115,7 @@ export const SelectedEntityType = (props: SelectedEntityTypeProps) => {
                 <span>
                   {entityRelationships.length} {tab === 'relations' && (
                     <>
-                      Relationship{entityRelationships.length === 0 || entityRelationships.length > 1 ? 's' : ''}
+                      {t('selectionDetails.entityType.relationshipsLabel', { count: entityRelationships.length })}
                     </>
                   )}
                 </span>

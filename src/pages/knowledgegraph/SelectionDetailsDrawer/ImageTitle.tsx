@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Clipboard, ClipboardCheck, Image } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { cn } from '@/ui/utils';
@@ -46,6 +47,8 @@ interface CopyManifestURLButtonProps {
 
 export const CopyManifestURLButton = (props: CopyManifestURLButtonProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const [copied, setCopied] = useState(false);
   
   const onCopyManifestURL = (evt: React.MouseEvent) => {
@@ -74,7 +77,7 @@ export const CopyManifestURLButton = (props: CopyManifestURLButtonProps) => {
       </TooltipTrigger>
       
       <TooltipContent>
-        Copy manifest URL to clipboard
+        {t('selectionDetails.copyManifestUrl')}
       </TooltipContent>
     </Tooltip>
   )

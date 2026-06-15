@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ForceGraph2D, { LinkObject, NodeObject, ForceGraphMethods } from 'react-force-graph-2d';
 import { useDataModel } from '@/store';
 import { usePrevious } from '@/utils/usePrevious';
@@ -41,6 +42,8 @@ const MIN_LINK_WIDTH = 1;
 let globalScale = 1;
 
 export const GraphView = (props: GraphViewProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { graph, settings } = props;
 
@@ -310,24 +313,24 @@ export const GraphView = (props: GraphViewProps) => {
 
     if (types.length > 1) return;
 
-    const t = types[0];
+    const type = types[0];
 
-    if (t === 'FOLDER_CONTAINS_SUBFOLDER') {
-      return 'Sub-Folder';
-    } else if (t === 'FOLDER_CONTAINS_IMAGE') {
-      return 'Image is in Sub-Folder';
-    } else if (t === 'IS_PARENT_TYPE_OF') {
-      return 'Entity Class Hierarchy';
-    } else if (t === 'HAS_ENTITY_ANNOTATION') {
-      return `Image has ${link.weight} entity annotation${link.weight ===  1 ? '' : 's'}`;
-    } else if (t === 'HAS_RELATED_ANNOTATION_IN') {
-      return link.source === link.target 
-        ? `${link.weight} Relationship${link.weight ===  1 ? '' : 's'} inside this image (${[...relations].join(', ')})`
-        : `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between these images (${[...relations].join(', ')})`;
-    } else if (t === 'IS_RELATED_VIA_ANNOTATION') {
+    if (type === 'FOLDER_CONTAINS_SUBFOLDER') {
+      return t('graphView.linkLabels.subFolder');
+    } else if (type === 'FOLDER_CONTAINS_IMAGE') {
+      return t('graphView.linkLabels.imageInSubFolder');
+    } else if (type === 'IS_PARENT_TYPE_OF') {
+      return t('graphView.linkLabels.entityClassHierarchy');
+    } else if (type === 'HAS_ENTITY_ANNOTATION') {
+      return t('graphView.linkLabels.hasEntityAnnotations', { count: link.weight });
+    } else if (type === 'HAS_RELATED_ANNOTATION_IN') {
       return link.source === link.target
-        ? `${link.weight} Relationship${link.weight === 1 ? '' : 's'} between entities of this class (${[...relations].join(', ')})`
-        : `Connected via ${link.weight} Relationship${link.weight === 1 ? '' : 's'} (${[...relations].join(', ')})`
+        ? t('graphView.linkLabels.relationshipsInsideImage', { count: link.weight, relations: [...relations].join(', ') })
+        : t('graphView.linkLabels.relationshipsBetweenImages', { count: link.weight, relations: [...relations].join(', ') });
+    } else if (type === 'IS_RELATED_VIA_ANNOTATION') {
+      return link.source === link.target
+        ? t('graphView.linkLabels.relationshipsBetweenEntities', { count: link.weight, relations: [...relations].join(', ') })
+        : t('graphView.linkLabels.connectedViaRelationships', { count: link.weight, relations: [...relations].join(', ') });
     }
   }
 

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
@@ -29,6 +30,8 @@ interface GraphSearchSubConditionBuilderProps {
 
 export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBuilderProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const { subcondition } = props;
 
   const annotations = useMemo(() => (
@@ -52,7 +55,7 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
   
   return (
     <div className="flex pt-2">
-      <div className="w-32 text-right px-2 py-1">where</div>
+      <div className="w-32 text-right px-2 py-1">{t('graphSearch.where')}</div>
 
       <Combobox 
         className={`${selectStyle} border-l`}
@@ -80,7 +83,7 @@ export const GraphSearchSubConditionBuilder = (props: GraphSearchSubConditionBui
           ))}
 
           {(comparatorOptions.length === 0) && (
-            <div className="text-xs text-muted-foreground flex justify-center py-1">No matches</div>
+            <div className="text-xs text-muted-foreground flex justify-center py-1">{t('graphSearch.noMatches')}</div>
           )}
         </SelectContent>
       </Select>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CirclePlus, Trash2 } from 'lucide-react';
 import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
@@ -46,6 +47,8 @@ interface GraphSearchConditionBuilderProps {
 
 export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const {
     attributeOptions,
     comparatorOptions,
@@ -59,21 +62,21 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
     props.onChange(sentence, matches);
   }, [sentence, matches]);
 
-  const conditionTypes = useMemo(() => 
+  const conditionTypes = useMemo(() =>
     props.objectType === 'IMAGE' ? [
-      { label: 'where', value: 'WHERE' },
-      (props.settings.graphMode === 'RELATIONS' ? { label: 'with relationship', value: 'WITH_RELATIONSHIP' } : undefined),
-      { label: 'with entity', value: 'WITH_ENTITY' },
-      { label: 'with note', value: 'WITH_NOTE' },
-      { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
-    ].filter(Boolean) : 
+      { label: t('graphSearch.conditionTypes.where'), value: 'WHERE' },
+      (props.settings.graphMode === 'RELATIONS' ? { label: t('graphSearch.conditionTypes.withRelationship'), value: 'WITH_RELATIONSHIP' } : undefined),
+      { label: t('graphSearch.conditionTypes.withEntity'), value: 'WITH_ENTITY' },
+      { label: t('graphSearch.conditionTypes.withNote'), value: 'WITH_NOTE' },
+      { label: t('graphSearch.conditionTypes.withIiifMetadata'), value: 'WITH_IIIF_METADATA' }
+    ].filter(Boolean) :
     props.objectType === 'ENTITY_TYPE' ? [
-      { label: 'with relationship', value: 'WITH_RELATIONSHIP' }
+      { label: t('graphSearch.conditionTypes.withRelationship'), value: 'WITH_RELATIONSHIP' }
     ] : [
       // props.object type === 'FOLDER'
-      { label: 'where', value: 'WHERE' },
-      { label: 'with IIIF metadata', value: 'WITH_IIIF_METADATA' }
-    ], [props.objectType, props.settings]);
+      { label: t('graphSearch.conditionTypes.where'), value: 'WHERE' },
+      { label: t('graphSearch.conditionTypes.withIiifMetadata'), value: 'WITH_IIIF_METADATA' }
+    ], [props.objectType, props.settings, t]);
 
   const showAddSubCondition = sentence.ConditionType === 'WITH_ENTITY' && 'Value' in sentence;
 
@@ -119,7 +122,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
         ))}
 
         {(options.length === 0) && (
-          <div className="text-xs text-muted-foreground flex justify-center py-1">No matches</div>
+          <div className="text-xs text-muted-foreground flex justify-center py-1">{t('graphSearch.noMatches')}</div>
         )}
       </SelectContent>
     </Select>
@@ -206,7 +209,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
           <button 
             className="flex items-center text-[11.5px] text-muted-foreground hover:text-black gap-1 pl-2"
             onClick={onAddSubcondition}>
-            <CirclePlus className="h-3 w-3" /> Sub-Condition
+            <CirclePlus className="h-3 w-3" /> {t('graphSearch.subCondition')}
           </button>
         )}
       </div>

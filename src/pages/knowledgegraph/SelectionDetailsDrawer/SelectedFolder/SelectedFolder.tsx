@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import murmur from 'murmurhash';
 import { Link } from 'react-router-dom';
 import { Braces, FolderIcon, FolderOpen, ImageIcon, NotebookPen, X } from 'lucide-react';
@@ -33,6 +34,8 @@ interface MetadataProps {
 
 const Metadata = (props: MetadataProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const [formState, setFormState] = useState<W3CAnnotationBody | undefined>();
 
   useEffect(() => {
@@ -59,7 +62,7 @@ const Metadata = (props: MetadataProps) => {
             disabled={!hasChanges(props.metadata, formState)} 
             className="w-full mb-2"
             type="submit">
-            Save
+            {t('selectionDetails.metadata.save')}
           </Button>
         </div>
       </form>
@@ -82,6 +85,8 @@ const SelectedFolderMetadata = ({ folder }: { folder: Folder }) => {
 
 const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource }) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const cozyManifest = useIIIFResource(manifest.id);
 
   const { metadata, updateMetadata } = useManifestMetadata(manifest.id);
@@ -94,13 +99,13 @@ const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource
           <TabsTrigger 
             value="iiif"
             className="text-xs py-1 flex gap-1.5">
-            <Braces className="size-3.5" /> IIIF
+            <Braces className="size-3.5" /> {t('selectionDetails.metadata.iiifTab')}
           </TabsTrigger>
 
-          <TabsTrigger 
+          <TabsTrigger
             value="my"
             className="text-xs py-1 px-2 flex gap-1.5">
-            <NotebookPen className="size-3.5" /> My
+            <NotebookPen className="size-3.5" /> {t('selectionDetails.metadata.myTab')}
           </TabsTrigger>
         </TabsList>
 
@@ -121,6 +126,8 @@ const SelectedManifestMetadata = ({ manifest }: { manifest: IIIFManifestResource
 }
 
 export const SelectedFolder = (props: SelectedFolderProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const store = useStore();
 
@@ -198,13 +205,13 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             <div className="text-muted-foreground flex gap-4">
               {imageCount > 0 && (
                 <div className="flex gap-1 items-center">
-                  <ImageIcon className="h-3.5 w-3.5" /> {imageCount} Images
+                  <ImageIcon className="h-3.5 w-3.5" /> {t('selectionDetails.folder.imageCount', { count: imageCount })}
                 </div>
               )}
 
               {folderCount > 0 && (
                 <div className="flex gap-1 items-center">
-                  <FolderIcon className="h-3.5 w-3.5" /> {folderCount} Sub-Folders
+                  <FolderIcon className="h-3.5 w-3.5" /> {t('selectionDetails.folder.subFolderCount', { count: folderCount })}
                 </div>
               )}
             </div>
@@ -212,7 +219,7 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
             <Link 
               to={`/images/${folderId}`}
               className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 py-1.5">
-              Open
+              {t('selectionDetails.folder.open')}
             </Link>
           </div>
         </div>
