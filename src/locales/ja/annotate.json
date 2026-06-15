@@ -1,0 +1,160 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "キャンセル",
+    "searchPlaceholder": "検索..."
+  },
+  "emptyWorkspace": {
+    "title": "ワークスペースは空です",
+    "description1": "まずは <strong><imageIcon /> 画像</strong>ギャラリーから画像を開いてください。<strong><graphIcon /> ナレッジグラフ</strong>から画像を送ることも、ツールバーの <strong><addIcon /> 画像を追加</strong>ボタンを使うこともできます。",
+    "description2": "ワークスペースのレイアウトは、ツールバーの <strong><bookmarkIcon /> ブックマーク</strong>ツールで保存・復元できます。"
+  },
+  "connectorPopup": {
+    "addToVocabulary": "語彙に追加:"
+  },
+  "gpuError": {
+    "title": "エラー",
+    "intro": "IMMARKUS はアノテーションインターフェースを起動できませんでした。最も可能性が高い原因は、<strong>ブラウザのハードウェアアクセラレーションが無効になっている</strong>ことです。",
+    "chromeIntro": "<strong>Chrome</strong> でハードウェアアクセラレーションを有効にするには:",
+    "stepOpenMenu": "ブラウザのメニュー(右上の 3 点アイコン)を開きます",
+    "chromeStep2": "<strong>設定 → システム</strong>に移動します",
+    "chromeStep3": "<strong>ハードウェア アクセラレーションが使用可能な場合は使用する</strong>のスイッチを有効にします",
+    "chromeStep4": "<strong>再起動</strong>をクリックして Chrome を再起動します",
+    "edgeIntro": "<strong>Edge</strong> でハードウェアアクセラレーションを有効にするには:",
+    "edgeStep2": "<strong>設定 → システムとパフォーマンス</strong>に移動します",
+    "edgeStep3": "<strong>システム</strong>をクリックします",
+    "edgeStep4": "<strong>使用可能な場合はグラフィックス アクセラレーションを使用する</strong>のスイッチを有効にします",
+    "edgeStep5": "設定を反映するには Edge の再起動が必要な場合があります",
+    "goBack": "戻る"
+  },
+  "headerSection": {
+    "addImage": "画像を追加",
+    "addImageTooltip": "画像をワークスペースに追加",
+    "hideUnannotated": "未アノテーションを非表示",
+    "back": "戻る",
+    "workspaceBookmarks": "ワークスペースのブックマーク",
+    "deleteCurrentBookmark": "現在のブックマークを削除",
+    "saveBookmark": "ブックマークを保存...",
+    "noSavedBookmarks": "保存済みのブックマークはありません",
+    "saveCurrentWorkspace": "現在のワークスペースを保存",
+    "newBookmarkName": "新しいブックマーク名",
+    "orOverwriteExisting": "– または既存のブックマークを上書き –",
+    "copySnippetTooltip": "画像スニペットをクリップボードにコピー",
+    "copyExactShape": "正確な形状をコピー",
+    "copyBoundingBox": "バウンディングボックスをコピー",
+    "rotateCounterclockwise": "画像を反時計回りに回転",
+    "rotateClockwise": "画像を時計回りに回転",
+    "zoomIn": "ズームイン",
+    "zoomOut": "ズームアウト",
+    "undo": "元に戻す",
+    "redo": "やり直す",
+    "move": "移動",
+    "showAnnotations": "アノテーションを表示",
+    "hideAnnotations": "アノテーションを非表示",
+    "smartToolsTooltip": "スマートアノテーションツール"
+  },
+  "toolSelector": {
+    "box": "矩形",
+    "polygon": "ポリゴン",
+    "ellipse": "楕円",
+    "path": "パス"
+  },
+  "pagination": {
+    "previousImage": "このフォルダ内の前の画像",
+    "nextImage": "このフォルダ内の次の画像",
+    "changeImage": "画像を変更",
+    "selectThisImage": "この画像を選択",
+    "addImageToWorkspace": "画像をワークスペースに追加"
+  },
+  "savingState": {
+    "allSaved": "すべてのアノテーションを保存済み",
+    "saved": "保存済み",
+    "saving": "保存中",
+    "failed": "失敗",
+    "errorSaving": "データを保存できませんでした",
+    "couldNotSaveAnnotation": "直前のアノテーションを保存できませんでした。エラー: {{message}}"
+  },
+  "relationEditor": {
+    "createRelationTooltip": "リレーションを作成",
+    "createRelation": "リレーションを作成",
+    "selectTargetAnnotation": "ターゲットのアノテーションを選択します。",
+    "chooseRelationType": "リレーションタイプを選択します。",
+    "noTypesFound": "タイプが見つかりません。",
+    "noApplicableTypesFound": "適用可能なタイプが見つかりません。",
+    "notApplicableTypes_other": "適用不可のタイプ {{count}} 件",
+    "hideNotApplicableTypes": "適用不可のタイプを非表示",
+    "create": "作成:",
+    "createNewType": "新しいタイプを作成"
+  },
+  "annotationList": {
+    "dragToChangeOrder": "カードをドラッグして順序を変更",
+    "selectAll": "すべて選択",
+    "show": "表示:",
+    "filter": {
+      "all": "すべて",
+      "withEntity": "エンティティあり",
+      "withoutEntity": "エンティティなし",
+      "withRelation": "リレーションあり",
+      "entityClasses": "エンティティクラス",
+      "relationshipTypes": "リレーションタイプ",
+      "nClasses_other": "{{count}} クラス",
+      "nRelations_other": "{{count}} リレーション"
+    },
+    "order": {
+      "recent": "新しい順",
+      "oldest": "古い順",
+      "entity": "エンティティ順",
+      "custom": "カスタム"
+    },
+    "emptyAnnotation": "空のアノテーション",
+    "editTooltip": "編集",
+    "duplicateTooltip": "このアノテーションを複製",
+    "deleteTooltip": "削除",
+    "deleteAnnotation": "アノテーションを削除",
+    "confirmDeleteAnnotation": "このアノテーションを削除してもよろしいですか?"
+  },
+  "currentSelection": {
+    "noAnnotationSelected": "アノテーションが選択されていません",
+    "addTag": "タグを追加",
+    "addNote": "ノートを追加",
+    "deleteAnnotation": "アノテーションを削除",
+    "confirmDeleteAnnotation": "このアノテーションを削除してもよろしいですか?"
+  },
+  "multiSelection": {
+    "annotations_other": "{{count}} 件のアノテーション",
+    "compareDialogTitle_other": "{{count}} 件のアノテーションを比較",
+    "compare": "比較",
+    "compareHint": "選択したアノテーションを並べて表示します。",
+    "addTag": "タグを追加",
+    "addTagHint": "選択したすべてのアノテーションに同じタグを適用します。",
+    "merge": "結合",
+    "mergeHint": "選択したアノテーションを結合します。すべてのタグを保持し、ノートは選択順に連結します。",
+    "subtract": "減算",
+    "subtractHint": "最初のアノテーションを残し、それ以外をすべて削除します。重なっている領域は最初のアノテーションから取り除かれます。",
+    "deleteSelected": "選択項目を削除"
+  },
+  "propertiesForm": {
+    "addTag": "タグを追加",
+    "addNote": "ノートを追加",
+    "clearNote": "ノートをクリア",
+    "clearNoteTooltip": "ノートをクリア",
+    "editEntitySchema": "エンティティスキーマを編集",
+    "deleteTag": "このタグを削除",
+    "relatedAnnotations": "関連アノテーション",
+    "deleteRelationMessage": "この操作はリレーションを完全に削除します。",
+    "deleteRelationTooltip": "このリレーションを削除"
+  },
+  "imageMetadata": {
+    "manifest": "マニフェスト",
+    "canvas": "キャンバス",
+    "my": "マイ",
+    "noManifestMetadata": "マニフェストのメタデータはありません",
+    "noCanvasMetadata": "キャンバスのメタデータはありません",
+    "saveMetadata": "メタデータを保存"
+  },
+  "sidebar": {
+    "selection": "選択",
+    "list": "リスト",
+    "metadata": "メタデータ"
+  }
+}

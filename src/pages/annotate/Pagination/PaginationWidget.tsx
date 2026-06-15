@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CanvasInformation, FileImage, IIIFManifestResource, LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -23,6 +24,8 @@ interface PaginationWidgetProps {
 }
 
 export const PaginationWidget = (props: PaginationWidgetProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -101,7 +104,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
           disabled={props.disabled || currentIndex === 0}
           className="mr-1"
           onClick={() => onSkipImage(-1)}
-          tooltip="Previous image in this folder">
+          tooltip={t('pagination.previousImage')}>
           <ChevronLeft className="w-5 h-8 py-2 px-0 mr-0.5" />
         </ToolbarButton>
       )}
@@ -120,7 +123,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
           disabled={props.disabled || images.length < 2}
           className="py-1 bg-muted disabled:bg-transparent hover:bg-slate-200"
           onClick={() => setShowThumbnails(show => !show)}
-          tooltip="Change image">
+          tooltip={t('pagination.changeImage')}>
           <span className="min-w-12 inline-block px-1.5 whitespace-nowrap">
             {currentIndex + 1} / {images.length}
           </span>
@@ -139,7 +142,7 @@ export const PaginationWidget = (props: PaginationWidgetProps) => {
           className="ml-1"
           disabled={props.disabled || currentIndex === images.length - 1}
           onClick={() => onSkipImage(1)}
-          tooltip="Next image in this folder">
+          tooltip={t('pagination.nextImage')}>
           <ChevronRight className="w-5 h-8 py-2 px-0" />
         </ToolbarButton>
       )}

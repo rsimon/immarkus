@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { NotebookPen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { CanvasInformation, Image } from '@/model';
 import { useImageMetadata } from '@/store';
@@ -20,6 +21,8 @@ interface ImageMetadataSectionProps {
 
 const IIIFManifestMetadataTab = (props: ImageMetadataSectionProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const { manifestId } = props.image as CanvasInformation;
 
   const manifest = useIIIFResource(manifestId);
@@ -32,12 +35,14 @@ const IIIFManifestMetadataTab = (props: ImageMetadataSectionProps) => {
   return metadata ? (
     <IIIFMetadataList 
       metadata={metadata} 
-      emptyMessage="No Manifest Metadata" />
+      emptyMessage={t('imageMetadata.noManifestMetadata')} />
   ) : null;
 
 }
 
 const IIIFCanvasMetadataTab = (props: ImageMetadataSectionProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { manifestId, id: canvasId } = props.image as CanvasInformation;
 
@@ -59,11 +64,13 @@ const IIIFCanvasMetadataTab = (props: ImageMetadataSectionProps) => {
     <IIIFMetadataList 
       annotations={annotations}
       metadata={metadata} 
-      emptyMessage="No Canvas Metadata" />
+      emptyMessage={t('imageMetadata.noCanvasMetadata')} />
   );
 }
 
 const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { image } = props;
 
@@ -98,7 +105,7 @@ const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
         <Button 
           disabled={!hasChanges(metadata, formState)} 
           className="w-full mb-2">
-          Save Metadata
+          {t('imageMetadata.saveMetadata')}
         </Button>
       </form>
     </PropertyValidation>
@@ -107,6 +114,8 @@ const MyImageMetadataTab = (props: ImageMetadataSectionProps) => {
 }
 
 export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { image } = props;
 
@@ -118,19 +127,19 @@ export const ImageMetadataSection = (props: ImageMetadataSectionProps) => {
         <TabsTrigger 
           value="iiif-manifest"
           className="text-xs py-1 flex gap-1 items-center">
-          <IIIFIcon light className="size-3.5 mb-0.5" /> Manifest
+          <IIIFIcon light className="size-3.5 mb-0.5" /> {t('imageMetadata.manifest')}
         </TabsTrigger>
 
         <TabsTrigger 
           value="iiif-canvas"
           className="text-xs py-1 flex gap-1 items-center">
-          <IIIFIcon light className="size-3.5 mb-0.5" /> Canvas
+          <IIIFIcon light className="size-3.5 mb-0.5" /> {t('imageMetadata.canvas')}
         </TabsTrigger>
 
         <TabsTrigger 
           value="my"
           className="text-xs py-1 px-2 flex gap-1">
-          <NotebookPen className="size-3.5" /> My
+          <NotebookPen className="size-3.5" /> {t('imageMetadata.my')}
         </TabsTrigger>
       </TabsList>
       

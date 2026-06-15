@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Grid2X2, Grid3X3, Square, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
@@ -36,6 +37,8 @@ interface ToolbarProps {
 
 export const Toolbar = (props: ToolbarProps) => {
 
+  const { t } = useTranslation('smartTools');
+
   return (
     <DialogHeader className="flex flex-row justify-between border-b bg-white">
       <DialogTitle className="m-0 p-2">
@@ -50,9 +53,9 @@ export const Toolbar = (props: ToolbarProps) => {
           
           <div className="p-0.5 text-xs font-normal text-muted-foreground">
             {props.results ? (
-              <span>Showing {props.results.length.toLocaleString()} matches</span>
+              <span>{t('visualSearch.toolbar.showingMatches', { count: props.results.length })}</span>
             ) : (
-              <span>Searching...</span>
+              <span>{t('visualSearch.toolbar.searching')}</span>
             )}
           </div>
         </div>
@@ -60,7 +63,7 @@ export const Toolbar = (props: ToolbarProps) => {
 
       <VisuallyHidden>
         <DialogDescription>
-          Visual similarity search results for the selected image region
+          {t('visualSearch.toolbar.dialogDescription')}
         </DialogDescription>
       </VisuallyHidden>
 
@@ -69,7 +72,7 @@ export const Toolbar = (props: ToolbarProps) => {
           'text-xs font-normal',
           props.disabled && 'opacity-50'
         )}>
-          Search inside
+          {t('visualSearch.toolbar.searchInside')}
         </Label>
 
         <ToggleGroup
@@ -81,20 +84,20 @@ export const Toolbar = (props: ToolbarProps) => {
           <ToggleGroupItem 
             value="this"
             className="text-xs font-normal">
-            Source Image
+            {t('visualSearch.toolbar.sourceImage')}
           </ToggleGroupItem>
 
           <ToggleGroupItem
             disabled={props.imagesInWorkspace.length < 2}
             value="workspace"
             className="text-xs font-normal">
-            Currently Open Images
+            {t('visualSearch.toolbar.currentlyOpenImages')}
           </ToggleGroupItem>
 
           <ToggleGroupItem
             value="all"
             className="text-xs font-normal">
-            All Images
+            {t('visualSearch.toolbar.allImages')}
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -114,7 +117,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 </ToggleGroupItem>
               </div>
             </TooltipTrigger>
-            <TooltipContent>Small Thumbnails</TooltipContent>
+            <TooltipContent>{t('visualSearch.toolbar.smallThumbnails')}</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -125,7 +128,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 </ToggleGroupItem>
               </div>
             </TooltipTrigger>
-            <TooltipContent>Medium Thumbnails</TooltipContent>
+            <TooltipContent>{t('visualSearch.toolbar.mediumThumbnails')}</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -136,7 +139,7 @@ export const Toolbar = (props: ToolbarProps) => {
                 </ToggleGroupItem>
               </div>
             </TooltipTrigger>
-            <TooltipContent>Large Thumbnails</TooltipContent>
+            <TooltipContent>{t('visualSearch.toolbar.largeThumbnails')}</TooltipContent>
           </Tooltip>
         </ToggleGroup>
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Clipboard, ClipboardCheck, ClipboardPen, ClipboardX } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/Spinner';
 import { LoadedImage } from '@/model';
 import { ToolbarButton } from '../../ToolbarButton';
@@ -21,6 +22,8 @@ type CopyMode = 'masked' | 'unmasked';
 
 export const CopyToClipboard = (props: CopyToClipboardProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const [mode, setMode] = useState<CopyMode>('masked');
 
   const { status, canCopy, copyToClipboard } = useCopyToClipboard(props.images, mode === 'masked');
@@ -29,7 +32,7 @@ export const CopyToClipboard = (props: CopyToClipboardProps) => {
     <div className="flex items-center">
       <ToolbarButton
         disabled={!canCopy}
-        tooltip="Copy image snippet to clipboard"
+        tooltip={t('headerSection.copySnippetTooltip')}
         onClick={copyToClipboard}>
         {status === 'busy' ? (
           <Spinner className="size-6 p-2" />
@@ -58,13 +61,13 @@ export const CopyToClipboard = (props: CopyToClipboardProps) => {
           <SelectItem 
             value="masked"
             className="text-xs">
-            Copy exact shape
+            {t('headerSection.copyExactShape')}
           </SelectItem>
 
           <SelectItem 
             value="unmasked"
             className="text-xs">
-            Copy bounding box
+            {t('headerSection.copyBoundingBox')}
           </SelectItem>
         </SelectContent>
       </Select>

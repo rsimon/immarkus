@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import ReactAutosuggest from 'react-autosuggest';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { RelationshipSearchResult, useRelationshipSearch } from '@/store';
 import { RelationshipType } from '@/model';
@@ -22,6 +23,8 @@ interface RelationshipBrowserProps {
 }
 
 export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const [showNotApplicable, setShowNotApplicable] = useState(false);
 
@@ -83,17 +86,17 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
           ) : (
             results.length === 0 ? (
               <div className="flex flex-col border-b justify-center items-center p-6 text-xs text-muted-foreground font-light bg-muted">
-                <span>No types found.</span>
+                <span>{t('relationEditor.noTypesFound')}</span>
               </div>
             ) : !showNotApplicable && (
               <div className="flex flex-col justify-center items-center border-b px-2 pt-6 pb-4 text-xs bg-muted">
-                <span>No applicable types found.</span>
+                <span>{t('relationEditor.noApplicableTypesFound')}</span>
 
                 <Button 
                   variant="outline"
                   className="py-0.5 px-1.5 mt-3 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
                   onClick={() => setShowNotApplicable(true)}>
-                  <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {results.length} not applicable type{results.length === 1 ? '' : 's'}
+                  <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {t('relationEditor.notApplicableTypes', { count: results.length })}
                 </Button>
               </div>
             )
@@ -126,7 +129,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
                 variant="outline"
                 className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
                 onClick={() => setShowNotApplicable(false)}>
-                <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} /> Hide not applicable types.
+                <EyeOff className="h-3.5 w-3.5" strokeWidth={1.8} /> {t('relationEditor.hideNotApplicableTypes')}
               </Button>
             </div>
           </div>
@@ -136,7 +139,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
               variant="outline"
               className="py-0.5 px-1.5 gap-1.5 text-[11.5px] font-normal text-muted-foreground/60 h-auto hover:bg-white"
               onClick={() => setShowNotApplicable(true)}>
-              <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {notApplicable} not applicable type{notApplicable === 1 ? '' : 's'}
+              <Eye className="h-3.5 w-3.5" strokeWidth={1.8} /> {t('relationEditor.notApplicableTypes', { count: notApplicable })}
             </Button>
           </div>
         )}
@@ -145,7 +148,7 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
       <div className="flex px-1 pt-2 pb-1.5 overflow-hidden">
         {(query && !results.some(t => t.name === query)) ? (
           <div className="px-1.5 py-1 flex gap-1 items-center text-[11px] text-muted-foreground overflow-hidden">
-            <Spline className="h-4 w-4" /> Create
+            <Spline className="h-4 w-4" /> {t('relationEditor.create')}
             <Button
               size="sm"
               className="block font-light border h-auto text-[11px] rounded px-1.5 py-1 whitespace-nowrap overflow-hidden text-ellipsis"
@@ -160,8 +163,8 @@ export const RelationshipBrowser = (props: RelationshipBrowserProps) => {
             className="px-1.5 pr-2 pt-2 pb-1.5 text-[11px] text-muted-foreground flex gap-1 h-auto overflow-hidden"
             variant="ghost"
             onClick={onCreateNew}>
-            <Spline className="h-4 w-4" /> 
-            Create New Type
+            <Spline className="h-4 w-4" />
+            {t('relationEditor.createNewType')}
           </Button>
         )}
       </div>

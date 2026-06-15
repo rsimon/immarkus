@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Spline } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Button } from '@/ui/Button';
@@ -21,6 +22,8 @@ interface RelationEditorContentProps {
 
 export const RelationEditorContent = (props: RelationEditorContentProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const { source, target } = props;
   
   const [relation, setRelation] = useState<RelationshipType | undefined>();
@@ -38,12 +41,12 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
   return (
     <div>
       <h3 className="flex text-xs text-muted-foreground items-center gap-1 font-medium">
-        <Spline className="h-4 w-4" /> Create Relation
+        <Spline className="h-4 w-4" /> {t('relationEditor.createRelation')}
       </h3>
 
       <ol className="list-decimal list-inside">
         <li className="text-xs mt-5 shrink-0">
-          Select a target annotation.
+          {t('relationEditor.selectTargetAnnotation')}
 
           <div className="mt-3 mb-1 ml-4 w-56 flex gap-1 justify-between items-center relative">
             <AnnotationThumbnail 
@@ -68,7 +71,7 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
         </li>
 
         <li className="text-xs mt-6 mb-1 shrink-0">
-          Choose a relation type.
+          {t('relationEditor.chooseRelationType')}
 
           <div className="ml-4 mt-2">
             <RelationshipBrowserPopover 
@@ -83,13 +86,13 @@ export const RelationEditorContent = (props: RelationEditorContentProps) => {
       <Button 
         className="mt-6 w-full"
         disabled={!relation || !props.target}
-        onClick={onSave}>Save</Button>
+        onClick={onSave}>{t('common.save')}</Button>
 
       <Button
         variant="outline"
         className="mt-2 w-full"
         onClick={props.onCancel}>
-        Cancel
+        {t('common.cancel')}
       </Button>
     </div>
   )

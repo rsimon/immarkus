@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { Button } from '@/ui/Button';
@@ -24,6 +25,8 @@ interface CompareDialogProps {
 
 export const CompareDialog = (props: CompareDialogProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const onOpenChange = (open: boolean) => {
     if (!open)
       props.onClose();
@@ -40,7 +43,7 @@ export const CompareDialog = (props: CompareDialogProps) => {
           overflow-hidden relative gap-1">
         <div className="flex items-center justify-between w-full px-5 pt-3 pb-2">
           <DialogTitle className="font-medium text-base">
-            Compare {props.selected.length} Annotations
+            {t('multiSelection.compareDialogTitle', { count: props.selected.length })}
           </DialogTitle>
 
           <DialogClose asChild>
@@ -54,7 +57,7 @@ export const CompareDialog = (props: CompareDialogProps) => {
         </div>
 
         <DialogDescription className="sr-only">
-          Compare {props.selected.length} Annotations
+          {t('multiSelection.compareDialogTitle', { count: props.selected.length })}
         </DialogDescription>
         
         <div className="grow relative overflow-x-auto overflow-y-hidden px-4 pb-3">

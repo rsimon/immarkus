@@ -1,0 +1,165 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "searchPlaceholder": "Search..."
+  },
+  "emptyWorkspace": {
+    "title": "Your workspace is empty",
+    "description1": "Start by opening an image from the <strong><imageIcon /> Images</strong> gallery. You can also send images here from the <strong><graphIcon /> Knowledge Graph</strong>, or use the <strong><addIcon /> Add image</strong> button in the toolbar.",
+    "description2": "Save and restore workspace layouts using the <strong><bookmarkIcon /> bookmark</strong> tool in the toolbar."
+  },
+  "connectorPopup": {
+    "addToVocabulary": "Add to vocabulary:"
+  },
+  "gpuError": {
+    "title": "Error",
+    "intro": "IMMARKUS could not launch the annotation interface. The most likely reason is that <strong>hardware acceleration is disabled on your browser</strong>.",
+    "chromeIntro": "To enable hardware acceleration on <strong>Chrome</strong>:",
+    "stepOpenMenu": "Open the browser menu (three dots in the upper right corner)",
+    "chromeStep2": "Go to <strong>Settings → System</strong>",
+    "chromeStep3": "Enable the switch <strong>Use hardware acceleration when available</strong>",
+    "chromeStep4": "Click <strong>Relaunch</strong> to restart Chrome",
+    "edgeIntro": "To enable hardware acceleration on <strong>Edge</strong>:",
+    "edgeStep2": "Go to <strong>Settings → System and performance</strong>",
+    "edgeStep3": "Click <strong>System</strong>",
+    "edgeStep4": "Enable the switch <strong>Use graphics acceleration when available</strong>",
+    "edgeStep5": "You may have to restart Edge for the setting to take effect",
+    "goBack": "Go Back"
+  },
+  "headerSection": {
+    "addImage": "Add image",
+    "addImageTooltip": "Add image to workspace",
+    "hideUnannotated": "Hide unannotated",
+    "back": "Back",
+    "workspaceBookmarks": "Workspace bookmarks",
+    "deleteCurrentBookmark": "Delete current bookmark",
+    "saveBookmark": "Save bookmark...",
+    "noSavedBookmarks": "No saved bookmarks",
+    "saveCurrentWorkspace": "Save current workspace",
+    "newBookmarkName": "New bookmark name",
+    "orOverwriteExisting": "– or overwrite an existing bookmark –",
+    "copySnippetTooltip": "Copy image snippet to clipboard",
+    "copyExactShape": "Copy exact shape",
+    "copyBoundingBox": "Copy bounding box",
+    "rotateCounterclockwise": "Rotate image counterclockwise",
+    "rotateClockwise": "Rotate image clockwise",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "undo": "Undo",
+    "redo": "Redo",
+    "move": "Move",
+    "showAnnotations": "Show annotations",
+    "hideAnnotations": "Hide annotations",
+    "smartToolsTooltip": "Smart annotation tools"
+  },
+  "toolSelector": {
+    "box": "Box",
+    "polygon": "Polygon",
+    "ellipse": "Ellipse",
+    "path": "Path"
+  },
+  "pagination": {
+    "previousImage": "Previous image in this folder",
+    "nextImage": "Next image in this folder",
+    "changeImage": "Change image",
+    "selectThisImage": "Select this image",
+    "addImageToWorkspace": "Add image to workspace"
+  },
+  "savingState": {
+    "allSaved": "All annotations saved",
+    "saved": "Saved",
+    "saving": "Saving",
+    "failed": "Failed",
+    "errorSaving": "Error saving data",
+    "couldNotSaveAnnotation": "Could not save the last annotation. Error: {{message}}"
+  },
+  "relationEditor": {
+    "createRelationTooltip": "Create relation",
+    "createRelation": "Create Relation",
+    "selectTargetAnnotation": "Select a target annotation.",
+    "chooseRelationType": "Choose a relation type.",
+    "noTypesFound": "No types found.",
+    "noApplicableTypesFound": "No applicable types found.",
+    "notApplicableTypes_one": "{{count}} not applicable type",
+    "notApplicableTypes_other": "{{count}} not applicable types",
+    "hideNotApplicableTypes": "Hide not applicable types.",
+    "create": "Create",
+    "createNewType": "Create New Type"
+  },
+  "annotationList": {
+    "dragToChangeOrder": "Drag cards to change order",
+    "selectAll": "Select All",
+    "show": "Show",
+    "filter": {
+      "all": "All",
+      "withEntity": "With Entity",
+      "withoutEntity": "Without Entity",
+      "withRelation": "With Relation",
+      "entityClasses": "Entity Classes",
+      "relationshipTypes": "Relationship Types",
+      "nClasses_one": "{{count}} class",
+      "nClasses_other": "{{count}} classes",
+      "nRelations_one": "{{count}} relation",
+      "nRelations_other": "{{count}} relations"
+    },
+    "order": {
+      "recent": "recent",
+      "oldest": "oldest",
+      "entity": "entity",
+      "custom": "custom"
+    },
+    "emptyAnnotation": "Empty annotation",
+    "editTooltip": "Edit",
+    "duplicateTooltip": "Duplicate this annotation",
+    "deleteTooltip": "Delete",
+    "deleteAnnotation": "Delete Annotation",
+    "confirmDeleteAnnotation": "Are you sure you want to delete this annotation?"
+  },
+  "currentSelection": {
+    "noAnnotationSelected": "No annotation selected",
+    "addTag": "Add Tag",
+    "addNote": "Add Note",
+    "deleteAnnotation": "Delete Annotation",
+    "confirmDeleteAnnotation": "Are you sure you want to delete this annotation?"
+  },
+  "multiSelection": {
+    "annotations_one": "{{count}} Annotation",
+    "annotations_other": "{{count}} Annotations",
+    "compareDialogTitle_one": "Compare {{count}} Annotation",
+    "compareDialogTitle_other": "Compare {{count}} Annotations",
+    "compare": "Compare",
+    "compareHint": "View selected annotations side by side.",
+    "addTag": "Add Tag",
+    "addTagHint": "Apply the same tag to all selected annotations.",
+    "merge": "Merge",
+    "mergeHint": "Combine selected annotations. Preserves all tags and concatenates notes in the order of selection.",
+    "subtract": "Subtract",
+    "subtractHint": "Keep first annotation, delete all others. Overlapping areas are removed from the first annotation.",
+    "deleteSelected": "Delete Selected"
+  },
+  "propertiesForm": {
+    "addTag": "Add Tag",
+    "addNote": "Add Note",
+    "clearNote": "Clear Note",
+    "clearNoteTooltip": "Clear note",
+    "editEntitySchema": "Edit entity schema",
+    "deleteTag": "Delete this tag",
+    "relatedAnnotations": "Related Annotations",
+    "deleteRelationMessage": "This action will delete the relation permanently.",
+    "deleteRelationTooltip": "Delete this relationship"
+  },
+  "imageMetadata": {
+    "manifest": "Manifest",
+    "canvas": "Canvas",
+    "my": "My",
+    "noManifestMetadata": "No Manifest Metadata",
+    "noCanvasMetadata": "No Canvas Metadata",
+    "saveMetadata": "Save Metadata"
+  },
+  "sidebar": {
+    "selection": "Selection",
+    "list": "List",
+    "metadata": "Metadata"
+  }
+}

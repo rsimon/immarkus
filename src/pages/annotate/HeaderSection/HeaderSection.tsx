@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { TruncatedLabel } from '@/components/TruncatedLabel';
@@ -54,6 +55,8 @@ interface HeaderSectionProps {
 }
 
 export const HeaderSection = (props: HeaderSectionProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const viewers = useViewers();
 
@@ -125,7 +128,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           <BackButton images={props.images} />
 
           <TruncatedLabel
-            value={props.images.length === 1 ? props.images[0].name : 'Back'} />
+            value={props.images.length === 1 ? props.images[0].name : t('headerSection.back')} />
         </div>
 
         <SavingState.Indicator />
@@ -179,7 +182,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <ToolbarButton
               disabled={osdToolsDisabled}
               onClick={() => onRotate(false)}
-              tooltip="Rotate image counterclockwise">
+              tooltip={t('headerSection.rotateCounterclockwise')}>
               <RotateCcwSquare
                 className="size-8 p-2" />
             </ToolbarButton>
@@ -187,7 +190,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <ToolbarButton
               disabled={osdToolsDisabled}
               onClick={() => onRotate(true)}
-              tooltip="Rotate image clockwise">
+              tooltip={t('headerSection.rotateClockwise')}>
               <RotateCwSquare 
                 className="size-8 p-2" />
             </ToolbarButton>
@@ -197,7 +200,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <ToolbarButton 
           disabled={osdToolsDisabled}
           onClick={onZoom(2)}
-          tooltip="Zoom in">
+          tooltip={t('headerSection.zoomIn')}>
           <ZoomIn 
             className="size-8 p-2" />
         </ToolbarButton>
@@ -205,7 +208,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
         <ToolbarButton 
           disabled={osdToolsDisabled}
           onClick={onZoom(0.5)}
-          tooltip="Zoom out">
+          tooltip={t('headerSection.zoomOut')}>
           <ZoomOut 
             className="size-8 p-2" />
         </ToolbarButton>
@@ -217,7 +220,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <ToolbarButton
               disabled={osdToolsDisabled}
               onClick={onUndo}
-              tooltip="Undo">
+              tooltip={t('headerSection.undo')}>
               <Undo2 
                 className="size-8 p-2" />
             </ToolbarButton>
@@ -225,7 +228,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <ToolbarButton
               disabled={osdToolsDisabled}
               onClick={onRedo}
-              tooltip="Redo">
+              tooltip={t('headerSection.redo')}>
               <Redo2
                 className="size-8 p-2" />
             </ToolbarButton>
@@ -240,7 +243,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
           data-state={props.mode === 'move' ? 'active' : undefined}
           onClick={() => props.onChangeMode('move')}>
           <MousePointer2 className="size-4" />
-          {collapseLevel < 2 && (<span className="ml-1 pr-1">Move</span>)}
+          {collapseLevel < 2 && (<span className="ml-1 pr-1">{t('headerSection.move')}</span>)}
         </button>
 
         <ToolSelector 
@@ -258,7 +261,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
             <ToolbarButton
               data-state={props.hideAnnotations ? 'active' : undefined}
-              tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+              tooltip={props.hideAnnotations ? t('headerSection.showAnnotations') : t('headerSection.hideAnnotations')}
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
               onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
               <MessageCircleOff className="size-8 p-2" />

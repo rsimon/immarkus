@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useDraggable } from '@neodrag/react';
 import { CircleX, FlaskConical, Grip, Images, Magnet, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
@@ -40,6 +41,8 @@ interface SmartToolsPanelProps {
 type SmartTool = 'smart-scissors' | 'edge-snap' | 'auto-select' | 'transcribe' | 'visual-search'; 
 
 export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const el = useRef(null);
 
@@ -123,7 +126,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
       <div className="flex items-center justify-between gap-1.5 text-xs font-semibold py-1 px-2 border-b border-stone-200 cursor-grab drag-handle">
         <div className="flex items-center gap-1.5">
           <Grip className="size-4" />
-          <span>Smart Tools</span>
+          <span>{t('panel.title')}</span>
         </div>
 
         <Button
@@ -143,7 +146,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             <AccordionTrigger 
               className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <ScissorsLineDashed className="size-4" /> Smart Scissors
+                <ScissorsLineDashed className="size-4" /> {t('panel.smartScissors')}
               </span>
             </AccordionTrigger>
 
@@ -158,7 +161,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <Magnet className="size-4" /> Edge Snap
+                <Magnet className="size-4" /> {t('panel.edgeSnap')}
               </span>
             </AccordionTrigger>
 
@@ -173,7 +176,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
-                <Sparkles className="size-4" /> Auto Select
+                <Sparkles className="size-4" /> {t('panel.autoSelect')}
               </span>
             </AccordionTrigger>
 
@@ -198,7 +201,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               <AccordionTrigger 
                 className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
                 <span className="flex grow items-center gap-2 justify-start">
-                  <ScanText className="size-4" /> Auto Transcribe
+                  <ScanText className="size-4" /> {t('panel.autoTranscribe')}
                 </span>
               </AccordionTrigger>
 
@@ -214,11 +217,11 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 disabled:text-muted-foreground/30">
               {visualSearchAvailable ? (
                 <span className="flex grow items-center gap-2 justify-start">
-                  <Images className="size-4" /> Visual Search
+                  <Images className="size-4" /> {t('panel.visualSearch')}
                 </span>
               ) : (
                 <span className="flex grow items-center gap-2 justify-start text-destructive">
-                  <CircleX className="size-4" /> Visual Search
+                  <CircleX className="size-4" /> {t('panel.visualSearch')}
                 </span>
               )}
             </AccordionTrigger>
@@ -237,16 +240,18 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </div>
 
             <div className="text font-medium text-orange-400">
-              Not Supported
+              {t('panel.notSupported.title')}
             </div>
 
             <p className="pt-4 text-xs text-muted-foreground font-light leading-relaxed">
-              Smart Tools use experimental WebGPU technology not 
-              available in your browser. Please switch to a recent version 
-              of Chrome or Edge to use this 
-              feature. <a 
-                className="underline text-slate-800"
-                href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API#browser_compatibility" target="_blank">View browser compatibility</a>.
+              <Trans
+                ns="smartTools"
+                i18nKey="panel.notSupported.description"
+                components={{
+                  compatLink: <a
+                    className="underline text-slate-800"
+                    href="https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API#browser_compatibility" target="_blank" />
+                }} />
             </p>
           </div>
         </div>

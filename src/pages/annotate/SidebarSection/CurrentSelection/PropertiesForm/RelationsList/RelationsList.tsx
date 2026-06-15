@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { useStore } from '@/store';
@@ -15,6 +16,8 @@ interface RelationsListProps {
 }
 
 export const RelationsList = (props: RelationsListProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -40,7 +43,7 @@ export const RelationsList = (props: RelationsListProps) => {
     <div>
       <h3 className="font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-sm 
         ml-0.5 flex gap-1.5 pt-4 pb-1 items-center">
-        <span>Related Annotations</span>
+        <span>{t('propertiesForm.relatedAnnotations')}</span>
       </h3>
 
       <ul>

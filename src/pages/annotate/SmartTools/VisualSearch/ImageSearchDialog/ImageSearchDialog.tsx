@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Annotorious, type ImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
 import { VisualSearch } from '@/utils/useVisualSearch';
@@ -40,7 +41,9 @@ interface ImageSearchDialogProps {
 
 }
 
-export const ImageSearchDialog = (props: ImageSearchDialogProps) => {  
+export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const { sourceImage, imagesInWorkspace } = props;
 
@@ -248,7 +251,7 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
                     <Progress 
                       value={downloadStatus.progress} 
                       className="bg-white [&>div]:bg-orange-400 h-1 w-40" />
-                    <span>Dowloading embedding model</span>
+                    <span>{t('visualSearch.dialog.downloadingModel')}</span>
                   </div>
                 </div>
               ) : (
@@ -265,17 +268,16 @@ export const ImageSearchDialog = (props: ImageSearchDialogProps) => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              Discard selected results?
+              {t('visualSearch.dialog.discardTitle')}
             </AlertDialogTitle>
             <AlertDialogDescription className="leading-relaxed">
-              You have selected {selectedForImport.length} result{selectedForImport.length !== 1 ? 's' : ''} for import.
-              If you continue, your selection will be lost.
+              {t('visualSearch.dialog.discardDescription', { count: selectedForImport.length })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t('visualSearch.dialog.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={onConfirmDiscard}>
-              Discard Selection
+              {t('visualSearch.dialog.discardSelection')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

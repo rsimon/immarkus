@@ -1,4 +1,5 @@
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { ImageAnnotation, W3CImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { useStore } from '@/store';
@@ -24,14 +25,16 @@ interface SelectFilterOpts {
 
 }
 
-const LABELS = {
-  all: 'All',
-  with_entity: 'With Entity',
-  without_entity: 'Without Entity',
-  with_relationship: 'With Relation'
+const LABEL_KEYS = {
+  all: 'annotationList.filter.all',
+  with_entity: 'annotationList.filter.withEntity',
+  without_entity: 'annotationList.filter.withoutEntity',
+  with_relationship: 'annotationList.filter.withRelation'
 }
 
 export const SelectFilter = (props: SelectFilterOpts) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -156,16 +159,18 @@ export const SelectFilter = (props: SelectFilterOpts) => {
       if (filterValue.length === 1) {
         return first.substring(first.indexOf('-') + 1);
       } else {
-        return `${filterValue.length} ${first.startsWith('entity-') ? 'classes' : 'relations'}`; 
+        return first.startsWith('entity-')
+          ? t('annotationList.filter.nClasses', { count: filterValue.length })
+          : t('annotationList.filter.nRelations', { count: filterValue.length });
       }
     } else {
-      return LABELS[filterValue];
+      return t(LABEL_KEYS[filterValue]);
     }
   }
 
   return (
     <div className="flex text-xs">
-      Show <DropdownMenu>
+      {t('annotationList.show')} <DropdownMenu>
         <DropdownMenuTrigger 
           className="flex overflow-hidden items-center p-0 whitespace-nowrap [&>span]:max-w-24 [&>span]:overflow-hidden [&>span]:text-ellipsis shadow-none font-medium border-none text-xs hover:underline bg-transparent h-auto ml-1.5">
           <div className="max-w-22 truncate">{getLabel()}</div>
@@ -178,7 +183,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
               checked={filterValue === 'all'}
               onCheckedChange={() => onSetValue('all', true)}
               className="text-xs text-muted-foreground py-1">
-              All
+              {t('annotationList.filter.all')}
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem
@@ -186,7 +191,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
               checked={filterValue === 'with_entity'}
               onCheckedChange={checked => onSetValue('with_entity', checked)}
               className="text-xs text-muted-foreground py-1">
-              With Entity
+              {t('annotationList.filter.withEntity')}
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem 
@@ -194,7 +199,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
               checked={filterValue === 'without_entity'}
               onCheckedChange={checked => onSetValue('without_entity', checked)}
               className="text-xs text-muted-foreground py-1">
-              Without Entity
+              {t('annotationList.filter.withoutEntity')}
             </DropdownMenuCheckboxItem>
 
             <DropdownMenuCheckboxItem 
@@ -202,7 +207,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
               checked={filterValue === 'with_relationship'}
               onCheckedChange={checked => onSetValue('with_relationship', checked)}
               className="text-xs text-muted-foreground py-1">
-              With Relation
+              {t('annotationList.filter.withRelation')}
             </DropdownMenuCheckboxItem>
           </DropdownMenuGroup>
 
@@ -210,7 +215,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
             <DropdownMenuGroup>
               <DropdownMenuLabel
                 className="text-xs py-1">
-                Entity Classes
+                {t('annotationList.filter.entityClasses')}
               </DropdownMenuLabel>
 
               {props.entityTypes.map(type => (
@@ -229,7 +234,7 @@ export const SelectFilter = (props: SelectFilterOpts) => {
             <DropdownMenuGroup>
               <DropdownMenuLabel
                 className="text-xs py-1">
-                Relationship Types
+                {t('annotationList.filter.relationshipTypes')}
               </DropdownMenuLabel>
               {props.relationshipNames.map(name => (
                 <DropdownMenuCheckboxItem 

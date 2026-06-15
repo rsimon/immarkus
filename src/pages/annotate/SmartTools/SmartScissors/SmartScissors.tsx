@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Toggle } from '@/ui/Toggle';
 import { ScissorsLineDashed } from 'lucide-react';
 
@@ -10,6 +11,8 @@ interface SmartScissorsProps {
 }
 
 export const SmartScissors = (props: SmartScissorsProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   return (
     <div className="px-4">
@@ -24,12 +27,12 @@ export const SmartScissors = (props: SmartScissorsProps) => {
         </div>
 
         <p className="font-medium">
-          Click to start, move to follow edges. Click again to place points.
+          {t('smartScissors.instructions')}
         </p>
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Ideal for quickly tracing complex shapes and curved edges.
+        {t('smartScissors.hint')}
       </p>
     </div>
   )

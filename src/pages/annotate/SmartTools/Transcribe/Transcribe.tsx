@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation} from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
@@ -24,6 +25,8 @@ interface TranscribeProps {
 }
 
 export const Transcribe = (props: TranscribeProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const store = useStore();
 
@@ -71,11 +74,11 @@ export const Transcribe = (props: TranscribeProps) => {
       <div className="pt-6 pb-1 px-0.5 flex gap-3 items-start leading-relaxed">
         {props.images.length === 1 ? (
             <p className="font-medium">
-              Automatically transcribe this image, or parts of it.
+              {t('transcribe.transcribeThisImage')}
             </p>
         ) : (
           <p className="font-medium">
-            Select an image to transcribe automatically.
+            {t('transcribe.selectImageToTranscribe')}
           </p>
         )}
       </div>
@@ -88,13 +91,12 @@ export const Transcribe = (props: TranscribeProps) => {
             onCheckedChange={checked => setOptIn(checked as boolean)} />
 
           <Label htmlFor="ai-opt-in-compact">
-            <strong className="font-semibold text-xs">Enable external AI tools.</strong>
+            <strong className="font-semibold text-xs">{t('transcribe.enableExternalAI')}</strong>
           </Label>
         </div>
         
         <p>
-          I understand that images I send are processed by 3rd-party services
-          and that I’m responsible for what I upload.
+          {t('transcribe.disclaimer')}
         </p>
       </div>
 

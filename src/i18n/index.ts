@@ -2,11 +2,15 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
+import enAnnotate from '../locales/en/annotate.json';
 import enCommon from '../locales/en/common.json';
+import enSmartTools from '../locales/en/smartTools.json';
 import enStart from '../locales/en/start.json';
 import enUi from '../locales/en/ui.json';
 
+import jaAnnotate from '../locales/ja/annotate.json';
 import jaCommon from '../locales/ja/common.json';
+import jaSmartTools from '../locales/ja/smartTools.json';
 import jaStart from '../locales/ja/start.json';
 import jaUi from '../locales/ja/ui.json';
 
@@ -21,12 +25,16 @@ i18n
   .init({
     resources: {
       en: {
+        annotate: enAnnotate,
         common: enCommon,
+        smartTools: enSmartTools,
         start: enStart,
         ui: enUi
       },
       ja: {
+        annotate: jaAnnotate,
         common: jaCommon,
+        smartTools: jaSmartTools,
         start: jaStart,
         ui: jaUi
       }

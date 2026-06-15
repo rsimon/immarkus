@@ -1,5 +1,6 @@
 import { Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation, createBody } from '@annotorious/react';
 import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifold';
 import { isW3CRelationLinkAnnotation } from '@annotorious/plugin-wires-react';
@@ -20,6 +21,8 @@ interface SearchDialogState {
 }
 
 export const CurrentSelection = () => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -127,7 +130,7 @@ export const CurrentSelection = () => {
     <>
       {selected.length === 0 ? (
         <div className="flex h-full rounded text-sm justify-center items-center w-full text-muted-foreground">
-          No annotation selected
+          {t('currentSelection.noAnnotationSelected')}
         </div> 
       ) : selected.length === 1 ? (
         <div 
@@ -140,11 +143,11 @@ export const CurrentSelection = () => {
                   ref={ref}
                   onClick={() => setSearchDialogState({ open: true })}
                   onKeyDown={onKeyDown}
-                  className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">Add Tag</Button>
+                  className="px-3 mr-2 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2">{t('currentSelection.addTag')}</Button>
 
                 <Button
                   onClick={() => setShowAsEmpty(false)}
-                  variant="outline">Add Note</Button>
+                  variant="outline">{t('currentSelection.addNote')}</Button>
               </div>
             </div>
           ) : (
@@ -157,10 +160,10 @@ export const CurrentSelection = () => {
             <ConfirmedDelete
               variant="destructive" 
               className="w-full mt-2 mb-2"
-              title="Delete Annotation"
-              message="Are you sure you want to delete this annotation?"
+              title={t('currentSelection.deleteAnnotation')}
+              message={t('currentSelection.confirmDeleteAnnotation')}
               onConfirm={() => onDelete(selected[0])}>
-              <Trash2 className="w-4 h-4 mr-2" /> Delete Annotation
+              <Trash2 className="w-4 h-4 mr-2" /> {t('currentSelection.deleteAnnotation')}
             </ConfirmedDelete>
           </footer>
         </div>

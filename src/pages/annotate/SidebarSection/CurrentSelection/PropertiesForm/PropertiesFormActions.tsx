@@ -1,4 +1,5 @@
 import { Cuboid, NotebookPen } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { FontSize, FontSizeButton } from '@/components/FontSize';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
@@ -22,6 +23,8 @@ interface PropertiesFormActionsProps {
 
 export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
 
+  const { t } = useTranslation('annotate');
+
   return (
     <div className="pt-0.5 pb-2 flex gap-1 justify-between text-muted-foreground mb-4">
       <Button 
@@ -29,7 +32,7 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
         type="button"
         className="text-xs pl-2 pr-2.5 font-normal py-3.5 h-6 rounded-full whitespace-nowrap"
         onClick={props.onAddTag}>
-        <Cuboid className="h-3.5 w-3.5 mr-1.5" /> Add Tag
+        <Cuboid className="h-3.5 w-3.5 mr-1.5" /> {t('propertiesForm.addTag')}
       </Button>
 
       {props.hasNote ? (
@@ -48,12 +51,12 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
                 type="button"
                 className="h-6 w-auto py-3.5 px-2 rounded-full font-normal text-xs"
                 onClick={props.onClearNote}>
-                Clear Note
+                {t('propertiesForm.clearNote')}
               </Button>
             </TooltipTrigger>
 
             <TooltipContent>
-              Clear note
+              {t('propertiesForm.clearNoteTooltip')}
             </TooltipContent>
           </Tooltip>
         </div>
@@ -63,7 +66,7 @@ export const PropertiesFormActions = (props: PropertiesFormActionsProps) => {
           type="button"
           className="text-xs pl-2 pr-2.5 py-3.5 h-6 font-normal rounded-full whitespace-nowrap"
           onClick={props.onAddNote}>
-          <NotebookPen className="h-4 w-4 mr-1" /> Add Note
+          <NotebookPen className="h-4 w-4 mr-1" /> {t('propertiesForm.addNote')}
         </Button>
       )}
     </div>

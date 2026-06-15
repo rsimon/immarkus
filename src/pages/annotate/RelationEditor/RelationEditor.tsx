@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Spline } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation } from '@annotorious/react';
 import { useSelection } from '@annotorious/react-manifold';
@@ -20,6 +21,8 @@ interface RelationEditorProps {
 }
 
 export const RelationEditor = (props: RelationEditorProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -95,7 +98,7 @@ export const RelationEditor = (props: RelationEditorProps) => {
           <ToolbarButton
             className="flex items-center"
             disabled={disabled}
-            tooltip="Create relation"
+            tooltip={t('relationEditor.createRelationTooltip')}
             onClick={() => props.onOpenChange(!props.open)}>
             <Spline
               className="h-8 w-8 p-2" />

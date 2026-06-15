@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Bookmark, Image, ImagePlus, Loader2, Waypoints } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
@@ -24,6 +25,8 @@ import './Annotate.css';
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
 
 export const Annotate = () => {
+
+  const { t } = useTranslation('annotate');
 
   const params = useParams();
 
@@ -119,21 +122,29 @@ export const Annotate = () => {
                     ) : imageIds.length === 0 ? (
                       <div className="flex items-center justify-center h-full text-muted-foreground bg-muted">
                         <Alert className="bg-transparent border-none max-w-lg p-6 text-primary/60">
-                          <AlertTitle className="text-lg">Your workspace is empty</AlertTitle>
+                          <AlertTitle className="text-lg">{t('emptyWorkspace.title')}</AlertTitle>
 
                           <div className="text-sm leading-relaxed mt-4 space-y-4">
                             <p>
-                              Start by opening an image from 
-                              the <span className="font-semibold"><Image className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Images</span> gallery.
-                              You can also send images here from 
-                              the <span className="font-semibold"><Waypoints className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Knowledge Graph</span>, or
-                              use the <span className="font-semibold"><ImagePlus className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> Add image</span> button 
-                              in the toolbar.
+                              <Trans
+                                ns="annotate"
+                                i18nKey="emptyWorkspace.description1"
+                                components={{
+                                  strong: <span className="font-semibold" />,
+                                  imageIcon: <Image className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
+                                  graphIcon: <Waypoints className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
+                                  addIcon: <ImagePlus className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
+                                }} />
                             </p>
-                            <p> 
-                              Save and restore workspace layouts using 
-                              the <span className="font-semibold"><Bookmark className="size-4 inline-block mb-0.5" strokeWidth={2.25} /> bookmark</span> tool in the toolbar.
-                            </p> 
+                            <p>
+                              <Trans
+                                ns="annotate"
+                                i18nKey="emptyWorkspace.description2"
+                                components={{
+                                  strong: <span className="font-semibold" />,
+                                  bookmarkIcon: <Bookmark className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
+                                }} />
+                            </p>
                           </div>
                         </Alert>
                       </div>

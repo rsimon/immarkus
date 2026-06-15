@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Bookmark, BookmarkCheck, Check, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { LoadedImage } from '@/model';
 import { WorkspaceBookmark } from '@/store';
 import { Button } from '@/ui/Button';
@@ -25,6 +26,8 @@ interface BookmarkWorkspaceProps {
 }
 
 export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { openInAnnotationView } = useOpenInAnnotationView();
 
@@ -75,7 +78,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
         onOpenChange={open => setPopoverOpen(open)}>
         <PopoverTrigger asChild>
           <ToolbarButton
-            tooltip="Workspace bookmarks">
+            tooltip={t('headerSection.workspaceBookmarks')}>
             {isCurrentBookmarked ? (
               <BookmarkCheck className="size-8.5 p-2" />
             ) : (
@@ -92,7 +95,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
                 variant="ghost"
                 onClick={() => onDeleteBookmark()}
                 className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
-                <Trash2 className="size-3.5 mb-px" /> Delete current bookmark
+                <Trash2 className="size-3.5 mb-px" /> {t('headerSection.deleteCurrentBookmark')}
               </Button>
             ) : (
               <Button
@@ -100,7 +103,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
                 disabled={props.images.length === 0}
                 onClick={() => setDialogOpen(true)}
                 className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
-                <Bookmark className="size-3.5 mb-px" /> Save bookmark...
+                <Bookmark className="size-3.5 mb-px" /> {t('headerSection.saveBookmark')}
               </Button>
             )}
           </div>
@@ -110,7 +113,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
           <div className="p-1">
             {bookmarks.length === 0 ? (
               <div className="text-muted-foreground text-xs px-2 py-1.25 font-light text-center">
-                No saved bookmarks
+                {t('headerSection.noSavedBookmarks')}
               </div>
             ) : (
               <Command className="rounded-none">
@@ -142,18 +145,18 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
         onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save current workspace</DialogTitle>
+            <DialogTitle>{t('headerSection.saveCurrentWorkspace')}</DialogTitle>
           </DialogHeader>
 
           <Input
-            placeholder="New bookmark name"
+            placeholder={t('headerSection.newBookmarkName')}
             value={workspaceName}
             onChange={e => setWorkspaceName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && onSaveBookmark()} />
 
           {bookmarks.length > 0 && (
             <div className="space-y-4">
-              <div className="text-muted-foreground text-xs font-light">– or overwrite an existing bookmark –</div>
+              <div className="text-muted-foreground text-xs font-light">{t('headerSection.orOverwriteExisting')}</div>
 
               <Command className="h-auto rounded-none">
                 <div className="[&>div]:border [&>div]:rounded-t">
@@ -175,13 +178,13 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
 
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
 
-            <Button 
-              disabled={!workspaceName.trim()} 
+            <Button
+              disabled={!workspaceName.trim()}
               onClick={onSaveBookmark}>
-              Save
+              {t('common.save')}
             </Button>
           </DialogFooter>
         </DialogContent>

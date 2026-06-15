@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArrowDownWideNarrow, Search, Square, SquareCheckBig, SquareDot, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { cn } from '@/ui/utils';
@@ -37,6 +38,8 @@ interface SidebarProps {
 type ResultSorting = 'hits' | 'score';
 
 export const Sidebar = (props: SidebarProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const { selectedImages } = props;
 
@@ -133,7 +136,7 @@ export const Sidebar = (props: SidebarProps) => {
           ) : (
             <SquareDot className="size-4" />
           )}
-          Select All
+          {t('visualSearch.sidebar.selectAll')}
         </Button>
 
         <div className="flex items-center text-muted-foreground">
@@ -193,11 +196,11 @@ export const Sidebar = (props: SidebarProps) => {
             
             <SelectContent>
               <SelectItem value="hits">
-                Number of matches
+                {t('visualSearch.sidebar.sortByMatches')}
               </SelectItem>
 
               <SelectItem value="score">
-                Best match
+                {t('visualSearch.sidebar.sortByScore')}
               </SelectItem>
             </SelectContent>
           </Select>

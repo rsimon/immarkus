@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ImageUp, Square, SquareCheckBig, ZoomIn, ZoomOut } from 'lucide-react';
 import { ImageAnnotation, useViewer } from '@annotorious/react';
 import { Button } from '@/ui/Button';
@@ -22,6 +23,8 @@ interface ImagePreviewToolbarProps {
 }
 
 export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const { selected } = props;
 
@@ -48,7 +51,7 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
           disabled={isClosing}
           className="absolute flex gap-1 items-center text-xs top-4 left-4 rounded pl-1.5 pr-3 py-2.5 bg-black hover:bg-neutral-700 text-white disabled:opacity-50"
           onClick={onClose}>
-          <ChevronLeft className="size-4" /> Back
+          <ChevronLeft className="size-4" /> {t('visualSearch.preview.back')}
         </button>
       )}
 
@@ -76,8 +79,8 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
             {props.isAllSelected ? (
               <SquareCheckBig className="size-4" /> 
             ) : (
-              <Square className="size-4" /> 
-            )} Select All
+              <Square className="size-4" />
+            )} {t('visualSearch.preview.selectAll')}
           </button>
 
           <Button
@@ -89,9 +92,9 @@ export const ImagePreviewToolbar = (props: ImagePreviewToolbarProps) => {
             onClick={props.onImportSelected}>
             <ImageUp className="size-4" />
             {selected.length === 0 ? (
-              'Import Selected Annotations'
+              t('visualSearch.preview.importSelectedAnnotations')
             ) : (
-              `Import ${selected.length.toLocaleString()} Annotation${selected.length > 1 ? 's' : ''}`
+              t('visualSearch.preview.importAnnotations', { count: selected.length })
             )}
           </Button>
         </div>

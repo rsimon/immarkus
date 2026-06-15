@@ -1,0 +1,131 @@
+{
+  "panel": {
+    "title": "スマートツール",
+    "smartScissors": "スマートシザーズ",
+    "edgeSnap": "エッジスナップ",
+    "autoSelect": "自動選択",
+    "autoTranscribe": "自動文字起こし",
+    "visualSearch": "ビジュアル検索",
+    "notSupported": {
+      "title": "非対応",
+      "description": "スマートツールは、お使いのブラウザでは利用できない実験的な WebGPU 技術を使用しています。この機能を使用するには、最新版の Chrome または Edge に切り替えてください。<compatLink>ブラウザの対応状況を見る</compatLink>。"
+    }
+  },
+  "sam": {
+    "downloadingModel": "AI モデルをダウンロード中",
+    "downloadHint": "しばらく時間がかかる場合があります。モデルは今後の使用に備えてブラウザに保存されます。"
+  },
+  "autoSelect": {
+    "instructions": "ホバーで選択をプレビューし、クリックで確定します。ポイントを追加・削除して調整できます。",
+    "selectObject": "オブジェクトを選択",
+    "removeArea": "領域を削除",
+    "done": "完了",
+    "reset": "リセット"
+  },
+  "edgeSnap": {
+    "instructions": "カーソルを近くのエッジにスナップします。",
+    "hint": "輪郭がはっきりした直線的なオブジェクトのトレースに最適です。特にコントラストの高い画像で効果的です。"
+  },
+  "smartScissors": {
+    "instructions": "クリックで開始し、カーソルを動かすとエッジに沿って線を描きます。再度クリックでポイントを配置します。",
+    "hint": "複雑な形状や曲線のエッジをすばやくトレースするのに最適です。"
+  },
+  "transcribe": {
+    "transcribeThisImage": "この画像の全体または一部を自動で文字起こしします。",
+    "selectImageToTranscribe": "自動文字起こしする画像を選択してください。",
+    "enableExternalAI": "外部 AI ツールを有効にする。",
+    "disclaimer": "送信した画像が第三者のサービスで処理されること、およびアップロードする内容について自分が責任を負うことを理解しています。",
+    "selectService": "サービスを選択",
+    "dialogTitle": "自動文字起こし",
+    "dialogDescription": "この画像を自動文字起こしのために送信します。",
+    "consent": {
+      "title": "自動文字起こしを使用する前に",
+      "intro": "IMMARKUS の自動文字起こしツールでは、外部の AI プラットフォーム(例: Google、Microsoft Azure、OpenAI)に接続できます。続行する前に、以下をお読みのうえご確認ください:",
+      "externalProcessing": "<strong>外部処理</strong>: 自動文字起こしツールを使用すると、送信した画像または画像の一部が、選択した第三者サービスに送られて処理されます。",
+      "ownKeys": "<strong>ご自身の API キー</strong>: API キーが必要なサービスでは、ご自身のキーを用意する必要があります。キーはブラウザ内にローカル保存され、対象の AI サービスへの直接接続のみに使用されます。IMMARKUS がキーを他の場所へ送信・保存することはありません。",
+      "imageRights": "<strong>画像の権利と責任</strong>: 使用する素材をアップロード・処理する権利があることを確認してください。利用規約を理解し同意していない限り、著作権で保護されたデータ、個人情報、機密データを外部サービスに送信しないでください。",
+      "noHiddenTransfers": "<strong>隠れたデータ送信はありません</strong>: IMMARKUS 自体がデータをどこかへ送信することはありません。送信したデータを受け取るのは、接続先として選択した AI サービスのみです。",
+      "confirmation": "続行することで、この情報を読み理解したこと、および外部 AI サービスの使用について責任を負うことに同意したものとみなされます。",
+      "agree": "理解して同意します",
+      "close": "閉じる"
+    },
+    "controls": {
+      "service": "サービス",
+      "apiKeyRequired": "API キーが必要",
+      "areaSelected": "領域を選択済み",
+      "selectAreaToTranscribe": "文字起こしする領域を選択",
+      "regionHint": "このサービスはバウンディングボックス情報なしで文字起こしを返します。文字起こししたい領域を選択してください。結果は単一のアノテーションとして挿入されます。",
+      "runTranscription": "文字起こしを実行",
+      "cancel": "キャンセル"
+    },
+    "status": {
+      "compressionFailed": "画像の圧縮に失敗しました",
+      "ocrError": "OCR サービスエラー",
+      "ocrResponded": "OCR サービスの応答:",
+      "noResults": "結果なし",
+      "success": "成功",
+      "cropping": "画像を切り抜き中",
+      "fetchingIIIF": "IIIF 画像を取得中",
+      "compressing": "画像を圧縮中",
+      "processing": "処理中"
+    },
+    "nav": {
+      "rotateCounterClockwise": "反時計回りに回転",
+      "rotateClockwise": "時計回りに回転",
+      "zoomIn": "ズームイン",
+      "zoomOut": "ズームアウト"
+    },
+    "resultBadge": {
+      "annotationCount_other": "{{count}} 件のアノテーション",
+      "importToImmarkus": "IMMARKUS にインポート",
+      "noResults": "結果なし"
+    },
+    "selectRegion": {
+      "clearSelection": "選択を解除",
+      "selectRegionOptional": "領域を選択(任意)"
+    }
+  },
+  "visualSearch": {
+    "description": "コレクション内から視覚的に類似した要素を検索します。",
+    "notIndexed": "コレクションがインデックス化されていません。詳しくは <nowrap><icon/> <searchLink>ビジュアル検索</searchLink></nowrap> をご覧ください。",
+    "indexOutdated": "検索インデックスが最新ではありません。詳しくは <searchLink>ビジュアル検索</searchLink> をご覧ください。",
+    "searchInsideImages": "画像内を検索",
+    "discoverSimilar": "すべての画像から類似のパターンを見つけます。",
+    "selectAnnotation": "アノテーションを選択して開始してください。",
+    "dialog": {
+      "downloadingModel": "埋め込みモデルをダウンロード中",
+      "discardTitle": "選択した結果を破棄しますか?",
+      "discardDescription_other": "インポート対象として {{count}} 件の結果を選択しています。続行すると選択内容は失われます。",
+      "cancel": "キャンセル",
+      "discardSelection": "選択を破棄"
+    },
+    "toolbar": {
+      "showingMatches_other": "{{count}} 件の一致を表示中",
+      "searching": "検索中...",
+      "dialogDescription": "選択した画像領域に対するビジュアル類似検索の結果",
+      "searchInside": "検索対象",
+      "sourceImage": "ソース画像",
+      "currentlyOpenImages": "現在開いている画像",
+      "allImages": "すべての画像",
+      "smallThumbnails": "小さいサムネイル",
+      "mediumThumbnails": "中サイズのサムネイル",
+      "largeThumbnails": "大きいサムネイル"
+    },
+    "sidebar": {
+      "selectAll": "すべて選択",
+      "sortByMatches": "一致数",
+      "sortByScore": "ベストマッチ",
+      "hitsAndScore_other": "<strong>{{count}} 件ヒット</strong> · ベストスコア {{score}}",
+      "sourceBadge": "ソース",
+      "openBadge": "表示中",
+      "sourceTooltip": "この画像にはクエリのアノテーションが含まれています",
+      "openTooltip": "この画像は現在ワークスペースで開いています"
+    },
+    "preview": {
+      "back": "戻る",
+      "selectAll": "すべて選択",
+      "importSelectedAnnotations": "選択したアノテーションをインポート",
+      "importAnnotations_other": "{{count}} 件のアノテーションをインポート"
+    }
+  }
+}

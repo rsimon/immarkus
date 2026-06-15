@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { TooltipPortal } from '@radix-ui/react-tooltip';
 import { LoadedImage } from '@/model';
@@ -34,7 +35,9 @@ interface SidebarImageItemProps {
 }
 
 export const SidebarImageItem = (props: SidebarImageItemProps) => {
-  
+
+  const { t } = useTranslation('smartTools');
+
   const { image, isSourceImage } = props;
 
   const isDisabled = props.isPreviewOpen && !props.isCurrentPreview;
@@ -93,8 +96,12 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
           </div>
 
           <div className="text-[11px] text-muted-foreground">
-            <strong className="font-semibold">{props.matches} hits</strong> · {Math.round(100 * props.topScore) / 100} best 
-            score {props.isSourceImage ? (
+            <Trans
+              ns="smartTools"
+              i18nKey="visualSearch.sidebar.hitsAndScore"
+              count={props.matches}
+              values={{ score: Math.round(100 * props.topScore) / 100 }}
+              components={{ strong: <strong className="font-semibold" /> }} /> {props.isSourceImage ? (
               <>· <Tooltip>
                   <TooltipTrigger asChild>
                     <Badge 
@@ -102,13 +109,13 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
                       style={{ 
                         backgroundColor: THIS_IMAGE_COLOR
                       }}>
-                      Source
+                      {t('visualSearch.sidebar.sourceBadge')}
                     </Badge>
                   </TooltipTrigger>
 
                   <TooltipPortal>
                     <TooltipContent>
-                        This image contains the query annotation
+                        {t('visualSearch.sidebar.sourceTooltip')}
                     </TooltipContent>
                   </TooltipPortal>
                 </Tooltip>
@@ -118,13 +125,13 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
                 <TooltipTrigger asChild>
                   <Badge 
                     className="text-[11px] font-medium rounded-md py-px px-1.25 bg-orange-400 hover:bg-orange-400">
-                    Open
+                    {t('visualSearch.sidebar.openBadge')}
                   </Badge>
                 </TooltipTrigger>
 
                 <TooltipPortal>
                   <TooltipContent>
-                    This image is currently open in your workspace
+                    {t('visualSearch.sidebar.openTooltip')}
                   </TooltipContent>
                 </TooltipPortal>
                 </Tooltip>

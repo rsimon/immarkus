@@ -1,5 +1,6 @@
 import { type MouseEvent, useCallback, useMemo, useState } from 'react';
 import { Move } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 import { ImageAnnotation, parseW3CImageAnnotation } from '@annotorious/react';
 import type { AnnotoriousOpenSeadragonAnnotator, W3CImageAnnotation } from '@annotorious/react';
@@ -48,6 +49,8 @@ const cloneAnnotation = (annotation: ImageAnnotation): ImageAnnotation => {
 }
 
 export const AnnotationList = (props: AnnotationListProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const manifold = useAnnotoriousManifold<ImageAnnotation, W3CImageAnnotation>();
 
@@ -180,7 +183,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
       {!sorting && (
         <div className="px-1.5 py-3 border border-dashed border-slate-300/50 rounded mt-2.5 mb-1 text-muted-foreground/80 text-xs flex justify-center">
           <span className="flex gap-1.5">
-            <Move className="size-3.5 mt-px" /> Drag cards to change order
+            <Move className="size-3.5 mt-px" /> {t('annotationList.dragToChangeOrder')}
           </span>
         </div>
       )}

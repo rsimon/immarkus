@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LoadedImage } from '@/model';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Separator } from '@/ui/Separator';
@@ -49,6 +50,8 @@ interface MoreToolsPanelProps {
 }
 
 export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const [open, setOpen] = useState(false);
 
@@ -126,7 +129,7 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
 
           <ToolbarButton
             data-state={props.hideAnnotations ? 'active' : undefined}
-            tooltip={`${props.hideAnnotations ? 'Show' : 'Hide'} annotations`}
+            tooltip={props.hideAnnotations ? t('headerSection.showAnnotations') : t('headerSection.hideAnnotations')}
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             onClick={() => props.onHideAnnotations(!props.hideAnnotations)}>
             <MessageCircleOff className="size-8 p-2" />

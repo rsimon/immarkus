@@ -1,5 +1,6 @@
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   AlertDialog, 
   AlertDialogAction, 
   AlertDialogContent, 
@@ -12,6 +13,8 @@ import { ShieldAlert } from 'lucide-react';
 
 export const GPUDisabledError = () => {
 
+  const { t } = useTranslation('annotate');
+
   const navigate = useNavigate();
 
   return (
@@ -19,46 +22,45 @@ export const GPUDisabledError = () => {
       <AlertDialogContent className="max-w-2xl">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex gap-1.5 items-center text-destructive">
-            <ShieldAlert className="size-5.5" /> Error
+            <ShieldAlert className="size-5.5" /> {t('gpuError.title')}
           </AlertDialogTitle>
 
           <AlertDialogDescription className="py-2 leading-relaxed space-y-4">
             <p>
-              IMMARKUS could not launch the annotation interface. The most likely reason is 
-              that <strong>hardware acceleration is disabled on your browser</strong>.
+              <Trans ns="annotate" i18nKey="gpuError.intro" components={{ strong: <strong /> }} />
             </p>
 
             <div>
               <p>
-                To enable hardware acceleration on <strong>Chrome</strong>:
+                <Trans ns="annotate" i18nKey="gpuError.chromeIntro" components={{ strong: <strong /> }} />
               </p>
               <ul className="list-disc pl-4 pt-1">
-                <li>Open the browser menu (three dots in the upper right corner)</li>
-                <li>Go to <strong>Settings → System</strong></li>
-                <li>Enable the switch <strong>Use hardware acceleration when available</strong></li>
-                <li>Click <strong>Relaunch</strong> to restart Chrome</li>
+                <li>{t('gpuError.stepOpenMenu')}</li>
+                <li><Trans ns="annotate" i18nKey="gpuError.chromeStep2" components={{ strong: <strong /> }} /></li>
+                <li><Trans ns="annotate" i18nKey="gpuError.chromeStep3" components={{ strong: <strong /> }} /></li>
+                <li><Trans ns="annotate" i18nKey="gpuError.chromeStep4" components={{ strong: <strong /> }} /></li>
               </ul>
             </div>
 
             <div>
               <p>
-                To enable hardware acceleration on <strong>Edge</strong>:
+                <Trans ns="annotate" i18nKey="gpuError.edgeIntro" components={{ strong: <strong /> }} />
               </p>
-              <ul className="list-disc pl-4 pt-1">         
-                <li>Open the browser menu (three dots in the upper right corner)</li>
-                <li>Go to <strong>Settings → System and performance</strong></li>
-                <li>Click <strong>System</strong></li>
-                <li>Enable the switch <strong>Use graphics acceleration when available</strong></li>
-                <li>You may have to restart Edge for the setting to take effect</li>
+              <ul className="list-disc pl-4 pt-1">
+                <li>{t('gpuError.stepOpenMenu')}</li>
+                <li><Trans ns="annotate" i18nKey="gpuError.edgeStep2" components={{ strong: <strong /> }} /></li>
+                <li><Trans ns="annotate" i18nKey="gpuError.edgeStep3" components={{ strong: <strong /> }} /></li>
+                <li><Trans ns="annotate" i18nKey="gpuError.edgeStep4" components={{ strong: <strong /> }} /></li>
+                <li>{t('gpuError.edgeStep5')}</li>
               </ul>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={() => navigate(-1)}>
-            Go Back
+            {t('gpuError.goBack')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
