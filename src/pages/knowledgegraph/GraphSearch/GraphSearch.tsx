@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
@@ -48,6 +49,8 @@ interface GraphSearchProps {
 const EMPTY_CONDITION: Condition = { operator: 'AND', sentence: {} };
 
 export const GraphSearch = (props: GraphSearchProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const el = useRef<HTMLDivElement>(null);
 
@@ -168,7 +171,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
       <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <Grip className="w-4 h-4 mb-0.5" />
-          <span>Graph Search</span>
+          <span>{t('graphSearch.title')}</span>
         </div>
 
         <Button 
@@ -183,7 +186,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
       <div className="px-3 pr-5 pb-2">
         <div className="text-xs flex items-center gap-2">
           <span className="w-14 text-right">
-            Find
+            {t('graphSearch.find')}
           </span>
           
           <Select 
@@ -191,7 +194,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
             onValueChange={onSelectObjectType}>
             <SelectTrigger className="rounded-none px-2 py-1 h-auto bg-white shadow-none">
               <span className="text-xs">
-                <SelectValue placeholder="select node type..." />
+                <SelectValue placeholder={t('graphSearch.selectNodeType')} />
               </span>
             </SelectTrigger>
 
@@ -199,18 +202,18 @@ export const GraphSearch = (props: GraphSearchProps) => {
               {props.settings.graphMode === 'RELATIONS' && (
                 <SelectItem
                   className="text-xs" 
-                  value="ENTITY_TYPE">entity classes</SelectItem>
+                  value="ENTITY_TYPE">{t('graphSearch.objectTypes.entityClasses')}</SelectItem>
               )}
 
               {props.settings.includeFolders && (
                 <SelectItem
                   className="text-xs" 
-                  value="FOLDER">sub-folders</SelectItem>
+                  value="FOLDER">{t('graphSearch.objectTypes.subFolders')}</SelectItem>
               )}
 
               <SelectItem
                 className="text-xs" 
-                value="IMAGE">images</SelectItem>
+                value="IMAGE">{t('graphSearch.objectTypes.images')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -236,11 +239,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
                   <SelectContent>
                     <SelectItem
                       className="text-xs" 
-                      value="AND">and</SelectItem>
+                      value="AND">{t('graphSearch.operators.and')}</SelectItem>
 
                     <SelectItem
-                      className="text-xs" 
-                      value="OR">or</SelectItem>
+                      className="text-xs"
+                      value="OR">{t('graphSearch.operators.or')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -266,7 +269,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
                 size="sm"
                 className="flex items-center text-xs py-0 px-0 font-normal"
                 onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-                <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-0.5" /> Add Condition
+                <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-0.5" /> {t('graphSearch.addCondition')}
               </Button>
 
               <Button 
@@ -274,7 +277,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
                 size="sm"
                 className="flex items-center text-xs py-0 px-0 font-normal"
                 onClick={onClearAll}>
-                <Trash2 className="h-3.5 w-3.5 mr-1 mb-px" /> Clear All
+                <Trash2 className="h-3.5 w-3.5 mr-1 mb-px" /> {t('graphSearch.clearAll')}
               </Button>
             </div>
 
@@ -298,7 +301,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
                   </TooltipTrigger>
 
                   <TooltipContent>
-                    Open in workspace
+                    {t('graphSearch.openInWorkspace')}
                   </TooltipContent>
                 </Tooltip>
               </div>

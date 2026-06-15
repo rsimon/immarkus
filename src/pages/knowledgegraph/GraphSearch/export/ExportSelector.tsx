@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { ChevronDown, Download, FileBarChart2, Table2 } from 'lucide-react';
 import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
@@ -23,6 +24,8 @@ interface ExportSelectorProps {
 }
 
 export const ExportSelector = (props: ExportSelectorProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const store = useStore();
 
@@ -85,8 +88,8 @@ export const ExportSelector = (props: ExportSelectorProps) => {
             variant="link"
             size="sm"
             className="flex items-center text-xs py-0 px-0 font-normal">
-            <Download className="h-3.5 w-3.5 mr-1.5 mb-px" /> 
-            Export 
+            <Download className="h-3.5 w-3.5 mr-1.5 mb-px" />
+            {t('graphSearch.export.export')}
             <ChevronDown className="h-3.5 w-3.5 ml-0.5" />
           </Button>
         </DropdownMenuTrigger>
@@ -95,15 +98,15 @@ export const ExportSelector = (props: ExportSelectorProps) => {
           align="end"
           sideOffset={-5}>
           <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportMetadata}>
-            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" />  Export metadata
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" />  {t('graphSearch.export.metadata')}
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportAnnotations}>
-            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export annotations
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> {t('graphSearch.export.annotations')}
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs flex items-center" onSelect={onExportRelationships}>
-            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> Export relationships
+            <FileBarChart2 className="w-3.5 h-3.5 mr-1.5 mb-0.5" /> {t('graphSearch.export.relationships')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -111,7 +114,7 @@ export const ExportSelector = (props: ExportSelectorProps) => {
       <ProgressDialog 
         icon={<Table2 className="h-5 w-5" />}
         open={busy}
-        message="Exporting XLSX. This may take a while."
+        message={t('graphSearch.export.exporting')}
         progress={progress} />
     </>
   )

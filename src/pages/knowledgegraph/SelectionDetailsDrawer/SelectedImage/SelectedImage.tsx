@@ -1,4 +1,5 @@
 import { memo, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MessagesSquare, MoveDiagonal, NotebookPen, Spline, X } from 'lucide-react';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
@@ -25,6 +26,8 @@ interface SelectedImageProps {
 }
 
 const SelectedImageComponent = (props: SelectedImageProps) => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { image } = props;
 
@@ -112,7 +115,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <div 
                   className="flex items-center leading-relaxed text-muted-foreground gap-1 text-xs">
                   <MoveDiagonal className="h-3.5 w-3.5" />
-                  <span>{dimensions[0].toLocaleString()} x {dimensions[1].toLocaleString()} px</span>
+                  <span>{t('selectionDetails.image.dimensions', { width: dimensions[0].toLocaleString(), height: dimensions[1].toLocaleString() })}</span>
                 </div>
               )}
             </div>
@@ -128,7 +131,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <MessagesSquare size={15} className="mr-1.5" /> 
                 {annotations.length} 
                 {tab === 'annotations' && (
-                  <span className="ml-1">Annotations</span>
+                  <span className="ml-1">{t('selectionDetails.image.annotationsTab')}</span>
                 )}
               </TabsTrigger>
 
@@ -138,7 +141,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 <Spline size={15} className="mr-1.5" /> 
                 {relationships.length} 
                 {tab === 'relationships' && (
-                  <span className="ml-1">Relationships</span>
+                  <span className="ml-1">{t('selectionDetails.image.relationshipsTab')}</span>
                 )}
               </TabsTrigger>
 
@@ -147,7 +150,7 @@ const SelectedImageComponent = (props: SelectedImageProps) => {
                 className={`transition-none pl-2 ${tab === 'metadata' ? 'pr-3' : 'pr-2'} py-1.5 border font-normal bg-muted/50 text-xs rounded-full data-[state=active]:bg-black data-[state=active]:border-black data-[state=active]:font-normal data-[state=active]:text-white`}>
                 <NotebookPen size={15} className="mx-1" />
                 {tab === 'metadata' && (
-                  <span className="ml-1">Metadata</span>
+                  <span className="ml-1">{t('selectionDetails.image.metadataTab')}</span>
                 )}
               </TabsTrigger>
             </TabsList>

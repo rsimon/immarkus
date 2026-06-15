@@ -1,0 +1,145 @@
+{
+  "knowledgeGraph": {
+    "title": "ナレッジグラフ",
+    "description": "画像とエンティティのつながりを探索できます。マウスでグラフのズームやパンができます。ノードをドラッグするとグラフを並べ替えられます。ノードをクリックすると詳細が表示されます。"
+  },
+  "graphControls": {
+    "toggleFullscreen": "全画面表示を切り替え",
+    "unpinAllNodes": "すべてのノードのピン留めを解除",
+    "graphSearch": "グラフ検索",
+    "graphSettings": "グラフ設定",
+    "settings": "設定"
+  },
+  "settingsPanel": {
+    "graphType": {
+      "title": "グラフタイプ",
+      "description": "データの可視化方法を選択します。",
+      "hierarchy": "階層とアノテーション",
+      "hierarchyDescription": "データモデルの階層、フォルダ構造、エンティティアノテーションを可視化します。",
+      "relations": "リレーション",
+      "relationsDescription": "アノテーション間のリレーションを可視化します。データモデルの階層とエンティティアノテーションはホバー時に表示されます。"
+    },
+    "hideLabels": "ラベルを非表示",
+    "hideLabelsDescription": "グラフノードのテキストラベルを表示しません。代わりにホバー時のツールチップが使用されます。",
+    "hideForSpecificNodeTypes": "特定のノードタイプのみ非表示",
+    "imageLabels": "画像ラベル",
+    "subFolderLabels": "サブフォルダラベル",
+    "entityClassLabels": "エンティティクラスラベル",
+    "showSubFolders": "サブフォルダをノードとして表示",
+    "showSubFoldersDescription": "作業フォルダ内のサブフォルダをグラフのノードとして含めます。",
+    "hideUnconnectedNodes": "接続のないノードを非表示",
+    "hideUnconnectedNodesDescription": "接続を持たないノードをグラフから取り除きます。"
+  },
+  "legend": {
+    "nodes": "ノード",
+    "edges": "エッジ",
+    "entityClass": "エンティティクラス",
+    "subFolder": "サブフォルダ",
+    "image": "画像",
+    "relationship": {
+      "title": "リレーション",
+      "description": "アノテーション間のリレーションに基づく接続です。"
+    },
+    "entityClassHierarchy": {
+      "title": "エンティティクラス階層",
+      "description": "データモデル内の親エンティティクラスと子エンティティクラスを結ぶリンクです。"
+    },
+    "folderStructure": {
+      "title": "フォルダ構造",
+      "description": "プロジェクトディレクトリ内のサブフォルダと画像ファイルのファイル構造です。"
+    },
+    "entityAnnotations": {
+      "title": "エンティティアノテーション",
+      "description": "アノテーションのタグに基づく、画像とエンティティクラスの間の接続です。"
+    }
+  },
+  "graphView": {
+    "linkLabels": {
+      "subFolder": "サブフォルダ",
+      "imageInSubFolder": "画像はサブフォルダ内にあります",
+      "entityClassHierarchy": "エンティティクラス階層",
+      "hasEntityAnnotations_other": "画像には {{count}} 件のエンティティアノテーションがあります",
+      "relationshipsInsideImage_other": "この画像内のリレーション {{count}} 件（{{relations}}）",
+      "relationshipsBetweenImages_other": "これらの画像間のリレーション {{count}} 件（{{relations}}）",
+      "relationshipsBetweenEntities_other": "このクラスのエンティティ間のリレーション {{count}} 件（{{relations}}）",
+      "connectedViaRelationships_other": "{{count}} 件のリレーションで接続（{{relations}}）"
+    }
+  },
+  "graphSearch": {
+    "title": "グラフ検索",
+    "find": "検索対象",
+    "selectNodeType": "ノードタイプを選択...",
+    "objectTypes": {
+      "entityClasses": "エンティティクラス",
+      "subFolders": "サブフォルダ",
+      "images": "画像"
+    },
+    "operators": {
+      "and": "かつ",
+      "or": "または"
+    },
+    "conditionTypes": {
+      "where": "条件",
+      "withRelationship": "リレーションを持つ",
+      "withEntity": "エンティティを持つ",
+      "withNote": "メモを持つ",
+      "withIiifMetadata": "IIIF メタデータを持つ"
+    },
+    "comparators": {
+      "is": "等しい",
+      "isEmpty": "空である",
+      "isNotEmpty": "空でない"
+    },
+    "builtInAttributes": {
+      "folderName": "フォルダ名",
+      "imageFilename": "画像ファイル名"
+    },
+    "attributePrefix": {
+      "folder": "フォルダ",
+      "image": "画像"
+    },
+    "addCondition": "条件を追加",
+    "clearAll": "すべてクリア",
+    "subCondition": "サブ条件",
+    "where": "条件",
+    "noMatches": "該当なし",
+    "openInWorkspace": "ワークスペースで開く",
+    "searchPlaceholder": "検索...",
+    "export": {
+      "export": "エクスポート",
+      "metadata": "メタデータをエクスポート",
+      "annotations": "アノテーションをエクスポート",
+      "relationships": "リレーションをエクスポート",
+      "exporting": "XLSX をエクスポートしています。しばらくお待ちください。"
+    }
+  },
+  "selectionDetails": {
+    "annotationViewLink": {
+      "currentlyOpen": "現在ワークスペースで開いています",
+      "openImage": "画像を開く",
+      "addToWorkspace": "ワークスペースに追加"
+    },
+    "copyManifestUrl": "マニフェスト URL をクリップボードにコピー",
+    "entityType": {
+      "noDescription": "説明なし",
+      "annotationsLabel_other": "アノテーション",
+      "relationshipsLabel_other": "リレーション"
+    },
+    "image": {
+      "annotationsTab": "アノテーション",
+      "relationshipsTab": "リレーション",
+      "metadataTab": "メタデータ",
+      "dimensions": "{{width}} x {{height}} px"
+    },
+    "folder": {
+      "imageCount_other": "{{count}} 件の画像",
+      "subFolderCount_other": "{{count}} 件のサブフォルダ",
+      "open": "開く"
+    },
+    "metadata": {
+      "save": "保存",
+      "iiifTab": "IIIF",
+      "myTab": "マイ"
+    }
+  }
+}

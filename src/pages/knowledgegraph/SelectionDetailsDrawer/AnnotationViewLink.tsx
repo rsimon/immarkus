@@ -1,4 +1,5 @@
 import { PanelsTopLeft, SquareArrowOutUpRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useOpenInAnnotationView } from '@/pages/annotate';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
@@ -16,7 +17,9 @@ interface AnnotationViewLinkProps {
 }
 
 export const AnnotationViewLink = (props: AnnotationViewLinkProps) => {
-  
+
+  const { t } = useTranslation('knowledgegraph');
+
   const { imageIds, openInAnnotationView, addToAnnotationView } = useOpenInAnnotationView();
 
   const isOpen = imageIds.includes(props.id);
@@ -30,7 +33,7 @@ export const AnnotationViewLink = (props: AnnotationViewLinkProps) => {
       </TooltipTrigger>
 
       <TooltipContent>
-        Currently open in workspace
+        {t('selectionDetails.annotationViewLink.currentlyOpen')}
       </TooltipContent>
     </Tooltip>
   ) : (
@@ -46,11 +49,11 @@ export const AnnotationViewLink = (props: AnnotationViewLinkProps) => {
 
       <DropdownMenuContent>
         <DropdownMenuItem onSelect={() => openInAnnotationView(props.id)}>
-          Open image
+          {t('selectionDetails.annotationViewLink.openImage')}
         </DropdownMenuItem>
 
         <DropdownMenuItem onSelect={() => addToAnnotationView(props.id)}>
-          Add to workspace
+          {t('selectionDetails.annotationViewLink.addToWorkspace')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

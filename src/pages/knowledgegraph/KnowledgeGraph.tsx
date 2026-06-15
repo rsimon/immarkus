@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { NodeObject } from 'react-force-graph-2d';
 import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
@@ -15,6 +16,8 @@ import { GraphSearch } from './GraphSearch';
 import { TooltipProvider } from '@/ui/Tooltip';
 
 export const KnowledgeGraph = () => {
+
+  const { t } = useTranslation('knowledgegraph');
 
   const { selectedNodes, setSelectedNodes } = useSelectedNodes();
 
@@ -85,13 +88,12 @@ export const KnowledgeGraph = () => {
             className="absolute top-4 left-6 z-10">
             <h1 className="text-xl font-semibold tracking-tight mb-1">
               <span className="bg-white/80 backdrop-blur-xs rounded px-1 py-0.5">
-                Knowledge Graph
+                {t('knowledgeGraph.title')}
               </span>
             </h1>
             <p className="text-sm text-muted-foreground max-w-lg leading-6">
               <span className="bg-white/80 backdrop-blur-xs box-decoration-clone px-1 py-0.5 rounded">
-                Explore connections between images and entities. Zoom and pan the graph with your mouse.
-                Grab and pull a node to re-arrange the graph. Click a node to see more information.
+                {t('knowledgeGraph.description')}
               </span>
             </p>
           </animated.div>

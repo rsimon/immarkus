@@ -1,5 +1,6 @@
 import { useStore } from '@/store';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
 import { IIIFManifestResource } from '@/model';
 import { IIIFMetadataIndexRecord } from './iiif';
@@ -27,19 +28,21 @@ import {
   PropertyCondition
 } from './searchUtils';
 
-const ComparatorOptions = [
-  { label: 'is', value: 'IS' }, 
-  { label: 'is empty', value: 'IS_EMPTY' },
-  { label: 'is not empty', value: 'IS_NOT_EMPTY'}
-];
-
 export const useGraphSearch = (
   annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
-  graph: Graph, 
-  objectType: GraphNodeType, 
+  graph: Graph,
+  objectType: GraphNodeType,
   initialValue?: Partial<Sentence>
 ) => {
   const store = useStore();
+
+  const { t } = useTranslation('knowledgegraph');
+
+  const ComparatorOptions = [
+    { label: t('graphSearch.comparators.is'), value: 'IS' },
+    { label: t('graphSearch.comparators.isEmpty'), value: 'IS_EMPTY' },
+    { label: t('graphSearch.comparators.isNotEmpty'), value: 'IS_NOT_EMPTY' }
+  ];
 
   const [sentence, setSentence] = useState<Partial<Sentence>>(initialValue || {});
 
@@ -79,11 +82,19 @@ export const useGraphSearch = (
           ? listFolderMetadataProperties(store) : listAllMetadataProperties(store);
 
         setAttributeOptions(properties.map(p => {
-          const value = p.builtIn 
+          const value = p.builtIn
             ? p.propertyName
             : `${p.type === 'FOLDER' ? 'folder' : 'image'}:${p.propertyName}`;
-            
-          return { label: value, value, builtIn: p.builtIn }
+
+          const label = p.builtIn
+            ? (p.propertyName === 'folder name'
+                ? t('graphSearch.builtInAttributes.folderName')
+                : p.propertyName === 'image filename'
+                  ? t('graphSearch.builtInAttributes.imageFilename')
+                  : p.propertyName)
+            : `${p.type === 'FOLDER' ? t('graphSearch.attributePrefix.folder') : t('graphSearch.attributePrefix.image')}:${p.propertyName}`;
+
+          return { label, value, builtIn: p.builtIn }
         }));
       } else if (!s.Comparator) {
         setComparatorOptions(ComparatorOptions);

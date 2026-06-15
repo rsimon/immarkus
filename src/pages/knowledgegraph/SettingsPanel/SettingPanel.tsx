@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTransition, animated } from '@react-spring/web';
 import { ChevronDown, ChevronRight, X } from 'lucide-react';
 import { Button } from '@/ui/Button';
@@ -23,7 +24,9 @@ interface SettingsPanelProps {
 
 export const SettingsPanel = (props: SettingsPanelProps) => {
 
-  const { settings } = props;  
+  const { t } = useTranslation('knowledgegraph');
+
+  const { settings } = props;
 
   const transition = useTransition([props.open], {
     from: {  transform: 'translateY(50%)', opacity: 0 },
@@ -120,9 +123,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <fieldset className="p-3">
         <div className="pb-3">
           <legend>
-            <div className="font-medium">Graph Type</div> 
+            <div className="font-medium">{t('settingsPanel.graphType.title')}</div>
             <p className="text-muted-foreground text-xs mt-0.5">
-              Select how you want to visualize your data. 
+              {t('settingsPanel.graphType.description')}
             </p>
           </legend>
         </div>
@@ -137,9 +140,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               id="HIERARCHY" />
 
             <div>
-              <Label htmlFor="HIERARCHY">Hierarchy & Annotations</Label>
+              <Label htmlFor="HIERARCHY">{t('settingsPanel.graphType.hierarchy')}</Label>
               <p className="text-xs text-muted-foreground">
-                Visualize the data model hierarchy, folder structure and entity annotations.
+                {t('settingsPanel.graphType.hierarchyDescription')}
               </p>
             </div>
           </div>
@@ -151,9 +154,9 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               id="RELATIONS" />
 
             <div>
-              <Label htmlFor="RELATIONS">Relationships</Label>
+              <Label htmlFor="RELATIONS">{t('settingsPanel.graphType.relations')}</Label>
               <p className="text-xs text-muted-foreground">
-                Visualize the Relationships between annotations. Data model hierarchy and entity annotations are shown on hover.
+                {t('settingsPanel.graphType.relationsDescription')}
               </p>
             </div>
           </div>
@@ -165,7 +168,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <fieldset className="p-3">
         <div className="flex items-center gap-2 justify-between">
           <Label htmlFor="hide-labels">
-            Hide labels
+            {t('settingsPanel.hideLabels')}
           </Label>
 
           <Switch 
@@ -175,8 +178,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Don't show text labels for graph nodes. A hover tooltip
-          will be used instead.
+          {t('settingsPanel.hideLabelsDescription')}
         </p>
 
         <Collapsible onOpenChange={open => setTypeLabelsOpen(open)}>
@@ -185,7 +187,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               <ChevronDown className="w-3.5 h-3.5" />
             ) : (
               <ChevronRight className="w-3.5 h-3.5" />
-            )} Hide for specific node types
+            )} {t('settingsPanel.hideForSpecificNodeTypes')}
           </CollapsibleTrigger>
 
           <CollapsibleContent className="pl-4">
@@ -193,7 +195,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               <Label 
                 className="text-xs font-normal"
                 htmlFor="hide-image-labels">
-                Image labels
+                {t('settingsPanel.imageLabels')}
               </Label>
 
               <Switch 
@@ -207,7 +209,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
                 <Label 
                   className="text-xs font-normal"
                   htmlFor="hide-folder-labels">
-                  Sub-folder labels
+                  {t('settingsPanel.subFolderLabels')}
                 </Label>
 
                 <Switch 
@@ -221,7 +223,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
               <Label 
                 className="text-xs font-normal"
                 htmlFor="hide-entity-labels">
-                Entity class labels
+                {t('settingsPanel.entityClassLabels')}
               </Label>
 
               <Switch 
@@ -236,7 +238,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
       <fieldset className="p-3">
         <div className="flex items-center gap-2 justify-between">
           <Label htmlFor="include-folders">
-            Show sub-folders as nodes
+            {t('settingsPanel.showSubFolders')}
           </Label>
 
           <Switch 
@@ -247,14 +249,14 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
         </div>
 
         <p className="text-muted-foreground text-xs mt-1 pr-12">
-          Include sub-folders inside your workfolder as nodes in the graph.
+          {t('settingsPanel.showSubFoldersDescription')}
         </p>
       </fieldset>
 
       <fieldset className={`p-3 ${settings.graphMode === 'RELATIONS' ? 'group is-disabled' : ''}`.trim()}>
         <div className="flex items-center gap-2 justify-between group-[.is-disabled]:text-muted-foreground/50">
           <Label htmlFor="hide-isolated">
-            Hide unconnected nodes
+            {t('settingsPanel.hideUnconnectedNodes')}
           </Label>
 
           <Switch 
@@ -267,7 +269,7 @@ export const SettingsPanel = (props: SettingsPanelProps) => {
 
         <p 
           className="text-xs mt-1 pr-12 text-muted-foreground group-[.is-disabled]:text-muted-foreground/50">
-          Remove nodes without any connections from the graph.
+          {t('settingsPanel.hideUnconnectedNodesDescription')}
         </p>
       </fieldset>
     </animated.div>
