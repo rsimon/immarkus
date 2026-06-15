@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ImagePlus, MessageSquareOff, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Toggle } from '@/ui/Toggle';
@@ -27,6 +28,8 @@ interface AddImageProps {
 }
 
 export const AddImage = (props: AddImageProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -140,12 +143,12 @@ export const AddImage = (props: AddImageProps) => {
           <PopoverTrigger
             className="p-2 flex items-center text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 whitespace-nowrap">
-            <ImagePlus className="h-4 w-4 mr-1" /> Add image
+            <ImagePlus className="h-4 w-4 mr-1" /> {t('headerSection.addImage')}
           </PopoverTrigger>
         </TooltipTrigger>
 
         <TooltipContent>
-          Add image to workspace
+          {t('headerSection.addImageTooltip')}
         </TooltipContent>
       </Tooltip>
       
@@ -157,7 +160,7 @@ export const AddImage = (props: AddImageProps) => {
           
           <input 
             autoFocus
-            placeholder="Search..."
+            placeholder={t('common.searchPlaceholder')}
             className="relative top-px py-1 outline-hidden px-0.5 grow text-sm" 
             value={query} 
             onChange={evt => setQuery(evt.target.value)} />
@@ -175,7 +178,7 @@ export const AddImage = (props: AddImageProps) => {
             </TooltipTrigger>
 
             <TooltipContent>
-              Hide unannotated
+              {t('headerSection.hideUnannotated')}
             </TooltipContent>
           </Tooltip>
         </div>

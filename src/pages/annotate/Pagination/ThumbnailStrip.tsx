@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, ImageIcon, ImagePlus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useTransition, animated, easings } from '@react-spring/web';
 import { Thumbnail } from '@/components/Thumbnail';
 import { CanvasInformation, FileImage, LoadedImage } from '@/model';
@@ -29,6 +30,8 @@ interface ThumbnailStripProps {
 import './ThumbnailStrip.css';
 
 export const ThumbnailStrip = (props: ThumbnailStripProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const el = useRef<HTMLOListElement>(null);
 
@@ -145,13 +148,13 @@ export const ThumbnailStrip = (props: ThumbnailStripProps) => {
                 <ContextMenuItem 
                   className="flex gap-2 items-center text-xs"
                   onClick={() => onSelect(image)}>
-                  <ImageIcon className="h-3.5 w-3.5" /> Select this image
+                  <ImageIcon className="h-3.5 w-3.5" /> {t('pagination.selectThisImage')}
                 </ContextMenuItem>
 
                 <ContextMenuItem 
                   className="flex gap-2 items-center text-xs"
                   onClick={() => props.onAdd(image.id)}>
-                  <ImagePlus className="h-3.5 w-3.5" /> Add image to workspace
+                  <ImagePlus className="h-3.5 w-3.5" /> {t('pagination.addImageToWorkspace')}
                 </ContextMenuItem>
               </ContextMenuContent>
             </ContextMenu>

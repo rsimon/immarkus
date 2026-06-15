@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CirclePlus, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ConnectionPopupProps } from '@annotorious/plugin-wires-react';
 import { Combobox, ComboboxState } from '@/components/Combobox';
 import { useDataModel } from '@/store';
@@ -8,6 +9,8 @@ import { Button } from '@/ui/Button';
 import './ConnectorPopup.css';
 
 export const ConnectorPopup = (props: ConnectionPopupProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const model = useDataModel();
 
@@ -55,7 +58,7 @@ export const ConnectorPopup = (props: ConnectionPopupProps) => {
         {addTerm && (
           <div className="p-2 border-t bg-muted">
             <p className="p-1 pb-2 text-center text-xs text-muted-foreground">
-              Add to vocabulary:
+              {t('connectorPopup.addToVocabulary')}
             </p>
             <Button 
               size="sm"

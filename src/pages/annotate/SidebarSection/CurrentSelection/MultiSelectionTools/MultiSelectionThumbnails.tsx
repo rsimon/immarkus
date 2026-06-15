@@ -1,6 +1,7 @@
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { ImageAnnotation } from '@annotorious/react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface MultiSelectionThumbnailsProps {
 
@@ -15,6 +16,8 @@ const stackStyles = [
 ];
 
 export const MultiSelectionThumbnails = (props: MultiSelectionThumbnailsProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const first = useMemo(() => [...props.selected].slice(0, 3).reverse(), [props.selected]);
 
@@ -38,7 +41,7 @@ export const MultiSelectionThumbnails = (props: MultiSelectionThumbnailsProps) =
       </div>
 
       <div className="h-full px-1 py-2 font-medium">
-        {props.selected.length} Annotations
+        {t('multiSelection.annotations', { count: props.selected.length })}
       </div>
     </div>
   )

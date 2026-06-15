@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'; 
+import { useEffect, useState } from 'react';
 import { FolderCheck, FolderSync, FolderX } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useSavingState } from './useSavingState';
 import {
   Popover,
@@ -14,6 +15,8 @@ interface SavingStateIndicatorProps {
 }
 
 export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { savingState } = useSavingState();
 
@@ -50,7 +53,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
             align="center"
             className="text-xs flex gap-2 font-medium w-auto items-center px-3.5 py-2.5
             justify-center text-green-600">
-            <FolderCheck className="h-4 w-4" />All annotations saved
+            <FolderCheck className="h-4 w-4" />{t('savingState.allSaved')}
           </PopoverContent>
         </Popover>
       ) : savingState.value === 'success' ? (
@@ -60,7 +63,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
             <FolderCheck className="h-4 w-4" />
             <span style={{ opacity, width: opacity === 0 ? 0 : undefined}}>
-              <span className="ml-1">Saved</span>
+              <span className="ml-1">{t('savingState.saved')}</span>
             </span>
           </PopoverTrigger>
 
@@ -68,7 +71,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
             align="center"
             className="text-xs flex gap-2 font-medium w-[200px] items-center 
             justify-center text-green-600">
-            <FolderCheck className="h-4 w-4" />All annotations saved
+            <FolderCheck className="h-4 w-4" />{t('savingState.allSaved')}
           </PopoverContent>
         </Popover>
       ) : savingState.value === 'failed' ? (
@@ -77,7 +80,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
             className="p-2 flex gap-1 text-xs font-medium rounded-md hover:bg-muted focus-visible:outline-hidden 
               focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center text-red-600">
             <FolderX size={16} />
-            <span>Failed</span>
+            <span>{t('savingState.failed')}</span>
           </PopoverTrigger> 
 
           <PopoverContent 
@@ -85,7 +88,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
             alignOffset={-18}
             className="text-xs flex gap-2 font-medium w-[200px] items-center 
             justify-center text-red-600">
-            <FolderX className="h-4 w-4" />{savingState.message || 'Error saving data'}
+            <FolderX className="h-4 w-4" />{savingState.message || t('savingState.errorSaving')}
           </PopoverContent>
         </Popover>
       ) : savingState.value === 'saving' ? (
@@ -93,7 +96,7 @@ export const SavingStateIndicator = (props: SavingStateIndicatorProps) => {
           className="p-2 flex text-xs rounded-md hover:bg-muted focus-visible:outline-hidden 
             focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 items-center">
           <FolderSync size={16} />
-          <span className="ml-1">Saving</span>
+          <span className="ml-1">{t('savingState.saving')}</span>
         </button>
       ) : null}
     </div>

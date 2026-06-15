@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Toggle } from '@/ui/Toggle';
 import { Magnet } from 'lucide-react';
 
@@ -10,6 +11,8 @@ interface EdgeSnapProps {
 }
 
 export const EdgeSnap = (props: EdgeSnapProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   return (
     <div className="px-4">
@@ -24,13 +27,12 @@ export const EdgeSnap = (props: EdgeSnapProps) => {
         </div>
 
         <p className="font-medium">
-          Snaps your cursor to nearby edges.
+          {t('edgeSnap.instructions')}
         </p>
       </div>
 
       <p className="pt-3 pb-2 font-light leading-relaxed">
-        Ideal for tracing objects with clear, straight outlines—especially 
-        in high-contrast images.
+        {t('edgeSnap.hint')}
       </p>
     </div>
   )

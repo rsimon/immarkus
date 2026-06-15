@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { AnnotationThumbnail } from '@/components/AnnotationThumbnail';
 import { Combobox, ComboboxOption } from '@/components/Combobox';
@@ -25,6 +26,8 @@ interface RelationsListItemProps {
 }
 
 export const RelationsListItem = (props: RelationsListItemProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const model = useDataModel();
 
@@ -97,14 +100,14 @@ export const RelationsListItem = (props: RelationsListItemProps) => {
 
       <ConfirmedDelete
         asChild
-        message="This action will delete the relation permanently."
+        message={t('propertiesForm.deleteRelationMessage')}
         onConfirm={onDelete}>
         <TooltippedButton 
           variant="ghost" 
           size="icon" 
           type="button"
           className="rounded-full h-8 w-8 hover:text-red-500"
-          tooltip="Delete this relationship">
+          tooltip={t('propertiesForm.deleteRelationTooltip')}>
           <Trash2 className="h-4 w-4" />  
         </TooltippedButton>
       </ConfirmedDelete>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { PluginManifoldProxy } from '@annotorious/react-manifold';
 import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { Spinner } from '@/components/Spinner';
@@ -15,6 +16,8 @@ interface SAMInitializingProps {
 
 export const SAMInitializing = (props: SAMInitializingProps) => {
 
+  const { t } = useTranslation('smartTools');
+
   const { plugin, downloading, progress } = props;
 
   useEffect(() => {
@@ -26,7 +29,7 @@ export const SAMInitializing = (props: SAMInitializingProps) => {
     <div>
       {downloading ? (
         <div className="min-h-36 flex flex-col items-center p-4 space-y-4 relative">
-          <div>Downloading AI model</div>
+          <div>{t('sam.downloadingModel')}</div>
 
           <div className="w-full bg-stone-200 rounded-full h-0.5">
             <div 
@@ -36,8 +39,7 @@ export const SAMInitializing = (props: SAMInitializingProps) => {
           </div>
 
           <div className="text-muted-foreground text-center leading-relaxed">
-            This may take a while. The model will remain stored in your browser
-            for future uses.
+            {t('sam.downloadHint')}
           </div>
         </div>
       ) : (

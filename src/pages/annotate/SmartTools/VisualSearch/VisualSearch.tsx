@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Images, TriangleAlert } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
@@ -16,6 +17,8 @@ interface VisualSearchProps {
 }
 
 export const VisualSearch = (props: VisualSearchProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const vs = useVisualSearch();
 
@@ -40,14 +43,20 @@ export const VisualSearch = (props: VisualSearchProps) => {
   return (
     <div className="px-4">
       <p className="pt-4 font-medium leading-relaxed text-center">
-        Search your collection for visually similar elements.
+        {t('visualSearch.description')}
       </p>
 
       <div className="pt-3">
         {indexStatus.state === 'index_missing' ? (
           <Alert variant="destructive" className="rounded-sm py-1.5 px-2 leading-relaxed">
-            Your collection is not indexed. Go 
-            to <span><Images className="size-3.5 inline-block" /> <Link to="/visual-search" className="font-semibold hover:underline">Visual Search</Link></span> to learn more.
+            <Trans
+              ns="smartTools"
+              i18nKey="visualSearch.notIndexed"
+              components={{
+                nowrap: <span />,
+                icon: <Images className="size-3.5 inline-block" />,
+                searchLink: <Link to="/visual-search" className="font-semibold hover:underline" />
+              }} />
           </Alert>
         ) : selected.length === 1 ? (
           <div className="space-y-3 pt-1.5">
@@ -55,17 +64,17 @@ export const VisualSearch = (props: VisualSearchProps) => {
               <Button 
                 className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 tracking-wide"
                 onClick={onOpenSearchDialog}>
-                Search Inside Images
+                {t('visualSearch.searchInsideImages')}
               </Button>
 
               <p className="font-light text-center py-1.5 px-2">
-                Discover similar patterns across all images.
+                {t('visualSearch.discoverSimilar')}
               </p>
             </div>
           </div>
         ) : (
           <p className="p-1.5 text-center font-light leading-relaxed rounded border border-dashed border-gray-500">
-            Select an annotation to start.
+            {t('visualSearch.selectAnnotation')}
           </p>
         )}
 
@@ -73,8 +82,12 @@ export const VisualSearch = (props: VisualSearchProps) => {
           <div className="text-amber-600 mt-4 flex gap-1.5 items-start">
             <TriangleAlert className="inline size-4 shrink-0" /> 
             <p>
-              Your search index is outdated. Go 
-              to <Link to="/visual-search" className="underline">Visual Search</Link> to learn more.
+              <Trans
+                ns="smartTools"
+                i18nKey="visualSearch.indexOutdated"
+                components={{
+                  searchLink: <Link to="/visual-search" className="underline" />
+                }} />
             </p>
           </div>
         )}

@@ -1,0 +1,136 @@
+{
+  "panel": {
+    "title": "Smart Tools",
+    "smartScissors": "Smart Scissors",
+    "edgeSnap": "Edge Snap",
+    "autoSelect": "Auto Select",
+    "autoTranscribe": "Auto Transcribe",
+    "visualSearch": "Visual Search",
+    "notSupported": {
+      "title": "Not Supported",
+      "description": "Smart Tools use experimental WebGPU technology not available in your browser. Please switch to a recent version of Chrome or Edge to use this feature. <compatLink>View browser compatibility</compatLink>."
+    }
+  },
+  "sam": {
+    "downloadingModel": "Downloading AI model",
+    "downloadHint": "This may take a while. The model will remain stored in your browser for future uses."
+  },
+  "autoSelect": {
+    "instructions": "Hover to preview a selection. Click to confirm. Add or remove points to refine.",
+    "selectObject": "Select object",
+    "removeArea": "Remove area",
+    "done": "Done",
+    "reset": "Reset"
+  },
+  "edgeSnap": {
+    "instructions": "Snaps your cursor to nearby edges.",
+    "hint": "Ideal for tracing objects with clear, straight outlines—especially in high-contrast images."
+  },
+  "smartScissors": {
+    "instructions": "Click to start, move to follow edges. Click again to place points.",
+    "hint": "Ideal for quickly tracing complex shapes and curved edges."
+  },
+  "transcribe": {
+    "transcribeThisImage": "Automatically transcribe this image, or parts of it.",
+    "selectImageToTranscribe": "Select an image to transcribe automatically.",
+    "enableExternalAI": "Enable external AI tools.",
+    "disclaimer": "I understand that images I send are processed by 3rd-party services and that I’m responsible for what I upload.",
+    "selectService": "Select Service",
+    "dialogTitle": "Auto Transcribe",
+    "dialogDescription": "Submit this image for automatic transcription.",
+    "consent": {
+      "title": "Before You Use Auto Transcribe",
+      "intro": "The IMMARKUS Auto Transcribe tool allows you to connect to external AI platforms (e.g. Google, Microsoft Azure, OpenAI). Please read and confirm the following before continuing:",
+      "externalProcessing": "<strong>External Processing</strong>: When you use the Auto Transcribe tool, any images or image portions you submit will be sent to the selected third-party service for processing.",
+      "ownKeys": "<strong>Your Own Keys</strong>: For services that require an API key, you must provide your own key. The key is stored locally in your browser and used only to connect directly to the intended AI service. IMMARKUS does not transmit or store your key elsewhere.",
+      "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external service unless you understand and accept their terms of use.",
+      "noHiddenTransfers": "<strong>No Hidden Transfers</strong>: IMMARKUS itself does not send your data anywhere. Only the AI services you choose to connect to will receive the data you submit.",
+      "confirmation": "By continuing, you confirm that you have read and understood this information and accept responsibility for your use of external AI services.",
+      "agree": "I Understand and Agree",
+      "close": "Close"
+    },
+    "controls": {
+      "service": "Service",
+      "apiKeyRequired": "API Key Required",
+      "areaSelected": "Area Selected",
+      "selectAreaToTranscribe": "Select Area to Transcribe",
+      "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
+      "runTranscription": "Run Transcription",
+      "cancel": "Cancel"
+    },
+    "status": {
+      "compressionFailed": "Image compression failed",
+      "ocrError": "OCR Service Error",
+      "ocrResponded": "OCR service responded:",
+      "noResults": "No Results",
+      "success": "Success",
+      "cropping": "Cropping Image",
+      "fetchingIIIF": "Fetching IIIF Image",
+      "compressing": "Compressing Image",
+      "processing": "Processing"
+    },
+    "nav": {
+      "rotateCounterClockwise": "Rotate counter-clockwise",
+      "rotateClockwise": "Rotate clockwise",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    },
+    "resultBadge": {
+      "annotationCount_one": "{{count}} Annotation",
+      "annotationCount_other": "{{count}} Annotations",
+      "importToImmarkus": "Import to IMMARKUS",
+      "noResults": "No Results"
+    },
+    "selectRegion": {
+      "clearSelection": "Clear Selection",
+      "selectRegionOptional": "Select a region (optional)"
+    }
+  },
+  "visualSearch": {
+    "description": "Search your collection for visually similar elements.",
+    "notIndexed": "Your collection is not indexed. Go to <nowrap><icon/> <searchLink>Visual Search</searchLink></nowrap> to learn more.",
+    "indexOutdated": "Your search index is outdated. Go to <searchLink>Visual Search</searchLink> to learn more.",
+    "searchInsideImages": "Search Inside Images",
+    "discoverSimilar": "Discover similar patterns across all images.",
+    "selectAnnotation": "Select an annotation to start.",
+    "dialog": {
+      "downloadingModel": "Downloading embedding model",
+      "discardTitle": "Discard selected results?",
+      "discardDescription_one": "You have selected {{count}} result for import. If you continue, your selection will be lost.",
+      "discardDescription_other": "You have selected {{count}} results for import. If you continue, your selection will be lost.",
+      "cancel": "Cancel",
+      "discardSelection": "Discard Selection"
+    },
+    "toolbar": {
+      "showingMatches_one": "Showing {{count}} match",
+      "showingMatches_other": "Showing {{count}} matches",
+      "searching": "Searching...",
+      "dialogDescription": "Visual similarity search results for the selected image region",
+      "searchInside": "Search inside",
+      "sourceImage": "Source Image",
+      "currentlyOpenImages": "Currently Open Images",
+      "allImages": "All Images",
+      "smallThumbnails": "Small Thumbnails",
+      "mediumThumbnails": "Medium Thumbnails",
+      "largeThumbnails": "Large Thumbnails"
+    },
+    "sidebar": {
+      "selectAll": "Select All",
+      "sortByMatches": "Number of matches",
+      "sortByScore": "Best match",
+      "hitsAndScore_one": "<strong>{{count}} hit</strong> · {{score}} best score",
+      "hitsAndScore_other": "<strong>{{count}} hits</strong> · {{score}} best score",
+      "sourceBadge": "Source",
+      "openBadge": "Open",
+      "sourceTooltip": "This image contains the query annotation",
+      "openTooltip": "This image is currently open in your workspace"
+    },
+    "preview": {
+      "back": "Back",
+      "selectAll": "Select All",
+      "importSelectedAnnotations": "Import Selected Annotations",
+      "importAnnotations_one": "Import {{count}} Annotation",
+      "importAnnotations_other": "Import {{count}} Annotations"
+    }
+  }
+}

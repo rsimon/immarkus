@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CircleCheck, KeyRound, ScanText, SquareDashedMousePointer } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
@@ -42,6 +43,8 @@ interface TranscriptionControlsProps {
 const connectors = ServiceRegistry.listAvailableConnectors('TRANSCRIPTION');
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const { connectorId, serviceOptions } = props.options;
 
@@ -117,7 +120,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     <div className="pr-2 py-4 min-h-full flex flex-col">
       <div className="space-y-8 flex-1">
         <fieldset className="space-y-2">
-          <Label className="font-semibold">Service</Label>
+          <Label className="font-semibold">{t('transcribe.controls.service')}</Label>
 
           <Select
             value={connectorConfig.id}
@@ -129,7 +132,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                   {connectorConfig.displayName}
                   {connectorConfig.requiresKey && (
                     <span className="rounded-full mb-px text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
-                      <KeyRound className="size-3" /> API Key Required
+                      <KeyRound className="size-3" /> {t('transcribe.controls.apiKeyRequired')}
                     </span>
                   )}
                 </h4>
@@ -180,19 +183,18 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               {props.region ? (
                 <>
                   <CircleCheck className="size-4.5 mb-0.5" />
-                  Area Selected
+                  {t('transcribe.controls.areaSelected')}
                 </>
               ) : (
                 <>
-                  <SquareDashedMousePointer className="size-4.5 mb-0.5" /> 
-                  Select Area to Transcribe
+                  <SquareDashedMousePointer className="size-4.5 mb-0.5" />
+                  {t('transcribe.controls.selectAreaToTranscribe')}
                 </>
               )} 
             </h5>
 
             <p>
-              This service returns transcriptions without bounding box information. Select the area you 
-              want to transcribe. The result will be inserted as a single annotation.
+              {t('transcribe.controls.regionHint')}
             </p>
           </div>
         )}
@@ -206,7 +208,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            <ScanText className="size-4.5" /> Run Transcription
+            <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
           </Button>
         )}
 
@@ -214,7 +216,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           variant="outline"
           className="w-full"
           onClick={props.onCancel}>
-          Cancel
+          {t('transcribe.controls.cancel')}
         </Button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Funnel, Image, MessagesSquare, SquareMousePointer } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useSelection } from '@annotorious/react-manifold';
 import * as Tabs from '@radix-ui/react-tabs';
 import { Separator } from '@/ui/Separator';
@@ -17,6 +18,8 @@ interface SidebarSectionProps {
 }
 
 export const SidebarSection = (props: SidebarSectionProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { selected } = useSelection();
 
@@ -41,7 +44,7 @@ export const SidebarSection = (props: SidebarSectionProps) => {
             <Tabs.Trigger 
               value="selection" 
               className="relative group p-1.5 flex items-center text-xs rounded-md hover:bg-muted">
-              <SquareMousePointer className="h-4 w-4 mr-1" /> Selection
+              <SquareMousePointer className="h-4 w-4 mr-1" /> {t('sidebar.selection')}
               {showSelectionPip && (
                 <div className="absolute top-1 left-1 border border-white group-hover:border-muted size-2 rounded-full bg-orange-400" />
               )}
@@ -53,15 +56,15 @@ export const SidebarSection = (props: SidebarSectionProps) => {
               {props.filterState ? (
                 <Funnel className="size-4 mr-1" /> 
               ) : (
-                <MessagesSquare className="size-4 mr-1" /> 
-              )} List
+                <MessagesSquare className="size-4 mr-1" />
+              )} {t('sidebar.list')}
               {showListPip && (
                 <div className="absolute top-1 left-1 border border-white group-hover:border-muted size-2 rounded-full bg-orange-400" />
               )}
             </Tabs.Trigger>
 
             <Tabs.Trigger value="image-notes" className="p-1.5 flex items-center text-xs rounded-md hover:bg-muted text-muted-foreground">
-              <Image className="h-4 w-4 mr-1" /> Metadata
+              <Image className="h-4 w-4 mr-1" /> {t('sidebar.metadata')}
             </Tabs.Trigger>
           </Tabs.List>
         </section>

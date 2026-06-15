@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { W3CImageAnnotation } from '@annotorious/react';
 import { useDataModel } from '@/store';
 import { usePersistentState } from '@/utils/usePersistentState';
@@ -34,6 +35,8 @@ const SORT_BY_CREATED_DESCENDING = (a: W3CImageAnnotation, b: W3CImageAnnotation
 export const DEFAULT_SORTING = SORT_BY_CREATED_DESCENDING;
 
 export const SelectListOrder = (props: SelectListOrderProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const datamodel = useDataModel();
 
@@ -80,10 +83,10 @@ export const SelectListOrder = (props: SelectListOrderProps) => {
         </SelectTrigger>
 
         <SelectContent>
-          <SelectItem value="recent">recent</SelectItem>
-          <SelectItem value="oldest">oldest</SelectItem>
-          <SelectItem value="entity">entity</SelectItem>
-          <SelectItem value="custom">custom</SelectItem>
+          <SelectItem value="recent">{t('annotationList.order.recent')}</SelectItem>
+          <SelectItem value="oldest">{t('annotationList.order.oldest')}</SelectItem>
+          <SelectItem value="entity">{t('annotationList.order.entity')}</SelectItem>
+          <SelectItem value="custom">{t('annotationList.order.custom')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

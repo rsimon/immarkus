@@ -1,6 +1,8 @@
 import { useMemo, useState, type MouseEvent } from 'react';
 import { CopyPlus, SquarePen, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
+import { getDateLocale } from '@/i18n/dateLocale';
 import { useInView } from 'react-intersection-observer';
 import { DraggableAttributes } from '@dnd-kit/core';
 import type { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
@@ -33,6 +35,8 @@ interface AnnotationListItemProps {
 }
 
 export const AnnotationListItem = (props: AnnotationListItemProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const store = useStore();
 
@@ -120,7 +124,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
           {isEmpty && (
             <div className="py-6 flex justify-center text-muted-foreground">
-              Empty annotation
+              {t('annotationList.emptyAnnotation')}
             </div>
           )}
         </button>
@@ -143,7 +147,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
         <div className="bg-slate-50 border-t py-0.5 pl-2.5 pr-1 flex justify-between items-center text-[11px]">
           {lastEdit ? (
             <div className="text-gray-400">
-              {format(lastEdit, 'H:mm MMM dd')}
+              {format(lastEdit, 'H:mm MMM dd', { locale: getDateLocale() })}
             </div>
           ) : (
             <div />
@@ -154,7 +158,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
               variant="ghost" 
               size="icon" 
               className="h-8 w-8 text-gray-400 hover:text-black"
-              tooltip="Edit"
+              tooltip={t('annotationList.editTooltip')}
               onClick={props.onEdit}>
               <SquarePen className="size-4" />
             </TooltippedButton>
@@ -163,7 +167,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
               variant="ghost" 
               size="icon" 
               className="h-8 w-8 text-gray-400 hover:text-black"
-              tooltip="Duplicate this annotation"
+              tooltip={t('annotationList.duplicateTooltip')}
               onClick={props.onDuplicate}>
               <CopyPlus className="size-4" />
             </TooltippedButton>
@@ -172,7 +176,7 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
               variant="ghost" 
               size="icon" 
               className="h-8 w-8 text-gray-400 hover:text-red-600"
-              tooltip="Delete"
+              tooltip={t('annotationList.deleteTooltip')}
               onClick={() => setConfirmDelete(true)}>
               <Trash2 className="size-4" />
             </TooltippedButton>
@@ -182,8 +186,8 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
 
       <ConfirmedDelete
         open={confirmDelete}
-        title="Delete Annotation"
-        message="Are you sure you want to delete this annotation?"
+        title={t('annotationList.deleteAnnotation')}
+        message={t('annotationList.confirmDeleteAnnotation')}
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { RotateCcwSquare, RotateCwSquare, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewer } from '@annotorious/react';
 import { Rotation } from '@/services';
@@ -11,6 +12,8 @@ interface NavControlsProps {
 }
 
 export const NavControls = (props: NavControlsProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const viewer = useViewer();
 
@@ -35,7 +38,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          Rotate counter-clockwise
+          {t('transcribe.nav.rotateCounterClockwise')}
         </TooltipContent>
       </Tooltip>
 
@@ -50,7 +53,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          Rotate clockwise
+          {t('transcribe.nav.rotateClockwise')}
         </TooltipContent>
       </Tooltip>
 
@@ -65,7 +68,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          Zoom in
+          {t('transcribe.nav.zoomIn')}
         </TooltipContent>
       </Tooltip>
 
@@ -80,7 +83,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          Zoom out
+          {t('transcribe.nav.zoomOut')}
         </TooltipContent>
       </Tooltip>
     </div>

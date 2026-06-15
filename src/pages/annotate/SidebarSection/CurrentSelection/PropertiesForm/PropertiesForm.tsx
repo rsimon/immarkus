@@ -1,5 +1,6 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { dequal } from 'dequal/lite';
+import { useTranslation } from 'react-i18next';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { AnnotationBody, ImageAnnotation, W3CAnnotationBody, createBody } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
@@ -31,6 +32,8 @@ interface PropertiesFormProps {
 }
 
 export const PropertiesForm = (props: PropertiesFormProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const { annotation } = props;
 
@@ -283,7 +286,7 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
         <Button 
           disabled={!hasChanges}
           className="w-full" 
-          type="submit">Save</Button> 
+          type="submit">{t('common.save')}</Button>
       </form>
     </PropertyValidation>
   )

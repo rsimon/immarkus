@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SquareDashedMousePointer, X } from 'lucide-react';
 import { Region } from '@/services';
 import { Button } from '@/ui/Button';
@@ -17,6 +18,8 @@ interface SelectRegionProps {
 }
 
 export const SelectRegion = (props: SelectRegionProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const [pressed, setPressed] = useState(false);
 
@@ -67,7 +70,7 @@ export const SelectRegion = (props: SelectRegionProps) => {
               variant="ghost"
               className="absolute text-xs gap-1.5 top-2 left-2 z-10 bg-white shadow-xs px-2.5 py-2 h-auto pointer-events-auto"
               onClick={onClearRegion}>
-              <X className="size-4.5" /> Clear Selection
+              <X className="size-4.5" /> {t('transcribe.selectRegion.clearSelection')}
             </Button>
           </TooltipTrigger>
         </Tooltip>
@@ -86,7 +89,7 @@ export const SelectRegion = (props: SelectRegionProps) => {
 
           <TooltipContent
             collisionPadding={20}>
-            Select a region (optional)
+            {t('transcribe.selectRegion.selectRegionOptional')}
           </TooltipContent>
         </Tooltip>
       )}

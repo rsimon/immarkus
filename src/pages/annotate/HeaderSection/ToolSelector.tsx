@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Circle, Square, Tangent, TriangleRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { AnnotationMode, Tool } from '../AnnotationMode';
 import {
   Select,
@@ -24,6 +25,8 @@ interface ToolSelectorProps {
 const TOOLS = new Set(['rectangle', 'polygon', 'ellipse', 'path']);
 
 export const ToolSelector = (props: ToolSelectorProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const tool = useMemo(() => {
     return (TOOLS.has(props.tool)) ? props.tool : 'rectangle';
@@ -70,28 +73,28 @@ export const ToolSelector = (props: ToolSelectorProps) => {
         <SelectItem value="rectangle">
           <div className="flex items-center text-xs gap-1.5">
             <Square className="w-3.5 h-3.5 mb-px" /> 
-            {!props.compact && (<>Box</>)}
+            {!props.compact && (<>{t('toolSelector.box')}</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="polygon">
           <div className="flex items-center text-xs gap-1.5">
             <TriangleRight className="w-3.5 h-3.5 rotate-[-10deg]" /> 
-            {!props.compact && (<>Polygon</>)}
+            {!props.compact && (<>{t('toolSelector.polygon')}</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="ellipse" >
           <div className="flex items-center text-xs gap-1.5">
             <Circle className="w-3.5 h-3.5 scale-y-90 mb-px" />
-            {!props.compact && (<>Ellipse</>)}
+            {!props.compact && (<>{t('toolSelector.ellipse')}</>)}
           </div>
         </SelectItem>
 
         <SelectItem value="path">
           <div className="flex items-center text-xs gap-1.5">
             <Tangent className="w-3.5 h-3.5 scale-y-90 mb-px" />
-            {!props.compact && (<>Path</>)}
+            {!props.compact && (<>{t('toolSelector.path')}</>)}
           </div>
         </SelectItem>
       </SelectContent>

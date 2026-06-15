@@ -6,6 +6,7 @@ import { mountPlugin } from '@annotorious/plugin-boolean-operations';
 import { Columns3, Cuboid, Trash2 } from 'lucide-react';
 import { CompareDialog } from './Compare/CompareDialog';
 import { ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MultiSelectionThumbnails } from './MultiSelectionThumbnails';
 
 interface MultiSelectionOptionsProps {
@@ -21,6 +22,8 @@ interface MultiSelectionOptionsProps {
 }
 
 export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
+
+  const { t } = useTranslation('annotate');
 
   const [showCompareDialog, setShowCompareDialog] = useState(false);
 
@@ -95,27 +98,27 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
 
         <div className="space-y-4">
           {renderButton(
-            'Compare', 'View selected annotations side by side.',
+            t('multiSelection.compare'), t('multiSelection.compareHint'),
             <Columns3 className="size-5" />,
             () => setShowCompareDialog(true)
           )}
 
           {renderButton(
-            'Add Tag', 'Apply the same tag to all selected annotations.',
+            t('multiSelection.addTag'), t('multiSelection.addTagHint'),
             <Cuboid className="size-5" />,
             () => props.onAddTag()
           )}
 
           {renderButton(
-            'Merge', 'Combine selected annotations. Preserves all tags and concatenates notes in the order of selection.',
+            t('multiSelection.merge'), t('multiSelection.mergeHint'),
             <Combine className="size-5" />,
             onMergeSelected,
             props.isCrossImageSelection
           )}
 
           {renderButton(
-            'Subtract', 
-            'Keep first annotation, delete all others. Overlapping areas are removed from the first annotation.',
+            t('multiSelection.subtract'),
+            t('multiSelection.subtractHint'),
             <Subtract className="size-5" />,
             () => plugin.subtractSelected(),
             !canSubtract
@@ -133,7 +136,7 @@ export const MultiSelectionTools = (props: MultiSelectionOptionsProps) => {
         className="flex gap-2"
         variant="destructive"
         onClick={props.onDeleteSelected}>
-        <Trash2 className="size-5" /> Delete Selected
+        <Trash2 className="size-5" /> {t('multiSelection.deleteSelected')}
       </Button>
     </div>
   )

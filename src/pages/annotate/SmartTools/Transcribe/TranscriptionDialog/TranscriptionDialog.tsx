@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
@@ -49,6 +50,8 @@ interface TranscriptionDialogProps {
 }
 
 export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const [open, setOpen] = useState(false);
 
@@ -176,7 +179,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         <Button 
           disabled={props.disabled}
           className="bg-orange-400 hover:bg-orange-400/90 w-full h-9 mt-3 tracking-wide">
-          Select Service
+          {t('transcribe.selectService')}
         </Button>
       </DialogTrigger>
 
@@ -184,11 +187,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
         closeIcon={false}
         className="rounded-lg w-11/12 h-11/12 max-w-11/12 p-0 overflow-hidden relative">
         <DialogTitle className="sr-only">
-          Auto Transcribe
+          {t('transcribe.dialogTitle')}
         </DialogTitle>
 
         <DialogDescription className="sr-only">
-          Submit this image for automatic transcription.
+          {t('transcribe.dialogDescription')}
         </DialogDescription>
         
         <div className="flex h-full gap-4 overflow-hidden relative">

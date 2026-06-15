@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Minus, WandSparkles } from 'lucide-react';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold, PluginManifoldProxy } from '@annotorious/react-manifold';
@@ -19,6 +20,8 @@ interface AutoSelectProps {
 }
 
 export const AutoSelect = (props: AutoSelectProps) => {
+
+  const { t } = useTranslation('smartTools');
 
   const { busy, enabled, plugin } = props;
 
@@ -87,7 +90,7 @@ export const AutoSelect = (props: AutoSelectProps) => {
   return (
     <div className="px-3">
       <p className="pt-4 font-medium text-center leading-relaxed">
-        Hover to preview a selection. Click to confirm. Add or remove points to refine.
+        {t('autoSelect.instructions')}
       </p>
 
       <ToggleGroup
@@ -105,7 +108,7 @@ export const AutoSelect = (props: AutoSelectProps) => {
               <WandSparkles className="size-5" />
             )}
           </ToggleGroupItem>
-          <span className="pt-1 text-orange-600/40">Select object</span>
+          <span className="pt-1 text-orange-600/40">{t('autoSelect.selectObject')}</span>
         </div>
 
         <div className="flex flex-col items-center gap-1">
@@ -114,7 +117,7 @@ export const AutoSelect = (props: AutoSelectProps) => {
             className="rounded-md! aspect-square h-12 hover:border-orange-400/70 hover:[&+*]:text-orange-400 border border-orange-500/25 text-orange-400/25 hover:text-orange-400/70 data-[state=on]:bg-orange-400 data-[state=on]:border-orange-400 data-[state=on]:[&+*]:text-orange-400">
             <Minus className="size-5"/>
           </ToggleGroupItem>
-          <span className="pt-1 text-orange-600/40">Remove area</span>
+          <span className="pt-1 text-orange-600/40">{t('autoSelect.removeArea')}</span>
         </div>
       </ToggleGroup>
 
@@ -124,14 +127,14 @@ export const AutoSelect = (props: AutoSelectProps) => {
             disabled={!enabled || !currentAnnotationId}
             onClick={onConfirm}
             className="px-8 rounded-l-md border border-r-0 border-orange-400 py-1.5 bg-orange-400 hover:bg-orange-400/90 disabled:border-orange-300/5 disabled:bg-orange-500/25">
-            Done
+            {t('autoSelect.done')}
           </button>
 
           <button 
             disabled={!enabled || !currentAnnotationId}
             onClick={onReset}
             className="px-8 rounded-r-md py-1.5 bg-transparent text-orange-500 border border-l-0 border-orange-400 hover:bg-orange-500/10 disabled:bg-orange-500/25 disabled:border-orange-300/5 disabled:text-white">
-            Reset
+            {t('autoSelect.reset')}
           </button>
         </div>
       </div>

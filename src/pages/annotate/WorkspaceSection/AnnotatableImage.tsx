@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type OpenSeadragon from 'openseadragon';
 import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
@@ -71,6 +72,8 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const { image } = props;
 
   const { setSavingState } = useSavingState();
@@ -88,7 +91,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
     setSavingState({
       value: 'failed',
-      message: `Could not save the last annotation. Error: ${error.message}`
+      message: t('savingState.couldNotSaveAnnotation', { message: error.message })
     });
   }
 

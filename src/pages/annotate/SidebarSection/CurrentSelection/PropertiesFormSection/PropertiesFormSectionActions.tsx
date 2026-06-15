@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Replace, Settings, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { TooltippedButton } from '@/components/TooltippedButton';
 import { EntityType } from '@/model';
@@ -21,6 +22,8 @@ interface PropertiesFormSectionActionsProps {
 
 export const PropertiesFormSectionActions = (props: PropertiesFormSectionActionsProps) => {
 
+  const { t } = useTranslation('annotate');
+
   const model = useDataModel();
 
   const [edited, setEdited] = useState<EntityType | undefined>();
@@ -40,7 +43,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
               type="button"
               size="icon" 
               className="rounded-full h-8 w-8"
-              tooltip="Edit entity schema">
+              tooltip={t('propertiesForm.editEntitySchema')}>
               <Settings className="h-4 w-4" />
             </TooltippedButton>
           </DropdownMenuTrigger>
@@ -69,7 +72,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
           size="icon" 
           className="rounded-full h-8 w-8"
           type="button"
-          tooltip="Edit entity schema"
+          tooltip={t('propertiesForm.editEntitySchema')}
           onClick={() => setEdited(withoutInherited)}>
           <Settings className="h-4 w-4" />
         </TooltippedButton>
@@ -80,7 +83,7 @@ export const PropertiesFormSectionActions = (props: PropertiesFormSectionActions
         size="icon" 
         type="button"
         className="rounded-full h-8 w-8 -ml-1 hover:text-red-500"
-        tooltip="Delete this tag"
+        tooltip={t('propertiesForm.deleteTag')}
         onClick={props.onDeleteBody}>
         <Trash2 className="h-4 w-4" />
       </TooltippedButton>
