@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MetadataTable } from '@/components/MetadataTable';
 import { MetadataSchema } from '@/model';
 import { useDataModel, useStore } from '@/store';
@@ -10,17 +11,17 @@ import { DataModelImport } from '@/components/DataModelImport';
 
 export const ImageMetadata = () => {
 
+  const { t } = useTranslation('datamodel');
+
   const store = useStore();
 
   const model = useDataModel();
 
   const [edited, setEdited] = useState<MetadataSchema | undefined>();
 
-  const editorHint = 
-    'Add Properties to record specific details for your images, such as title, source, date, etc.';
+  const editorHint = t('imageMetadata.editorHint');
 
-  const previewHint =
-    'This is how your property will appear when editing metadata in the image gallery.';
+  const previewHint = t('imageMetadata.previewHint');
 
   const onSave = (updated: MetadataSchema, previous?: MetadataSchema) => {
     if (previous && previous.name === updated.name) {
@@ -44,9 +45,7 @@ export const ImageMetadata = () => {
   return (
     <div>
       <p className="p-1 mt-4 text-sm max-w-2xl leading-6">
-        Use schemas to record structured information about your images, such as title, author or source.
-        Create multiple schemas to describe different types of images, e.g. 'artwork', 'historical printed 
-        illustration', or 'archaeological image'.
+        {t('imageMetadata.description')}
       </p>
 
       <MetadataTable
@@ -61,13 +60,13 @@ export const ImageMetadata = () => {
           existingSchemas={model.imageSchemas}
           onSave={onSave}>
           <Button>
-            <Rows3 className="w-4 h-4 mr-2" /> New Image Schema
+            <Rows3 className="w-4 h-4 mr-2" /> {t('imageMetadata.newSchema')}
           </Button>
         </MetadataSchemaEditorDialog>
 
         <DataModelImport type="IMAGE_SCHEMAS">
           <Button variant="outline">
-            <Import className="h-4 w-4 mr-2" /> Import Model
+            <Import className="h-4 w-4 mr-2" /> {t('imageMetadata.importModel')}
           </Button>
         </DataModelImport>
       </div>

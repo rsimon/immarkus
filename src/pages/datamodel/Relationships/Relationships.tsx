@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { ArrowDownToDot, ArrowUpFromDot, Check, Import, Spline } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { DataModelImport } from '@/components/DataModelImport';
 import { RelationshipTypeEditor } from '@/components/RelationshipTypeEditor';
 import { RelationshipType } from '@/model';
@@ -17,6 +18,8 @@ import {
 } from '@/ui/Table';
 
 export const Relationships = () => {
+
+  const { t } = useTranslation('datamodel');
 
   const model = useDataModel();
 
@@ -66,29 +69,28 @@ export const Relationships = () => {
               <ArrowDownToDot className="h-3.5 w-3.5" />
             )}
           </div>
-          <span>Deleted Class</span>
+          <span>{t('relationships.deletedClass')}</span>
         </div>
       )
     }
-  }, [model]);
+  }, [model, t]);
  
   return (
     <>
       <div>
         <p className="p-1 mt-4 text-sm max-w-xl leading-6">
-          You can connect two annotations through a Relationship. A Relationship has a 
-          name (e.g. 'is next to' or 'is part of') and can be directed or undirected.
+          {t('relationships.description')}
         </p>
 
         <div className="rounded-md border mt-6">
           <Table>
             <TableHeader className="text-xs">
               <TableRow>
-                <TableHead className="px-3 whitespace-nowrap">Relationship Name</TableHead>
-                <TableHead className="px-2 whitespace-nowrap w-[280px]">Description</TableHead>
-                <TableHead className="px-2 whitespace-nowrap text-center">Directed</TableHead>
-                <TableHead className="px-2 whitespace-nowrap">Source Class</TableHead>
-                <TableHead className="px-2 whitespace-nowrap">Target Class</TableHead>
+                <TableHead className="px-3 whitespace-nowrap">{t('relationships.headerName')}</TableHead>
+                <TableHead className="px-2 whitespace-nowrap w-[280px]">{t('relationships.headerDescription')}</TableHead>
+                <TableHead className="px-2 whitespace-nowrap text-center">{t('relationships.headerDirected')}</TableHead>
+                <TableHead className="px-2 whitespace-nowrap">{t('relationships.headerSourceClass')}</TableHead>
+                <TableHead className="px-2 whitespace-nowrap">{t('relationships.headerTargetClass')}</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -99,7 +101,7 @@ export const Relationships = () => {
                   <TableCell
                     colSpan={6}
                     className="h-24 text-center text-muted-foreground">
-                    No relationship types defined
+                    {t('relationships.empty')}
                   </TableCell>
                 </TableRow>
               ) : relationshipTypes.map(rel => (
@@ -140,13 +142,13 @@ export const Relationships = () => {
         <div className="flex mt-4 gap-2">
           <RelationshipTypeEditor>
             <Button>
-              <Spline size={16} className="mr-2" /> Add Relationship Type
+              <Spline size={16} className="mr-2" /> {t('relationships.addType')}
             </Button>
           </RelationshipTypeEditor>
 
           <DataModelImport type="RELATIONSHIP_TYPES">
             <Button variant="outline">
-              <Import className="h-4 w-4 mr-2" /> Import Model
+              <Import className="h-4 w-4 mr-2" /> {t('relationships.importModel')}
             </Button>
           </DataModelImport>
         </div>

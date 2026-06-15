@@ -1,0 +1,61 @@
+{
+  "title": "Data Model",
+  "tabs": {
+    "entityClasses": "Entity Classes",
+    "relationships": "Relationships",
+    "imageMetadata": "Image Metadata",
+    "folderMetadata": "Folder Metadata"
+  },
+  "entityTypes": {
+    "description": "Use Entity Classes to annotate specific concepts or things with your annotations, and record details like the the material of an item, or the number of legs on an animal.",
+    "createNew": "Create New Entity Class",
+    "importModel": "Import Model",
+    "errorTitle": "Error",
+    "errorCouldNotDelete": "Could not delete entity"
+  },
+  "entityTypesTable": {
+    "headerEntityClass": "Entity Class",
+    "headerDisplayName": "Display Name",
+    "headerDescription": "Description",
+    "headerProperties": "Properties",
+    "empty": "No entity classes"
+  },
+  "entityTypeActions": {
+    "edit": "Edit Entity Class",
+    "delete": "Delete Entity Class",
+    "confirmDelete": "This action will delete the entity class from the vocabulary.",
+    "confirmDeleteWithChildren_one": "This action will delete the entity class from the vocabulary. {{count}} child class will be moved to the root of your data model.",
+    "confirmDeleteWithChildren_other": "This action will delete the entity class from the vocabulary. {{count}} child classes will be moved to the root of your data model."
+  },
+  "imageMetadata": {
+    "description": "Use schemas to record structured information about your images, such as title, author or source. Create multiple schemas to describe different types of images, e.g. 'artwork', 'historical printed illustration', or 'archaeological image'.",
+    "editorHint": "Add Properties to record specific details for your images, such as title, source, date, etc.",
+    "previewHint": "This is how your property will appear when editing metadata in the image gallery.",
+    "newSchema": "New Image Schema",
+    "importModel": "Import Model"
+  },
+  "folderMetadata": {
+    "description": "Use schemas to record structured information about your folders. Create multiple schemas to describe different folder types, e.g. 'artwork', 'historical printed text', 'journal article', or 'modern monograph'.",
+    "editorHint": "Add Properties to record specific details for your folders, such as title, source, date, etc.",
+    "previewHint": "This is how your property will appear when editing metadata in the image gallery.",
+    "newSchema": "New Folder Schema",
+    "importModel": "Import Model"
+  },
+  "relationships": {
+    "description": "You can connect two annotations through a Relationship. A Relationship has a name (e.g. 'is next to' or 'is part of') and can be directed or undirected.",
+    "headerName": "Relationship Name",
+    "headerDescription": "Description",
+    "headerDirected": "Directed",
+    "headerSourceClass": "Source Class",
+    "headerTargetClass": "Target Class",
+    "empty": "No relationship types defined",
+    "deletedClass": "Deleted Class",
+    "addType": "Add Relationship Type",
+    "importModel": "Import Model"
+  },
+  "relationshipActions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "This action will delete the relationship type from your data model."
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { TreeNode } from 'primereact/treenode';
 import { TreeTable } from 'primereact/treetable';
 import { Column } from 'primereact/column';
@@ -31,6 +32,8 @@ interface EntityTypesTableProps {
 }
 
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
+
+  const { t } = useTranslation('datamodel');
 
   const model = useDataModel();
 
@@ -142,28 +145,28 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
         togglerTemplate={togglerTemplate}
         emptyMessage={(
           <div className="h-24 flex items-center justify-center text-center text-muted-foreground">
-            No entity classes
+            {t('entityTypesTable.empty')}
           </div>
         )}>
 
         <Column
           expander
-          header="Entity Class" 
+          header={t('entityTypesTable.headerEntityClass')}
           headerClassName={headerClass}
           body={idTemplate} />
 
         <Column 
-          header="Display Name" 
+          header={t('entityTypesTable.headerDisplayName')}
           headerClassName={headerClass}
           body={displayNameTemplate} />
 
         <Column 
-          header="Description"
+          header={t('entityTypesTable.headerDescription')}
           headerClassName={headerClass}
           field="description" />
 
         <Column
-          header="Properties"
+          header={t('entityTypesTable.headerProperties')}
           headerClassName={headerClass}
           body={propertiesTemplate} />
 

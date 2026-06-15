@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Button } from '@/ui/Button';
 import { 
@@ -19,6 +20,8 @@ interface RelationshipActionsProps {
 
 export const RelationshipActions = (props: RelationshipActionsProps) => {
 
+  const { t } = useTranslation('datamodel');
+
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
@@ -32,19 +35,19 @@ export const RelationshipActions = (props: RelationshipActionsProps) => {
 
         <DropdownMenuContent sideOffset={-10}>
           <DropdownMenuItem className="text-xs" onSelect={props.onEdit}>
-            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />Edit
+            <Pencil size={16} className="inline text-muted-foreground relative -top-px mr-2" />{t('relationshipActions.edit')}
           </DropdownMenuItem>
 
           <DropdownMenuItem className="text-xs" onSelect={() => setConfirmDelete(true)}>
             <Trash2 size={16} className="inline text-red-400 relative -top-px mr-2" />
-            <span className="text-red-500">Delete</span>
+            <span className="text-red-500">{t('relationshipActions.delete')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <ConfirmedDelete
         open={confirmDelete}
-        message="This action will delete the relationship type from your data model."
+        message={t('relationshipActions.confirmDelete')}
         onConfirm={props.onDelete}
         onOpenChange={setConfirmDelete} />
     </>

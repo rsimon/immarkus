@@ -1,0 +1,15 @@
+{
+  "title": "About IMMARKUS",
+  "developedBy": "IMMARKUS: Image Annotation has been developed by Prof. Dr. Hilde De Weerdt, <rainerLink>Dr. Rainer Simon</rainerLink>, Dawn Zhuang, Dr. Lee Sunkyu, Dr. Iva Stojević, Meret Meister, and Xi Wangzhi as part of the Regionalizing Infrastructures in Chinese History (<regInfraLink>RegInfra</regInfraLink>) project.",
+  "citation": {
+    "intro": "To cite the software when you use it in your research or teaching, please use the following bibliographic information:",
+    "platform": "Platform",
+    "code": "Code",
+    "instructions": "Instructions"
+  },
+  "logos": {
+    "kuLeuven": "KU Leuven logo",
+    "erc": "Logo of the European Research Council",
+    "europeFlag": "Flag of Europe"
+  }
+}

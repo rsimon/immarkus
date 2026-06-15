@@ -1,0 +1,15 @@
+{
+  "title": "IMMARKUS について",
+  "developedBy": "IMMARKUS: Image Annotation は、Regionalizing Infrastructures in Chinese History(<regInfraLink>RegInfra</regInfraLink>)プロジェクトの一環として、Prof. Dr. Hilde De Weerdt、<rainerLink>Dr. Rainer Simon</rainerLink>、Dawn Zhuang、Dr. Lee Sunkyu、Dr. Iva Stojević、Meret Meister、Xi Wangzhi によって開発されました。",
+  "citation": {
+    "intro": "研究や教育で本ソフトウェアを引用する際は、以下の書誌情報をご利用ください。",
+    "platform": "プラットフォーム",
+    "code": "コード",
+    "instructions": "利用手順"
+  },
+  "logos": {
+    "kuLeuven": "KU Leuven のロゴ",
+    "erc": "欧州研究会議 (ERC) のロゴ",
+    "europeFlag": "欧州旗"
+  }
+}

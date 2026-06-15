@@ -1,5 +1,6 @@
-import { useState } from 'react'; 
+import { useState } from 'react';
 import { Cuboid, Import } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { DataModelImport } from '@/components/DataModelImport';
 import { EntityTypeEditor } from '@/components/EntityTypeEditor';
 import { EntityType } from '@/model';
@@ -9,6 +10,8 @@ import { useToast, ToastTitle } from '@/ui/Toaster';
 import { EntityTypesTable } from './EntityTypesTable';
 
 export const EntityTypes = () => {
+
+  const { t } = useTranslation('datamodel');
 
   const { toast } = useToast();
 
@@ -23,16 +26,15 @@ export const EntityTypes = () => {
         toast({
           variant: 'destructive',
           // @ts-ignore
-          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> Error</ToastTitle>,
-          description: 'Could not delete entity'
+          title: <ToastTitle className="flex"><XCircle size={18} className="mr-2" /> {t('entityTypes.errorTitle')}</ToastTitle>,
+          description: t('entityTypes.errorCouldNotDelete')
         });    
       });
 
   return (
     <>
       <p className="p-1 mt-4 text-sm max-w-xl leading-6">
-        Use Entity Classes to annotate specific concepts or things with your annotations, and record details 
-        like the the material of an item, or the number of legs on an animal.
+        {t('entityTypes.description')}
       </p>
 
       <EntityTypesTable
@@ -42,13 +44,13 @@ export const EntityTypes = () => {
       <div className="flex mt-4 gap-2">
         <EntityTypeEditor>
           <Button>
-            <Cuboid size={16} className="mr-2" /> Create New Entity Class
+            <Cuboid size={16} className="mr-2" /> {t('entityTypes.createNew')}
           </Button>
         </EntityTypeEditor>
 
         <DataModelImport type="ENTITY_TYPES">
           <Button variant="outline">
-            <Import className="h-4 w-4 mr-2" /> Import Model
+            <Import className="h-4 w-4 mr-2" /> {t('entityTypes.importModel')}
           </Button>
         </DataModelImport>
       </div>
