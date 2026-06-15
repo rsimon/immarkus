@@ -1,4 +1,5 @@
 import { ShieldAlert } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 
 interface IndexOutdatedProps {
@@ -11,20 +12,21 @@ interface IndexOutdatedProps {
 
 export const IndexOutdated = (props: IndexOutdatedProps) => {
 
+  const { t } = useTranslation('settings');
+
   return (
     <div className="py-1.5">
       <div className="rounded-lg relative p-6 border border-red-700/30 bg-red-700/5 space-y-6 max-w-2xl">
         <div className="flex gap-2 items-center text-red-700 font-medium">
           <ShieldAlert className="size-5" />
           <p>
-            Your index is out of date
+            {t('indexOutdated.title')}
           </p>
         </div>
 
         <div className="text-sm leading-relaxed text-red-700 space-y-3">
           <p>
-            Your image collection has changed since the last indexing run. Update the 
-            index to include new or modified images in Visual Search.
+            {t('indexOutdated.description')}
           </p>
         </div>
 
@@ -34,12 +36,11 @@ export const IndexOutdated = (props: IndexOutdatedProps) => {
             variant="outline"
             className="relative border-red-700/30 bg-red-700/90 hover:bg-red-700/80 tracking-wide text-white hover:text-white"
             onClick={props.onReindex}>
-            Index {props.toAdd} new image{props.toAdd > 1 && 's'}
+            {t('indexOutdated.reindexButton', { count: props.toAdd })}
           </Button>
 
           <p className="text-xs text-red-800/60 leading-relaxed text-center max-w-lg">
-            Visual search only includes indexed images until you update. Processing time depends on your 
-            collection and computer, and may take up to a minute per image. 
+            {t('indexOutdated.footnote')}
           </p>
         </div>
       </div>

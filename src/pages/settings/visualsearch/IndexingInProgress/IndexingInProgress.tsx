@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Disc3 } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Progress } from '@/ui/Progress';
 import { IndexingProgress, VisualSearch } from '@/utils/useVisualSearch';
 
@@ -19,6 +20,8 @@ const formatURL = (url: string, maxLength = 30) => {
 }
 
 export const IndexingInProgress = (props: IndexingInProgressProps) => {
+
+  const { t } = useTranslation('settings');
 
   const [progress, setProgress] = useState<IndexingProgress>({ phase: 'initializing' });
 
@@ -42,7 +45,7 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
         <div className="flex gap-2 items-center text-sky-700 font-medium">
           <Disc3 className="size-5 animate-spin duration-2000" />
           <p>
-            Indexing your images
+            {t('indexing.title')}
           </p>
         </div>
 
@@ -52,22 +55,24 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
             className="h-2.5 bg-white border border-sky-800/15 [&>div]:bg-sky-800" />
 
           {progress.phase === 'initializing' ? (
-            <p>Initializing...</p>
+            <p>{t('indexing.initializing')}</p>
           ) : progress.phase === 'downloading_model' ? (
-            <p>Downloading model: {formatURL(progress.model, 60)}</p>
+            <p>{t('indexing.downloadingModel', { model: formatURL(progress.model, 60) })}</p>
           ) : progress.phase === 'indexing' ? (
-            <p>Processed {progress.progress.toLocaleString()} of {progress.total.toLocaleString()} images</p>
+            <p>{t('indexing.processed', { progress: progress.progress.toLocaleString(), total: progress.total.toLocaleString() })}</p>
           ) : progress.phase === 'fetching' ? (
-            <p>Fetching IIIF: {formatURL(progress.url)}</p>
+            <p>{t('indexing.fetchingIIIF', { url: formatURL(progress.url) })}</p>
           ) : (
-            <p>Sucessfully processed {progress.total} images</p>
+            <p>{t('indexing.success', { total: progress.total })}</p>
           )}
         </div>
       </div>
 
       <p className="leading-relaxed font-light">
-        <strong className="font-semibold">Keep this page open while indexing completes.</strong> Indexing 
-        runs locally in your browser and may take up to a minute per image.
+        <Trans
+          ns="settings"
+          i18nKey="indexing.keepOpen"
+          components={{ b: <strong className="font-semibold" /> }} />
       </p>
     </div>
   )

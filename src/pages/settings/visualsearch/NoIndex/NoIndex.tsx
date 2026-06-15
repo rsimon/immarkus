@@ -1,4 +1,5 @@
 import { ChevronDown, PanelsTopLeft } from 'lucide-react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
@@ -22,21 +23,23 @@ const getModelName = (url: string) =>
 
 export const NoIndex = (props: NoIndexProps) => {
 
+  const { t } = useTranslation('settings');
+
   return (
     <div className="text-sm">    
       <div className="leading-relaxed space-y-3 mt-6 font-light">
         <p>
-          With IMMARKUS Visual Search, you can find objects inside your 
-          images based on example.
-          Pick the <strong className="font-semibold">Visual Search</strong> smart tool 
-          in the <strong className="font-semibold"><PanelsTopLeft className="size-3.5 inline mb-0.5" strokeWidth={2.25} /> Workspace</strong>, select 
-          an annotation, and find visually similar matches across your collection.
+          <Trans
+            ns="settings"
+            i18nKey="noIndex.intro1"
+            components={{
+              b: <strong className="font-semibold" />,
+              wsIcon: <PanelsTopLeft className="size-3.5 inline mb-0.5" strokeWidth={2.25} />
+            }} />
         </p>
 
         <p>
-          Before you can use visual search, your images need to be indexed. 
-          IMMARKUS analyzes your images, detects objects, and makes them 
-          searchable. You only need to do this once.
+          {t('noIndex.intro2')}
         </p>
       </div>
 
@@ -46,14 +49,14 @@ export const NoIndex = (props: NoIndexProps) => {
             size="lg"
             className="w-full"
             onClick={() => props.onStartIndexing()}>
-            Start indexing {props.imageCount} images
+            {t('noIndex.startButton', { count: props.imageCount })}
           </Button>
 
           {props.availableSegmenters.length > 1 && (
             <Collapsible>
               <CollapsibleTrigger asChild>
                 <Button variant="link" className="px-0.5 mt-1 font-light group w-full flex justify-start gap-1">
-                  Advanced Options
+                  {t('noIndex.advancedOptions')}
                   <ChevronDown 
                     className="size-4 group-data-[state=open]:rotate-180"/>
                 </Button>
@@ -62,9 +65,9 @@ export const NoIndex = (props: NoIndexProps) => {
               <CollapsibleContent className="rounded-md bg-muted p-4 text-xs">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
                   <div className="sm:self-center space-y-1">
-                    <p className="font-medium text-foreground">Segmentation model</p>
+                    <p className="font-medium text-foreground">{t('noIndex.segmentationModel')}</p>
                     <p className="text-muted-foreground">
-                      Controls how images are divided into searchable regions
+                      {t('noIndex.segmentationModelDescription')}
                     </p>
                   </div>
 
@@ -90,9 +93,7 @@ export const NoIndex = (props: NoIndexProps) => {
         </div>
 
         <p className="text-xs font-light text-muted-foreground leading-relaxed">
-          Indexing runs directly in your browser and does not upload your 
-          images to external services. Processing time depends on your 
-          collection and computer, and may take up to a minute per image. 
+          {t('noIndex.footnote')}
         </p>
       </div>
     </div>
