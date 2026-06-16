@@ -2,7 +2,7 @@ import { ShieldAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 
-interface IndexOutdatedProps {
+interface IndexIncompleteProps {
 
   toAdd: number;
 
@@ -10,7 +10,7 @@ interface IndexOutdatedProps {
 
 }
 
-export const IndexOutdated = (props: IndexOutdatedProps) => {
+export const IndexIncomplete = (props: IndexIncompleteProps) => {
 
   const { t } = useTranslation('settings');
 
@@ -20,13 +20,13 @@ export const IndexOutdated = (props: IndexOutdatedProps) => {
         <div className="flex gap-2 items-center text-red-700 font-medium">
           <ShieldAlert className="size-5" />
           <p>
-            {t('indexOutdated.title')}
+            {t('indexIncomplete.title')}
           </p>
         </div>
 
         <div className="text-sm leading-relaxed text-red-700 space-y-3">
           <p>
-            {t('indexOutdated.description')}
+            {t('indexIncomplete.description')}
           </p>
         </div>
 
@@ -36,11 +36,11 @@ export const IndexOutdated = (props: IndexOutdatedProps) => {
             variant="outline"
             className="relative border-red-700/30 bg-red-700/90 hover:bg-red-700/80 tracking-wide text-white hover:text-white"
             onClick={props.onReindex}>
-            {t('indexOutdated.reindexButton', { count: props.toAdd })}
+            {t('indexIncomplete.reindexButton', { count: props.toAdd })}
           </Button>
 
           <p className="text-xs text-red-800/60 leading-relaxed text-center max-w-lg">
-            {t('indexOutdated.footnote')}
+            {t('indexIncomplete.footnote')}
           </p>
         </div>
       </div>

@@ -11,14 +11,16 @@ export type IndexStatus =
   | { state: 'loading' }
   | { state: 'index_missing' } 
   | { state: 'index_incomplete', toAdd: number, toRemove: number }
-  | { state: 'index_complete' };
+  | { state: 'index_complete', failed?: FailedManifests };
 
 export type IndexingProgress = 
   | { phase: 'initializing' }
   | { phase: 'downloading_model', model: string, progress: number}
-  | { phase: 'fetching', url: string, progress: number, total: number }
-  | { phase: 'indexing', id: string, progress: number, total: number }
-  | { phase: 'done', total: number };
+  | { phase: 'fetching', url: string, progress: number, total: number, errors: number }
+  | { phase: 'indexing', id: string, progress: number, total: number, errors: number }
+  | { phase: 'done', total: number, failed: string[] };
+
+export type FailedManifests = { manifests: string[], totalImages: number };
 
 export interface VisualSearch {
 
@@ -145,17 +147,20 @@ export const useVisualSearch = (segmenterUrl?: string): VisualSearch => {
 
     // Index image files
     if (images.length > 0)
-      onProgress?.({ phase: 'indexing', progress: 0, total, id: images[0].id });
+      onProgress?.({ phase: 'indexing', progress: 0, total, id: images[0].id, errors: 0 });
 
     await images.reduce<Promise<void>>((promise, image, idx) => promise.then(() => {
       const skip = skipExisting && index.images.some(i => i.imageId === image.id);
 
       return skip ? Promise.resolve() : index.addToIndex(image.file, image.id).then(() => {
-        onProgress?.({ phase: 'indexing', id: image.id, progress: idx + 1, total })
+        onProgress?.({ phase: 'indexing', id: image.id, progress: idx + 1, total, errors: 0 })
       });
     }), Promise.resolve());
     
     let progress = images.length;
+
+    let failedManifests: string[] = [];
+    let failedCanvasCount = 0;
 
     // Resolve IIIF manifests
     await manifests.reduce<Promise<void>>((promise, manifest) => promise.then(async () => {
@@ -163,37 +168,58 @@ export const useVisualSearch = (segmenterUrl?: string): VisualSearch => {
         phase: 'fetching',
         url: manifest.uri,
         progress,
-        total
+        total,
+        errors: failedManifests.length
       });
 
-      const resolved = await fetchManifest(manifest.uri);
-      
-      return resolved.canvases.reduce<Promise<void>>((p, canvas, idx) => p.then(() => {
-        const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`
+      try {
+        const resolved = await fetchManifest(manifest.uri);
         
-        const skip = skipExisting && index.images.some(i => i.imageId === id);
-        return skip ? Promise.resolve() : fetchImage(canvas).then(file => {        
-          onProgress?.({ 
-            phase: 'indexing',
-            progress,
-            total,
-            id
-          });
+        return resolved.canvases.reduce<Promise<void>>((p, canvas, idx) => p.then(() => {
+          const id = `iiif:${manifest.id}:${manifest.canvases[idx].id}`;
+          
+          const skip = skipExisting && index.images.some(i => i.imageId === id);
+          return skip ? Promise.resolve() : fetchImage(canvas).then(file => {        
+            onProgress?.({ 
+              phase: 'indexing',
+              progress,
+              total,
+              id,
+              errors: failedManifests.length
+            });
 
-          progress++;
+            progress++;
 
-          return index.addToIndex(file, id).then(() => {
-            onProgress?.({ phase: 'indexing', id, progress, total });
-          });
-        })
-      }), Promise.resolve());
+            return index.addToIndex(file, id).then(() => {
+              onProgress?.({ phase: 'indexing', id, progress, total, errors: failedManifests.length });
+            });
+          })
+        }), Promise.resolve());
+      } catch (error) {
+        // console.error(error);
+        console.error(`Error fetching manifest: ${manifest.uri} (${manifest.canvases.length} canvases)`);
+
+        progress += manifest.canvases.length;
+
+        failedManifests.push(manifest.uri);
+        failedCanvasCount += manifest.canvases.length;
+
+        const id = `iiif:${manifest.id}:${manifest.canvases[manifest.canvases.length - 1].id}`;
+        onProgress?.({ phase: 'indexing', id, progress, total, errors: failedManifests.length });
+      }
     }), Promise.resolve());
     
     await index.save();
     
-    setIndexStatus({ state: 'index_complete' });
+    setIndexStatus({ 
+      state: 'index_complete', 
+      failed: { 
+        manifests: failedManifests, 
+        totalImages: failedCanvasCount
+      } 
+    });
 
-    onProgress?.({ phase: 'done', total });
+    onProgress?.({ phase: 'done', total, failed: failedManifests });
   }, [index, storedImageIds, currentEmbedderUrl, currentSegmenterUrl]);
 
   const deleteIndex = useCallback(async () => {

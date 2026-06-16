@@ -84,7 +84,7 @@ export const VisualSearch = (props: VisualSearchProps) => {
             <p>
               <Trans
                 ns="smartTools"
-                i18nKey="visualSearch.indexOutdated"
+                i18nKey="visualSearch.indexIncomplete"
                 components={{
                   searchLink: <Link to="/visual-search" className="underline" />
                 }} />

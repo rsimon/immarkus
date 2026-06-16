@@ -6,7 +6,7 @@ import { useRuntimeConfig } from '@/RuntimeConfig';
 import { IndexReady } from './IndexReady';
 import { NoIndex } from './NoIndex';
 import { IndexingInProgress } from './IndexingInProgress';
-import { IndexOutdated } from './IndexOutdated';
+import { IndexIncomplete } from './IndexIncomplete';
 
 export const VisualSearch = () => {
 
@@ -24,6 +24,8 @@ export const VisualSearch = () => {
 
   const vs = useVisualSearch(selectedSegmenter);
 
+  const [failed, setFailed] = useState<string[]>([]);
+
   const count = useMemo(() => {
     if (!store) return 0;
 
@@ -36,12 +38,17 @@ export const VisualSearch = () => {
     return imageCount + canvasCount;
   }, [store]);
 
+  const onIndexingComplete = (failed: string[]) => {
+    setFailed(failed);
+    setIsIndexing(false);
+  }
+
   return (
     <div className="mt-4 max-w-2xl">
       {isIndexing ? (
         <IndexingInProgress 
           vs={vs} 
-          onDone={() => setIsIndexing(false)} />
+          onDone={onIndexingComplete} />
       ) : vs.indexStatus.state === 'index_missing' ? (
         <NoIndex 
           imageCount={count} 
@@ -50,11 +57,13 @@ export const VisualSearch = () => {
           onStartIndexing={() => setIsIndexing(true)} 
           onChangeSegmenter={setSelectedSegmenter} />
       ) : vs.indexStatus.state === 'index_incomplete' ? (
-        <IndexOutdated 
+        <IndexIncomplete 
           toAdd={vs.indexStatus.toAdd} 
           onReindex={() => setIsIndexing(true)} />
       ) : vs.indexStatus.state === 'index_complete' ? (
-        <IndexReady vs={vs} />
+        <IndexReady 
+          vs={vs} 
+          failed={failed} />
       ) : null}
     </div>
   )

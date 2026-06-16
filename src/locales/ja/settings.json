@@ -15,6 +15,7 @@
   },
   "indexing": {
     "title": "画像をインデックス中",
+    "errors": "errors",
     "initializing": "初期化しています...",
     "downloadingModel": "モデルをダウンロード中: {{model}}",
     "processed": "{{total}} 件中 {{progress}} 件の画像を処理しました",
@@ -22,7 +23,7 @@
     "success": "{{total}} 件の画像を処理しました",
     "keepOpen": "<b>インデックス作成が完了するまで、このページを開いたままにしてください。</b>インデックス作成はブラウザ内でローカルに実行され、画像 1 枚につき最大 1 分ほどかかる場合があります。"
   },
-  "indexOutdated": {
+  "indexIncomplete": {
     "title": "インデックスが最新ではありません",
     "description": "前回のインデックス作成以降に画像コレクションが変更されています。新規または変更された画像をビジュアル検索に含めるには、インデックスを更新してください。",
     "reindexButton_other": "{{count}} 件の新しい画像をインデックス",

@@ -89,7 +89,7 @@
   "visualSearch": {
     "description": "Search your collection for visually similar elements.",
     "notIndexed": "Your collection is not indexed. Go to <nowrap><icon/> <searchLink>Visual Search</searchLink></nowrap> to learn more.",
-    "indexOutdated": "Your search index is outdated. Go to <searchLink>Visual Search</searchLink> to learn more.",
+    "indexIncomplete": "Your search index is incomplete. Go to <searchLink>Visual Search</searchLink> to learn more.",
     "searchInsideImages": "Search Inside Images",
     "discoverSimilar": "Discover similar patterns across all images.",
     "selectAnnotation": "Select an annotation to start.",

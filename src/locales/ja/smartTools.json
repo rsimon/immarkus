@@ -88,7 +88,7 @@
   "visualSearch": {
     "description": "コレクション内から視覚的に類似した要素を検索します。",
     "notIndexed": "コレクションがインデックス化されていません。詳しくは <nowrap><icon/> <searchLink>ビジュアル検索</searchLink></nowrap> をご覧ください。",
-    "indexOutdated": "検索インデックスが最新ではありません。詳しくは <searchLink>ビジュアル検索</searchLink> をご覧ください。",
+    "indexIncomplete": "検索インデックスが最新ではありません。詳しくは <searchLink>ビジュアル検索</searchLink> をご覧ください。",
     "searchInsideImages": "画像内を検索",
     "discoverSimilar": "すべての画像から類似のパターンを見つけます。",
     "selectAnnotation": "アノテーションを選択して開始してください。",

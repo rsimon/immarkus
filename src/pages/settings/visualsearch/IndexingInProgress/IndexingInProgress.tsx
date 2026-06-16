@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Disc3 } from 'lucide-react';
+import { Disc3, FileExclamationPoint } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Progress } from '@/ui/Progress';
 import { IndexingProgress, VisualSearch } from '@/utils/useVisualSearch';
@@ -8,7 +8,7 @@ interface IndexingInProgressProps {
 
   vs: VisualSearch;
 
-  onDone(): void;
+  onDone(errors: string[]): void;
 
 }
 
@@ -27,6 +27,8 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
 
   const [percentage, setPercentage] = useState(0);
 
+  const errors = 'errors' in progress ? progress.errors : 0;
+
   useEffect(() => {
     props.vs.runIndexing(setProgress);
   }, []);
@@ -36,7 +38,7 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
       setPercentage(Math.round(100 * progress.progress / progress.total)); 
 
     if (progress.phase === 'done')
-      props.onDone();
+      props.onDone(progress.failed);
   }, [progress]);
 
   return (
@@ -47,6 +49,12 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
           <p>
             {t('indexing.title')}
           </p>
+
+          {errors > 0 && (
+            <div className="ml-1 flex gap-1 items-center text-xs font-normal text-red-600">
+              <FileExclamationPoint className="size-4 mb-px" /> {errors.toLocaleString()} {t('indexing.errors')}
+            </div>
+          )}
         </div>
 
         <div className="text-xs text-center text-sky-700/70 space-y-4 pb-2">

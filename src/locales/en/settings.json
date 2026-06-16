@@ -15,6 +15,7 @@
   },
   "indexing": {
     "title": "Indexing your images",
+    "errors": "errors",
     "initializing": "Initializing...",
     "downloadingModel": "Downloading model: {{model}}",
     "processed": "Processed {{progress}} of {{total}} images",
@@ -22,9 +23,9 @@
     "success": "Successfully processed {{total}} images",
     "keepOpen": "<b>Keep this page open while indexing completes.</b> Indexing runs locally in your browser and may take up to a minute per image."
   },
-  "indexOutdated": {
-    "title": "Your index is out of date",
-    "description": "Your image collection has changed since the last indexing run. Update the index to include new or modified images in Visual Search.",
+  "indexIncomplete": {
+    "title": "Your index is incomplete",
+    "description": "Your collection includes images that are not yet indexed. Update the index to include new or modified images in Visual Search.",
     "reindexButton_one": "Index {{count}} new image",
     "reindexButton_other": "Index {{count}} new images",
     "footnote": "Visual search only includes indexed images until you update. Processing time depends on your collection and computer, and may take up to a minute per image."

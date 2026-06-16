@@ -6,6 +6,8 @@ import { VisualSearch } from '@/utils/useVisualSearch';
 
 interface IndexReadyProps {
 
+  failed: string[];
+  
   vs: VisualSearch;
 
 }
