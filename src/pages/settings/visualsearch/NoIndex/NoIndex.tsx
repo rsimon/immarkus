@@ -49,7 +49,7 @@ export const NoIndex = (props: NoIndexProps) => {
             size="lg"
             className="w-full"
             onClick={() => props.onStartIndexing()}>
-            {t('noIndex.startButton', { count: props.imageCount })}
+            {t('noIndex.startButton', { count: props.imageCount, formattedCount: props.imageCount.toLocaleString() })}
           </Button>
 
           {props.availableSegmenters.length > 1 && (

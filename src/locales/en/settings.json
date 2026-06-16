@@ -42,8 +42,8 @@
   "noIndex": {
     "intro1": "With IMMARKUS Visual Search, you can find objects inside your images based on example. Pick the <b>Visual Search</b> smart tool in the <b><wsIcon /> Workspace</b>, select an annotation, and find visually similar matches across your collection.",
     "intro2": "Before you can use visual search, your images need to be indexed. IMMARKUS analyzes your images, detects objects, and makes them searchable. You only need to do this once.",
-    "startButton_one": "Start indexing {{count}} image",
-    "startButton_other": "Start indexing {{count}} images",
+    "startButton_one": "Start indexing {{formattedCount}} image",
+    "startButton_other": "Start indexing {{formattedCount}} images",
     "advancedOptions": "Advanced Options",
     "segmentationModel": "Segmentation model",
     "segmentationModelDescription": "Controls how images are divided into searchable regions",
