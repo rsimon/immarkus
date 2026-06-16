@@ -52,7 +52,7 @@ export const IndexingInProgress = (props: IndexingInProgressProps) => {
 
           {errors > 0 && (
             <div className="ml-1 flex gap-1 items-center text-xs font-normal text-red-600">
-              <FileExclamationPoint className="size-4 mb-px" /> {errors.toLocaleString()} {t('indexing.errors')}
+              <FileExclamationPoint className="size-4 mb-px" /> {errors.toLocaleString()} {t('errors')}
             </div>
           )}
         </div>

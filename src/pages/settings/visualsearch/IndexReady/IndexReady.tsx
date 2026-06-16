@@ -1,13 +1,22 @@
-import { BadgeCheck, PanelsTopLeft } from 'lucide-react';
+import { BadgeCheck, PanelsTopLeft, TriangleAlert } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { Button } from '@/ui/Button';
+import { cn } from '@/ui/utils';
 import { VisualSearch } from '@/utils/useVisualSearch';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@/ui/Dialog';
 
 interface IndexReadyProps {
 
   failed: string[];
-  
+
   vs: VisualSearch;
 
 }
@@ -23,10 +32,46 @@ export const IndexReady = (props: IndexReadyProps) => {
   return (
     <div className="py-1.5">
       <div className="relative text-sm space-y-6">
-        <div className="flex gap-2 items-center font-medium rounded-lg p-4 border border-green-600 bg-green-600/5 text-green-700">
-          <BadgeCheck className="size-5" />
+        <div className={cn(
+            'flex gap-2 items-center font-medium rounded-lg p-4 border',
+            props.failed.length === 0 
+              ? 'border-green-600 bg-green-600/5 text-green-700' 
+              : 'border-amber-600 bg-amber-600/5 text-amber-600' 
+          )}>
+          {props.failed.length === 0 ? (
+            <BadgeCheck className="size-5" />
+          ) : (
+            <TriangleAlert className="size-5" />
+          )}
           <p>
-            {t('indexReady.title')}
+            {t('indexReady.title')} {props.failed.length > 0 && (
+              <>· <Dialog>
+                <DialogTrigger 
+                  asChild
+                  className="underline text-amber-600/80">
+                  <button>{props.failed.length} {t('errors')}</button>
+                </DialogTrigger>
+
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Errors</DialogTitle>
+                    <DialogDescription className="sr-only">
+                      {t('indexReady.errorsOccurred')}
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-2">
+                    <ul className="space-y-1">
+                      {props.failed.map((failed, idx) => (
+                        <li key={idx} className="text-sm wrap-break">
+                          {failed}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </DialogContent>
+              </Dialog></>
+            )}
           </p>
         </div>
 

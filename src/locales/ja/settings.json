@@ -15,7 +15,6 @@
   },
   "indexing": {
     "title": "画像をインデックス中",
-    "errors": "errors",
     "initializing": "初期化しています...",
     "downloadingModel": "モデルをダウンロード中: {{model}}",
     "processed": "{{total}} 件中 {{progress}} 件の画像を処理しました",

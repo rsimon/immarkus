@@ -1,6 +1,7 @@
 {
   "title": "Settings",
   "description": "Application-wide settings and configuration.",
+  "errors": "errors",
   "nav": {
     "general": "General",
     "visualSearch": "Visual Search"
@@ -15,7 +16,6 @@
   },
   "indexing": {
     "title": "Indexing your images",
-    "errors": "errors",
     "initializing": "Initializing...",
     "downloadingModel": "Downloading model: {{model}}",
     "processed": "Processed {{progress}} of {{total}} images",
@@ -32,6 +32,7 @@
   },
   "indexReady": {
     "title": "Your images are ready to search",
+    "errorsOccurred": "The following errors occurred during indexing:",
     "description": "IMMARKUS has successfully analyzed your images and made them searchable. Pick the <b>Visual Search</b> smart tool in the <b><wsIcon /> Workspace</b> to search for visually similar matches.",
     "stats": "{{images}} images indexed · {{objects}} objects detected",
     "dangerZone": "Danger Zone",
