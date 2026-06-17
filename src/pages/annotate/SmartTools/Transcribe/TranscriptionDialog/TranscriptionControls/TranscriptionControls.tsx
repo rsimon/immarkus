@@ -46,6 +46,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const { t } = useTranslation('smartTools');
 
+  const { t: ts } = useTranslation('services');
+
   const { connectorId, serviceOptions } = props.options;
 
   const { connectorConfig, serviceConfig } = useMemo(() => {
@@ -95,23 +97,25 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         value={value} 
         onValueChanged={onValueChanged} />
     ) : param.type === 'radio' ? (
-      <RadioParameterControl 
+      <RadioParameterControl
         key={param.id}
         param={param}
+        connectorId={connectorConfig.id}
         value={value}
         onValueChanged={onValueChanged} />
     ) : param.type === 'string' ? (
-      <StringParameterControl 
+      <StringParameterControl
         key={param.id}
-        param={param} 
-        connector={connectorConfig} 
-        value={value} 
+        param={param}
+        connector={connectorConfig}
+        value={value}
         onValueChanged={onValueChanged} />
     ) : param.type === 'switch' ? (
-      <SwitchParameterControl 
+      <SwitchParameterControl
         key={param.id}
-        param={param} 
-        checked={value} 
+        param={param}
+        connectorId={connectorConfig.id}
+        checked={value}
         onCheckedChange={onValueChanged} />
     ) : null;
   }
@@ -137,7 +141,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                   )}
                 </h4>
                 <p className="text-xs leading-relaxed mt-0.5">
-                  {serviceConfig.description}
+                  {ts(`${connectorConfig.id}.description`, { defaultValue: serviceConfig.description })}
                 </p>
               </div>
             </SelectTrigger>
@@ -156,7 +160,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                     )} 
                   </h4>
                   <p className="text-xs leading-relaxed mt-0.5">
-                    {c.services.find(s => s.type === 'TRANSCRIPTION')?.description}
+                    {ts(`${c.id}.description`, { defaultValue: c.services.find(s => s.type === 'TRANSCRIPTION')?.description })}
                   </p>
                 </SelectItem>
               ))}
