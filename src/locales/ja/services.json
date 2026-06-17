@@ -1,0 +1,143 @@
+{
+  "anthropic-claude": {
+    "description": "Anthropic Claude による全文文字起こし",
+    "params": {
+      "api-key": {
+        "displayName": "API キー"
+      },
+      "model": {
+        "displayName": "モデル"
+      }
+    }
+  },
+  "google-gemini": {
+    "description": "Google Gemini による全文文字起こし",
+    "keyInstructions": "Google Gemini を使用するには API キーが必要です。API キーを取得するには:\n\n- <https://aistudio.google.com/> にアクセスします\n- ポップアップから **Get an API key** を選択します",
+    "params": {
+      "api-key": {
+        "displayName": "API キー"
+      },
+      "model": {
+        "displayName": "モデル"
+      }
+    }
+  },
+  "google-vision": {
+    "description": "Google Cloud Vision API による OCR",
+    "keyInstructions": "Google Vision を使用するには API キーが必要です。Google Vision は **有料サービス** であることにご注意ください。\n\nAPI キーを取得するには:\n- [こちら](https://cloud.google.com/vision/docs/before-you-begin) から開始し、新しいプロジェクトを作成します\n- サイドバーから **Billing** を選択します\n- **Enable billing account** を選択し、支払い情報を入力します\n- **APIs & Services** > **Enabled APIs & Services** に移動し、Google Cloud Vision API を有効にします\n- **APIs & Services** > **Credentials** に移動します\n- メニューから **Create Credentials** > **API key** を選択してキーを作成します",
+    "params": {
+      "api-key": {
+        "displayName": "API キー"
+      },
+      "merge-annotations": {
+        "displayName": "アノテーションの結合",
+        "options": {
+          "dont_merge": "結合しない",
+          "paragraph": "段落で結合",
+          "block": "ブロックで結合"
+        }
+      }
+    }
+  },
+  "huggingface-inference": {
+    "description": "HuggingFace の Inference Providers による文字起こし",
+    "keyInstructions": "HuggingFace Inference Providers を使用するにはアクセストークンが必要です。\n\nアクセストークンを取得するには:\n- [こちら](https://huggingface.co/) から HuggingFace アカウントを作成します\n- ログイン後、左上のアバターをクリックして **アカウントメニューを開きます**\n- **Settings** を選択します\n- サイドバーで **Access Tokens** を選択します\n- **Create new token** をクリックします\n- 新しいトークンに任意の名前を付けます(例:「IMMARKUS」)\n- **User Permissions** で **Make calls to Inference Providers** にチェックを入れます\n- **Create Token** をクリックします",
+    "params": {
+      "access-token": {
+        "displayName": "HuggingFace アクセストークン"
+      },
+      "model": {
+        "displayName": "モデル"
+      }
+    }
+  },
+  "huggingface-spaces": {
+    "description": "HuggingFace Spaces で独自のモデルを使用",
+    "params": {
+      "endpoint": {
+        "displayName": "エンドポイント"
+      },
+      "access-token": {
+        "displayName": "アクセストークン(任意)"
+      },
+      "image_fieldname": {
+        "displayName": "API フィールド名:画像"
+      },
+      "prompt_fieldname": {
+        "displayName": "API フィールド名:プロンプト"
+      },
+      "optional_args": {
+        "displayName": "追加の引数(JSON、任意)"
+      }
+    }
+  },
+  "ocr-space": {
+    "description": "OCR.space が提供する無料の OCR サービス",
+    "params": {
+      "language": {
+        "displayName": "コンテンツの言語",
+        "options": {
+          "ara": "アラビア語",
+          "bul": "ブルガリア語",
+          "chs": "中国語(簡体字)",
+          "cht": "中国語(繁体字)",
+          "hrv": "クロアチア語",
+          "cze": "チェコ語",
+          "dan": "デンマーク語",
+          "dut": "オランダ語",
+          "eng": "英語",
+          "fin": "フィンランド語",
+          "fre": "フランス語",
+          "ger": "ドイツ語",
+          "gre": "ギリシャ語",
+          "hun": "ハンガリー語",
+          "kor": "韓国語",
+          "ita": "イタリア語",
+          "jpn": "日本語",
+          "pol": "ポーランド語",
+          "por": "ポルトガル語",
+          "rus": "ロシア語",
+          "slv": "スロベニア語",
+          "spa": "スペイン語",
+          "swe": "スウェーデン語",
+          "tha": "タイ語",
+          "tur": "トルコ語",
+          "ukr": "ウクライナ語",
+          "vnm": "ベトナム語"
+        }
+      },
+      "merge-lines": {
+        "displayName": "単語の結合",
+        "hint": "単語ごとに個別のアノテーションを作成する代わりに、検出されたテキスト行ごとに 1 つのアノテーションを作成します。"
+      }
+    }
+  },
+  "open-ai-gpt": {
+    "description": "OpenAI GPT による全文文字起こし",
+    "keyInstructions": "OpenAI API を使用するには API キーが必要です。OpenAI の画像解析は **有料サービス** であることにご注意ください。\n\nAPI キーを取得するには:\n\n- <https://platform.openai.com/> にアクセスします\n- サイドバーから **API keys** を選択します\n- **Create a new secret key** をクリックします\n- プロフィールの請求設定に支払い方法が設定されていることを確認します",
+    "params": {
+      "api-key": {
+        "displayName": "API キー"
+      }
+    }
+  },
+  "sino-nom": {
+    "description": "Kim Hán Nôm プロジェクトによる Sino-Nom OCR",
+    "params": {
+      "email": {
+        "displayName": "アカウントのメールアドレス"
+      },
+      "password": {
+        "displayName": "パスワード"
+      }
+    }
+  },
+  "volcano-engine": {
+    "description": "Volcano Engine 経由の Doubao 1.5 Vision Pro",
+    "params": {
+      "api-key": {
+        "displayName": "Volcano Engine API キー"
+      }
+    }
+  }
+}

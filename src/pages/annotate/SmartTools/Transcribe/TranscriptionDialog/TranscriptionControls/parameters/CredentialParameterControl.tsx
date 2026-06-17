@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Markdown from 'react-markdown';
 import { ServiceConfigCredentialParameter, ServiceConnectorConfig } from '@/services';
 import { deobfuscate, obfuscate } from '@/utils/obfuscateString';
@@ -23,6 +24,8 @@ export const CredentialParameterControl = (props: CredentialParameterControlProp
 
   const { connector, param, value } = props;
 
+  const { t } = useTranslation('services');
+
   const key = `immarkus:services:${connector.id}:${param.id}`;
 
   useEffect(() => {
@@ -45,7 +48,7 @@ export const CredentialParameterControl = (props: CredentialParameterControlProp
   return (
     <fieldset className="space-y-2">
       <div className="flex gap-2 items-center">
-        <Label className="font-semibold">{param.displayName}</Label>
+        <Label className="font-semibold">{t(`${connector.id}.params.${param.id}.displayName`, { defaultValue: param.displayName })}</Label>
         {connector.keyInstructions && (
           <Popover>
             <PopoverTrigger>
@@ -59,7 +62,7 @@ export const CredentialParameterControl = (props: CredentialParameterControlProp
               alignOffset={-10}
               collisionPadding={10}
               className="text-xs shadow-2xl p-4 w-96 leading-relaxed prose prose-p:py-1 prose-p:m-0 prose-ul:my-2 prose-ul:px-4">
-              <Markdown>{connector.keyInstructions}</Markdown>
+              <Markdown>{t(`${connector.id}.keyInstructions`, { defaultValue: connector.keyInstructions })}</Markdown>
             </PopoverContent>
           </Popover>
         )}
