@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ServiceConfigStringParameter, ServiceConnectorConfig } from '@/services/Types';
 import { Input } from '@/ui/Input';
 import { Label } from '@/ui/Label';
@@ -26,6 +27,8 @@ interface StringParameterControlProps {
 export const StringParameterControl =  (props:StringParameterControlProps) => {
 
   const { connector, param, value } = props;
+
+  const { t } = useTranslation('services');
 
   const key = `immarkus:services:${connector.id}:${param.id}`;
 
@@ -56,7 +59,7 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
 
   return initialized ? (
     <fieldset className="space-y-2">
-      <Label className="font-semibold">{param.displayName}</Label>
+      <Label className="font-semibold">{t(`${connector.id}.params.${param.id}.displayName`, { defaultValue: param.displayName })}</Label>
 
       {param.options ? (
         <Select 
@@ -68,10 +71,10 @@ export const StringParameterControl =  (props:StringParameterControlProps) => {
 
           <SelectContent>
             {param.options.map(([key, value]) => (
-              <SelectItem 
+              <SelectItem
                 key={key}
                 value={key}>
-                {value}
+                {t(`${connector.id}.params.${param.id}.options.${key}`, { defaultValue: value })}
               </SelectItem>
             ))}
           </SelectContent>

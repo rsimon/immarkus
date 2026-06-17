@@ -11,6 +11,7 @@ import enExport from '../locales/en/export.json';
 import enImages from '../locales/en/images.json';
 import enKnowledgegraph from '../locales/en/knowledgegraph.json';
 import enMarkus from '../locales/en/markus.json';
+import enServices from '../locales/en/services.json';
 import enSettings from '../locales/en/settings.json';
 import enSmartTools from '../locales/en/smartTools.json';
 import enStart from '../locales/en/start.json';
@@ -25,6 +26,7 @@ import jaExport from '../locales/ja/export.json';
 import jaImages from '../locales/ja/images.json';
 import jaKnowledgegraph from '../locales/ja/knowledgegraph.json';
 import jaMarkus from '../locales/ja/markus.json';
+import jaServices from '../locales/ja/services.json';
 import jaSettings from '../locales/ja/settings.json';
 import jaSmartTools from '../locales/ja/smartTools.json';
 import jaStart from '../locales/ja/start.json';
@@ -50,6 +52,7 @@ i18n
         images: enImages,
         knowledgegraph: enKnowledgegraph,
         markus: enMarkus,
+        services: enServices,
         settings: enSettings,
         smartTools: enSmartTools,
         start: enStart,
@@ -65,6 +68,7 @@ i18n
         images: jaImages,
         knowledgegraph: jaKnowledgegraph,
         markus: jaMarkus,
+        services: jaServices,
         settings: jaSettings,
         smartTools: jaSmartTools,
         start: jaStart,

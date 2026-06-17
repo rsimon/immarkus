@@ -1,0 +1,143 @@
+{
+  "anthropic-claude": {
+    "description": "Full-text transcription via Anthropic Claude",
+    "params": {
+      "api-key": {
+        "displayName": "Your API Key"
+      },
+      "model": {
+        "displayName": "Model"
+      }
+    }
+  },
+  "google-gemini": {
+    "description": "Full-text transcription via Google Gemini",
+    "keyInstructions": "You need an API key to use Google Gemini. To get your own key:\n\n- Go to <https://aistudio.google.com/>\n- Select **Get an API key** from the popup",
+    "params": {
+      "api-key": {
+        "displayName": "Your API Key"
+      },
+      "model": {
+        "displayName": "Model"
+      }
+    }
+  },
+  "google-vision": {
+    "description": "OCR via the Google Cloud Vision API",
+    "keyInstructions": "You need an API key to use Google Vision. Note that Google Vision is a **paid service**!\n\nTo get your own key:\n- [Start here](https://cloud.google.com/vision/docs/before-you-begin) and create a new project\n- Choose **Billing** from the sidebar\n- Choose **Enable billing account** and fill your payment information\n- Go to **APIs & Services** > **Enabled APIs & Services** and enable the Google Cloud Vision API\n- Go to **APIs & Services** > **Credentials** \n- Choose **Create Credentials** > **API key** from the menu to create a key",
+    "params": {
+      "api-key": {
+        "displayName": "Your API Key"
+      },
+      "merge-annotations": {
+        "displayName": "Merge Annotations",
+        "options": {
+          "dont_merge": "Don't merge",
+          "paragraph": "Merge paragraphs",
+          "block": "Merge blocks"
+        }
+      }
+    }
+  },
+  "huggingface-inference": {
+    "description": "Transcription via HuggingFace's Inference Providers",
+    "keyInstructions": "You need an Access Token to use HuggingFace Inference Providers.\n\nTo get your own key:\n- [Start here](https://huggingface.co/) to create a HuggingFace account\n- After you are logged in, click your Avatar in the top-left corner to **open your account menu**\n- Choose **Settings**\n- In the sidebar, choose **Access Tokens**\n- Click **Create new token**\n- Give the new token a name of your choice (e.g. \"IMMARKUS\")\n- Under **User Permissions**, check **Make calls to Inference Providers**\n- Click **Create Token**",
+    "params": {
+      "access-token": {
+        "displayName": "HuggingFace Access Token"
+      },
+      "model": {
+        "displayName": "Model"
+      }
+    }
+  },
+  "huggingface-spaces": {
+    "description": "Use your own model on HuggingFace Spaces",
+    "params": {
+      "endpoint": {
+        "displayName": "Endpoint"
+      },
+      "access-token": {
+        "displayName": "Access Token (Optional)"
+      },
+      "image_fieldname": {
+        "displayName": "API Fieldname: Image"
+      },
+      "prompt_fieldname": {
+        "displayName": "API Fieldname: Prompt"
+      },
+      "optional_args": {
+        "displayName": "Additional Arguments (JSON, Optional)"
+      }
+    }
+  },
+  "ocr-space": {
+    "description": "Free OCR service provided by OCR.space",
+    "params": {
+      "language": {
+        "displayName": "Content Language",
+        "options": {
+          "ara": "Arabic",
+          "bul": "Bulgarian",
+          "chs": "Chinese (Simplified)",
+          "cht": "Chinese (Traditional)",
+          "hrv": "Croatian",
+          "cze": "Czech",
+          "dan": "Danish",
+          "dut": "Dutch",
+          "eng": "English",
+          "fin": "Finnish",
+          "fre": "French",
+          "ger": "German",
+          "gre": "Greek",
+          "hun": "Hungarian",
+          "kor": "Korean",
+          "ita": "Italian",
+          "jpn": "Japanese",
+          "pol": "Polish",
+          "por": "Portuguese",
+          "rus": "Russian",
+          "slv": "Slovenian",
+          "spa": "Spanish",
+          "swe": "Swedish",
+          "tha": "Thai",
+          "tur": "Turkish",
+          "ukr": "Ukrainian",
+          "vnm": "Vietnamese"
+        }
+      },
+      "merge-lines": {
+        "displayName": "Merge Words",
+        "hint": "Create one annotation per detected text line instead of separate annotations for each word."
+      }
+    }
+  },
+  "open-ai-gpt": {
+    "description": "Full-text transcription via OpenAI GPT",
+    "keyInstructions": "You need an API key to use the OpenAI API. Note that OpenAI image analysis is a **paid service**! \n\nTo get your own key:\n\n- Go to <https://platform.openai.com/>\n- Choose **API keys** from the sidebar\n- Click **Create a new secret key**\n- Make sure that you have a payment method configured in your profile's billing settings",
+    "params": {
+      "api-key": {
+        "displayName": "Your API Key"
+      }
+    }
+  },
+  "sino-nom": {
+    "description": "Sino-Nom OCR by the Kim Hán Nôm project",
+    "params": {
+      "email": {
+        "displayName": "Account E-Mail"
+      },
+      "password": {
+        "displayName": "Password"
+      }
+    }
+  },
+  "volcano-engine": {
+    "description": "Doubao 1.5 Vision Pro via Volcano Engine",
+    "params": {
+      "api-key": {
+        "displayName": "Your Volcano Engine API Key"
+      }
+    }
+  }
+}
