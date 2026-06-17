@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import murmur from 'murmurhash';
 import { FolderOpen, ImageIcon, Images, MoreHorizontal, NotebookPen } from 'lucide-react';
 import { CozyRange } from 'cozy-iiif';
+import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
 import { CanvasItem } from '../../Types';
@@ -42,6 +43,13 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
     return `/images/${props.manifest.id}@${id}`;
   }, [props.data, isCanvas]);
 
+  const getCanvasId = () => {
+    if (!isCanvas) return;
+    
+    const { info } = props.data as CanvasItem;
+    return `iiif:${info.manifestId}:${info.id}`;
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -58,14 +66,12 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
         sideOffset={0}
         collisionPadding={10}
         onClick={evt => evt.stopPropagation()}>
-        {isCanvas && (
-          <DropdownMenuItem onSelect={() => props.onSelectCanvas(props.data as CanvasItem)}>
-            <NotebookPen className="size-4 text-muted-foreground mr-2" /> {t('common.metadata')}
-          </DropdownMenuItem>
-        )}
-
         {isCanvas ? (
           <>
+            <DropdownMenuItem onSelect={() => props.onSelectCanvas(props.data as CanvasItem)}>
+              <NotebookPen className="size-4 text-muted-foreground mr-2" /> {t('common.metadata')}
+            </DropdownMenuItem>
+            
             <DropdownMenuItem onSelect={() => props.onOpenCanvas(props.data as CanvasItem)}>
               <ImageIcon className="size-4 text-muted-foreground mr-2" /> {t('common.openCanvas')}
             </DropdownMenuItem>
@@ -73,6 +79,10 @@ export const IIIFManifestTableRowActions = (props: IIIFManifestTableRowActionsPr
             <DropdownMenuItem onSelect={() => props.onAddToWorkspace(props.data as CanvasItem)}>
               <Images className="size-4 text-muted-foreground mr-2" /> {t('common.addToWorkspace')}
             </DropdownMenuItem>
+
+            <VisualSearchDebugAction 
+              title={(props.data as CanvasItem).canvas.getLabel()}
+              imageId={getCanvasId()} />
           </>
         ) : (
           <DropdownMenuItem asChild>

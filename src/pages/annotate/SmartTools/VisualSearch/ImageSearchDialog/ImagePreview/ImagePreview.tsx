@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { v5 as uuidv5 } from 'uuid';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat, isConnectionAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { cn } from '@/ui/utils';
+import { getDeterministicId } from '@/utils/useVisualSearch';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { ResolvedSearchResult } from '../Types';
 import { getBounds } from '../utils';
@@ -42,12 +42,6 @@ interface ImagePreviewProps {
   onClosePreview(): void;
 
 }
-
-// Random UUID v5 namespace for deterministic IDs
-const NAMESPACE = 'a7cb2652-a967-405c-bcee-a08ba86ab6c1';
-
-const getDeterministicId = (imageId: string, bounds: [number, number, number, number]) =>
-  uuidv5(`${imageId}-${bounds.join(',')}`, NAMESPACE);
 
 export const ImagePreview = (props: ImagePreviewProps) => {
 
