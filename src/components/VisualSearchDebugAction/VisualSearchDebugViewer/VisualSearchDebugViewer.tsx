@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IndexedImageSegment } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
-import { useImages, useStore } from '@/store';
+import { useAnnotations, useImages, useStore } from '@/store';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { getDeterministicId, useVisualSearch } from '@/utils/useVisualSearch';
 import { VisualSearchDebugToolbar } from './VisualSearchDebugToolbar';
@@ -9,6 +9,7 @@ import { useVisualSearchDebugView } from './useVisualSearchDebugView';
 import { 
   ImageAnnotation, 
   OpenSeadragonAnnotator, 
+  OpenSeadragonHoverTooltip, 
   OpenSeadragonViewer, 
   serializeW3CImageAnnotation, 
   useAnnotator, 
@@ -49,7 +50,11 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
 
   const [selected, setSelected] = useState<ImageAnnotation[]>([]);
 
-  const { options, style } = useVisualSearchDebugView(image, selected);
+  const annotations = useAnnotations(props.imageId, { type: 'image' });
+
+  const { options, style } = useVisualSearchDebugView(image, annotations, selected);
+
+  const isImported = (annotation: ImageAnnotation) => annotations.some(a => a.id === annotation.id); 
 
   useEffect(() => {
     if (!vs.index || !anno || !image) return;
@@ -78,6 +83,8 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
     if (!anno) return;
 
     const onClick = (annotation: ImageAnnotation) => {
+      if (isImported(annotation)) return;
+
       setSelected(current => {
         if (current.some(a => a.id === annotation.id)) {
           return current.filter(a => a.id !== annotation.id);
@@ -97,15 +104,23 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
   const onImportSelected = () => {
     const w3c = selected.map(a => serializeW3CImageAnnotation(a, image.id));
     store.bulkUpsertAnnotation(image.id, w3c);
+    setSelected([]);
   }
 
   return options ? (
     <OpenSeadragonAnnotator
       style={style}
-      userSelectAction={UserSelectAction.SELECT}>
+      userSelectAction={UserSelectAction.NONE}>
       <OpenSeadragonViewer
         options={options} 
         className="size-full bg-muted border rounded [&_div]:outline-none" />
+
+      <OpenSeadragonHoverTooltip 
+        tooltip={props => isImported(props.annotation) ? (
+          <div className="bg-black text-white text-[11px] rounded px-1.5 py-1 font-mono">
+            This annotation is already imported
+          </div>
+        ) : null}/>
 
       <VisualSearchDebugToolbar 
         selected={selected} 

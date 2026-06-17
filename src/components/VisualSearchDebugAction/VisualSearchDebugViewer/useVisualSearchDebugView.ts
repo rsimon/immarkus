@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from 'react';
-import { AnnotationState, DrawingStyle, ImageAnnotation } from '@annotorious/react';
 import { LoadedImage } from '@/model';
-import { useAnnotations } from '@/store';
 import { getOSDTilesets } from '@/utils/iiif';
+import { 
+  AnnotationState, 
+  DrawingStyle, 
+  ImageAnnotation, 
+  W3CAnnotation 
+} from '@annotorious/react';
 
-export const useVisualSearchDebugView = (image: LoadedImage, selected: ImageAnnotation[]) => {
-  const annotations = useAnnotations(image?.id, { type: 'image' });
+export const useVisualSearchDebugView = (image: LoadedImage, annotations: W3CAnnotation[], selected: ImageAnnotation[]) => {
 
   const options: OpenSeadragon.Options = useMemo(() => {
     if (!image?.id) return;
