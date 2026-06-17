@@ -13,7 +13,7 @@ export const useManifestAnnotations = (
 
   useEffect(() => {
     store.getManifestAnnotations(sourceId, opts).then(setAnnotations);
-  }, [sourceId]);
+  }, [sourceId, store]);
 
   return annotations;
 }

@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
+import { CozyCanvas } from 'cozy-iiif';
 import { useTranslation } from 'react-i18next';
 import { Image, Images, MoreVertical, NotebookPen } from 'lucide-react';
+import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 import { CanvasInformation } from '@/model';
-import { CozyCanvas } from 'cozy-iiif';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +28,8 @@ export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
 
   const { t } = useTranslation('images');
 
+  const id = `iiif:${props.canvasInfo.manifestId}:${props.canvasInfo.id}`;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,6 +51,10 @@ export const IIIFCanvasItemActions = (props: IIIFCanvasItemActionsProps) => {
         <DropdownMenuItem onSelect={props.onAddToWorkspace}>
           <Images className="size-4 text-muted-foreground mr-2" /> {t('common.addToWorkspace')}
         </DropdownMenuItem>
+
+        <VisualSearchDebugAction 
+          title={props.canvas.getLabel()}
+          imageId={id} />
       </DropdownMenuContent>
     </DropdownMenu>
   )
