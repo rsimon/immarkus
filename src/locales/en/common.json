@@ -218,6 +218,11 @@
     "noLanguageFound": "No supported language found."
   },
   "visualSearchDebug": {
-    "inspectIndexedPatches": "Inspect indexed patches"
+    "inspectIndexedPatches": "Inspect indexed patches",
+    "toolbar": {
+      "importSelectedAnnotations": "Import Selected Annotations",
+      "importAnnotations_one": "Import {{count}} Annotation",
+      "importAnnotations_other": "Import {{count}} Annotations"
+    }
   }
 }
