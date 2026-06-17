@@ -1,12 +1,17 @@
 import { useTranslation } from 'react-i18next';
-import { ImageUp, ZoomIn, ZoomOut } from 'lucide-react';
+import { ImageUp, Square, SquareCheckBig, ZoomIn, ZoomOut } from 'lucide-react';
 import { ImageAnnotation, useViewer } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { cn } from '@/ui/utils';
+import { Separator } from '@/ui/Separator';
 
 interface VisualSearchDebugToolbarProps {
 
   selected: ImageAnnotation[];
+
+  isAllSelected: boolean;
+
+  onSelectAll(): void;
 
   onImportSelected(): void;
 
@@ -36,6 +41,20 @@ export const VisualSearchDebugToolbar = (props: VisualSearchDebugToolbarProps) =
           className="rounded p-2 hover:bg-white/25"
           onClick={onZoom(0.5)}>
           <ZoomOut className="size-4" />
+        </button>
+
+        <Separator 
+          orientation="vertical" 
+          className="h-4 opacity-35" />
+
+        <button 
+          className="flex gap-1.5 text-xs items-center rounded p-2 hover:bg-white/25"
+          onClick={props.onSelectAll}>
+          {props.isAllSelected ? (
+            <SquareCheckBig className="size-4" /> 
+          ) : (
+            <Square className="size-4" />
+          )} {t('visualSearchDebug.toolbar.selectAll')}
         </button>
 
         <Button

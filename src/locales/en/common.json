@@ -221,6 +221,7 @@
     "inspectIndexedPatches": "Inspect indexed patches",
     "alreadyImported": "This annotation is already imported",
     "toolbar": {
+      "selectAll": "Select All",
       "importSelectedAnnotations": "Import Selected Annotations",
       "importAnnotations_one": "Import {{count}} Annotation",
       "importAnnotations_other": "Import {{count}} Annotations"

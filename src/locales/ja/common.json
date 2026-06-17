@@ -214,6 +214,11 @@
     "noLanguageFound": "対応する言語が見つかりません。"
   },
   "visualSearchDebug": {
-    "inspectIndexedPatches": "インデックス済みパッチを確認"
+    "inspectIndexedPatches": "インデックス済みパッチを確認",
+    "toolbar": {
+      "selectAll": "すべて選択",
+      "importSelectedAnnotations": "選択したアノテーションをインポート",
+      "importAnnotations_other": "{{count}} 件のアノテーションをインポート"
+    }
   }
 }

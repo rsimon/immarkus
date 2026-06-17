@@ -39,7 +39,6 @@ export const VisualSearchDebugAction = (props: VisualSearchDebugActionProps) => 
         {t('visualSearchDebug.inspectIndexedPatches')}
       </DropdownMenuItem>
 
-
       <Dialog
         open={showVisualSearchDebug}
         onOpenChange={setShowVisualSearchDebug}>

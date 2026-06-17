@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IndexedImageSegment } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
@@ -53,10 +53,20 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
   const [selected, setSelected] = useState<ImageAnnotation[]>([]);
 
   const annotations = useAnnotations(props.imageId, { type: 'image' });
-
+  
   const { options, style } = useVisualSearchDebugView(image, annotations, selected);
 
-  const isImported = (annotation: ImageAnnotation) => annotations.some(a => a.id === annotation.id); 
+  const [indexedSegments, setIndexedSegments] = useState<ImageAnnotation[]>([]);
+
+  const isImported = useCallback((annotation: ImageAnnotation) => (
+    annotations.some(a => a.id === annotation.id)
+  ), [annotations]);
+
+  const selectableSegments = useMemo(() => (
+    indexedSegments.filter(s => !isImported(s))
+  ), [indexedSegments, isImported]);
+
+  const isAllSelected = selected.length === selectableSegments.length;
 
   useEffect(() => {
     if (!vs.index || !anno || !image) return;
@@ -74,6 +84,7 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
       }, getDeterministicId(image.id, segment.pxBounds));
     });
 
+    setIndexedSegments(annotations);
     anno.setAnnotations(annotations);
 
     return () => {
@@ -103,6 +114,13 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
     }
   }, [anno]);
 
+  const onSelectAll = () => {
+    if (isAllSelected)
+      setSelected([]);
+    else
+      setSelected(selectableSegments)
+  }
+
   const onImportSelected = () => {
     const w3c = selected.map(a => serializeW3CImageAnnotation(a, image.id));
     store.bulkUpsertAnnotation(image.id, w3c);
@@ -125,8 +143,10 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
         ) : null}/>
 
       <VisualSearchDebugToolbar 
+        isAllSelected={isAllSelected}
         selected={selected} 
-        onImportSelected={onImportSelected} />
+        onImportSelected={onImportSelected} 
+        onSelectAll={onSelectAll} />
     </OpenSeadragonAnnotator>
   ) : null;
 
