@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IndexedImageSegment } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
 import { useAnnotations, useImages, useStore } from '@/store';
@@ -39,6 +40,7 @@ const getBounds = (segment: IndexedImageSegment, image: LoadedImage) => {
 }
 
 export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => {
+  const { t } = useTranslation('common');
 
   const image = useImages(props.imageId) as LoadedImage;
 
@@ -118,7 +120,7 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
       <OpenSeadragonHoverTooltip 
         tooltip={props => isImported(props.annotation) ? (
           <div className="bg-black text-white text-[11px] rounded px-1.5 py-1 font-mono">
-            This annotation is already imported
+            {t('visualSearchDebug.alreadyImported')}
           </div>
         ) : null}/>
 

@@ -219,6 +219,7 @@
   },
   "visualSearchDebug": {
     "inspectIndexedPatches": "Inspect indexed patches",
+    "alreadyImported": "This annotation is already imported",
     "toolbar": {
       "importSelectedAnnotations": "Import Selected Annotations",
       "importAnnotations_one": "Import {{count}} Annotation",
