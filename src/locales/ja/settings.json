@@ -1,6 +1,7 @@
 {
   "title": "設定",
   "description": "アプリケーション全体の設定です。",
+  "errors": "件のエラー",
   "nav": {
     "general": "一般",
     "visualSearch": "ビジュアル検索"
@@ -30,6 +31,7 @@
   },
   "indexReady": {
     "title": "画像を検索する準備ができました",
+    "errorsOccurred": "インデックス作成中に次のエラーが発生しました:",
     "description": "IMMARKUS による画像の解析が完了し、検索できるようになりました。<b><wsIcon /> ワークスペース</b>のスマートツールから<b>ビジュアル検索</b>を選ぶと、視覚的に類似した画像を検索できます。",
     "stats": "{{images}} 件の画像をインデックス済み · {{objects}} 件のオブジェクトを検出",
     "dangerZone": "危険な操作",
