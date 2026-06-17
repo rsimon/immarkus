@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { v5 as uuidv5 } from 'uuid';
 import { indexExists, openIndex, VisualSearchIndex } from 'browser-visual-search';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
@@ -283,3 +284,9 @@ export const useVisualSearchAvailable = () => {
   return available;
 
 }
+
+// Random UUID v5 namespace for deterministic IDs
+const NAMESPACE = 'a7cb2652-a967-405c-bcee-a08ba86ab6c1';
+
+export const getDeterministicId = (imageId: string, bounds: [number, number, number, number]) =>
+  uuidv5(`${imageId}-${bounds.join(',')}`, NAMESPACE);

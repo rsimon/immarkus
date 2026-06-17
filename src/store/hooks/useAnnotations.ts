@@ -12,8 +12,9 @@ export const useAnnotations = (
   const [annotations, setAnnotations] = useState<W3CAnnotation[]>([]);
 
   useEffect(() => {
+    if (!imageId) return;
     store.getAnnotations(imageId, opts).then(setAnnotations);
-  }, [imageId]);
+  }, [imageId, store]);
 
   return annotations;
 }

@@ -1,18 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IndexedImageSegment } from 'browser-visual-search';
 import { LoadedImage } from '@/model';
-import { useImages } from '@/store';
-import { getOSDTilesets } from '@/utils/iiif';
+import { useImages, useStore } from '@/store';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
-import { useVisualSearch } from '@/utils/useVisualSearch';
+import { getDeterministicId, useVisualSearch } from '@/utils/useVisualSearch';
 import { VisualSearchDebugToolbar } from './VisualSearchDebugToolbar';
+import { useVisualSearchDebugView } from './useVisualSearchDebugView';
 import { 
-  AnnotationState, 
-  DrawingStyleExpression, 
   ImageAnnotation, 
   OpenSeadragonAnnotator, 
   OpenSeadragonViewer, 
-  useAnnotator 
+  serializeW3CImageAnnotation, 
+  useAnnotator, 
+  UserSelectAction
 } from '@annotorious/react';
 
 interface VisualSearchDebugViewerProps {
@@ -43,37 +43,13 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
 
   const vs = useVisualSearch();
 
+  const store = useStore();
+
   const anno = useAnnotator();
 
   const [selected, setSelected] = useState<ImageAnnotation[]>([]);
 
-  const options: OpenSeadragon.Options = useMemo(() => {
-    if (!image) return;
-
-    return {
-      tileSources: 'data' in image ? {
-        type: 'image',
-        url: URL.createObjectURL(image.data)
-      } as object : getOSDTilesets(image.canvas),
-      gestureSettingsMouse: {
-        clickToZoom: false,
-        dblClickToZoom: false
-      },
-      crossOriginPolicy: 'Anonymous',
-      showNavigationControl: false,
-      minZoomLevel: 0.1,
-      maxZoomLevel: 100
-    }
-  }, [image]);
-
-  const style: DrawingStyleExpression = useMemo(() => (_: ImageAnnotation, state: AnnotationState) => {
-    return {
-      fill: '#ff1493',
-      fillOpacity: state?.hovered ? 0.2 : 0.02,
-      stroke: '#ff1493',
-      strokeOpacity: state?.hovered ? 0.9 : 0.65
-    };
-  }, []);
+  const { options, style } = useVisualSearchDebugView(image, selected);
 
   useEffect(() => {
     if (!vs.index || !anno || !image) return;
@@ -88,7 +64,7 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
         minY: y,
         maxX: x + w,
         maxY: y + h
-      });
+      }, getDeterministicId(image.id, segment.pxBounds));
     });
 
     anno.setAnnotations(annotations);
@@ -98,13 +74,35 @@ export const VisualSearchDebugViewer = (props: VisualSearchDebugViewerProps) => 
     }
   }, [vs, anno, image]);
 
-  const onImportSelected = () => {
+  useEffect(() => {
+    if (!anno) return;
 
+    const onClick = (annotation: ImageAnnotation) => {
+      setSelected(current => {
+        if (current.some(a => a.id === annotation.id)) {
+          return current.filter(a => a.id !== annotation.id);
+        } else {
+          return [...current, annotation];
+        }
+      });
+    }
+
+    anno.on('clickAnnotation', onClick);
+
+    return () => {
+      anno?.off('clickAnnotation', onClick);
+    }
+  }, [anno]);
+
+  const onImportSelected = () => {
+    const w3c = selected.map(a => serializeW3CImageAnnotation(a, image.id));
+    store.bulkUpsertAnnotation(image.id, w3c);
   }
 
-  return image ? (
+  return options ? (
     <OpenSeadragonAnnotator
-      style={style}>
+      style={style}
+      userSelectAction={UserSelectAction.SELECT}>
       <OpenSeadragonViewer
         options={options} 
         className="size-full bg-muted border rounded [&_div]:outline-none" />
