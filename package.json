@@ -104,5 +104,10 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^14.0.0",
     "zod": "^4.4.3"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "^14.0.0"
+    }
   }
 }
