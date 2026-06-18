@@ -122,8 +122,8 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   const listAnnotations = useCallback((imageId: string) => {
     const filtered = props.filterState?.fn
-      ? annotations.get(imageId).filter(props.filterState.fn)
-      : annotations.get(imageId).filter(a => 'selector'  in (a as any).target);
+      ? annotations.get(imageId)?.filter(props.filterState.fn)
+      : annotations.get(imageId)?.filter(a => 'selector'  in (a as any).target);
 
     return sorting ? filtered.slice().sort(sorting) : filtered;
   }, [props.filterState, sorting, annotations]);
@@ -155,7 +155,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
 
   return (
     <div 
-      className="py-3 px-2 bg-slate-100/50 grow h-full" 
+      className="py-3 px-2 bg-slate-100/50 grow min-h-full" 
       onClick={onListClick}>
       <div className="text-xs text-muted-foreground flex justify-between mb-1 px-1.5">
         <div>

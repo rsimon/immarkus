@@ -80,7 +80,7 @@ export const SidebarSection = (props: SidebarSectionProps) => {
 
           <Tabs.Content value="annotation-list" asChild>
             <div 
-              className="grow h-full text-sm justify-center items-center w-full">
+              className="grow min-h-full text-sm justify-center items-center w-full relative">
               <AnnotationList 
                 filterState={props.filterState}
                 onChangeFilterState={props.onChangeFilterState}
