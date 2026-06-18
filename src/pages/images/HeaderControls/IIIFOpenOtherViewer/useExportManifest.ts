@@ -30,7 +30,7 @@ export const useExportManifest = (manifest: IIIFManifestResource) => {
     // @ts-ignore
     const derivative = importAnnotations(resource, crosswalked);
 
-    const str = JSON.stringify(derivative);
+    const str = JSON.stringify(derivative.source);
     const data = new TextEncoder().encode(str);
     const blob = new Blob([data], {
       type: 'application/json;charset=utf-8'
@@ -38,7 +38,7 @@ export const useExportManifest = (manifest: IIIFManifestResource) => {
 
     const anchor = document.createElement('a');
     anchor.href = URL.createObjectURL(blob);
-    anchor.download = 'annotations.json';
+    anchor.download = 'manifest.json';
     anchor.click();
   }, [resource, annotations, store]);
 
