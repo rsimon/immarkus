@@ -68,11 +68,6 @@ export const GraphSearch = (props: GraphSearchProps) => {
       .map(m => m.id);
   }, [props.query, props.graph, objectType]);
 
-  useEffect(() => {
-    // Not sure why this is needed since neodrag v2.3...
-    setTimeout(() => el.current.style.translate = null, 0);
-  }, []);
-
   useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY })
