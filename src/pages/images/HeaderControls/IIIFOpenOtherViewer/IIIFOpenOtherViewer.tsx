@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, Share2 } from 'lucide-react';
+import { ChevronDown, Download, Share2 } from 'lucide-react';
 import { CopyManifestURL } from '@/components/CopyManifestURL';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
+import { useExportManifest } from './useExportManifest';
 
 interface IIIFOpenOtherViewerProps {
 
@@ -22,16 +23,7 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
   const { t } = useTranslation('images');
 
-  const [copied, setCopied] = useState(false);
-
-  const onCopyManifestURL = (evt: MouseEvent) => {
-    evt.preventDefault();
-
-    navigator.clipboard.writeText(props.manifest.uri).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 750);
-    });
-  }
+  const exportManifest = useExportManifest(props.manifest);
 
   return (
     <DropdownMenu>
@@ -98,6 +90,12 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
         <DropdownMenuItem onSelect={evt => evt.preventDefault}>
           <CopyManifestURL manifest={props.manifest} />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem 
+          className="text-xs text-muted-foreground gap-1.75"
+          onSelect={() => exportManifest()}>
+          <Download className="size-3.5 ml-px" /> Export manifest
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
