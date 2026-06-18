@@ -1,15 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component2';
 import { v4 as uuidv4 } from 'uuid';
 import type { Filter, ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { Image, LoadedImage } from '@/model';
 import { useWindowSize } from '@/utils/useWindowSize';
-import { AnnotatableImage } from './AnnotatableImage';
 import { AnnotationMode, Tool } from '../AnnotationMode';
-import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
-import { usePersistentHistory } from './usePersistentHistory';
 import { FilterState } from '../FilterState';
+import { AnnotatableImage } from './AnnotatableImage';
+import { usePersistentHistory } from './usePersistentHistory';
+import { useSelectAll } from './useSelectAll';
+import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 
 import 'react-mosaic-component2/react-mosaic-component.css';
 
@@ -119,6 +120,15 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   useEffect(() => {
     windowRefs.current?.forEach(ref => ref?.onResize());
   }, [width]);
+
+  useSelectAll(useCallback(() => {
+    const toSelect = manifold.annotators
+      .flatMap(anno => anno.getAnnotations())
+      .filter(a => a.target.selector)
+      .map(a => a.id);
+
+    manifold.setSelected(toSelect);
+  }, [manifold]));
 
   const renderWindow = (windowId: string, path: MosaicBranch[]) => {
     const image = windowMap.current.find(t => t.windowId === windowId)?.image;
