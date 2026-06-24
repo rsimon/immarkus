@@ -1,4 +1,5 @@
 import { CozyManifest } from 'cozy-iiif';
+import { W3CAnnotation } from '@annotorious/react';
 import { CanvasInformation, Image, MetadataSchema } from '@/model';
 import { FileImageSnippet, ImageSnippet } from '@/utils/getImageSnippet';
 import { Store } from '../Store';
@@ -75,3 +76,59 @@ export const getFullPath = (source: Image | CanvasInformation, store: Store, man
     ].filter(Boolean);
   }
 }
+
+const crosswalkIIIFTarget = (annotation: W3CAnnotation, imageId: string, store: Store): W3CAnnotation => {
+  if (!Array.isArray(annotation.target) && typeof annotation.target !== 'string') {
+    const canvas = store.getCanvas(imageId);
+    
+    // Should never happen
+    if (!canvas) return annotation;
+
+    return {
+      ...annotation,
+      target: {
+        ...annotation.target,
+        source: canvas.uri
+      }
+    };
+  } else {
+    // Type safety protection - should never happen
+    return annotation;
+  }
+}
+
+// Shorthand
+type ImageLike = Image | CanvasInformation;
+
+const _bulkGetAnnotations = (images: ImageLike[], store: Store): Promise<W3CAnnotation[]> => {
+  return images.reduce<Promise<W3CAnnotation[]>>((promise, image) => {
+    return promise.then((all) => {
+      const isManifest = 'manifestId' in image;
+      const id = isManifest ? `iiif:${image.manifestId}:${image.id}` : image.id;
+
+      return store.getAnnotations(id).then(annotations => {
+        return isManifest ? (
+          // Replace IMMARKUS internal ID with Canvas URI
+          [...all, ...annotations.map(a => crosswalkIIIFTarget(a, id, store))]
+        ) : (
+          [...all, ...annotations]
+        );
+      })
+    })
+  }, Promise.resolve([]));
+}
+
+const _getAnnotations = (image: ImageLike, store: Store): Promise<W3CAnnotation[]> => {
+  const isManifest = 'manifestId' in image;
+  const id = isManifest ? `iiif:${image.manifestId}:${image.id}` : image.id;
+
+  return store.getAnnotations(id).then(annotations => {
+    return isManifest 
+      // Replace IMMARKUS internal ID with Canvas URI
+      ? annotations.map(a => crosswalkIIIFTarget(a, id, store))
+      : annotations;
+  });
+}
+
+export const getAnnotations = (arg: ImageLike | ImageLike[], store: Store): Promise<W3CAnnotation[]> =>
+  Array.isArray(arg) ? _bulkGetAnnotations(arg, store) : _getAnnotations(arg, store);

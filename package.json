@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -10,17 +10,17 @@
     "test:e2e": "playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.61.0",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.1",
     "@types/chroma-js": "^3.1.2",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.0.0",
     "@types/react": "^19.2.17",
     "@types/react-autosuggest": "^10.1.11",
     "@types/react-dom": "^19.2.3",
     "@types/wicg-file-system-access": "^2023.10.7",
     "@vitejs/plugin-react": "^5.2.0",
-    "playwright": "^1.61.0",
+    "playwright": "^1.61.1",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "vite": "^7.3.5",
@@ -38,8 +38,8 @@
     "@annotorious/react-manifold": "^3.8.6",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
-    "@google/genai": "^2.8.0",
-    "@gradio/client": "^2.2.2",
+    "@google/genai": "^2.10.0",
+    "@gradio/client": "^2.3.0",
     "@huggingface/inference": "^4.13.19",
     "@neodrag/react": "2.3.1",
     "@radix-ui/react-accordion": "^1.2.14",
@@ -77,18 +77,18 @@
     "dequal": "^2.0.3",
     "exceljs": "^4.4.0",
     "fuse.js": "^7.4.2",
-    "i18next": "^26.3.1",
+    "i18next": "^26.3.2",
     "i18next-browser-languagedetector": "^8.2.1",
     "i18next-resources-to-backend": "^1.2.1",
     "localforage": "^1.10.0",
-    "lucide-react": "^1.20.0",
+    "lucide-react": "^1.21.0",
     "masonic": "^4.1.0",
-    "motion": "^12.40.0",
+    "motion": "^12.41.0",
     "murmurhash": "^2.0.1",
-    "openai": "^6.43.0",
+    "openai": "^6.44.0",
     "openseadragon": "^6.0.2",
     "p-throttle": "^8.1.0",
-    "papaparse": "^5.5.3",
+    "papaparse": "^5.5.4",
     "primereact": "^10.9.8",
     "react": "^19.2.7",
     "react-autosuggest": "^10.1.0",
@@ -102,12 +102,12 @@
     "react-textarea-autosize": "^8.5.9",
     "tailwind-merge": "^3.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^14.0.0",
+    "uuid": "^14.0.1",
     "zod": "^4.4.3"
   },
   "overrides": {
     "exceljs": {
-      "uuid": "^14.0.0"
+      "uuid": "^14.0.1"
     }
   }
 }

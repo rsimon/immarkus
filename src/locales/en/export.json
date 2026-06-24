@@ -13,11 +13,13 @@
     "dataDescription": "All annotations, on all images in your current work folder, as a flat list in <w3cLink>W3C Web Annotation</w3cLink> JSON-LD format.",
     "imagesTitle": "Annotations and Images",
     "imagesDescription": "All annotations, on all images in your current work folder, as an Excel file. Each top-level Entity Class will appear on a separate worksheet.",
-    "snippetsIntro": "Image snippets are included as a spreadsheet column. Choose your preferred format:",
+    "snippetsIntro": "Image snippets can be included as a spreadsheet column:",
     "snippetsBoundingBox": "<b>Bounding box snippets</b>: rectangular images showing the full area around each annotation.",
     "snippetsExactShape": "<b>Exact shape snippets</b>: images clipped precisely to the annotated shape (applies to polygons and ellipses).",
+    "noSnippets": "<b>No snippets</b>: export annotations without image snippets.",
     "exportBoundingBox": "Export bounding box snippets",
-    "exportExactShape": "Export exact shape snippets"
+    "exportExactShape": "Export exact shape snippets",
+    "exportNoSnippet": "Export without snippets"
   },
   "dataModel": {
     "entityClassesTitle": "Entity Classes",

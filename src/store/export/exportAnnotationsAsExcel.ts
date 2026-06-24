@@ -3,7 +3,7 @@ import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { CanvasInformation, EntityType, IIIFManifestResource, Image, PropertyDefinition } from '@/model';
 import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
-import { addImageToCell, fitColumnWidths } from './utils';
+import { addImageToCell, fitColumnWidths, getAnnotations } from './utils';
 import { resolveManifestsWithId } from '@/utils/iiif';
 import { CozyManifest } from 'cozy-iiif';
 
@@ -206,12 +206,21 @@ const createNotesWorksheet = (
   fitColumnWidths(worksheet);
 }
 
+export interface ExcelAnnotationExportOpts {
+
+  includeSnippets: boolean;
+
+  snippetMode?: 'masked' | 'unmasked';
+
+  filename?: string;
+
+}
+
 export const exportAnnotationsAsExcel = (
   store: Store, 
   images: (Image | CanvasInformation)[], 
   onProgress: ((progress: number) => void), 
-  masked: boolean,
-  filename?: string
+  opts: ExcelAnnotationExportOpts
 ) => {
   const model = store.getDataModel();
   const root = store.getRootFolder().handle;
@@ -236,7 +245,7 @@ export const exportAnnotationsAsExcel = (
 
   const promise = resolveManifestsWithId(manifests, updateProgress).then(manifests => {
     return images.reduce<Promise<SourceAnnotationSnippetTuple[]>>((promise, image, idx) => {
-      return promise.then(all => {
+      return promise.then((all): Promise<SourceAnnotationSnippetTuple[]> => {
         // While we're at it, resolve image folder path
         const folder = 'uri' in image 
           ? store.iiifResources.find(r => r.id === image.manifestId)?.folder
@@ -246,21 +255,37 @@ export const exportAnnotationsAsExcel = (
           ? manifests.find(m => m.id === image.manifestId)?.manifest : undefined;
 
         return root.resolve(folder).then(path => {
-          return getAnnotationsWithSnippets(image, store, masked, true)
-            .then(t => { 
-              onProgress((idx + 2) * progressIncrement);
+          if (opts.includeSnippets) {
+            return getAnnotationsWithSnippets(image, store, opts.snippetMode === 'masked', true)
+              .then(t => { 
+                onProgress((idx + 2) * progressIncrement);
 
-              return [
-                ...all,
-                ...t.map(({ annotation, snippet }) => ({ 
-                    image, 
-                    path: [root.name, ...path], 
+                return [
+                  ...all,
+                  ...t.map(({ annotation, snippet }) => ({ 
+                      image, 
+                      path: [root.name, ...path], 
+                      manifest,
+                      annotation, 
+                      snippet 
+                    } as SourceAnnotationSnippetTuple))
+                ];
+              });
+            } else {
+              return getAnnotations(image, store).then(annotations => {
+                onProgress((idx + 2) * progressIncrement);
+
+                return [
+                  ...all,
+                  ...annotations.map(annotation => ({
+                    image,
+                    path: [root.name, ...path],
                     manifest,
-                    annotation, 
-                    snippet 
+                    annotation
                   } as SourceAnnotationSnippetTuple))
-              ]
-            });
+                ];
+              });
+            }
           })
         })
       }, Promise.resolve([]));
@@ -330,7 +355,7 @@ export const exportAnnotationsAsExcel = (
   
       const anchor = document.createElement('a');
       anchor.href = URL.createObjectURL(blob);
-      anchor.download = filename || 'annotations.xlsx';
+      anchor.download = opts.filename || 'annotations.xlsx';
       anchor.click();
     });
   });

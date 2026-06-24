@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { CanvasInformation, IIIFManifestResource, Image } from '@/model';
-import { exportAnnotationsAsExcel, useStore } from '@/store';
+import { ExcelAnnotationExportOpts, exportAnnotationsAsExcel, useStore } from '@/store';
 
-export type SnippetExportMode = 'masked' | 'unmasked';
+export type SnippetExportMode = 'masked' | 'unmasked' | 'no-snippet';
 
 export const useExcelAnnotationExport = (mode: SnippetExportMode = 'unmasked') => {
 
@@ -31,7 +31,13 @@ export const useExcelAnnotationExport = (mode: SnippetExportMode = 'unmasked') =
         setBusy(false);
     }
 
-    exportAnnotationsAsExcel(store, imagesToExport, onProgress, mode === 'masked', filename);
+    const opts: ExcelAnnotationExportOpts = {
+      includeSnippets: mode !== 'no-snippet',
+      snippetMode: mode === 'no-snippet' ? undefined : mode,
+      filename
+    };
+
+    exportAnnotationsAsExcel(store, imagesToExport, onProgress, opts);
   }
 
   return {
