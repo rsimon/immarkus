@@ -1,4 +1,5 @@
-import { FileChartColumn, FileJson, ScissorsLineDashed, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
+import { useState } from 'react';
+import { FileChartColumn, FileJson, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/Spinner';
 import { exportAnnotationsAsJSONLD, useStore } from '@/store';
@@ -6,7 +7,6 @@ import { Button } from '@/ui/Button';
 import { SnippetExportMode, useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/Select';
-import { useState } from 'react';
 
 export const ExportAnnotations = () => {
 
@@ -79,6 +79,12 @@ export const ExportAnnotations = () => {
                   i18nKey="annotations.snippetsExactShape"
                   components={{ b: <strong /> }} />
               </li>
+              <li className="ml-5">
+                <Trans
+                  ns="export"
+                  i18nKey="annotations.noSnippets"
+                  components={{ b: <strong /> }} />
+              </li>
             </ul>
 
             <div className="flex justify-end gap-2 pt-3">
@@ -101,6 +107,13 @@ export const ExportAnnotations = () => {
                     value="masked">
                     <div className="flex items-center gap-2 whitespace-nowrap">
                       <TriangleDashed className="size-4 rotate-[-15deg]" /> {t('annotations.exportExactShape')}
+                    </div>
+                  </SelectItem>
+
+                  <SelectItem 
+                    value="no-snippet">
+                    <div className="flex items-center gap-2 whitespace-nowrap">
+                      <div className="size-4" /> {t('annotations.exportNoSnippet')}
                     </div>
                   </SelectItem>
                 </SelectContent>
