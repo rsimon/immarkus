@@ -1,4 +1,4 @@
-import { MessagesSquare, PanelsTopLeft } from 'lucide-react';
+import { MessagesSquare } from 'lucide-react';
 import { TruncatedLabel } from '@/components/TruncatedLabel';
 import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
@@ -51,7 +51,7 @@ export const ImageItem = (props: ImageItemProps) => {
 
             <div className="absolute bottom-0.5 right-2 text-white text-sm pointer-events-auto">
               <ImageItemActions 
-                image={image} 
+                image={image}
                 onSelect={props.onSelect}
                 onOpen={props.onOpen} 
                 onAddToWorkspace={props.onAddToWorkspace} />
