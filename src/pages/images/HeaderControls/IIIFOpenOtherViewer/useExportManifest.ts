@@ -10,8 +10,8 @@ import { serializePropertyValue } from '@/utils/serialize';
 /**
  * Simplified test, because we can rely on Annotorious-generated annotations
  */
-const isFragmentSelector = (s: W3CImageSelector): s is FragmentSelector =>
-  'type' in s && s.type === 'FragmentSelector';
+const isFragmentSelector = (s?: W3CImageSelector): s is FragmentSelector =>
+  s && 'type' in s && s.type === 'FragmentSelector';
 
 /**
  * Make Mirador happy: no 'pixel:' format prefix. And round coordinates
@@ -80,8 +80,10 @@ export const useExportManifest = (manifest: IIIFManifestResource) => {
       const target = (Array.isArray(a.target) ? a.target[0] : a.target) as W3CAnnotationTarget;
       const canvas = store.getCanvas(target.source);
 
-      if (!canvas)
-        throw Error(`Canvas not found for source ${target.source}`);
+      if (!canvas) {
+        console.warn(`Canvas not found for source ${target.source}`);
+        return;
+      }
 
       const selector = target.selector as W3CImageSelector;
 
@@ -100,7 +102,7 @@ export const useExportManifest = (manifest: IIIFManifestResource) => {
           source: canvas.uri
         }
       }
-    });
+    }).filter(Boolean);
 
     const derivative = importAnnotations(resource, crosswalked as any[]);
 
