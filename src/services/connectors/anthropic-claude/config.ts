@@ -17,8 +17,8 @@ export const config: ServiceConnectorConfig = {
     required: true,
     persist: true,
     options: [
-      ['claude-opus-4-20250514', 'Claude Opus 4'],
-      // ['claude-fable-5', 'Claude Fable 5'],
+      ['claude-opus-4-8', 'Claude Opus 4.8'],
+      ['claude-sonnet-4-6', 'Claude Sonnet 4.6']
     ]
   }],
   services: [{
