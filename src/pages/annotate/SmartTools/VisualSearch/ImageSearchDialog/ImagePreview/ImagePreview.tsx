@@ -17,6 +17,7 @@ import {
   OpenSeadragonAnnotator, 
   OpenSeadragonHoverTooltip, 
   OpenSeadragonViewer, 
+  serializeW3CImageAnnotation, 
   useAnnotator, 
   UserSelectAction
 } from '@annotorious/react';
@@ -163,9 +164,14 @@ export const ImagePreview = (props: ImagePreviewProps) => {
     // Update the local annotator instance of the preview
     anno.state.store.bulkUpsertAnnotations(toImport);
 
-    // Update the main image annotator in the workspace
+    // Update the main image annotator in the workspace (if open)
     const annotator = manifold.getAnnotator(image.id);
-    annotator.state.store.bulkUpsertAnnotations(toImport);
+    if (annotator) {
+      annotator.state.store.bulkUpsertAnnotations(toImport);
+    } else {
+      // Write to store directly if image is not open
+      store.bulkUpsertAnnotation(image.id, toImport.map(a => serializeW3CImageAnnotation(a, image.id)));
+    }
   }
 
   const getScore = useCallback((annotation: ImageAnnotation) => {
