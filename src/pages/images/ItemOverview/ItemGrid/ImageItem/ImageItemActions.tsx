@@ -65,7 +65,7 @@ export const ImageItemActions = (props: ImageItemActionProps) => {
       <IIIFExportDialog 
         open={isIIIFExportOpen} 
         onOpenChange={setIsIIIFExportOpen} 
-        image={props.image} />
+        item={props.image} />
     </>
   )
 

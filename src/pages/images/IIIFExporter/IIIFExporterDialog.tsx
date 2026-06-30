@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/ui/Dialog';
-import { LoadedFileImage } from '@/model';
+import { IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
 import { exportImageToIIIF } from '@/store/export/iiif/exportImageToIIIF';
 import { useStore } from '@/store';
+import { exportDerivativeResource } from '@/store/export/iiif/exportDerivativeResource';
 
 interface IIIFExportDialogProps {
 
-  image: LoadedFileImage;
+  item: LoadedFileImage | IIIFResource;
 
   open: boolean;
 
@@ -48,7 +49,10 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
       return;
     }
 
-    exportImageToIIIF(props.image, stripTrailingSlash(baseUrl), store);
+    if ('data' in props.item)
+      exportImageToIIIF(props.item, stripTrailingSlash(baseUrl), store);
+    else 
+      exportDerivativeResource(props.item as IIIFManifestResource, stripTrailingSlash(baseUrl), store);
 
     props.onOpenChange(false);
   }

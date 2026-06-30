@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger 
 } from '@/ui/DropdownMenu';
-import { useExportManifest } from './useExportManifest';
 
 interface IIIFOpenOtherViewerProps {
 
@@ -22,8 +21,6 @@ interface IIIFOpenOtherViewerProps {
 export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
   const { t } = useTranslation('images');
-
-  const exportManifest = useExportManifest(props.manifest);
 
   return (
     <DropdownMenu>
@@ -90,12 +87,6 @@ export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
         <DropdownMenuItem onSelect={evt => evt.preventDefault}>
           <CopyManifestURL manifest={props.manifest} />
-        </DropdownMenuItem>
-
-        <DropdownMenuItem 
-          className="text-xs text-muted-foreground gap-1.75"
-          onSelect={() => exportManifest()}>
-          <Download className="size-3.5 ml-px" /> Export manifest
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
