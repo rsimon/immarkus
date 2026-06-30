@@ -1,4 +1,3 @@
-export * from './createStaticImageManifest';
 export * from './fetchManifest';
 export * from './getCanvasAnnotations';
 export * from './getLabelWithFallback';
