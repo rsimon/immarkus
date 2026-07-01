@@ -14,16 +14,20 @@ export default defineConfig({
     viteStaticCopy({
       targets: [{
         src: 'node_modules/browser-image-compression/dist/browser-image-compression.js',
-        dest: 'assets'
+        dest: 'assets',
+        rename: { stripBase: true }
       },{
         src: 'node_modules/@annotorious/plugin-segment-anything/dist/assets/*',
-        dest: 'assets'
+        dest: 'assets',
+        rename: { stripBase: true }
       },{
         src: 'node_modules/@annotorious/plugin-magnetic-outline/dist/assets/*',
-        dest: 'assets'
+        dest: 'assets',
+        rename: { stripBase: true }
       },{
         src: 'node_modules/onnxruntime-web/dist/*.wasm',
-        dest: 'node_modules/.vite/deps'
+        dest: 'node_modules/.vite/deps',
+        rename: { stripBase: true }
       }]
     })
   ],
@@ -47,7 +51,7 @@ export default defineConfig({
       PACKAGE_VERSION: JSON.parse(
         fs.readFileSync('./package.json').toString()
       ).version,
-      BUILD_DATE: new Date()
+      BUILD_DATE: new Date().toISOString()
     }
   },
   build: {
