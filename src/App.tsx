@@ -32,7 +32,11 @@ export const App = () => {
   
   return store ? (
     <SidebarProvider className="h-dvh">
-      <Suspense fallback={<PageLoading />}>
+      <Suspense 
+        // This ensures a root-level path change triggers the loading fallback
+        // Cf. https://github.com/remix-run/react-router/issues/10568
+        key={pathname.split('/')[1]}  
+        fallback={<PageLoading />}>
         <Routes>
           <Route path="/">
             <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
