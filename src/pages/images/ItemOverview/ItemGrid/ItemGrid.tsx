@@ -65,7 +65,7 @@ export const ItemGrid = (props: ItemGridProps) => {
                 onSelect={() => props.onSelectFolder(item)} />
             ) : (
               <IIIFManifestItem
-                annotationCount={(props.annotations.folders[item.id] || []).length}
+                annotationCount={(props.annotations.folders[`iiif:${item.id}`] || []).length}
                 resource={item as IIIFManifestResource}
                 onOpen={() => props.onOpenFolder(item)}
                 onSelect={props.onSelectItem} />
@@ -77,7 +77,7 @@ export const ItemGrid = (props: ItemGridProps) => {
           <li key={image.id}>
             {'canvases' in image ? ( 
               <IIIFManifestItem
-                annotationCount={(props.annotations.folders[image.id] || []).length}
+                annotationCount={(props.annotations.folders[`iiif:${image.id}`] || []).length}
                 resource={image as IIIFManifestResource}
                 onOpen={() => props.onOpenFolder(image)}
                 onSelect={props.onSelectItem} />
