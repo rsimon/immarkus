@@ -102,5 +102,13 @@
     "importingMessage_other": "Importing {{count}} IIIF manifests",
     "importErrorTitle": "Import Error",
     "alreadyExists": "{{name}} already exists in the current subfolder. IMMARKUS allows multiple imports of the same manifest, but each one must be placed in a different subfolder. To continue, please remove this manifest from the list or choose a different subfolder."
+  },
+  "iiifExporter": {
+    "exportToIIIF": "Export to IIIF",
+    "description": "This generates a ZIP file with everything you need to publish your work as a IIIF resource, ready to deploy to your own web server. Since IIIF requires absolute URL references, please enter the base URL where your files will be hosted. This URL will be written into the manifest and annotation list(s).",
+    "baseUrl": "Base URL",
+    "hint": "Extract the ZIP and serve its contents at exactly this URL.",
+    "validationError": "Please enter a valid URL, including the protocol (e.g. https://)",
+    "exportZip": "Export ZIP"
   }
 }

@@ -1,12 +1,21 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/ui/Dialog';
+import { useTranslation } from 'react-i18next';
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
-import { exportImageToIIIF } from '@/store/export/iiif/exportImageToIIIF';
 import { useStore } from '@/store';
+import { exportImageToIIIF } from '@/store/export/iiif/exportImageToIIIF';
 import { exportDerivativeResource } from '@/store/export/iiif/exportDerivativeResource';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from '@/ui/Dialog';
 
 interface IIIFExportDialogProps {
 
@@ -33,6 +42,8 @@ const isValidUrl = (value: string) => {
 }
 
 export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
+  const { t } = useTranslation('images');
+
   const [baseUrl, setBaseUrl] = useState('');
   const [touched, setTouched] = useState(false);
 
@@ -66,48 +77,55 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
   }
 
   return (
-    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent>
+    <Dialog 
+      open={props.open} 
+      onOpenChange={props.onOpenChange}>
+      <DialogContent 
+        className="max-w-xl" 
+        onClick={e => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>Export as IIIF Resource</DialogTitle>
-          <DialogDescription>
-            This will generate a ZIP file containing the image, a IIIF Presentation
-            v3 manifest, and an annotation list, ready to deploy as a static IIIF
-            resource. Because the manifest and annotations reference each other by
-            absolute URL, you need to provide the base URL where these files will
-            be hosted once deployed.
+          <DialogTitle className="flex gap-2 items-center">
+            <IIIFIcon color className="size-6 mb-0.5"/> {t('iiifExporter.exportToIIIF')}
+          </DialogTitle>
+
+          <DialogDescription className="leading-relaxed my-4">
+            {t('iiifExporter.description')}
           </DialogDescription>
 
-          <div className="space-y-2">
-            <Label htmlFor="iiif-base-url">Base URL</Label>
+          <div className="mb-6">
+            <Label htmlFor="iiif-base-url">
+              {t('iiifExporter.baseUrl')}
+            </Label>
 
-            <Input
-              id="iiif-base-url"
-              type="url"
-              placeholder="https://example.org/iiif"
-              value={baseUrl}
-              onChange={e => setBaseUrl(e.target.value)}
-              onBlur={() => setTouched(true)}
-              aria-invalid={showError} />
+            <div className="py-3">
+              <Input
+                id="iiif-base-url"
+                className="-mx-0.5"
+                type="url"
+                placeholder="https://example.org/my-collection/"
+                value={baseUrl}
+                onChange={e => setBaseUrl(e.target.value)}
+                onBlur={() => setTouched(true)}
+                aria-invalid={showError} />
+            </div>
 
             {showError ? (
               <p className="text-sm text-destructive">
-                Please enter a valid URL, including the protocol (e.g. https://).
+                {t('iiifExporter.validationError')}
               </p>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                The folder this ZIP is extracted into should be served at exactly
-                this URL.
+              <p className="text-xs font-lightd">
+                {t('iiifExporter.hint')}
               </p>
             )}
           </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button onClick={onExport} disabled={!valid}>
-              Export ZIP
+              {t('iiifExporter.exportZip')}
             </Button>
           </DialogFooter>
         </DialogHeader>
