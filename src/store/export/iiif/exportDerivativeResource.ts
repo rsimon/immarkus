@@ -53,7 +53,7 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
     }
   };
 
-  zip.file(`${resource.id}/manifest.json`, JSON.stringify(manifest, null, 2));
+  zip.file(`${resource.id}/manifest.json`, JSON.stringify(derivative, null, 2));
 
   const blob = await zip.generateAsync({ type:'blob' });
 
