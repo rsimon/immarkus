@@ -18,25 +18,42 @@ const Settings = lazy(() => import('./pages/settings/Settings').then(m => ({ def
 const Start = lazy(() => import('./pages/start/Start').then(m => ({ default: m.Start })));
 const Vocabulary = lazy(() => import('./pages/datamodel/DataModel').then(m => ({ default: m.Vocabulary })));
 
-const PageLoading = () => (
+const FullscreenPageLoading = () => (
   <div className="flex items-center justify-center h-full w-full">
     <Loader2 className="animate-spin size-6 opacity-50" />
   </div>
 );
+
+const SidebarPageLoading = () => (
+  <>
+    <AppNavigationSidebar />
+
+    <main className="grow flex items-center justify-center">
+      <Loader2 className="animate-spin size-6 opacity-50" />
+    </main>
+  </>
+);
+
+// Routes that render full-screen, without the nav sidebar
+const FULLSCREEN_ROUTES = ['start', 'annotate'];
 
 export const App = () => {
 
   const store = useStore();
 
   const { pathname } = useLocation();
-  
+
+  const rootSegment = pathname.split('/')[1];
+
+  const isFullScreen = FULLSCREEN_ROUTES.includes(rootSegment);
+
   return store ? (
     <SidebarProvider className="h-dvh">
-      <Suspense 
+      <Suspense
         // This ensures a root-level path change triggers the loading fallback
         // Cf. https://github.com/remix-run/react-router/issues/10568
-        key={pathname.split('/')[1]}  
-        fallback={<PageLoading />}>
+        key={rootSegment}
+        fallback={isFullScreen ? <FullscreenPageLoading /> : <SidebarPageLoading />}>
         <Routes>
           <Route path="/">
             <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
@@ -77,7 +94,7 @@ export const App = () => {
       </Suspense>
     </SidebarProvider>
   ) : (
-    <Suspense fallback={<PageLoading />}>
+    <Suspense fallback={<FullscreenPageLoading />}>
       <Start redirectTo={pathname === '/' ? undefined : pathname} />
     </Suspense>
   )
