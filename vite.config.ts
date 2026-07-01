@@ -28,7 +28,6 @@ export default defineConfig({
     })
   ],
   server: {
-    cors: true,
     proxy: {
       '/api/web/clc-sinonom/': {
         target: 'https://kimhannom.clc.hcmus.edu.vn',
