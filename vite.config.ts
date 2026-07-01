@@ -52,11 +52,30 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 12000,
+    modulePreload: {
+      // By default, Vite also preloads a chunk's *nested* dynamic imports as
+      // soon as its container chunk is loaded, to avoid a request waterfall.
+      // That's wrong for dep-sam/dep-opencv: Annotate.tsx only imports them
+      // conditionally (once the user opens Smart Tools / picks the magnetic
+      // outline tool), so preloading them just for visiting /annotate defeats
+      // the point of deferring them - strip them from every preload list and
+      // let their own dynamic import() fetch them on demand instead.
+      resolveDependencies: (_filename, deps) =>
+        deps.filter(dep => !dep.includes('dep-sam-') && !dep.includes('dep-opencv-'))
+    },
     rollupOptions: {
       output: {
         entryFileNames: 'assets/immarkus-[hash].js',
         assetFileNames: 'assets/immarkus-[hash].[ext]',
         manualChunks(id) {
+          // CSS side-effect imports (e.g. the SAM/magnetic-outline plugin
+          // stylesheets) resolve to a path under the same package directory as
+          // their JS, so the substring checks below would otherwise also sweep
+          // them into the huge vendor chunks - forcing whichever page statically
+          // imports the (tiny) CSS to also statically depend on the whole chunk.
+          // Let Vite's own CSS extraction handle these instead.
+          if (id.endsWith('.css')) return;
+
           // Keep Vite's/Rollup's shared cross-cutting runtime helpers out of the
           // vendor chunks below - otherwise every other chunk that also happens to
           // need the same helper ends up statically importing (and therefore

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePluginManifold } from '@annotorious/react-manifold';
-import { DownloadProgress, mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
+import type { DownloadProgress, mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 
 export const useSAMPlugin = () => {
 

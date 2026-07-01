@@ -4,7 +4,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AnnotoriousManifold, OSDViewerManifold, PluginProvider, Plugin } from '@annotorious/react-manifold';
 import { mountPlugin as BooleanPlugin } from '@annotorious/plugin-boolean-operations';
-import { mountOpenSeadragonPlugin as SAMPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { LoadedImage } from '@/model';
 import { useImages } from '@/store';
 import { Alert, AlertTitle } from '@/ui/Alert';
@@ -23,6 +22,10 @@ import { GPUDisabledError } from './GPUDisabledError';
 import './Annotate.css';
 
 import '@annotorious/plugin-segment-anything/annotorious-plugin-smart-tools.css';
+
+// Type-only - keeps the (heavy) SAM plugin module out of Annotate's own bundle.
+// It's only fetched once the user actually opens the Smart Tools panel, below.
+type SAMPluginFn = typeof import('@annotorious/plugin-segment-anything/openseadragon').mountOpenSeadragonPlugin;
 
 export const Annotate = () => {
 
@@ -49,6 +52,17 @@ export const Annotate = () => {
   const [isSmartPanelOpen, setIsSmartPanelOpen] = useState(false);
 
   const [initError, setInitError] = useState<Error | undefined>();
+
+  const [samPlugin, setSamPlugin] = useState<SAMPluginFn>();
+
+  // Defer loading the SAM plugin (a multi-MB WASM/ONNX runtime bundle) until the
+  // user actually opens the Smart Tools panel, rather than on every Annotate visit.
+  useEffect(() => {
+    if (!isSmartPanelOpen || samPlugin) return;
+
+    import('@annotorious/plugin-segment-anything/openseadragon')
+      .then(module => setSamPlugin(() => module.mountOpenSeadragonPlugin));
+  }, [isSmartPanelOpen, samPlugin]);
 
   // Populate context from URL on mount - but only if it's empty!
   useEffect(() => {
@@ -87,9 +101,11 @@ export const Annotate = () => {
                   name="boolean" 
                   plugin={BooleanPlugin} />
 
-                <Plugin
-                  name="smart-selection"
-                  plugin={SAMPlugin} />
+                {samPlugin && (
+                  <Plugin
+                    name="smart-selection"
+                    plugin={samPlugin} />
+                )}
 
                 <SavingState.Root>
                   <main className="absolute top-0 left-0 h-full right-85 flex flex-col">

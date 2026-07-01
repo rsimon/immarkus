@@ -1,11 +1,10 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type OpenSeadragon from 'openseadragon';
 import type { History } from '@annotorious/core';
 import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat } from '@annotorious/plugin-wires-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
-import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
 import { LoadedImage } from '@/model';
 import { getOSDTilesets } from '@/utils/iiif';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
@@ -27,6 +26,10 @@ import '@annotorious/react/annotorious-react.css';
 import '@annotorious/plugin-tools/annotorious-plugin-tools.css';
 import '@annotorious/plugin-wires-react/annotorious-wires-react.css';
 import '@annotorious/plugin-magnetic-outline/plugin-magnetic-outline.css';
+
+// Type-only - keeps the (heavy) OpenCV/WASM plugin module out of this bundle.
+// It's only fetched once the user actually selects the magnetic outline tool, below.
+type MagneticOutlinePluginFn = typeof import('@annotorious/plugin-magnetic-outline').mountPlugin;
 
 interface AnnotatableImageProps {
 
@@ -82,6 +85,17 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const style = useRelationEmphasisStyle(props.mode === 'relation', colorByEntity);
 
+  const [magneticOutlinePlugin, setMagneticOutlinePlugin] = useState<MagneticOutlinePluginFn>();
+
+  // Defer loading the magnetic outline plugin (a multi-MB OpenCV/WASM bundle)
+  // until the user actually selects that tool, rather than on every image opened.
+  useEffect(() => {
+    if (props.tool !== 'magnetic-cursor' || magneticOutlinePlugin) return;
+
+    import('@annotorious/plugin-magnetic-outline')
+      .then(module => setMagneticOutlinePlugin(() => module.mountPlugin));
+  }, [props.tool, magneticOutlinePlugin]);
+
   const onSave = () => setSavingState({ value: 'saving' });
 
   const onSaved = () => setSavingState({ value: 'success' });
@@ -136,8 +150,10 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
         <AnnotoriousPlugin
           plugin={SelectorPack} />
 
-        <AnnotoriousPlugin
-          plugin={MagneticOutlinePlugin} />
+        {magneticOutlinePlugin && (
+          <AnnotoriousPlugin
+            plugin={magneticOutlinePlugin} />
+        )}
 
         <AnnotoriousRelationEditorPlugin
           enabled={props.mode === 'relation'} />

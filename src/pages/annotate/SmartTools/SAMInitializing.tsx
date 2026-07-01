@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PluginManifoldProxy } from '@annotorious/react-manifold';
-import { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
+import type { mountOpenSeadragonPlugin } from '@annotorious/plugin-segment-anything/openseadragon';
 import { Spinner } from '@/components/Spinner';
 
 interface SAMInitializingProps {
