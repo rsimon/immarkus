@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
-import { exportRelationshipsAsExcel } from '@/store';
+import { exportRelationshipsAsExcel } from '@/store/export';
 import { Store } from '../Store';
 
 export const useExcelRelationshipExport = () => {

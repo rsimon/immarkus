@@ -1,6 +1,6 @@
 import { PanelsTopLeft, SquareArrowOutUpRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { 

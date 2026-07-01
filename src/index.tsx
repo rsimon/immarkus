@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { KnowledgeGraphStateProvider } from './pages/knowledgegraph';
-import { AnnotationViewStateProvider } from './pages/annotate';
+import { KnowledgeGraphStateProvider } from './pages/knowledgegraph/KnowledgeGraphState';
+import { AnnotationViewStateProvider } from './pages/annotate/AnnotationViewState';
 import { StoreProvider } from './store/StoreProvider';
 import { Toaster } from '@/ui/Toaster';
 import { App } from '@/App';

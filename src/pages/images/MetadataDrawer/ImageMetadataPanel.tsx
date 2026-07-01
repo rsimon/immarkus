@@ -7,7 +7,7 @@ import { ImagePlus, PanelTop } from 'lucide-react';
 import { W3CAnnotationBody } from '@annotorious/react';
 import { ImageMetadataForm, hasChanges } from '@/components/MetadataForm';
 import { Image } from '@/model';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 
 interface ImageMetadataPanelProps {
 

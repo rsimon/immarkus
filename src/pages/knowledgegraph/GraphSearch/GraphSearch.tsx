@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { useDraggable } from '@neodrag/react';
 import { CirclePlus, Grip, PanelsTopLeft, Trash2, X } from 'lucide-react';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearchDialogPos, useSearchState } from '../KnowledgeGraphState';

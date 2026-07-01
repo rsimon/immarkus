@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { ChevronDown, Download, FileBarChart2, Table2 } from 'lucide-react';
-import { useStore, useExcelAnnotationExport, useExcelRelationshipExport } from '@/store';
+import { useStore } from '@/store';
+import { useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
+import { useExcelRelationshipExport } from '@/store/hooks/useExcelRelationshipExport';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Graph, GraphNode, GraphNodeType } from '../../Types';
 import { getRelationships } from './exportRelationships';

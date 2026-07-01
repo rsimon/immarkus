@@ -1,6 +1,6 @@
 import { PanelsTopLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useAnnotationViewState } from '@/pages/annotate';
+import { useAnnotationViewState } from '@/pages/annotate/AnnotationViewState';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 
 interface IsInWorkspaceIndicatorPipProps {

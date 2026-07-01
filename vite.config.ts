@@ -57,6 +57,13 @@ export default defineConfig({
         entryFileNames: 'assets/immarkus-[hash].js',
         assetFileNames: 'assets/immarkus-[hash].[ext]',
         manualChunks(id) {
+          // Keep Vite's/Rollup's shared cross-cutting runtime helpers out of the
+          // vendor chunks below - otherwise every other chunk that also happens to
+          // need the same helper ends up statically importing (and therefore
+          // preloading) whichever huge chunk it landed in.
+          if (id.includes('vite/preload-helper')) return 'vite-preload-helper';
+          if (id.includes('commonjsHelpers')) return 'commonjs-helpers';
+          if (id.includes('commonjs-dynamic-modules')) return 'commonjs-helpers';
           if (id.includes('node_modules/@annotorious/react')) return 'dep-annotorious';
           if (id.includes('node_modules/exceljs')) return 'dep-exceljs';
           if (id.includes('node_modules/primereact')) return 'dep-primereact';
