@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { useImages, useStore } from '@/store';
 import { useImageSorting } from '@/utils/useImageSorting';
 import { usePersistentState } from '@/utils/usePersistentState';

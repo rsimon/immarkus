@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CanvasInformation, IIIFManifestResource, Image } from '@/model';
-import { ExcelAnnotationExportOpts, exportAnnotationsAsExcel, useStore } from '@/store';
+import { useStore } from '@/store';
+import { ExcelAnnotationExportOpts, exportAnnotationsAsExcel } from '@/store/export';
 
 export type SnippetExportMode = 'masked' | 'unmasked' | 'no-snippet';
 

@@ -3,7 +3,7 @@ import { useInView } from 'react-intersection-observer';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { IIIFThumbnail } from '@/components/IIIFThumbnail';
 import { IIIFManifestResource } from '@/model';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { useManifestAnnotations } from '@/store';
 import { Skeleton } from '@/ui/Skeleton';
 import { useCanvas } from '@/utils/iiif/hooks';

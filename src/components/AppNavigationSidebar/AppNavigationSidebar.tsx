@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useAnnotationViewState } from '@/pages';
+import { useAnnotationViewState } from '@/pages/annotate/AnnotationViewState';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/Collapsible';
 import { 
   ChevronDown,

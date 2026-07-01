@@ -2,7 +2,9 @@ import { FileChartColumn, FileJson, Table2 } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ProgressDialog } from '@/components/ProgressDialog';
 import { Spinner } from '@/components/Spinner';
-import { exportRelationshipsAsJSONLD, useExcelRelationshipExport, useStore } from '@/store';
+import { useStore } from '@/store';
+import { exportRelationshipsAsJSONLD } from '@/store/export';
+import { useExcelRelationshipExport } from '@/store/hooks/useExcelRelationshipExport';
 import { Button } from '@/ui/Button';
 
 export const ExportRelationships = () => {

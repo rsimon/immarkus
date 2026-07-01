@@ -11,7 +11,7 @@ import { CanvasItem, OverviewItem, OverviewLayout } from '../Types';
 import { IIIFManifestHeader } from './IIIFManifestHeader';
 import { IIIFManifestGrid } from './IIIFManifestGrid';
 import { IIIFManifestTable } from './IIIFManifestTable';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 
 interface IIIFManifestOverviewProps {
 

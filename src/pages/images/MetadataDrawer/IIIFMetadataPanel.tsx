@@ -13,7 +13,7 @@ import { Annotation, CozyMetadata } from 'cozy-iiif';
 import { getCanvasAnnotations } from '@/utils/iiif';
 import { useCanvas, useIIIFResource } from '@/utils/iiif/hooks';
 import { CanvasItem } from '../Types';
-import { useOpenInAnnotationView } from '@/pages/annotate';
+import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 
 interface MetadataListProps {
 
