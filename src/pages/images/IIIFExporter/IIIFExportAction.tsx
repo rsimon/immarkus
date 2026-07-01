@@ -1,4 +1,5 @@
-import { Download } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { IIIFIcon } from '@/components/IIIFIcon';
 import { DropdownMenuItem } from '@/ui/DropdownMenu';
 
 interface IIIFExportActionProps {
@@ -9,9 +10,13 @@ interface IIIFExportActionProps {
 
 export const IIIFExportAction = (props: IIIFExportActionProps) => {
 
+  const { t } = useTranslation('images');
+
   return (
     <DropdownMenuItem onSelect={props.onSelect}>
-      <Download className="size-4 text-muted-foreground mr-2" /> Export IIIF manifest
+      <IIIFIcon 
+        light
+        className="size-4 text-muted-foreground mr-2" /> {t('common.exportIIIF')}
     </DropdownMenuItem>
   )
 
