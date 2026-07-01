@@ -1,6 +1,6 @@
 import { MouseEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, Share2 } from 'lucide-react';
+import { ChevronDown, Download, Share2 } from 'lucide-react';
 import { CopyManifestURL } from '@/components/CopyManifestURL';
 import { IIIFManifestResource } from '@/model';
 import { Button } from '@/ui/Button';
@@ -21,17 +21,6 @@ interface IIIFOpenOtherViewerProps {
 export const IIIFOpenOtherViewer = (props: IIIFOpenOtherViewerProps) => {
 
   const { t } = useTranslation('images');
-
-  const [copied, setCopied] = useState(false);
-
-  const onCopyManifestURL = (evt: MouseEvent) => {
-    evt.preventDefault();
-
-    navigator.clipboard.writeText(props.manifest.uri).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 750);
-    });
-  }
 
   return (
     <DropdownMenu>

@@ -6,10 +6,11 @@ import { Button } from '@/ui/Button';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 // import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
-import { Folder, IIIFManifestResource, Image } from '@/model';
+import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { useStore } from '@/store';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { useCanvas } from '@/utils/iiif/hooks';
+import { IIIFExportAction, IIIFExportDialog } from '../../IIIFExporter';
 import { OverviewItem } from '../../Types';
 import { IIIFOpenInViewerAction } from '../IIIFOpenInViewerAction';
 import {
@@ -24,7 +25,7 @@ import {
 
 interface ItemTableRowActions {
 
-  data: Folder | IIIFManifestResource | Image;
+  data: Folder | IIIFManifestResource | LoadedFileImage;
 
   onOpenFolder(folder: Folder): void;
 
@@ -85,6 +86,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
   const store = useStore();
 
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const [isIIIFExportOpen, setIsIIIFExportOpen] = useState(false);
 
   const [isManifest, isImage, isFolder] = useMemo(() => {
     if ('canvases' in props.data) {
@@ -156,6 +159,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
                 <Images className="size-4 text-muted-foreground mr-2" /> {t('common.addToWorkspace')}
               </DropdownMenuItem>
 
+              <IIIFExportAction onSelect={() => setIsIIIFExportOpen(true)} />
+
               <VisualSearchDebugAction
                 imageId={imageId}
                 title={props.data.name} />
@@ -178,6 +183,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
 
+              <IIIFExportAction onSelect={() => setIsIIIFExportOpen(true)} />
+
               <VisualSearchDebugAction 
                 imageId={imageId}
                 title={props.data.name} />
@@ -191,6 +198,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               </DropdownMenuItem>
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
+              
+              <IIIFExportAction onSelect={() => setIsIIIFExportOpen(true)} />
             </>
           )}
 
@@ -207,6 +216,13 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {('canvases' in props.data || 'data' in props.data) && (
+        <IIIFExportDialog 
+          open={isIIIFExportOpen} 
+          onOpenChange={setIsIIIFExportOpen} 
+          item={props.data} />
+      )}
 
       <ConfirmedDelete
         open={confirmDelete}
