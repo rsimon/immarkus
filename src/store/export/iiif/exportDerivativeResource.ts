@@ -46,7 +46,7 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
 
   // 1. Derivative manifest must have a new ID
   const derivative = { ...manifest.source } as Record<string, any>;
-  derivative.id = `${resource.id}/manifest.json`;
+  derivative.id = `${baseUrl}/${resource.id}/manifest.json`;
 
   // 2. Derivative should modify the label to alert users of the change
   derivative.label = createModifiedLabel(derivative.label, '(annotated with IMMARKUS)');
