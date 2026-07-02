@@ -49,7 +49,7 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
   derivative.id = `${resource.id}/manifest.json`;
 
   // 2. Derivative should modify the label to alert users of the change
-  derivative.label = createModifiedLabel(derivative.label, '(modified with IMMARKUS)');
+  derivative.label = createModifiedLabel(derivative.label, '(annotated with IMMARKUS)');
 
   derivative.items = (derivative.items || []).map((canvas: any) => {
     const annotationPageUrl = annotationPageUrls.get(canvas.id);
