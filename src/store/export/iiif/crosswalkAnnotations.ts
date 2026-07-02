@@ -1,3 +1,4 @@
+import { serializeSVGSelector, parseSVGSelector } from '@annotorious/react';
 import { Store } from '@/store';
 import { serializePropertyValue } from '@/utils/serialize';
 import { 
@@ -71,16 +72,19 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
 }
 
 export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store): W3CImageAnnotation[] => {
-  return annotations.map(a => {
+  return annotations.map(a => {    
     const target = (Array.isArray(a.target) ? a.target[0] : a.target) as W3CImageAnnotationTarget;
     const canvas = store.getCanvas(target.source); 
 
     const selector = target.selector as W3CImageSelector;
 
-    const normalized = isFragmentSelector(selector) ? {
-      ...selector,
-      value: normalizeFragmentSelector(selector.value)
-    } : selector;
+    const normalized = isFragmentSelector(selector) 
+      ? {
+        ...selector,
+        value: normalizeFragmentSelector(selector.value)
+      } :
+        // Serialize to Mirador-safe format (all SVG shapes to `<path>` elements) 
+        serializeSVGSelector(parseSVGSelector(selector), true);
 
     return {
       ...a,
