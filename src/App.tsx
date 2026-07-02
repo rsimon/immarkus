@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, ReactNode, Suspense } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
@@ -34,8 +34,24 @@ const SidebarPageLoading = () => (
   </>
 );
 
-// Routes that render full-screen, without the nav sidebar
-const FULLSCREEN_ROUTES = ['start', 'annotate'];
+// Wraps a lazy page in its own Suspense boundary, keyed per page so that
+// navigating between pages always mounts a fresh (unrevealed) boundary and
+// shows the loading fallback. A shared boundary around the whole route tree
+// doesn't work here: React ties "have I revealed content" to the Suspense
+// fiber itself, and Suspense's tree position stays the same across route
+// changes, so React reuses it instead of remounting.
+// Cf. https://github.com/remix-run/react-router/issues/10568
+const withFullscreenFallback = (key: string, element: ReactNode) => (
+  <Suspense key={key} fallback={<FullscreenPageLoading />}>
+    {element}
+  </Suspense>
+);
+
+const withSidebarFallback = (key: string, element: ReactNode) => (
+  <Suspense key={key} fallback={<SidebarPageLoading />}>
+    {element}
+  </Suspense>
+);
 
 export const App = () => {
 
@@ -43,55 +59,45 @@ export const App = () => {
 
   const { pathname } = useLocation();
 
-  const rootSegment = pathname.split('/')[1];
-
-  const isFullScreen = FULLSCREEN_ROUTES.includes(rootSegment);
-
   return store ? (
     <SidebarProvider className="h-dvh">
-      <Suspense
-        // This ensures a root-level path change triggers the loading fallback
-        // Cf. https://github.com/remix-run/react-router/issues/10568
-        key={rootSegment}
-        fallback={isFullScreen ? <FullscreenPageLoading /> : <SidebarPageLoading />}>
-        <Routes>
-          <Route path="/">
-            <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
+      <Routes>
+        <Route path="/">
+          <Route index element={<Navigate to={store ? '/images' : '/start' }/>} />
 
-            <Route path="start" element={<Start />} />
+          <Route path="start" element={withFullscreenFallback('start', <Start />)} />
 
-            <Route path="images" element={<Images />} />
+          <Route path="images" element={withSidebarFallback('images', <Images />)} />
 
-            <Route path="images/:folder" element={<Images />} />
+          <Route path="images/:folder" element={withSidebarFallback('images', <Images />)} />
 
-            <Route path="annotate/:images?" element={store ? <Annotate /> : <Start />} />
+          <Route path="annotate/:images?" element={withFullscreenFallback('annotate', store ? <Annotate /> : <Start />)} />
 
-            <Route path="model" element={<Vocabulary />} />
+          <Route path="model" element={withSidebarFallback('model', <Vocabulary />)} />
 
-            <Route path="graph" element={<KnowledgeGraph />} />
+          <Route path="graph" element={withSidebarFallback('graph', <KnowledgeGraph />)} />
 
-            <Route path="settings">
-              <Route index element={<Navigate to="/settings/general" />} />
-              <Route path="general" element={<Settings tab="general" />} />
-              <Route path="visual-search" element={<Settings tab="visual-search" />} />
-            </Route>
-
-            <Route path="export">
-              <Route index element={<Navigate to="/export/annotations" />} />
-              <Route path="annotations" element={<Export tab="annotations" />} />
-              <Route path="relationships" element={<Export tab="relationships" />} />
-              <Route path="model" element={<Export tab="model" />} />
-              <Route path="metadata" element={<Export tab="metadata" />} />
-            </Route>
-
-            <Route path="markus" element={<Markus />} />
-
-            <Route path="about" element={<About />} />
-
-            <Route path="*" element={<NotFound />} />
+          <Route path="settings">
+            <Route index element={<Navigate to="/settings/general" />} />
+            <Route path="general" element={withSidebarFallback('settings', <Settings tab="general" />)} />
+            <Route path="visual-search" element={withSidebarFallback('settings', <Settings tab="visual-search" />)} />
           </Route>
-        </Routes>
-      </Suspense>
+
+          <Route path="export">
+            <Route index element={<Navigate to="/export/annotations" />} />
+            <Route path="annotations" element={withSidebarFallback('export', <Export tab="annotations" />)} />
+            <Route path="relationships" element={withSidebarFallback('export', <Export tab="relationships" />)} />
+            <Route path="model" element={withSidebarFallback('export', <Export tab="model" />)} />
+            <Route path="metadata" element={withSidebarFallback('export', <Export tab="metadata" />)} />
+          </Route>
+
+          <Route path="markus" element={withSidebarFallback('markus', <Markus />)} />
+
+          <Route path="about" element={withSidebarFallback('about', <About />)} />
+
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
     </SidebarProvider>
   ) : (
     <Suspense fallback={<FullscreenPageLoading />}>
