@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@annotorious/plugin-boolean-operations": "^0.4.0",
-    "@annotorious/plugin-magnetic-outline": "^0.3.0",
+    "@annotorious/plugin-magnetic-outline": "^0.3.1",
     "@annotorious/plugin-segment-anything": "^0.4.0",
     "@annotorious/plugin-tools": "^1.6.0",
     "@annotorious/plugin-wires-react": "^0.9.0",
