@@ -71,7 +71,7 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
   }
 }
 
-export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store, source?: string): W3CImageAnnotation[] => {
+export const crosswalkAnnotations = (annotations: W3CAnnotation[], miradorSafe: boolean, store: Store, source?: string): W3CImageAnnotation[] => {
   return annotations.map(a => {    
     const target = (Array.isArray(a.target) ? a.target[0] : a.target) as W3CImageAnnotationTarget;
     const canvas = store.getCanvas(target.source); 
@@ -84,7 +84,7 @@ export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store,
         value: normalizeFragmentSelector(selector.value)
       } :
         // Serialize to Mirador-safe format (all SVG shapes to `<path>` elements) 
-        serializeSVGSelector(parseSVGSelector(selector), true);
+        serializeSVGSelector(parseSVGSelector(selector), miradorSafe);
 
     return {
       ...a,

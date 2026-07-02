@@ -28,14 +28,14 @@ const getImageDimensions = (blob: Blob): Promise<{ width: number, height: number
     img.src = url;
   });
 
-const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, store: Store) => {
+const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, miradorSafe: boolean, store: Store) => {
   const base = `${baseUrl}/${stripExtension(image.name)}`;
 
   return store.getAnnotations(image.id, { type: 'image' }).then(annotations => ({
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${base}/annotations.json`,
     type: 'AnnotationPage',
-    items: crosswalkAnnotations(annotations, store, `${base}/canvas/1`)
+    items: crosswalkAnnotations(annotations, miradorSafe, store, `${base}/canvas/1`)
   }));
 }
 
@@ -86,7 +86,7 @@ const createStaticManifest = (image: LoadedFileImage, baseUrl: string) => {
  * - A static image presentation manifest
  * - A JSON-LD annotation list
  */
-export const exportImageToIIIF = async (image: LoadedFileImage, baseUrl: string, store: Store) => {
+export const exportImageToIIIF = async (image: LoadedFileImage, baseUrl: string, miradorSafe: boolean, store: Store) => {
   const name = stripExtension(image.name);
 
   const zip = new JSZip();
@@ -96,7 +96,7 @@ export const exportImageToIIIF = async (image: LoadedFileImage, baseUrl: string,
   const manifest = await createStaticManifest(image, baseUrl);
   zip.file(`${name}/manifest.json`, JSON.stringify(manifest, null, 2));
 
-  const annotations = await createAnnotationPage(image, baseUrl, store);
+  const annotations = await createAnnotationPage(image, baseUrl, miradorSafe, store);
   zip.file(`${name}/annotations.json`, JSON.stringify(annotations, null, 2));
 
   const blob = await zip.generateAsync({ type:'blob' });

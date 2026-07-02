@@ -109,6 +109,8 @@
     "baseUrl": "Base URL",
     "hint": "Extract the ZIP and serve its contents at exactly this URL.",
     "validationError": "Please enter a valid URL, including the protocol (e.g. https://)",
+    "miradorSafe": "Export Mirador-Safe Shapes",
+    "miradorSafeHint": "Mirador only supports a limited set of annotation shapes. Select this option to convert complex shapes into a simplified format Mirador can display. Note that the original, more precise shapes cannot be fully recovered if you re-import this export back into IMMARKUS.",
     "exportZip": "Export ZIP"
   }
 }

@@ -17,15 +17,15 @@ export const createModifiedLabel = (label: Record<string, string[]> | undefined,
   );
 }
 
-const createAnnotationPage = (canvas: CanvasInformation, baseUrl: string, store: Store) =>
+const createAnnotationPage = (canvas: CanvasInformation, baseUrl: string, miradorSafe: boolean, store: Store) =>
   store.getAnnotations(`iiif:${canvas.manifestId}:${canvas.id}`).then(annotations => annotations.length > 0 ? {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${baseUrl}/${canvas.manifestId}/annotations-${canvas.id}.json`,
     type: 'AnnotationPage',
-    items: crosswalkAnnotations(annotations, store)
+    items: crosswalkAnnotations(annotations, miradorSafe, store)
   } : undefined);
 
-export const exportDerivativeResource = async (resource: IIIFManifestResource, baseUrl: string, store: Store) => {
+export const exportDerivativeResource = async (resource: IIIFManifestResource, baseUrl: string, miradorSafe: boolean, store: Store) => {
   const zip = new JSZip();
 
   // Original manifest
@@ -34,7 +34,7 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
   const annotationPageUrls = new Map<string, string>();
 
   for (const canvas of resource.canvases) {
-    const annotations = await createAnnotationPage(canvas, baseUrl, store);
+    const annotations = await createAnnotationPage(canvas, baseUrl, miradorSafe, store);
     if (annotations) {
       zip.file(`${resource.id}/annotations-${canvas.id}.json`, JSON.stringify(annotations, null, 2));
       annotationPageUrls.set(canvas.uri, annotations.id);

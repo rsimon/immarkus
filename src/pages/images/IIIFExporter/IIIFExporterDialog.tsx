@@ -5,6 +5,7 @@ import { IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
+import { Checkbox } from '@/ui/Checkbox';
 import { useStore } from '@/store';
 import { exportImageToIIIF } from '@/store/export/iiif/exportImageToIIIF';
 import { exportDerivativeResource } from '@/store/export/iiif/exportDerivativeResource';
@@ -46,6 +47,7 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
 
   const [baseUrl, setBaseUrl] = useState('');
   const [touched, setTouched] = useState(false);
+  const [miradorSafe, setMiradorSafe] = useState(false);
 
   const valid = isValidUrl(baseUrl);
   const showError = touched && baseUrl.length > 0 && !valid;
@@ -61,9 +63,9 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
     }
 
     if ('data' in props.item)
-      exportImageToIIIF(props.item, stripTrailingSlash(baseUrl), store);
+      exportImageToIIIF(props.item, stripTrailingSlash(baseUrl), miradorSafe, store);
     else 
-      exportDerivativeResource(props.item as IIIFManifestResource, stripTrailingSlash(baseUrl), store);
+      exportDerivativeResource(props.item as IIIFManifestResource, stripTrailingSlash(baseUrl), miradorSafe, store);
 
     props.onOpenChange(false);
   }
@@ -72,6 +74,7 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
     if (!open) {
       setBaseUrl('');
       setTouched(false);
+      setMiradorSafe(false);
     }
     props.onOpenChange(open);
   }
@@ -81,7 +84,7 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
       open={props.open} 
       onOpenChange={props.onOpenChange}>
       <DialogContent 
-        className="max-w-xl" 
+        className="max-w-2xl" 
         onClick={e => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex gap-2 items-center">
@@ -114,10 +117,27 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
                 {t('iiifExporter.validationError')}
               </p>
             ) : (
-              <p className="text-xs font-lightd">
+              <p className="text-xs text-muted-foreground">
                 {t('iiifExporter.hint')}
               </p>
             )}
+          </div>
+
+          <div className="mb-6 mt-2">
+            <div className="flex gap-2 items-center">
+              <Checkbox
+                id="iiif-mirador-safe"
+                checked={miradorSafe}
+                onCheckedChange={checked => setMiradorSafe(checked as boolean)} />
+
+              <Label htmlFor="iiif-mirador-safe">
+                {t('iiifExporter.miradorSafe')}
+              </Label>
+            </div>
+
+            <p className="text-xs mt-2 text-muted-foreground leading-relaxed">
+              {t('iiifExporter.miradorSafeHint')}
+            </p>
           </div>
 
           <DialogFooter>
