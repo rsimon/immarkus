@@ -11,24 +11,6 @@ export default defineConfig({
     react(),
     macros(),
     tailwindcss(),
-    {
-      name: 'debug-chunk-contents',
-      generateBundle(_opts, bundle) {
-        if (!process.env.DEBUG_CHUNKS) return;
-        for (const [name, chunk] of Object.entries(bundle)) {
-          if (name.includes('dep-opencv')) {
-            try {
-              const modIds = chunk.moduleIds || [];
-              console.log('!!! moduleIds.length =', modIds.length);
-              const nonMagnetic = modIds.filter(m => !m.includes('plugin-magnetic-outline'));
-              console.log('!!! non-magnetic-outline module ids:', JSON.stringify(nonMagnetic, null, 2));
-            } catch (e) {
-              console.log('!!! ERROR', e && e.stack);
-            }
-          }
-        }
-      }
-    },
     viteStaticCopy({
       targets: [{
         src: 'node_modules/browser-image-compression/dist/browser-image-compression.js',
