@@ -35,7 +35,7 @@ const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, store: St
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${base}/annotations.json`,
     type: 'AnnotationPage',
-    items: crosswalkAnnotations(annotations, store)
+    items: crosswalkAnnotations(annotations, store, `${base}/canvas/1`)
   }));
 }
 

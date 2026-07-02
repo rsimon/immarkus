@@ -71,7 +71,7 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
   }
 }
 
-export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store): W3CImageAnnotation[] => {
+export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store, source?: string): W3CImageAnnotation[] => {
   return annotations.map(a => {    
     const target = (Array.isArray(a.target) ? a.target[0] : a.target) as W3CImageAnnotationTarget;
     const canvas = store.getCanvas(target.source); 
@@ -93,7 +93,7 @@ export const crosswalkAnnotations = (annotations: W3CAnnotation[], store: Store)
       target: {
         ...target,
         selector: normalized,
-        source: canvas?.uri || target.source
+        source: canvas?.uri || source
       }
     }
   }).filter(Boolean);
