@@ -4,6 +4,19 @@ import { Store } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
 
+export const createModifiedLabel = (label: Record<string, string[]> | undefined, suffix: string) => {
+  if (!label) return { en: [suffix] };
+
+  return Object.fromEntries(
+    Object.entries(label).map(([language, values]) => [
+      language,
+      values.map(value => (
+        value.endsWith(' ') ? `${value}${suffix}` : `${value} ${suffix}`
+      ))
+    ])
+  );
+}
+
 const createAnnotationPage = (canvas: CanvasInformation, baseUrl: string, store: Store) =>
   store.getAnnotations(`iiif:${canvas.manifestId}:${canvas.id}`).then(annotations => annotations.length > 0 ? {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
@@ -28,13 +41,22 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
     }
   }
 
-  const derivative = {...manifest.source };
+  // Derivative manifest follows recommendations set out in
+  // https://iiif.io/api/cookbook/recipe/0464-reuse-manifest/
+
+  // 1. Derivative manifest must have a new ID
+  const derivative = { ...manifest.source } as Record<string, any>;
+  derivative.id = `${resource.id}/manifest.json`;
+
+  // 2. Derivative should modify the label to alert users of the change
+  derivative.label = createModifiedLabel(derivative.label, '(modified with IMMARKUS)');
 
   derivative.items = (derivative.items || []).map((canvas: any) => {
     const annotationPageUrl = annotationPageUrls.get(canvas.id);
     if (!annotationPageUrl) return canvas;
 
     return {
+      // 3. Canvases (incl. their IDs! remain unchanged!)
       ...canvas,
       annotations: [{
         id: annotationPageUrl,
