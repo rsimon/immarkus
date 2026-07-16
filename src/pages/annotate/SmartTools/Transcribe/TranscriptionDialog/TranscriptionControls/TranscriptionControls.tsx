@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
+import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
-import { Separator } from '@/ui/Separator';
 import { cn } from '@/ui/utils';
 import { ServiceRegistry, ServiceConfigParameter, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
+import { TagSelectionControl } from './TagSelectionControl';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
   CredentialParameterControl,
@@ -61,6 +62,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     ...(connectorConfig?.parameters || []),
     ...(serviceConfig?.parameters || [])
   ]), [connectorConfig, serviceConfig]);
+
+  const [entityTags, setEntityTags] = useState<EntityType[]>([]);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
@@ -183,9 +186,13 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               </Label>
 
               <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
-                This service can also identify entities in the transcribed text 
+                This service can identify entities in the transcribed text 
                 and pre-fill annotation fields automatically. Pick Entity Classes to look for. 
               </p>
+
+              <TagSelectionControl 
+                selectedTags={entityTags} 
+                onChangeSelectedTags={setEntityTags} />
             </fieldset>
           )}
         </form>
@@ -228,7 +235,15 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
+            {entityTags.length === 0 ? (
+              <>
+                <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4" /> Transcribe & Extract Entities
+              </>
+            )}
           </Button>
         )}
 
