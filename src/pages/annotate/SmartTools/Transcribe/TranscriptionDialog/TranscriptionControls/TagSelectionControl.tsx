@@ -52,12 +52,12 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
         ))}
 
         <li 
-          className="inline ml-1" 
+          className="inline-flex ml-1 grow" 
           role="presentation">
           <Button 
             variant="ghost"
             onClick={() => setShowDialog(true)}
-            className="h-auto px-0 py-1 text-muted-foreground font-light text-xs grow justify-start">
+            className="h-auto grow px-0 py-1 text-muted-foreground font-light text-xs justify-start">
             {props.selectedTags.length === 0 ? (
               <span>Select tags...</span>
             ) : (
