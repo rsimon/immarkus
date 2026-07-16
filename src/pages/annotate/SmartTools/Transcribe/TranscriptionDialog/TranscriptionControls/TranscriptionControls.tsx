@@ -32,9 +32,13 @@ interface TranscriptionControlsProps {
 
   options: OCROptions;
 
+  entityTags: EntityType[];
+
   onConnectorChanged(connectorId: string): void;
 
   onServiceOptionChanged(key: string, value: any): void;
+
+  onEntityTagsChanged(tags: EntityType[]): void;
 
   onCancel(): void;
 
@@ -62,8 +66,6 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     ...(connectorConfig?.parameters || []),
     ...(serviceConfig?.parameters || [])
   ]), [connectorConfig, serviceConfig]);
-
-  const [entityTags, setEntityTags] = useState<EntityType[]>([]);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
@@ -191,8 +193,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               </p>
 
               <TagSelectionControl 
-                selectedTags={entityTags} 
-                onChangeSelectedTags={setEntityTags} />
+                selectedTags={props.entityTags} 
+                onChangeSelectedTags={props.onEntityTagsChanged} />
             </fieldset>
           )}
         </form>
@@ -235,7 +237,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            {entityTags.length === 0 ? (
+            {props.entityTags.length === 0 ? (
               <>
                 <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
               </>

@@ -1,4 +1,5 @@
 import { ImageAnnotation } from '@annotorious/react';
+import { EntityType } from '@/model';
 
 export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION';
 
@@ -128,7 +129,7 @@ export type ServiceConfigParameter =
 
 export interface TranscriptionServiceConnector {
 
-  transcribe(image: File | string, options?: Record<string, any>): Promise<TranscriptionServiceResponse>;
+  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<TranscriptionServiceResponse>;
 
   parseTranscriptionResponse: TranscriptionServiceCrosswalk;
 
