@@ -258,7 +258,9 @@ const tagToPrompt = (tag: EntityType): string => {
 };
 
 export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
-  const classIds = tags.map((t) => `"${t.id}"`).join(" | ");
+  if (tags.length === 0) return PROMPT_TRANSCRIBE;
+
+  const classIds = tags.map((t) => `"${t.id}"`);
 
   return `You are an expert annotator assisting with the scholarly transcription of historical sources. The attached image is a region selected from a larger document by a researcher.
 
@@ -278,8 +280,9 @@ ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
 ## Rules
 
-* Each entry in the list describes exactly one individual entity. Don't merge separate entities in the same list entry. 
-* List each individual only once. If the same entity instance (e.g. the same person) is mentioned multiple times, do not create multiple list entries.
+* List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
+* List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
+* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank. As long as you can fill at least one property, 
 * If the image contains no legible text, return an empty "text" and an empty "entities" array.
 
 ## Output format
@@ -290,11 +293,21 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
   "text": "<the full transcription from Task 1>",
   "entities": [
     {
-      "class": <${classIds}>,
+      "class": "${classIds[0]}",
       "properties": {
         <field name>: <value, as specified per class above>
       }
-    }
+    },{
+      "class": "${classIds[0]}",
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    }${classIds.length > 1 ? `, {
+      "class": "${classIds[1]}",
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    }` : ''}
   ]
 }`;
 }
