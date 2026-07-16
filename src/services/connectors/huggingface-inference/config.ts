@@ -36,7 +36,7 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['Qwen/Qwen3-VL-8B-Instruct:novita', 'Qwen3-VL-8B-Instruct'],
+        ['Qwen/Qwen3-VL-30B-A3B-Instruct:novita', 'Qwen3-VL-30B'],
         ['google/gemma-3-27b-it', 'Gemma-3-27b-it']
       ]
     }]
