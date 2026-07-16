@@ -2,7 +2,7 @@ import { InferenceClient } from '@huggingface/inference';
 import { buildTranscribeAndTagPrompt, fileToBase64, urlToBase64 } from '@/services/utils';
 import { TranscriptionServiceResponse } from '@/services/Types';
 import { EntityType } from '@/model';
-import { MOCK_RESPONSE } from './mock-response';
+// import { MOCK_RESPONSE } from './mock-response';
 
 const PROMPT_TRANSCRIBE = 
 `Extract all text from this image. Your response must be ONLY valid JSON in this format: 
@@ -29,7 +29,6 @@ export const transcribe = (image: File | string, options: Record<string, any> = 
 
   const submit = (imageUrl: string) => {
     const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
-    // console.log(prompt);
 
     // return new Promise(resolve => {
     //   resolve(MOCK_RESPONSE)

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
-import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
+import type { ImageAnnotation } from '@annotorious/react';
 import { EntityType, PropertyDefinition } from '@/model';
 import { 
   Generator, 
@@ -121,16 +121,10 @@ export const parseOpenAIResponse = (data: any) => {
 }
 
 export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
-  console.log('-------parsing response -------');
-  console.log(data)
-  console.log('---------------------')
-
   try {
     const result = parseOpenAIResponse(data);
     if (!result?.text)
       throw new Error('Could not parse response');
-
-    console.log(result);
 
     const id = uuidv4();
 
@@ -140,7 +134,14 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
         annotation: id,
         purpose: 'commenting',
         value: result.text
-      } as AnnotationBody],
+      }, ...(result.entities || []).map(entity => ({
+        id: uuidv4(),
+        annotation: id,
+        type: 'Dataset',
+        purpose: 'classifying',
+        source: entity.class,
+        properties: entity.properties
+      }))],
       target: {
         annotation: id,
         selector: {
@@ -260,16 +261,14 @@ ${instructions ? `\n${instructions}\n` : ""}
 
 ## Task 2: Entity extraction
 
-From your transcription, identify every mention of the following entity classes and fill in their fields.
+From your transcription, list every individual entity that belongs to one of the classes below.
 
 ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
 ## Rules
 
-* One entity per real-world referent. If the same entity is mentioned multiple times, return it once, listing every distinct variant.
-* "mentions" must contain the exact substrings of your transcription that refer to the entity, character for character.
-* A field value must be evidenced by the text in the image. If the text does not state it, use null (or [] for array fields). Null is always better than a guess.
-* Set "uncertain": true if the identification or a reading is doubtful.
+* Each entry in the list describes exactly one individual entity. Don't merge separate entities in the same list entry. 
+* List each individual only once. If the same entity instance (e.g. the same person) is mentioned multiple times, do not create multiple list entries.
 * If the image contains no legible text, return an empty "text" and an empty "entities" array.
 
 ## Output format
@@ -281,8 +280,6 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
   "entities": [
     {
       "class": <${classIds}>,
-      "mentions": ["<exact substring>", "..."],
-      "uncertain": <true | false>,
       "properties": {
         <field name>: <value, as specified per class above>
       }

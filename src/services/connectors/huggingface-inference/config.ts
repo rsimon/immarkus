@@ -36,7 +36,8 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['Qwen/Qwen3-VL-30B-A3B-Instruct:novita', 'Qwen3-VL-30B'],
+        ['Qwen/Qwen3-VL-235B-A22B-Instruct:novita', 'Qwen3-VL-235B'],
+        ['zai-org/GLM-4.6V:zai-org', 'Zhipu GLM 4.6V'],
         ['google/gemma-3-27b-it', 'Gemma-3-27b-it']
       ]
     }]
