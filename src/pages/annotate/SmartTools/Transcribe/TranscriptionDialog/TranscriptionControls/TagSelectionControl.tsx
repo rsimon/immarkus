@@ -29,38 +29,43 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
 
   return (
     <div className="space-y-2">
-      <div className="border rounded-md bg-muted shadow-xs p-1 flex items-center gap-2">
-        <ul aria-label="Selected entity classes">
-          {props.selectedTags.map(t => (
-            <li 
-              key={t.id}
-              className="bg-white/90 rounded-full inline-flex items-center text-[11px] gap-1 px-1.5 py-0.5 border">
-              <span
-                className="inline-block w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
-                style={{ backgroundColor: t.color }}/>
-              <span>{t.label || t.id}</span>
-              <button 
-                type="button" 
-                aria-label={`Remove ${t.label || t.id}`}
-                onClick={() => onRemove(t)}
-                className="">
-                <X className="size-3 text-muted-foreground" />
-              </button>
-            </li>
-          ))}
-        </ul>  
+      <ul
+        role="list" 
+        aria-label="Selected entity classes"
+        className="border rounded-md bg-muted shadow-xs p-1 flex flex-wrap items-center gap-1 gap-y-0.5">
+        {props.selectedTags.map(t => (
+          <li 
+            key={t.id}
+            className="bg-white/90 whitespace-nowrap rounded-full inline-flex items-center text-[11px] gap-1 px-1.5 py-0.5 border">
+            <span
+              className="inline-block w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
+              style={{ backgroundColor: t.color }}/>
+            <span>{t.label || t.id}</span>
+            <button 
+              type="button" 
+              aria-label={`Remove ${t.label || t.id}`}
+              onClick={() => onRemove(t)}
+              className="">
+              <X className="size-3 text-muted-foreground" />
+            </button>
+          </li>
+        ))}
 
-        <Button 
-          variant="ghost"
-          onClick={() => setShowDialog(true)}
-          className="h-auto px-0 py-1 text-muted-foreground font-light text-xs grow justify-start">
-          {props.selectedTags.length === 0 ? (
-            <span>Select tags...</span>
-          ) : (
-            <span>Add tag...</span>
-          )}
-        </Button>
-      </div>
+        <li 
+          className="inline ml-1" 
+          role="presentation">
+          <Button 
+            variant="ghost"
+            onClick={() => setShowDialog(true)}
+            className="h-auto px-0 py-1 text-muted-foreground font-light text-xs grow justify-start">
+            {props.selectedTags.length === 0 ? (
+              <span>Select tags...</span>
+            ) : (
+              <span>Add tag...</span>
+            )}
+          </Button>
+        </li>
+      </ul>  
 
       <div className="flex justify-end px-1">
         {props.selectedTags.length > 0 && (
