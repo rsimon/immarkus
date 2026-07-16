@@ -11,6 +11,13 @@ import {
   TranslationServiceResponse 
 } from './Types';
 
+const PROMPT_TRANSCRIBE = 
+`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
+
+{ "text": "all extracted text goes here" } 
+ 
+Preserve whitespace and newline formatting in the text output.`;
+
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
   reader.onload = () => {
@@ -57,6 +64,7 @@ export const transcribeOpenAICompatible = (
   baseURL: string,
   model: string,
   generator: Generator,
+  tags: EntityType[] = [],
   defaultHeaders?: any
 ): Promise<TranscriptionServiceResponse> => {
   const client = new OpenAI({ 
@@ -66,16 +74,17 @@ export const transcribeOpenAICompatible = (
     defaultHeaders
   });
 
+  const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
+
   const submit = (imageUrl: string) => {    
     return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{
           type: 'text',
-          text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.'
+          text: prompt
         },{
           type: 'image_url',
           image_url: {
@@ -190,7 +199,6 @@ export const translateOpenAICompatible = (
   return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{

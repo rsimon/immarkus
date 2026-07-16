@@ -24,7 +24,8 @@ export const config: ServiceConnectorConfig = {
   services: [{
     type: 'TRANSCRIPTION',
     description: 'Full-text transcription via Anthropic Claude',
-    requiresRegion: true
+    requiresRegion: true,
+    supportsEntityExtraction: true,
   }, {
     type: 'TRANSLATION'
   }]

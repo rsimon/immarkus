@@ -1,6 +1,7 @@
+import { EntityType } from '@/model';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, options?: Record<string, any>) => {
+export const transcribe = (image: File | string, options?: Record<string, any>, tags?: EntityType[]) => {
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -20,6 +21,7 @@ export const transcribe = (image: File | string, options?: Record<string, any>) 
     'https://api.anthropic.com/v1',
     model,
     generator, 
+    tags,
     { 
       'anthropic-dangerous-direct-browser-access': 'true' 
     }
