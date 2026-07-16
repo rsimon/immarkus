@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
-import type { ImageAnnotation } from '@annotorious/react';
+import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType, PropertyDefinition } from '@/model';
 import { 
   Generator, 
@@ -11,7 +11,7 @@ import {
   TranslationServiceResponse 
 } from './Types';
 
-const PROMPT_TRANSCRIBE = 
+export const PROMPT_TRANSCRIBE = 
 `Extract all text from this image. Your response must be ONLY valid JSON in this format: 
 
 { "text": "all extracted text goes here" } 
@@ -129,6 +129,20 @@ export const parseOpenAIResponse = (data: any) => {
   }
 }
 
+export const parseTranscriptionResponseBodies = (annotationId: string, result: any): AnnotationBody[] => ([{
+  id: uuidv4(),
+  annotation: annotationId,
+  purpose: 'commenting',
+  value: result.text
+}, ...(result.entities || []).map(entity => ({
+  id: uuidv4(),
+  annotation: annotationId,
+  type: 'Dataset',
+  purpose: 'classifying',
+  source: entity.class,
+  properties: entity.properties
+}))]);
+
 export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
   try {
     const result = parseOpenAIResponse(data);
@@ -139,18 +153,7 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
 
     return [{
       id,
-      bodies: [{
-        annotation: id,
-        purpose: 'commenting',
-        value: result.text
-      }, ...(result.entities || []).map(entity => ({
-        id: uuidv4(),
-        annotation: id,
-        type: 'Dataset',
-        purpose: 'classifying',
-        source: entity.class,
-        properties: entity.properties
-      }))],
+      bodies: parseTranscriptionResponseBodies(id, result),
       target: {
         annotation: id,
         selector: {

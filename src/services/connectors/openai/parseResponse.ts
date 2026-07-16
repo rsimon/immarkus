@@ -1,24 +1,19 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
+import { ImageAnnotation, ShapeType } from '@annotorious/react';
 import { PageTransform, Region } from '@/services/Types';
+import { parseTranscriptionResponseBodies } from '@/services/utils';
 
 export const parseResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
   if (!region)
     throw new Error('OpenAI crosswalk: missing region');
 
   const result = JSON.parse(data.output_text);
-
-  const { text } = result;
     
   const id = uuidv4();
 
   return [{
     id,
-    bodies: [{
-      annotation: id,
-      purpose: 'commenting',
-      value: text
-    } as AnnotationBody],
+    bodies: parseTranscriptionResponseBodies(id, result),
     target: {
       annotation: id,
       selector: {
