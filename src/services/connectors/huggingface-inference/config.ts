@@ -28,6 +28,7 @@ To get your own key:
     type: 'TRANSCRIPTION',
     requiresRegion: true,
     description: 'Transcription via HuggingFace\'s Inference Providers',
+    supportsEntityExtraction: true,
     parameters: [{
       type: 'string',
       id: 'model',

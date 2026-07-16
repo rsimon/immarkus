@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CircleCheck, KeyRound, ScanText, SquareDashedMousePointer } from 'lucide-react';
+import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
+import { Separator } from '@/ui/Separator';
 import { cn } from '@/ui/utils';
 import { ServiceRegistry, ServiceConfigParameter, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
@@ -172,6 +173,21 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           onSubmit={evt => evt.preventDefault()}
           className="space-y-4">
           {parameters.map(param => renderParameterControl(param))}
+
+          {serviceConfig.supportsEntityExtraction && (
+            <fieldset className="space-y-2 mt-6">
+              <Label className="font-semibold flex gap-1.5 items-center">
+                <Sparkles className="size-4 text-muted-foreground mr-0.5" />
+                <span>Entity Tags</span>
+                <span className="uppercase text-xs font-normal text-muted-foreground">optional</span>
+              </Label>
+
+              <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
+                This service can also identify entities in the transcribed text 
+                and pre-fill annotation fields automatically. Pick Entity Classes to look for. 
+              </p>
+            </fieldset>
+          )}
         </form>
       </div>
 
