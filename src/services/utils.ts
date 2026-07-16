@@ -2,7 +2,21 @@ import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { Generator, PageTransform, Region, TranscriptionServiceResponse, TranslationServiceResponse } from './Types';
+import { EntityType, PropertyDefinition } from '@/model';
+import { 
+  Generator, 
+  PageTransform, 
+  Region, 
+  TranscriptionServiceResponse, 
+  TranslationServiceResponse 
+} from './Types';
+
+export const PROMPT_TRANSCRIBE = 
+`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
+
+{ "text": "all extracted text goes here" } 
+ 
+Preserve whitespace and newline formatting in the text output.`;
 
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -50,6 +64,7 @@ export const transcribeOpenAICompatible = (
   baseURL: string,
   model: string,
   generator: Generator,
+  tags: EntityType[] = [],
   defaultHeaders?: any
 ): Promise<TranscriptionServiceResponse> => {
   const client = new OpenAI({ 
@@ -59,16 +74,17 @@ export const transcribeOpenAICompatible = (
     defaultHeaders
   });
 
+  const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
+
   const submit = (imageUrl: string) => {    
     return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{
           type: 'text',
-          text: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.'
+          text: prompt
         },{
           type: 'image_url',
           image_url: {
@@ -113,6 +129,20 @@ export const parseOpenAIResponse = (data: any) => {
   }
 }
 
+export const parseTranscriptionResponseBodies = (annotationId: string, result: any): AnnotationBody[] => ([{
+  id: uuidv4(),
+  annotation: annotationId,
+  purpose: 'commenting',
+  value: result.text
+}, ...(result.entities || []).map(entity => ({
+  id: uuidv4(),
+  annotation: annotationId,
+  type: 'Dataset',
+  purpose: 'classifying',
+  source: entity.class,
+  properties: entity.properties
+}))]);
+
 export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
   try {
     const result = parseOpenAIResponse(data);
@@ -123,11 +153,7 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
 
     return [{
       id,
-      bodies: [{
-        annotation: id,
-        purpose: 'commenting',
-        value: result.text
-      } as AnnotationBody],
+      bodies: parseTranscriptionResponseBodies(id, result),
       target: {
         annotation: id,
         selector: {
@@ -176,7 +202,6 @@ export const translateOpenAICompatible = (
   return client.chat.completions.create({
       model,
       max_completion_tokens: 4000,
-      // temperature: 0.1, // Low temperature for consistent JSON
       messages: [{
         role: 'user',
         content: [{
@@ -193,4 +218,83 @@ export const translateOpenAICompatible = (
       const { translation, language } = result;
       return { generator, translation, language } as TranslationServiceResponse;
     });
+}
+
+// Compiles a prompt line for one property
+const propertyToPrompt = (p: PropertyDefinition): string | undefined => {
+  const instructions = p.description ? ` — ${p.description}` : '';
+
+  switch (p.type) {
+    case 'text':
+      return p.multiple
+        ? `* "${p.name}": array of strings, [] if none${instructions}`
+        : `* "${p.name}": string, or null if the text does not state it${instructions}`;
+
+    case 'number':
+      return `* "${p.name}": number, or null if the text does not state it${instructions}`;
+
+    case 'enum': {
+      const opts =  p.values.map((v) => `"${v}"`).join(", ");
+      return p.multiple
+        ? `* "${p.name}": array containing any of [${opts}], [] if none apply. Use the listed values exactly; never invent a new one${instructions}`
+        : `* "${p.name}": exactly one of [${opts}], or null. Use the listed values exactly; never invent a new one${instructions}`;
+    }
+
+    default:
+      // omit other types
+      return undefined;
+  }
+}
+
+const tagToPrompt = (tag: EntityType): string => {
+  const lines = (tag.properties || []).map(propertyToPrompt);
+
+  return [
+    `### Class: "${tag.id}"`,
+    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
+    tag.description,
+    lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
+  ].filter(Boolean).join('\n');
+};
+
+export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
+  const classIds = tags.map((t) => `"${t.id}"`).join(" | ");
+
+  return `You are an expert annotator assisting with the scholarly transcription of historical sources. The attached image is a region selected from a larger document by a researcher.
+
+## Task 1: Transcription
+
+Transcribe all text visible in the image.
+${instructions ? `\n${instructions}\n` : ""}
+* Reproduce the original characters exactly. Do not modernize, translate, or add punctuation that is not in the source.
+* Preserve line breaks as they appear.
+* Use ○ for characters you cannot read. Never substitute a guess.
+
+## Task 2: Entity extraction
+
+From your transcription, list every individual entity that belongs to one of the classes below.
+
+${tags.map((t) => tagToPrompt(t)).join("\n\n")}
+
+## Rules
+
+* Each entry in the list describes exactly one individual entity. Don't merge separate entities in the same list entry. 
+* List each individual only once. If the same entity instance (e.g. the same person) is mentioned multiple times, do not create multiple list entries.
+* If the image contains no legible text, return an empty "text" and an empty "entities" array.
+
+## Output format
+
+Respond with a single JSON object and nothing else — no markdown fences, no commentary:
+
+{
+  "text": "<the full transcription from Task 1>",
+  "entities": [
+    {
+      "class": <${classIds}>,
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    }
+  ]
+}`;
 }

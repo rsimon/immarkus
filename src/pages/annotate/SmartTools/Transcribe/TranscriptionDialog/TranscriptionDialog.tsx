@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
-import { LoadedImage } from '@/model';
+import { EntityType, LoadedImage } from '@/model';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
 import { AnnotationBatch, OCROptions, ProcessingState } from '../Types';
@@ -62,6 +62,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const [options, setOptions] = useState<OCROptions>({
     connectorId: ServiceRegistry.listAvailableConnectors('TRANSCRIPTION')[0].id 
   });
+
+  const [tags, setTags] = useState<EntityType[]>([]);
   
   const service = useService(options.connectorId, 'TRANSCRIPTION');
 
@@ -142,7 +144,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
       const image = 'file' in result ? result.file : result.url;
       const crosswalk = service.connector.parseTranscriptionResponse;
 
-      service.connector.transcribe(image, options.serviceOptions).then(({ data, generator }) => {
+      service.connector.transcribe(image, options.serviceOptions, tags).then(({ data, generator }) => {
         // Test the crosswalk to make sure data is valid
         try {
           const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
@@ -215,8 +217,10 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 options={options}
                 processingState={processingState}
                 region={region}
+                entityTags={tags}
                 onConnectorChanged={onConnectorChanged}
                 onServiceOptionChanged={onServiceOptionChanged}
+                onEntityTagsChanged={setTags}
                 onCancel={() => onOpenChange(false)}
                 onSubmit={onSubmitImage} />
             </div>

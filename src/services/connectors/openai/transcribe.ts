@@ -1,5 +1,5 @@
 import { TranscriptionServiceResponse } from '@/services/Types';
-import { fileToBase64, urlToBase64 } from '@/services/utils';
+import { fileToBase64, PROMPT_TRANSCRIBE, urlToBase64 } from '@/services/utils';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
@@ -17,7 +17,7 @@ export const transcribe = (
     name: 'OpenAI GPT (gpt-4.1)',
     homepage: 'https://openai.com/index/openai-api/'
   };
-
+  
   const Transcription = z.object({ text: z.string() });
 
   const submit = (image_url: string) => {
@@ -26,7 +26,7 @@ export const transcribe = (
       input:[{
         role: 'user',
         content: [
-          { type: 'input_text', text: 'Transcribe the text on this is image.' },
+          { type: 'input_text', text: PROMPT_TRANSCRIBE },
           { 
             type: 'input_image', 
             image_url,

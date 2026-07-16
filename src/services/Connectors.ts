@@ -1,6 +1,5 @@
 import { ServiceConnectorConfig } from './Types';
 import { config as AnthropicClaude } from './connectors/anthropic-claude/config';
-import { config as AzureCV } from './connectors/azure-cv/config';
 import { config as GoogleGemini } from './connectors/google-gemini/config';
 import { config as GoogleVision } from './connectors/google-vision/config';
 import { config as HuggingFaceInference } from './connectors/huggingface-inference/config';
@@ -12,7 +11,6 @@ import { config as VolcanoEngine } from './connectors/volcano-engine/config';
 
 export const Connectors: ServiceConnectorConfig[] = [
   AnthropicClaude,
-  // AzureCV,
   GoogleGemini, 
   GoogleVision,
   HuggingFaceInference,

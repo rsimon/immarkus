@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CircleCheck, KeyRound, ScanText, SquareDashedMousePointer } from 'lucide-react';
+import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
+import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
 import { ServiceRegistry, ServiceConfigParameter, Region } from '@/services';
 import { OCROptions, ProcessingState } from '../../Types';
+import { TagSelectionControl } from './TagSelectionControl';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 
   CredentialParameterControl,
@@ -30,9 +32,13 @@ interface TranscriptionControlsProps {
 
   options: OCROptions;
 
+  entityTags: EntityType[];
+
   onConnectorChanged(connectorId: string): void;
 
   onServiceOptionChanged(key: string, value: any): void;
+
+  onEntityTagsChanged(tags: EntityType[]): void;
 
   onCancel(): void;
 
@@ -172,6 +178,25 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           onSubmit={evt => evt.preventDefault()}
           className="space-y-4">
           {parameters.map(param => renderParameterControl(param))}
+
+          {serviceConfig.supportsEntityExtraction && (
+            <fieldset className="space-y-2 mt-6">
+              <Label className="font-semibold flex gap-1.5 items-center">
+                <Sparkles className="size-4 text-muted-foreground mr-0.5" />
+                <span>Entity Tags</span>
+                <span className="uppercase text-xs font-normal text-muted-foreground">optional</span>
+              </Label>
+
+              <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
+                This service can identify entities in the transcribed text 
+                and pre-fill annotation fields automatically. Pick Entity Classes to look for. 
+              </p>
+
+              <TagSelectionControl 
+                selectedTags={props.entityTags} 
+                onChangeSelectedTags={props.onEntityTagsChanged} />
+            </fieldset>
+          )}
         </form>
       </div>
 
@@ -212,7 +237,15 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
+            {props.entityTags.length === 0 ? (
+              <>
+                <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-4" /> Transcribe & Extract Entities
+              </>
+            )}
           </Button>
         )}
 

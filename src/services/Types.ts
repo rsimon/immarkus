@@ -1,4 +1,5 @@
 import { ImageAnnotation } from '@annotorious/react';
+import { EntityType } from '@/model';
 
 export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION';
 
@@ -38,6 +39,9 @@ export interface TranscriptionServiceConfig {
   /** Set to true if the service requires a user-provded region bounding box **/
   requiresRegion?: boolean;
 
+  /** Set to true if the service supports data model form filling **/
+  supportsEntityExtraction?: boolean;
+
   /** Configuration parameters supported by this service **/
   parameters?: ServiceConfigParameter[];
 
@@ -53,8 +57,9 @@ export interface TranslationServiceConfig {
   
 }
 
-export type ServiceConfig = TranscriptionServiceConfig | TranslationServiceConfig;
-
+export type ServiceConfig = 
+  | TranscriptionServiceConfig 
+  | TranslationServiceConfig;
 
 export interface ServiceConfigCredentialParameter {
 
@@ -124,7 +129,7 @@ export type ServiceConfigParameter =
 
 export interface TranscriptionServiceConnector {
 
-  transcribe(image: File | string, options?: Record<string, any>): Promise<TranscriptionServiceResponse>;
+  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<TranscriptionServiceResponse>;
 
   parseTranscriptionResponse: TranscriptionServiceCrosswalk;
 
