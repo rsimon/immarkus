@@ -5,6 +5,7 @@ import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { IIIFOpenInViewerAction } from '../../../IIIFOpenInViewerAction';
+import { IIIFExportAction, IIIFExportDialog } from '../../../../IIIFExporter';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,9 +37,11 @@ interface SingleCanvasManifestItemActionsProps {
 export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemActionsProps) => {
   const { t } = useTranslation('images');
 
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  
   const id = `iiif:${props.canvas.manifestId}:${props.canvas.id}`;
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const [isIIIFExportOpen, setIsIIIFExportOpen] = useState(false);
 
   return (
     <>
@@ -76,6 +79,8 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
 
           <IIIFOpenInViewerAction manifest={props.manifest} />
 
+          <IIIFExportAction onSelect={() => setIsIIIFExportOpen(true)} />
+
           <VisualSearchDebugAction
             imageId={id}
             title={props.canvas.name} />
@@ -86,6 +91,11 @@ export const SingleCanvasManifestItemActions = (props: SingleCanvasManifestItemA
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <IIIFExportDialog 
+        open={isIIIFExportOpen} 
+        onOpenChange={setIsIIIFExportOpen} 
+        item={props.manifest} />
 
       <ConfirmedDelete
         open={confirmDelete}

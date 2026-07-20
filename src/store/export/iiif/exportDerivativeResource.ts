@@ -18,7 +18,7 @@ export const createModifiedLabel = (label: Record<string, string[]> | undefined,
 }
 
 const createAnnotationPage = (canvas: CanvasInformation, baseUrl: string, miradorSafe: boolean, store: Store) =>
-  store.getAnnotations(`iiif:${canvas.manifestId}:${canvas.id}`).then(annotations => annotations.length > 0 ? {
+  store.getAnnotations(`iiif:${canvas.manifestId}:${canvas.id}`, { type: 'image' }).then(annotations => annotations.length > 0 ? {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${baseUrl}/${canvas.manifestId}/annotations-${canvas.id}.json`,
     type: 'AnnotationPage',
