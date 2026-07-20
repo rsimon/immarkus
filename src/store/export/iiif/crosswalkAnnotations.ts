@@ -59,7 +59,7 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
     }
   }) : [];
 
-  const html = `<div>${entries.map(([key, val]) => 
+  const html = `<div><h3>${entityType.label || entityType.id}</h3>${entries.map(([key, val]) => 
 `<p><strong>${escapeHtml(key)}</strong>:<span>${escapeHtml(val)}</span></p>`
 ).join('')}</div>`
     
