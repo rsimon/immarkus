@@ -238,7 +238,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
             disabled={!canSumbit}>
-            {props.entityTags.length === 0 ? (
+            {(props.entityTags.length === 0 || !serviceConfig.supportsEntityExtraction) ? (
               <>
                 <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}
               </>
