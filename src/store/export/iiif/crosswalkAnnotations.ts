@@ -62,7 +62,7 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
   const entries = 'properties' in b ? Object.entries(b.properties).map(([key, val]) => {
     const prop = (entityType.properties || []).find(p => p.name === key);
     if (prop) {
-      return [key, serializePropertyValue(prop, val)];
+      return [key, serializePropertyValue(prop, val).join(', ')];
     } else {
       return [key, val];
     }
@@ -71,11 +71,11 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
   const html = 
 `<div data-entity-id="${escapeHtml(entityType.id)}">
   <h2>${escapeHtml(entityType.label || entityType.id)}</h2>
-  <dl>
+  <div>
   ${entries.map(([key, val]) => 
-`    <div><dt><strong>${escapeHtml(key)}:</strong></dt><dd>${escapeHtml(val)}</dd></div>`
+`    <p><strong>${escapeHtml(key)}:</strong> <span>${val ? escapeHtml(val) : ' – '}<span></p>`
 ).join('\n')}
-  </dl>
+  </div>
 ${generator ? `<p><small>${escapeHtml(generator)}</small></p>` : ''}
 </div>`
 
