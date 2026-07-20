@@ -40,9 +40,18 @@ const escapeHtml = (s: unknown): string =>
 const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
   const model = store.getDataModel();
 
-  if (b.purpose !== 'classifying')
+  // Export AI generator tag, if any
+  const generator = b.creator?.type === 'Software' ? b.creator?.name : undefined;
+
+  // Should never happen - unknown body purpose
+  if (b.purpose !== 'classifying' && b.purpose !== 'commenting')
     return { id: b.id, type: 'TextualBody', format: 'text/plain', value: b.value };
-  
+
+  if (b.purpose === 'commenting')
+    return generator 
+      ? { id: b.id, type: 'TextualBody', format: 'text/html', value: `<div><p>${escapeHtml(b.value)}</p><p><small>${escapeHtml(generator)}</small></p></div>`}
+      : { id: b.id, type: 'TextualBody', format: 'text/plain', value: b.value };
+
   const entityType = model.getEntityType(b.source);
 
   if (!entityType) {
@@ -59,10 +68,17 @@ const toHTMLBody = (b: W3CAnnotationBody, store: Store) => {
     }
   }) : [];
 
-  const html = `<div><h3>${entityType.label || entityType.id}</h3>${entries.map(([key, val]) => 
-`<p><strong>${escapeHtml(key)}</strong>:<span>${escapeHtml(val)}</span></p>`
-).join('')}</div>`
-    
+  const html = 
+`<div data-entity-id="${escapeHtml(entityType.id)}">
+  <h2>${escapeHtml(entityType.label || entityType.id)}</h2>
+  <dl>
+  ${entries.map(([key, val]) => 
+`    <div><dt><strong>${escapeHtml(key)}:</strong></dt><dd>${escapeHtml(val)}</dd></div>`
+).join('\n')}
+  </dl>
+${generator ? `<p><small>${escapeHtml(generator)}</small></p>` : ''}
+</div>`
+
   return {
     id: b.id,
     type: 'TextualBody',
