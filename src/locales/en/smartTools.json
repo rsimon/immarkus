@@ -54,6 +54,13 @@
       "apiKeyRequired": "API Key Required",
       "areaSelected": "Area Selected",
       "selectAreaToTranscribe": "Select Area to Transcribe",
+      "entityTags": "Entity Tags",
+      "optional": "optional",
+      "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick Entity Classes to look for.",
+      "selectTags": "Select tags...",
+      "addTag": "Add tag...",
+      "clear": "Clear",
+      "transcribeAndExtractEntities": "Transcribe & Extract Entities",
       "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
       "runTranscription": "Run Transcription",
       "cancel": "Cancel"

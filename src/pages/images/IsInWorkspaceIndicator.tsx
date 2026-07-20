@@ -20,7 +20,7 @@ export const IsInWorkspaceIndicatorPip = (props: IsInWorkspaceIndicatorPipProps)
   return isInWorkspace ? (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
-        <div className="absolute border border-white -top-0.5 -left-0.75 size-3 bg-green-500 rounded-full" />
+        <div className="absolute border-2 border-white -top-1.25 -left-1.5 size-4 bg-black rounded-full" />
       </TooltipTrigger>
 
       <TooltipContent>
@@ -48,7 +48,7 @@ export const IsInWorkspaceIndicatorBadge = (props: IsInWorkspaceIndicatorBadgePr
   return isInWorkspace ? (
     <Tooltip delayDuration={100}>
       <TooltipTrigger asChild>
-        <div className="absolute top-2 right-2 bg-green-500 p-1 text-white rounded">
+        <div className="absolute top-1.5 right-1.5 bg-black p-2 text-white rounded-full">
           <PanelsTopLeft className="size-4" />
         </div>
       </TooltipTrigger>

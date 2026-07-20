@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EntityType } from '@/model';
 import { X } from 'lucide-react';
 import { Button } from '@/ui/Button';
@@ -13,6 +14,8 @@ interface TagSelectionControlProps {
 }
 
 export const TagSelectionControl = (props: TagSelectionControlProps) => {
+  const { t } = useTranslation('smartTools');
+
   const [showDialog, setShowDialog] = useState(false);
 
   const onAdd = (toAdd: EntityType) => {
@@ -59,9 +62,9 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
             onClick={() => setShowDialog(true)}
             className="h-auto grow px-0 py-1 text-muted-foreground font-light text-xs justify-start">
             {props.selectedTags.length === 0 ? (
-              <span>Select tags...</span>
+              <span>{t('transcribe.controls.selectTags')}</span>
             ) : (
-              <span>Add tag...</span>
+              <span>{t('transcribe.controls.addTag')}</span>
             )}
           </Button>
         </li>
@@ -73,7 +76,7 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
             variant="link"
             className="underline font-normal text-muted-foreground hover:text-foreground p-0 h-auto text-[11px]"
             onClick={() => props.onChangeSelectedTags([])}>
-            Clear
+            {t('transcribe.controls.clear')}
           </Button>
         )}
       </div>

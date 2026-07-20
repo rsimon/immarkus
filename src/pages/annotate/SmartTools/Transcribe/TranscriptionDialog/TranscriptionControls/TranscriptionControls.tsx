@@ -183,13 +183,14 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
             <fieldset className="space-y-2 mt-6">
               <Label className="font-semibold flex gap-1.5 items-center">
                 <Sparkles className="size-4 text-muted-foreground mr-0.5" />
-                <span>Entity Tags</span>
-                <span className="uppercase text-xs font-normal text-muted-foreground">optional</span>
+                <span>
+                  {t('transcribe.controls.entityTags')}
+                </span>
+                <span className="uppercase text-xs font-normal text-muted-foreground">{t('optional')}</span>
               </Label>
 
               <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
-                This service can identify entities in the transcribed text 
-                and pre-fill annotation fields automatically. Pick Entity Classes to look for. 
+               {t('transcribe.controls.entityTagsHint')} 
               </p>
 
               <TagSelectionControl 
@@ -243,7 +244,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               </>
             ) : (
               <>
-                <Sparkles className="size-4" /> Transcribe & Extract Entities
+                <Sparkles className="size-4" /> {t('transcribe.controls.transcribeAndExtractEntities')}
               </>
             )}
           </Button>
