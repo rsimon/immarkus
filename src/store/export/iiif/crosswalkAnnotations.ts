@@ -100,7 +100,7 @@ const escapeHtml = (s: unknown): string =>
  * 
  * - Strictly no headings (h1, h2) - Theseus breaks completely!
  * - Explicit <br/> tags to give at least a minimum of structure
- * - "Hierarchy" encoded only implicitly through `<strong>` and `<u>` (and
+ * - "Hierarchy" encoded only implicitly through `<b>` and `<u>` (and
  *   event these aren't handled by some viewers, incl. Mirador)
  */
 const toHTMLFragment = (b: W3CAnnotationBody, store: Store): string => {
@@ -129,7 +129,7 @@ const toHTMLFragment = (b: W3CAnnotationBody, store: Store): string => {
       return (
 `<div>
 ${Object.keys(b.properties).map(([key, value]) =>
-`  <p><strong>${escapeHtml(key)}:</strong> <span>${value ? escapeHtml(value) : ' – '}<span></p>`
+`  <p><b>${escapeHtml(key)}:</b> <span>${value ? escapeHtml(value) : ' – '}<span></p>`
 ).join('\n')}
 </div>`);
     } else {
@@ -151,10 +151,10 @@ ${Object.keys(b.properties).map(([key, value]) =>
   // and confirmed bug with them.)
   return (
 `<div data-entity-id="${escapeHtml(entityType.id)}">
-  <strong><u>${escapeHtml(entityType.label || entityType.id)}</u></strong><br/>
+  <b><u>${escapeHtml(entityType.label || entityType.id)}</u></b><br/>
   <div>
   ${entries.map(([key, val]) => 
-`    <p><strong>${escapeHtml(key)}:</strong> <span>${val ? escapeHtml(val) : ' – '}<span></p>`
+`    <p><b>${escapeHtml(key)}:</b> <span>${val ? escapeHtml(val) : ' – '}<span></p>`
 ).join('\n')}
   </div>
 ${generator ? `<p><small>${escapeHtml(generator)}</small></p>` : ''}
