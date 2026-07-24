@@ -1,8 +1,16 @@
 import JSZip from 'jszip';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
-import { Store } from '@/store';
+import { getImageMetadata, Store } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
+import { crosswalkMetadata } from './crosswalkMetadata';
+
+// Marks the start of the metadata block added by IMMARKUS, so it stays
+// visually distinguishable from whatever metadata the original canvas had.
+const ADDED_METADATA_DIVIDER = {
+  label: { en: ['Metadata added with'] },
+  value: { en: ['<a href="https://immarkus.xmarkus.org">IMMARKUS</a>'] }
+};
 
 export const createModifiedLabel = (label: Record<string, string[]> | undefined, suffix: string) => {
   if (!label) return { en: [suffix] };
@@ -32,12 +40,22 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
   const manifest = await fetchManifest(resource.uri);
 
   const annotationPageUrls = new Map<string, string>();
+  const canvasMetadata = new Map<string, { label: Record<string, string[]>, value: Record<string, string[]> }[]>();
 
   for (const canvas of resource.canvases) {
     const annotations = await createAnnotationPage(canvas, baseUrl, miradorSafe, store);
     if (annotations) {
       zip.file(`${resource.id}/annotations-${canvas.id}.json`, JSON.stringify(annotations, null, 2));
       annotationPageUrls.set(canvas.uri, annotations.id);
+    }
+
+    const { metadata } = await getImageMetadata(store, `iiif:${canvas.manifestId}:${canvas.id}`);
+    const hasMetadata = metadata && Object.keys(metadata).length > 0;
+
+    if (hasMetadata) {
+      const crosswalked = crosswalkMetadata(metadata, store) as { metadata?: { label: Record<string, string[]>, value: Record<string, string[]> }[] };
+      if (crosswalked.metadata)
+        canvasMetadata.set(canvas.uri, crosswalked.metadata);
     }
   }
 
@@ -53,15 +71,28 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
 
   derivative.items = (derivative.items || []).map((canvas: any) => {
     const annotationPageUrl = annotationPageUrls.get(canvas.id);
-    if (!annotationPageUrl) return canvas;
+    const addedMetadata = canvasMetadata.get(canvas.id);
 
     return {
       // 3. Canvases (incl. their IDs! remain unchanged!)
       ...canvas,
-      annotations: [{
-        id: annotationPageUrl,
-        type: 'AnnotationPage'
-      }]
+
+      // 3a. Append user-authored metadata, if any, keeping whatever
+      // metadata the canvas already had, marked off by a divider
+      ...(addedMetadata ? {
+        metadata: [
+          ...(canvas.metadata || []),
+          ADDED_METADATA_DIVIDER,
+          ...addedMetadata
+        ]
+      } : {}),
+
+      ...(annotationPageUrl ? {
+        annotations: [{
+          id: annotationPageUrl,
+          type: 'AnnotationPage'
+        }]
+      } : {})
     };
   });
 
