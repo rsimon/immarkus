@@ -1,16 +1,23 @@
 import JSZip from 'jszip';
+import { W3CAnnotationBody } from '@annotorious/react';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
-import { getImageMetadata, Store } from '@/store';
+import { getImageMetadata, getManifestMetadata, Store } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
-import { crosswalkMetadata } from './crosswalkMetadata';
+import { crosswalkMetadata, IIIFMetadataField } from './crosswalkMetadata';
 
-// Marks the start of the metadata block added by IMMARKUS, so it stays
-// visually distinguishable from whatever metadata the original canvas had.
-const ADDED_METADATA_DIVIDER = {
+const ADDED_METADATA_DIVIDER: IIIFMetadataField = {
   label: { en: ['Metadata added with'] },
   value: { en: ['<a href="https://immarkus.xmarkus.org">IMMARKUS</a>'] }
 };
+
+const getCrosswalkedMetadata = (metadata: W3CAnnotationBody, store: Store): IIIFMetadataField[] | undefined => {
+  const hasMetadata = metadata && Object.keys(metadata).length > 0;
+  if (!hasMetadata) return undefined;
+
+  const crosswalked = crosswalkMetadata(metadata, store) as { metadata?: IIIFMetadataField[] };
+  return crosswalked.metadata;
+}
 
 export const createModifiedLabel = (label: Record<string, string[]> | undefined, suffix: string) => {
   if (!label) return { en: [suffix] };
@@ -40,7 +47,7 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
   const manifest = await fetchManifest(resource.uri);
 
   const annotationPageUrls = new Map<string, string>();
-  const canvasMetadata = new Map<string, { label: Record<string, string[]>, value: Record<string, string[]> }[]>();
+  const canvasMetadata = new Map<string, IIIFMetadataField[]>();
 
   for (const canvas of resource.canvases) {
     const annotations = await createAnnotationPage(canvas, baseUrl, miradorSafe, store);
@@ -50,14 +57,13 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
     }
 
     const { metadata } = await getImageMetadata(store, `iiif:${canvas.manifestId}:${canvas.id}`);
-    const hasMetadata = metadata && Object.keys(metadata).length > 0;
-
-    if (hasMetadata) {
-      const crosswalked = crosswalkMetadata(metadata, store) as { metadata?: { label: Record<string, string[]>, value: Record<string, string[]> }[] };
-      if (crosswalked.metadata)
-        canvasMetadata.set(canvas.uri, crosswalked.metadata);
-    }
+    const crosswalked = getCrosswalkedMetadata(metadata, store);
+    if (crosswalked)
+      canvasMetadata.set(canvas.uri, crosswalked);
   }
+
+  const { metadata: manifestMetadata } = await getManifestMetadata(store, resource.id);
+  const addedManifestMetadata = getCrosswalkedMetadata(manifestMetadata, store);
 
   // Derivative manifest follows recommendations set out in
   // https://iiif.io/api/cookbook/recipe/0464-reuse-manifest/
@@ -74,11 +80,9 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
     const addedMetadata = canvasMetadata.get(canvas.id);
 
     return {
-      // 3. Canvases (incl. their IDs! remain unchanged!)
       ...canvas,
 
-      // 3a. Append user-authored metadata, if any, keeping whatever
-      // metadata the canvas already had, marked off by a divider
+      // Append user-authored metadata (marked via divider)
       ...(addedMetadata ? {
         metadata: [
           ...(canvas.metadata || []),
@@ -96,9 +100,10 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
     };
   });
 
-  // 4. Add a metadata element with a link to the source Manifest and description of changes
+  // Append user-authored manifest metadata
   derivative.metadata = [
     ...(derivative.metadata || []),
+    ...(addedManifestMetadata ? [ADDED_METADATA_DIVIDER, ...addedManifestMetadata] : []),
     {
       label: { en: ['Source'] },
       value: {

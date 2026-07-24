@@ -3,7 +3,7 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
 
 // Basic helper shape
-interface IIIFMetadataField {
+export interface IIIFMetadataField {
 
   label: { en: string[] };
 
