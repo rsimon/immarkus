@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
-import { SortOrder } from 'primereact/datatable';
+import { useCallback, useEffect, useState } from 'react';
 
 const KEY_IMAGE_SORTING = 'immarkus:image-sorting';
+
+export type SortOrder = 1 | -1;
 
 export interface Sorting { 
   
@@ -25,14 +26,14 @@ export const useImageSorting = () => {
       localStorage.removeItem(KEY_IMAGE_SORTING);
   }, [sorting, KEY_IMAGE_SORTING]);
 
-  const onSort = (sorting?: Sorting) => {
+  const onSort = useCallback((sorting?: Sorting) => {
     if (sorting) {
       const { sortField, sortOrder } = sorting;
       setSorting({ sortField, sortOrder });
     } else {
       setSorting(null);
     }
-  }
+  }, []);
 
   return {
     sortField: sorting?.sortField,

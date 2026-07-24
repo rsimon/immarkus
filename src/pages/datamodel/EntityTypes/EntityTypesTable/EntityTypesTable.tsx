@@ -1,27 +1,26 @@
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TreeNode } from 'primereact/treenode';
-import { TreeTable } from 'primereact/treetable';
-import { Column } from 'primereact/column';
+import { ColumnDef, ExpandedState, flexRender, getCoreRowModel, getExpandedRowModel, Row, useReactTable } from '@tanstack/react-table';
 import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
+import { cn } from '@/ui/utils';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/Table';
 import { EntityTypeActions } from './EntityTypeActions';
-import { 
-  CaseSensitive, 
-  ChevronRight, 
-  ChevronsLeftRightEllipsis, 
-  CopyPlus, 
-  Database, 
-  Hash, 
-  Link2, 
-  List, 
-  MapPin, 
-  Palette, 
+import {
+  CaseSensitive,
+  ChevronRight,
+  ChevronsLeftRightEllipsis,
+  CopyPlus,
+  Database,
+  Hash,
+  Link2,
+  List,
+  MapPin,
+  Palette,
   Ruler
 } from 'lucide-react';
-
-import './EntityTypesTable.css';
 
 interface EntityTypesTableProps {
 
@@ -31,23 +30,35 @@ interface EntityTypesTableProps {
 
 }
 
+interface EntityTypeNode {
+
+  id: string;
+
+  data: EntityType;
+
+  children: EntityTypeNode[];
+
+}
+
+const HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const { t } = useTranslation('datamodel');
 
   const model = useDataModel();
 
-  const toTreeNode = (type: EntityType) => ({
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const toNode = (type: EntityType): EntityTypeNode => ({
     id: type.id,
-    key: type.id,
-    label: type.id,
     data: { ...type },
     get children() {
-      return model.getChildTypes(type.id).map(toTreeNode)
+      return model.getChildTypes(type.id).map(toNode)
     }
   })
 
-  const nodes: TreeNode[] = model.getRootTypes()
+  const nodes: EntityTypeNode[] = model.getRootTypes()
     .slice().sort((a, b) => {
       const aHasChildren = model.hasChildTypes(a.id);
       const bHasChildren = model.hasChildTypes(b.id);
@@ -57,37 +68,38 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
       if (bHasChildren && !aHasChildren) return 1;
 
       return a.id.localeCompare(b.id);
-    }).map(toTreeNode);
+    }).map(toNode);
 
-  const togglerTemplate = (node: TreeNode, options: any) => 
-    model.hasChildTypes(node.data.id) ? (
-      <Button 
-        variant="ghost" 
+  const togglerTemplate = useCallback((row: Row<EntityTypeNode>) =>
+    row.getCanExpand() ? (
+      <Button
+        variant="ghost"
         size="icon"
-        style={{ 
-          marginLeft: `${options.props.level * 8}px`
+        style={{
+          marginLeft: `${row.depth * 8}px`
         }}
-        className={`ml-0.5 rounded-full ${options.containerClassName}`} onClick={options.onClick}>
-        <ChevronRight 
-          style={{ transform: options.expanded ? 'rotateZ(90deg)' : undefined}}
+        className="ml-0.5 rounded-full"
+        onClick={row.getToggleExpandedHandler()}>
+        <ChevronRight
+          style={{ transform: row.getIsExpanded() ? 'rotateZ(90deg)' : undefined}}
           className="h-4 w-4 mb-0.5" />
       </Button>
     ) : (
-      <span className="inline-block" style={{ width: `${options.props.level * 8 +  40}px`}} />
-    );
+      <span className="inline-block" style={{ width: `${row.depth * 8 +  40}px`}} />
+    ), []);
 
-  const idTemplate = (node: TreeNode) => (
+  const idTemplate = useCallback((node: EntityTypeNode) => (
     <span>
       <span className="pip ml-1 mr-1.5" style={{ backgroundColor: node.data.color }} />
       <span>{node.data.id}</span>
     </span>
-  )
+  ), []);
 
-  const displayNameTemplate = (node: TreeNode) => (
+  const displayNameTemplate = useCallback((node: EntityTypeNode) => (
     <span className="font-medium">{node.data.label}</span>
-  )
+  ), []);
 
-  const propertiesTemplate = (node: TreeNode) => (
+  const propertiesTemplate = useCallback((node: EntityTypeNode) => (
     <span className="whitespace-nowrap">
       {(node.data.properties || []).slice(0, 3).map((property: PropertyDefinition) => (
         <span key={property.name}
@@ -118,62 +130,120 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           {property.multiple && (
             <CopyPlus className="w-3 h-3 ml-1.5 mr-0.5" />
           )}
-        </span>    
+        </span>
       ))}
 
       {node.data.properties?.length > 3 && (
         <PropertyListTooltip properties={node.data.properties} />
       )}
     </span>
-  )
+  ), []);
 
-  const actionsTemplate = (node: TreeNode) => (
+  const actionsTemplate = useCallback((node: EntityTypeNode) => (
     <span className="text-right py-1 px-2">
-      <EntityTypeActions 
+      <EntityTypeActions
         entityType={node.data}
-        onEditEntityType={() => props.onEditEntityType(node.data)} 
+        onEditEntityType={() => props.onEditEntityType(node.data)}
         onDeleteEntityType={() => props.onDeleteEntityType(node.data)} />
     </span>
-  )
+  ), [props.onEditEntityType, props.onDeleteEntityType]);
 
-  const headerClass = "pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left";
+  // Memoized so column/cell identity stays stable across re-renders —
+  // TanStack's flexRender treats a changed cell function as a changed
+  // component type and remounts the whole cell subtree otherwise.
+  const columns: ColumnDef<EntityTypeNode>[] = useMemo(() => [
+    {
+      id: 'entityClass',
+      header: t('entityTypesTable.headerEntityClass'),
+      cell: ({ row }) => (
+        <div className="flex items-center">
+          {togglerTemplate(row)}
+          {idTemplate(row.original)}
+        </div>
+      )
+    },
+    {
+      id: 'displayName',
+      header: t('entityTypesTable.headerDisplayName'),
+      cell: ({ row }) => displayNameTemplate(row.original)
+    },
+    {
+      id: 'description',
+      header: t('entityTypesTable.headerDescription'),
+      cell: ({ row }) => row.original.data.description
+    },
+    {
+      id: 'properties',
+      header: t('entityTypesTable.headerProperties'),
+      cell: ({ row }) => propertiesTemplate(row.original)
+    },
+    {
+      id: 'actions',
+      header: '',
+      cell: ({ row }) => actionsTemplate(row.original)
+    }
+  ], [t, togglerTemplate, idTemplate, displayNameTemplate, propertiesTemplate, actionsTemplate]);
+
+  const table = useReactTable({
+    data: nodes,
+    columns,
+    state: { expanded },
+    onExpandedChange: setExpanded,
+    getSubRows: row => row.children,
+    getRowId: row => row.id,
+    getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel()
+  });
+
+  const columnClassName = (columnId: string) => cn(
+    (columnId === 'entityClass' || columnId === 'displayName') && 'whitespace-nowrap',
+    columnId === 'description' && 'overflow-hidden text-ellipsis whitespace-nowrap max-w-[240px]',
+    columnId === 'properties' && 'whitespace-nowrap w-[240px]',
+    columnId === 'actions' && 'w-[80px] text-right'
+  );
 
   return (
     <div className="relative rounded-md border mt-6 w-full overflow-x-auto">
-      <TreeTable 
-        value={nodes} 
-        togglerTemplate={togglerTemplate}
-        emptyMessage={(
-          <div className="h-24 flex items-center justify-center text-center text-muted-foreground">
-            {t('entityTypesTable.empty')}
-          </div>
-        )}>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map(headerGroup => (
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              {headerGroup.headers.map(header => (
+                <TableHead
+                  key={header.id}
+                  className={cn(HEADER_CLASS, columnClassName(header.column.id))}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-        <Column
-          expander
-          header={t('entityTypesTable.headerEntityClass')}
-          headerClassName={headerClass}
-          body={idTemplate} />
-
-        <Column 
-          header={t('entityTypesTable.headerDisplayName')}
-          headerClassName={headerClass}
-          body={displayNameTemplate} />
-
-        <Column 
-          header={t('entityTypesTable.headerDescription')}
-          headerClassName={headerClass}
-          field="description" />
-
-        <Column
-          header={t('entityTypesTable.headerProperties')}
-          headerClassName={headerClass}
-          body={propertiesTemplate} />
-
-        <Column 
-          body={actionsTemplate} />
-      </TreeTable>
+        <TableBody>
+          {table.getRowModel().rows.length === 0 ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={columns.length} className="p-0">
+                <div className="h-24 flex items-center justify-center text-center text-muted-foreground">
+                  {t('entityTypesTable.empty')}
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : (
+            table.getRowModel().rows.map(row => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map(cell => (
+                  <TableCell
+                    key={cell.id}
+                    className={cn('py-2 px-2', columnClassName(cell.column.id))}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
-  
+
 }
