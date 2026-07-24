@@ -79,7 +79,10 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           marginLeft: `${row.depth * 8}px`
         }}
         className="ml-0.5 rounded-full"
-        onClick={row.getToggleExpandedHandler()}>
+        // Deferred: toggling synchronously inserts/removes sibling <tr>s
+        // under the click coordinate, which reliably hangs the browser's
+        // click-event dispatch on a real (non-synthetic) mouse click.
+        onClick={() => setTimeout(() => row.toggleExpanded(), 0)}>
         <ChevronRight
           style={{ transform: row.getIsExpanded() ? 'rotateZ(90deg)' : undefined}}
           className="h-4 w-4 mb-0.5" />
