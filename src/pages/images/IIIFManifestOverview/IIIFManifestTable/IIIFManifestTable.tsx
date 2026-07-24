@@ -150,10 +150,6 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     return murmur.v3(row.data.canvas.id).toString()
   }
 
-  // Memoized so column/cell identity stays stable across re-renders that
-  // aren't relevant to the columns themselves — TanStack's flexRender
-  // treats a changed cell function as a changed component type and
-  // remounts the whole cell subtree otherwise.
   const columns: ColumnDef<ItemTableRow>[] = useMemo(() => [
     {
       id: 'type',
