@@ -147,10 +147,6 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     }
   }, [props.onOpenFolder, props.onOpenImage]);
 
-  // Memoized so column/cell identity stays stable across re-renders that
-  // aren't relevant to the columns themselves (e.g. `dimensions` updating)
-  // — TanStack's flexRender treats a changed cell function as a changed
-  // component type and remounts the whole cell subtree otherwise.
   const columns: ColumnDef<ItemTableRow>[] = useMemo(() => [
     {
       id: 'type',
