@@ -1,7 +1,8 @@
 import JSZip from 'jszip';
 import { LoadedFileImage } from '@/model';
-import { Store } from '@/store';
+import { getImageMetadata, Store } from '@/store';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
+import { crosswalkMetadata } from './crosswalkMetadata';
 
 // Helper
 export const stripExtension = (filename: string): string => {
@@ -43,14 +44,20 @@ const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, miradorSa
  * Creates a basic IIIF manifest for the file image, according to IIIF cookbook recipe 1:
  * https://iiif.io/api/cookbook/recipe/0001-mvm-image/
  */
-const createStaticManifest = (image: LoadedFileImage, baseUrl: string) => {
+const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, store: Store) => {
   const base = `${baseUrl}/${stripExtension(image.name)}`;
 
-  return getImageDimensions(image.data).then(({ width, height }) => ({
+  const { width, height } = await getImageDimensions(image.data);
+
+  const { metadata } = await getImageMetadata(store, image.id);
+  const hasMetadata = metadata && Object.keys(metadata).length > 0;
+
+  return {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${base}/manifest.json`,
     type: 'Manifest',
     label: { en: [ image.name ] },
+    ...(hasMetadata ? crosswalkMetadata(metadata, store) : {}),
     items: [{
       id: `${base}/canvas/1`,
       type: 'Canvas',
@@ -77,7 +84,7 @@ const createStaticManifest = (image: LoadedFileImage, baseUrl: string) => {
         type: 'AnnotationPage'
       }]
     }]
-  }));
+  }
 }
 
 /**
@@ -93,7 +100,7 @@ export const exportImageToIIIF = async (image: LoadedFileImage, baseUrl: string,
 
   zip.file(`${name}/${image.name}`, image.data, { binary: true });
 
-  const manifest = await createStaticManifest(image, baseUrl);
+  const manifest = await createStaticManifest(image, baseUrl, store);
   zip.file(`${name}/manifest.json`, JSON.stringify(manifest, null, 2));
 
   const annotations = await createAnnotationPage(image, baseUrl, miradorSafe, store);

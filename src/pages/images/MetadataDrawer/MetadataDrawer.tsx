@@ -45,7 +45,7 @@ export const MetadataDrawer = (props: MetadataDrawerProps) => {
     <animated.div 
       style={style}
       className="grow-0 shrink-0 relative border-l">
-      <aside className="w-[340px] overflow-hidden absolute top-0 left-0 h-full overflow-y-auto box-border">
+      <aside className="w-85 overflow-hidden absolute top-0 left-0 h-full overflow-y-auto box-border">
         <Button 
           size="icon"
           variant="ghost"
