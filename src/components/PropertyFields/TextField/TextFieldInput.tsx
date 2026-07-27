@@ -93,7 +93,7 @@ export const TextFieldInput = (props: TextFieldInputProps) => {
     <Input
       className={cn(props.className, 'mt-0.5')} 
       value={props.onChange ? value || '' : value} 
-      onChange={evt => props.onChange && onChange(evt.target.value)} />
+      onChange={evt => onChange(evt.target.value)} />
   )
   
 }
