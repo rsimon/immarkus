@@ -62,11 +62,15 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
     id: `${base}/manifest.json`,
     type: 'Manifest',
     label: { en: [ image.name ] },
-    ...(folderMetadata.length > 0 ? { metadata: folderMetadata } : {}),
+    ...(
+      folderMetadata.length > 0 ? { metadata: folderMetadata } : 
+      // If ONLY image metadata -> add as manifest metadata
+      imageMetadata.length > 0 ? { metadata: imageMetadata } : {}
+    ),
     items: [{
       id: `${base}/canvas/1`,
       type: 'Canvas',
-      ...(imageMetadata.length > 0 ? { metadata: imageMetadata } : {}),
+      ...(imageMetadata.length > 0 && folderMetadata.length > 0 ? { metadata: imageMetadata } : {}),
       height,
       width,
       items: [{

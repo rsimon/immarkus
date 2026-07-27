@@ -52,7 +52,7 @@ export const getParentFolders = (
     const folder = store.getFolder(manifest.folder);
     const isRootFolder = !('id' in folder);
     if (isRootFolder) {
-      return [manifest];
+      return [folder, manifest];
     } else {
       return [...getParentFoldersRecursive(folder), manifest];
     }
@@ -63,7 +63,7 @@ export const getParentFolders = (
 
       const isRootFolder = !('id' in folder);
       if (isRootFolder) {
-        return [];
+        return [folder];
       } else {
         return getParentFoldersRecursive(folder);
       }
