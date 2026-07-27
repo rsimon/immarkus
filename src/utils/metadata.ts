@@ -1,5 +1,7 @@
 import { W3CAnnotationBody } from '@annotorious/react';
-import { MetadataSchema, PropertyDefinition } from '@/model';
+import { Folder, IIIFManifestResource, MetadataSchema, PropertyDefinition, RootFolder } from '@/model';
+import { Store } from '@/store';
+import { parseIIIFId } from './iiif';
 import { serializePropertyValue } from './serialize';
 
 export interface SchemaField { schema: string, definition: PropertyDefinition };
@@ -21,4 +23,52 @@ export const zipMetadata = (columns: SchemaField[], metadata?: W3CAnnotationBody
   });
 
   return entries;
+}
+
+/** Lists the parent sub-folder hierarchy for the given image or IIIF resource **/
+export const getParentFolders = (
+  store: Store,
+  sourceId: string
+): (RootFolder | Folder | IIIFManifestResource)[] => {
+  const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
+    if (next.parent) {
+      const folder = store.getFolder(next.parent);
+
+      const isRootFolder = !('id' in folder);
+      if (isRootFolder) {
+        return [folder, next, ...hierarchy];
+      } else {
+        return getParentFoldersRecursive(folder, [next, ...hierarchy]);
+      }
+    } else {
+      return [next, ...hierarchy];
+    }
+  }
+
+  if (sourceId.startsWith('iiif')) {
+    const [manifestId, _] = parseIIIFId(sourceId);
+    const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
+
+    const folder = store.getFolder(manifest.folder);
+    const isRootFolder = !('id' in folder);
+    if (isRootFolder) {
+      return [manifest];
+    } else {
+      return [...getParentFoldersRecursive(folder), manifest];
+    }
+  } else {
+    const image = store.getImage(sourceId);
+    if (image) {
+      const folder = store.getFolder(image.folder);
+
+      const isRootFolder = !('id' in folder);
+      if (isRootFolder) {
+        return [];
+      } else {
+        return getParentFoldersRecursive(folder);
+      }
+    } else {
+      return [];
+    }
+  }
 }

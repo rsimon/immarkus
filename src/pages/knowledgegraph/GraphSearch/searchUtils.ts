@@ -1,9 +1,9 @@
-import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema, RootFolder } from '@/model';
+import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema } from '@/model';
 import { DataModelStore, getManifestMetadata, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
+import { getParentFolders } from '@/utils/metadata';
 import { serializePropertyValue } from '@/utils/serialize';
-import { parseIIIFId } from '@/utils/iiif';
-import { 
+import {
   Graph, 
   GraphNode, 
   SchemaPropertyValue, 
@@ -39,54 +39,6 @@ export const annotationToProperties = (model: DataModelStore, type: 'IMAGE' | 'F
 
   const body = Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
   return bodyToProperties(model, type, body);
-}
-
-/** Lists the parent sub-folder hierarchy for the given image **/
-export const getParentFolders = (
-  store: Store, 
-  sourceId: string
-): (RootFolder | Folder | IIIFManifestResource)[] => {
-  const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
-    if (next.parent) {
-      const folder = store.getFolder(next.parent);
-
-      const isRootFolder = !('id' in folder);
-      if (isRootFolder) {
-        return [folder, next, ...hierarchy];
-      } else {
-        return getParentFoldersRecursive(folder, [next, ...hierarchy]);
-      }
-    } else {
-      return [next, ...hierarchy];
-    }
-  }
-
-  if (sourceId.startsWith('iiif')) {
-    const [manifestId, _] = parseIIIFId(sourceId);
-    const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
-
-    const folder = store.getFolder(manifest.folder);
-    const isRootFolder = !('id' in folder);
-    if (isRootFolder) {
-      return [manifest];
-    } else {
-      return [...getParentFoldersRecursive(folder), manifest];
-    }
-  } else {
-    const image = store.getImage(sourceId);
-    if (image) {
-      const folder = store.getFolder(image.folder);
-
-      const isRootFolder = !('id' in folder);
-      if (isRootFolder) {
-        return [];
-      } else {
-        return getParentFoldersRecursive(folder);
-      }
-    } else {
-      return [];
-    }
-  }
 }
 
 const listMetadataProperties = (schemas: { type: GraphNodeType, schema: MetadataSchema }[]): SchemaProperty[] => {

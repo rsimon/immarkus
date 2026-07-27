@@ -1,5 +1,6 @@
-import { Store } from '@/store';
 import { W3CAnnotationBody } from '@annotorious/react';
+import { getManifestMetadata, Store } from '@/store';
+import { getParentFolders } from '@/utils/metadata';
 import { serializePropertyValue } from '@/utils/serialize';
 
 // Basic helper shape
@@ -11,17 +12,24 @@ export interface IIIFMetadataField {
 
 }
 
-export const crosswalkMetadata = (metadata: W3CAnnotationBody, store: Store) => {
-  const source = metadata['source'];
-  const properties = metadata['properties'];
+export const crosswalkMetadata = (
+  metadata: W3CAnnotationBody | undefined,
+  store: Store,
+  type: 'IMAGE' | 'FOLDER'
+): IIIFMetadataField[] => {
+  const source = metadata?.['source'];
+  const properties = metadata?.['properties'];
 
   if (!source || !properties || typeof properties !== 'object')
-    return {};
+    return [];
 
-  const schema = store.getDataModel().getImageSchema(source);
-  if (!schema) return {};
+  const schema = type === 'FOLDER'
+    ? store.getDataModel().getFolderSchema(source)
+    : store.getDataModel().getImageSchema(source);
 
-  const entries = (schema.properties || []).reduce<IIIFMetadataField[]>((entries, definition) => {
+  if (!schema) return [];
+
+  return (schema.properties || []).reduce<IIIFMetadataField[]>((entries, definition) => {
     const values = serializePropertyValue(definition, properties[definition.name]);
     if (values.length === 0) return entries;
 
@@ -30,6 +38,29 @@ export const crosswalkMetadata = (metadata: W3CAnnotationBody, store: Store) => 
       value: { en: values }
     }];
   }, []);
+}
 
-  return entries.length > 0 ? { metadata: entries } : {};
+/** Collapses parent folder metadata for the given image or IIIF manifest **/
+export const getFlattenedParentFolderMetadata = (store: Store, sourceId: string): Promise<IIIFMetadataField[]> => {
+  const folders = getParentFolders(store, sourceId);
+
+  // Merges two lists of IIIF metadata fields, with same-labeled fields in 'next' taking precedence
+  const mergeIIIFMetadataFields = (
+    current: IIIFMetadataField[],
+    next: IIIFMetadataField[]
+  ): IIIFMetadataField[] => {
+    const nextLabels = new Set(next.map(field => field.label.en[0]));
+    return [...current.filter(field => !nextLabels.has(field.label.en[0])), ...next];
+  }
+
+  return folders.reduce<Promise<IIIFMetadataField[]>>((promise, folder) => promise.then(fields => {
+    const body = 'uri' in folder
+      ? getManifestMetadata(store, folder.id).then(({ metadata }) => metadata)
+      : store.getFolderMetadata(folder.handle).then(annotation => {
+          if (!annotation) return undefined;
+          return Array.isArray(annotation.body) ? annotation.body[0] : annotation.body;
+        });
+
+    return body.then(b => mergeIIIFMetadataFields(fields, crosswalkMetadata(b, store, 'FOLDER')));
+  }), Promise.resolve([]));
 }

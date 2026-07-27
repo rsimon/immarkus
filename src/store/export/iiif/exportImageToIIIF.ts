@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 import { LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
-import { crosswalkMetadata } from './crosswalkMetadata';
+import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
 
 // Helper
 export const stripExtension = (filename: string): string => {
@@ -49,18 +49,24 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
 
   const { width, height } = await getImageDimensions(image.data);
 
-  const { metadata } = await getImageMetadata(store, image.id);
-  const hasMetadata = metadata && Object.keys(metadata).length > 0;
+  // Folder metadata -> manifest metadata
+  const folderMetadata = await getFlattenedParentFolderMetadata(store, image.id);
+
+  // Image metadata -> canvas metadata
+  const { metadata: imageMetaBody } = await getImageMetadata(store, image.id);
+  const imageMetadata = imageMetaBody && Object.keys(imageMetaBody).length > 0 
+    ? crosswalkMetadata(imageMetaBody, store, 'IMAGE') : [];
 
   return {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
     id: `${base}/manifest.json`,
     type: 'Manifest',
     label: { en: [ image.name ] },
-    ...(hasMetadata ? crosswalkMetadata(metadata, store) : {}),
+    ...(folderMetadata.length > 0 ? { metadata: folderMetadata } : {}),
     items: [{
       id: `${base}/canvas/1`,
       type: 'Canvas',
+      ...(imageMetadata.length > 0 ? { metadata: imageMetadata } : {}),
       height,
       width,
       items: [{
