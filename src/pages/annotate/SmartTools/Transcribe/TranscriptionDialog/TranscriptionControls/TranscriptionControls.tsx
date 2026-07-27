@@ -186,7 +186,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                 <span>
                   {t('transcribe.controls.entityTags')}
                 </span>
-                <span className="uppercase text-xs font-normal text-muted-foreground">{t('optional')}</span>
+                <span className="uppercase text-xs font-normal text-muted-foreground">{t('transcribe.controls.optional')}</span>
               </Label>
 
               <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
