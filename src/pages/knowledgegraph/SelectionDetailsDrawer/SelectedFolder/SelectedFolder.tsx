@@ -225,9 +225,13 @@ export const SelectedFolder = (props: SelectedFolderProps) => {
         </div>
 
         {('type' in folder && folder.type === 'PRESENTATION_MANIFEST') ? (
-          <SelectedManifestMetadata manifest={folder} />
+          <SelectedManifestMetadata 
+            key={folder.id}
+            manifest={folder} />
         ) : !('canvases' in folder) ? (
-          <SelectedFolderMetadata folder={folder} />
+          <SelectedFolderMetadata 
+            key={folder.id}
+            folder={folder} />
         ) : null}
       </article>
     </div>
