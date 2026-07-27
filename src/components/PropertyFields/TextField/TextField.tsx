@@ -39,8 +39,7 @@ export const TextField = (props: TextFieldProps) => {
   useEffect(() => {
     if (props.onChange) {
       const normalized = removeEmpty(values);
-      if (normalized)
-        props.onChange(normalized);
+      props.onChange(normalized);
     }
   }, [values]);
 
