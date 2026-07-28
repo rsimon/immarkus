@@ -87,7 +87,7 @@
     "masonic": "^4.1.0",
     "motion": "^12.42.2",
     "murmurhash": "^2.0.1",
-    "openai": "^6.49.0",
+    "openai": "^7.0.0",
     "openseadragon": "^6.0.2",
     "p-throttle": "^8.1.0",
     "papaparse": "^5.5.4",
