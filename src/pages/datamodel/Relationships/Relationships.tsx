@@ -87,7 +87,7 @@ export const Relationships = () => {
             <TableHeader className="text-xs">
               <TableRow>
                 <TableHead className="px-3 whitespace-nowrap">{t('relationships.headerName')}</TableHead>
-                <TableHead className="px-2 whitespace-nowrap w-[280px]">{t('relationships.headerDescription')}</TableHead>
+                <TableHead className="px-2 whitespace-nowrap w-70">{t('relationships.headerDescription')}</TableHead>
                 <TableHead className="px-2 whitespace-nowrap text-center">{t('relationships.headerDirected')}</TableHead>
                 <TableHead className="px-2 whitespace-nowrap">{t('relationships.headerSourceClass')}</TableHead>
                 <TableHead className="px-2 whitespace-nowrap">{t('relationships.headerTargetClass')}</TableHead>

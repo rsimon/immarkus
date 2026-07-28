@@ -50,13 +50,6 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
-  // Memoized so the tree is only rebuilt when the data model actually
-  // changes. TanStack walks the *entire* tree (via getSubRows) on every
-  // core row model computation, regardless of which rows are collapsed —
-  // so an unmemoized, getter-based `children` property was being
-  // recomputed from scratch (an O(n) scan per node) on every render,
-  // including every render triggered by toggling a single row. That's
-  // what was freezing the browser.
   const nodes: EntityTypeNode[] = useMemo(() => {
     const toNode = (type: EntityType): EntityTypeNode => ({
       id: type.id,
