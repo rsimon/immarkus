@@ -15,9 +15,6 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
 
   const { onLoad, dimensions } = useImageDimensions();
 
-  // Keep the object URL stable across re-renders so the <img> doesn't
-  // reload (and flash back to the placeholder) every time an unrelated
-  // row's dimensions load triggers a re-render of this table.
   const url = useMemo(() => URL.createObjectURL(props.image.data), [props.image.data]);
 
   useEffect(() => () => URL.revokeObjectURL(url), [url]);
