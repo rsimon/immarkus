@@ -40,7 +40,7 @@ interface EntityTypeNode {
 
 }
 
-const HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+const HEADER_CLASS = 'pl-2 pr-2 whitespace-nowrap text-xs text-muted-foreground font-medium text-left';
 
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
@@ -50,25 +50,32 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
-  const toNode = (type: EntityType): EntityTypeNode => ({
-    id: type.id,
-    data: { ...type },
-    get children() {
-      return model.getChildTypes(type.id).map(toNode)
-    }
-  })
+  // Memoized so the tree is only rebuilt when the data model actually
+  // changes. TanStack walks the *entire* tree (via getSubRows) on every
+  // core row model computation, regardless of which rows are collapsed —
+  // so an unmemoized, getter-based `children` property was being
+  // recomputed from scratch (an O(n) scan per node) on every render,
+  // including every render triggered by toggling a single row. That's
+  // what was freezing the browser.
+  const nodes: EntityTypeNode[] = useMemo(() => {
+    const toNode = (type: EntityType): EntityTypeNode => ({
+      id: type.id,
+      data: { ...type },
+      children: model.getChildTypes(type.id).map(toNode)
+    });
 
-  const nodes: EntityTypeNode[] = model.getRootTypes()
-    .slice().sort((a, b) => {
-      const aHasChildren = model.hasChildTypes(a.id);
-      const bHasChildren = model.hasChildTypes(b.id);
+    return model.getRootTypes()
+      .slice().sort((a, b) => {
+        const aHasChildren = model.hasChildTypes(a.id);
+        const bHasChildren = model.hasChildTypes(b.id);
 
-      if (aHasChildren && !bHasChildren) return -1;
+        if (aHasChildren && !bHasChildren) return -1;
 
-      if (bHasChildren && !aHasChildren) return 1;
+        if (bHasChildren && !aHasChildren) return 1;
 
-      return a.id.localeCompare(b.id);
-    }).map(toNode);
+        return a.id.localeCompare(b.id);
+      }).map(toNode);
+  }, [model]);
 
   const togglerTemplate = useCallback((row: Row<EntityTypeNode>) =>
     row.getCanExpand() ? (
@@ -79,10 +86,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           marginLeft: `${row.depth * 8}px`
         }}
         className="ml-0.5 rounded-full"
-        // Deferred: toggling synchronously inserts/removes sibling <tr>s
-        // under the click coordinate, which reliably hangs the browser's
-        // click-event dispatch on a real (non-synthetic) mouse click.
-        onClick={() => setTimeout(() => row.toggleExpanded(), 0)}>
+        onClick={() => row.toggleExpanded()}>
         <ChevronRight
           style={{ transform: row.getIsExpanded() ? 'rotateZ(90deg)' : undefined}}
           className="h-4 w-4 mb-0.5" />
@@ -211,10 +215,10 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
         <TableHeader>
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
-              {headerGroup.headers.map(header => (
+              {headerGroup.headers.map((header, idx) => (
                 <TableHead
                   key={header.id}
-                  className={cn(HEADER_CLASS, columnClassName(header.column.id))}>
+                  className={cn(columnClassName(header.column.id), HEADER_CLASS, idx === 0 ? 'pl-4' : undefined)}>
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}
@@ -237,7 +241,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
                 {row.getVisibleCells().map(cell => (
                   <TableCell
                     key={cell.id}
-                    className={cn('py-2 px-2', columnClassName(cell.column.id))}>
+                    className={cn('py-2 px-2 text-xs', columnClassName(cell.column.id))}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

@@ -205,7 +205,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
   });
 
   const columnClassName = (columnId: string) => cn(
-    columnId === 'type' && 'w-[80px] pl-0',
+    columnId === 'type' && 'w-[100px]',
     columnId === 'name' && 'w-[60%]',
     (columnId === 'dimensions' || columnId === 'lastEdit' || columnId === 'annotations') && 'text-center',
     columnId === 'actions' && 'w-[60px] text-right'
@@ -243,7 +243,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
                 {row.getVisibleCells().map(cell => (
                   <TableCell
                     key={cell.id}
-                    className={cn('overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2', columnClassName(cell.column.id))}>
+                    className={cn('overflow-hidden text-xs text-ellipsis whitespace-nowrap px-2 py-2', columnClassName(cell.column.id))}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

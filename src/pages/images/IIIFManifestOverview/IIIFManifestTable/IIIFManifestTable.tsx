@@ -208,7 +208,7 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
   });
 
   const columnClassName = (columnId: string) => cn(
-    columnId === 'type' && 'w-[80px] pl-0',
+    columnId === 'type' && 'w-[100px]',
     columnId === 'name' && 'w-[60%]',
     (columnId === 'dimensions' || columnId === 'lastEdit' || columnId === 'annotations') && 'text-center',
     columnId === 'actions' && 'w-[60px] text-right'

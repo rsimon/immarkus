@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { StoreContext } from '../StoreProvider';
 import { EntityType, MetadataSchema, RelationshipType } from '@/model';
 
@@ -6,86 +6,95 @@ export const useDataModel = () => {
 
   const { store, model, setModel } = useContext(StoreContext);
 
-  const setAsync = (p: Promise<void>) =>
-    p.then(() => setModel({...store.getDataModel()}));
+  // Memoized on [model, store] so consumers get a referentially stable
+  // object as long as the underlying data model hasn't actually changed.
+  // Without this, every render created a brand new object, which defeated
+  // downstream memoization (e.g. table data) that relies on stable refs.
+  return useMemo(() => {
 
-  /** 
-   * Override methods that modify the model and update the model
-   * instance in the state, so that it becomes reactive.
-   */
-  const addEntityType = (type: EntityType) =>
-    setAsync(model.addEntityType(type));
+    const setAsync = (p: Promise<void>) =>
+      p.then(() => setModel({...store.getDataModel()}));
 
-  const addFolderSchema = (schema: MetadataSchema) =>
-    setAsync(model.addFolderSchema(schema));
+    /**
+     * Override methods that modify the model and update the model
+     * instance in the state, so that it becomes reactive.
+     */
+    const addEntityType = (type: EntityType) =>
+      setAsync(model.addEntityType(type));
 
-  const addImageSchema = (schema: MetadataSchema) =>
-    setAsync(model.addImageSchema(schema));
+    const addFolderSchema = (schema: MetadataSchema) =>
+      setAsync(model.addFolderSchema(schema));
 
-  const clearEntityTypes = () =>
-    setAsync(model.clearEntityTypes());
+    const addImageSchema = (schema: MetadataSchema) =>
+      setAsync(model.addImageSchema(schema));
 
-  const clearFolderSchemas = () =>
-    setAsync(model.clearFolderSchemas());
+    const clearEntityTypes = () =>
+      setAsync(model.clearEntityTypes());
 
-  const clearImageSchemas = () =>
-    setAsync(model.clearImageSchemas());
+    const clearFolderSchemas = () =>
+      setAsync(model.clearFolderSchemas());
 
-  const removeEntityType = (typeOrId: EntityType | string) =>
-    setAsync(model.removeEntityType(typeOrId));
+    const clearImageSchemas = () =>
+      setAsync(model.clearImageSchemas());
 
-  const removeFolderSchema = (schemaOrName: MetadataSchema | string) =>
-    setAsync(model.removeFolderSchema(schemaOrName));
+    const removeEntityType = (typeOrId: EntityType | string) =>
+      setAsync(model.removeEntityType(typeOrId));
 
-  const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
-    setAsync(model.removeImageSchema(schemaOrName));
+    const removeFolderSchema = (schemaOrName: MetadataSchema | string) =>
+      setAsync(model.removeFolderSchema(schemaOrName));
 
-  const removeRelationshipType = (name: string) => 
-    setAsync(model.removeRelationshipType(name));
+    const removeImageSchema = (schemaOrName: MetadataSchema | string) =>
+      setAsync(model.removeImageSchema(schemaOrName));
 
-  const setRelationshipTypes = (types: RelationshipType[]) =>
-    setAsync(model.setRelationshipTypes(types));
+    const removeRelationshipType = (name: string) =>
+      setAsync(model.removeRelationshipType(name));
 
-  const setEntityTypes = (types: EntityType[]) =>
-    setAsync(model.setEntityTypes(types));
+    const setRelationshipTypes = (types: RelationshipType[]) =>
+      setAsync(model.setRelationshipTypes(types));
 
-  const setFolderSchemas = (schemas: MetadataSchema[]) =>
-    setAsync(model.setFolderSchemas(schemas));
+    const setEntityTypes = (types: EntityType[]) =>
+      setAsync(model.setEntityTypes(types));
 
-  const setImageSchemas = (schemas: MetadataSchema[]) =>
-    setAsync(model.setImageSchemas(schemas));
+    const setFolderSchemas = (schemas: MetadataSchema[]) =>
+      setAsync(model.setFolderSchemas(schemas));
 
-  const updateEntityType = (type: EntityType) => 
-    setAsync(model.updateEntityType(type));
+    const setImageSchemas = (schemas: MetadataSchema[]) =>
+      setAsync(model.setImageSchemas(schemas));
 
-  const updateFolderSchema = (schema: MetadataSchema) =>
-    setAsync(model.updateFolderSchema(schema));
+    const updateEntityType = (type: EntityType) =>
+      setAsync(model.updateEntityType(type));
 
-  const updateImageSchema = (schema: MetadataSchema) =>
-    setAsync(model.updateImageSchema(schema));
+    const updateFolderSchema = (schema: MetadataSchema) =>
+      setAsync(model.updateFolderSchema(schema));
 
-  const upsertRelationshipType = (type: RelationshipType) =>
-    setAsync(model.upsertRelationshipType(type));
+    const updateImageSchema = (schema: MetadataSchema) =>
+      setAsync(model.updateImageSchema(schema));
 
-  return { 
-    ...model,
-    addEntityType,
-    addFolderSchema,
-    addImageSchema,
-    clearEntityTypes,
-    clearFolderSchemas,
-    clearImageSchemas,
-    removeEntityType,
-    removeFolderSchema,
-    removeImageSchema,
-    removeRelationshipType,
-    setEntityTypes,
-    setFolderSchemas,
-    setImageSchemas,
-    setRelationshipTypes,
-    updateEntityType,
-    updateFolderSchema,
-    updateImageSchema,
-    upsertRelationshipType
-  };
+    const upsertRelationshipType = (type: RelationshipType) =>
+      setAsync(model.upsertRelationshipType(type));
+
+    return {
+      ...model,
+      addEntityType,
+      addFolderSchema,
+      addImageSchema,
+      clearEntityTypes,
+      clearFolderSchemas,
+      clearImageSchemas,
+      removeEntityType,
+      removeFolderSchema,
+      removeImageSchema,
+      removeRelationshipType,
+      setEntityTypes,
+      setFolderSchemas,
+      setImageSchemas,
+      setRelationshipTypes,
+      updateEntityType,
+      updateFolderSchema,
+      updateImageSchema,
+      upsertRelationshipType
+    };
+
+  }, [model, store, setModel]);
+
 }

@@ -14,7 +14,7 @@ import {
   MessagesSquare
 } from 'lucide-react';
 
-export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-medium text-left';
 
 const TableEmptyMessage = () => {
   const { t } = useTranslation('images');
