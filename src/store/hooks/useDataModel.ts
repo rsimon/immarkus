@@ -6,10 +6,6 @@ export const useDataModel = () => {
 
   const { store, model, setModel } = useContext(StoreContext);
 
-  // Memoized on [model, store] so consumers get a referentially stable
-  // object as long as the underlying data model hasn't actually changed.
-  // Without this, every render created a brand new object, which defeated
-  // downstream memoization (e.g. table data) that relies on stable refs.
   return useMemo(() => {
 
     const setAsync = (p: Promise<void>) =>
