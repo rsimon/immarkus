@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IIIFIcon } from '@/components/IIIFIcon';
-import { IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
+import { Folder, IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
@@ -9,6 +9,7 @@ import { Checkbox } from '@/ui/Checkbox';
 import { useStore } from '@/store';
 import { exportImageToIIIF } from '@/store/export/iiif/exportImageToIIIF';
 import { exportDerivativeResource } from '@/store/export/iiif/exportDerivativeResource';
+import { exportImageFolderToIIIF } from '@/store/export/iiif/exportImageFolderToIIIF';
 import { 
   Dialog, 
   DialogContent, 
@@ -20,7 +21,7 @@ import {
 
 interface IIIFExportDialogProps {
 
-  item: LoadedFileImage | IIIFResource;
+  item: LoadedFileImage | IIIFResource | Folder;
 
   open: boolean;
 
@@ -62,10 +63,15 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
       return;
     }
 
-    if ('data' in props.item)
-      exportImageToIIIF(props.item, stripTrailingSlash(baseUrl), miradorSafe, store);
-    else 
-      exportDerivativeResource(props.item as IIIFManifestResource, stripTrailingSlash(baseUrl), miradorSafe, store);
+    const base = stripTrailingSlash(baseUrl);
+
+    if ('data' in props.item) {
+      exportImageToIIIF(props.item, base, miradorSafe, store);
+    } else if ('handle' in props.item) {
+      exportImageFolderToIIIF(props.item, base, miradorSafe, store);
+    } else {
+      exportDerivativeResource(props.item as IIIFManifestResource, base, miradorSafe, store);
+    }
 
     props.onOpenChange(false);
   }
