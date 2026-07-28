@@ -1,9 +1,8 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import murmur from 'murmurhash';
-import { DataTable, DataTableRowClickEvent } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest, CozyRange } from 'cozy-iiif';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -11,22 +10,23 @@ import { IIIFIcon } from '@/components/IIIFIcon';
 import { CanvasInformation } from '@/model';
 import { useIIIFResource } from '@/utils/iiif/hooks';
 import { getLastEdit } from '@/utils/annotation';
+import { Sorting } from '@/utils/useImageSorting';
+import { cn } from '@/ui/utils';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/Table';
 import { IIIFManifestOverviewLayoutProps } from '../IIIFManifestOverviewLayoutProps';
 import { CanvasItem, ItemTableRow } from '../../Types';
 import { IIIFManifestTableRowThumbnail } from './IIIFManifestTableRowThumbnail';
 import { IIIFManifestTableRowActions } from './IIIFManifestTableRowActions';
-import { 
-  ANNOTATIONS_COLUMN_TEMPLATE, 
-  DIMENSIONS_COLUMN_TEMPLATE, 
+import {
+  ANNOTATIONS_COLUMN_TEMPLATE,
+  DIMENSIONS_COLUMN_TEMPLATE,
   getAnnotationsInRange,
-  LAST_EDIT_COLUMN_TEMPLATE, 
-  NAME_COLUMN_TEMPLATE, 
-  sortByAnnotations, 
-  sortByLastEdit, 
-  sortByName, 
-  sortIcon, 
-  TABLE_EMPTY_MESSAGE, 
-  TABLE_HEADER_CLASS, 
+  LAST_EDIT_COLUMN_TEMPLATE,
+  NAME_COLUMN_TEMPLATE,
+  SortableColumnHeader,
+  sortRows,
+  TABLE_EMPTY_MESSAGE,
+  TABLE_HEADER_CLASS,
   TABLE_SKELETON
 } from '../../ImagesUtils';
 
@@ -43,7 +43,7 @@ const folderToRow = (range: CozyRange, annotations: Record<string, W3CAnnotation
 }
 
 const canvasToRow = (
-  info: CanvasInformation, 
+  info: CanvasInformation,
   annotations: W3CAnnotation[],
   parsed: CozyManifest
 ): ItemTableRow => {
@@ -77,6 +77,8 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
 
   const [rows, setRows] = useState<ItemTableRow[]>([]);
 
+  const [sorting, setSorting] = useState<Sorting | undefined>();
+
   useEffect(() => {
     if ((folders.length + canvases.length) === 0) return;
 
@@ -92,6 +94,8 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     hideUnannotated ? rows.filter(r => r.annotations > 0) : rows
   ), [rows, hideUnannotated]);
 
+  const sortedRows = useMemo(() => sortRows(filteredRows, sorting), [filteredRows, sorting]);
+
   useLayoutEffect(() => {
     const canvasId = queryParams.get('canvas');
     if (!canvasId) return;
@@ -103,7 +107,7 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     }, 1);
   }, [queryParams]);
 
-  const typeTemplate = (row: ItemTableRow) => {
+  const typeTemplate = useCallback((row: ItemTableRow) => {
     const item = row.data as CanvasItem;
 
     return (
@@ -117,84 +121,140 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
             />
           </div>
         ) : (
-          <IIIFManifestTableRowThumbnail 
+          <IIIFManifestTableRowThumbnail
             item={item} />
         )}
       </div>
     );
-  };
+  }, []);
 
-  const actionsTemplate = (row: ItemTableRow) => (
-    <IIIFManifestTableRowActions 
+  const actionsTemplate = useCallback((row: ItemTableRow) => (
+    <IIIFManifestTableRowActions
       manifest={props.manifest}
-      data={row.data} 
-      onSelectCanvas={props.onSelect} 
-      onOpenCanvas={item => props.onOpenCanvas(item.canvas)} 
+      data={row.data}
+      onSelectCanvas={props.onSelect}
+      onOpenCanvas={item => props.onOpenCanvas(item.canvas)}
       onAddToWorkspace={item => props.onAddToWorkspace(item.canvas)} />
-  );
+  ), [props.manifest, props.onSelect, props.onOpenCanvas, props.onAddToWorkspace]);
 
-  const onRowClick = (evt: DataTableRowClickEvent) => {
-    const { type, data } = evt.data as ItemTableRow;
+  const onRowClick = useCallback((row: ItemTableRow) => {
+    const { type, data } = row;
     if (type === 'folder')
       props.onOpenRange(data);
     else if (type === 'image')
       props.onOpenCanvas(data.canvas);
-  }
+  }, [props.onOpenRange, props.onOpenCanvas]);
 
   const rowClassName = (row: ItemTableRow) => {
-    if (row.type === 'folder') return;
+    if (row.type === 'folder') return undefined;
     return murmur.v3(row.data.canvas.id).toString()
-  } 
+  }
+
+  const columns: ColumnDef<ItemTableRow>[] = useMemo(() => [
+    {
+      id: 'type',
+      header: t('table.type'),
+      cell: ({ row }) => typeTemplate(row.original)
+    },
+    {
+      id: 'name',
+      header: () => (
+        <SortableColumnHeader
+          label={t('table.name')}
+          field="name"
+          sorting={sorting}
+          onSort={setSorting} />
+      ),
+      cell: ({ row }) => NAME_COLUMN_TEMPLATE(row.original)
+    },
+    {
+      id: 'dimensions',
+      header: t('table.dimensions'),
+      cell: ({ row }) => DIMENSIONS_COLUMN_TEMPLATE(row.original)
+    },
+    {
+      id: 'lastEdit',
+      header: () => (
+        <SortableColumnHeader
+          label={t('table.lastEdit')}
+          field="lastEdit"
+          sorting={sorting}
+          onSort={setSorting} />
+      ),
+      cell: ({ row }) => LAST_EDIT_COLUMN_TEMPLATE(row.original)
+    },
+    {
+      id: 'annotations',
+      header: () => (
+        <SortableColumnHeader
+          label={t('table.annotations')}
+          field="annotations"
+          sorting={sorting}
+          onSort={setSorting} />
+      ),
+      cell: ({ row }) => ANNOTATIONS_COLUMN_TEMPLATE(row.original)
+    },
+    {
+      id: 'actions',
+      header: '',
+      cell: ({ row }) => actionsTemplate(row.original)
+    }
+  ], [t, sorting, typeTemplate, actionsTemplate]);
+
+  const table = useReactTable({
+    data: sortedRows,
+    columns,
+    getCoreRowModel: getCoreRowModel()
+  });
+
+  const columnClassName = (columnId: string) => cn(
+    columnId === 'name' && 'w-[60%]',
+    (columnId === 'dimensions' || columnId === 'lastEdit' || columnId === 'annotations') && 'text-center',
+    columnId === 'actions' && 'text-right'
+  );
 
   return (
     <div className="mt-12 rounded-md border cursor-pointer">
-      <DataTable 
-        removableSort
-        rowClassName={rowClassName}
-        value={filteredRows} 
-        onRowClick={onRowClick}
-        sortIcon={sortIcon}
-        emptyMessage={props.loading ? TABLE_SKELETON : TABLE_EMPTY_MESSAGE}>
-        <Column
-          field="type"
-          header={t('table.type')}
-          headerClassName={TABLE_HEADER_CLASS}
-          body={typeTemplate} />
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map(headerGroup => (
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              {headerGroup.headers.map((header, idx) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(TABLE_HEADER_CLASS, columnClassName(header.column.id), idx === 0 && 'pl-4')}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
 
-        <Column
-          sortable
-          sortFunction={sortByName}
-          field="name"
-          header={t('table.name')}
-          headerClassName={TABLE_HEADER_CLASS}
-          body={NAME_COLUMN_TEMPLATE} />
-
-        <Column
-          field="dimensions"
-          header={t('table.dimensions')}
-          headerClassName={TABLE_HEADER_CLASS}
-          body={DIMENSIONS_COLUMN_TEMPLATE} />
-
-        <Column
-          sortable
-          sortFunction={sortByLastEdit}
-          field="lastEdit"
-          header={t('table.lastEdit')}
-          headerClassName={TABLE_HEADER_CLASS}
-          body={LAST_EDIT_COLUMN_TEMPLATE} />
-
-        <Column
-          sortable
-          sortFunction={sortByAnnotations}
-          field="annotations"
-          header={t('table.annotations')}
-          headerClassName={TABLE_HEADER_CLASS}
-          body={ANNOTATIONS_COLUMN_TEMPLATE} />
-
-        <Column 
-          field="actions" 
-          body={actionsTemplate} />
-      </DataTable>
+        <TableBody>
+          {table.getRowModel().rows.length === 0 ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={columns.length} className="p-0">
+                {props.loading ? TABLE_SKELETON : TABLE_EMPTY_MESSAGE}
+              </TableCell>
+            </TableRow>
+          ) : (
+            table.getRowModel().rows.map(row => (
+              <TableRow
+                key={row.id}
+                className={rowClassName(row.original)}
+                onClick={() => onRowClick(row.original)}>
+                {row.getVisibleCells().map(cell => (
+                  <TableCell
+                    key={cell.id}
+                    className={cn('overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2', columnClassName(cell.column.id))}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 

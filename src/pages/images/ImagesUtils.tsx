@@ -4,18 +4,17 @@ import { formatDistanceToNow } from 'date-fns';
 import { getDateLocale } from '@/i18n/dateLocale';
 import { CozyRange } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
-import { ColumnSortEvent } from 'primereact/column';
 import { Skeleton } from '@/ui/Skeleton';
-import { Sorting } from '@/utils/useImageSorting';
+import { Sorting, SortOrder } from '@/utils/useImageSorting';
 import { ItemTableRow } from './Types';
-import { 
-  ArrowDownNarrowWide, 
-  ArrowDownWideNarrow, 
-  ArrowUpDown, 
-  MessagesSquare 
+import {
+  ArrowDownNarrowWide,
+  ArrowDownWideNarrow,
+  ArrowUpDown,
+  MessagesSquare
 } from 'lucide-react';
 
-export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-semibold text-left';
+export const TABLE_HEADER_CLASS = 'pl-3 pr-2 whitespace-nowrap text-xs text-muted-foreground font-medium text-left';
 
 const TableEmptyMessage = () => {
   const { t } = useTranslation('images');
@@ -38,45 +37,90 @@ export const TABLE_SKELETON = (
   </div>
 )
 
-export const sortIcon = (evt: any) => {
-  if (!evt.sorted)
-    return (<ArrowUpDown className="size-3.5" />)
-  else if (evt.sortOrder === 1)
-    return (<ArrowDownNarrowWide className="size-3.5" />)
-  else 
-    return (<ArrowDownWideNarrow className="size-3.5" />)
+export const renderSortIcon = (active: boolean, order?: SortOrder) => {
+  if (!active)
+    return (<ArrowUpDown className="size-3.5" />);
+  else if (order === 1)
+    return (<ArrowDownNarrowWide className="size-3.5" />);
+  else
+    return (<ArrowDownWideNarrow className="size-3.5" />);
 }
 
-// Generic sort helper that applies by-type sorting first, and the provided sort fn second.
-const sort = (evt: ColumnSortEvent, sortFn: (a: ItemTableRow, b: ItemTableRow) => number) => {
-  const data = evt.data as ItemTableRow[];
+interface SortableColumnHeaderProps {
 
-  return [...data].sort((a, b) => {
-    const isFolderLike = (row: ItemTableRow) => row.type === 'folder' || row.type === 'manifest';
+  label: string;
 
+  field: string;
+
+  sorting?: Sorting;
+
+  onSort(sorting?: Sorting): void;
+
+}
+
+// Clickable column header that cycles: unsorted -> ascending -> descending -> unsorted.
+export const SortableColumnHeader = (props: SortableColumnHeaderProps) => {
+  const { label, field, sorting, onSort } = props;
+
+  const active = sorting?.sortField === field;
+
+  const onClick = () => {
+    if (!active)
+      onSort({ sortField: field, sortOrder: 1 });
+    else if (sorting!.sortOrder === 1)
+      onSort({ sortField: field, sortOrder: -1 });
+    else
+      onSort(undefined);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex items-center gap-1.5">
+      {label}
+      {renderSortIcon(active, sorting?.sortOrder)}
+    </button>
+  );
+}
+
+const isFolderLike = (row: ItemTableRow) => row.type === 'folder' || row.type === 'manifest';
+
+const compareByName = (a: ItemTableRow, b: ItemTableRow) =>
+  a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+
+const compareByLastEdit = (a: ItemTableRow, b: ItemTableRow) => {
+  if (a.lastEdit && b.lastEdit)
+    return a.lastEdit > b.lastEdit ? -1 : 1;
+  else
+    return a.lastEdit ? -1 : 1;
+}
+
+const compareByAnnotations = (a: ItemTableRow, b: ItemTableRow) =>
+  a.annotations - b.annotations;
+
+const COMPARATORS: Record<string, (a: ItemTableRow, b: ItemTableRow) => number> = {
+  name: compareByName,
+  lastEdit: compareByLastEdit,
+  annotations: compareByAnnotations
+};
+
+// Sorts rows by the given field/order, keeping folder-like rows (folders, manifests)
+// ahead of images regardless of sort direction.
+export const sortRows = (rows: ItemTableRow[], sorting?: Sorting): ItemTableRow[] => {
+  const comparator = sorting?.sortField && COMPARATORS[sorting.sortField];
+  if (!comparator) return rows;
+
+  return [...rows].sort((a, b) => {
     if (isFolderLike(a) !== isFolderLike(b))
       return isFolderLike(a) ? -1 : 1;
-    
-    return evt.order * sortFn(a, b);
-  })
+
+    return sorting!.sortOrder * comparator(a, b);
+  });
 }
 
-export const sortByName = (evt: ColumnSortEvent) =>
-  sort(evt, (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-
-export const sortByLastEdit = (evt: ColumnSortEvent) =>
-  sort(evt, (a, b) => {
-    if (a.lastEdit && b.lastEdit)
-      return a.lastEdit > b.lastEdit ? -1 : 1;
-    else 
-      return a.lastEdit ? -1 : 1;
-  });
-
-export const sortByAnnotations = (evt: ColumnSortEvent) =>
-  sort(evt, (a, b) => a.annotations - b.annotations);
-
 export const NAME_COLUMN_TEMPLATE = (row: ItemTableRow) => (
-  <div>{row.name}</div>
+  <div className="truncate">{row.name}</div>
 );
 
 export const DIMENSIONS_COLUMN_TEMPLATE = (row: ItemTableRow) =>
@@ -87,7 +131,7 @@ export const DIMENSIONS_COLUMN_TEMPLATE = (row: ItemTableRow) =>
     </span>
   ) : null;
 
-export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) => 
+export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) =>
   row.lastEdit ? (
     <div className="text-muted-foreground">
       {formatDistanceToNow(row.lastEdit, { addSuffix: true, locale: getDateLocale() })}
@@ -97,10 +141,10 @@ export const LAST_EDIT_COLUMN_TEMPLATE = (row: ItemTableRow) =>
 export const ANNOTATIONS_COLUMN_TEMPLATE = (row: ItemTableRow) => (
   <div className="text-muted-foreground flex justify-around">
     <div>
-      <MessagesSquare 
-        size={16} 
-        className="inline align-text-bottom mr-1.5" 
-        strokeWidth={1.8}/> 
+      <MessagesSquare
+        size={16}
+        className="inline align-text-bottom mr-1.5"
+        strokeWidth={1.8}/>
       {(row.annotations || 0).toLocaleString()}
     </div>
   </div>

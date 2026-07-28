@@ -1,7 +1,6 @@
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { SortOrder } from 'primereact/datatable';
-import { Sorting } from '@/utils/useImageSorting';
+import { Sorting, SortOrder } from '@/utils/useImageSorting';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 

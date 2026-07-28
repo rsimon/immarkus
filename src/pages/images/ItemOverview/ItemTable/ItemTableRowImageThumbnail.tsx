@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { LoadedFileImage } from '@/model';
 import { useImageDimensions } from '@/utils/useImageDimensions';
 import { IsInWorkspaceIndicatorPip } from '../../IsInWorkspaceIndicator';
@@ -15,16 +15,20 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
 
   const { onLoad, dimensions } = useImageDimensions();
 
+  const url = useMemo(() => URL.createObjectURL(props.image.data), [props.image.data]);
+
+  useEffect(() => () => URL.revokeObjectURL(url), [url]);
+
   useEffect(() => {
     if (dimensions) props.onLoadDimensions(dimensions);
   }, [dimensions]);
 
   return (
-    <div className="relative inline-block">
+    <div className="relative block w-fit">
       <img
         onLoad={onLoad}
         loading="lazy"
-        src={URL.createObjectURL(props.image.data)}
+        src={url}
         alt={props.image.name}
         className="size-10 bg-muted object-cover object-center aspect-square rounded-[2px] border"
       />
@@ -32,5 +36,5 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
       <IsInWorkspaceIndicatorPip imageId={props.image.id} />
     </div>
   )
-  
+
 }
