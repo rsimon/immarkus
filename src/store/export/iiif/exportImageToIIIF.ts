@@ -1,8 +1,8 @@
 import JSZip from 'jszip';
-import { LoadedFileImage } from '@/model';
+import { FileImage, LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
-import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
+import { crosswalkMetadata, getFlattenedParentFolderMetadata, IIIFMetadataField } from './crosswalkMetadata';
 
 // Helper
 export const stripExtension = (filename: string): string => {
@@ -29,7 +29,7 @@ const getImageDimensions = (blob: Blob): Promise<{ width: number, height: number
     img.src = url;
   });
 
-const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, miradorSafe: boolean, store: Store) => {
+export const createAnnotationPage = (image: FileImage, baseUrl: string, miradorSafe: boolean, store: Store) => {
   const base = `${baseUrl}/${stripExtension(image.name)}`;
 
   return store.getAnnotations(image.id, { type: 'image' }).then(annotations => ({
@@ -38,6 +38,42 @@ const createAnnotationPage = (image: LoadedFileImage, baseUrl: string, miradorSa
     type: 'AnnotationPage',
     items: crosswalkAnnotations(annotations, miradorSafe, store, `${base}/canvas/1`)
   }));
+}
+
+export const createStaticImageCanvas = async (
+  image: LoadedFileImage, 
+  metadata: IIIFMetadataField[],
+  base: string
+) => {
+  const { width, height } = await getImageDimensions(image.data);
+
+  return {
+    id: `${base}/canvas/1`,
+    type: 'Canvas',
+    ...(metadata.length > 0 ? { metadata } : {}),
+    height,
+    width,
+    items: [{
+      id: `${base}/page/p1/1`,
+      type: 'AnnotationPage',
+      items: [{
+        id: `${base}/annotation/p0001-image`,
+        type: 'Annotation',
+        motivation: 'painting',
+        body: {
+          id: `${base}/${image.name}`,
+          type: 'Image',
+          height,
+          width
+        },
+        target: `${base}/canvas/1`
+      }]
+    }],
+    annotations: [{
+      id: `${base}/annotations.json`,
+      type: 'AnnotationPage'
+    }]
+  }
 }
 
 /**
@@ -67,33 +103,13 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
       // If ONLY image metadata -> add as manifest metadata
       imageMetadata.length > 0 ? { metadata: imageMetadata } : {}
     ),
-    items: [{
-      id: `${base}/canvas/1`,
-      type: 'Canvas',
-      ...(imageMetadata.length > 0 && folderMetadata.length > 0 ? { metadata: imageMetadata } : {}),
-      height,
-      width,
-      items: [{
-        id: `${base}/page/p1/1`,
-        type: 'AnnotationPage',
-        items: [{
-          id: `${base}/annotation/p0001-image`,
-          type: 'Annotation',
-          motivation: 'painting',
-          body: {
-            id: `${base}/${image.name}`,
-            type: 'Image',
-            height,
-            width
-          },
-          target: `${base}/canvas/1`
-        }]
-      }],
-      annotations: [{
-        id: `${base}/annotations.json`,
-        type: 'AnnotationPage'
-      }]
-    }]
+    items: [
+      createStaticImageCanvas(
+        image, 
+        imageMetadata.length > 0 && folderMetadata.length > 0 ? imageMetadata : [],
+        base
+      )
+    ]
   }
 }
 
