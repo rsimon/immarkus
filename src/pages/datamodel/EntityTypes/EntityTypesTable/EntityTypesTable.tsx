@@ -148,9 +148,6 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
     </span>
   ), [props.onEditEntityType, props.onDeleteEntityType]);
 
-  // Memoized so column/cell identity stays stable across re-renders —
-  // TanStack's flexRender treats a changed cell function as a changed
-  // component type and remounts the whole cell subtree otherwise.
   const columns: ColumnDef<EntityTypeNode>[] = useMemo(() => [
     {
       id: 'entityClass',
