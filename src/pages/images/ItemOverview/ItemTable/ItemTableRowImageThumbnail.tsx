@@ -27,7 +27,7 @@ export const ItemTableRowImageThumbnail = (props: ItemTableRowImageThumbnailProp
   }, [dimensions]);
 
   return (
-    <div className="relative inline-block">
+    <div className="relative block w-fit">
       <img
         onLoad={onLoad}
         loading="lazy"

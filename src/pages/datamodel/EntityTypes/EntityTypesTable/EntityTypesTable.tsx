@@ -89,7 +89,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
         onClick={() => row.toggleExpanded()}>
         <ChevronRight
           style={{ transform: row.getIsExpanded() ? 'rotateZ(90deg)' : undefined}}
-          className="h-4 w-4 mb-0.5" />
+          className="h-4 w-4" />
       </Button>
     ) : (
       <span className="inline-block" style={{ width: `${row.depth * 8 +  40}px`}} />
@@ -218,7 +218,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
               {headerGroup.headers.map((header, idx) => (
                 <TableHead
                   key={header.id}
-                  className={cn(columnClassName(header.column.id), HEADER_CLASS, idx === 0 ? 'pl-4' : undefined)}>
+                  className={cn(columnClassName(header.column.id), HEADER_CLASS, idx === 0 ? 'pl-3' : undefined)}>
                   {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 </TableHead>
               ))}

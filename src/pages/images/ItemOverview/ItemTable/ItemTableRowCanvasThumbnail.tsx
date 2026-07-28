@@ -18,7 +18,7 @@ export const ItemTableRowCanvasThumbnail = (props: ItemTableRowCanvasThumbnailPr
   const canvas = useCanvas(id);
 
   return (
-    <div className="relative inline-block">
+    <div className="relative block w-fit">
       {canvas ? (
         <IIIFThumbnail
           canvas={canvas}
