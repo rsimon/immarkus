@@ -278,7 +278,7 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
     ];
   }
 
-  const folders = getSourceParents(store, imageId);
+  const folders = getSourceParents(imageId, store);
 
   // Go through folders from the top and aggregate metadata values
   const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 

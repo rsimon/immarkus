@@ -2,7 +2,8 @@ import JSZip from 'jszip';
 import { Folder, LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { createAnnotationPage, createStaticImageCanvas, stripExtension } from './exportImageToIIIF';
-import { crosswalkMetadata, IIIFMetadataField } from './crosswalkMetadata';
+import { crosswalkMetadata, getFlattenedParentFolderMetadata, IIIFMetadataField } from './crosswalkMetadata';
+import { getParentFolderHierarchy } from '@/utils/metadata';
 
 /**
  * Creates a basic IIIF manifest for the list of image files, according to 
@@ -12,7 +13,8 @@ import { crosswalkMetadata, IIIFMetadataField } from './crosswalkMetadata';
  */
 const createStaticManifest = async (folder: Folder, images: LoadedFileImage[], base: string, store: Store) => {
   // Folder metadata -> manifest metadata
-  // const folderMetadata = await getFlattenedParentFolderMetadata(store, image.id);
+  const folders = getParentFolderHierarchy(folder, store);
+  const folderMetadata = await getFlattenedParentFolderMetadata(folders, store);
 
   const resolveImageMetadata = async (image: LoadedFileImage): Promise<IIIFMetadataField[]> => {
     const { metadata: imageMetaBody } = await getImageMetadata(store, image.id);
@@ -32,6 +34,9 @@ const createStaticManifest = async (folder: Folder, images: LoadedFileImage[], b
     id: `${base}/manifest.json`,
     type: 'Manifest',
     label: { en: [ folder.name ] },
+    ...(
+      folderMetadata.length > 0 ? { metadata: folderMetadata } : {}
+    ),
     items
   }
 }

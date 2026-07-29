@@ -40,15 +40,15 @@ const getParentFoldersRecursive = (next: Folder, store: Store, hierarchy: Folder
   }
 }
 
-export const getFolderHierarchy = (
+export const getParentFolderHierarchy = (
+  folder: Folder,
   store: Store,
-  folder: Folder
 ): (RootFolder | Folder)[] => getParentFoldersRecursive(folder, store);
 
 /** Lists the parent sub-folder hierarchy for the given image or IIIF resource **/
 export const getSourceParents = (
+  sourceId: string,
   store: Store,
-  sourceId: string
 ): (RootFolder | Folder | IIIFManifestResource)[] => {
   if (sourceId.startsWith('iiif')) {
     const [manifestId, _] = parseIIIFId(sourceId);

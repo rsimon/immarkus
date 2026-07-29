@@ -3,6 +3,7 @@ import { FileImage, LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
 import { crosswalkMetadata, getFlattenedParentFolderMetadata, IIIFMetadataField } from './crosswalkMetadata';
+import { getSourceParents } from '@/utils/metadata';
 
 // Helper
 export const stripExtension = (filename: string): string => {
@@ -53,6 +54,7 @@ export const createStaticImageCanvas = async (
   filename = 'annotations.json'
 ) => {
   const { width, height } = await getImageDimensions(image.data);
+
   return {
     id: `${base}/canvas/${canvasIndex}`,
     type: 'Canvas',
@@ -91,7 +93,8 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
   const base = `${baseUrl}/${stripExtension(image.name)}`;
 
   // Folder metadata -> manifest metadata
-  const folderMetadata = await getFlattenedParentFolderMetadata(store, image.id);
+  const folders = getSourceParents(image.id, store);
+  const folderMetadata = await getFlattenedParentFolderMetadata(folders, store);
 
   // Image metadata -> canvas metadata
   const { metadata: imageMetaBody } = await getImageMetadata(store, image.id);
