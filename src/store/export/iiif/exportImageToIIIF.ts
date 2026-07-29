@@ -29,35 +29,43 @@ const getImageDimensions = (blob: Blob): Promise<{ width: number, height: number
     img.src = url;
   });
 
-export const createAnnotationPage = (image: FileImage, baseUrl: string, miradorSafe: boolean, store: Store) => {
-  const base = `${baseUrl}/${stripExtension(image.name)}`;
-
+export const createAnnotationPage = (
+  image: FileImage, 
+  id: string, 
+  targetId: string,
+  miradorSafe: boolean, 
+  store: Store
+) => {
   return store.getAnnotations(image.id, { type: 'image' }).then(annotations => ({
     '@context': 'http://iiif.io/api/presentation/3/context.json',
-    id: `${base}/annotations.json`,
+    id,
     type: 'AnnotationPage',
-    items: crosswalkAnnotations(annotations, miradorSafe, store, `${base}/canvas/1`)
+    items: crosswalkAnnotations(annotations, miradorSafe, store, targetId)
   }));
 }
 
 export const createStaticImageCanvas = async (
   image: LoadedFileImage, 
-  metadata: IIIFMetadataField[],
-  base: string
+  base: string,
+  label?: string,
+  metadata: IIIFMetadataField[] = [],
+  canvasIndex = 1,
+  filename = 'annotations.json'
 ) => {
   const { width, height } = await getImageDimensions(image.data);
 
   return {
-    id: `${base}/canvas/1`,
+    id: `${base}/canvas/${canvasIndex}`,
     type: 'Canvas',
     ...(metadata.length > 0 ? { metadata } : {}),
     height,
     width,
+    ...(label ? { label: { en: [label] } } : {}),
     items: [{
-      id: `${base}/page/p1/1`,
+      id: `${base}/page/p${canvasIndex}/1`,
       type: 'AnnotationPage',
       items: [{
-        id: `${base}/annotation/p0001-image`,
+        id: `${base}/annotation/p${canvasIndex}-image`,
         type: 'Annotation',
         motivation: 'painting',
         body: {
@@ -66,11 +74,11 @@ export const createStaticImageCanvas = async (
           height,
           width
         },
-        target: `${base}/canvas/1`
+        target: `${base}/canvas/${canvasIndex}`
       }]
     }],
     annotations: [{
-      id: `${base}/annotations.json`,
+      id: `${base}/${filename}`,
       type: 'AnnotationPage'
     }]
   }
@@ -105,9 +113,10 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
     ),
     items: [
       createStaticImageCanvas(
-        image, 
-        imageMetadata.length > 0 && folderMetadata.length > 0 ? imageMetadata : [],
-        base
+        image,
+        base,
+        undefined,
+        imageMetadata.length > 0 && folderMetadata.length > 0 ? imageMetadata : []
       )
     ]
   }
@@ -129,7 +138,14 @@ export const exportImageToIIIF = async (image: LoadedFileImage, baseUrl: string,
   const manifest = await createStaticManifest(image, baseUrl, store);
   zip.file(`${name}/manifest.json`, JSON.stringify(manifest, null, 2));
 
-  const annotations = await createAnnotationPage(image, baseUrl, miradorSafe, store);
+  const base = `${baseUrl}/${name}`;
+  const annotations = await createAnnotationPage(
+    image, 
+    `${base}/annotations.json`, 
+    `${base}/canvas/1`, 
+    miradorSafe,
+    store);
+
   zip.file(`${name}/annotations.json`, JSON.stringify(annotations, null, 2));
 
   const blob = await zip.generateAsync({ type:'blob' });

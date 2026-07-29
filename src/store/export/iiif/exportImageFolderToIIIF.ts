@@ -21,9 +21,9 @@ const createStaticManifest = async (folder: Folder, images: LoadedFileImage[], b
   } 
 
   const items = await Promise.all(
-    images.map(async image => {
+    images.map(async (image, idx) => {
       const metadata = await resolveImageMetadata(image);
-      return createStaticImageCanvas(image, metadata, base);
+      return createStaticImageCanvas(image, base, image.name, metadata, idx + 1, `${stripExtension(image.name)}.json`);
     })
   );
 
@@ -32,7 +32,6 @@ const createStaticManifest = async (folder: Folder, images: LoadedFileImage[], b
     id: `${base}/manifest.json`,
     type: 'Manifest',
     label: { en: [ folder.name ] },
-    // TODO folder + parent folder metadata 
     items
   }
 }
@@ -60,8 +59,16 @@ export const exportImageFolderToIIIF = async (folder: Folder, baseUrl: string, m
   });
 
   // Package annotation lists
-  const annotationPages = await Promise.all(images.map(i => 
-    createAnnotationPage(i, base, miradorSafe, store)));
+  const annotationPages = await Promise.all(images.map((img, idx) => {
+    const name = stripExtension(img.name);
+    const annotationBase = `${base}/${name}.json`;
+    return createAnnotationPage(
+      img, 
+      `${base}/${name}.json`,
+      `${base}/canvas/${idx + 1}`,
+      miradorSafe, 
+      store)
+  }));
 
   annotationPages.forEach((annotations, idx) =>
     zip.file(`${folder.id}/${stripExtension(images[idx].name)}.json`, JSON.stringify(annotations, null, 2)));
