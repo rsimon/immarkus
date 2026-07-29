@@ -4,7 +4,7 @@ export const useDebounce = (value: any, delay: number) => {
 
   const [debouncedValue, setDebouncedValue] = useState<any>(value);
 
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   useEffect(() => {
     timerRef.current = 

@@ -9,9 +9,6 @@
     "description1": "まずは <strong><imageIcon /> 画像</strong>ギャラリーから画像を開いてください。<strong><graphIcon /> ナレッジグラフ</strong>から画像を送ることも、ツールバーの <strong><addIcon /> 画像を追加</strong>ボタンを使うこともできます。",
     "description2": "ワークスペースのレイアウトは、ツールバーの <strong><bookmarkIcon /> ブックマーク</strong>ツールで保存・復元できます。"
   },
-  "connectorPopup": {
-    "addToVocabulary": "語彙に追加:"
-  },
   "gpuError": {
     "title": "エラー",
     "intro": "IMMARKUS はアノテーションインターフェースを起動できませんでした。最も可能性が高い原因は、<strong>ブラウザのハードウェアアクセラレーションが無効になっている</strong>ことです。",
