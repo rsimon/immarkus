@@ -1,9 +1,9 @@
 import JSZip from 'jszip';
 import { FileImage, LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
+import { getSourceParents } from '@/utils/metadata';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
 import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
-import { getSourceParents } from '@/utils/metadata';
 import { IIIFMetadataField } from './types';
 
 // Helper
