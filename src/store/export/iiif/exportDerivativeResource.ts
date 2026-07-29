@@ -1,11 +1,11 @@
 import JSZip from 'jszip';
 import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { getImageMetadata, Store } from '@/store';
+import { getSourceParents } from '@/utils/metadata';
 import { fetchManifest } from '@/utils/iiif';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
 import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
 import { IIIFMetadataField } from './types';
-import { getSourceParents } from '@/utils/metadata';
 
 const ADDED_METADATA_DIVIDER: IIIFMetadataField = {
   label: { en: ['Metadata added with'] },
