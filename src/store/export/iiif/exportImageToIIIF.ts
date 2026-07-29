@@ -2,8 +2,9 @@ import JSZip from 'jszip';
 import { FileImage, LoadedFileImage } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
-import { crosswalkMetadata, getFlattenedParentFolderMetadata, IIIFMetadataField } from './crosswalkMetadata';
+import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
 import { getSourceParents } from '@/utils/metadata';
+import { IIIFMetadataField } from './types';
 
 // Helper
 export const stripExtension = (filename: string): string => {

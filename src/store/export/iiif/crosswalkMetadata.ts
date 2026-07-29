@@ -2,15 +2,7 @@ import { W3CAnnotationBody } from '@annotorious/react';
 import { getManifestMetadata, Store } from '@/store';
 import { serializePropertyValue } from '@/utils/serialize';
 import type { Folder, IIIFManifestResource, RootFolder } from '@/model';
-
-// Basic helper shape
-export interface IIIFMetadataField {
-
-  label: { en: string[] };
-
-  value: { en: string[] };
-
-}
+import { IIIFMetadataField } from './types';
 
 export const crosswalkMetadata = (
   metadata: W3CAnnotationBody | undefined,
