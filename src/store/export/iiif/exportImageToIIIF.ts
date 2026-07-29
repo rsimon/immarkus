@@ -53,7 +53,6 @@ export const createStaticImageCanvas = async (
   filename = 'annotations.json'
 ) => {
   const { width, height } = await getImageDimensions(image.data);
-
   return {
     id: `${base}/canvas/${canvasIndex}`,
     type: 'Canvas',
@@ -91,8 +90,6 @@ export const createStaticImageCanvas = async (
 const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, store: Store) => {
   const base = `${baseUrl}/${stripExtension(image.name)}`;
 
-  const { width, height } = await getImageDimensions(image.data);
-
   // Folder metadata -> manifest metadata
   const folderMetadata = await getFlattenedParentFolderMetadata(store, image.id);
 
@@ -112,7 +109,7 @@ const createStaticManifest = async (image: LoadedFileImage, baseUrl: string, sto
       imageMetadata.length > 0 ? { metadata: imageMetadata } : {}
     ),
     items: [
-      createStaticImageCanvas(
+      await createStaticImageCanvas(
         image,
         base,
         undefined,
