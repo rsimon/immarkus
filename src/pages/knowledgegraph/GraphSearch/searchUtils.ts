@@ -1,7 +1,7 @@
 import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema } from '@/model';
 import { DataModelStore, getManifestMetadata, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
-import { getParentFolders } from '@/utils/metadata';
+import { getSourceParents } from '@/utils/metadata';
 import { serializePropertyValue } from '@/utils/serialize';
 import {
   Graph, 
@@ -278,7 +278,7 @@ export const getAggregatedMetadata = (store: Store, imageId: string): Promise<Sc
     ];
   }
 
-  const folders = getParentFolders(store, imageId);
+  const folders = getSourceParents(store, imageId);
 
   // Go through folders from the top and aggregate metadata values
   const folderMetadata = folders.reduce<Promise<SchemaPropertyValue[]>>((promise, folder) => 

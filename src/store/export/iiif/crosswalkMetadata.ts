@@ -1,6 +1,6 @@
 import { W3CAnnotationBody } from '@annotorious/react';
 import { getManifestMetadata, Store } from '@/store';
-import { getParentFolders } from '@/utils/metadata';
+import { getSourceParents } from '@/utils/metadata';
 import { serializePropertyValue } from '@/utils/serialize';
 
 // Basic helper shape
@@ -42,7 +42,7 @@ export const crosswalkMetadata = (
 
 /** Collapses parent folder metadata for the given image or IIIF manifest **/
 export const getFlattenedParentFolderMetadata = (store: Store, sourceId: string): Promise<IIIFMetadataField[]> => {
-  const folders = getParentFolders(store, sourceId);
+  const folders = getSourceParents(store, sourceId);
 
   // Merges two lists of IIIF metadata fields, with same-labeled fields in 'next' taking precedence
   const mergeIIIFMetadataFields = (

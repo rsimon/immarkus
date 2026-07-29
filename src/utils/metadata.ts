@@ -25,26 +25,31 @@ export const zipMetadata = (columns: SchemaField[], metadata?: W3CAnnotationBody
   return entries;
 }
 
+const getParentFoldersRecursive = (next: Folder, store: Store, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
+  if (next.parent) {
+    const folder = store.getFolder(next.parent);
+
+    const isRootFolder = !('id' in folder);
+    if (isRootFolder) {
+      return [folder, next, ...hierarchy];
+    } else {
+      return getParentFoldersRecursive(folder, store, [next, ...hierarchy]);
+    }
+  } else {
+    return [next, ...hierarchy];
+  }
+}
+
+export const getFolderHierarchy = (
+  store: Store,
+  folder: Folder
+): (RootFolder | Folder)[] => getParentFoldersRecursive(folder, store);
+
 /** Lists the parent sub-folder hierarchy for the given image or IIIF resource **/
-export const getParentFolders = (
+export const getSourceParents = (
   store: Store,
   sourceId: string
 ): (RootFolder | Folder | IIIFManifestResource)[] => {
-  const getParentFoldersRecursive = (next: Folder, hierarchy: Folder[] = []): (Folder | RootFolder)[] => {
-    if (next.parent) {
-      const folder = store.getFolder(next.parent);
-
-      const isRootFolder = !('id' in folder);
-      if (isRootFolder) {
-        return [folder, next, ...hierarchy];
-      } else {
-        return getParentFoldersRecursive(folder, [next, ...hierarchy]);
-      }
-    } else {
-      return [next, ...hierarchy];
-    }
-  }
-
   if (sourceId.startsWith('iiif')) {
     const [manifestId, _] = parseIIIFId(sourceId);
     const manifest = store.getIIIFResource(manifestId) as IIIFManifestResource;
@@ -54,7 +59,7 @@ export const getParentFolders = (
     if (isRootFolder) {
       return [folder, manifest];
     } else {
-      return [...getParentFoldersRecursive(folder), manifest];
+      return [...getParentFoldersRecursive(folder, store), manifest];
     }
   } else {
     const image = store.getImage(sourceId);
@@ -65,7 +70,7 @@ export const getParentFolders = (
       if (isRootFolder) {
         return [folder];
       } else {
-        return getParentFoldersRecursive(folder);
+        return getParentFoldersRecursive(folder, store);
       }
     } else {
       return [];
