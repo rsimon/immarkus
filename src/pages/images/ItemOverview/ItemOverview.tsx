@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { W3CAnnotation } from '@annotorious/react';
 import { Folder, IIIFManifestResource, IIIFResource, Image, LoadedFileImage, RootFolder } from '@/model';
@@ -71,17 +71,17 @@ export const ItemOverview = (props: ItemOverviewProps) => {
     folderAnnotations.then(a => setAnnotations(current => ({...current, folders: a })));
   }, [folders, iiifResources, images]);
 
-  const onOpenFolder = (folder: Folder | IIIFManifestResource) =>
-    navigate(`/images/${folder.id}`);
+  const onOpenFolder = useCallback((folder: Folder | IIIFManifestResource) =>
+    navigate(`/images/${folder.id}`), [navigate]);
 
-  const onSelectFolder = (folder: Folder) =>
-    props.onSelect({ type: 'folder', ...folder });
+  const onSelectFolder = useCallback((folder: Folder) =>
+    props.onSelect({ type: 'folder', ...folder }), [props.onSelect]);
 
-  const onSelectImage = (image: Image) =>
-    props.onSelect({ type: 'image', ...image });
+  const onSelectImage = useCallback((image: Image) =>
+    props.onSelect({ type: 'image', ...image }), [props.onSelect]);
 
-  const onSelectItem = (item: OverviewItem) =>
-    props.onSelect(item);
+  const onSelectItem = useCallback((item: OverviewItem) =>
+    props.onSelect(item), [props.onSelect]);
 
   const filteredFolders = useMemo(() => {
     const hasAnnotations = (folder: Folder) =>
