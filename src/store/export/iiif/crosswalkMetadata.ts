@@ -1,7 +1,7 @@
 import { W3CAnnotationBody } from '@annotorious/react';
 import { getManifestMetadata, Store } from '@/store';
-import { getParentFolders } from '@/utils/metadata';
 import { serializePropertyValue } from '@/utils/serialize';
+import type { Folder, IIIFManifestResource, RootFolder } from '@/model';
 
 // Basic helper shape
 export interface IIIFMetadataField {
@@ -41,9 +41,10 @@ export const crosswalkMetadata = (
 }
 
 /** Collapses parent folder metadata for the given image or IIIF manifest **/
-export const getFlattenedParentFolderMetadata = (store: Store, sourceId: string): Promise<IIIFMetadataField[]> => {
-  const folders = getParentFolders(store, sourceId);
-
+export const getFlattenedParentFolderMetadata = (
+  folderHierarchy: (RootFolder | Folder | IIIFManifestResource)[], 
+  store: Store
+): Promise<IIIFMetadataField[]> => {
   // Merges two lists of IIIF metadata fields, with same-labeled fields in 'next' taking precedence
   const mergeIIIFMetadataFields = (
     current: IIIFMetadataField[],
@@ -53,7 +54,7 @@ export const getFlattenedParentFolderMetadata = (store: Store, sourceId: string)
     return [...current.filter(field => !nextLabels.has(field.label.en[0])), ...next];
   }
 
-  return folders.reduce<Promise<IIIFMetadataField[]>>((promise, folder) => promise.then(fields => {
+  return folderHierarchy.reduce<Promise<IIIFMetadataField[]>>((promise, folder) => promise.then(fields => {
     const body = 'uri' in folder
       ? getManifestMetadata(store, folder.id).then(({ metadata }) => metadata)
       : store.getFolderMetadata(folder.handle).then(annotation => {

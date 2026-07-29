@@ -68,7 +68,7 @@ export interface AnnotationStore {
 
   listImagesInFolder(folderId: string): Image[];
 
-  loadImage(id: string): Promise<LoadedImage>;
+  loadImage(id: string): Promise<LoadedFileImage>;
 
   removeIIIFResource(resource: IIIFResource): Promise<void>;
 
