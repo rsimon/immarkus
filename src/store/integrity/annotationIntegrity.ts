@@ -25,7 +25,7 @@ export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModel
         return {
           ...a,
           target: {
-            ...a.target,
+            ...(a.target as any),
             selector: fixed
           }
         } as W3CAnnotation;
@@ -34,7 +34,11 @@ export const repairAnnotations = (annotations: W3CAnnotation[], model: DataModel
       }
     })
     .map(annotation => {
-      if (typeof annotation.selector === 'object' && 'selector' in annotation.target) {
+      if (
+        typeof annotation.selector === 'object' && 
+        typeof annotation.target === 'object' && 
+        'selector' in annotation.target
+      ) {
         // Remove bodies that point to unknown classes
         const bodies = Array.isArray(annotation.body) ? annotation.body : [annotation.body];
         return ({

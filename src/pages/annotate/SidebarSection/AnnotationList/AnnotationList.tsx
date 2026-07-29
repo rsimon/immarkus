@@ -205,6 +205,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                 <SortableAnnotationList 
                   annotations={listAnnotations(imageIds[0])} 
                   onEdit={onEdit} 
+                  onDuplicate={onDuplicate}
                   onDelete={onDelete} 
                   onUpdateOrder={a => updateOrder(imageIds[0], a)} />
               )}
@@ -241,6 +242,7 @@ export const AnnotationList = (props: AnnotationListProps) => {
                       <SortableAnnotationList 
                         annotations={listAnnotations(sourceId)} 
                         onEdit={onEdit} 
+                        onDuplicate={onDuplicate}
                         onDelete={onDelete} 
                         onUpdateOrder={a => updateOrder(sourceId, a)} />
                     )}

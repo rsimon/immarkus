@@ -17,7 +17,7 @@ const _useImageSnippets = (arg: ([ImageAnnotation | W3CImageAnnotation, string][
     if (!images || images.length === 0) return;
 
     const promise = Promise.all(arg
-      .filter(([annotation, _]) => 'selector' in annotation.target)
+      .filter(([annotation, _]) => typeof annotation.target === 'object' && 'selector' in annotation.target)
       .map(([annotation, imageId]) => {
         const image = images.find(i => i.id === imageId);
         return getImageSnippet(image, annotation);

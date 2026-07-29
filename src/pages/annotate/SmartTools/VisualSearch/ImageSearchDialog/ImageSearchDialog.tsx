@@ -13,7 +13,14 @@ import { resetPalette } from './ImageSearchPalette';
 import { ImagePreview } from './ImagePreview';
 import { Spinner } from '@/components/Spinner';
 import { Progress } from '@/ui/Progress';
-import { IconSize, isLoadedImage, isResolveSearchResult, ModelDownloadStatus, ResolvedSearchResult, SearchScope } from './Types';
+import { 
+  type IconSize, 
+  isLoadedImage, 
+  isResolveSearchResult, 
+  type ModelDownloadStatus, 
+  type ResolvedSearchResult, 
+  type SearchScope 
+} from './Types';
 import { 
   AlertDialog,
   AlertDialogAction,

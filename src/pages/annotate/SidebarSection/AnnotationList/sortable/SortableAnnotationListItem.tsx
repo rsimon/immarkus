@@ -15,6 +15,8 @@ interface SortableAnnotationListItemProps {
 
   onDelete(): void;
 
+  onDuplicate(): void;
+
 }
 
 export const SortableAnnotationListItem = (props: SortableAnnotationListItemProps) => {
@@ -43,7 +45,8 @@ export const SortableAnnotationListItem = (props: SortableAnnotationListItemProp
         annotation={props.annotation} 
         isSelected={props.isSelected}
         onEdit={props.onEdit} 
-        onDelete={props.onDelete}       
+        onDelete={props.onDelete}     
+        onDuplicate={props.onDuplicate}  
         dragAttributes={attributes} 
         dragListeners={listeners} />
     </li>

@@ -46,6 +46,7 @@ export const transcribe = async (image: File | string, options?: Record<string, 
 
   const submit = async (blob: Blob) => {
     const client = await Client.connect(spaceName, {
+      // @ts-ignore
       hf_token: accessToken
     });
 

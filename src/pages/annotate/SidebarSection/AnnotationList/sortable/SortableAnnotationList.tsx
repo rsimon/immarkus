@@ -28,6 +28,8 @@ interface SortableAnnotationListProps {
 
   onDelete(annotation: W3CImageAnnotation): void;
 
+  onDuplicate(annotation: W3CImageAnnotation): void;
+
   onUpdateOrder(annotationIds: string[]): void;
 
 }
@@ -81,7 +83,8 @@ export const SortableAnnotationList = (props: SortableAnnotationListProps) => {
         annotation={annotation}
         isSelected={isSelected}
         onEdit={() => props.onEdit(annotation)}
-        onDelete={() => props.onDelete(annotation)} />
+        onDelete={() => props.onDelete(annotation)} 
+        onDuplicate={() => props.onDuplicate(annotation)} />
     )
   }
 

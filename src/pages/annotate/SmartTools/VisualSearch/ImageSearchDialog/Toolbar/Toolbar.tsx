@@ -7,11 +7,11 @@ import { Separator } from '@/ui/Separator';
 import { Skeleton } from '@/ui/Skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/ui/ToggleGroup';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { IconSize, ResolvedSearchResult, SearchScope } from '../ImageSearchDialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
+import { IconSize, ResolvedSearchResult, SearchScope } from '../Types';
 
 interface ToolbarProps {
   
