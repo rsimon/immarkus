@@ -9,9 +9,6 @@
     "description1": "Start by opening an image from the <strong><imageIcon /> Images</strong> gallery. You can also send images here from the <strong><graphIcon /> Knowledge Graph</strong>, or use the <strong><addIcon /> Add image</strong> button in the toolbar.",
     "description2": "Save and restore workspace layouts using the <strong><bookmarkIcon /> bookmark</strong> tool in the toolbar."
   },
-  "connectorPopup": {
-    "addToVocabulary": "Add to vocabulary:"
-  },
   "gpuError": {
     "title": "Error",
     "intro": "IMMARKUS could not launch the annotation interface. The most likely reason is that <strong>hardware acceleration is disabled on your browser</strong>.",

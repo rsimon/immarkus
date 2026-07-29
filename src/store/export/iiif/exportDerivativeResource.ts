@@ -3,11 +3,9 @@ import { CanvasInformation, IIIFManifestResource } from '@/model';
 import { getImageMetadata, Store } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { crosswalkAnnotations } from './crosswalkAnnotations';
-import {
-  crosswalkMetadata,
-  getFlattenedParentFolderMetadata,
-  IIIFMetadataField
-} from './crosswalkMetadata';
+import { crosswalkMetadata, getFlattenedParentFolderMetadata } from './crosswalkMetadata';
+import { IIIFMetadataField } from './types';
+import { getSourceParents } from '@/utils/metadata';
 
 const ADDED_METADATA_DIVIDER: IIIFMetadataField = {
   label: { en: ['Metadata added with'] },
@@ -41,7 +39,8 @@ export const exportDerivativeResource = async (resource: IIIFManifestResource, b
   // Original manifest
   const manifest = await fetchManifest(resource.uri);
 
-  const folderMetadata = await getFlattenedParentFolderMetadata(store, `iiif:${resource.id}`);
+  const folders = getSourceParents(`iiif:${resource.id}`, store);
+  const folderMetadata = await getFlattenedParentFolderMetadata(folders, store);
 
   const annotationPageUrls = new Map<string, string>();
   const canvasMetadata = new Map<string, IIIFMetadataField[]>();

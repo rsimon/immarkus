@@ -191,6 +191,8 @@ export interface Region {
   w: number;
 
   h: number;
+
+  rotation?: number;
   
 }
 

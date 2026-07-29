@@ -16,7 +16,7 @@ interface TextFieldProps {
 
   definition: TextPropertyDefinition;
 
-  value: string | string[];
+  value?: string | string[];
 
   onChange?(value?: string | (string | undefined)[]): void;
 
