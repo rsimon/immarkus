@@ -8,6 +8,7 @@ import { VisualSearchDebugAction } from '@/components/VisualSearchDebugAction';
 // import { FixRelocatedManifest } from '@/components/FixRelocatedManifest';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
 import { useStore } from '@/store';
+import { canExportFolderAsIIIF } from '@/store/export/iiif/exportImageFolderToIIIF';
 import { isSingleImageManifest } from '@/utils/iiif';
 import { useCanvas } from '@/utils/iiif/hooks';
 import { IIIFExportAction, IIIFExportDialog } from '../../IIIFExporter';
@@ -103,6 +104,11 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     isManifest && isSingleImageManifest(props.data as IIIFManifestResource)
   ), [isManifest, props.data]);
 
+  const canExportIIIF = useMemo(() => {
+    if (!isFolder || !store) return false;
+    return canExportFolderAsIIIF(props.data as Folder, store);
+  }, [props.data, store, isFolder]);
+  
   const onSelect = () => {
     if (isManifest) {
       props.onSelectItem(props.data as IIIFManifestResource);
@@ -166,11 +172,17 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
                 title={props.data.name} />
             </>
           ) : isFolder ? (
-            <DropdownMenuItem asChild>
-              <Link to={`/images/${props.data.id}`}>
-                <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> {t('common.openFolder')}
-              </Link>
-            </DropdownMenuItem>
+            <>
+              <DropdownMenuItem asChild>
+                <Link to={`/images/${props.data.id}`}>
+                  <FolderOpen className="h-4 w-4 text-muted-foreground mr-2" /> {t('common.openFolder')}
+                </Link>
+              </DropdownMenuItem>
+
+              <IIIFExportAction 
+                disabled={!canExportIIIF}
+                onSelect={() => setIsIIIFExportOpen(true)} />
+            </>
           ) : isSingleCanvas ? (
             <>
               <DropdownMenuItem onSelect={() => props.onOpenImage(imageId)}>
@@ -183,7 +195,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
 
               <IIIFOpenInViewerAction manifest={props.data as IIIFManifestResource} />
 
-              <IIIFExportAction onSelect={() => setIsIIIFExportOpen(true)} />
+              <IIIFExportAction 
+                onSelect={() => setIsIIIFExportOpen(true)} />
 
               <VisualSearchDebugAction 
                 imageId={imageId}
@@ -217,12 +230,10 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {('canvases' in props.data || 'data' in props.data) && (
-        <IIIFExportDialog 
-          open={isIIIFExportOpen} 
-          onOpenChange={setIsIIIFExportOpen} 
-          item={props.data} />
-      )}
+      <IIIFExportDialog 
+        open={isIIIFExportOpen} 
+        onOpenChange={setIsIIIFExportOpen} 
+        item={props.data} />
 
       <ConfirmedDelete
         open={confirmDelete}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
@@ -85,13 +85,18 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
     props.onOpenChange(open);
   }
 
+  const stopPropagation = (e: SyntheticEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
   return (
     <Dialog 
       open={props.open} 
       onOpenChange={props.onOpenChange}>
       <DialogContent 
         className="max-w-2xl" 
-        onClick={e => e.preventDefault()}>
+        onClick={stopPropagation}>
         <DialogHeader>
           <DialogTitle className="flex gap-2 items-center">
             <IIIFIcon color className="size-6 mb-0.5"/> {t('iiifExporter.exportToIIIF')}
