@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FolderOpen, MoreVertical, NotebookPen } from 'lucide-react';
@@ -29,7 +29,11 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
 
   const store = useStore();
 
-  const canExportIIIF = canExportFolderAsIIIF(props.folder, store);
+  const { canExport, nestedManifests } = useMemo(() => {
+    // Should never happen
+    if (!store) return { canExport: false, nestedManifests: 0 };
+    return canExportFolderAsIIIF(props.folder, store)
+  }, [props.folder, store]);
 
   const [isIIIFExportOpen, setIIIFExportOpen] = useState(false);
 
@@ -55,7 +59,7 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
           </DropdownMenuItem>
 
           <IIIFExportAction 
-            disabled={!canExportIIIF}
+            disabled={!canExport}
             onSelect={() => setIIIFExportOpen(true)} />
         </DropdownMenuContent>
       </DropdownMenu>
@@ -63,6 +67,7 @@ export const FolderItemActions = (props: FolderItemActionProps) => {
       <IIIFExportDialog 
         open={isIIIFExportOpen} 
         onOpenChange={setIIIFExportOpen} 
+        willSkipManifests={nestedManifests}
         item={props.folder} />
     </>
   )

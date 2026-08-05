@@ -1,7 +1,9 @@
 import { type SyntheticEvent, useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, IIIFResource, LoadedFileImage } from '@/model';
+import { Alert, AlertDescription, AlertTitle } from '@/ui/Alert';
 import { Label } from '@/ui/Label';
 import { Input } from '@/ui/Input';
 import { Button } from '@/ui/Button';
@@ -22,6 +24,8 @@ import {
 interface IIIFExportDialogProps {
 
   item: LoadedFileImage | IIIFResource | Folder;
+
+  willSkipManifests: number;
 
   open: boolean;
 
@@ -105,6 +109,21 @@ export const IIIFExportDialog = (props: IIIFExportDialogProps) => {
           <DialogDescription className="leading-relaxed my-4">
             {t('iiifExporter.description')}
           </DialogDescription>
+
+          {props.willSkipManifests > 0 && (
+            <Alert className="border-amber-200 bg-amber-50 text-amber-900 [&>svg]:text-amber-900 text-sm mb-4 -mx-0.5">
+              <AlertTitle className="flex items-center gap-1.5">
+                <AlertTriangle className="size-4" />
+                <span className="font-medium">
+                  {t('iiifExporter.skippingManifests', { count: props.willSkipManifests })}
+                </span>
+              </AlertTitle>
+
+              <AlertDescription className="text-amber-900/70 pt-1.5 text-xs leading-relaxed">
+                {t('iiifExporter.skippingManifestsDescription', { count: props.willSkipManifests })}
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="mb-6">
             <Label htmlFor="iiif-base-url">

@@ -111,6 +111,10 @@
     "validationError": "Please enter a valid URL, including the protocol (e.g. https://)",
     "miradorSafe": "Export Mirador-Safe Shapes",
     "miradorSafeHint": "Unlike other IIIF viewers, Mirador can only display a limited set of annotations shapes. Select this option to convert complex shapes into a simplified format that Mirador supports. Note that the simplified shapes cannot be fully restored if you re-import this export back into IMMARKUS.",
-    "exportZip": "Export ZIP"
+    "exportZip": "Export ZIP",
+    "skippingManifests_one": "Skipping {{count}} nested manifest",
+    "skippingManifests_other": "Skipping {{count}} nested manifests",
+    "skippingManifestsDescription_one": "This folder contains both local image files and imported IIIF manifests. Only your local images will be exported, as a single IIIF manifest. Export the imported IIIF manifest separately to publish it with its annotations.",
+    "skippingManifestsDescription_other": "This folder contains both local image files and imported IIIF manifests. Only your local images will be exported, as a single IIIF manifest. Export the imported IIIF manifests separately to publish them with their annotations."
   }
 }

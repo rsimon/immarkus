@@ -143,10 +143,12 @@ export const exportImageFolderToIIIF = async (folder: Folder, baseUrl: string, m
  * A helper method to determine whether the folder meets
  * the requirements and limitations of `exportImageFolderToIIIF`.
  */
-export const canExportFolderAsIIIF = (folder: Folder, store: Store) => {
-  const hasNestedIIIFResources = (folder: Folder, store: Store): boolean => {
+export const canExportFolderAsIIIF = (folder: Folder, store: Store): { canExport: boolean; nestedManifests: number } => {
+  const countNestedIIIFResources = (folder: Folder, store: Store): number => {
     const { folders, iiifResources } = store.getFolderContents(folder.handle);
-    return iiifResources.length > 0 || folders.some(f => hasNestedIIIFResources(f, store));
+
+    const nested = folders.reduce<number>((total, f) => total + countNestedIIIFResources(f, store), 0);
+    return iiifResources.length + nested;
   }
 
   const hasAnyImages = (folder: Folder, store: Store): boolean => {
@@ -154,5 +156,8 @@ export const canExportFolderAsIIIF = (folder: Folder, store: Store) => {
     return images.length > 0 || folders.some(f => hasAnyImages(f, store));
   }
 
-  return hasAnyImages(folder, store) && !hasNestedIIIFResources(folder, store);
+  const canExport = hasAnyImages(folder, store);
+  const nestedManifests = countNestedIIIFResources(folder, store);
+
+  return { canExport, nestedManifests };
 }

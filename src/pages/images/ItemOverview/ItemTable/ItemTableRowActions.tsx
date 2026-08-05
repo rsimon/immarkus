@@ -104,8 +104,8 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
     isManifest && isSingleImageManifest(props.data as IIIFManifestResource)
   ), [isManifest, props.data]);
 
-  const canExportIIIF = useMemo(() => {
-    if (!isFolder || !store) return false;
+  const { canExport, nestedManifests } = useMemo(() => {
+    if (!isFolder || !store) return { canExport: false, nestedManifests: 0 };
     return canExportFolderAsIIIF(props.data as Folder, store);
   }, [props.data, store, isFolder]);
   
@@ -180,7 +180,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
               </DropdownMenuItem>
 
               <IIIFExportAction 
-                disabled={!canExportIIIF}
+                disabled={!canExport}
                 onSelect={() => setIsIIIFExportOpen(true)} />
             </>
           ) : isSingleCanvas ? (
@@ -233,6 +233,7 @@ export const ItemTableRowActions = (props: ItemTableRowActions) => {
       <IIIFExportDialog 
         open={isIIIFExportOpen} 
         onOpenChange={setIsIIIFExportOpen} 
+        willSkipManifests={nestedManifests}
         item={props.data} />
 
       <ConfirmedDelete
