@@ -1,6 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ColumnDef, ExpandedState, flexRender, getCoreRowModel, getExpandedRowModel, Row, useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  ExpandedState,
+  Row,
+  createExpandedRowModel,
+  flexRender,
+  rowExpandingFeature,
+  tableFeatures,
+  useTable
+} from '@tanstack/react-table';
 import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
@@ -42,6 +51,11 @@ interface EntityTypeNode {
 
 const HEADER_CLASS = 'pl-2 pr-2 whitespace-nowrap text-xs text-muted-foreground font-medium text-left';
 
+const features = tableFeatures({
+  rowExpandingFeature,
+  expandedRowModel: createExpandedRowModel()
+});
+
 export const EntityTypesTable = (props: EntityTypesTableProps) => {
 
   const { t } = useTranslation('datamodel');
@@ -70,7 +84,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
       }).map(toNode);
   }, [model]);
 
-  const togglerTemplate = useCallback((row: Row<EntityTypeNode>) =>
+  const togglerTemplate = useCallback((row: Row<typeof features, EntityTypeNode>) =>
     row.getCanExpand() ? (
       <Button
         variant="ghost"
@@ -148,7 +162,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
     </span>
   ), [props.onEditEntityType, props.onDeleteEntityType]);
 
-  const columns: ColumnDef<EntityTypeNode>[] = useMemo(() => [
+  const columns: ColumnDef<typeof features, EntityTypeNode>[] = useMemo(() => [
     {
       id: 'entityClass',
       header: t('entityTypesTable.headerEntityClass'),
@@ -181,15 +195,14 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
     }
   ], [t, togglerTemplate, idTemplate, displayNameTemplate, propertiesTemplate, actionsTemplate]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: nodes,
     columns,
     state: { expanded },
     onExpandedChange: setExpanded,
     getSubRows: row => row.children,
-    getRowId: row => row.id,
-    getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel()
+    getRowId: row => row.id
   });
 
   const columnClassName = (columnId: string) => cn(
@@ -228,7 +241,7 @@ export const EntityTypesTable = (props: EntityTypesTableProps) => {
           ) : (
             table.getRowModel().rows.map(row => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map(cell => (
+                {row.getAllCells().map(cell => (
                   <TableCell
                     key={cell.id}
                     className={cn('py-2 px-2 text-xs', columnClassName(cell.column.id))}>
