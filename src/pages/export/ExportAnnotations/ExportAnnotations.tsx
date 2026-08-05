@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { FileChartColumn, FileJson, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
+import { Boxes, FileChartColumn, FileJson, SquareDashed, Table2, TriangleDashed } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Spinner } from '@/components/Spinner';
 import { useStore } from '@/store';
-import { exportAnnotationsAsJSONLD } from '@/store/export';
+import { exportAnnotationsAsCOCO, exportAnnotationsAsJSONLD } from '@/store/export';
 import { Button } from '@/ui/Button';
 import { SnippetExportMode, useExcelAnnotationExport } from '@/store/hooks/useExcelAnnotationExport';
 import { ProgressDialog } from '@/components/ProgressDialog';
@@ -17,11 +17,25 @@ export const ExportAnnotations = () => {
 
   const [snippetMode, setSnippetMode] = useState<SnippetExportMode>('unmasked');
 
-  const { 
-    exportAnnotations: exportAnnotationsAsExcel, 
-    busy, 
+  const {
+    exportAnnotations: exportAnnotationsAsExcel,
+    busy,
     progress
   } = useExcelAnnotationExport(snippetMode);
+
+  const [cocoBusy, setCocoBusy] = useState(false);
+
+  const [cocoProgress, setCocoProgress] = useState(0);
+
+  const onExportCOCO = () => {
+    setCocoProgress(0);
+    setCocoBusy(true);
+
+    exportAnnotationsAsCOCO(store, progress => {
+      setCocoProgress(progress);
+      if (progress === 100) setCocoBusy(false);
+    });
+  }
 
   return (
     <> 
@@ -48,6 +62,38 @@ export const ExportAnnotations = () => {
                 className="whitespace-nowrap flex gap-3 w-36"
                 onClick={() => exportAnnotationsAsJSONLD(store)}>
                 <FileJson className="h-5 w-5" /> JSON-LD
+              </Button>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <div className="max-w-2xl py-4 px-6 bg-white border rounded">
+            <h3 className="font-medium leading-relaxed">
+              {t('annotations.cocoTitle')}
+            </h3>
+
+            <p className="text-sm pt-3 pb-5 leading-relaxed">
+              <Trans
+                ns="export"
+                i18nKey="annotations.cocoDescription"
+                components={{
+                  cocoLink: <a
+                    className="underline underline-offset-4 hover:text-primary"
+                    href="https://cocodataset.org/#format-data" target="_blank" />
+                }} />
+            </p>
+
+            <div className="flex justify-end pt-3">
+              <Button
+                disabled={cocoBusy}
+                className="whitespace-nowrap flex gap-3 w-36"
+                onClick={onExportCOCO}>
+                {cocoBusy ? (
+                  <Spinner className="w-4 h-4 text-white" />
+                ) : (
+                  <><Boxes className="h-5 w-5" /> COCO</>
+                )}
               </Button>
             </div>
           </div>
@@ -140,6 +186,12 @@ export const ExportAnnotations = () => {
         message={t('exportingXlsx')}
         open={busy}
         progress={progress} />
+
+      <ProgressDialog
+        icon={<Boxes className="h-5 w-5" />}
+        message={t('exportingCoco')}
+        open={cocoBusy}
+        progress={cocoProgress} />
     </>
   )
 

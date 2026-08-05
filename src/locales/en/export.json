@@ -8,9 +8,12 @@
     "metadata": "Metadata"
   },
   "exportingXlsx": "Exporting XLSX. This may take a while.",
+  "exportingCoco": "Exporting COCO dataset. This may take a while.",
   "annotations": {
     "dataTitle": "Annotation Data",
     "dataDescription": "All annotations, on all images in your current work folder, as a flat list in <w3cLink>W3C Web Annotation</w3cLink> JSON-LD format.",
+    "cocoTitle": "COCO Object Detection Dataset",
+    "cocoDescription": "All annotations, on all images in your current work folder, as a <cocoLink>COCO</cocoLink> \"instances\" dataset. Only annotations tagged with an Entity Class are included - unclassified annotations, and Line or Polyline shapes, are skipped, since COCO has no equivalent for them. Entity Classes become COCO categories. This export references your images by their relative path in the work folder - it does not include the image files themselves.",
     "imagesTitle": "Annotations and Images",
     "imagesDescription": "All annotations, on all images in your current work folder, as an Excel file. Each top-level Entity Class will appear on a separate worksheet.",
     "snippetsIntro": "Image snippets can be included as a spreadsheet column:",

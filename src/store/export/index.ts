@@ -1,3 +1,4 @@
+export * from './coco/exportAnnotationsAsCOCO';
 export * from './exportAnnotationsAsExcel';
 export * from './exportAnnotationsAsJSONLD';
 export * from './exportFolderMetadata';
