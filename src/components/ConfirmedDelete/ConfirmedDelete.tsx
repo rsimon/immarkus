@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, SyntheticEvent } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
@@ -43,6 +43,11 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
 
   const isControlled = props.open !== undefined;
 
+  const stopPropagation = (e: SyntheticEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
   return (
     <AlertDialog 
       open={isControlled ? props.open : undefined} 
@@ -62,7 +67,7 @@ export const ConfirmedDelete = (props: DeleteButtonProps) => {
         </AlertDialogTrigger>
       )}
       
-      <AlertDialogContent>
+      <AlertDialogContent onClick={stopPropagation}>
         <AlertDialogHeader>
           <AlertDialogTitle>{props.title || t('confirmedDelete.title')}</AlertDialogTitle>
           <AlertDialogDescription>
