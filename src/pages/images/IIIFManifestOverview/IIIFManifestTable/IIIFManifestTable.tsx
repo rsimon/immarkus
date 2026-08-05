@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useState } from
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import murmur from 'murmurhash';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest, CozyRange } from 'cozy-iiif';
 import { FolderIcon } from '@/components/FolderIcon';
@@ -29,6 +29,8 @@ import {
   TABLE_HEADER_CLASS,
   TABLE_SKELETON
 } from '../../ImagesUtils';
+
+const features = tableFeatures({});
 
 const folderToRow = (range: CozyRange, annotations: Record<string, W3CAnnotation[]>): ItemTableRow => {
   const annotationsInRange = getAnnotationsInRange(range, annotations);
@@ -150,7 +152,7 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     return murmur.v3(row.data.canvas.id).toString()
   }
 
-  const columns: ColumnDef<ItemTableRow>[] = useMemo(() => [
+  const columns: ColumnDef<typeof features, ItemTableRow>[] = useMemo(() => [
     {
       id: 'type',
       header: t('table.type'),
@@ -201,10 +203,10 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
     }
   ], [t, sorting, typeTemplate, actionsTemplate]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: sortedRows,
-    columns,
-    getCoreRowModel: getCoreRowModel()
+    columns
   });
 
   const columnClassName = (columnId: string) => cn(
@@ -243,7 +245,7 @@ export const IIIFManifestTable = memo((props: IIIFManifestOverviewLayoutProps) =
                 key={row.id}
                 className={rowClassName(row.original)}
                 onClick={() => onRowClick(row.original)}>
-                {row.getVisibleCells().map(cell => (
+                {row.getAllCells().map(cell => (
                   <TableCell
                     key={cell.id}
                     className={cn('overflow-hidden text-ellipsis whitespace-nowrap px-2 py-2', columnClassName(cell.column.id))}>

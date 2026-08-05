@@ -65,7 +65,7 @@
     "@radix-ui/react-tooltip": "^1.2.16",
     "@radix-ui/react-visually-hidden": "^1.2.11",
     "@react-spring/web": "^10.1.2",
-    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-table": "^9.0.0",
     "ajv": "^8.20.0",
     "browser-image-compression": "^2.0.2",
     "browser-visual-search": "^0.6.3",

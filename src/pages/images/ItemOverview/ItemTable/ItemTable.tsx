@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import { FolderIcon } from '@/components/FolderIcon';
 import { IIIFIcon } from '@/components/IIIFIcon';
 import { Folder, IIIFManifestResource, Image, LoadedFileImage } from '@/model';
@@ -24,6 +24,8 @@ import {
   TABLE_EMPTY_MESSAGE,
   TABLE_HEADER_CLASS
 } from '../../ImagesUtils';
+
+const features = tableFeatures({});
 
 const folderToRow = (
   folder: Folder,
@@ -147,7 +149,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     }
   }, [props.onOpenFolder, props.onOpenImage]);
 
-  const columns: ColumnDef<ItemTableRow>[] = useMemo(() => [
+  const columns: ColumnDef<typeof features, ItemTableRow>[] = useMemo(() => [
     {
       id: 'type',
       header: t('table.type'),
@@ -198,10 +200,10 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
     }
   ], [t, sorting, onSort, typeTemplate, actionsTemplate]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: sortedRows,
-    columns,
-    getCoreRowModel: getCoreRowModel()
+    columns
   });
 
   const columnClassName = (columnId: string) => cn(
@@ -239,7 +241,7 @@ export const ItemTable = (props: ItemOverviewLayoutProps) => {
               <TableRow
                 key={row.id}
                 onClick={() => onRowClick(row.original)}>
-                {row.getVisibleCells().map(cell => (
+                {row.getAllCells().map(cell => (
                   <TableCell
                     key={cell.id}
                     className={cn('overflow-hidden text-xs text-ellipsis whitespace-nowrap px-2 py-2', columnClassName(cell.column.id))}>
