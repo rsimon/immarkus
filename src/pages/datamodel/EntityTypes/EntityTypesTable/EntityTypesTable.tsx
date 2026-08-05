@@ -1,15 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ColumnDef,
-  ExpandedState,
-  Row,
-  createExpandedRowModel,
-  flexRender,
-  rowExpandingFeature,
-  tableFeatures,
-  useTable
-} from '@tanstack/react-table';
 import { PropertyListTooltip } from '@/components/PropertyListTooltip';
 import { EntityType, PropertyDefinition } from '@/model';
 import { useDataModel } from '@/store';
@@ -30,6 +20,16 @@ import {
   Palette,
   Ruler
 } from 'lucide-react';
+import {
+  ColumnDef,
+  ExpandedState,
+  Row,
+  createExpandedRowModel,
+  flexRender,
+  rowExpandingFeature,
+  tableFeatures,
+  useTable
+} from '@tanstack/react-table';
 
 interface EntityTypesTableProps {
 
