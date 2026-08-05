@@ -96,7 +96,7 @@
     "react-dom": "^19.2.8",
     "react-force-graph-2d": "^1.29.1",
     "react-i18next": "^17.0.11",
-    "react-intersection-observer": "^10.1.0",
+    "react-intersection-observer": "^11.0.0",
     "react-markdown": "^10.1.0",
     "react-mosaic-component2": "^7.0.2",
     "react-router-dom": "^7.18.2",
