@@ -23,7 +23,7 @@
     "playwright": "^1.62.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.2.0",
+    "vite": "^8.2.1",
     "vite-plugin-babel-macros": "^1.0.6",
     "vite-plugin-static-copy": "^4.1.1",
     "vitest": "^4.1.10"
@@ -73,7 +73,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "cozy-iiif": "^0.10.0",
+    "cozy-iiif": "^0.10.1",
     "date-fns": "^4.4.0",
     "dequal": "^2.0.3",
     "exceljs": "^4.4.0",
