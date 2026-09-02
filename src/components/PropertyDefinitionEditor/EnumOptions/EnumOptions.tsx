@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/ui/Button';
 import { X } from 'lucide-react';
-import { AddOption } from './AddOption';
+import { AddOptions } from './AddOptions';
 import { EnumPropertyDefinition } from '@/model';
 
 interface EnumOptionsProps {
@@ -18,12 +18,14 @@ export const EnumOptions = (props: EnumOptionsProps) => {
 
   const { definition } = props;
 
-  const onAddOption = (option: string) => {
-    if (!(definition.values || []).includes(option)) {
+  const onAddOptions = (options: string[]) => {
+    const toAdd = options.filter(str => !definition.values?.includes(str));
+
+    if (toAdd.length > 0) {
       props.onUpdate({
-        ...definition, 
-        values: [ ...(definition.values || []),  option].slice().sort()
-      });
+        ...definition,
+        values: [...(definition.values || []), ...options].slice().sort()
+      })
     }
   }
 
@@ -62,8 +64,8 @@ export const EnumOptions = (props: EnumOptionsProps) => {
         )}
       </div>
 
-      <div className="grid grid-cols-6 gap-2"> 
-        <AddOption onAddOption={onAddOption} /> 
+      <div className="grid grid-cols-6 gap-1.5"> 
+        <AddOptions onAddOptions={onAddOptions} /> 
       </div>
     </div>
   )
