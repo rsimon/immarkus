@@ -67,6 +67,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
       { label: t('graphSearch.conditionTypes.where'), value: 'WHERE' },
       (props.settings.graphMode === 'RELATIONS' ? { label: t('graphSearch.conditionTypes.withRelationship'), value: 'WITH_RELATIONSHIP' } : undefined),
       { label: t('graphSearch.conditionTypes.withEntity'), value: 'WITH_ENTITY' },
+      { label: t('graphSearch.conditionTypes.withProperty'), value: 'WITH_PROPERTY'},
       { label: t('graphSearch.conditionTypes.withNote'), value: 'WITH_NOTE' },
       { label: t('graphSearch.conditionTypes.withIiifMetadata'), value: 'WITH_IIIF_METADATA' }
     ].filter(Boolean) :
@@ -182,7 +183,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             onChange={data => updateSentence({ data })} />
         )}
 
-        {'Attribute' in sentence && sentence.Attribute && 
+        {('Attribute' in sentence && sentence.Attribute) &&
           renderDropdown(
             sentence.Comparator, 
             comparatorOptions, 
@@ -192,7 +193,7 @@ export const GraphSearchConditionBuilder = (props: GraphSearchConditionBuilderPr
             }))}
 
         {(('Comparator' in sentence && sentence.Comparator === 'IS') ||
-          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
+          (sentence.ConditionType === 'WITH_ENTITY') || (sentence.ConditionType === 'WITH_PROPERTY') || (sentence.ConditionType === 'WITH_RELATIONSHIP')) && (
             <Combobox 
               className={selectStyle}
               value={(sentence as SimpleConditionSentence).Value}

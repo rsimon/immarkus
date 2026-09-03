@@ -1,4 +1,4 @@
-import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema } from '@/model';
+import { CanvasInformation, Folder, IIIFManifestResource, Image, MetadataSchema, PropertyDefinition } from '@/model';
 import { DataModelStore, getManifestMetadata, Store } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { getSourceParents } from '@/utils/metadata';
@@ -92,6 +92,24 @@ export const listFolderMetadataProperties = (store: Store): SchemaProperty[] => 
     { type: 'FOLDER', propertyName: 'folder name', builtIn: true },
     ...listMetadataProperties(schemas)
   ]);
+}
+
+export const enumerateProperties = (store: Store, type: GraphNodeType): string[] => {
+  const model = store.getDataModel();
+
+  const getNames = (arg: { properties?: PropertyDefinition[] }[]) => [...new Set(
+    arg.reduce<PropertyDefinition[]>((all, e) => ([
+      ...all, 
+      ...(e.properties || [])
+    ]), []).map(d => d.name)
+  )];
+  
+  const schemas = 
+    type === 'IMAGE' ? getNames([...model.imageSchemas, ...model.folderSchemas, ...model.entityTypes]) :
+    type === 'FOLDER' ? getNames(model.folderSchemas) :
+    type === 'ENTITY_TYPE' ? getNames(model.entityTypes) : [];
+
+  return schemas;
 }
 
 const enumerateNotes = (
@@ -478,6 +496,38 @@ export const findFoldersByMetadata = (
   }
 }
 
+export const findImagesByPropertyName = (
+  store: Store,
+  propertyName: string,
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
+): Promise<string[]> => {
+  // Images that match by annotation
+  const withMatchingAnnotations = annotations.reduce<string[]>((all, { sourceId, annotations }) => {
+    const hasMatchingAnnotations = annotations.some(a => {
+      const properties = (Array.isArray(a.body) ? a.body : [a.body]).reduce<string[]>((all, b) => {
+        if (b.purpose !== 'classifying' || !('properties' in b)) return all;
+        return [...all, ...Object.keys(b.properties || {})];
+      }, []);
+
+      return properties.includes(propertyName);
+    });
+
+    return hasMatchingAnnotations ? [...all, sourceId] : all;
+  }, []);
+
+  // Images that match by image- or folder-metadata
+  const byMetadata = Promise.all([
+    findImagesByMetadata(store, 'IMAGE', propertyName, { operator: 'IS_NOT_EMPTY' }),
+    findImagesByMetadata(store, 'FOLDER', propertyName, { operator: 'IS_NOT_EMPTY'})
+  ]).then(([a, b]) => [
+    ...a, ...b
+  ].map(img => 'uri' in img ? `iiif:${img.manifestId}:${img.id}` : img.id)); 
+
+  return byMetadata.then(id => ([
+    ...id, ...withMatchingAnnotations]
+  ));
+}
+
 export const findImagesByEntityClass = (
   store: Store, 
   graph: Graph, 
@@ -494,7 +544,6 @@ export const findImagesByEntityClass = (
     const linked = graph.getLinkedNodes(n.id);
     return linked.some(l => l.type === 'ENTITY_TYPE' && ids.has(l.id));
   });
-
 }
 
 export const findImagesByEntityConditions = (

@@ -87,6 +87,7 @@
       "where": "where",
       "withRelationship": "with relationship",
       "withEntity": "with entity",
+      "withProperty": "with property",
       "withNote": "with note",
       "withIiifMetadata": "with IIIF metadata"
     },

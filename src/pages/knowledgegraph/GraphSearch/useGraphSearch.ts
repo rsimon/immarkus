@@ -14,12 +14,14 @@ import {
   SimpleConditionSentence 
 } from '../Types';
 import { 
+  enumerateProperties,
   findEntityTypesByRelationship,
   findFoldersByMetadata, 
   findImagesByEntityClass, 
   findImagesByEntityConditions, 
   findImagesByMetadata, 
   findImagesByNote, 
+  findImagesByPropertyName, 
   findImagesByRelationship, 
   listAllMetadataProperties, 
   listAllNotes, 
@@ -27,6 +29,7 @@ import {
   listMetadataValues, 
   PropertyCondition
 } from './searchUtils';
+import { object } from 'zod';
 
 export const useGraphSearch = (
   annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
@@ -134,6 +137,20 @@ export const useGraphSearch = (
       } else {
         const imageIds = findImagesByEntityConditions(store, annotations, s.Value.value, s.SubConditions);
         setMatches(imageIds);
+      }
+    } else if (sentence.ConditionType === 'WITH_PROPERTY') {
+      const s = sentence as SimpleConditionSentence;
+
+      if (!s.Value) {
+        const defs = enumerateProperties(store, objectType);
+        const options = defs.map(str => ({ value: str, label: str }));
+        setValueOptions(options);
+      } else if (!s.Comparator) {
+        findImagesByPropertyName(store, s.Value.value, annotations).then(ids => {
+          setMatches(ids);
+          setComparatorOptions(ComparatorOptions);
+          // setComparatorOptions([{ label: t('graphSearch.comparators.is'), value: 'IS' }]);
+        });
       }
     } else if (sentence.ConditionType === 'WITH_NOTE') {
       const s = sentence as SimpleConditionSentence;
