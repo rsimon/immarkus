@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useDataModel } from '@/store';
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { serializePropertyValue } from '@/utils/serialize';
-import { DropdownOption } from '../Types';
+import { DropdownOption } from '../../Types';
 
 export const useSubConditions = (
   annotations: W3CAnnotation[],

@@ -5,7 +5,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Combobox } from '@/components/Combobox';
 import { Image } from '@/model';
 import { useSubConditions } from './useSubConditions';
-import { Comparator, DropdownOption, SubCondition } from '../Types';
+import { Comparator, DropdownOption, SubCondition } from '../../Types';
 import { 
   Select, 
   SelectContent, 

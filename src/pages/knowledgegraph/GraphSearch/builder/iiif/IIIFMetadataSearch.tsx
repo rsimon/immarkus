@@ -5,7 +5,7 @@ import { Command, CommandEmpty, CommandItem, CommandList } from '@/ui/Command';
 import { Spinner } from '@/components/Spinner';
 import { Button } from '@/ui/Button';
 import { Popover,PopoverContent, PopoverTrigger } from '@/ui/Popover';
-import type { GraphNodeType } from '../../Types';
+import type { GraphNodeType } from '../../../Types';
 import { IIIFMetadataIndexRecord, useManifestMetadataSearch } from './useManifestMetadataSearch';
 
 interface IIIFMetadataSearchProps {
@@ -63,7 +63,7 @@ export const IIIFMetadataSearch = (props: IIIFMetadataSearchProps) => {
 
       <PopoverContent 
         align="start"
-        className="min-w-[80px] max-w-72 w-auto p-0 overflow-hidden">
+        className="min-w-20 max-w-72 w-auto p-0 overflow-hidden">
         <Command>
           <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
             <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
