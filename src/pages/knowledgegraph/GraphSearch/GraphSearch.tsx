@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import { W3CAnnotation } from '@annotorious/react';
@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { useSearchDialogPos, useSearchState } from '../KnowledgeGraphState';
 import { GraphSearchConditionBuilder } from './GraphSearchConditionBuilder';
 import { ExportSelector } from './export';
+import { useFulltextSearch } from './useFulltextSearch';
 import { 
   Condition, 
   Graph, 
@@ -27,6 +28,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/ui/Select';
+import { Input } from '@/ui/Input';
 
 interface GraphSearchProps {
 
@@ -57,6 +59,8 @@ export const GraphSearch = (props: GraphSearchProps) => {
   const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 10 : 260, y: 10 });
 
   const { objectType, setObjectType, conditions, setConditions } = useSearchState();
+
+  const { search } = useFulltextSearch(props.annotations);
 
   const { openInAnnotationView } = useOpenInAnnotationView();
 
@@ -158,6 +162,16 @@ export const GraphSearch = (props: GraphSearchProps) => {
     setConditions([]);
   }
 
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const hits = search(query);
+    if (!hits) return; 
+
+    const q = (n: GraphNode) => new Set((hits.map(h => h.nodeId))).has(n.id);
+    props.onChangeQuery(q);
+  }, [query, search]);
+
   return createPortal(
     <div 
       ref={el}
@@ -179,6 +193,11 @@ export const GraphSearch = (props: GraphSearchProps) => {
       </div>
 
       <div className="px-3 pr-5 pb-2">
+        <Input 
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+        />
+
         <div className="text-xs flex items-center gap-2">
           <span className="w-14 text-right">
             {t('graphSearch.find')}
