@@ -104,7 +104,8 @@
       "image": "image"
     },
     "addCondition": "Add Condition",
-    "clearAll": "Clear All",
+    "clear": "Clear",
+    "simpleSearch": "Simple Search",
     "subCondition": "Sub-Condition",
     "where": "where",
     "noMatches": "No matches",

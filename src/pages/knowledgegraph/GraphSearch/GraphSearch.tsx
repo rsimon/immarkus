@@ -7,7 +7,7 @@ import { W3CAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { Graph, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { useSearchDialogPos } from '../KnowledgeGraphState';
-import { FulltextSearch } from './fulltext/FullTextSearch';
+import { FulltextSearch } from './fulltext';
 import { Builder } from './builder';
 
 interface GraphSearchProps {
@@ -36,8 +36,8 @@ export const GraphSearch = (props: GraphSearchProps) => {
 
   const { position, setPosition } = useSearchDialogPos({ x: props.isFullscreen ? 10 : 260, y: 10 });
 
-  const [tab, setTab] = useState<'BUILDER' | 'FULLTEXT'>('BUILDER');
-  
+  const [tab, setTab] = useState<'fulltext' | 'builder'>('fulltext');
+   
   useDraggable(el, {
     position,
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY })
@@ -48,7 +48,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
       ref={el}
       className="bg-white min-w-127.5 min-h-20 backdrop-blur-xs border absolute top-0 left-0 rounded shadow-lg z-30">
     
-      <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move mb-4 text-xs font-medium text-muted-foreground">
+      <div className="flex justify-between items-center pl-2 pr-1 py-1 border-b cursor-move text-xs font-medium text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <Grip className="w-4 h-4 mb-0.5" />
           <span>{t('graphSearch.title')}</span>
@@ -63,17 +63,19 @@ export const GraphSearch = (props: GraphSearchProps) => {
         </Button>
       </div>
 
-      <div className="px-3 pr-5 pb-2">
-        {tab === 'BUILDER' ? (
+      <div>
+        {tab === 'fulltext' ? (
+          <FulltextSearch 
+            onGoToBuilder={() => setTab('builder')} />
+        ) : (
           <Builder 
             annotations={props.annotations}
             graph={props.graph}
             isFullscreen={props.isFullscreen}
             settings={props.settings} 
             query={props.query}
-            onChangeQuery={props.onChangeQuery} />
-        ) : (
-          <FulltextSearch />
+            onChangeQuery={props.onChangeQuery}
+            onGoToFulltextSearch={() => setTab('fulltext')} />
         )}
       </div>
     </div>, document.body

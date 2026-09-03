@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
-import { CirclePlus, PanelsTopLeft, Trash2, X } from 'lucide-react';
+import { CirclePlus, PanelsTopLeft, TextCursorInput, Trash2, X } from 'lucide-react';
 import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
@@ -39,6 +39,8 @@ interface BuilderProps {
   settings: KnowledgeGraphSettings;
 
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
+
+  onGoToFulltextSearch(): void;
 
 }
 
@@ -146,7 +148,7 @@ export const Builder = (props: BuilderProps) => {
   }
 
   return (
-    <div className="px-3 pr-5 pb-2">
+    <div className="pl-1 pr-5 pb-2 pt-4">
       <div className="text-xs flex items-center gap-2">
         <span className="w-14 text-right">
           {t('graphSearch.find')}
@@ -224,7 +226,7 @@ export const Builder = (props: BuilderProps) => {
       ))}
 
       {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) ? (
-        <div className="flex justify-between pt-4 pl-14">
+        <div className="flex justify-between pt-4 pl-14 gap-10">
           <div className="flex items-center gap-4">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
@@ -232,7 +234,7 @@ export const Builder = (props: BuilderProps) => {
               size="sm"
               className="flex items-center text-xs py-0 px-0 font-normal"
               onClick={() => setConditions(conditions => ([...conditions, {...EMPTY_CONDITION}]))}>
-              <CirclePlus className="h-3.5 w-3.5 ml-0.5 mr-1 mb-0.5" /> {t('graphSearch.addCondition')}
+              <CirclePlus className="size-3.5 ml-0.5 mr-1 mb-0.5" /> {t('graphSearch.addCondition')}
             </Button>
 
             <Button 
@@ -240,7 +242,15 @@ export const Builder = (props: BuilderProps) => {
               size="sm"
               className="flex items-center text-xs py-0 px-0 font-normal"
               onClick={onClearAll}>
-              <Trash2 className="h-3.5 w-3.5 mr-1 mb-px" /> {t('graphSearch.clearAll')}
+              <Trash2 className="size-3.5 mr-1 mb-px" /> {t('graphSearch.clear')}
+            </Button>
+
+            <Button 
+              variant="link"
+              size="sm"
+              className="flex items-center text-xs py-0 px-0 font-normal"
+              onClick={props.onGoToFulltextSearch}>
+              <TextCursorInput className="size-4 mr-1 mb-px" /> {t('graphSearch.simpleSearch')}
             </Button>
           </div>
 
@@ -271,7 +281,15 @@ export const Builder = (props: BuilderProps) => {
           )}
         </div>
       ) : (
-        <div className="h-4"/>
+        <div className="px-2 pt-8">
+          <Button 
+            variant="link"
+            size="sm"
+            className="h-auto text-xs p-0 font-normal"
+            onClick={props.onGoToFulltextSearch}>
+            {t('graphSearch.simpleSearch')}
+          </Button>
+        </div>
       )}
     </div>
   )
