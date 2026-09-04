@@ -12,6 +12,15 @@ import {
   GraphNodeType
 } from '../Types';
 
+export const isPossiblyHTML = (str: string): boolean => {
+  // Check for common HTML patterns: tags with attributes, closing tags, or self-closing tags
+  const htmlPattern = /<\/?[a-z][\s\S]*?(?:>|\s+\/>)/i;
+  return htmlPattern.test(str);
+}
+
+export const normalizeString = (str: string): string => 
+  isPossiblyHTML(str) ? str.replace(/<[^>]*>/g, '') : str; 
+
 /** Converts a metadata annotation body to a list of SchemaProperties **/
 const bodyToProperties = (model: DataModelStore, type: 'IMAGE' | 'FOLDER', body: W3CAnnotationBody): SchemaPropertyValue[] => {
   if (!body) return [];

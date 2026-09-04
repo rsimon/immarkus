@@ -4,6 +4,7 @@ import { CozyCanvas, CozyManifest, CozyMetadata } from 'cozy-iiif';
 import { useStore } from '@/store';
 import { fetchManifests } from '@/utils/iiif';
 import { GraphNodeType } from '../../../Types';
+import { normalizeString } from '../../searchUtils';
 
 export interface IIIFMetadataIndexRecord {
 
@@ -17,19 +18,10 @@ export interface IIIFMetadataIndexRecord {
 
 }
 
-const isPossiblyHTML = (str: string): boolean => {
-  // Check for common HTML patterns: tags with attributes, closing tags, or self-closing tags
-  const htmlPattern = /<\/?[a-z][\s\S]*?(?:>|\s+\/>)/i;
-  return htmlPattern.test(str);
-}
-
-const normalize = (str: string): string => 
-  isPossiblyHTML(str) ? str.replace(/<[^>]*>/g, '') : str; 
-
 const buildManifestIndexRecords = (manifests: { id: string, manifest: CozyManifest }[]) => {
   return manifests.reduce<IIIFMetadataIndexRecord[]>((distinct, t) => {
     return t.manifest.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinct, meta) => {
-      const normalized = { label: normalize(meta.label), value: normalize(meta.value) };
+      const normalized = { label: normalizeString(meta.label), value: normalizeString(meta.value) };
       const stringified = `${normalized.label}: ${normalized.value}`.toLowerCase();
 
       const existing = distinct.find(record => record.stringified === stringified);
@@ -60,7 +52,7 @@ const buildCanvasIndexRecords = (manifests: { id: string, manifest: CozyManifest
 
       // ...and then through each metadata field
       return canvas.getMetadata().reduce<IIIFMetadataIndexRecord[]>((distinct, meta) => {
-        const normalized = { label: normalize(meta.label), value: normalize(meta.value) };
+        const normalized = { label: normalizeString(meta.label), value: normalizeString(meta.value) };
         const stringified = `${normalized.label}: ${normalized.value}`.toLowerCase();
 
         // Check if this key/valu pair already exists

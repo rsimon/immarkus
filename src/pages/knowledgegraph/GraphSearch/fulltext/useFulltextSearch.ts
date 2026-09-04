@@ -1,16 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
 import type { W3CAnnotation } from '@annotorious/react';
-import { PropertyDefinition } from '@/model';
+import { IIIFManifestResource, IIIFResource, PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
+import { fetchManifests } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
 import { Graph } from '../../Types';
+import { CozyManifest } from 'cozy-iiif';
+import { normalizeString } from '../searchUtils';
 
 export interface IndexedRecord { 
 
   nodeId: string;
 
-  fieldType: 'NODE_NAME' | 'IMAGE_ANNOTATION' | 'IMAGE_METADATA' | 'FOLDER_METADATA';
+  fieldType: 
+    | 'NODE_NAME' 
+    | 'IMAGE_ANNOTATION'
+    | 'IMAGE_METADATA' 
+    | 'FOLDER_METADATA' 
+    | 'IIIF_MANIFEST_METADATA'
+    | 'IIIF_CANVAS_METADATA';
 
   fieldKey?: string;
 
@@ -36,6 +45,32 @@ const getProperties = (a: W3CAnnotation, schemas: { id: string, properties?: Pro
       return [...all, ...entries];
     }
   }, []);
+}
+
+const buildManifestIndexRecords = (manifest: CozyManifest, resources: IIIFResource[]): IndexedRecord[] => {
+  const resource = resources.find(r => r.uri === manifest.id);
+  if (!resource) throw `IIIF manifest integrity error: ${manifest.id}`; // Should never happen
+
+  const manifestRecords = manifest.getMetadata().map(({ label , value }) => ({
+    nodeId: `iiif:${resource.id}`,
+    fieldType: 'IIIF_MANIFEST_METADATA',
+    fieldKey: normalizeString(label),
+    fieldValue: normalizeString(value)
+  } as IndexedRecord));
+
+  const canvasRecords = manifest.canvases.flatMap(canvas => {
+    const canvasId = (resource as IIIFManifestResource).canvases.find(c => c.uri === canvas.id)?.id;
+    if (!canvasId) throw `IIIF canvas integrity error: ${canvas.id}`; // Should never happen
+
+    return canvas.getMetadata().map(({ label, value }) => ({
+      nodeId: `iiif:${resource.id}:${canvasId}`,
+      fieldType: 'IIIF_CANVAS_METADATA',
+      fieldKey: normalizeString(label),
+      fieldValue: normalizeString(value)
+    } as IndexedRecord));
+  });
+
+  return [...manifestRecords, ...canvasRecords];
 }
 
 const buildIndex = (records: IndexedRecord[]) => new Fuse<IndexedRecord>(records, { 
@@ -95,7 +130,7 @@ export const useFulltextSearch = (
       ]
     }, []);
 
-    const pFolderRecords = store.folders.reduce<Promise<IndexedRecord[]>>((p, folder) => p.then(all => {
+    const pFolderRecords = () => store.folders.reduce<Promise<IndexedRecord[]>>((p, folder) => p.then(all => {
       return store.getFolderMetadata(folder.handle).then(meta => {
         return meta ? [
           ...all, 
@@ -110,9 +145,14 @@ export const useFulltextSearch = (
       })
     }), Promise.resolve([]));
 
-    pFolderRecords.then(folderRecords => {
-      const all = [...nodeNameRecords, ...imageRecords, ...folderRecords];
-      setIndex(buildIndex(all));
+    const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
+      .then(manifests => manifests.flatMap(m => buildManifestIndexRecords(m, store.iiifResources)));
+
+    pFolderRecords().then(folderRecords => {
+      pIIIFRecords().then(iiifRecords => {
+        const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
+        setIndex(buildIndex(all));
+      });
     });
   }, [annotations, store]);
 
