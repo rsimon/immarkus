@@ -18,7 +18,7 @@ import {
   Sentence, 
   SimpleConditionSentence, 
   SubCondition
-} from '../Types';
+} from '../../Types';
 import { 
   Select, 
   SelectContent, 

@@ -3,7 +3,7 @@ import Fuse from 'fuse.js';
 import { CozyCanvas, CozyManifest, CozyMetadata } from 'cozy-iiif';
 import { useStore } from '@/store';
 import { fetchManifests } from '@/utils/iiif';
-import { GraphNodeType } from '../../Types';
+import { GraphNodeType } from '../../../Types';
 
 export interface IIIFMetadataIndexRecord {
 

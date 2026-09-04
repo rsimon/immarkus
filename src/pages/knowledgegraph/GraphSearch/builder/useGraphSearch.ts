@@ -12,7 +12,7 @@ import {
   NestedConditionSentence, 
   Sentence, 
   SimpleConditionSentence 
-} from '../Types';
+} from '../../Types';
 import { 
   findEntityTypesByRelationship,
   findFoldersByMetadata, 
@@ -26,7 +26,7 @@ import {
   listFolderMetadataProperties, 
   listMetadataValues, 
   PropertyCondition
-} from './searchUtils';
+} from '../searchUtils';
 
 export const useGraphSearch = (
   annotations: { sourceId: string, annotations: W3CAnnotation[] }[],

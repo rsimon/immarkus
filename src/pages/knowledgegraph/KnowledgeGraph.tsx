@@ -70,6 +70,8 @@ export const KnowledgeGraph = () => {
       setShowGraphSearch(true);
   }
 
+  const onChangeQuery = useCallback((query: (n: GraphNode) => boolean) => setQuery(() => query), []);
+
   // Important to memo-ize, since otherwise child components re-render unnecessarily
   const onCloseSelectionDetails = useCallback(() => setSelectedNodes([]), [setSelectedNodes]);
 
@@ -157,7 +159,7 @@ export const KnowledgeGraph = () => {
             isFullscreen={isFullscreen}
             query={query}
             settings={settings}
-            onChangeQuery={query => setQuery(() => query)}
+            onChangeQuery={onChangeQuery}
             onClose={onCloseSearch} />
         )}
       </main>
