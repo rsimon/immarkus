@@ -37,7 +37,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
     if (!props.query) return [];
 
     return props.graph.nodes
-      .filter(n => props.query!(n))
+      .filter(n => n.type === 'IMAGE' && props.query!(n))
       .map(m => m.id);
   }, [props.query, props.graph]);
 
