@@ -4,12 +4,13 @@ import type { W3CAnnotation } from '@annotorious/react';
 import { PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
 import { serializePropertyValue } from '@/utils/serialize';
+import { Graph } from '../../Types';
 
 export interface IndexedRecord { 
 
   nodeId: string;
 
-  fieldType: 'IMAGE_ANNOTATION' | 'IMAGE_METADATA' | 'FOLDER_METADATA';
+  fieldType: 'NODE_NAME' | 'IMAGE_ANNOTATION' | 'IMAGE_METADATA' | 'FOLDER_METADATA';
 
   fieldKey?: string;
 
@@ -47,7 +48,8 @@ const buildIndex = (records: IndexedRecord[]) => new Fuse<IndexedRecord>(records
 });
 
 export const useFulltextSearch = (  
-  annotations: { sourceId: string, annotations: W3CAnnotation[] }[]
+  annotations: { sourceId: string, annotations: W3CAnnotation[] }[],
+  graph: Graph
 ) => {
   const store = useStore(); 
 
@@ -56,6 +58,13 @@ export const useFulltextSearch = (
   const [index, setIndex] = useState<Fuse<IndexedRecord>>(undefined);
 
   useEffect(() => {
+    // Node filenames
+    const nodeNameRecords = graph.nodes.map(node => ({
+      nodeId: node.id,
+      fieldType: 'NODE_NAME',
+      fieldValue: node.label
+    } as IndexedRecord))
+
     // Annotation property values: image annotations + image metadata
     const imageRecords = annotations.reduce<IndexedRecord[]>((all, { sourceId, annotations }) => {
       const imageAnnotations = 
@@ -102,7 +111,7 @@ export const useFulltextSearch = (
     }), Promise.resolve([]));
 
     pFolderRecords.then(folderRecords => {
-      const all = [...imageRecords, ...folderRecords];
+      const all = [...nodeNameRecords, ...imageRecords, ...folderRecords];
       setIndex(buildIndex(all));
     });
   }, [annotations, store]);
@@ -111,7 +120,7 @@ export const useFulltextSearch = (
     if (!index) return [];
 
     return index.search(query)
-      .filter(r => r.score < 0.2)
+      .filter(r => r.score < 0.1)
       .map(r => r.item)
   }, [index]);
 

@@ -27,7 +27,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
 
   const { t } = useTranslation('knowledgegraph');
 
-  const { search } = useFulltextSearch(props.annotations);
+  const { search } = useFulltextSearch(props.annotations, props.graph);
 
   const [query, setQuery] = useState('');
 
