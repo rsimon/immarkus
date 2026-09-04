@@ -108,7 +108,7 @@ export const useFulltextSearch = (
   }, [annotations, store]);
 
   const search = useCallback((query: string) => {
-    if (!index) return;
+    if (!index) return [];
 
     return index.search(query)
       .filter(r => r.score < 0.2)

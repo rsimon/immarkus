@@ -148,7 +148,7 @@ export const Builder = (props: BuilderProps) => {
   }
 
   return (
-    <div className="pl-1 pr-4 pb-2.5 pt-4">
+    <div className="pl-4 pr-5 pb-1.5 pt-4">
       <div className="text-xs flex items-center gap-2">
         <span className="w-14 text-right">
           {t('graphSearch.find')}
@@ -226,7 +226,7 @@ export const Builder = (props: BuilderProps) => {
       ))}
 
       {(conditions.length > 0 && isComplete(conditions[conditions.length - 1].sentence)) ? (
-        <div className="flex justify-between pt-4 pl-14 gap-10">
+        <div className="flex justify-between items-center pt-2 pl-12 gap-10">
           <div className="flex items-center gap-4">
             <Button 
               disabled={!conditions.map(c => c.sentence).every(isComplete)}
@@ -245,47 +245,45 @@ export const Builder = (props: BuilderProps) => {
               <Trash2 className="size-3.5 mr-1 mb-px" /> {t('graphSearch.clear')}
             </Button>
 
-            <Button 
-              variant="link"
-              size="sm"
-              className="flex items-center text-xs py-0 px-0 font-normal"
-              onClick={props.onGoToFulltextSearch}>
-              <TextCursorInput className="size-4 mr-1 mb-px" /> {t('graphSearch.simpleSearch')}
-            </Button>
+            {props.query && (
+              <div className="flex items-center gap-2">
+                <ExportSelector 
+                  objectType={objectType}
+                  graph={props.graph} 
+                  query={props.query} />
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button 
+                      disabled={matchedImages.length === 0}
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 gap-1 text-xs font-normal px-1.5"
+                      onClick={() => openInAnnotationView(matchedImages)}>
+                      <PanelsTopLeft className="size-3.5" /> {matchedImages.length} 
+                    </Button>
+                  </TooltipTrigger>
+
+                  <TooltipContent>
+                    {t('graphSearch.openInWorkspace')}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            )}
           </div>
-
-          {props.query && (
-            <div className="flex items-center gap-2">
-              <ExportSelector 
-                objectType={objectType}
-                graph={props.graph} 
-                query={props.query} />
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    disabled={matchedImages.length === 0}
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 gap-1 text-xs font-normal px-1.5"
-                    onClick={() => openInAnnotationView(matchedImages)}>
-                    {matchedImages.length} <PanelsTopLeft className="size-3.5" />
-                  </Button>
-                </TooltipTrigger>
-
-                <TooltipContent>
-                  {t('graphSearch.openInWorkspace')}
-                </TooltipContent>
-              </Tooltip>
-            </div>
-          )}
+          
+          <button 
+            className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 hover:underline hover:text-foreground"
+            onClick={props.onGoToFulltextSearch}>
+            <ChevronRight className="size-4 mr-0.5 mb-px" /> {t('graphSearch.quickSearch')}
+          </button>
         </div>
       ) : (
-        <div className="pt-10 flex justify-end">
+        <div className="pt-10 pb-1.5 flex justify-end">
           <button 
-            className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 hover:underline hover:text-black "
+            className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 hover:underline hover:text-foreground"
             onClick={props.onGoToFulltextSearch}>
-            <ChevronRight className="h-3 w-3" /> Back to simple search
+            <ChevronRight className="h-3 w-3" /> Back to quick search
           </button>
         </div>
       )}
