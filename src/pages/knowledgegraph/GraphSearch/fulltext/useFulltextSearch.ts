@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
 import type { W3CAnnotation } from '@annotorious/react';
+import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource, IIIFResource, PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
 import { fetchManifests } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
 import { Graph } from '../../Types';
-import { CozyManifest } from 'cozy-iiif';
 import { normalizeString } from '../searchUtils';
 
 export interface IndexedRecord { 
