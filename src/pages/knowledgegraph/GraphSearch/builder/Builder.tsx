@@ -283,7 +283,7 @@ export const Builder = (props: BuilderProps) => {
           <button 
             className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 hover:underline hover:text-foreground"
             onClick={props.onGoToFulltextSearch}>
-            <ChevronRight className="h-3 w-3" /> Back to quick search
+            <ChevronRight className="h-3 w-3" /> {t('graphSearch.backToQuickSearch')}
           </button>
         </div>
       )}

@@ -72,6 +72,8 @@
   },
   "graphSearch": {
     "title": "Graph Search",
+    "searchAnnotationsAndMetadata": "Search annotations and metadata...",
+    "useQueryBuilder": "Use query builder",
     "find": "Find",
     "selectNodeType": "select node type...",
     "objectTypes": {
@@ -106,6 +108,7 @@
     "addCondition": "Add Condition",
     "clear": "Clear",
     "quickSearch": "Quick Search",
+    "backToQuickSearch": "Back to quick search",
     "subCondition": "Sub-Condition",
     "where": "where",
     "noMatches": "No matches",

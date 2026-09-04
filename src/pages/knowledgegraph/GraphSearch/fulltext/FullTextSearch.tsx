@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
 import { Input } from '@/ui/Input';
 import { GraphNode } from '../../Types';
@@ -17,6 +18,8 @@ interface FulltextSearchProps {
 
 export const FulltextSearch = (props: FulltextSearchProps) => {
 
+  const { t } = useTranslation('knowledgegraph');
+
   const { search } = useFulltextSearch(props.annotations);
 
   const [query, setQuery] = useState('');
@@ -32,14 +35,14 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
       <Input 
         autoComplete="off"
         value={query}
-        placeholder="Search annotations and metadata..." 
+        placeholder={t('graphSearch.searchAnnotationsAndMetadata')} 
         onChange={e => setQuery(e.target.value)} />
 
       <div className="mt-3 flex justify-end">
         <button 
           className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 mr-0.5 hover:underline hover:text-black "
           onClick={props.onGoToBuilder}>
-          <ChevronRight className="h-3 w-3" /> Use query builder
+          <ChevronRight className="h-3 w-3" /> {t('graphSearch.useQueryBuilder')}
         </button>
       </div>
     </div>
