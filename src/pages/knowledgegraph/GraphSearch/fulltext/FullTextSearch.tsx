@@ -6,7 +6,9 @@ import { useOpenInAnnotationView } from '@/pages/annotate';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { Graph, GraphNode } from '../../Types';
+import { cn } from '@/ui/utils';
+import { Graph, GraphNode, KnowledgeGraphSettings } from '../../Types';
+import { NODE_COLORS } from '../../Styles';
 import { useFulltextSearch } from './useFulltextSearch';
 
 interface FulltextSearchProps {
@@ -16,12 +18,24 @@ interface FulltextSearchProps {
   graph: Graph;
 
   query?:((n: GraphNode) => boolean);
+
+  settings: KnowledgeGraphSettings;
   
   onChangeQuery(query?: ((n: GraphNode) => boolean)): void;
 
   onGoToBuilder(): void;
 
 }
+
+interface ResultCounts {
+
+  folders: number;
+
+  images: number;
+
+}
+
+const EMPTY_RESULT: ResultCounts = { folders: 0, images: 0};
 
 export const FulltextSearch = (props: FulltextSearchProps) => {
 
@@ -41,9 +55,20 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
       .map(m => m.id);
   }, [props.query, props.graph]);
 
+  const matchedFolders = useMemo(() => {
+    if (!props.query) return [];
+
+    return props.graph.nodes
+      .filter(n => n.type === 'FOLDER' && props.query!(n))
+      .map(m => m.id);
+  }, [props.query, props.graph]);
+
   useEffect(() => {
-    const hits = new Set(search(query).map(h => h.nodeId));
+    const result = search(query);
+    const hits = new Set(result.hits.map(h => h.nodeId));
+
     const q = (n: GraphNode) => hits.has(n.id);
+
     props.onChangeQuery(q);
   }, [search, query, props.onChangeQuery]);
 
@@ -55,18 +80,46 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
         placeholder={t('graphSearch.searchAnnotationsAndMetadata')} 
         onChange={e => setQuery(e.target.value)} />
 
-      <div className="mt-1 flex justify-between items-center">
+      <div className="mt-1 ml-0.5 flex justify-between items-center">
         {props.query ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3.5">
+            {props.settings.includeFolders && (
+              <div className={cn(
+                'text-xs font-normal flex gap-1.5 items-center',
+                matchedFolders.length === 0 && 'text-muted-foreground/70 opacity-50'
+              )}>
+                <span 
+                  style={{ backgroundColor: matchedFolders.length > 0 ? NODE_COLORS['FOLDER'] : undefined }} 
+                  className="bg-muted-foreground/50 block size-2 rounded-full mb-px" />
+                {matchedFolders.length} Folders
+              </div>
+            )}
+
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
                   disabled={matchedImages.length === 0}
                   variant="ghost"
                   size="sm"
-                  className="h-7 gap-1 text-xs font-normal px-1.5 -mx-0.5 disabled:text-muted-foreground/70 disabled:hover:bg-transparent"
+                  className="h-7 text-xs font-normal gap-1 px-1.5 -mx-0.5 disabled:text-muted-foreground/70 disabled:hover:bg-transparent"
                   onClick={() => openInAnnotationView(matchedImages)}>
-                  <PanelsTopLeft className="size-3.5" /> {matchedImages.length} 
+
+                  {props.settings.includeFolders ? (
+                    <>
+                      <span 
+                        style={{ 
+                          backgroundColor: matchedImages.length > 0 ? NODE_COLORS['IMAGE'] : undefined
+                        }} 
+                        className="bg-muted-foreground/50 block size-2 rounded-full mr-0.5 mb-px" />
+                      {matchedImages.length} Images
+                      <PanelsTopLeft className="size-3.5" />
+                    </>
+                  ) : (
+                    <>                      
+                      <PanelsTopLeft className="size-3.5" />
+                      {matchedImages.length}
+                    </>
+                  )}
                 </Button>
               </TooltipTrigger>
 

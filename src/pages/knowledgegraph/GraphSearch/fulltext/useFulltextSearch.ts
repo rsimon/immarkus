@@ -9,21 +9,32 @@ import { serializePropertyValue } from '@/utils/serialize';
 import { Graph } from '../../Types';
 import { normalizeString } from '../searchUtils';
 
+export type RecordFieldType = 
+  | 'IMAGE_NAME' 
+  | 'IMAGE_ANNOTATION'
+  | 'IMAGE_METADATA' 
+  | 'FOLDER_NAME'
+  | 'FOLDER_METADATA'
+  | 'IIIF_MANIFEST_METADATA'
+  | 'IIIF_CANVAS_METADATA';
+
 export interface IndexedRecord { 
 
   nodeId: string;
 
-  fieldType: 
-    | 'NODE_NAME' 
-    | 'IMAGE_ANNOTATION'
-    | 'IMAGE_METADATA' 
-    | 'FOLDER_METADATA' 
-    | 'IIIF_MANIFEST_METADATA'
-    | 'IIIF_CANVAS_METADATA';
+  fieldType: RecordFieldType;
 
   fieldKey?: string;
 
   fieldValue: string;
+
+}
+
+export interface SearchResult {
+
+  hits: IndexedRecord[];
+
+  counts: Partial<Record<RecordFieldType, number>>;
 
 }
 
@@ -96,7 +107,7 @@ export const useFulltextSearch = (
     // Node filenames
     const nodeNameRecords = graph.nodes.map(node => ({
       nodeId: node.id,
-      fieldType: 'NODE_NAME',
+      fieldType: node.type === 'IMAGE' ? 'IMAGE_NAME' : 'FOLDER_NAME',
       fieldValue: node.label
     } as IndexedRecord))
 
@@ -156,12 +167,19 @@ export const useFulltextSearch = (
     });
   }, [annotations, store]);
 
-  const search = useCallback((query: string) => {
-    if (!index) return [];
+  const search = useCallback((query: string): SearchResult => {
+    if (!index) return { hits: [], counts: {} };
 
-    return index.search(query)
+    const hits = index.search(query)
       .filter(r => r.score < 0.1)
-      .map(r => r.item)
+      .map(r => r.item);
+
+    const counts = hits.reduce<Partial<Record<RecordFieldType, number>>>((all, hit) => {
+      all[hit.fieldType] = (all[hit.fieldType] ?? 0) + 1;
+      return all;
+    }, {});
+
+    return { hits, counts };
   }, [index]);
 
   return { search };

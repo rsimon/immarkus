@@ -85,7 +85,7 @@ export const Legend = () => {
           <li className="flex gap-2 items-center">
             <span 
               style={{ backgroundColor: NODE_COLORS['ENTITY_TYPE']}} 
-              className="block w-[12px] h-[12px] rounded-full" />
+              className="block size-3 rounded-full" />
             <span>{t('legend.entityClass')}</span>
           </li>
 
@@ -93,7 +93,7 @@ export const Legend = () => {
             <li className="flex gap-2 items-center">
               <span 
                 style={{ backgroundColor: NODE_COLORS['FOLDER']}} 
-                className="block w-[12px] h-[12px] rounded-full" />
+                className="block size-3 rounded-full" />
               <span>{t('legend.subFolder')}</span>
             </li>
           )}
@@ -101,7 +101,7 @@ export const Legend = () => {
           <li className="flex gap-2 items-center">
             <span 
               style={{ backgroundColor: NODE_COLORS['IMAGE']}} 
-              className="block w-[12px] h-[12px] rounded-full"/>
+              className="block size-3 rounded-full" />
             <span>{t('legend.image')}</span>
           </li>
         </ul>

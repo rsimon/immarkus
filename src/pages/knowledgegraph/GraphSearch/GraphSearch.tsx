@@ -69,6 +69,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
             annotations={props.annotations}
             graph={props.graph}
             query={props.query}
+            settings={props.settings}
             onChangeQuery={props.onChangeQuery}
             onGoToBuilder={() => setTab('builder')} />
         ) : (
