@@ -5,7 +5,7 @@ import { PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
 import { serializePropertyValue } from '@/utils/serialize';
 
-interface IndexedRecord { 
+export interface IndexedRecord { 
 
   nodeId: string;
 

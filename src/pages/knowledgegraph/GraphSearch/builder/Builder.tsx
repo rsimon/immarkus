@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
-import { ChevronRight, CirclePlus, PanelsTopLeft, TextCursorInput, Trash2, X } from 'lucide-react';
+import { ChevronRight, CirclePlus, PanelsTopLeft, Trash2 } from 'lucide-react';
 import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';

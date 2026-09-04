@@ -67,6 +67,8 @@ export const GraphSearch = (props: GraphSearchProps) => {
         {tab === 'fulltext' ? (
           <FulltextSearch 
             annotations={props.annotations}
+            graph={props.graph}
+            query={props.query}
             onChangeQuery={props.onChangeQuery}
             onGoToBuilder={() => setTab('builder')} />
         ) : (
