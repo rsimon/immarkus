@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
-import { CirclePlus, PanelsTopLeft, TextCursorInput, Trash2, X } from 'lucide-react';
+import { ChevronRight, CirclePlus, PanelsTopLeft, TextCursorInput, Trash2, X } from 'lucide-react';
 import { useOpenInAnnotationView } from '@/pages/annotate/AnnotationViewState';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
@@ -148,7 +148,7 @@ export const Builder = (props: BuilderProps) => {
   }
 
   return (
-    <div className="pl-1 pr-5 pb-2 pt-4">
+    <div className="pl-1 pr-4 pb-2.5 pt-4">
       <div className="text-xs flex items-center gap-2">
         <span className="w-14 text-right">
           {t('graphSearch.find')}
@@ -281,14 +281,12 @@ export const Builder = (props: BuilderProps) => {
           )}
         </div>
       ) : (
-        <div className="px-2 pt-8">
-          <Button 
-            variant="link"
-            size="sm"
-            className="h-auto text-xs p-0 font-normal"
+        <div className="pt-10 flex justify-end">
+          <button 
+            className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 hover:underline hover:text-black "
             onClick={props.onGoToFulltextSearch}>
-            {t('graphSearch.simpleSearch')}
-          </Button>
+            <ChevronRight className="h-3 w-3" /> Back to simple search
+          </button>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import { Button } from '@/ui/Button';
+import { ChevronRight } from 'lucide-react';
 import { Input } from '@/ui/Input';
 
 interface FulltextSearchProps {
@@ -11,16 +11,15 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
 
   return (
     <div className="px-4 py-4">
-        <Input 
-          placeholder="Search annotations and metadata..." />
+      <Input 
+        placeholder="Search annotations and metadata..." />
 
-      <div className="mt-1.5">
-        <Button 
-          variant="link"
-          className="text-xs p-1 h-auto font-normal text-muted-foreground/70 hover:text-foreground"
+      <div className="mt-2 flex justify-end">
+        <button 
+          className="flex items-center text-[11.5px] text-muted-foreground gap-0.5 mr-0.5 hover:underline hover:text-black "
           onClick={props.onGoToBuilder}>
-          Query builder
-        </Button>
+          <ChevronRight className="h-3 w-3" /> Use query builder
+        </button>
       </div>
     </div>
   )
