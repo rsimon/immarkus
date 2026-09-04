@@ -88,7 +88,7 @@ export const useFulltextSearch = (
 
     const pFolderRecords = store.folders.reduce<Promise<IndexedRecord[]>>((p, folder) => p.then(all => {
       return store.getFolderMetadata(folder.handle).then(meta => {
-        return [
+        return meta ? [
           ...all, 
           ...getProperties(meta, model.folderSchemas.map(({ name, properties }) => ({ id: name, properties })))
             .map(([key, val]) => ({
@@ -97,7 +97,7 @@ export const useFulltextSearch = (
               fieldKey: key,
               fieldValue: val
             } as IndexedRecord))
-        ];
+        ] : all;
       })
     }), Promise.resolve([]));
 
