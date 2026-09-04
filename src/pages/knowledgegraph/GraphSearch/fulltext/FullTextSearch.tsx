@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ChevronRight, PanelsTopLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
+import { Spinner } from '@/components/Spinner';
 import { useOpenInAnnotationView } from '@/pages/annotate';
 import { Button } from '@/ui/Button';
 import { Input } from '@/ui/Input';
@@ -35,13 +36,11 @@ interface ResultCounts {
 
 }
 
-const EMPTY_RESULT: ResultCounts = { folders: 0, images: 0};
-
 export const FulltextSearch = (props: FulltextSearchProps) => {
 
   const { t } = useTranslation('knowledgegraph');
 
-  const { search } = useFulltextSearch(props.annotations, props.graph);
+  const { search, initializing } = useFulltextSearch(props.annotations, props.graph);
 
   const [query, setQuery] = useState('');
 
@@ -72,7 +71,11 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
     props.onChangeQuery(q);
   }, [search, query, props.onChangeQuery]);
 
-  return (
+  return initializing ? (
+    <div className="px-2 py-9 flex items-center justify-center">
+      <Spinner className="size-4 text-muted-foreground" />
+    </div>
+  ) : (
     <div className="px-4 py-4">
       <Input 
         autoComplete="off"

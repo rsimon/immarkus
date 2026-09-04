@@ -101,6 +101,8 @@ export const useFulltextSearch = (
 
   const model = store.getDataModel();
 
+  const [initializing, setInitializing] = useState(true);
+
   const [index, setIndex] = useState<Fuse<IndexedRecord>>(undefined);
 
   useEffect(() => {
@@ -138,7 +140,7 @@ export const useFulltextSearch = (
               fieldValue: val
             } as IndexedRecord)))
         // TODO add folder metadata
-      ]
+      ];
     }, []);
 
     const pFolderRecords = () => store.folders.reduce<Promise<IndexedRecord[]>>((p, folder) => p.then(all => {
@@ -163,6 +165,7 @@ export const useFulltextSearch = (
       pIIIFRecords().then(iiifRecords => {
         const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
         setIndex(buildIndex(all));
+        setInitializing(false);
       });
     });
   }, [annotations, store]);
@@ -182,6 +185,6 @@ export const useFulltextSearch = (
     return { hits, counts };
   }, [index]);
 
-  return { search };
+  return { search, initializing };
 
 }
