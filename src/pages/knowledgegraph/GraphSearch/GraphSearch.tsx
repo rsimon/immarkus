@@ -40,6 +40,7 @@ export const GraphSearch = (props: GraphSearchProps) => {
    
   useDraggable(el, {
     position,
+    cancel: 'input',
     onDrag: ({ offsetX, offsetY }) => setPosition({ x: offsetX, y: offsetY })
   });
 
