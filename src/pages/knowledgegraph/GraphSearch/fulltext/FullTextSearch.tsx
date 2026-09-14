@@ -77,7 +77,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
     </div>
   ) : error ? (
     <div className="px-2 py-9 flex text-red-600 gap-2 items-center justify-center text-sm">
-      <Ban className="size-3.5" /> Something went wrong: {error}
+      <Ban className="size-3.5" /> {t('graphSearch.somethingWentWrong')}: {error}
     </div>
   ) : (
     <div className="px-4 py-4">
@@ -98,7 +98,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
                 <span 
                   style={{ backgroundColor: matchedFolders.length > 0 ? NODE_COLORS['FOLDER'] : undefined }} 
                   className="bg-muted-foreground/50 block size-2 rounded-full mb-px" />
-                {matchedFolders.length} Folders
+                {matchedFolders.length} {t('graphSearch.folders')}
               </div>
             )}
 
@@ -118,7 +118,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
                           backgroundColor: matchedImages.length > 0 ? NODE_COLORS['IMAGE'] : undefined
                         }} 
                         className="bg-muted-foreground/50 block size-2 rounded-full mr-0.5 mb-px" />
-                      {matchedImages.length} Images
+                      {matchedImages.length} {t('graphSearch.images')}
                       <PanelsTopLeft className="size-3.5" />
                     </>
                   ) : (

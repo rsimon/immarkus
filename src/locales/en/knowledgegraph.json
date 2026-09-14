@@ -73,6 +73,9 @@
   "graphSearch": {
     "title": "Graph Search",
     "searchAnnotationsAndMetadata": "Search annotations and metadata...",
+    "somethingWentWrong": "Something went wrong:",
+    "images": "Images",
+    "folders": "Folders",
     "useQueryBuilder": "Use query builder",
     "find": "Find",
     "selectNodeType": "select node type...",
