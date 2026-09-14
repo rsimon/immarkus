@@ -60,7 +60,10 @@ const getProperties = (a: W3CAnnotation, schemas: { id: string, properties?: Pro
 
 const buildManifestIndexRecords = (manifest: CozyManifest, resources: IIIFResource[]): IndexedRecord[] => {
   const resource = resources.find(r => r.uri === manifest.id);
-  if (!resource) throw `IIIF manifest integrity error: ${manifest.id}`; // Should never happen
+  if (!resource) {
+    console.warn(`IIIF manifest integrity error: ${manifest.id}`);
+    return [];
+  }
 
   const manifestRecords = manifest.getMetadata().map(({ label , value }) => ({
     nodeId: `iiif:${resource.id}`,
@@ -106,12 +109,15 @@ export const useFulltextSearch = (
   const [index, setIndex] = useState<Fuse<IndexedRecord>>(undefined);
 
   useEffect(() => {
+    const startTime = performance.now();
+    console.log(`Building fulltext index for ${graph.nodes.length} nodes`);
+
     // Node filenames
     const nodeNameRecords = graph.nodes.map(node => ({
       nodeId: node.id,
       fieldType: node.type === 'IMAGE' ? 'IMAGE_NAME' : 'FOLDER_NAME',
       fieldValue: node.label
-    } as IndexedRecord))
+    } as IndexedRecord));
 
     // Annotation property values: image annotations + image metadata
     const imageRecords = annotations.reduce<IndexedRecord[]>((all, { sourceId, annotations }) => {
@@ -164,8 +170,11 @@ export const useFulltextSearch = (
     pFolderRecords().then(folderRecords => {
       pIIIFRecords().then(iiifRecords => {
         const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
+
         setIndex(buildIndex(all));
         setInitializing(false);
+
+        console.log(`Took ${Math.round(100 * performance.now() - startTime) / 100000}s`);
       });
     });
   }, [annotations, store]);
