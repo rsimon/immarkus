@@ -58,8 +58,8 @@ const getProperties = (a: W3CAnnotation, schemas: { id: string, properties?: Pro
   }, []);
 }
 
-const buildManifestIndexRecords = (manifest: CozyManifest, resources: IIIFResource[]): IndexedRecord[] => {
-  const resource = resources.find(r => r.uri === manifest.id);
+const buildManifestIndexRecords = (manifest: CozyManifest, downloadURL: string, resources: IIIFResource[]): IndexedRecord[] => {
+  const resource = resources.find(r => r.uri === downloadURL);
   if (!resource) {
     console.warn(`IIIF manifest integrity error: ${manifest.id}`);
     return [];
@@ -164,8 +164,13 @@ export const useFulltextSearch = (
       })
     }), Promise.resolve([]));
 
+    const manifestUrls = store.iiifResources.map(r => r.uri);
+
     const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
-      .then(manifests => manifests.flatMap(m => buildManifestIndexRecords(m, store.iiifResources)));
+      .then(manifests => {
+        return manifests.flatMap((m, idx) => 
+          buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources))
+      });
 
     pFolderRecords().then(folderRecords => {
       pIIIFRecords().then(iiifRecords => {
