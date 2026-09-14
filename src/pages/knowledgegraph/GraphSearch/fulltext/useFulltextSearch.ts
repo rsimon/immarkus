@@ -105,83 +105,84 @@ export const useFulltextSearch = (
   const model = store.getDataModel();
 
   const [initializing, setInitializing] = useState(true);
+  const [error, setError] = useState<string | undefined>();
 
   const [index, setIndex] = useState<Fuse<IndexedRecord>>(undefined);
 
   useEffect(() => {
-    const startTime = performance.now();
-    console.log(`Building fulltext index for ${graph.nodes.length} nodes`);
+    try {
+      const startTime = performance.now();
+      console.log(`Building fulltext index for ${graph.nodes.length} nodes`);
 
-    // Node filenames
-    const nodeNameRecords = graph.nodes.map(node => ({
-      nodeId: node.id,
-      fieldType: node.type === 'IMAGE' ? 'IMAGE_NAME' : 'FOLDER_NAME',
-      fieldValue: node.label
-    } as IndexedRecord));
+      // Node filenames
+      const nodeNameRecords = graph.nodes.map(node => ({
+        nodeId: node.id,
+        fieldType: node.type === 'IMAGE' ? 'IMAGE_NAME' : 'FOLDER_NAME',
+        fieldValue: node.label
+      } as IndexedRecord));
 
-    // Annotation property values: image annotations + image metadata
-    const imageRecords = annotations.reduce<IndexedRecord[]>((all, { sourceId, annotations }) => {
-      const imageAnnotations = 
-        annotations.filter(a => typeof a.target !== 'string' && 'selector' in a.target);
+      // Annotation property values: image annotations + image metadata
+      const imageRecords = annotations.reduce<IndexedRecord[]>((all, { sourceId, annotations }) => {
+        const imageAnnotations = 
+          annotations.filter(a => typeof a.target !== 'string' && 'selector' in a.target);
 
-      const metaAnnotations = 
-        annotations.filter(a => typeof a.target !== 'string' && !('selector' in a.target));
+        const metaAnnotations = 
+          annotations.filter(a => typeof a.target !== 'string' && !('selector' in a.target));
 
-      return [
-        ...all, 
-        ...imageAnnotations.flatMap(a => 
-          getProperties(a, model.entityTypes)
-            .map(([key, val]) => ({
-              nodeId: sourceId,
-              fieldType: 'IMAGE_ANNOTATION',
-              fieldKey: key,
-              fieldValue: val
-            } as IndexedRecord))),
-        ...metaAnnotations.flatMap(a => 
-          getProperties(a, model.imageSchemas.map(({ name, properties }) => ({ id: name, properties })))
-            .map(([key, val]) => ({
-              nodeId: sourceId,
-              fieldType: 'IMAGE_METADATA',
-              fieldKey: key,
-              fieldValue: val
-            } as IndexedRecord)))
-        // TODO add folder metadata
-      ];
-    }, []);
-
-    const pFolderRecords = () => store.folders.reduce<Promise<IndexedRecord[]>>((p, folder) => p.then(all => {
-      return store.getFolderMetadata(folder.handle).then(meta => {
-        return meta ? [
+        return [
           ...all, 
-          ...getProperties(meta, model.folderSchemas.map(({ name, properties }) => ({ id: name, properties })))
-            .map(([key, val]) => ({
-              nodeId: folder.id,
-              fieldType: 'FOLDER_METADATA',
-              fieldKey: key,
-              fieldValue: val
-            } as IndexedRecord))
-        ] : all;
-      })
-    }), Promise.resolve([]));
+          ...imageAnnotations.flatMap(a => 
+            getProperties(a, model.entityTypes)
+              .map(([key, val]) => ({
+                nodeId: sourceId,
+                fieldType: 'IMAGE_ANNOTATION',
+                fieldKey: key,
+                fieldValue: val
+              } as IndexedRecord))),
+          ...metaAnnotations.flatMap(a => 
+            getProperties(a, model.imageSchemas.map(({ name, properties }) => ({ id: name, properties })))
+              .map(([key, val]) => ({
+                nodeId: sourceId,
+                fieldType: 'IMAGE_METADATA',
+                fieldKey: key,
+                fieldValue: val
+              } as IndexedRecord)))
+          // TODO add folder metadata
+        ];
+      }, []);
 
-    const manifestUrls = store.iiifResources.map(r => r.uri);
-
-    const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
-      .then(manifests => {
-        return manifests.flatMap((m, idx) => 
-          buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources))
+    const pFolderRecords = () => Promise.all(store.folders.map(folder => {
+      return store.getFolderMetadata(folder.handle).then(meta => {
+        return meta ? getProperties(meta, model.folderSchemas.map(({ name, properties }) => ({ id: name, properties })))
+          .map(([key, val]) => ({
+            nodeId: folder.id,
+            fieldType: 'FOLDER_METADATA',
+            fieldKey: key,
+            fieldValue: val
+          } as IndexedRecord)) : [];
       });
+    })).then(nested => nested.flat());
+      const manifestUrls = store.iiifResources.map(r => r.uri);
 
-    pFolderRecords().then(folderRecords => {
-      pIIIFRecords().then(iiifRecords => {
-        const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
+      const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
+        .then(manifests => {
+          return manifests.flatMap((m, idx) => 
+            buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources))
+        });
 
-        setIndex(buildIndex(all));
-        setInitializing(false);
+      pFolderRecords().then(folderRecords => {
+        pIIIFRecords().then(iiifRecords => {
+          const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
 
-        console.log(`Took ${Math.round(100 * performance.now() - startTime) / 100000}s`);
-      });
-    });
+          setIndex(buildIndex(all));
+          setInitializing(false);
+
+          console.log(`Took ${performance.now() - startTime}ms`);
+        });
+      }).catch(error => { setError(error.message) });
+    } catch (error) {
+      setError(error.message);
+    }
   }, [annotations, store]);
 
   const search = useCallback((query: string): SearchResult => {
@@ -199,6 +200,6 @@ export const useFulltextSearch = (
     return { hits, counts };
   }, [index]);
 
-  return { search, initializing };
+  return { search, error, initializing };
 
 }

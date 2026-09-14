@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronRight, PanelsTopLeft } from 'lucide-react';
+import { Ban, ChevronRight, PanelsTopLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
 import { Spinner } from '@/components/Spinner';
@@ -40,7 +40,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
 
   const { t } = useTranslation('knowledgegraph');
 
-  const { search, initializing } = useFulltextSearch(props.annotations, props.graph);
+  const { search, initializing, error } = useFulltextSearch(props.annotations, props.graph);
 
   const [query, setQuery] = useState('');
 
@@ -74,6 +74,10 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
   return initializing ? (
     <div className="px-2 py-9 flex items-center justify-center">
       <Spinner className="size-4 text-muted-foreground" />
+    </div>
+  ) : error ? (
+    <div className="px-2 py-9 flex text-red-600 gap-2 items-center justify-center text-sm">
+      <Ban className="size-3.5" /> Something went wrong: {error}
     </div>
   ) : (
     <div className="px-4 py-4">

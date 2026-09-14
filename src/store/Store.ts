@@ -1,6 +1,6 @@
 import { W3CAnnotation, W3CAnnotationBody } from '@annotorious/react';
 import { v4 as uuidv4 } from 'uuid';
-import { FileImage, Folder, FolderItems, Image, LoadedFileImage, LoadedImage, RootFolder } from '@/model';
+import { FileImage, Folder, FolderItems, Image, LoadedFileImage, RootFolder } from '@/model';
 import { parseIIIFId } from '@/utils/iiif';
 import { generateShortId, hasSelector, readImageFile, readJSONFile, writeJSONFile } from './utils';
 import { loadDataModel, DataModelStore } from './datamodel/DataModelStore';
