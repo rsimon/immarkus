@@ -7,6 +7,7 @@ import { PaginationWidget } from '../Pagination';
 import { ToolbarButton } from '../ToolbarButton';
 import { AnnotationMode } from '../AnnotationMode';
 import { RelationEditor } from '../RelationEditor';
+import { ToolbarToggle } from '../ToolbarToggle';
 import { AddImage } from './AddImage';
 import { BookmarkWorkspace } from './BookmarkWorkspace';
 import { CopyToClipboard } from './CopyToClipboard';
@@ -16,6 +17,7 @@ import {
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare, 
+  SquareCenterlineDashedHorizontal, 
   Undo2 
 } from 'lucide-react';
 
@@ -24,6 +26,8 @@ interface MoreToolsPanelProps {
   hideAnnotations: boolean;
 
   images: LoadedImage[];
+
+  isFlipped: boolean;
 
   mode: AnnotationMode;
 
@@ -44,6 +48,8 @@ interface MoreToolsPanelProps {
   onRedo(): void;
 
   onRotate(clockwise: boolean): void;
+
+  onFlip(flipped: boolean): void;
 
   onUndo(): void;
 
@@ -105,6 +111,14 @@ export const MoreToolsPanel = (props: MoreToolsPanelProps) => {
             <RotateCwSquare 
               className="h-8 w-8 p-2" />
           </ToolbarButton>
+
+          <ToolbarToggle
+            disabled={props.osdToolsDisabled}
+            pressed={props.isFlipped}
+            onPressedChange={props.onFlip}>
+            <SquareCenterlineDashedHorizontal 
+                className="size-8 p-2" />
+          </ToolbarToggle>
 
           <Separator orientation="vertical" className="h-4" />
 
