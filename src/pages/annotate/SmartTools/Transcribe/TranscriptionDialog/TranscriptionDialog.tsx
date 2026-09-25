@@ -59,6 +59,8 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
   const [rotation, setRotation] = useState<Rotation>(0);
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const [options, setOptions] = useState<OCROptions>({
     connectorId: ServiceRegistry.listAvailableConnectors('TRANSCRIPTION')[0].id 
   });
@@ -138,7 +140,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
   const onSubmitImage = () => { 
     if (!service.connector) return;
 
-    preprocess(props.image, region, rotation, setProcessingState).then(result => {
+    preprocess(props.image, region, rotation, isFlipped, setProcessingState).then(result => {
       setProcessingState('pending');
 
       const image = 'file' in result ? result.file : result.url;
@@ -206,6 +208,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                   processingState={processingState}
                   onChangeRegion={onChangeRegion}
                   onChangeRotation={setRotation}
+                  onChangeFlipped={setIsFlipped}
                   onClearAnnotations={onClearAnnotations}
                   onImportAnnotations={onImportAnnotations} />
               </div>

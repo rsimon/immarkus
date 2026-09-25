@@ -99,6 +99,7 @@ export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
   rotation: Rotation,
+  isFlipped: boolean, 
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
   if (region) {

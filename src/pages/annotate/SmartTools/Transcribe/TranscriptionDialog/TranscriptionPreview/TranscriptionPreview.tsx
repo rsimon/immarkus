@@ -25,6 +25,8 @@ interface TranscriptionPreviewProps {
 
   image: LoadedImage;
 
+  onChangeFlipped(flipped: boolean): void;
+
   onChangeRegion(region?: Region): void;
 
   onChangeRotation(rotation: Rotation): void;
@@ -94,6 +96,7 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
           onChangeRegion={props.onChangeRegion} />
 
         <NavControls 
+          onChangeFlipped={props.onChangeFlipped}
           onChangeRotation={props.onChangeRotation} />
 
         <OpenSeadragonHoverTooltip 

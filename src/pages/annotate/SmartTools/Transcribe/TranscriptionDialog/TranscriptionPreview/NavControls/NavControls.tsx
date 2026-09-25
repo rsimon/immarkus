@@ -8,6 +8,8 @@ import { Toggle } from '@/ui/Toggle';
 
 interface NavControlsProps {
 
+  onChangeFlipped(flipped: boolean): void;
+
   onChangeRotation(rotation: Rotation): void;
 
 }
@@ -27,8 +29,10 @@ export const NavControls = (props: NavControlsProps) => {
     props.onChangeRotation(viewer.viewport.getRotation() as Rotation);
   }
 
-  const onFlip = (flipped: boolean) =>
+  const onFlip = (flipped: boolean) => {
     viewer.viewport.setFlip(flipped);
+    props.onChangeFlipped(flipped);
+  }
 
   const onZoom = (factor: number) => () =>
     viewer.viewport.zoomBy(factor);
