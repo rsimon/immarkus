@@ -162,8 +162,6 @@ export const preprocess = (
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
       const regionURL = firstImage.getRegionURL(region, { degrees: rotation, mirrored: isFlipped }, { minSize: Math.min(region.w, region.h)});
 
-      // console.log('IIIF region:', regionURL);
-
       /**
        * Case 1: Dynamic IIIF image service snippet with region
        */
@@ -178,8 +176,6 @@ export const preprocess = (
           const inputFile = rotation === 0
             ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
             : transformImage(new Blob([snippet.data as BlobPart]), rotation, isFlipped, image.file.type).then(blob => {
-              console.log('asfasdfasd');
-              window.open(URL.createObjectURL(blob));
               return new File([blob], image.name, { type: image.file.type }) }
             );
 
@@ -225,8 +221,9 @@ export const preprocess = (
     if ('file' in image) {
       const inputFile = rotation === 0
         ? Promise.resolve(image.file)
-        : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob =>
-          new File([blob], image.name, { type: image.file.type }));
+        : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob => {
+          return new File([blob], image.name, { type: image.file.type })
+        });
 
       return inputFile.then(data => getImageDimensions(data).then(({ width, height }) => {
         /**
