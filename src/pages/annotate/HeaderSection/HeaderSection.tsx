@@ -7,6 +7,7 @@ import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
 import { AnnotationMode, Tool } from '../AnnotationMode';
+import { ToolbarToggle } from '../ToolbarToggle';
 import { RelationEditor } from '../RelationEditor';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
@@ -28,7 +29,6 @@ import {
   ZoomIn, 
   ZoomOut 
 } from 'lucide-react';
-import { ToolbarToggle } from '../ToolbarToggle';
 
 interface HeaderSectionProps {
 
