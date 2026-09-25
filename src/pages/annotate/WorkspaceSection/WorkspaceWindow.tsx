@@ -70,8 +70,12 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
     props.onClose();
   }
 
-  const onRotate = (clockwise: boolean) =>
-    viewer?.viewport.rotateBy(clockwise ? 90 : -90);
+  const onRotate = (clockwise: boolean) => {
+    const signFlip = isFlipped ? -1 : 1;
+    const signDir = clockwise ? 1: -1;
+    const angle = 90 * signFlip * signDir;
+    viewer?.viewport.rotateBy(angle);
+  }
 
   const onFlip = (flipped: boolean) => {
     if (!viewer) return;
