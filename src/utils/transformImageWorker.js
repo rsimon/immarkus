@@ -34,8 +34,8 @@ function transformImage(
     if (!context) throw new Error('Failed to get canvas context');
 
     context.translate(outWidth / 2, outHeight / 2);
-    context.rotate(rad);
     if (flipped) context.scale(-1, 1);
+    context.rotate(rad);
     context.drawImage(imageBitmap, -width / 2, -height / 2);
 
     imageBitmap.close();
