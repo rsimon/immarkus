@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { RotateCcwSquare, RotateCwSquare, ZoomIn, ZoomOut } from 'lucide-react';
+import { RotateCcwSquare, RotateCwSquare, SquareCenterlineDashedHorizontal, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewer } from '@annotorious/react';
 import { Rotation } from '@/services';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
+import { Toggle } from '@/ui/Toggle';
 
 interface NavControlsProps {
 
@@ -17,13 +18,20 @@ export const NavControls = (props: NavControlsProps) => {
 
   const viewer = useViewer();
 
-  const onZoom = (factor: number) => () =>
-    viewer.viewport.zoomBy(factor);
-
   const onRotate = (clockwise: boolean) => () => {
-    viewer.viewport.rotateBy(clockwise ? 90 : -90);
+    const signFlip = viewer.viewport.getFlip() ? -1 : 1;
+    const signDir = clockwise ? 1: -1;
+    const angle = 90 * signFlip * signDir;
+
+    viewer.viewport.rotateBy(angle);
     props.onChangeRotation(viewer.viewport.getRotation() as Rotation);
   }
+
+  const onFlip = (flipped: boolean) =>
+    viewer.viewport.setFlip(flipped);
+
+  const onZoom = (factor: number) => () =>
+    viewer.viewport.zoomBy(factor);
 
   return (
     <div className="absolute top-2 right-2 flex gap-2">
@@ -54,6 +62,20 @@ export const NavControls = (props: NavControlsProps) => {
 
         <TooltipContent collisionPadding={20}>
           {t('transcribe.nav.rotateClockwise')}
+        </TooltipContent>
+      </Tooltip>
+
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Toggle
+            className="bg-white shadow-xs size-9.5"
+            onPressedChange={onFlip}>
+            <SquareCenterlineDashedHorizontal className="size-4.5" />
+          </Toggle>
+        </TooltipTrigger>
+
+        <TooltipContent collisionPadding={20}>
+          {t('transcribe.nav.rotateCounterClockwise')}
         </TooltipContent>
       </Tooltip>
 
