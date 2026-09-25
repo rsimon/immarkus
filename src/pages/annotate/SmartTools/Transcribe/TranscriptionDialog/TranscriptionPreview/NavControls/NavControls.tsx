@@ -75,7 +75,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.rotateCounterClockwise')}
+          {t('transcribe.nav.flip')}
         </TooltipContent>
       </Tooltip>
 
