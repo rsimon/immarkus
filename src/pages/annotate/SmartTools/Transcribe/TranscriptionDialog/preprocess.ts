@@ -119,15 +119,24 @@ export const preprocess = (
       const deg = ((rot % 360) + 360) % 360;
 
       const transformPoint = (x: number, y: number): Point => {
+        let sx = isFlipped ? snippetWidth - x : x;
+        let sy = y;
+
         let ux: number;
         let uy: number;
 
-        if (deg === 0 || deg === 180) {
-          ux = x * (region.w / snippetWidth);
-          uy = y * (region.h / snippetHeight);
-        } else if (deg === 90 || deg === 270) {
-          ux = x * (region.w / snippetHeight);
-          uy = y * (region.h / snippetWidth);
+        if (deg === 0) {
+          ux = sx * (region.w / snippetWidth);
+          uy = sy * (region.h / snippetHeight);
+        } else if (deg === 90) {
+          ux = (snippetHeight - sy) * (region.w / snippetHeight);
+          uy = sx * (region.h / snippetWidth);
+        } else if (deg === 180) {
+          ux = (snippetWidth - sx) * (region.w / snippetWidth);
+          uy = (snippetHeight - sy) * (region.h / snippetHeight);
+        } else if (deg === 270) {
+          ux = sy * (region.w / snippetHeight);
+          uy = (snippetWidth - sx) * (region.h / snippetWidth);
         } else {
           throw new Error('Unsupported rotation:' + rot);
         }
