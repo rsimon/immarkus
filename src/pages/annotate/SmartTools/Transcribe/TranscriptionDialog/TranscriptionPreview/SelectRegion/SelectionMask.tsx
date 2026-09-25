@@ -64,7 +64,11 @@ export const SelectionMask = (props: SelectionMaskProps) => {
       const p = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(0, 0), true);
 
       const scale = zoom * containerWidth / viewer.world.getContentFactor();
-      const transform = `translate(${p.x}, ${p.y}) scale(${scale}, ${scale}) rotate(${rotation})`;
+
+      const base = `translate(${p.x}, ${p.y}) scale(${scale}, ${scale}) rotate(${rotation})`;
+      const transform = viewer.viewport.getFlip()
+        ? `translate(${containerWidth}, 0) scale(-1, 1) ${base}`
+        : base;
 
       container.setAttribute('transform', transform);
     }

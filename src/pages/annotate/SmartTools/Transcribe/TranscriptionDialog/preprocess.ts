@@ -4,7 +4,7 @@ import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { PageTransform, Point, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
-import { rotateImage } from '@/utils/rotateImage';
+import { transformImage } from '@/utils/transformImage';
 import { ProcessingState } from '../Types';
 
 interface IntermediateBasePreprocessingResult {
@@ -160,7 +160,9 @@ export const preprocess = (
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, rotation, { minSize: Math.min(region.w, region.h)});
+      const regionURL = firstImage.getRegionURL(region, { degrees: rotation, mirrored: isFlipped }, { minSize: Math.min(region.w, region.h)});
+
+      // console.log('IIIF region:', regionURL);
 
       /**
        * Case 1: Dynamic IIIF image service snippet with region
@@ -175,8 +177,11 @@ export const preprocess = (
         if ('data' in snippet && 'file' in image) {
           const inputFile = rotation === 0
             ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
-            : rotateImage(new Blob([snippet.data as BlobPart]), rotation, image.file.type).then(blob =>
-              new File([blob], image.name, { type: image.file.type }));
+            : transformImage(new Blob([snippet.data as BlobPart]), rotation, isFlipped, image.file.type).then(blob => {
+              console.log('asfasdfasd');
+              window.open(URL.createObjectURL(blob));
+              return new File([blob], image.name, { type: image.file.type }) }
+            );
 
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region
@@ -220,7 +225,7 @@ export const preprocess = (
     if ('file' in image) {
       const inputFile = rotation === 0
         ? Promise.resolve(image.file)
-        : rotateImage(image.file, rotation, image.file.type).then(blob =>
+        : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob =>
           new File([blob], image.name, { type: image.file.type }));
 
       return inputFile.then(data => getImageDimensions(data).then(({ width, height }) => {
