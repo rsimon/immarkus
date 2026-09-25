@@ -41,6 +41,7 @@
     "copyBoundingBox": "Copy bounding box",
     "rotateCounterclockwise": "Rotate image counterclockwise",
     "rotateClockwise": "Rotate image clockwise",
+    "flip": "Flip image",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "undo": "Undo",

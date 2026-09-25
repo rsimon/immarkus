@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAnnotoriousManifold, useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
@@ -7,6 +7,7 @@ import { Separator } from '@/ui/Separator';
 import { PaginationWidget } from '../Pagination';
 import { SavingState } from '../SavingState';
 import { AnnotationMode, Tool } from '../AnnotationMode';
+import { ToolbarToggle } from '../ToolbarToggle';
 import { RelationEditor } from '../RelationEditor';
 import { ToolbarButton } from '../ToolbarButton';
 import { AddImage } from './AddImage';
@@ -23,6 +24,7 @@ import {
   Redo2, 
   RotateCcwSquare, 
   RotateCwSquare,
+  SquareCenterlineDashedHorizontal,
   Undo2, 
   ZoomIn, 
   ZoomOut 
@@ -60,11 +62,15 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const viewers = useViewers();
 
+  const viewer = useMemo(() => Array.from(viewers.values())[0], [viewers]);
+
   const manifold = useAnnotoriousManifold();
 
   const osdToolsDisabled = props.images.length === 0 || props.images.length > 1;
 
   const [relationsEditorOpen, setRelationsEditorOpen] = useState(false);
+
+  const [isFlipped, setIsFlipped] = useState(viewer ? viewer.viewport.getFlip() : false);
 
   /** 
    * The toolbar has a 'collapsed mode', GDocs-style, 
@@ -83,14 +89,21 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   const onRotate = (clockwise: boolean) => {
-    const viewer = Array.from(viewers.values())[0];
-    viewer.viewport.rotateBy(clockwise ? 90 : -90);
+    const signFlip = isFlipped ? -1 : 1;
+    const signDir = clockwise ? 1: -1;
+    const angle = 90 * signFlip * signDir;
+    viewer?.viewport.rotateBy(angle);
   }
 
-  const onZoom = (factor: number) => () => {
-    const viewer = Array.from(viewers.values())[0];
-    viewer.viewport.zoomBy(factor);
+  const onFlip = (flipped: boolean) => {
+    if (!viewer) return;
+
+    viewer.viewport.setFlip(flipped);
+    setIsFlipped(flipped);
   }
+
+  const onZoom = (factor: number) => () =>
+    viewer?.viewport.zoomBy(factor);
 
   const onUndo = () => {
     const anno = manifold.getAnnotator(props.images[0].id);
@@ -140,6 +153,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <MoreToolsPanel 
               hideAnnotations={props.hideAnnotations}
               images={props.images}
+              isFlipped={isFlipped}
               mode={props.mode}
               relationsEditorOpen={relationsEditorOpen}
               osdToolsDisabled={osdToolsDisabled}
@@ -150,6 +164,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               onRelationsEditorOpenChange={onRelationsEditorOpenChange}
               onRedo={onRedo}
               onRotate={onRotate}
+              onFlip={onFlip}
               onUndo={onUndo} />
 
             <Separator orientation="vertical" className="h-4" />
@@ -194,6 +209,15 @@ export const HeaderSection = (props: HeaderSectionProps) => {
               <RotateCwSquare 
                 className="size-8 p-2" />
             </ToolbarButton>
+
+            <ToolbarToggle
+              disabled={osdToolsDisabled}
+              pressed={isFlipped}
+              onPressedChange={onFlip}
+              tooltip={t('headerSection.flip')}>
+              <SquareCenterlineDashedHorizontal 
+                className="size-8 p-2" />
+            </ToolbarToggle>
           </>
         )}
 

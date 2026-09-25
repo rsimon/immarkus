@@ -1,10 +1,11 @@
-import { forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useState } from 'react';
 import { MosaicContext, MosaicRootActions, MosaicWindow, MosaicWindowContext } from 'react-mosaic-component2';
 import type { MosaicBranch } from 'react-mosaic-component2';
+import { Toggle } from '@radix-ui/react-toggle';
 import type { History } from '@annotorious/core';
 import { ImageAnnotation } from '@annotorious/react';
 import { useAnnotator, useViewers } from '@annotorious/react-manifold';
-import { Redo2, RotateCcwSquare, RotateCwSquare, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Redo2, RotateCcwSquare, RotateCwSquare, SquareCenterlineDashedHorizontal, Undo2, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { Separator } from '@/ui/Separator';
@@ -54,9 +55,13 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
 
   const viewers = useViewers();
 
+  const viewer = useMemo(() => viewers?.get(props.windowId), [viewers, props.windowId]);
+
   const anno = useAnnotator(props.image.id);
 
   const { toolbarRef, collapsed, onResize } = useCollapsibleToolbar();
+
+  const [isFlipped, setIsFlipped] = useState(viewer ? viewer.viewport.getFlip() : false);
 
   const onCloseWindow = (
     actions: MosaicRootActions<any>
@@ -66,15 +71,20 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
   }
 
   const onRotate = (clockwise: boolean) => {
-    const viewer = viewers.get(props.windowId);
-    // @ts-ignore
-    viewer.viewport.rotateBy(clockwise ? 90 : -90);
+    const signFlip = isFlipped ? -1 : 1;
+    const signDir = clockwise ? 1: -1;
+    const angle = 90 * signFlip * signDir;
+    viewer?.viewport.rotateBy(angle);
   }
 
-  const onZoom = (factor: number) => () => {
-    const viewer = viewers.get(props.windowId);
-    viewer.viewport.zoomBy(factor);
+  const onFlip = (flipped: boolean) => {
+    if (!viewer) return;
+    viewer.viewport.setFlip(flipped);
+    setIsFlipped(flipped);
   }
+
+  const onZoom = (factor: number) => () =>
+    viewer?.viewport.zoomBy(factor);
 
   // Bit of a workaround, but allows us to collapse the toolbar in 
   // response to a change in the parent Mosaic grid.
@@ -90,19 +100,21 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
           {collapsed ? (
             <>
               <button onClick={onZoom(2)}>
-                <ZoomIn className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+                <ZoomIn className="size-4 mx-1.5 text-muted-foreground hover:text-black" />
               </button>
 
               <button onClick={onZoom(0.5)}>
-                <ZoomOut className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
+                <ZoomOut className="size-4 mx-1.5 text-muted-foreground hover:text-black" />
               </button>
 
               <MoreToolsPanel 
                 image={props.image}
+                isFlipped={isFlipped}
                 onAddImage={props.onAddImage}
                 onChangeImage={props.onChangeImage}
                 onRedo={() => anno.redo()}
                 onRotate={onRotate} 
+                onFlip={onFlip}
                 onUndo={() => anno.undo()}/>
             </>
           ) : (
@@ -114,6 +126,14 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
               <button onClick={() => onRotate(true)}>
                 <RotateCwSquare className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
               </button>
+
+              <Toggle 
+                pressed={isFlipped}
+                onPressedChange={onFlip}
+                className="group rounded py-1.25 aria-pressed:bg-primary">
+                <SquareCenterlineDashedHorizontal 
+                  className="size-3.5 mx-1.5 text-muted-foreground hover:text-black group-aria-pressed:text-white group-aria-pressed:hover:text-white" /> 
+              </Toggle>
 
               <button onClick={onZoom(2)}>
                 <ZoomIn className="h-4 w-4 mx-1.5 text-muted-foreground hover:text-black" />
