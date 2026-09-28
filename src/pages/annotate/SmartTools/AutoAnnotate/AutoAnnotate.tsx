@@ -6,9 +6,6 @@ import { LoadedImage } from '@/model';
 import { useStore } from '@/store';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
-import { AIConsent, useAIOptIn } from '../AIConsent';
-import { TranscriptionDialog } from './TranscriptionDialog';
-import { AnnotationBatch } from './Types';
 import {
   Select,
   SelectContent,
@@ -16,14 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+import { AIConsent, useAIOptIn } from '../AIConsent';
 
-interface TranscribeProps {
+interface AutoAnnotateProps {
 
   images: LoadedImage[];
 
 }
 
-export const Transcribe = (props: TranscribeProps) => {
+export const AutoAnnotate = (props: AutoAnnotateProps) => {
 
   const { t } = useTranslation('smartTools');
 
@@ -32,41 +30,11 @@ export const Transcribe = (props: TranscribeProps) => {
   // Should never happen
   if (props.images.length < 1) return null;
 
-  const [optIn, setOptIn] = useAIOptIn('transcribe');
+  const [optIn, setOptIn] = useAIOptIn('annotate');
 
   const [selectedImage, setSelectedImage] = useState<LoadedImage | undefined>(
     props.images.length === 1 ? props.images[0] : undefined
   );
-
-  const manifold = useAnnotoriousManifold();
-
-  const onImportAnnotations = (batches: AnnotationBatch[], image: LoadedImage) => {
-    if (!store) return; // Should never happen
-
-    const annotations = batches.reduce<ImageAnnotation[]>((all, batch) => 
-      ([...all, ...batch.annotations.map(a => ({
-        ...a,
-        bodies: a.bodies.map(b => ({
-          ...b,
-          creator: {
-            type: batch.generator.type || 'Software',
-            ...batch.generator
-          },
-          created: new Date()
-        })),
-      }))]), []);
-
-    // Add image annotations (internal data model!) to the annotator as a 'Remote' action
-    const anno = manifold.getAnnotator(image.id);
-    anno.state.store.bulkAddAnnotations(annotations, false, Origin.REMOTE);
-
-    // Crosswalk to W3C and write to store. (Note: we could add them to the annotator
-    // with Origin.LOCAL. This would handle W3C crosswalk for us. But because the
-    // outer W3C API has no bulk handling, we'd generate one file write access per 
-    // annotation, which will lead to overwrites!
-    const w3c = annotations.map(a => serializeW3CImageAnnotation(a, selectedImage.id));
-    store.bulkUpsertAnnotation(image.id, w3c);
-  }
 
   return (
     <div className="px-4 pb-2">
@@ -125,10 +93,7 @@ export const Transcribe = (props: TranscribeProps) => {
           optIn={optIn}
           onChangeOptIn={setOptIn} />
 
-        <TranscriptionDialog 
-          disabled={!selectedImage || !optIn}
-          image={selectedImage} 
-          onImport={annotations => onImportAnnotations(annotations, selectedImage)} />
+        <div>Hello wrold</div>
       </Annotorious>
     </div>
   )

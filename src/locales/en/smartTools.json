@@ -1,11 +1,12 @@
 {
   "panel": {
     "title": "Smart Tools",
-    "smartScissors": "Smart Scissors",
-    "edgeSnap": "Edge Snap",
-    "autoSelect": "Auto Select",
-    "autoTranscribe": "Auto Transcribe",
-    "visualSearch": "Visual Search",
+    "smartScissors": "Trace outline",
+    "edgeSnap": "Snap to edges",
+    "autoSelect": "Select objects",
+    "autoTranscribe": "Transcribe text",
+    "autoAnnotate": "Auto-annotate",
+    "visualSearch": "Find similar",
     "notSupported": {
       "title": "Not Supported",
       "description": "Smart Tools use experimental WebGPU technology not available in your browser. Please switch to a recent version of Chrome or Edge to use this feature. <compatLink>View browser compatibility</compatLink>."
@@ -39,11 +40,11 @@
     "dialogTitle": "Auto Transcribe",
     "dialogDescription": "Submit this image for automatic transcription.",
     "consent": {
-      "title": "Before You Use Auto Transcribe",
-      "intro": "The IMMARKUS Auto Transcribe tool allows you to connect to external AI platforms (e.g. Google, Microsoft Azure, OpenAI). Please read and confirm the following before continuing:",
-      "externalProcessing": "<strong>External Processing</strong>: When you use the Auto Transcribe tool, any images or image portions you submit will be sent to the selected third-party service for processing.",
+      "title": "Before You Use External AI Services",
+      "intro": "This IMMARKUS tool allows you to connect to external AI platforms (e.g. OpenAI, Anthropic, Google), either directly or through third-party service providers such as HuggingFace, OpenRouter, etc. Please read and confirm the following before continuing:",
+      "externalProcessing": "<strong>External Processing</strong>: When you use this tool, any images or image portions you submit will be sent to the selected external service(s) for processing.",
       "ownKeys": "<strong>Your Own Keys</strong>: For services that require an API key, you must provide your own key. The key is stored locally in your browser and used only to connect directly to the intended AI service. IMMARKUS does not transmit or store your key elsewhere.",
-      "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external service unless you understand and accept their terms of use.",
+      "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external services unless you understand and accept their terms of use.",
       "noHiddenTransfers": "<strong>No Hidden Transfers</strong>: IMMARKUS itself does not send your data anywhere. Only the AI services you choose to connect to will receive the data you submit.",
       "confirmation": "By continuing, you confirm that you have read and understood this information and accept responsibility for your use of external AI services.",
       "agree": "I Understand and Agree",
