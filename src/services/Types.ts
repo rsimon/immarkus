@@ -208,3 +208,29 @@ export interface TranslationServiceResponse {
 
 }
 
+export interface AnnotationBatch {
+
+  annotations: ImageAnnotation[];
+
+  generator: Generator;
+  
+}
+
+export interface AnnotationServiceOptions {
+
+  connectorId: string;
+
+  serviceOptions?: Record<string, any>;
+
+}
+
+export type ProcessingState = 'cropping'
+  | 'compressing' 
+  | 'fetching_iiif' 
+  | 'pending' 
+  | 'success' 
+  | 'success_empty'
+  | 'compressing_failed' 
+  | 'service_failed';
+
+

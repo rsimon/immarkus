@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
-import { AnnotationBatch } from '@/components/AnnotationServices/Types';
+import { AnnotationServicePreview } from '@/components/AnnotationServices';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { EntityType, LoadedImage } from '@/model';
-import { OCROptions, ProcessingState } from '../Types';
+import { OCROptions } from '../Types';
 import { TranscriptionControls } from './TranscriptionControls';
-import { TranscriptionPreview } from './TranscriptionPreview';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 
@@ -23,7 +22,9 @@ import {
   TranscriptionServiceCrosswalk, 
   ServiceRegistry, 
   useService, 
-  Rotation
+  Rotation,
+  AnnotationBatch,
+  ProcessingState
 } from '@/services';
 
 interface OCRResult {
@@ -165,11 +166,11 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           else 
             setProcessingState('success_empty');
         } catch (error) {
-          setProcessingState('ocr_failed');
+          setProcessingState('service_failed');
           setLastError(error.message)
         }
       }).catch((error: Error) => {
-        setProcessingState('ocr_failed');
+        setProcessingState('service_failed');
         setLastError(error.message);
       });   
     });
@@ -203,7 +204,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
           <TooltipProvider>
             <div className="p-3 flex-2 min-w-0">
               <div className="h-full rounded bg-muted border">
-                <TranscriptionPreview 
+                <AnnotationServicePreview 
                   annotations={annotations}
                   image={props.image} 
                   processingState={processingState}

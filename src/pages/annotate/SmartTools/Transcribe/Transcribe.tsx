@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
+import { AnnotationBatch } from '@/services';
 import { useStore } from '@/store';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
 import { AIConsent, useAIOptIn } from '../AIConsent';
-import { AnnotationBatch } from '../AnnotationBatch';
 import { TranscriptionDialog } from './TranscriptionDialog';
 import {
   Select,

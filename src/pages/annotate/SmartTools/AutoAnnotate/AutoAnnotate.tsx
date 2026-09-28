@@ -5,7 +5,6 @@ import { LoadedImage } from '@/model';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
 import { AIConsent, useAIOptIn } from '../AIConsent';
-import { AnnotationBatch } from '../AnnotationBatch';
 import { AutoAnnotateDialog } from './AutoAnnotateDialog';
 import {
   Select,
@@ -14,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
+import { AnnotationBatch } from '@/services';
 
 interface AutoAnnotateProps {
 

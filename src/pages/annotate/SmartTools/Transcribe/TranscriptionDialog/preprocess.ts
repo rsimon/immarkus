@@ -5,7 +5,7 @@ import { PageTransform, Point, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { transformImage } from '@/utils/transformImage';
-import { ProcessingState } from '../Types';
+import { ProcessingState } from '@/components/AnnotationServices/Types';
 
 interface IntermediateBasePreprocessingResult {
 

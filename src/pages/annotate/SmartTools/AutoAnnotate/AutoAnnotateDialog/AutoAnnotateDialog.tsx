@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AnnotationBatch } from '@/components/AnnotationServices/Types';
 import { LoadedImage } from '@/model';
+import { AnnotationBatch } from '@/services';
 import { Button } from '@/ui/Button';
 import { 
   Dialog, 
