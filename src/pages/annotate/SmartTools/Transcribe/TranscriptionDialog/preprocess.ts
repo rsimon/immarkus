@@ -211,7 +211,7 @@ export const preprocess = (
       toPageTransform({ x: 0, y: 0, w: origW, h: origH }, deg, isFlipped, w, h);
 
     if ('file' in image) {
-      const inputFile = rotation === 0
+      const inputFile = deg === 0
         ? Promise.resolve(image.file)
         : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob => {
           return new File([blob], image.name, { type: image.file.type })
@@ -240,18 +240,48 @@ export const preprocess = (
 
       onProgress('fetching_iiif');
 
-      return firstImage.getPixelSize().then(originalSize => {
-        return fetch(imageURL).then(res => res.blob()).then(blob => {
-          return getImageDimensions(blob).then(({ width, height }) => {
-            /**
-             * Case 4: IIIF image (service or static) without region
-             */
-            return { 
-              url: imageURL, 
-              transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
-          })
+      if (isDynamicIIIF(image)) {
+        return firstImage.getPixelSize().then(originalSize => {
+          return fetch(imageURL).then(res => res.blob()).then(blob => {
+            return getImageDimensions(blob).then(({ width, height }) => {
+              /**
+               * Case 4a: IIIF image service without region
+               */
+              return { 
+                url: imageURL, 
+                transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
+            })
+          });
         });
-      });
+      } else {
+        // Case 4b: Level0 or static image - need to fetch the whole image, than transform it in memory.
+        return firstImage.getPixelSize()
+          .then(originalSize => fetch(imageURL).then(res => res.blob()).then(blob => {
+            const mimeType = blob.type || 'image/jpeg';
+            const ext = mimeType.split('/')[1] ?? 'jpg';
+            const name = `iiif-image.${ext}`;
+
+            const inputFile = deg === 0
+              ? Promise.resolve(new File([blob], name, { type: mimeType }))
+              : transformImage(blob, deg, isFlipped, mimeType).then(transformed =>
+                  new File([transformed], name, { type: mimeType })
+                );
+
+            return inputFile.then(file => 
+              getImageDimensions(file).then(({ width, height }) =>
+                preprocessImageData(file, width, height, onProgress).then(result => ({
+                  file: result.file,
+                  transform: getImageTransform(
+                    originalSize.width, 
+                    originalSize.height,
+                    result.width, 
+                    result.height
+                  )
+                }))
+              )
+            );
+          }));
+      }
     }
   }
 }
