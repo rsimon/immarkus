@@ -129,14 +129,14 @@ export const preprocess = (
           ux = sx * (region.w / snippetWidth);
           uy = sy * (region.h / snippetHeight);
         } else if (deg === 90) {
-          ux = (snippetHeight - sy) * (region.w / snippetHeight);
-          uy = sx * (region.h / snippetWidth);
+          ux = sy * (region.w / snippetHeight);
+          uy = (snippetWidth - sx) * (region.h / snippetWidth);
         } else if (deg === 180) {
           ux = (snippetWidth - sx) * (region.w / snippetWidth);
           uy = (snippetHeight - sy) * (region.h / snippetHeight);
         } else if (deg === 270) {
-          ux = sy * (region.w / snippetHeight);
-          uy = (snippetWidth - sx) * (region.h / snippetWidth);
+          ux = (snippetHeight - sy) * (region.w / snippetHeight);
+          uy = sx * (region.h / snippetWidth);
         } else {
           throw new Error('Unsupported rotation:' + rot);
         }
@@ -185,6 +185,7 @@ export const preprocess = (
           const inputFile = rotation === 0
             ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
             : transformImage(new Blob([snippet.data as BlobPart]), rotation, isFlipped, image.file.type).then(blob => {
+              // window.open(URL.createObjectURL(blob), '_blank');
               return new File([blob], image.name, { type: image.file.type }) }
             );
 
@@ -192,7 +193,7 @@ export const preprocess = (
            * Case 2: file image snippet (local or clipped static IIIF) with region
            */
           return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => (
-            { file, transform: getRegionTransform(result.width, result.height) }
+            { file: result.file, transform: getRegionTransform(result.width, result.height) }
           )));
         } else {
           // Should never happen
