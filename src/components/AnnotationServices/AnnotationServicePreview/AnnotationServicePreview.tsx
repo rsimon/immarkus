@@ -1,8 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
-import { Region, Rotation } from '@/services';
+import { ProcessingState, Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
-import type { ProcessingState } from '../Types';
 import { HoverTooltip } from './HoverTooltip';
 import { NavControls } from './NavControls';
 import { ResultBadge } from './ResultBadge';

@@ -12,6 +12,25 @@
     "agree": "I Understand and Agree",
     "close": "Close"
   },
+  "servicePreview": {
+    "selectRegion": {
+      "clearSelection": "Clear Selection",
+      "selectRegionOptional": "Select a region (optional)"
+    },
+    "resultBadge": {
+      "annotationCount_one": "{{count}} Annotation",
+      "annotationCount_other": "{{count}} Annotations",
+      "importToImmarkus": "Import to IMMARKUS",
+      "noResults": "No Results"
+    },
+    "nav": {
+      "rotateCounterClockwise": "Rotate counter-clockwise",
+      "rotateClockwise": "Rotate clockwise",
+      "flip": "Flip",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    }
+  },
   "panel": {
     "title": "Smart Tools",
     "traceOutline": "Trace outline",
@@ -76,23 +95,6 @@
       "fetchingIIIF": "Fetching IIIF Image",
       "compressing": "Compressing Image",
       "processing": "Processing"
-    },
-    "nav": {
-      "rotateCounterClockwise": "Rotate counter-clockwise",
-      "rotateClockwise": "Rotate clockwise",
-      "flip": "Flip",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out"
-    },
-    "resultBadge": {
-      "annotationCount_one": "{{count}} Annotation",
-      "annotationCount_other": "{{count}} Annotations",
-      "importToImmarkus": "Import to IMMARKUS",
-      "noResults": "No Results"
-    },
-    "selectRegion": {
-      "clearSelection": "Clear Selection",
-      "selectRegionOptional": "Select a region (optional)"
     }
   },
   "autoAnnotate": {

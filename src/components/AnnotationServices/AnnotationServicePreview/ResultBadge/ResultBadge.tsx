@@ -22,7 +22,7 @@ export const ResultBadge = (props: ResultBadgeProps) => {
       
       <div className="flex gap-2 text-sm items-center font-light whitespace-nowrap">
         <ScanText className="size-4.5" />
-        {t('transcribe.resultBadge.annotationCount', { count: props.count })}
+        {t('servicePreview.resultBadge.annotationCount', { count: props.count })}
 
         <button 
           className="rounded p-2 hover:bg-white/25 -ml-1"
@@ -34,7 +34,7 @@ export const ResultBadge = (props: ResultBadgeProps) => {
       <Button
         className="h-8 rounded-sm bg-green-600 whitespace-nowrap"
         onClick={props.onImport}>
-        {t('transcribe.resultBadge.importToImmarkus')}
+        {t('servicePreview.resultBadge.importToImmarkus')}
       </Button>
     </div>
   ) : (
@@ -42,7 +42,7 @@ export const ResultBadge = (props: ResultBadgeProps) => {
       className="absolute bottom-2 left-2 z-10 bg-black text-white py-1.5 pl-3 pr-3.5 rounded-md shadow-md flex gap-8 items-center">
       <div className="flex gap-2 h-7 text-sm items-center font-light whitespace-nowrap">
         <FileWarning className="size-4.5" />
-        {t('transcribe.resultBadge.noResults')}
+        {t('servicePreview.resultBadge.noResults')}
       </div>
     </div>
   )

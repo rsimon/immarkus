@@ -2,6 +2,23 @@
   "aiConsent": {
 
   },
+  "servicePreview": {
+    "selectRegion": {
+      "clearSelection": "選択を解除",
+      "selectRegionOptional": "領域を選択(任意)"
+    },
+    "resultBadge": {
+      "annotationCount_other": "{{count}} 件のアノテーション",
+      "importToImmarkus": "IMMARKUS にインポート",
+      "noResults": "結果なし"
+    },
+    "nav": {
+      "rotateCounterClockwise": "反時計回りに回転",
+      "rotateClockwise": "時計回りに回転",
+      "zoomIn": "ズームイン",
+      "zoomOut": "ズームアウト"
+    }
+  },
   "panel": {
     "title": "スマートツール",
     "traceOutline": "スマートシザーズ",
@@ -58,21 +75,6 @@
       "fetchingIIIF": "IIIF 画像を取得中",
       "compressing": "画像を圧縮中",
       "processing": "処理中"
-    },
-    "nav": {
-      "rotateCounterClockwise": "反時計回りに回転",
-      "rotateClockwise": "時計回りに回転",
-      "zoomIn": "ズームイン",
-      "zoomOut": "ズームアウト"
-    },
-    "resultBadge": {
-      "annotationCount_other": "{{count}} 件のアノテーション",
-      "importToImmarkus": "IMMARKUS にインポート",
-      "noResults": "結果なし"
-    },
-    "selectRegion": {
-      "clearSelection": "選択を解除",
-      "selectRegionOptional": "領域を選択(任意)"
     }
   },
   "visualSearch": {

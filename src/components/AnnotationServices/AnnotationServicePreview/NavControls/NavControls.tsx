@@ -50,7 +50,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.rotateCounterClockwise')}
+          {t('servicePreview.nav.rotateCounterClockwise')}
         </TooltipContent>
       </Tooltip>
 
@@ -65,7 +65,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.rotateClockwise')}
+          {t('servicePreview.nav.rotateClockwise')}
         </TooltipContent>
       </Tooltip>
 
@@ -79,7 +79,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.flip')}
+          {t('servicePreview.nav.flip')}
         </TooltipContent>
       </Tooltip>
 
@@ -94,7 +94,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.zoomIn')}
+          {t('servicePreview.nav.zoomIn')}
         </TooltipContent>
       </Tooltip>
 
@@ -109,7 +109,7 @@ export const NavControls = (props: NavControlsProps) => {
         </TooltipTrigger>
 
         <TooltipContent collisionPadding={20}>
-          {t('transcribe.nav.zoomOut')}
+          {t('servicePreview.nav.zoomOut')}
         </TooltipContent>
       </Tooltip>
     </div>
