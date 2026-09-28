@@ -40,46 +40,46 @@ export const AIConsent = (props: AIConsentProps) => {
       <AlertDialogContent
         className="max-w-2xl">
         <AlertDialogTitle className="flex gap-2 items-center text-destructive">
-          <TriangleAlert className="size-5" /> {t('transcribe.consent.title')}
+          <TriangleAlert className="size-5" /> {t('aiConsent.title')}
         </AlertDialogTitle>
 
         <AlertDialogDescription className="leading-relaxed space-y-4">
           <p>
-            {t('transcribe.consent.intro')}
+            {t('aiConsent.intro')}
           </p>
 
           <ol className="space-y-4 list-decimal pl-5">
             <li className="pl-1">
               <Trans
                 ns="smartTools"
-                i18nKey="transcribe.consent.externalProcessing"
+                i18nKey="aiConsent.externalProcessing"
                 components={{ strong: <strong /> }} />
             </li>
 
             <li className="pl-1">
               <Trans
                 ns="smartTools"
-                i18nKey="transcribe.consent.ownKeys"
+                i18nKey="aiConsent.ownKeys"
                 components={{ strong: <strong /> }} />
             </li>
 
             <li className="pl-1">
               <Trans
                 ns="smartTools"
-                i18nKey="transcribe.consent.imageRights"
+                i18nKey="aiConsent.imageRights"
                 components={{ strong: <strong /> }} />
             </li>
 
             <li className="pl-1">
               <Trans
                 ns="smartTools"
-                i18nKey="transcribe.consent.noHiddenTransfers"
+                i18nKey="aiConsent.noHiddenTransfers"
                 components={{ strong: <strong /> }} />
             </li>
           </ol>
 
           <p>
-            {t('transcribe.consent.confirmation')}
+            {t('aiConsent.confirmation')}
           </p>
 
           <div className="p-4 flex gap-2 items-center font-medium border rounded-md mb-6">
@@ -87,27 +87,15 @@ export const AIConsent = (props: AIConsentProps) => {
               id="ai-opt-in"
               checked={checked}
               onCheckedChange={checked => setChecked(checked as boolean)} />
-            <Label htmlFor="ai-opt-in">{t('transcribe.consent.agree')}</Label>
+            <Label htmlFor="ai-opt-in">{t('aiConsent.agree')}</Label>
           </div>
 
           <AlertDialogAction className="w-full">
-            {t('transcribe.consent.close')}
+            {t('aiConsent.close')}
           </AlertDialogAction>
         </AlertDialogDescription>
       </AlertDialogContent>
     </AlertDialog>
   )
-
-}
-
-import { usePersistentState } from '@/utils/usePersistentState';
-
-const KEY_BASE = 'immarkus:annotate:ai-opt-in';
-
-export const useAIOptIn = (key: string) => {
-
-  const [optIn, setOptIn] = usePersistentState(`${KEY_BASE}:${key}`, false);
-
-  return [optIn, setOptIn] as const;
 
 }

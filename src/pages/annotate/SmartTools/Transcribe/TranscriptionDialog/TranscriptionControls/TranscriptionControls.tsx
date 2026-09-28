@@ -5,8 +5,8 @@ import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, Region } from '@/services';
-import { OCROptions, ProcessingState } from '../../Types';
+import { ServiceRegistry, ServiceConfigParameter, Region, ProcessingState } from '@/services';
+import { OCROptions } from '../../Types';
 import { TagSelectionControl } from './TagSelectionControl';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
 import { 

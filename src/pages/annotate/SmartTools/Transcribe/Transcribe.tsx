@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { AIConsent, useAIOptIn } from '@/components/AnnotationServices/AIConsent';
 import { LoadedImage } from '@/model';
 import { AnnotationBatch } from '@/services';
 import { useStore } from '@/store';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
-import { AIConsent, useAIOptIn } from '../AIConsent';
 import { TranscriptionDialog } from './TranscriptionDialog';
 import {
   Select,

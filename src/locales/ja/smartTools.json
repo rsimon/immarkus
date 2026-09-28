@@ -1,4 +1,7 @@
 {
+  "aiConsent": {
+
+  },
   "panel": {
     "title": "スマートツール",
     "traceOutline": "スマートシザーズ",
@@ -33,15 +36,9 @@
   "transcribe": {
     "transcribeThisImage": "この画像の全体または一部を自動で文字起こしします。",
     "selectImageToTranscribe": "自動文字起こしする画像を選択してください。",
-    "enableExternalAI": "外部 AI ツールを有効にする。",
-    "disclaimer": "送信した画像が第三者のサービスで処理されること、およびアップロードする内容について自分が責任を負うことを理解しています。",
     "selectService": "サービスを選択",
     "dialogTitle": "自動文字起こし",
     "dialogDescription": "この画像を自動文字起こしのために送信します。",
-    "consent": {
-      "agree": "理解して同意します",
-      "close": "閉じる"
-    },
     "controls": {
       "service": "サービス",
       "apiKeyRequired": "API キーが必要",

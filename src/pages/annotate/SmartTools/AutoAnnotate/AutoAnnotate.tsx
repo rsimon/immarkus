@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Annotorious } from '@annotorious/react';
+import { AIConsent, useAIOptIn } from '@/components/AnnotationServices/AIConsent';
 import { LoadedImage } from '@/model';
+import { AnnotationBatch } from '@/services';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
-import { AIConsent, useAIOptIn } from '../AIConsent';
 import { AutoAnnotateDialog } from './AutoAnnotateDialog';
 import {
   Select,
@@ -13,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { AnnotationBatch } from '@/services';
 
 interface AutoAnnotateProps {
 
