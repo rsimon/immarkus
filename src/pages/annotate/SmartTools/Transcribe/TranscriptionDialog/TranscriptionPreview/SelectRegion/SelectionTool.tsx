@@ -1,8 +1,51 @@
 import { useEffect, useMemo, useState } from 'react';
-import OpenSeadragon from 'openseadragon';
+import { type Viewer, Point } from 'openseadragon';
 import { useViewer } from '@annotorious/react';
 import { Region } from '@/services';
-import { viewerOffsetPointToImageXY } from './selectRegionUtils';
+
+const viewerOffsetPointToImageXY = (
+  viewer: Viewer,
+  xy: Point
+): Point => {
+  const viewport = viewer.viewport;
+
+  if (viewport.getFlip()) {
+    const containerSize = viewport.getContainerSize();
+
+    // Mirror X across container center
+    const px = containerSize.x - xy.x;
+    const py = xy.y;
+
+    // Map mirrored coords to un-rotated viewport coords
+    const bounds = viewport.getBoundsNoRotate(true);
+    const unrotatedVx = bounds.x + (px / containerSize.x) * bounds.width;
+    const unrotatedVy = bounds.y + (py / containerSize.x) * bounds.width;
+
+    const rotation = viewport.getRotation(true);
+
+    if (rotation === 0) {
+      // Quicker path if flip but no rotation
+      return viewport.viewportToImageCoordinates(new Point(unrotatedVx, unrotatedVy));
+    } else {
+      // Flip + rotation: counter-rotate viewport point around viewport center
+      const center = viewport.getCenter(true);
+      const rad = (-rotation * Math.PI) / 180;
+      const cos = Math.cos(rad);
+      const sin = Math.sin(rad);
+
+      const dvx = unrotatedVx - center.x;
+      const dvy = unrotatedVy - center.y;
+
+      const finalVx = center.x + dvx * cos - dvy * sin;
+      const finalVy = center.y + dvx * sin + dvy * cos;
+
+      return viewport.viewportToImageCoordinates(new Point(finalVx, finalVy));
+    }
+  } else {
+    // Quick path if viewport is not flipped
+    return viewport.viewportToImageCoordinates(viewport.pointFromPixel(xy, true));
+  }
+}
 
 interface SelectionToolProps {
 
@@ -38,8 +81,8 @@ export const SelectionTool = (props: SelectionToolProps) => {
     const onCreateSelection = () => {
       if (!start || !currentEnd) return;
 
-      const elementStart = new OpenSeadragon.Point(start.x, start.y);
-      const elementEnd = new OpenSeadragon.Point(currentEnd.x, currentEnd.y);
+      const elementStart = new Point(start.x, start.y);
+      const elementEnd = new Point(currentEnd.x, currentEnd.y);
 
       const imageStart = viewerOffsetPointToImageXY(viewer, elementStart);
       const imageEnd = viewerOffsetPointToImageXY(viewer, elementEnd);
