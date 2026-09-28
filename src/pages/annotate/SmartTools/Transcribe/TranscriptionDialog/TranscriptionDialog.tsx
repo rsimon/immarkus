@@ -4,9 +4,10 @@ import { ImageAnnotation } from '@annotorious/react';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { EntityType, LoadedImage } from '@/model';
+import { AnnotationBatch } from '../../AnnotationBatch';
+import { OCROptions, ProcessingState } from '../Types';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';
-import { AnnotationBatch, OCROptions, ProcessingState } from '../Types';
 import { preprocess } from './preprocess';
 import { 
   Dialog, 

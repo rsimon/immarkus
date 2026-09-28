@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation} from '@annotorious/react';
-import { useAnnotoriousManifold } from '@annotorious/react-manifold';
+import { Annotorious } from '@annotorious/react';
 import { LoadedImage } from '@/model';
-import { useStore } from '@/store';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
+import { AIConsent, useAIOptIn } from '../AIConsent';
+import { AnnotationBatch } from '../AnnotationBatch';
+import { AutoAnnotateDialog } from './AutoAnnotateDialog';
 import {
   Select,
   SelectContent,
@@ -13,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/ui/Select';
-import { AIConsent, useAIOptIn } from '../AIConsent';
 
 interface AutoAnnotateProps {
 
@@ -33,6 +33,10 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
   const [selectedImage, setSelectedImage] = useState<LoadedImage | undefined>(
     props.images.length === 1 ? props.images[0] : undefined
   );
+
+  const onImportAnnotations = (batches: AnnotationBatch[], image: LoadedImage) => {
+    // TODO
+  }
 
   return (
     <div className="px-4 pb-2">
@@ -91,7 +95,10 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
           optIn={optIn}
           onChangeOptIn={setOptIn} />
 
-        <div>Hello wrold</div>
+        <AutoAnnotateDialog 
+          disabled={!selectedImage || !optIn}
+          image={selectedImage} 
+          onImport={annotations => onImportAnnotations(annotations, selectedImage)} />
       </Annotorious>
     </div>
   )
