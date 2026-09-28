@@ -39,7 +39,7 @@ interface SmartToolsPanelProps {
 
 }
 
-type SmartTool = 'smart-scissors' | 'edge-snap' | 'auto-select' | 'transcribe' | 'visual-search'; 
+type SmartTool = 'trace-outline' | 'snap-to-edges' | 'select-objects' | 'transcribe' | 'auto-annotate' | 'find-similar'; 
 
 export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
@@ -51,7 +51,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const [tab, setTab] = useState<SmartTool>('smart-scissors');
+  const [tab, setTab] = useState<SmartTool>('trace-outline');
 
   const visualSearchAvailable = useVisualSearchAvailable();
 
@@ -74,17 +74,17 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
       }
     }
 
-    if (tab === 'edge-snap') {
+    if (tab === 'snap-to-edges') {
       stopPluginIfRunning();
       props.onChangeTool('magnetic-cursor');
       props.onChangeMode('draw');
-    } else if (tab === 'smart-scissors') {
+    } else if (tab === 'trace-outline') {
       props.onChangeTool('intelligent-scissors');
       props.onChangeMode('draw');
-    } else if (tab === 'transcribe') {
+    } else if (tab === 'transcribe' || tab === 'auto-annotate') {
       stopPluginIfRunning();
       props.onChangeMode('move');
-    } else if (tab === 'visual-search') {
+    } else if (tab === 'find-similar') {
       props.onChangeMode('move');
     } else {
       pluginRunning.current = true;
@@ -143,11 +143,11 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
           type="single"
           value={tab}
           onValueChange={tab => setTab(tab as SmartTool)}>
-          <AccordionItem value="smart-scissors" className="border-b-0">
+          <AccordionItem value="trace-outline" className="border-b-0">
             <AccordionTrigger 
               className="text-xs font-normal hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <ScissorsLineDashed className="size-4" /> {t('panel.smartScissors')}
+                <ScissorsLineDashed className="size-4" /> {t('panel.traceOutline')}
               </span>
             </AccordionTrigger>
 
@@ -158,11 +158,11 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="edge-snap" className="border-b-0">
+          <AccordionItem value="snap-to-edges" className="border-b-0">
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 gap-2 justify-start">
               <span className="flex grow items-center gap-2 justify-start">
-                <Magnet className="size-4" /> {t('panel.edgeSnap')}
+                <Magnet className="size-4" /> {t('panel.snapToEdges')}
               </span>
             </AccordionTrigger>
 
@@ -173,11 +173,11 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="auto-select" className="border-b-0">
+          <AccordionItem value="select-objects" className="border-b-0">
             <AccordionTrigger 
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
               <span className="flex grow items-center gap-2 justify-start">
-                <MousePointerClick className="size-4" /> {t('panel.autoSelect')}
+                <MousePointerClick className="size-4" /> {t('panel.selectObjects')}
               </span>
             </AccordionTrigger>
 
@@ -202,7 +202,7 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
               <AccordionTrigger 
                 className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2">
                 <span className="flex grow items-center gap-2 justify-start">
-                  <ScanText className="size-4" /> {t('panel.autoTranscribe')}
+                  <ScanText className="size-4" /> {t('panel.transcribeText')}
                 </span>
               </AccordionTrigger>
 
@@ -225,16 +225,16 @@ export const SmartToolsPanel = (props: SmartToolsPanelProps) => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="visual-search" className="border-b-0">
+          <AccordionItem value="find-similar" className="border-b-0">
             <AccordionTrigger
               className="text-xs font-normal border-t hover:no-underline overflow-hidden p-2 disabled:text-muted-foreground/30">
               {visualSearchAvailable ? (
                 <span className="flex grow items-center gap-2 justify-start">
-                  <Images className="size-4" /> {t('panel.visualSearch')}
+                  <Images className="size-4" /> {t('panel.findSimilar')}
                 </span>
               ) : (
                 <span className="flex grow items-center gap-2 justify-start text-destructive">
-                  <CircleX className="size-4" /> {t('panel.visualSearch')}
+                  <CircleX className="size-4" /> {t('panel.findSimilar')}
                 </span>
               )}
             </AccordionTrigger>

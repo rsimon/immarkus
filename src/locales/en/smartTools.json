@@ -1,12 +1,12 @@
 {
   "panel": {
     "title": "Smart Tools",
-    "smartScissors": "Trace outline",
-    "edgeSnap": "Snap to edges",
-    "autoSelect": "Select objects",
-    "autoTranscribe": "Transcribe text",
+    "traceOutline": "Trace outline",
+    "snapToEdges": "Snap to edges",
+    "selectObjects": "Select objects",
+    "transcribeText": "Transcribe text",
     "autoAnnotate": "Auto-annotate",
-    "visualSearch": "Find similar",
+    "findSimilar": "Find similar",
     "notSupported": {
       "title": "Not Supported",
       "description": "Smart Tools use experimental WebGPU technology not available in your browser. Please switch to a recent version of Chrome or Edge to use this feature. <compatLink>View browser compatibility</compatLink>."
@@ -34,8 +34,6 @@
   "transcribe": {
     "transcribeThisImage": "Automatically transcribe this image, or parts of it.",
     "selectImageToTranscribe": "Select an image to transcribe automatically.",
-    "enableExternalAI": "Enable external AI tools.",
-    "disclaimer": "I understand that images I send are processed by 3rd-party services and that I’m responsible for what I upload.",
     "selectService": "Select Service",
     "dialogTitle": "Auto Transcribe",
     "dialogDescription": "Submit this image for automatic transcription.",
@@ -94,6 +92,23 @@
       "clearSelection": "Clear Selection",
       "selectRegionOptional": "Select a region (optional)"
     }
+  },
+  "autoAnnotate": {
+    "annotateThisImage": "Automatically annotated this image or parts of it using AI",
+    "selectImageToAnnotate": "Select an image to annotate automatically using AI"
+  },
+  "aiConsent": {
+    "enableExternalAI": "Enable external AI tools.",
+    "disclaimer": "I understand that images I send are processed by 3rd-party services and that I’m responsible for what I upload.",
+    "title": "Before You Use External AI Services",
+    "intro": "This IMMARKUS tool allows you to connect to external AI platforms (e.g. OpenAI, Anthropic, Google), either directly or through third-party service providers such as HuggingFace, OpenRouter, etc. Please read and confirm the following before continuing:",
+    "externalProcessing": "<strong>External Processing</strong>: When you use this tool, any images or image portions you submit will be sent to the selected external service(s) for processing.",
+    "ownKeys": "<strong>Your Own Keys</strong>: For services that require an API key, you must provide your own key. The key is stored locally in your browser and used only to connect directly to the intended AI service. IMMARKUS does not transmit or store your key elsewhere.",
+    "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external services unless you understand and accept their terms of use.",
+    "noHiddenTransfers": "<strong>No Hidden Transfers</strong>: IMMARKUS itself does not send your data anywhere. Only the AI services you choose to connect to will receive the data you submit.",
+    "confirmation": "By continuing, you confirm that you have read and understood this information and accept responsibility for your use of external AI services.",
+    "agree": "I Understand and Agree",
+    "close": "Close"
   },
   "visualSearch": {
     "description": "Search your collection for visually similar elements.",

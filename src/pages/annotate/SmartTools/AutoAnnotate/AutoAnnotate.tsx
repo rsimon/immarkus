@@ -25,8 +25,6 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
 
   const { t } = useTranslation('smartTools');
 
-  const store = useStore();
-
   // Should never happen
   if (props.images.length < 1) return null;
 
@@ -41,11 +39,11 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
       <div className="pt-6 pb-1 px-0.5 flex gap-3 items-start leading-relaxed">
         {props.images.length === 1 ? (
             <p className="font-medium">
-              {t('transcribe.transcribeThisImage')}
+              {t('autoAnnotate.annotateThisImage')}
             </p>
         ) : (
           <p className="font-medium">
-            {t('transcribe.selectImageToTranscribe')}
+            {t('autoAnnotate.selectImageToAnnotate')}
           </p>
         )}
       </div>
@@ -58,12 +56,12 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
             onCheckedChange={checked => setOptIn(checked as boolean)} />
 
           <Label htmlFor="ai-opt-in-compact">
-            <strong className="font-semibold text-xs">{t('transcribe.enableExternalAI')}</strong>
+            <strong className="font-semibold text-xs">{t('aiConsent.enableExternalAI')}</strong>
           </Label>
         </div>
         
         <p>
-          {t('transcribe.disclaimer')}
+          {t('aiConsent.disclaimer')}
         </p>
       </div>
 

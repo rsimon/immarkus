@@ -90,12 +90,12 @@ export const Transcribe = (props: TranscribeProps) => {
             onCheckedChange={checked => setOptIn(checked as boolean)} />
 
           <Label htmlFor="ai-opt-in-compact">
-            <strong className="font-semibold text-xs">{t('transcribe.enableExternalAI')}</strong>
+            <strong className="font-semibold text-xs">{t('aiConsent.enableExternalAI')}</strong>
           </Label>
         </div>
         
         <p>
-          {t('transcribe.disclaimer')}
+          {t('aiConsent.disclaimer')}
         </p>
       </div>
 

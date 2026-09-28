@@ -1,11 +1,11 @@
 {
   "panel": {
     "title": "スマートツール",
-    "smartScissors": "スマートシザーズ",
-    "edgeSnap": "エッジスナップ",
-    "autoSelect": "自動選択",
-    "autoTranscribe": "自動文字起こし",
-    "visualSearch": "ビジュアル検索",
+    "traceOutline": "スマートシザーズ",
+    "snapToEdges": "エッジスナップ",
+    "selectObjects": "自動選択",
+    "transcribeText": "自動文字起こし",
+    "findSimilar": "ビジュアル検索",
     "notSupported": {
       "title": "非対応",
       "description": "スマートツールは、お使いのブラウザでは利用できない実験的な WebGPU 技術を使用しています。この機能を使用するには、最新版の Chrome または Edge に切り替えてください。<compatLink>ブラウザの対応状況を見る</compatLink>。"
