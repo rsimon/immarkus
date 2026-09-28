@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ImageAnnotation } from '@annotorious/react';
+import { AnnotationBatch } from '@/components/AnnotationServices/Types';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { EntityType, LoadedImage } from '@/model';
-import { AnnotationBatch } from '../../AnnotationBatch';
 import { OCROptions, ProcessingState } from '../Types';
 import { TranscriptionControls } from './TranscriptionControls';
 import { TranscriptionPreview } from './TranscriptionPreview';

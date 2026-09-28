@@ -95,7 +95,10 @@
   },
   "autoAnnotate": {
     "annotateThisImage": "Automatically annotated this image or parts of it using AI",
-    "selectImageToAnnotate": "Select an image to annotate automatically using AI"
+    "selectImageToAnnotate": "Select an image to annotate automatically using AI",
+    "selectService": "Select Service",
+    "dialogTitle": "Auto-Annotate",
+    "dialogDescription": "Submit this image for automatic annotation using AI."
   },
   "aiConsent": {
     "enableExternalAI": "Enable external AI tools.",
