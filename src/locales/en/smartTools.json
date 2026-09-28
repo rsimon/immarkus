@@ -79,6 +79,7 @@
     "nav": {
       "rotateCounterClockwise": "Rotate counter-clockwise",
       "rotateClockwise": "Rotate clockwise",
+      "flip": "Flip",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out"
     },

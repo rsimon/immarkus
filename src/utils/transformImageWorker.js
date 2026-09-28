@@ -1,7 +1,7 @@
 self.onmessage = function(e) {
-  const { blob, rotation, format } = e.data;
+  const { blob, rotation, flipped, format } = e.data;
   
-  rotateImage(blob, rotation, format)
+  transformImage(blob, rotation, flipped, format)
     .then(blob => { 
       self.postMessage({ blob });  
       self.close();
@@ -9,14 +9,17 @@ self.onmessage = function(e) {
     .catch(error => self.postMessage({ error: error.message }));
 }
 
-function rotateImage(
+function transformImage(
   blob,
-  rotation, // 0, 90, 180, 270
+  rotation,
+  flipped = false,
   format = 'image/jpeg'
 ) {
-  if (rotation === 0) return Promise.resolve(blob);
+  const rot = ((rotation % 360) + 360) % 360;
 
-  const rad = (((rotation % 360) + 360) % 360) * (Math.PI / 180);
+  if (rot === 0 && !flipped) return Promise.resolve(blob);
+
+  const rad = rot * (Math.PI / 180);
   const isTransposed = rotation % 180 !== 0;
 
   return createImageBitmap(blob).then(imageBitmap => {
@@ -31,6 +34,7 @@ function rotateImage(
     if (!context) throw new Error('Failed to get canvas context');
 
     context.translate(outWidth / 2, outHeight / 2);
+    if (flipped) context.scale(-1, 1);
     context.rotate(rad);
     context.drawImage(imageBitmap, -width / 2, -height / 2);
 

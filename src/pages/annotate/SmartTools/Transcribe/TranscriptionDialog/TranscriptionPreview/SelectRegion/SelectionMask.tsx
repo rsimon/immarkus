@@ -1,10 +1,54 @@
 import { useEffect, useMemo } from 'react';
+import { Viewer, Point } from 'openseadragon';
 import { useViewer } from '@annotorious/react';
-import OpenSeadragon from 'openseadragon';
 
 import './SelectionMask.css';
 
 const SVG = 'http://www.w3.org/2000/svg';
+
+export const viewerOffsetPointToImageXY = (
+  viewer: Viewer,
+  xy: Point
+): Point => {
+  const viewport = viewer.viewport;
+
+  if (viewport.getFlip()) {
+    const containerSize = viewport.getContainerSize();
+
+    // Mirror X across container center
+    const px = containerSize.x - xy.x;
+    const py = xy.y;
+
+    // Map mirrored coords to un-rotated viewport coords
+    const bounds = viewport.getBoundsNoRotate(true);
+    const unrotatedVx = bounds.x + (px / containerSize.x) * bounds.width;
+    const unrotatedVy = bounds.y + (py / containerSize.x) * bounds.width;
+
+    const rotation = viewport.getRotation(true);
+
+    if (rotation === 0) {
+      // Quicker path if flip but no rotation
+      return viewport.viewportToImageCoordinates(new Point(unrotatedVx, unrotatedVy));
+    } else {
+      // Flip + rotation: counter-rotate viewport point around viewport center
+      const center = viewport.getCenter(true);
+      const rad = (-rotation * Math.PI) / 180;
+      const cos = Math.cos(rad);
+      const sin = Math.sin(rad);
+
+      const dvx = unrotatedVx - center.x;
+      const dvy = unrotatedVy - center.y;
+
+      const finalVx = center.x + dvx * cos - dvy * sin;
+      const finalVy = center.y + dvx * sin + dvy * cos;
+
+      return viewport.viewportToImageCoordinates(new Point(finalVx, finalVy));
+    }
+  } else {
+    // Quick path if viewport is not flipped
+    return viewport.viewportToImageCoordinates(viewport.pointFromPixel(xy, true));
+  }
+}
 
 interface SelectionMaskProps {
 
@@ -61,10 +105,14 @@ export const SelectionMask = (props: SelectionMaskProps) => {
 
       const zoom = viewer.viewport.getZoom(true);
       const rotation = viewer.viewport.getRotation(true);
-      const p = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(0, 0), true);
+      const p = viewer.viewport.pixelFromPoint(new Point(0, 0), true);
 
       const scale = zoom * containerWidth / viewer.world.getContentFactor();
-      const transform = `translate(${p.x}, ${p.y}) scale(${scale}, ${scale}) rotate(${rotation})`;
+
+      const base = `translate(${p.x}, ${p.y}) scale(${scale}, ${scale}) rotate(${rotation})`;
+      const transform = viewer.viewport.getFlip()
+        ? `translate(${containerWidth}, 0) scale(-1, 1) ${base}`
+        : base;
 
       container.setAttribute('transform', transform);
     }

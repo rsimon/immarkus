@@ -1,8 +1,9 @@
-import Worker from './rotateImageWorker?worker';
+import Worker from './transformImageWorker?worker';
 
-export const rotateImage = (
+export const transformImage = (
   blob: Blob,
-  rotation: number, // 0, 90, 180, 270
+  rotation: number,
+  flipped: boolean = false,
   format = 'image/jpeg'
 ) => new Promise<Blob>((resolve, reject) => {
   const worker = new Worker();
@@ -19,5 +20,5 @@ export const rotateImage = (
 
   worker.addEventListener('message', messageHandler);
 
-  worker.postMessage({ blob, rotation, format });
+  worker.postMessage({ blob, rotation, flipped, format });
 });

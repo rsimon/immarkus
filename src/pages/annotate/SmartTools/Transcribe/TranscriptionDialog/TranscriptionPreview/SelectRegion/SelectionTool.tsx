@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import OpenSeadragon from 'openseadragon';
 import { useViewer } from '@annotorious/react';
 import { Region } from '@/services';
+import { viewerOffsetPointToImageXY } from './selectRegionUtils';
 
 interface SelectionToolProps {
 
@@ -40,8 +41,8 @@ export const SelectionTool = (props: SelectionToolProps) => {
       const elementStart = new OpenSeadragon.Point(start.x, start.y);
       const elementEnd = new OpenSeadragon.Point(currentEnd.x, currentEnd.y);
 
-      const imageStart = viewer.viewport.viewerElementToImageCoordinates(elementStart);
-      const imageEnd = viewer.viewport.viewerElementToImageCoordinates(elementEnd);
+      const imageStart = viewerOffsetPointToImageXY(viewer, elementStart);
+      const imageEnd = viewerOffsetPointToImageXY(viewer, elementEnd);
 
       const origX = Math.min(imageStart.x, imageEnd.x);
       const origY = Math.min(imageStart.y, imageEnd.y);

@@ -4,7 +4,7 @@ import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { PageTransform, Point, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
-import { rotateImage } from '@/utils/rotateImage';
+import { transformImage } from '@/utils/transformImage';
 import { ProcessingState } from '../Types';
 
 interface IntermediateBasePreprocessingResult {
@@ -49,6 +49,59 @@ const getImageDimensions = (blob: Blob) => createImageBitmap(blob)
     bitmap.close(); 
     return { width, height }
   });
+
+const transformPoint = (
+  x: number, y: number,
+  region: Region, // region in the ORIGINAL image 
+  rotation: Rotation,
+  isFlipped: boolean,
+  w: number, h: number // dimensions of the submitted (cropped/rotated/flipped) image
+): Point => {
+  const deg = (((rotation ?? 0) % 360) + 360) % 360;
+
+  if (isFlipped) x = w - x;
+
+  let a: number, b: number, uw: number, uh: number;
+  switch (deg) {
+    case 0:   a = x;     b = y;     uw = w; uh = h; break;
+    case 90:  a = y;     b = w - x; uw = h; uh = w; break;
+    case 180: a = w - x; b = h - y; uw = w; uh = h; break;
+    case 270: a = h - y; b = x;     uw = h; uh = w; break;
+    default: throw new Error('Unsupported rotation: ' + rotation);
+  }
+
+  return {
+    x: region.x + a * (region.w / uw),
+    y: region.y + b * (region.h / uh)
+  };
+}
+
+const toPageTransform = (
+  region: Region,
+  rotation: Rotation,
+  isFlipped: boolean,
+  w: number,
+  h: number
+): PageTransform => {
+  const fn = (x: number, y: number) =>
+    transformPoint(x, y, region, rotation, isFlipped, w, h);
+
+  return ((input: Point | Region) => {
+    if ('w' in input) {
+      const tl = fn(input.x, input.y);
+      const br = fn(input.x + input.w, input.y + input.h);
+      const minX = Math.min(tl.x, br.x);
+      const minY = Math.min(tl.y, br.y);
+      return {
+        x: minX,
+        y: minY,
+        w: Math.max(tl.x, br.x) - minX,
+        h: Math.max(tl.y, br.y) - minY
+      } as Region;
+    }
+    return fn(input.x, input.y);
+  }) as PageTransform;
+}
 
 const preprocessImageData = (
   file: File,
@@ -99,8 +152,11 @@ export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
   rotation: Rotation,
+  isFlipped: boolean, 
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
+  const deg = (((rotation ?? 0) % 360) + 360) % 360 as Rotation;
+
   if (region) {
     onProgress('cropping');
 
@@ -113,53 +169,12 @@ export const preprocess = (
       maxY: region.y + region.h
     });
 
-    const getRegionTransform = (snippetWidth: number, snippetHeight: number) => ((input: Point | Region) => {
-      const rot = rotation ?? 0;
-      const deg = ((rot % 360) + 360) % 360;
-
-      const transformPoint = (x: number, y: number): Point => {
-        let ux: number;
-        let uy: number;
-
-        if (deg === 0 || deg === 180) {
-          ux = x * (region.w / snippetWidth);
-          uy = y * (region.h / snippetHeight);
-        } else if (deg === 90 || deg === 270) {
-          ux = x * (region.w / snippetHeight);
-          uy = y * (region.h / snippetWidth);
-        } else {
-          throw new Error('Unsupported rotation:' + rot);
-        }
-
-        return {
-          x: ux + region.x,
-          y: uy + region.y
-        };
-      };
-
-      if ('w' in input) {
-        const tl = transformPoint(input.x, input.y);
-        const br = transformPoint(input.x + input.w, input.y + input.h);
-
-        const minX = Math.min(tl.x, br.x);
-        const minY = Math.min(tl.y, br.y);
-        const maxX = Math.max(tl.x, br.x);
-        const maxY = Math.max(tl.y, br.y);
-
-        return { 
-          x: minX, 
-          y: minY, 
-          w: maxX - minX, 
-          h: maxY - minY 
-        } as Region;
-      } else {
-        return transformPoint(input.x, input.y);
-      }
-    }) as PageTransform;
+    const getRegionTransform = (w: number, h: number) =>
+      toPageTransform(region, deg, isFlipped, w, h);
     
     if (isDynamicIIIF(image)) {
       const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, rotation, { minSize: Math.min(region.w, region.h)});
+      const regionURL = firstImage.getRegionURL(region, { degrees: deg, mirrored: isFlipped }, { minSize: Math.min(region.w, region.h)});
 
       /**
        * Case 1: Dynamic IIIF image service snippet with region
@@ -172,16 +187,18 @@ export const preprocess = (
     } else {
       return getImageSnippet(image, annotation, false).then(snippet => {
         if ('data' in snippet && 'file' in image) {
-          const inputFile = rotation === 0
+          const inputFile = deg === 0
             ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
-            : rotateImage(new Blob([snippet.data as BlobPart]), rotation, image.file.type).then(blob =>
-              new File([blob], image.name, { type: image.file.type }));
+            : transformImage(new Blob([snippet.data as BlobPart]), deg, isFlipped, image.file.type).then(blob => {
+              // window.open(URL.createObjectURL(blob), '_blank');
+              return new File([blob], image.name, { type: image.file.type }) }
+            );
 
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region
            */
           return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => (
-            { file, transform: getRegionTransform(result.width, result.height) }
+            { file: result.file, transform: getRegionTransform(result.width, result.height) }
           )));
         } else {
           // Should never happen
@@ -190,44 +207,27 @@ export const preprocess = (
       });
     }
   } else {
-    const getImageTransform = (imageWidth: number, imageHeight: number, resultWidth: number, resultHeight: number) => ((input: Point | Region) => {
-      const transformPoint = (x: number, y: number): Point => ({
-        x: x * (imageWidth / resultWidth), 
-        y: y * (imageHeight / resultHeight) 
-      });
-
-      if ('w' in input) {
-        const tl = transformPoint(input.x, input.y);
-        const br = transformPoint(input.x + input.w, input.y + input.h);
-
-        const minX = Math.min(tl.x, br.x);
-        const minY = Math.min(tl.y, br.y);
-        const maxX = Math.max(tl.x, br.x);
-        const maxY = Math.max(tl.y, br.y);
-
-        return { 
-          x: minX, 
-          y: minY, 
-          w: maxX - minX, 
-          h: maxY - minY 
-        } as Region;
-      } else {
-        return transformPoint(input.x, input.y);
-      }
-    }) as PageTransform;
+    const getImageTransform = (origW: number, origH: number, w: number, h: number) =>
+      toPageTransform({ x: 0, y: 0, w: origW, h: origH }, deg, isFlipped, w, h);
 
     if ('file' in image) {
       const inputFile = rotation === 0
         ? Promise.resolve(image.file)
-        : rotateImage(image.file, rotation, image.file.type).then(blob =>
-          new File([blob], image.name, { type: image.file.type }));
+        : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob => {
+          return new File([blob], image.name, { type: image.file.type })
+        });
 
       return inputFile.then(data => getImageDimensions(data).then(({ width, height }) => {
+        const swap = deg === 90 || deg === 270;
+        const origW = swap ? height : width;
+        const origH = swap ? width : height;
+
         /**
          * Case 3: local image file without region
          */
         return preprocessImageData(data, width, height, onProgress).then(result => ({
-          file: result.file, transform: getImageTransform(width, height, result.width, result.height)
+          file: result.file, 
+          transform: getImageTransform(origW, origH, result.width, result.height)
         }));
       }));
     } else {
@@ -236,20 +236,19 @@ export const preprocess = (
       // Should never happen
       if (!firstImage) throw new Error('Canvas has no image');
 
-      const imageURL = firstImage.getImageURL(1200, rotation);
+      const imageURL = firstImage.getImageURL(1200, { degrees: deg, mirrored: isFlipped });
 
       onProgress('fetching_iiif');
 
       return firstImage.getPixelSize().then(originalSize => {
         return fetch(imageURL).then(res => res.blob()).then(blob => {
           return getImageDimensions(blob).then(({ width, height }) => {
-            const originalWidth = (rotation === 0 || rotation === 180) ? originalSize.width : originalSize.height;
-            const originalHeight = (rotation === 0 || rotation === 180) ? originalSize.height : originalSize.width;
-
             /**
              * Case 4: IIIF image (service or static) without region
              */
-            return { url: imageURL, transform: getImageTransform(originalWidth, originalHeight, width, height) };
+            return { 
+              url: imageURL, 
+              transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
           })
         });
       });

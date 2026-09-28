@@ -17,6 +17,8 @@ import {
   UserSelectAction
 } from '@annotorious/react';
 
+import '@annotorious/react/annotorious-react.css';
+
 interface VisualSearchDebugViewerProps {
 
   imageId: string;
