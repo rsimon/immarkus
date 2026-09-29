@@ -194,6 +194,14 @@ export interface AnnotationServiceConnector {
 
 }
 
+export interface TranscriptionServiceConnector {
+
+  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+
+  parseServiceResponse: AnnotationServiceCrosswalk;
+
+}
+
 export interface TranslationServiceConnector {
 
   translate(text: string, targetLanguage?: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
@@ -201,7 +209,7 @@ export interface TranslationServiceConnector {
 }
 
 
-export type ServiceConnector = AnnotationServiceConnector | TranslationServiceConnector;
+export type ServiceConnector = AnnotationServiceConnector | TranscriptionServiceConnector | TranslationServiceConnector;
 
 export interface AnnotationServiceResponse<T extends unknown = any> {
 

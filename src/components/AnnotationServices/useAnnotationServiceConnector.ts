@@ -12,6 +12,12 @@ import {
   useService 
 } from '@/services';
 
+const OPS = {
+  TRANSCRIPTION: 'transcribe',
+  ANNOTATION: 'annotate',
+  TRANSLATION: 'translate'
+} as const satisfies Record<ServiceType, string>;
+
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const [options, setOptions] = useState<AnnotationServiceOptions>({
     connectorId: ServiceRegistry.listAvailableConnectors(type)[0].id 
@@ -86,12 +92,10 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     preprocess(image, input.region, input.rotation, input.isFlipped, onUpdateState).then(result => {
       if (isStale()) return;
 
-      onUpdateState('pending');
-
       const image = 'file' in result ? result.file : result.url;
       const crosswalk = service.connector.parseServiceResponse;
 
-      service.connector.annotate(image, options.serviceOptions, tags).then(({ data, generator }) => {
+      service.connector[OPS[type]](image, options.serviceOptions, tags).then(({ data, generator }) => {
         if (isStale()) return;
 
         // Test the crosswalk to make sure data is valid
@@ -118,6 +122,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
         setStatus({ state: 'service_failed', error: error.message });
       });   
     }).catch((error: Error) => {
+      console.log('ERRROR', error);
+
       if (isStale()) return;
       setStatus({ state: 'service_failed', error: error.message });
     });
