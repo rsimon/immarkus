@@ -232,8 +232,6 @@ export interface Generator {
 
 }
 
-export type AnnotationServiceCrosswalk<T = any> = (data: T, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
-
 export type PageTransform = {
 
   (point: Point): Point;
@@ -314,5 +312,13 @@ export interface AnnotationServiceResult<T = any> {
   crosswalk: AnnotationServiceCrosswalk;
 
 } 
+
+export type AnnotationServiceCrosswalk<T = any> = (
+  data: T, 
+  transform: PageTransform,
+  region?: Region, 
+  options?: Record<string, any>
+) => ImageAnnotation[];
+
 
 

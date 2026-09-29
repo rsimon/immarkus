@@ -50,8 +50,8 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['qwen/qwen3.8-27b:free', 'Qwen 3.8 27B (Free)'],
-        ['qwen/qwen3.8-27b', 'Qwen 3.8 27B']
+        ['qwen/qwen3.8-max-0902', 'Qwen 3.8 Max (0902)'],
+        ['google/gemini-3.1-pro-preview', 'Gemini 3.1 Pro Preview']
       ]
     }]
   },{
