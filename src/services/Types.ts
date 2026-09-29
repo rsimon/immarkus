@@ -1,8 +1,6 @@
 import { ImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 
-export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION' | 'ANNOTATION';
-
 export interface ServiceConnectorConfig {
 
   /** Any alphanumeric string, as long as unique within IMMARKUS **/
@@ -25,6 +23,51 @@ export interface ServiceConnectorConfig {
 
   /** List of services provided through this connector */
   services: ServiceConfig[];
+
+}
+
+interface ServiceConfigMap {
+
+  ANNOTATION: AnnotationServiceConfig;
+
+  TRANSCRIPTION: TranscriptionServiceConfig;
+
+  TRANSLATION: TranslationServiceConfig;
+
+}
+
+export type ServiceType = keyof ServiceConfigMap;
+
+interface BaseServiceConfig {
+
+  description?: string;
+
+  parameters?: ServiceConfigParameter[];
+
+  requiresRegion?: boolean;
+}
+
+export interface AnnotationServiceConfig extends BaseServiceConfig {
+
+  type: 'ANNOTATION';
+
+}
+
+export interface TranscriptionServiceConfig extends BaseServiceConfig {
+
+  type: 'TRANSCRIPTION';
+
+  supportsEntityExtraction?: boolean;
+
+}
+
+export interface TranslationServiceConfig extends BaseServiceConfig {
+
+  type: 'TRANSLATION';
+
+  displayName?: string;
+
+  arguments?: Record<string, any>;
 
 }
 
@@ -73,10 +116,9 @@ export interface TranslationServiceConfig {
   
 }
 
-export type ServiceConfig = 
-  | AnnotationServiceConfig 
-  | TranscriptionServiceConfig
-  | TranslationServiceConfig;
+export type ServiceConfig = ServiceConfigMap[ServiceType];
+
+export type ServiceConfigOf<T extends ServiceType> = ServiceConfigMap[T];
 
 export interface ServiceConfigCredentialParameter {
 

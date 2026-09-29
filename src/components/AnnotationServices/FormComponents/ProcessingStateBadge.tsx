@@ -24,11 +24,11 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     <div className="w-full bg-destructive text-white rounded-md h-10 gap-2 flex items-center justify-center text-sm">
       <CloudAlert className="size-5 mb-px" /> 
       {state === 'compressing_failed' ? (
-        <span>{t('service.status.compressionFailed')}</span>
+        <span>{t('annotate.status.compressionFailed')}</span>
       ) : state === 'service_failed' ? (
         <>
           <span>
-            {t('service.status.serviceError')}
+            {t('annotate.status.serviceError')}
           </span>
 
           {props.lastError && (
@@ -53,24 +53,24 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     </div>
   ) : state === 'success_empty' ? (
     <div className="w-full bg-orange-400 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
-      <CloudAlert className="size-5 mb-px" /> {t('service.status.noResults')}
+      <CloudAlert className="size-5 mb-px" /> {t('annotate.status.noResults')}
     </div>
   ) : state === 'success' ? (
     <div className="w-full bg-green-600 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
-      <CloudCheck className="size-5 mb-px" /> {t('service.status.success')}
+      <CloudCheck className="size-5 mb-px" /> {t('annotate.status.success')}
     </div>
   ) : (
     <div className="w-full bg-black text-white h-10 rounded-md flex items-center justify-center px-4 gap-2.5 text-sm">
       <Spinner className="size-5 mb-px" />
 
       {state === 'cropping' ? (
-        <span>{t('service.status.cropping')}</span>
+        <span>{t('annotate.status.cropping')}</span>
       ) : state === 'fetching_iiif' ? (
-        <span>{t('service.status.fetchingIIIF')}</span>
+        <span>{t('annotate.status.fetchingIIIF')}</span>
       ) : state === 'compressing' ? (
-        <span>{t('service.status.compressing')}</span>
+        <span>{t('annotate.status.compressing')}</span>
       ) : state === 'pending' ? (
-        <span>{t('service.status.processing')}</span>
+        <span>{t('annotate.status.processing')}</span>
       ) : null}
     </div>
   )

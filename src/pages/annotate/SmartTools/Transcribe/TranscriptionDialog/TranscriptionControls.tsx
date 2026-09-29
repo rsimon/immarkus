@@ -1,34 +1,33 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, Region, TranscriptionServiceConfig } from '@/services';
-import { OCROptions } from '../../Types';
-import { ProcessingStateBadge, TagSelectionControl } from '@/components/AnnotationServices';
+import { ServiceRegistry, AnnotationServiceOptions } from '@/services';
+import { 
+  AnnotationServiceInput, 
+  AnnotationServiceStatus, 
+  ProcessingStateBadge, 
+  ServiceParameterControls, 
+  TagSelectionControl, 
+  useAnnotationServiceConfig 
+} from '@/components/AnnotationServices';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger
 } from '@/ui/Select';
-import { 
-  AnnotationServiceStatus, 
-  CredentialParameterControl, 
-  RadioParameterControl, 
-  StringParameterControl,
-  SwitchParameterControl
-} from '@/components/AnnotationServices';
 
 interface TranscriptionControlsProps {
 
   status: AnnotationServiceStatus;
 
-  region?: Region;
+  input: AnnotationServiceInput;
 
-  options: OCROptions;
+  options: AnnotationServiceOptions;
 
   entityTags: EntityType[];
 
@@ -47,23 +46,16 @@ interface TranscriptionControlsProps {
 const connectors = ServiceRegistry.listAvailableConnectors('TRANSCRIPTION');
 
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
-
   const { t } = useTranslation('smartTools');
 
   const { t: ts } = useTranslation('services');
 
-  const { connectorId, serviceOptions } = props.options;
-
-  const { connectorConfig, serviceConfig } = useMemo(() => {
-    const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
-    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION') as TranscriptionServiceConfig;
-    return { connectorConfig, serviceConfig };
-  }, [connectorId]);
-
-  const parameters = useMemo(() => ([
-    ...(connectorConfig?.parameters || []),
-    ...(serviceConfig?.parameters || [])
-  ]), [connectorConfig, serviceConfig]);
+  const { 
+    connectorConfig, 
+    serviceConfig, 
+    parameters, 
+    canSubmit 
+  } = useAnnotationServiceConfig('TRANSCRIPTION', props.options, props.input);
 
   const [showProcessingState, setShowProcessingState] = useState(false);
 
@@ -72,57 +64,10 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     setShowProcessingState(false);
   }, [props.options]);
 
-  const canSumbit = useMemo(() => {
-    if (!serviceConfig) return false;
-
-    // Check if all required params are filled
-    const required = (parameters || []).filter(p => p.required);
-    const allRequiredFilled = required.length === 0 || required.every(param => Boolean((serviceOptions || {})[param.id]));
-
-    return serviceConfig.requiresRegion ? allRequiredFilled && props.region : allRequiredFilled;
-  }, [parameters, props.options, props.region]);
-
   useEffect(() => {
     // Show processing state instead of submit button
     setShowProcessingState(Boolean(props.status?.state));
   }, [props.status]);
-
-  const renderParameterControl = (param: ServiceConfigParameter) => {
-    const value = (serviceOptions || {})[param.id];
-
-    const onValueChanged = (value: any) =>
-      props.onServiceOptionChanged(param.id, value);
-
-    return param.type === 'credential' ? (
-      <CredentialParameterControl
-        key={param.id}
-        param={param} 
-        connector={connectorConfig} 
-        value={value} 
-        onValueChanged={onValueChanged} />
-    ) : param.type === 'radio' ? (
-      <RadioParameterControl
-        key={param.id}
-        param={param}
-        connectorId={connectorConfig.id}
-        value={value}
-        onValueChanged={onValueChanged} />
-    ) : param.type === 'string' ? (
-      <StringParameterControl
-        key={param.id}
-        param={param}
-        connector={connectorConfig}
-        value={value}
-        onValueChanged={onValueChanged} />
-    ) : param.type === 'switch' ? (
-      <SwitchParameterControl
-        key={param.id}
-        param={param}
-        connectorId={connectorConfig.id}
-        checked={value}
-        onCheckedChange={onValueChanged} />
-    ) : null;
-  }
 
   return (
     <div className="pr-2 py-4 min-h-full flex flex-col">
@@ -175,7 +120,12 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         <form 
           onSubmit={evt => evt.preventDefault()}
           className="space-y-4">
-          {parameters.map(param => renderParameterControl(param))}
+          
+          <ServiceParameterControls
+            connector={connectorConfig}
+            parameters={parameters}
+            values={props.options.serviceOptions}
+            onChange={props.onServiceOptionChanged} />
 
           {serviceConfig.supportsEntityExtraction && (
             <fieldset className="space-y-2 mt-6">
@@ -203,12 +153,12 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
         {serviceConfig.requiresRegion && (
           <div className={cn(
             'border rounded-md px-2.5 py-2 text-sm leading-relaxed',
-            props.region 
+            props.input.region 
               ? 'border-green-700/15 text-green-700 bg-green-700/10'
               : 'border-amber-700/15 text-amber-700 bg-amber-700/10'
             )}>
             <h5 className="font-semibold flex gap-2 items-center mb-1">
-              {props.region ? (
+              {props.input.region ? (
                 <>
                   <CircleCheck className="size-4.5 mb-0.5" />
                   {t('transcribe.controls.areaSelected')}
@@ -235,7 +185,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           <Button 
             className="w-full flex gap-2 1.5"
             onClick={() => props.onSubmit()}
-            disabled={!canSumbit}>
+            disabled={!canSubmit}>
             {(props.entityTags.length === 0 || !serviceConfig.supportsEntityExtraction) ? (
               <>
                 <ScanText className="size-4.5" /> {t('transcribe.controls.runTranscription')}

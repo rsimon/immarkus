@@ -103,7 +103,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
               <TranscriptionControls
                 status={status}
                 options={options}
-                region={input.region}
+                input={input}
                 entityTags={tags}
                 onConnectorChanged={setConnector}
                 onServiceOptionChanged={setServiceOption}
