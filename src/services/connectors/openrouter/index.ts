@@ -1,6 +1,7 @@
 import { ServiceConnector } from '@/services/Types';
 import { transcribe } from './transcribe';
 import { translate } from './translate';
-import { parseOpenAICompatibleTranscriptionResponse as parseServiceResponse } from '@/services/utils';
+import { annotate, parseAnnotationResponse } from './annotate';
+import { parseOpenAICompatibleTranscriptionResponse as parseTranscriptionResponse } from '@/services/utils';
 
-export default { transcribe, translate, parseServiceResponse } as ServiceConnector;
+export default { annotate, transcribe, translate, parseTranscriptionResponse, parseAnnotationResponse } as ServiceConnector;

@@ -188,17 +188,17 @@ export type ServiceConfigParameter =
 
 export interface AnnotationServiceConnector {
 
-  annotate(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+  annotate(image: File | string, width: number, height: number, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
-  parseServiceResponse: AnnotationServiceCrosswalk;
+  parseAnnotationResponse: AnnotationServiceCrosswalk;
 
 }
 
 export interface TranscriptionServiceConnector {
 
-  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+  transcribe(image: File | string, width: number, height: number, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
-  parseServiceResponse: AnnotationServiceCrosswalk;
+  parseTranscriptionResponse: AnnotationServiceCrosswalk;
 
 }
 

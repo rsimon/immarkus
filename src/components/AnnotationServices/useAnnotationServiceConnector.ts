@@ -13,10 +13,10 @@ import {
 } from '@/services';
 
 const OPS = {
-  TRANSCRIPTION: 'transcribe',
-  ANNOTATION: 'annotate',
-  TRANSLATION: 'translate'
-} as const satisfies Record<ServiceType, string>;
+  TRANSCRIPTION: { submit: 'transcribe', parse: 'parseTranscriptionResponse' },
+  ANNOTATION:    { submit: 'annotate',   parse: 'parseAnnotationResponse' },
+  TRANSLATION:   { submit: 'translate', parse: undefined }
+} as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const [options, setOptions] = useState<AnnotationServiceOptions>({
@@ -93,9 +93,12 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (isStale()) return;
 
       const image = 'file' in result ? result.file : result.url;
-      const crosswalk = service.connector.parseServiceResponse;
 
-      service.connector[OPS[type]](image, options.serviceOptions, tags).then(({ data, generator }) => {
+      const parseFn = OPS[type].parse;
+      if (!parseFn) return;
+
+      const crosswalk =  service.connector[parseFn];
+      service.connector[OPS[type].submit](image, result.width, result.height, options.serviceOptions, tags).then(({ data, generator }) => {
         if (isStale()) return;
 
         // Test the crosswalk to make sure data is valid

@@ -1,4 +1,4 @@
-import { TranscriptionServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse } from '@/services/Types';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -15,8 +15,10 @@ const isOCRSpaceOptions = (opts: Record<string, any>): opts is OCRSpaceOptions =
 
 export const transcribe = (
   image: File | string, 
+  _width: number,
+  _height: number,
   options?: Record<string, any>
-): Promise<TranscriptionServiceResponse> => {
+): Promise<AnnotationServiceResponse> => {
   if (!isOCRSpaceOptions(options)) {
     console.error(options);
     return Promise.reject('Invalid OCR options');

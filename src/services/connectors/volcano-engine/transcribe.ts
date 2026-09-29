@@ -1,6 +1,6 @@
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, options: Record<string, any> = {}) => {
+export const transcribe = (image: File | string, _w: number, _h: number, options: Record<string, any> = {}) => {
   const key = options['api-key'];
 
   // Should never happen

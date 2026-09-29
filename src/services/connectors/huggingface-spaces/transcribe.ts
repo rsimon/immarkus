@@ -15,7 +15,7 @@ const parseArgs = (str: string): any | undefined => {
   }
 }
 
-export const transcribe = async (image: File | string, options?: Record<string, any>) => {
+export const transcribe = async (image: File | string, _width: number, _height: number, options?: Record<string, any>) => {
   const endpoint = options['endpoint'];
 
   // Should never happen

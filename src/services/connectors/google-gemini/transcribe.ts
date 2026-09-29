@@ -1,11 +1,13 @@
-import { TranscriptionServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { GoogleGenAI, Type } from '@google/genai';
 
 export const transcribe = (
   image: File | string, 
+  _width: number,
+  _height: number,
   options?: Record<string, any>
-): Promise<TranscriptionServiceResponse>  => {
+): Promise<AnnotationServiceResponse>  => {
   const apiKey = options['api-key'];
   const model = options['model'];
 

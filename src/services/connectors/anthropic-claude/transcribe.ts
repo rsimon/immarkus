@@ -1,7 +1,7 @@
 import { EntityType } from '@/model';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, options?: Record<string, any>, tags?: EntityType[]) => {
+export const transcribe = (image: File | string, _width: number, _height: number, options?: Record<string, any>, tags?: EntityType[]) => {
   const apiKey = options['api-key'];
   const model = options['model'];
 

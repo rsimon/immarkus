@@ -1,5 +1,5 @@
 import { transcribe } from './transcribe';
-import { parseResponse as parseServiceResponse } from './parseResponse';
+import { parseResponse as parseTranscriptionResponse } from './parseResponse';
 import { ServiceConnector } from '@/services/Types';
 
-export default { transcribe, parseServiceResponse } as ServiceConnector;
+export default { transcribe, parseTranscriptionResponse } as ServiceConnector;
