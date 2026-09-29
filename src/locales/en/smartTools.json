@@ -63,6 +63,30 @@
     "instructions": "Click to start, move to follow edges. Click again to place points.",
     "hint": "Ideal for quickly tracing complex shapes and curved edges."
   },
+  "annotate": {
+    "status": {
+      "compressionFailed": "Image compression failed",
+      "serviceError": "Service Error",
+      "serviceResponded": "Service responded:",
+      "noResults": "No Results",
+      "success": "Success",
+      "cropping": "Cropping Image",
+      "fetchingIIIF": "Fetching IIIF Image",
+      "compressing": "Compressing Image",
+      "processing": "Processing"
+    },
+    "controls": {
+      "service": "Service",
+      "apiKeyRequired": "API Key Required",
+      "areaSelected": "Area Selected",
+      "entityTags": "Entity Tags",
+      "optional": "optional",
+      "selectTags": "Select tags...",
+      "addTag": "Add tag...",
+      "clear": "Clear",
+      "cancel": "Cancel"
+    }
+  },
   "transcribe": {
     "transcribeThisImage": "Automatically transcribe this image, or parts of it.",
     "selectImageToTranscribe": "Select an image to transcribe automatically.",
@@ -70,31 +94,11 @@
     "dialogTitle": "Auto Transcribe",
     "dialogDescription": "Submit this image for automatic transcription.",
     "controls": {
-      "service": "Service",
-      "apiKeyRequired": "API Key Required",
-      "areaSelected": "Area Selected",
       "selectAreaToTranscribe": "Select Area to Transcribe",
-      "entityTags": "Entity Tags",
-      "optional": "optional",
       "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick Entity Classes to look for.",
-      "selectTags": "Select tags...",
-      "addTag": "Add tag...",
-      "clear": "Clear",
       "transcribeAndExtractEntities": "Transcribe & Extract Entities",
       "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
-      "runTranscription": "Run Transcription",
-      "cancel": "Cancel"
-    },
-    "status": {
-      "compressionFailed": "Image compression failed",
-      "ocrError": "OCR Service Error",
-      "ocrResponded": "OCR service responded:",
-      "noResults": "No Results",
-      "success": "Success",
-      "cropping": "Cropping Image",
-      "fetchingIIIF": "Fetching IIIF Image",
-      "compressing": "Compressing Image",
-      "processing": "Processing"
+      "runTranscription": "Run Transcription"
     }
   },
   "autoAnnotate": {

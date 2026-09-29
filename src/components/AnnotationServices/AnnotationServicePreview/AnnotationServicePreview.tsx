@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
+import { Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { AnnotationServiceInput, AnnotationServiceStatus } from '../Types';
 import { HoverTooltip } from './HoverTooltip';
@@ -15,8 +16,6 @@ import {
   useAnnotator, 
   UserSelectAction 
 } from '@annotorious/react';
-import { Region, Rotation } from '@/services';
-
 
 interface AnnotationServicePreviewProps {
 

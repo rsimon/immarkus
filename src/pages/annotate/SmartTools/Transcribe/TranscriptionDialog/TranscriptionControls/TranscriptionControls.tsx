@@ -1,27 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
-import { AnnotationServiceStatus } from '@/components/AnnotationServices';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, Region, AnnotationServiceConfig, TranscriptionServiceConfig } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter, Region, TranscriptionServiceConfig } from '@/services';
 import { OCROptions } from '../../Types';
-import { TagSelectionControl } from './TagSelectionControl';
-import { ProcessingStateBadge } from './ProcessingStateBadge';
-import { 
-  CredentialParameterControl,
-  RadioParameterControl,
-  StringParameterControl, 
-  SwitchParameterControl 
-} from './parameters';
+import { ProcessingStateBadge, TagSelectionControl } from '@/components/AnnotationServices';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger
 } from '@/ui/Select';
+import { 
+  AnnotationServiceStatus, 
+  CredentialParameterControl, 
+  RadioParameterControl, 
+  StringParameterControl,
+  SwitchParameterControl
+} from '@/components/AnnotationServices';
 
 interface TranscriptionControlsProps {
 
@@ -129,7 +128,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     <div className="pr-2 py-4 min-h-full flex flex-col">
       <div className="space-y-8 flex-1">
         <fieldset className="space-y-2">
-          <Label className="font-semibold">{t('transcribe.controls.service')}</Label>
+          <Label className="font-semibold">{t('annotate.controls.service')}</Label>
 
           <Select
             value={connectorConfig.id}
@@ -141,7 +140,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
                   {connectorConfig.displayName}
                   {connectorConfig.requiresKey && (
                     <span className="rounded-full mb-px text-[11px] font-medium flex gap-1.5 items-center border text-amber-500 border-amber-400 bg-orange-50 pl-2 pr-2.5 py-0.5">
-                      <KeyRound className="size-3" /> {t('transcribe.controls.apiKeyRequired')}
+                      <KeyRound className="size-3" /> {t('annotate.controls.apiKeyRequired')}
                     </span>
                   )}
                 </h4>
@@ -183,9 +182,9 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               <Label className="font-semibold flex gap-1.5 items-center">
                 <Sparkles className="size-4 text-muted-foreground mr-0.5" />
                 <span>
-                  {t('transcribe.controls.entityTags')}
+                  {t('annotate.controls.entityTags')}
                 </span>
-                <span className="uppercase text-xs font-normal text-muted-foreground">{t('transcribe.controls.optional')}</span>
+                <span className="uppercase text-xs font-normal text-muted-foreground">{t('annotate.controls.optional')}</span>
               </Label>
 
               <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
@@ -253,7 +252,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           variant="outline"
           className="w-full"
           onClick={props.onCancel}>
-          {t('transcribe.controls.cancel')}
+          {t('annotate.controls.cancel')}
         </Button>
       </div>
     </div>

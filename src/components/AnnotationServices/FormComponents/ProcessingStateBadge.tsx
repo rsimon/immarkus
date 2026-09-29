@@ -24,11 +24,11 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     <div className="w-full bg-destructive text-white rounded-md h-10 gap-2 flex items-center justify-center text-sm">
       <CloudAlert className="size-5 mb-px" /> 
       {state === 'compressing_failed' ? (
-        <span>{t('transcribe.status.compressionFailed')}</span>
+        <span>{t('service.status.compressionFailed')}</span>
       ) : state === 'service_failed' ? (
         <>
           <span>
-            {t('transcribe.status.ocrError')}
+            {t('service.status.serviceError')}
           </span>
 
           {props.lastError && (
@@ -41,7 +41,7 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
                 side="top"
                 sideOffset={6}
                 className="text-xs px-2.5 py-2 w-72 leading-relaxed">
-                <h3 className="font-semibold">{t('transcribe.status.ocrResponded')}</h3>
+                <h3 className="font-semibold">{t('annotate.status.serviceResponded')}</h3>
                 <p className="italic mt-1">
                   "{props.lastError}"
                 </p>
@@ -53,24 +53,24 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     </div>
   ) : state === 'success_empty' ? (
     <div className="w-full bg-orange-400 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
-      <CloudAlert className="size-5 mb-px" /> {t('transcribe.status.noResults')}
+      <CloudAlert className="size-5 mb-px" /> {t('service.status.noResults')}
     </div>
   ) : state === 'success' ? (
     <div className="w-full bg-green-600 h-10 text-white rounded-md flex items-center justify-center gap-2 text-sm">
-      <CloudCheck className="size-5 mb-px" /> {t('transcribe.status.success')}
+      <CloudCheck className="size-5 mb-px" /> {t('service.status.success')}
     </div>
   ) : (
     <div className="w-full bg-black text-white h-10 rounded-md flex items-center justify-center px-4 gap-2.5 text-sm">
       <Spinner className="size-5 mb-px" />
 
       {state === 'cropping' ? (
-        <span>{t('transcribe.status.cropping')}</span>
+        <span>{t('service.status.cropping')}</span>
       ) : state === 'fetching_iiif' ? (
-        <span>{t('transcribe.status.fetchingIIIF')}</span>
+        <span>{t('service.status.fetchingIIIF')}</span>
       ) : state === 'compressing' ? (
-        <span>{t('transcribe.status.compressing')}</span>
+        <span>{t('service.status.compressing')}</span>
       ) : state === 'pending' ? (
-        <span>{t('transcribe.status.processing')}</span>
+        <span>{t('service.status.processing')}</span>
       ) : null}
     </div>
   )

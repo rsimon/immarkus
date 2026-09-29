@@ -50,25 +50,9 @@
     "instructions": "クリックで開始し、カーソルを動かすとエッジに沿って線を描きます。再度クリックでポイントを配置します。",
     "hint": "複雑な形状や曲線のエッジをすばやくトレースするのに最適です。"
   },
-  "transcribe": {
-    "transcribeThisImage": "この画像の全体または一部を自動で文字起こしします。",
-    "selectImageToTranscribe": "自動文字起こしする画像を選択してください。",
-    "selectService": "サービスを選択",
-    "dialogTitle": "自動文字起こし",
-    "dialogDescription": "この画像を自動文字起こしのために送信します。",
-    "controls": {
-      "service": "サービス",
-      "apiKeyRequired": "API キーが必要",
-      "areaSelected": "領域を選択済み",
-      "selectAreaToTranscribe": "文字起こしする領域を選択",
-      "regionHint": "このサービスはバウンディングボックス情報なしで文字起こしを返します。文字起こししたい領域を選択してください。結果は単一のアノテーションとして挿入されます。",
-      "runTranscription": "文字起こしを実行",
-      "cancel": "キャンセル"
-    },
+  "annotate": {
     "status": {
       "compressionFailed": "画像の圧縮に失敗しました",
-      "ocrError": "OCR サービスエラー",
-      "ocrResponded": "OCR サービスの応答:",
       "noResults": "結果なし",
       "success": "成功",
       "cropping": "画像を切り抜き中",
@@ -76,6 +60,13 @@
       "compressing": "画像を圧縮中",
       "processing": "処理中"
     }
+  },
+  "transcribe": {
+    "transcribeThisImage": "この画像の全体または一部を自動で文字起こしします。",
+    "selectImageToTranscribe": "自動文字起こしする画像を選択してください。",
+    "selectService": "サービスを選択",
+    "dialogTitle": "自動文字起こし",
+    "dialogDescription": "この画像を自動文字起こしのために送信します。"
   },
   "visualSearch": {
     "description": "コレクション内から視覚的に類似した要素を検索します。",
