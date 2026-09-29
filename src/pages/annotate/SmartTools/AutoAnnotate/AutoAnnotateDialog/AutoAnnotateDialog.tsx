@@ -12,6 +12,7 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
+import { AutoAnnotateControls } from './AutoAnnotateControls';
 
 interface AutoAnnotateDialogProps {
 
@@ -32,11 +33,25 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
   const { 
     annotations,
     batches,
+    input,
+    options,
     status,
+    tags,
     clearResults,
     reset,
+    setConnector,
+    setServiceOption,
+    setTags,
+    submit,
     updateInput
   } = useAnnotationServiceConnector('ANNOTATION', props.image);
+
+  const onOpenChange = (open: boolean) => {
+    setOpen(open);
+
+    if (!open)
+      reset();
+  }
 
   const onImportAnnotations = () => {
     if (!batches) return;
@@ -86,7 +101,16 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
             </div>
 
             <div className="flex-1 min-w-0 px-3 pl-0 relative overflow-y-auto">
-              Sidebar
+              <AutoAnnotateControls 
+                status={status} 
+                input={input} 
+                entityTags={tags}
+                options={options} 
+                onConnectorChanged={setConnector} 
+                onServiceOptionChanged={setServiceOption}
+                onEntityTagsChanged={setTags} 
+                onCancel={() => onOpenChange(false)} 
+                onSubmit={submit} />
             </div>
           </TooltipProvider>
         </div>

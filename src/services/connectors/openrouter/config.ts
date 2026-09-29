@@ -51,10 +51,7 @@ To get your own key:
       persist: true,
       options: [
         ['qwen/qwen3.8-27b:free', 'Qwen 3.8 27B (Free)'],
-        ['qwen/qwen3.8-27b', 'Qwen 3.8 27B'],
-        ['google/gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite'],
-        ['openai/gpt-6-sol', 'GPT 6 Sol'],
-        ['openai/gpt-6-luna', 'GPT 6 Luna']
+        ['qwen/qwen3.8-27b', 'Qwen 3.8 27B']
       ]
     }]
   },{
