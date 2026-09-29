@@ -1,7 +1,19 @@
 import OpenAI from 'openai';
+import { v4 as uuidv4 } from 'uuid';
+import { AnnotationBody, createBody, ImageAnnotation, ShapeType } from '@annotorious/react';
 import { EntityType } from '@/model';
-import { AnnotationServiceResponse, PageTransform } from '@/services';
-import { fileToBase64, tagToPrompt, urlToBase64 } from '@/services/utils';
+import { PageTransform } from '@/services';
+import { fileToBase64, parseOpenAIResponse, tagToPrompt, urlToBase64 } from '@/services/utils';
+
+interface Detection {
+
+  category: string;
+
+  label: string;
+
+  bbox: { x_min: number, y_min: number, x_max: number, y_max: number };
+
+}
 
 const buildPrompt = (w: number, h: number, tags: EntityType[]) => 
 `You are identifying objects in an image. The image is exactly ${w} pixels wide and ${h} pixels tall. Identify every instance of the following object types visible in the image:
@@ -79,8 +91,50 @@ export const annotate = (image: File | string, width: number, height: number, op
   }
 }
 
-export const parseAnnotationResponse = (data: any, transform: PageTransform) => {
+export const parseAnnotationResponse = (data: any, transform: PageTransform): ImageAnnotation[] => {
+  const payload: Detection[] = parseOpenAIResponse(data);
 
+  return payload.map(detection => {
+    const id = uuidv4();
+
+    const { x_min, y_min, x_max, y_max } = detection.bbox;
+
+    const { x, y, w, h } = transform({
+      x: x_min,
+      y: y_min,
+      w: x_max - x_min,
+      h: y_max - y_min
+    });
+
+    return {
+      id,
+      bodies: [{
+        annotation: id,
+        purpose: 'commenting',
+        value: detection.label
+      }, {
+        annotation: id,
+        purpose: 'classifying',
+        type: 'Dataset',
+        source: detection.category
+      }] as AnnotationBody[],
+      target: {
+        annotation: id,
+        selector: {
+          type: ShapeType.RECTANGLE,
+          geometry: {
+            x, y, w, h,
+            bounds: {
+              minX: x,
+              minY: y,
+              maxX: x + w,
+              maxY: y + h
+            }
+          }
+        }
+      }
+    }
+  });
 }
 
 const MOCK = {
