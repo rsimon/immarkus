@@ -6,7 +6,7 @@ import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, Region, AnnotationServiceConfig } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter, Region, AnnotationServiceConfig, TranscriptionServiceConfig } from '@/services';
 import { OCROptions } from '../../Types';
 import { TagSelectionControl } from './TagSelectionControl';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
@@ -57,7 +57,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const { connectorConfig, serviceConfig } = useMemo(() => {
     const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
-    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION') as AnnotationServiceConfig;
+    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION') as TranscriptionServiceConfig;
     return { connectorConfig, serviceConfig };
   }, [connectorId]);
 

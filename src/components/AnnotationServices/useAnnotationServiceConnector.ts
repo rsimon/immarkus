@@ -13,7 +13,6 @@ import {
 } from '@/services';
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
-
   const [options, setOptions] = useState<AnnotationServiceOptions>({
     connectorId: ServiceRegistry.listAvailableConnectors(type)[0].id 
   });

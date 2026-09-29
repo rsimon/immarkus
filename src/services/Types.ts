@@ -31,7 +31,20 @@ export interface ServiceConnectorConfig {
 export interface AnnotationServiceConfig {
   
   /** Type of service **/
-  type: 'TRANSCRIPTION' | 'ANNOTATION';
+  type: 'ANNOTATION';
+
+  /** Service display description **/
+  description: string;
+
+  /** Configuration parameters supported by this service **/
+  parameters?: ServiceConfigParameter[];
+
+}
+
+export interface TranscriptionServiceConfig {
+  
+  /** Type of service **/
+  type: 'TRANSCRIPTION';
 
   /** Service display description **/
   description: string;
@@ -62,6 +75,7 @@ export interface TranslationServiceConfig {
 
 export type ServiceConfig = 
   | AnnotationServiceConfig 
+  | TranscriptionServiceConfig
   | TranslationServiceConfig;
 
 export interface ServiceConfigCredentialParameter {
