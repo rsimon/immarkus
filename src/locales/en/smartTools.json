@@ -106,7 +106,10 @@
     "selectImageToAnnotate": "Select an image to annotate automatically using AI",
     "selectService": "Select Service",
     "dialogTitle": "Auto-Annotate",
-    "dialogDescription": "Submit this image for automatic annotation using AI."
+    "dialogDescription": "Submit this image for automatic annotation using AI.",
+    "controls": {
+      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick Entity Classes to look for."
+    }
   },
   "visualSearch": {
     "description": "Search your collection for visually similar elements.",
