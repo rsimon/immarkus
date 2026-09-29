@@ -1,11 +1,10 @@
 import imageCompression from 'browser-image-compression';
 import { DynamicImageServiceResource } from 'cozy-iiif';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { PageTransform, Point, Region, Rotation } from '@/services';
+import { PageTransform, Point, ProcessingState, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { transformImage } from '@/utils/transformImage';
-import { ProcessingState } from '@/components/AnnotationServices/Types';
 
 interface IntermediateBasePreprocessingResult {
 

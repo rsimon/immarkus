@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, KeyRound, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
+import { AnnotationServiceStatus } from '@/components/AnnotationServices';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
-import { ServiceRegistry, ServiceConfigParameter, Region, ProcessingState } from '@/services';
+import { ServiceRegistry, ServiceConfigParameter, Region, AnnotationServiceConfig } from '@/services';
 import { OCROptions } from '../../Types';
 import { TagSelectionControl } from './TagSelectionControl';
 import { ProcessingStateBadge } from './ProcessingStateBadge';
@@ -24,9 +25,7 @@ import {
 
 interface TranscriptionControlsProps {
 
-  lastError?: string;
-
-  processingState?: ProcessingState;
+  status: AnnotationServiceStatus;
 
   region?: Region;
 
@@ -58,7 +57,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   const { connectorConfig, serviceConfig } = useMemo(() => {
     const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
-    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION');
+    const serviceConfig = connectorConfig?.services.find(s => s.type === 'TRANSCRIPTION') as AnnotationServiceConfig;
     return { connectorConfig, serviceConfig };
   }, [connectorId]);
 
@@ -86,8 +85,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
   useEffect(() => {
     // Show processing state instead of submit button
-    setShowProcessingState(Boolean(props.processingState));
-  }, [props.processingState]);
+    setShowProcessingState(Boolean(props.status?.state));
+  }, [props.status]);
 
   const renderParameterControl = (param: ServiceConfigParameter) => {
     const value = (serviceOptions || {})[param.id];
@@ -231,8 +230,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
 
         {showProcessingState ? (
           <ProcessingStateBadge
-            lastError={props.lastError}
-            processingState={props.processingState} />
+            lastError={props.status?.error}
+            processingState={props.status?.state} />
         ) : (
           <Button 
             className="w-full flex gap-2 1.5"

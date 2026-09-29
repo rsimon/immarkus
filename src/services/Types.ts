@@ -1,7 +1,7 @@
 import { ImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 
-export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION';
+export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION' | 'ANNOTATION';
 
 export interface ServiceConnectorConfig {
 
@@ -28,10 +28,10 @@ export interface ServiceConnectorConfig {
 
 }
 
-export interface TranscriptionServiceConfig {
+export interface AnnotationServiceConfig {
   
   /** Type of service **/
-  type: 'TRANSCRIPTION';
+  type: 'TRANSCRIPTION' | 'ANNOTATION';
 
   /** Service display description **/
   description: string;
@@ -53,12 +53,15 @@ export interface TranslationServiceConfig {
 
   displayName?: string;
 
+  /** Service display description **/
+  description?: string;
+
   arguments?: Record<string, any>;
   
 }
 
 export type ServiceConfig = 
-  | TranscriptionServiceConfig 
+  | AnnotationServiceConfig 
   | TranslationServiceConfig;
 
 export interface ServiceConfigCredentialParameter {
@@ -127,11 +130,11 @@ export type ServiceConfigParameter =
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
 
-export interface TranscriptionServiceConnector {
+export interface AnnotationServiceConnector {
 
-  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<TranscriptionServiceResponse>;
+  annotate(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
-  parseTranscriptionResponse: TranscriptionServiceCrosswalk;
+  parseServiceResponse: AnnotationServiceCrosswalk;
 
 }
 
@@ -141,9 +144,10 @@ export interface TranslationServiceConnector {
 
 }
 
-export type ServiceConnector = TranscriptionServiceConnector | TranslationServiceConnector;
 
-export interface TranscriptionServiceResponse<T extends unknown = any> {
+export type ServiceConnector = AnnotationServiceConnector | TranslationServiceConnector;
+
+export interface AnnotationServiceResponse<T extends unknown = any> {
 
   data: T; 
 
@@ -164,7 +168,7 @@ export interface Generator {
 
 }
 
-export type TranscriptionServiceCrosswalk = (data: any, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
+export type AnnotationServiceCrosswalk<T = any> = (data: T, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
 
 export type PageTransform = {
 
@@ -232,5 +236,19 @@ export type ProcessingState = 'cropping'
   | 'success_empty'
   | 'compressing_failed' 
   | 'service_failed';
+
+export interface AnnotationServiceResult<T = any> {
+
+  data: T;
+
+  generator: Generator;
+
+  transform: PageTransform;
+
+  region?: Region;
+
+  crosswalk: AnnotationServiceCrosswalk;
+
+} 
 
 

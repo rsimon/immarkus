@@ -1,13 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ImageAnnotation } from '@annotorious/react';
-import { AnnotationServicePreview } from '@/components/AnnotationServices';
+import { AnnotationServicePreview, useAnnotationServiceConnector } from '@/components/AnnotationServices';
+import { LoadedImage } from '@/model';
+import { AnnotationBatch } from '@/services';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
-import { EntityType, LoadedImage } from '@/model';
-import { OCROptions } from '../Types';
 import { TranscriptionControls } from './TranscriptionControls';
-import { preprocess } from './preprocess';
 import { 
   Dialog, 
   DialogContent, 
@@ -15,31 +13,6 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
-import { 
-  Generator, 
-  PageTransform, 
-  Region, 
-  TranscriptionServiceCrosswalk, 
-  ServiceRegistry, 
-  useService, 
-  Rotation,
-  AnnotationBatch,
-  ProcessingState
-} from '@/services';
-
-interface OCRResult {
-
-  data: any;
-
-  generator: Generator;
-
-  transform: PageTransform;
-
-  region?: Region;
-
-  crosswalk: TranscriptionServiceCrosswalk;
-
-} 
 
 interface TranscriptionDialogProps {
 
@@ -52,55 +25,26 @@ interface TranscriptionDialogProps {
 }
 
 export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
-
   const { t } = useTranslation('smartTools');
 
   const [open, setOpen] = useState(false);
 
-  const [region, setRegion] = useState<Region | undefined>();
-
-  const [rotation, setRotation] = useState<Rotation>(0);
-
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  const [options, setOptions] = useState<OCROptions>({
-    connectorId: ServiceRegistry.listAvailableConnectors('TRANSCRIPTION')[0].id 
-  });
-
-  const [tags, setTags] = useState<EntityType[]>([]);
+  const { 
+    annotations, 
+    batches, 
+    input,
+    options,
+    status, 
+    tags,
+    clearResults,
+    reset,
+    setConnector,
+    setServiceOption,
+    setTags,
+    submit, 
+    updateInput
+  } = useAnnotationServiceConnector('TRANSCRIPTION', props.image);
   
-  const service = useService(options.connectorId, 'TRANSCRIPTION');
-
-  const [processingState, setProcessingState] = useState<ProcessingState | undefined>();
-
-  const [lastError, setLastError] = useState<string | undefined>();
-
-  const [results, setResults] = useState<OCRResult[] | undefined>();
-
-  const batches = useMemo(() => {
-    if ((results || []).length === 0) return; // No (successful) OCR run yet
-
-    return results.map(result => {
-      const { crosswalk, data, generator, region, transform } = result;
-      
-      const annotations = crosswalk(data, transform, region, options.serviceOptions);
-      return { annotations, generator };
-    });
-  }, [results, options]);
-
-  const annotations = useMemo(() => {
-    if (!batches) return;
-
-    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), [])
-  }, [batches]);
-
-  const reset = () => {
-    setRegion(undefined);
-    setProcessingState(undefined);
-    setLastError(undefined);
-    setResults(undefined);
-  }
-
   const onOpenChange = (open: boolean) => {
     setOpen(open);
 
@@ -115,65 +59,6 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
 
     setOpen(false);
     reset();
-  }
-
-  const onConnectorChanged = (connectorId: string) => 
-    setOptions(({ connectorId }));
-
-  const onServiceOptionChanged = (key: string, value: string) =>
-    setOptions(current => ({
-      ...current,
-      serviceOptions: {
-        ...(current.serviceOptions || {}),
-        [key]: value
-      } 
-    }));
-
-  const onChangeRegion = (region: Region) => {
-    setRegion(region);
-    setProcessingState(undefined);
-  }
-
-  const onClearAnnotations = () => {
-    setResults(undefined);
-    setProcessingState(undefined);
-  }
-
-  const onSubmitImage = () => { 
-    if (!service.connector) return;
-
-    preprocess(props.image, region, rotation, isFlipped, setProcessingState).then(result => {
-      setProcessingState('pending');
-
-      const image = 'file' in result ? result.file : result.url;
-      const crosswalk = service.connector.parseTranscriptionResponse;
-
-      service.connector.transcribe(image, options.serviceOptions, tags).then(({ data, generator }) => {
-        // Test the crosswalk to make sure data is valid
-        try {
-          const annotations = crosswalk(data, result.transform, region, options.serviceOptions);
-
-          setResults(current => [...(current || []), { 
-            data, 
-            generator,
-            transform: result.transform,
-            region,
-            crosswalk
-          }]);
-
-          if (annotations.length > 0)
-            setProcessingState('success')
-          else 
-            setProcessingState('success_empty');
-        } catch (error) {
-          setProcessingState('service_failed');
-          setLastError(error.message)
-        }
-      }).catch((error: Error) => {
-        setProcessingState('service_failed');
-        setLastError(error.message);
-      });   
-    });
   }
 
   return (
@@ -207,27 +92,24 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 <AnnotationServicePreview 
                   annotations={annotations}
                   image={props.image} 
-                  processingState={processingState}
-                  onChangeRegion={onChangeRegion}
-                  onChangeRotation={setRotation}
-                  onChangeFlipped={setIsFlipped}
-                  onClearAnnotations={onClearAnnotations}
+                  status={status}
+                  onUpdateInput={updateInput}
+                  onClearAnnotations={clearResults}
                   onImportAnnotations={onImportAnnotations} />
               </div>
             </div>
 
             <div className="flex-1 min-w-0 px-3 pl-0 relative overflow-y-auto">
               <TranscriptionControls
-                lastError={lastError}
+                status={status}
                 options={options}
-                processingState={processingState}
-                region={region}
+                region={input.region}
                 entityTags={tags}
-                onConnectorChanged={onConnectorChanged}
-                onServiceOptionChanged={onServiceOptionChanged}
+                onConnectorChanged={setConnector}
+                onServiceOptionChanged={setServiceOption}
                 onEntityTagsChanged={setTags}
                 onCancel={() => onOpenChange(false)}
-                onSubmit={onSubmitImage} />
+                onSubmit={submit} />
             </div>
           </TooltipProvider>
         </div>

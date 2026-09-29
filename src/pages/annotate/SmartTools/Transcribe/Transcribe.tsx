@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Annotorious, ImageAnnotation, Origin, serializeW3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
-import { AIConsent, useAIOptIn } from '@/components/AnnotationServices/AIConsent';
+import { AIConsent, useAIOptIn } from '@/components/AnnotationServices';
 import { LoadedImage } from '@/model';
 import { AnnotationBatch } from '@/services';
 import { useStore } from '@/store';

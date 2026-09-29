@@ -1,25 +1,36 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useDraggable } from '@neodrag/react';
-import { CircleX, FlaskConical, Grip, Images, Magnet, MousePointerClick, PencilSparkles, ScanText, ScissorsLineDashed, Sparkles, X } from 'lucide-react';
 import { LoadedImage } from '@/model';
 import { Button } from '@/ui/Button';
 import { useVisualSearchAvailable } from '@/utils/useVisualSearch';
 import { VisualSearch } from './VisualSearch';
 import { AnnotationMode, Tool } from '../AnnotationMode';
+import { AutoAnnotate } from './AutoAnnotate';
 import { AutoSelect } from './AutoSelect';
 import { EdgeSnap } from './EdgeSnap';
 import { SmartScissors } from './SmartScissors';
 import { Transcribe } from './Transcribe';
 import { SAMInitializing } from './SAMInitializing';
 import { useSAMPlugin } from './useSAMPlugin';
+import { 
+  CircleX, 
+  FlaskConical, 
+  Grip, 
+  Images,
+  Magnet, 
+  MousePointerClick, 
+  ScanText, 
+  ScissorsLineDashed, 
+  Sparkles, 
+  X 
+} from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { AutoAnnotate } from './AutoAnnotate';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
