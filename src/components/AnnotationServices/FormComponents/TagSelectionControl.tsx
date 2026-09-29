@@ -76,7 +76,7 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
             variant="link"
             className="underline font-normal text-muted-foreground hover:text-foreground p-0 h-auto text-[11px]"
             onClick={() => props.onChangeSelectedTags([])}>
-            {t('service.controls.clear')}
+            {t('annotate.controls.clear')}
           </Button>
         )}
       </div>

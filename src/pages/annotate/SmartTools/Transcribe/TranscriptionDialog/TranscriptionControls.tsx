@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircleCheck, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
 import { EntityType } from '@/model';
@@ -13,7 +12,8 @@ import {
   ServiceParameterControls, 
   ServiceSelectionControl, 
   TagSelectionControl, 
-  useAnnotationServiceConfig 
+  useAnnotationServiceConfig,
+  useIsProcessing
 } from '@/components/AnnotationServices';
 
 interface TranscriptionControlsProps {
@@ -50,17 +50,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
     canSubmit 
   } = useAnnotationServiceConfig('TRANSCRIPTION', props.options, props.input);
 
-  const [showProcessingState, setShowProcessingState] = useState(false);
-
-  useEffect(() => {
-    // Re-enable submit button if user changes settings
-    setShowProcessingState(false);
-  }, [props.options]);
-
-  useEffect(() => {
-    // Show processing state instead of submit button
-    setShowProcessingState(Boolean(props.status?.state));
-  }, [props.status]);
+  const showProcessingState = useIsProcessing(props.status, props.options);
 
   return (
     <div className="pr-2 py-4 min-h-full flex flex-col">
