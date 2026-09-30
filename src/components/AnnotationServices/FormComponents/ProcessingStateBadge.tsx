@@ -17,7 +17,7 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
   const { t } = useTranslation('smartTools');
 
   const state = props.processingState;
-
+  
   const isError = state === 'compressing_failed' || state === 'service_failed';
 
   return isError ? (
@@ -61,7 +61,7 @@ export const ProcessingStateBadge = (props: ProcessingStateBadgeProps) => {
     </div>
   ) : (
     <div className="w-full bg-black text-white h-10 rounded-md flex items-center justify-center px-4 gap-2.5 text-sm">
-      <Spinner className="size-5 mb-px" />
+      <Spinner className="size-4 mb-px" />
 
       {state === 'cropping' ? (
         <span>{t('annotate.status.cropping')}</span>

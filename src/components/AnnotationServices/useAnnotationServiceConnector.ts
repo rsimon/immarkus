@@ -92,6 +92,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     preprocess(image, input.region, input.rotation, input.isFlipped, onUpdateState).then(result => {
       if (isStale()) return;
 
+      onUpdateState('pending');
+
       const image = 'file' in result ? result.file : result.url;
 
       const parseFn = OPS[type].parse;
@@ -100,6 +102,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       const crosswalk =  service.connector[parseFn];
       service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags).then(({ data, generator }) => {
         if (isStale()) return;
+
+        // console.log(data);
 
         // Test the crosswalk to make sure data is valid
         try {
