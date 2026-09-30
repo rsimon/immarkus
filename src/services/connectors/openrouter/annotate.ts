@@ -63,8 +63,8 @@ export const annotate = (image: File | string, transform: PageTransform, options
 
     return client.chat.completions.create({
       model,
-      max_completion_tokens: 16000,
-      ...({ reasoning: { max_tokens: 8000 } } as any),
+      max_completion_tokens: 6500,
+      ...({ reasoning: { max_tokens: 2000 } } as any),
       messages: [{
         role: 'user',
         content: [{
