@@ -79,12 +79,10 @@ export const annotate = (image: File | string, transform: PageTransform, options
       }]
     }).then((data: any) => ({ generator, data } as AnnotationServiceResponse));
 
-    /*
-    return Promise.resolve(({
-      generator,
-      data: MOCK
-    }));
-    */
+    // return Promise.resolve(({
+    //   generator,
+    //   data: MOCK
+    // }));
   }
 
   if (typeof image === 'string') {
@@ -145,6 +143,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
   });
 }
 
+/*
 const MOCK = {
     "id": "gen-1790760770-UmpvwPPUAMV0C7Jgz4td",
     "object": "chat.completion",
@@ -199,3 +198,4 @@ const MOCK = {
         }
     }
 }
+*/

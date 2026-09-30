@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Annotorious } from '@annotorious/react';
-import { AIConsent, useAIOptIn } from '@/components/AnnotationServices/AIConsent';
+import { AIConsent, useAIOptIn, useImportAnnotations } from '@/components/AnnotationServices';
 import { LoadedImage } from '@/model';
-import { AnnotationBatch } from '@/services';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
 import { AutoAnnotateDialog } from './AutoAnnotateDialog';
@@ -34,9 +33,7 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
     props.images.length === 1 ? props.images[0] : undefined
   );
 
-  const onImportAnnotations = (batches: AnnotationBatch[], image: LoadedImage) => {
-    // TODO
-  }
+  const importAnnotations = useImportAnnotations();
 
   return (
     <div className="px-4 pb-2">
@@ -98,7 +95,7 @@ export const AutoAnnotate = (props: AutoAnnotateProps) => {
         <AutoAnnotateDialog 
           disabled={!selectedImage || !optIn}
           image={selectedImage} 
-          onImport={annotations => onImportAnnotations(annotations, selectedImage)} />
+          onImport={annotations => importAnnotations(annotations, selectedImage)} />
       </Annotorious>
     </div>
   )

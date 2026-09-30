@@ -4,4 +4,5 @@ export * from './FormComponents';
 export * from './Types';
 export * from './useAnnotationServiceConfig';
 export * from './useAnnotationServiceConnector';
+export * from './useImportAnnotations';
 export * from './useIsProcessing';
