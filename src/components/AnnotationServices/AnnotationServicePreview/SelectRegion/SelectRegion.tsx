@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SquareDashedMousePointer, X } from 'lucide-react';
-import { Region } from '@/services';
+import { ProcessingState, Region } from '@/services';
 import { Button } from '@/ui/Button';
 import { Toggle } from '@/ui/Toggle';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { SelectionTool } from './SelectionTool';
 import { SelectionMask } from './SelectionMask';
-import { ProcessingState } from '../../../Types';
 
 interface SelectRegionProps {
 
@@ -70,7 +69,7 @@ export const SelectRegion = (props: SelectRegionProps) => {
               variant="ghost"
               className="absolute text-xs gap-1.5 top-2 left-2 z-10 bg-white shadow-xs px-2.5 py-2 h-auto pointer-events-auto"
               onClick={onClearRegion}>
-              <X className="size-4.5" /> {t('transcribe.selectRegion.clearSelection')}
+              <X className="size-4.5" /> {t('servicePreview.selectRegion.clearSelection')}
             </Button>
           </TooltipTrigger>
         </Tooltip>
@@ -89,7 +88,7 @@ export const SelectRegion = (props: SelectRegionProps) => {
 
           <TooltipContent
             collisionPadding={20}>
-            {t('transcribe.selectRegion.selectRegionOptional')}
+            {t('servicePreview.selectRegion.selectRegionOptional')}
           </TooltipContent>
         </Tooltip>
       )}

@@ -72,19 +72,18 @@ export const parseResponse = (
   transform: PageTransform, 
   _: Region | undefined,
   options: ParseOCRSpaceResponseArgs = { 'merge-lines': false }
-): ImageAnnotation[] =>
-  (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
-    if ('TextOverlay' in result) {
-      const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
-        if (options['merge-lines']) {
-          return [...all, createLineAnnotation(line, transform)];
-        } else {  
-          return [...all, ...createWordAnnotations(line, transform)];
-        }
-      }, []);
+): ImageAnnotation[] => (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
+  if ('TextOverlay' in result) {
+    const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
+      if (options['merge-lines']) {
+        return [...all, createLineAnnotation(line, transform)];
+      } else {  
+        return [...all, ...createWordAnnotations(line, transform)];
+      }
+    }, []);
 
-      return [...all, ...onThisPage];
-    } else {
-      return all;
-    }
-  }, []);
+    return [...all, ...onThisPage];
+  } else {
+    return all;
+  }
+}, []);

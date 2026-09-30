@@ -41,6 +41,20 @@ To get your own key:
       ]
     }]
   },{
+    type: 'ANNOTATION',
+    description: 'Annotation via OpenRouter',
+    parameters: [{
+      type: 'string',
+      id: 'model',
+      displayName: 'Model',
+      required: true,
+      persist: true,
+      options: [
+        ['qwen/qwen3.8-max-0902', 'Qwen 3.8 Max (0902)'],
+        ['google/gemini-3.1-pro-preview', 'Gemini 3.1 Pro Preview']
+      ]
+    }]
+  },{
     type: 'TRANSLATION',
     displayName: 'OpenRouter (Qwen 3.8 27B Free)',
     arguments: {

@@ -4,11 +4,11 @@ import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType, PropertyDefinition } from '@/model';
 import { 
+  AnnotationServiceResponse,
   Generator, 
   PageTransform, 
-  Region, 
-  TranscriptionServiceResponse, 
-  TranslationServiceResponse 
+  Region,
+  TranslationServiceResponse
 } from './Types';
 
 export const PROMPT_TRANSCRIBE = 
@@ -66,7 +66,7 @@ export const transcribeOpenAICompatible = (
   generator: Generator,
   tags: EntityType[] = [],
   defaultHeaders?: any
-): Promise<TranscriptionServiceResponse> => {
+): Promise<AnnotationServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
     baseURL,
@@ -92,7 +92,7 @@ export const transcribeOpenAICompatible = (
           }
         }]
       }]
-    }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
+    }).then((data: any) => ({ generator, data } as AnnotationServiceResponse));
   }
 
   if (typeof image === 'string') {
@@ -246,14 +246,14 @@ const propertyToPrompt = (p: PropertyDefinition): string | undefined => {
   }
 }
 
-const tagToPrompt = (tag: EntityType): string => {
+export const tagToPrompt = (tag: EntityType): string => {
   const lines = (tag.properties || []).map(propertyToPrompt);
 
   return [
     `### Class: "${tag.id}"`,
     tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
     tag.description,
-    lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
+    // lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
   ].filter(Boolean).join('\n');
 };
 

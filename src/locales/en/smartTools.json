@@ -1,11 +1,44 @@
 {
+  "aiConsent": {
+    "enableExternalAI": "Enable external AI tools.",
+    "disclaimer": "I understand that images I send are processed by 3rd-party services and that I’m responsible for what I upload.",
+    "title": "Before You Use External AI Services",
+    "intro": "This IMMARKUS tool allows you to connect to external AI platforms (e.g. OpenAI, Anthropic, Google), either directly or through third-party service providers such as HuggingFace, OpenRouter, etc. Please read and confirm the following before continuing:",
+    "externalProcessing": "<strong>External Processing</strong>: When you use this tool, any images or image portions you submit will be sent to the selected external service(s) for processing.",
+    "ownKeys": "<strong>Your Own Keys</strong>: For services that require an API key, you must provide your own key. The key is stored locally in your browser and used only to connect directly to the intended AI service. IMMARKUS does not transmit or store your key elsewhere.",
+    "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external services unless you understand and accept their terms of use.",
+    "noHiddenTransfers": "<strong>No Hidden Transfers</strong>: IMMARKUS itself does not send your data anywhere. Only the AI services you choose to connect to will receive the data you submit.",
+    "confirmation": "By continuing, you confirm that you have read and understood this information and accept responsibility for your use of external AI services.",
+    "agree": "I Understand and Agree",
+    "close": "Close"
+  },
+  "servicePreview": {
+    "selectRegion": {
+      "clearSelection": "Clear Selection",
+      "selectRegionOptional": "Select a region (optional)"
+    },
+    "resultBadge": {
+      "annotationCount_one": "{{count}} Annotation",
+      "annotationCount_other": "{{count}} Annotations",
+      "importToImmarkus": "Import to IMMARKUS",
+      "noResults": "No Results"
+    },
+    "nav": {
+      "rotateCounterClockwise": "Rotate counter-clockwise",
+      "rotateClockwise": "Rotate clockwise",
+      "flip": "Flip",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    }
+  },
   "panel": {
     "title": "Smart Tools",
-    "smartScissors": "Smart Scissors",
-    "edgeSnap": "Edge Snap",
-    "autoSelect": "Auto Select",
-    "autoTranscribe": "Auto Transcribe",
-    "visualSearch": "Visual Search",
+    "traceOutline": "Trace outline",
+    "snapToEdges": "Snap to edges",
+    "selectObjects": "Select objects",
+    "transcribeText": "Transcribe text",
+    "autoAnnotate": "Auto-annotate",
+    "findSimilar": "Find similar",
     "notSupported": {
       "title": "Not Supported",
       "description": "Smart Tools use experimental WebGPU technology not available in your browser. Please switch to a recent version of Chrome or Edge to use this feature. <compatLink>View browser compatibility</compatLink>."
@@ -30,45 +63,11 @@
     "instructions": "Click to start, move to follow edges. Click again to place points.",
     "hint": "Ideal for quickly tracing complex shapes and curved edges."
   },
-  "transcribe": {
-    "transcribeThisImage": "Automatically transcribe this image, or parts of it.",
-    "selectImageToTranscribe": "Select an image to transcribe automatically.",
-    "enableExternalAI": "Enable external AI tools.",
-    "disclaimer": "I understand that images I send are processed by 3rd-party services and that I’m responsible for what I upload.",
-    "selectService": "Select Service",
-    "dialogTitle": "Auto Transcribe",
-    "dialogDescription": "Submit this image for automatic transcription.",
-    "consent": {
-      "title": "Before You Use Auto Transcribe",
-      "intro": "The IMMARKUS Auto Transcribe tool allows you to connect to external AI platforms (e.g. Google, Microsoft Azure, OpenAI). Please read and confirm the following before continuing:",
-      "externalProcessing": "<strong>External Processing</strong>: When you use the Auto Transcribe tool, any images or image portions you submit will be sent to the selected third-party service for processing.",
-      "ownKeys": "<strong>Your Own Keys</strong>: For services that require an API key, you must provide your own key. The key is stored locally in your browser and used only to connect directly to the intended AI service. IMMARKUS does not transmit or store your key elsewhere.",
-      "imageRights": "<strong>Image Rights & Responsibility</strong>: Ensure that you have the right to upload and process any materials you use. Do not send copyrighted, personal, or sensitive data to external service unless you understand and accept their terms of use.",
-      "noHiddenTransfers": "<strong>No Hidden Transfers</strong>: IMMARKUS itself does not send your data anywhere. Only the AI services you choose to connect to will receive the data you submit.",
-      "confirmation": "By continuing, you confirm that you have read and understood this information and accept responsibility for your use of external AI services.",
-      "agree": "I Understand and Agree",
-      "close": "Close"
-    },
-    "controls": {
-      "service": "Service",
-      "apiKeyRequired": "API Key Required",
-      "areaSelected": "Area Selected",
-      "selectAreaToTranscribe": "Select Area to Transcribe",
-      "entityTags": "Entity Tags",
-      "optional": "optional",
-      "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick Entity Classes to look for.",
-      "selectTags": "Select tags...",
-      "addTag": "Add tag...",
-      "clear": "Clear",
-      "transcribeAndExtractEntities": "Transcribe & Extract Entities",
-      "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
-      "runTranscription": "Run Transcription",
-      "cancel": "Cancel"
-    },
+  "annotate": {
     "status": {
       "compressionFailed": "Image compression failed",
-      "ocrError": "OCR Service Error",
-      "ocrResponded": "OCR service responded:",
+      "serviceError": "Service Error",
+      "serviceResponded": "Service responded:",
       "noResults": "No Results",
       "success": "Success",
       "cropping": "Cropping Image",
@@ -76,22 +75,41 @@
       "compressing": "Compressing Image",
       "processing": "Processing"
     },
-    "nav": {
-      "rotateCounterClockwise": "Rotate counter-clockwise",
-      "rotateClockwise": "Rotate clockwise",
-      "flip": "Flip",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out"
-    },
-    "resultBadge": {
-      "annotationCount_one": "{{count}} Annotation",
-      "annotationCount_other": "{{count}} Annotations",
-      "importToImmarkus": "Import to IMMARKUS",
-      "noResults": "No Results"
-    },
-    "selectRegion": {
-      "clearSelection": "Clear Selection",
-      "selectRegionOptional": "Select a region (optional)"
+    "controls": {
+      "service": "Service",
+      "apiKeyRequired": "API Key Required",
+      "areaSelected": "Area Selected",
+      "entityTags": "Entity Tags",
+      "optional": "optional",
+      "selectTags": "Select tags...",
+      "addTag": "Add tag...",
+      "clear": "Clear",
+      "cancel": "Cancel"
+    }
+  },
+  "transcribe": {
+    "transcribeThisImage": "Automatically transcribe this image, or parts of it.",
+    "selectImageToTranscribe": "Select an image to transcribe automatically.",
+    "selectService": "Select Service",
+    "dialogTitle": "Auto Transcribe",
+    "dialogDescription": "Submit this image for automatic transcription.",
+    "controls": {
+      "selectAreaToTranscribe": "Select Area to Transcribe",
+      "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick Entity Classes to look for.",
+      "transcribeAndExtractEntities": "Transcribe & Extract Entities",
+      "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
+      "runTranscription": "Run Transcription"
+    }
+  },
+  "autoAnnotate": {
+    "annotateThisImage": "Automatically annotated this image or parts of it using AI",
+    "selectImageToAnnotate": "Select an image to annotate automatically using AI",
+    "selectService": "Select Service",
+    "dialogTitle": "Auto-Annotate",
+    "dialogDescription": "Submit this image for automatic annotation using AI.",
+    "controls": {
+      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick Entity Classes to look for.",
+      "runAnnotation": "Annotate"
     }
   },
   "visualSearch": {

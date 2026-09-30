@@ -1,6 +1,7 @@
+import { PageTransform } from '@/services/Types';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, options: Record<string, any> = {}) => {
+export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}) => {
   const key = options['api-key'];
 
   // Should never happen

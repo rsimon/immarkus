@@ -1,5 +1,6 @@
 import { Client, handle_file } from '@gradio/client';
 import { urlToFile } from '@/services/utils';
+import { PageTransform } from '@/services/Types';
 
 const isValidEndpoint = (url: string) => {
   // TODO possibly support localhost URLs later?
@@ -15,7 +16,7 @@ const parseArgs = (str: string): any | undefined => {
   }
 }
 
-export const transcribe = async (image: File | string, options?: Record<string, any>) => {
+export const transcribe = async (image: File | string, _t: PageTransform, options?: Record<string, any>) => {
   const endpoint = options['endpoint'];
 
   // Should never happen

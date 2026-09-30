@@ -5,7 +5,7 @@ import { AIConsent, useAIOptIn, useImportAnnotations } from '@/components/Annota
 import { LoadedImage } from '@/model';
 import { Checkbox } from '@/ui/Checkbox';
 import { Label } from '@/ui/Label';
-import { TranscriptionDialog } from './TranscriptionDialog';
+import { AutoAnnotateDialog } from './AutoAnnotateDialog';
 import {
   Select,
   SelectContent,
@@ -14,19 +14,20 @@ import {
   SelectValue,
 } from '@/ui/Select';
 
-interface TranscribeProps {
+interface AutoAnnotateProps {
 
   images: LoadedImage[];
 
 }
 
-export const Transcribe = (props: TranscribeProps) => {
+export const AutoAnnotate = (props: AutoAnnotateProps) => {
+
   const { t } = useTranslation('smartTools');
 
   // Should never happen
   if (props.images.length < 1) return null;
 
-  const [optIn, setOptIn] = useAIOptIn('transcribe');
+  const [optIn, setOptIn] = useAIOptIn('annotate');
 
   const [selectedImage, setSelectedImage] = useState<LoadedImage | undefined>(
     props.images.length === 1 ? props.images[0] : undefined
@@ -39,11 +40,11 @@ export const Transcribe = (props: TranscribeProps) => {
       <div className="pt-6 pb-1 px-0.5 flex gap-3 items-start leading-relaxed">
         {props.images.length === 1 ? (
             <p className="font-medium">
-              {t('transcribe.transcribeThisImage')}
+              {t('autoAnnotate.annotateThisImage')}
             </p>
         ) : (
           <p className="font-medium">
-            {t('transcribe.selectImageToTranscribe')}
+            {t('autoAnnotate.selectImageToAnnotate')}
           </p>
         )}
       </div>
@@ -91,7 +92,7 @@ export const Transcribe = (props: TranscribeProps) => {
           optIn={optIn}
           onChangeOptIn={setOptIn} />
 
-        <TranscriptionDialog 
+        <AutoAnnotateDialog 
           disabled={!selectedImage || !optIn}
           image={selectedImage} 
           onImport={annotations => importAnnotations(annotations, selectedImage)} />

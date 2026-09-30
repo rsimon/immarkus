@@ -1,6 +1,6 @@
 import { InferenceClient } from '@huggingface/inference';
 import { buildTranscribeAndTagPrompt, fileToBase64, urlToBase64 } from '@/services/utils';
-import { TranscriptionServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
 // import { MOCK_RESPONSE } from './mock-response';
 
@@ -11,7 +11,7 @@ const PROMPT_TRANSCRIBE =
  
 Preserve whitespace and newline formatting in the text output.`;
 
-export const transcribe = (image: File | string, options: Record<string, any> = {}, tags: EntityType[] = []) => {
+export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}, tags: EntityType[] = []) => {
   const hfToken = options['access-token'];
   const model = options['model'];
 
@@ -50,7 +50,7 @@ export const transcribe = (image: File | string, options: Record<string, any> = 
           }]
         },
       ],
-    }).then((data: any) => ({ generator, data } as TranscriptionServiceResponse));
+    }).then((data: any) => ({ generator, data } as AnnotationServiceResponse));
   }
 
   if (typeof image === 'string') {

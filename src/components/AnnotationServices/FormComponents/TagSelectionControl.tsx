@@ -62,9 +62,9 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
             onClick={() => setShowDialog(true)}
             className="h-auto grow px-0 py-1 text-muted-foreground font-light text-xs justify-start">
             {props.selectedTags.length === 0 ? (
-              <span>{t('transcribe.controls.selectTags')}</span>
+              <span>{t('annotate.controls.selectTags')}</span>
             ) : (
-              <span>{t('transcribe.controls.addTag')}</span>
+              <span>{t('annotate.controls.addTag')}</span>
             )}
           </Button>
         </li>
@@ -76,7 +76,7 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
             variant="link"
             className="underline font-normal text-muted-foreground hover:text-foreground p-0 h-auto text-[11px]"
             onClick={() => props.onChangeSelectedTags([])}>
-            {t('transcribe.controls.clear')}
+            {t('annotate.controls.clear')}
           </Button>
         )}
       </div>

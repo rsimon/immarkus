@@ -1,19 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServiceRegistry } from './ServiceRegistry';
 import { 
+  AnnotationServiceConfig,
+  AnnotationServiceConnector, 
   ServiceConnector, 
   ServiceConnectorConfig, 
   ServiceType, 
-  TranscriptionServiceConnector, 
   TranslationServiceConnector,
-  TranscriptionServiceConfig,
   TranslationServiceConfig
 } from './Types';
 
 type UseServiceState =
   | {
       connectorConfig: ServiceConnectorConfig | undefined;
-      serviceConfig: TranscriptionServiceConfig | TranslationServiceConfig | undefined;
+      serviceConfig: AnnotationServiceConfig | TranslationServiceConfig | undefined;
       connector: ServiceConnector | undefined;
     };
 
@@ -29,29 +29,20 @@ const EMPTY_STATE: UseServiceState = {
 
 export function useService(
   connectorId: string,
-  type: 'TRANSCRIPTION'
+  type: ServiceType
 ): { 
   connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: TranscriptionServiceConfig; 
-  connector?: TranscriptionServiceConnector; 
+  serviceConfig: AnnotationServiceConfig; 
+  connector?: AnnotationServiceConnector; 
 };
 
 export function useService(
   connectorId: string,
-  type: 'TRANSLATION'
+  config: AnnotationServiceConfig
 ): { 
   connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: TranslationServiceConfig; 
-  connector?: TranslationServiceConnector; 
-};
-
-export function useService(
-  connectorId: string,
-  config: TranscriptionServiceConfig
-): { 
-  connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: TranscriptionServiceConfig; 
-  connector?: TranscriptionServiceConnector; 
+  serviceConfig: AnnotationServiceConfig; 
+  connector?: AnnotationServiceConnector; 
 };
 
 export function useService(
@@ -65,10 +56,10 @@ export function useService(
 
 export function useService(
   connectorId: string,
-  arg: ServiceType | TranscriptionServiceConfig | TranslationServiceConfig
+  arg: ServiceType | AnnotationServiceConfig | TranslationServiceConfig
 ): {
   connectorConfig: ServiceConnectorConfig;
-  serviceConfig: TranscriptionServiceConfig | TranslationServiceConfig;
+  serviceConfig: AnnotationServiceConfig | TranslationServiceConfig;
   connector?: ServiceConnector;
 } {
   const type = typeof arg === 'string' ? arg : arg.type;

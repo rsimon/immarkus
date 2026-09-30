@@ -2,11 +2,11 @@ import { useEffect, useMemo } from 'react';
 import { LoadedImage } from '@/model';
 import { Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
+import { AnnotationServiceInput, AnnotationServiceStatus } from '../Types';
 import { HoverTooltip } from './HoverTooltip';
 import { NavControls } from './NavControls';
 import { ResultBadge } from './ResultBadge';
 import { SelectRegion } from './SelectRegion';
-import { ProcessingState } from '../../Types';
 import { 
   DrawingStyle, 
   ImageAnnotation, 
@@ -17,19 +17,15 @@ import {
   UserSelectAction 
 } from '@annotorious/react';
 
-interface TranscriptionPreviewProps {
-
-  processingState?: ProcessingState;
+interface AnnotationServicePreviewProps {
 
   annotations?: ImageAnnotation[];
 
   image: LoadedImage;
 
-  onChangeFlipped(flipped: boolean): void;
+  status?: AnnotationServiceStatus;
 
-  onChangeRegion(region?: Region): void;
-
-  onChangeRotation(rotation: Rotation): void;
+  onUpdateInput(patch: Partial<AnnotationServiceInput>): void;
 
   onClearAnnotations(): void;
 
@@ -37,7 +33,7 @@ interface TranscriptionPreviewProps {
 
 }
 
-export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
+export const AnnotationServicePreview = (props: AnnotationServicePreviewProps) => {
 
   const { image } = props;
 
@@ -75,6 +71,12 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
     }
   }, [props.annotations, anno]);
 
+  const onChangeRegion = (region: Region) => props.onUpdateInput({ region });
+
+  const onChangeRotation = (rotation: Rotation) => props.onUpdateInput({ rotation });
+
+  const onChangeFlipped = (isFlipped: boolean) => props.onUpdateInput({ isFlipped });
+
   return (
     <div className="relative h-full w-full">
       {props.annotations && ( 
@@ -92,12 +94,12 @@ export const TranscriptionPreview = (props: TranscriptionPreviewProps) => {
           options={options} />
 
         <SelectRegion 
-          processingState={props.processingState}
-          onChangeRegion={props.onChangeRegion} />
+          processingState={props.status?.state}
+          onChangeRegion={onChangeRegion} />
 
         <NavControls 
-          onChangeFlipped={props.onChangeFlipped}
-          onChangeRotation={props.onChangeRotation} />
+          onChangeRotation={onChangeRotation} 
+          onChangeFlipped={onChangeFlipped} />
 
         <OpenSeadragonHoverTooltip 
           tooltip={props => (

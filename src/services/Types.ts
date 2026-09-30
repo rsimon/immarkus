@@ -1,8 +1,6 @@
 import { ImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 
-export type ServiceType = 'TRANSCRIPTION' | 'TRANSLATION';
-
 export interface ServiceConnectorConfig {
 
   /** Any alphanumeric string, as long as unique within IMMARKUS **/
@@ -25,6 +23,64 @@ export interface ServiceConnectorConfig {
 
   /** List of services provided through this connector */
   services: ServiceConfig[];
+
+}
+
+interface ServiceConfigMap {
+
+  ANNOTATION: AnnotationServiceConfig;
+
+  TRANSCRIPTION: TranscriptionServiceConfig;
+
+  TRANSLATION: TranslationServiceConfig;
+
+}
+
+export type ServiceType = keyof ServiceConfigMap;
+
+interface BaseServiceConfig {
+
+  description?: string;
+
+  parameters?: ServiceConfigParameter[];
+
+  requiresRegion?: boolean;
+}
+
+export interface AnnotationServiceConfig extends BaseServiceConfig {
+
+  type: 'ANNOTATION';
+
+}
+
+export interface TranscriptionServiceConfig extends BaseServiceConfig {
+
+  type: 'TRANSCRIPTION';
+
+  supportsEntityExtraction?: boolean;
+
+}
+
+export interface TranslationServiceConfig extends BaseServiceConfig {
+
+  type: 'TRANSLATION';
+
+  displayName?: string;
+
+  arguments?: Record<string, any>;
+
+}
+
+export interface AnnotationServiceConfig {
+  
+  /** Type of service **/
+  type: 'ANNOTATION';
+
+  /** Service display description **/
+  description: string;
+
+  /** Configuration parameters supported by this service **/
+  parameters?: ServiceConfigParameter[];
 
 }
 
@@ -53,13 +109,16 @@ export interface TranslationServiceConfig {
 
   displayName?: string;
 
+  /** Service display description **/
+  description?: string;
+
   arguments?: Record<string, any>;
   
 }
 
-export type ServiceConfig = 
-  | TranscriptionServiceConfig 
-  | TranslationServiceConfig;
+export type ServiceConfig = ServiceConfigMap[ServiceType];
+
+export type ServiceConfigOf<T extends ServiceType> = ServiceConfigMap[T];
 
 export interface ServiceConfigCredentialParameter {
 
@@ -127,11 +186,19 @@ export type ServiceConfigParameter =
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
 
+export interface AnnotationServiceConnector {
+
+  annotate(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+
+  parseAnnotationResponse: AnnotationServiceCrosswalk;
+
+}
+
 export interface TranscriptionServiceConnector {
 
-  transcribe(image: File | string, options?: Record<string, any>, tags?: EntityType[]): Promise<TranscriptionServiceResponse>;
+  transcribe(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
-  parseTranscriptionResponse: TranscriptionServiceCrosswalk;
+  parseTranscriptionResponse: AnnotationServiceCrosswalk;
 
 }
 
@@ -141,9 +208,9 @@ export interface TranslationServiceConnector {
 
 }
 
-export type ServiceConnector = TranscriptionServiceConnector | TranslationServiceConnector;
+export type ServiceConnector = AnnotationServiceConnector | TranscriptionServiceConnector | TranslationServiceConnector;
 
-export interface TranscriptionServiceResponse<T extends unknown = any> {
+export interface AnnotationServiceResponse<T extends unknown = any> {
 
   data: T; 
 
@@ -164,13 +231,13 @@ export interface Generator {
 
 }
 
-export type TranscriptionServiceCrosswalk = (data: any, transform: PageTransform, region?: Region, options?: Record<string, any>) => ImageAnnotation[];
-
 export type PageTransform = {
 
   (point: Point): Point;
 
   (region: Region): Region;
+
+  readonly source: { width: number, height: number };
 
 }
 
@@ -207,4 +274,52 @@ export interface TranslationServiceResponse {
   language?: string;
 
 }
+
+export interface AnnotationBatch {
+
+  annotations: ImageAnnotation[];
+
+  generator: Generator;
+  
+}
+
+export interface AnnotationServiceOptions {
+
+  connectorId: string;
+
+  serviceOptions?: Record<string, any>;
+
+}
+
+export type ProcessingState = 'cropping'
+  | 'compressing' 
+  | 'fetching_iiif' 
+  | 'pending' 
+  | 'success' 
+  | 'success_empty'
+  | 'compressing_failed' 
+  | 'service_failed';
+
+export interface AnnotationServiceResult<T = any> {
+
+  data: T;
+
+  generator: Generator;
+
+  transform: PageTransform;
+
+  region?: Region;
+
+  crosswalk: AnnotationServiceCrosswalk;
+
+} 
+
+export type AnnotationServiceCrosswalk<T = any> = (
+  data: T, 
+  transform: PageTransform,
+  region?: Region, 
+  options?: Record<string, any>
+) => ImageAnnotation[];
+
+
 

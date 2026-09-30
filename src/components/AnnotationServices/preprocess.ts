@@ -1,11 +1,10 @@
 import imageCompression from 'browser-image-compression';
 import { DynamicImageServiceResource } from 'cozy-iiif';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { PageTransform, Point, Region, Rotation } from '@/services';
+import { PageTransform, Point, ProcessingState, Region, Rotation } from '@/services';
 import { getImageSnippet } from '@/utils/getImageSnippet';
 import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { transformImage } from '@/utils/transformImage';
-import { ProcessingState } from '../Types';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -86,7 +85,7 @@ const toPageTransform = (
   const fn = (x: number, y: number) =>
     transformPoint(x, y, region, rotation, isFlipped, w, h);
 
-  return ((input: Point | Region) => {
+  const transform = (input: Point | Region) => {
     if ('w' in input) {
       const tl = fn(input.x, input.y);
       const br = fn(input.x + input.w, input.y + input.h);
@@ -100,7 +99,9 @@ const toPageTransform = (
       } as Region;
     }
     return fn(input.x, input.y);
-  }) as PageTransform;
+  }
+
+  return Object.assign(transform, { source: { width: w, height: h } }) as PageTransform;
 }
 
 const preprocessImageData = (
@@ -197,9 +198,10 @@ export const preprocess = (
           /**
            * Case 2: file image snippet (local or clipped static IIIF) with region
            */
-          return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => (
-            { file: result.file, transform: getRegionTransform(result.width, result.height) }
-          )));
+          return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => ({
+            file: result.file, 
+            transform: getRegionTransform(result.width, result.height) 
+          })));
         } else {
           // Should never happen
           throw new Error('Unexpected snippet type');
