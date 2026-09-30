@@ -28,10 +28,6 @@ export interface FilePreprocessingResult {
 
   file: File;
 
-  width: number;
-
-  height: number;
-
   transform: PageTransform;
 
 }
@@ -39,10 +35,6 @@ export interface FilePreprocessingResult {
 export interface IIIFPreprocessingResult {
 
   url: string;
-
-  width: number;
-
-  height: number;
 
   transform: PageTransform;
 
@@ -93,7 +85,7 @@ const toPageTransform = (
   const fn = (x: number, y: number) =>
     transformPoint(x, y, region, rotation, isFlipped, w, h);
 
-  return ((input: Point | Region) => {
+  const transform = (input: Point | Region) => {
     if ('w' in input) {
       const tl = fn(input.x, input.y);
       const br = fn(input.x + input.w, input.y + input.h);
@@ -107,7 +99,9 @@ const toPageTransform = (
       } as Region;
     }
     return fn(input.x, input.y);
-  }) as PageTransform;
+  }
+
+  return Object.assign(transform, { source: { width: w, height: h } }) as PageTransform;
 }
 
 const preprocessImageData = (
@@ -188,7 +182,7 @@ export const preprocess = (
        */
       return fetch(regionURL).then(res => res.blob()).then(blob => {
         return getImageDimensions(blob).then(({ width, height }) => (
-          { url: regionURL, width, height, transform: getRegionTransform(width, height) }
+          { url: regionURL, transform: getRegionTransform(width, height) }
         ));
       });
     } else {
@@ -206,8 +200,6 @@ export const preprocess = (
            */
           return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => ({
             file: result.file, 
-            width: result.width,
-            height: result.height,
             transform: getRegionTransform(result.width, result.height) 
           })));
         } else {
@@ -237,8 +229,6 @@ export const preprocess = (
          */
         return preprocessImageData(data, width, height, onProgress).then(result => ({
           file: result.file, 
-          width: result.width,
-          height: result.height,
           transform: getImageTransform(origW, origH, result.width, result.height)
         }));
       }));
@@ -261,8 +251,6 @@ export const preprocess = (
                */
               return { 
                 url: imageURL, 
-                width,
-                height,
                 transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
             })
           });
@@ -285,8 +273,6 @@ export const preprocess = (
               getImageDimensions(file).then(({ width, height }) =>
                 preprocessImageData(file, width, height, onProgress).then(result => ({
                   file: result.file,
-                  width: result.width,
-                  height: result.height,
                   transform: getImageTransform(
                     originalSize.width, 
                     originalSize.height,

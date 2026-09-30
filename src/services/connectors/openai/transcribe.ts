@@ -1,4 +1,4 @@
-import { AnnotationServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { fileToBase64, PROMPT_TRANSCRIBE, urlToBase64 } from '@/services/utils';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
@@ -6,8 +6,7 @@ import { z } from 'zod';
 
 export const transcribe = (
   image: File | string, 
-  _width: number,
-  _height: number,
+  _t: PageTransform,
   options?: Record<string, any>
 ): Promise<AnnotationServiceResponse> => {
   const apiKey = options['api-key'];

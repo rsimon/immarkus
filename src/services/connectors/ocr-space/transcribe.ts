@@ -1,4 +1,4 @@
-import { AnnotationServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 
 const { VITE_OCR_SPACE_KEY } = import.meta.env;
 
@@ -15,8 +15,7 @@ const isOCRSpaceOptions = (opts: Record<string, any>): opts is OCRSpaceOptions =
 
 export const transcribe = (
   image: File | string, 
-  _width: number,
-  _height: number,
+  _t: PageTransform,
   options?: Record<string, any>
 ): Promise<AnnotationServiceResponse> => {
   if (!isOCRSpaceOptions(options)) {

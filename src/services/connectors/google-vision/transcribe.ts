@@ -1,10 +1,9 @@
-import { AnnotationServiceResponse } from '@/services/Types';
+import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 
 export const transcribe = (
   image: File | string, 
-  _width: number,
-  _height: number,
+  _t: PageTransform,
   options?: Record<string, any>
 ): Promise<AnnotationServiceResponse> => {
   if (!options || !options['api-key']) throw new Error('Missing API key');

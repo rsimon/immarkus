@@ -98,10 +98,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (!parseFn) return;
 
       const crosswalk =  service.connector[parseFn];
-      service.connector[OPS[type].submit](image, result.width, result.height, options.serviceOptions, tags).then(({ data, generator }) => {
+      service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags).then(({ data, generator }) => {
         if (isStale()) return;
-
-        console.log(data);
 
         // Test the crosswalk to make sure data is valid
         try {

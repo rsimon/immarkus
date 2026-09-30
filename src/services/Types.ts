@@ -188,7 +188,7 @@ export type ServiceConfigParameter =
 
 export interface AnnotationServiceConnector {
 
-  annotate(image: File | string, width: number, height: number, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+  annotate(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
   parseAnnotationResponse: AnnotationServiceCrosswalk;
 
@@ -196,7 +196,7 @@ export interface AnnotationServiceConnector {
 
 export interface TranscriptionServiceConnector {
 
-  transcribe(image: File | string, width: number, height: number, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+  transcribe(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
 
   parseTranscriptionResponse: AnnotationServiceCrosswalk;
 
@@ -207,7 +207,6 @@ export interface TranslationServiceConnector {
   translate(text: string, targetLanguage?: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
 
 }
-
 
 export type ServiceConnector = AnnotationServiceConnector | TranscriptionServiceConnector | TranslationServiceConnector;
 
@@ -237,6 +236,8 @@ export type PageTransform = {
   (point: Point): Point;
 
   (region: Region): Region;
+
+  readonly source: { width: number, height: number };
 
 }
 

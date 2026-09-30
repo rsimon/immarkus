@@ -50,7 +50,7 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['qwen/qwen3.8-max-prime', 'Qwen 3.8 Max Prime'],
+        ['qwen/qwen3.8-max-0902', 'Qwen 3.8 Max (0902)'],
         ['google/gemini-3.1-pro-preview', 'Gemini 3.1 Pro Preview']
       ]
     }]
