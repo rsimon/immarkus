@@ -50,8 +50,14 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['qwen/qwen3.8-max-0902', 'Qwen 3.8 Max (0902)'],
-        ['google/gemini-3.1-pro-preview', 'Gemini 3.1 Pro Preview']
+        ['qwen/qwen3.8-max-0902', 'Qwen 3.8 Max'],
+        ['qwen/qwen3.8-flash', 'Qwen 3.8 Flash'],
+        ['openai/gpt-6-astra', 'GPT 6 Astra'],
+        ['openai/gpt-6.1-sol', 'GPT 6.1 Sol'],
+        ['openai/gpt-5.6-sol', 'GPT 5.6 Sol'],
+        ['anthropic/claude-sonnet-5.5', 'Claude Sonnet 5.5'],
+        ['google/gemini-3.8-flash', 'Gemini 3.8 Flash'],     
+        ['google/gemini-3.7-flash', 'Gemini 3.7 Flash']
       ]
     }]
   },{

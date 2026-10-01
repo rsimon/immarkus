@@ -63,8 +63,8 @@ export const annotate = (image: File | string, transform: PageTransform, options
 
     return client.chat.completions.create({
       model,
-      max_completion_tokens: 6500,
-      ...({ reasoning: { max_tokens: 100 } } as any),
+      max_completion_tokens: 12000,
+      ...({ reasoning: { max_tokens: 1000 } } as any),
       messages: [{
         role: 'user',
         content: [{
@@ -95,7 +95,10 @@ export const annotate = (image: File | string, transform: PageTransform, options
 }
 
 export const parseAnnotationResponse = (data: any, transform: PageTransform): ImageAnnotation[] => {
+  // console.log('[openrouter.annotate] parsing...');
+
   const payload: Detection[] = parseOpenAIResponse(data);
+  // console.log(payload);
 
   return payload.map(detection => {
     const id = uuidv4();
