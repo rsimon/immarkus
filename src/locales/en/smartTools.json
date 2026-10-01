@@ -33,12 +33,12 @@
   },
   "panel": {
     "title": "Smart Tools",
-    "traceOutline": "Smart Scissors",
-    "snapToEdges": "Edge Snap",
-    "selectObjects": "Auto Select",
-    "transcribeText": "Auto Transcribe",
-    "autoAnnotate": "Auto Annotate",
-    "findSimilar": "Visual Search",
+    "traceOutline": "Trace outline",
+    "snapToEdges": "Snap to edges",
+    "selectObjects": "Select objects",
+    "transcribeText": "Transcribe text",
+    "autoAnnotate": "Auto-annotate",
+    "findSimilar": "Find similar",
     "notSupported": {
       "title": "Not Supported",
       "description": "Smart Tools use experimental WebGPU technology not available in your browser. Please switch to a recent version of Chrome or Edge to use this feature. <compatLink>View browser compatibility</compatLink>."
