@@ -253,7 +253,7 @@ export const tagToPrompt = (tag: EntityType): string => {
     `### Class: "${tag.id}"`,
     tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
     tag.description,
-    // lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
+    lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
   ].filter(Boolean).join('\n');
 };
 
