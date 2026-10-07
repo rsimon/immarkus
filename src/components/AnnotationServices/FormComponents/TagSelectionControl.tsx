@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EntityType } from '@/model';
 import { X } from 'lucide-react';
-import { Button } from '@/ui/Button';
 import { EntityTypeBrowserDialog } from '@/components/EntityTypeBrowser';
+import { useDataModel } from '@/store';
+import { Button } from '@/ui/Button';
 
 interface TagSelectionControlProps {
 
@@ -17,6 +18,10 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
   const { t } = useTranslation('smartTools');
 
   const [showDialog, setShowDialog] = useState(false);
+
+  const model = useDataModel();
+
+  const isAllTags = model.entityTypes.every(t => props.selectedTags.find(s => s.id === t.id));
 
   const onAdd = (toAdd: EntityType) => {
     setShowDialog(false);
@@ -54,20 +59,22 @@ export const TagSelectionControl = (props: TagSelectionControlProps) => {
           </li>
         ))}
 
-        <li 
-          className="inline-flex ml-1 grow" 
-          role="presentation">
-          <Button 
-            variant="ghost"
-            onClick={() => setShowDialog(true)}
-            className="h-auto grow px-0 py-1 text-muted-foreground font-light text-xs justify-start">
-            {props.selectedTags.length === 0 ? (
-              <span>{t('annotate.controls.selectTags')}</span>
-            ) : (
-              <span>{t('annotate.controls.addTag')}</span>
-            )}
-          </Button>
-        </li>
+        {!isAllTags && (
+          <li 
+            className="inline-flex ml-1 grow" 
+            role="presentation">
+            <Button 
+              variant="ghost"
+              onClick={() => setShowDialog(true)}
+              className="h-auto grow px-0 py-1 text-muted-foreground font-light text-xs justify-start">
+              {props.selectedTags.length === 0 ? (
+                <span>{t('annotate.controls.selectTags')}</span>
+              ) : (
+                <span>{t('annotate.controls.addTag')}</span>
+              )}
+            </Button>
+          </li>
+        )}
       </ul>  
 
       <div className="flex justify-end px-1">

@@ -1,8 +1,9 @@
-import { useTranslation } from 'react-i18next';
-import { ScanText, Sparkles } from 'lucide-react';
-import { Button } from '@/ui/Button';
+import { Trans, useTranslation } from 'react-i18next';
+import { Sparkles } from 'lucide-react';
 import { EntityType } from '@/model';
 import { AnnotationServiceOptions, ServiceRegistry } from '@/services';
+import { useDataModel } from '@/store';
+import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { 
   AnnotationServiceInput, 
@@ -43,6 +44,8 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
 
   const { t } = useTranslation('smartTools');
 
+  const model = useDataModel();
+
   const { 
     canSubmit,
     connectorConfig, 
@@ -53,6 +56,9 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
   const showProcessingState = useIsProcessing(props.status, props.options);
 
   const readyToSubmit = canSubmit && props.entityTags.length > 0;
+
+  const onSetAll = () => 
+    props.onEntityTagsChanged(model.entityTypes);
 
   return (
     <div className="pr-2 py-4 min-h-full flex flex-col">
@@ -79,7 +85,24 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
             </Label>
 
             <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
-              {t('autoAnnotate.controls.entityTagsHint')} 
+              <Trans
+                t={t}
+                i18nKey="autoAnnotate.controls.entityTagsHint" 
+                components={{
+                  selectAll: (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="font-medium underline text-foreground" 
+                      onClick={onSetAll}
+                      onKeyDown={evt => {
+                        if (evt.key === 'Enter' || evt.key === ' ') {
+                          evt.preventDefault();
+                          onSetAll();
+                        }
+                    }}/>
+                  )
+                }}/>
             </p>
 
             <TagSelectionControl
