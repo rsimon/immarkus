@@ -15,6 +15,7 @@
     "nav": {
       "rotateCounterClockwise": "反時計回りに回転",
       "rotateClockwise": "時計回りに回転",
+      "rotation": "回転",
       "zoomIn": "ズームイン",
       "zoomOut": "ズームアウト"
     }

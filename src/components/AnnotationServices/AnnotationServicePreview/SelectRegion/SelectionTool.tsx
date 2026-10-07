@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { type Viewer, Point } from 'openseadragon';
 import { useViewer } from '@annotorious/react';
 import { Region } from '@/services';
+import { getRotatedImageSize, imageToRotatedCoordinates } from '@/utils/imageRotation';
 
 const viewerOffsetPointToImageXY = (
   viewer: Viewer,
@@ -86,19 +87,28 @@ export const SelectionTool = (props: SelectionToolProps) => {
 
       const imageStart = viewerOffsetPointToImageXY(viewer, elementStart);
       const imageEnd = viewerOffsetPointToImageXY(viewer, elementEnd);
+      const rotation = viewer.viewport.getRotation();
+      const isFlipped = viewer.viewport.getFlip();
+      const orientedStart = imageToRotatedCoordinates(
+        imageStart, dimensions.x, dimensions.y, rotation, isFlipped
+      );
+      const orientedEnd = imageToRotatedCoordinates(
+        imageEnd, dimensions.x, dimensions.y, rotation, isFlipped
+      );
 
-      const origX = Math.min(imageStart.x, imageEnd.x);
-      const origY = Math.min(imageStart.y, imageEnd.y);
+      const origX = Math.min(orientedStart.x, orientedEnd.x);
+      const origY = Math.min(orientedStart.y, orientedEnd.y);
 
-      const origW = Math.abs(imageEnd.x - imageStart.x);
-      const origH = Math.abs(imageEnd.y - imageStart.y);
+      const origW = Math.abs(orientedEnd.x - orientedStart.x);
+      const origH = Math.abs(orientedEnd.y - orientedStart.y);
+      const orientedSize = getRotatedImageSize(dimensions.x, dimensions.y, rotation);
 
       // Discard any box that's fully outside the image
       const hasNoOverlap =  (
         origX + origW <= 0   || // selection is left of the image
-        origX > dimensions.x || // selection is right of the image
+        origX > orientedSize.width || // selection is right of the image
         origY + origH <= 0   || // selection is above image
-        origY > dimensions.y    // selection is below image
+        origY > orientedSize.height    // selection is below image
       );
 
       if (hasNoOverlap) {
@@ -113,14 +123,14 @@ export const SelectionTool = (props: SelectionToolProps) => {
         const trimmedW = origW - (x - origX);
         const trimmedH = origH - (y - origY);
 
-        const maxWidth = dimensions.x - x;
-        const maxHeight = dimensions.y - y;
+        const maxWidth = orientedSize.width - x;
+        const maxHeight = orientedSize.height - y;
 
         const w = Math.min(maxWidth, trimmedW);
         const h = Math.min(maxHeight, trimmedH);
 
         if (w * h > 0)      
-          props.onSelect({ x, y, w, h, rotation: viewer.viewport.getRotation() as 0 | 90 | 180 | 270 });
+          props.onSelect({ x, y, w, h, rotation, isFlipped });
 
         setStart(undefined);
       }

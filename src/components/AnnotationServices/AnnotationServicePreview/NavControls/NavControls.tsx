@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RotateCcwSquare, RotateCwSquare, SquareCenterlineDashedHorizontal, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewer } from '@annotorious/react';
@@ -20,13 +22,29 @@ export const NavControls = (props: NavControlsProps) => {
 
   const viewer = useViewer();
 
+  const [rotation, setRotation] = useState(0);
+
+  useEffect(() => {
+    if (viewer)
+      setRotation(Math.round(viewer.viewport.getRotation()) % 360);
+  }, [viewer]);
+
   const onRotate = (clockwise: boolean) => () => {
     const signFlip = viewer.viewport.getFlip() ? -1 : 1;
     const signDir = clockwise ? 1: -1;
     const angle = 90 * signFlip * signDir;
 
     viewer.viewport.rotateBy(angle);
-    props.onChangeRotation(viewer.viewport.getRotation() as Rotation);
+    const nextRotation = ((Math.round(viewer.viewport.getRotation()) % 360) + 360) % 360;
+    setRotation(nextRotation);
+    props.onChangeRotation(nextRotation);
+  }
+
+  const onSetRotation = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextRotation = Number(event.currentTarget.value);
+    viewer.viewport.setRotation(nextRotation);
+    setRotation(nextRotation);
+    props.onChangeRotation(nextRotation);
   }
 
   const onFlip = (flipped: boolean) => {
@@ -112,6 +130,20 @@ export const NavControls = (props: NavControlsProps) => {
           {t('servicePreview.nav.zoomOut')}
         </TooltipContent>
       </Tooltip>
+
+      <label className="absolute top-12 right-0 flex items-center gap-2 rounded-md bg-white px-2.5 py-2 text-xs shadow-xs">
+        <span>{t('servicePreview.nav.rotation')}</span>
+        <input
+          type="range"
+          min="0"
+          max="359"
+          step="1"
+          value={rotation}
+          aria-label={t('servicePreview.nav.rotation')}
+          className="w-28 accent-primary"
+          onChange={onSetRotation} />
+        <span className="w-8 text-right tabular-nums">{rotation}°</span>
+      </label>
     </div>
   )
 

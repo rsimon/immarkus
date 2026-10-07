@@ -9,6 +9,7 @@ import {
   tagToPrompt, 
   urlToBase64 
 } from '@/services/utils';
+import { transformRectangle } from './transformRectangle';
 
 interface Detection {
 
@@ -63,7 +64,8 @@ const sniffScale = (detections: Detection[]): number => {
 
   const max = Math.max(...values);
 
-  return (max <= 1000) ? 1000 : 1;
+  if (max <= 1) return 1;
+  return max <= 1000 ? 1000 : 1;
 }
 
 export const annotate = (image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
@@ -148,7 +150,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
       return;
     }
 
-    const { x, y, w, h } = transform({
+    const geometry = transformRectangle(transform, {
       x: (x_min * width) / scale,
       y: (y_min * height) / scale,
       w: (x_max - x_min) * width / scale,
@@ -172,15 +174,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
         annotation: id,
         selector: {
           type: ShapeType.RECTANGLE,
-          geometry: {
-            x, y, w, h,
-            bounds: {
-              minX: x,
-              minY: y,
-              maxX: x + w,
-              maxY: y + h
-            }
-          }
+          geometry
         }
       }
     }

@@ -1,10 +1,12 @@
 import Worker from './transformImageWorker?worker';
+import type { Region } from '@/services';
 
 export const transformImage = (
   blob: Blob,
   rotation: number,
   flipped: boolean = false,
-  format = 'image/jpeg'
+  format = 'image/jpeg',
+  crop?: Region
 ) => new Promise<Blob>((resolve, reject) => {
   const worker = new Worker();
 
@@ -20,5 +22,5 @@ export const transformImage = (
 
   worker.addEventListener('message', messageHandler);
 
-  worker.postMessage({ blob, rotation, flipped, format });
+  worker.postMessage({ blob, rotation, flipped, format, crop });
 });
