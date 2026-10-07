@@ -25,7 +25,9 @@ interface Detection {
 const buildPrompt = (w: number, h: number, tags: EntityType[]) => 
 `You are identifying objects in an image. You have two tasks: 
 
-1. **Object detection.** For each object, return a bounding box as fractions of the image width and height in XYXY order, normalized to a range from 0.0 to 1.0, where (0,0) is the top-left corner and (1,1) is the bottom-right corner. Boxes should tightly enclose just that object. Include every instance you can find, not just one example per category.
+## Task 1: Object Detection
+
+For each object, return a bounding box as fractions of the image width and height in XYXY order, normalized to a range from 0.0 to 1.0, where (0,0) is the top-left corner and (1,1) is the bottom-right corner. Boxes should tightly enclose just that object. Include every instance you can find, not just one example per category.
 
 2. ** Property extraction.** For each object you identify, assign a category, and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge, or interpolate information just because it seems plausible to you - any information you record must be based **only** on whatever is shown explicitly in the image.
 
@@ -33,20 +35,36 @@ Identify every instance of the following object types visible in the image, alon
 
 ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
+## Bounding box format
+
 ## Output format
 
-Respond with ONLY a JSON object (no markdown code fences, no commentary) matching exactly this shape:
+Respond ONLY with a valid JSON object (no markdown code fences, no commentary) matching exactly this shape:
 
 [
   {
     "category": ${tags.map(t => `"${t.id}"`).join(' | ')},
     "label": "short human-readable description",
-    "bbox": { "x_min": 0, "y_min": 0, "x_max": 0, "y_max": 0 },
+    "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
     "properties": {
       <field name>: <value>
     }
   }
-]`;
+]
+
+Remember to normalize coordinates to the the range of [0, 1] relative to the image.Every value must be a plain decimal literal (e.g. 0.043). Never write expressions, fractions, or divisions such as "43 / 1000".
+`;
+
+const sniffScale = (detections: Detection[]): number => {
+  const values = detections.flatMap(d => {
+    const { x_min, y_min, x_max, y_max } = d.bbox;
+    return [x_min, y_min, x_max, y_max];
+  }).filter(Number.isFinite);
+
+  const max = Math.max(...values);
+
+  return (max <= 1000) ? 1000 : 1;
+}
 
 export const annotate = (image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
   const apiKey = options['api-key'];
@@ -107,7 +125,10 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
   // console.log('[openrouter.annotate] parsing...');
 
   const payload: Detection[] = parseOpenAIResponse(data);
-  // console.log(payload);
+  console.debug('LLM response', payload);
+
+  const scale = sniffScale(payload);
+  console.log({ scale });
 
   return payload.map(detection => {
     const id = uuidv4();
@@ -117,11 +138,21 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
     // Normalized (0,1) on source width / height
     const { x_min, y_min, x_max, y_max } = detection.bbox;
 
+    const isValid = [x_min, y_min, x_max, y_max]
+      .every(n => Number.isFinite(n) && n >= 0 && n <= scale)
+      && x_max > x_min && y_max > y_min;
+
+    if (!isValid) {
+      console.warn(detection);
+      console.warn('Skipping invalid detection');
+      return;
+    }
+
     const { x, y, w, h } = transform({
-      x: x_min * width,
-      y: y_min * height,
-      w: (x_max - x_min) * width,
-      h: (y_max - y_min) * height
+      x: (x_min * width) / scale,
+      y: (y_min * height) / scale,
+      w: (x_max - x_min) * width / scale,
+      h: (y_max - y_min) * height / scale
     });
 
     return {
@@ -153,7 +184,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
         }
       }
     }
-  });
+  }).filter(Boolean);
 }
 
 /*
@@ -305,7 +336,7 @@ const MOCK = [
         "category": "house",
         "label": "House outside the city walls (north)",
         "bbox": {
-            "x_min": 0.44,
+            "x_min": null,
             "y_min": 0.11,
             "x_max": 0.48,
             "y_max": 0.14
@@ -375,7 +406,7 @@ const MOCK = [
         "category": "house",
         "label": "Pavilion inside the city walls",
         "bbox": {
-            "x_min": 0.37,
+            "x_min": null,
             "y_min": 0.41,
             "x_max": 0.41,
             "y_max": 0.45

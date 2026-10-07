@@ -42,6 +42,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
   const [nameError, setNameError] = useState(false);
 
+  const isComplete = edited.name && edited.type && !nameError;
+
   useEffect(() => {
     const { name } = edited;
     if (!name) return;
@@ -57,15 +59,8 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
 
   const onSubmit = (evt: React.FormEvent) => {
     evt.preventDefault();
-
-    const { name, type } = edited;
-
-    // Validate
-    if (name && type && !nameError) {
-      props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
-    } else {
-      // TODO error handling
-    }
+    if (!isComplete) return;
+    props.onSave({...edited, name: edited.name.trim() } as PropertyDefinition);
   }
 
   const onCheckMultiple = (checked: boolean) => {
@@ -179,7 +174,10 @@ export const PropertyDefinitionEditor = (props: PropertyDefinitionEditorProps) =
           </div>
 
           <div className="mt-5 mb-3 sm:justify-start">
-            <Button type="button" onClick={onSubmit}>{t('propertyDefinitionEditor.saveProperty')}</Button>
+            <Button 
+              type="button"
+              disabled={!isComplete}
+              onClick={onSubmit}>{t('propertyDefinitionEditor.saveProperty')}</Button>
           </div>
         </form>
       </div>
