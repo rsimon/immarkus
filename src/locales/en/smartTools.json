@@ -95,7 +95,7 @@
     "dialogDescription": "Submit this image for automatic transcription.",
     "controls": {
       "selectAreaToTranscribe": "Select Area to Transcribe",
-      "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick Entity Classes to look for.",
+      "entityTagsHint": "This service can identify entities in the transcribed text and pre-fill annotation fields automatically. Pick specific Entity Classes to look for or <selectAll>use your entire data model</selectAll>",
       "transcribeAndExtractEntities": "Transcribe & Extract Entities",
       "regionHint": "This service returns transcriptions without bounding box information. Select the area you want to transcribe. The result will be inserted as a single annotation.",
       "runTranscription": "Run Transcription"
@@ -108,7 +108,7 @@
     "dialogTitle": "Auto-Annotate",
     "dialogDescription": "Submit this image for automatic annotation using AI.",
     "controls": {
-      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick specific Entity Classes to look for or <selectAll>import your entire data model</selectAll>.",
+      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick specific Entity Classes to look for or <selectAll>use your entire data model</selectAll>.",
       "runAnnotation": "Annotate"
     }
   },

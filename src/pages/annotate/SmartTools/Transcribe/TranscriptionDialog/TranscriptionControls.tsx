@@ -1,10 +1,11 @@
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { CircleCheck, ScanText, Sparkles, SquareDashedMousePointer } from 'lucide-react';
 import { EntityType } from '@/model';
 import { Button } from '@/ui/Button';
 import { Label } from '@/ui/Label';
 import { cn } from '@/ui/utils';
 import { ServiceRegistry, AnnotationServiceOptions } from '@/services';
+import { useDataModel } from '@/store';
 import { 
   AnnotationServiceInput, 
   AnnotationServiceStatus, 
@@ -43,6 +44,8 @@ const connectors = ServiceRegistry.listAvailableConnectors('TRANSCRIPTION');
 export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   const { t } = useTranslation('smartTools');
 
+  const model = useDataModel();
+
   const { 
     connectorConfig, 
     serviceConfig, 
@@ -51,6 +54,8 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
   } = useAnnotationServiceConfig('TRANSCRIPTION', props.options, props.input);
 
   const showProcessingState = useIsProcessing(props.status, props.options);
+
+  const onSetAll = () => props.onEntityTagsChanged(model.entityTypes);
 
   return (
     <div className="pr-2 py-4 min-h-full flex flex-col">
@@ -82,7 +87,24 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
               </Label>
 
               <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
-               {t('transcribe.controls.entityTagsHint')} 
+                <Trans
+                  t={t}
+                  i18nKey="transcribe.controls.entityTagsHint" 
+                  components={{
+                    selectAll: (
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        className="font-medium underline text-foreground" 
+                        onClick={onSetAll}
+                        onKeyDown={evt => {
+                          if (evt.key === 'Enter' || evt.key === ' ') {
+                            evt.preventDefault();
+                            onSetAll();
+                          }
+                      }}/>
+                    )
+                  }}/>
               </p>
 
               <TagSelectionControl 
