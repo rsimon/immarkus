@@ -87,14 +87,15 @@ export const SelectionTool = (props: SelectionToolProps) => {
 
       const imageStart = viewerOffsetPointToImageXY(viewer, elementStart);
       const imageEnd = viewerOffsetPointToImageXY(viewer, elementEnd);
+
       const rotation = viewer.viewport.getRotation();
       const isFlipped = viewer.viewport.getFlip();
+
       const orientedStart = imageToRotatedCoordinates(
         imageStart, dimensions.x, dimensions.y, rotation, isFlipped
       );
       const orientedEnd = imageToRotatedCoordinates(
-        imageEnd, dimensions.x, dimensions.y, rotation, isFlipped
-      );
+        imageEnd, dimensions.x, dimensions.y, rotation, isFlipped);
 
       const origX = Math.min(orientedStart.x, orientedEnd.x);
       const origY = Math.min(orientedStart.y, orientedEnd.y);
