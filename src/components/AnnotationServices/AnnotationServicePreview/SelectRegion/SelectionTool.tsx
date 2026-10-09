@@ -92,8 +92,8 @@ export const SelectionTool = (props: SelectionToolProps) => {
       const isFlipped = viewer.viewport.getFlip();
 
       const orientedStart = imageToRotatedCoordinates(
-        imageStart, dimensions.x, dimensions.y, rotation, isFlipped
-      );
+        imageStart, dimensions.x, dimensions.y, rotation, isFlipped);
+        
       const orientedEnd = imageToRotatedCoordinates(
         imageEnd, dimensions.x, dimensions.y, rotation, isFlipped);
 
