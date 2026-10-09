@@ -27,9 +27,16 @@ You need an API key to use Google Gemini. To get your own key:
       required: true,
       persist: true,
       options: [
-        ['gemini-2.0-flash', 'Google Gemini (gemini-2.0-flash)'],
-        ['gemini-2.5-flash', 'Google Gemini (gemini-2.5-flash)'],
-        ['gemini-3.1-pro-preview', 'Google Gemini (gemini-3.1-pro-preview)'],
+        ['gemini-3.8-flash', 'Gemini 3.8 Flash'],
+        ['gemini-3.7-flash', 'Gemini 3.7 Flash'],
+        ['gemini-3.6-flash', 'Gemini 3.6 Flash'],
+        ['gemini-3.5-flash', 'Gemini 3.5 Flash'],
+        ['gemini-3.5-flash-lite', 'Gemini 3.5 Flash Lite'],
+        ['gemini-3.1-flash-lite', 'Gemini 3.1 Flash Lite'],
+        ['gemini-3.1-pro-preview', 'Gemini 3.1 Pro (Preview)'],
+        ['gemini-2.5-pro', 'Gemini 2.5 Pro'],
+        ['gemini-2.5-flash', 'Gemini 2.5 Flash'],
+        ['gemini-2.5-flash-lite', 'Gemini 2.5 Flash Lite']
       ]
     }]
   },{
