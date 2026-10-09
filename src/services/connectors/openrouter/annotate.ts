@@ -63,9 +63,7 @@ const sniffScale = (detections: Detection[]): number => {
   }).filter(Number.isFinite);
 
   const max = Math.max(...values);
-
-  if (max <= 1) return 1;
-  return max <= 1000 ? 1000 : 1;
+  return (max <= 1) ? 1 : 1000;
 }
 
 export const annotate = (image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
