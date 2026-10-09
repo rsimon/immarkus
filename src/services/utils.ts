@@ -118,8 +118,10 @@ export const parseOpenAIResponse = (data: any) => {
   }
 
   try {
+    const str = Array.isArray(result) ? result.find(r => r.type === 'text')?.text : result;
+    
     // Strip markdown container, if any
-    const match = result.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, result];
+    const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
     return JSON.parse(match[1]);
   } catch (error) {
     console.error(data);

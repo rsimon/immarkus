@@ -1,5 +1,6 @@
 import { ServiceConnector } from '@/services/Types';
 import { transcribe } from './transcribe';
+import { annotate, parseAnnotationResponse } from './annotate';
 import { parseResponse as parseTranscriptionResponse } from './parseResponse';
 
-export default { transcribe, parseTranscriptionResponse } as ServiceConnector;
+export default { annotate, parseAnnotationResponse, transcribe, parseTranscriptionResponse } as ServiceConnector;
