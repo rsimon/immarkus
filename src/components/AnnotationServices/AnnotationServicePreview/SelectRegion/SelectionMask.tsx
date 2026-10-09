@@ -36,12 +36,14 @@ export const SelectionMask = (props: SelectionMaskProps) => {
     if (!dimensions) return;
 
     const outer = `M 0,0 L ${dimensions.x},0 L ${dimensions.x},${dimensions.y} L 0,${dimensions.y} Z`;
+
     const corners = [
       rotatedToImageCoordinates({ x, y }, dimensions.x, dimensions.y, props.rotation ?? 0, !!props.isFlipped),
       rotatedToImageCoordinates({ x: x + w, y }, dimensions.x, dimensions.y, props.rotation ?? 0, !!props.isFlipped),
       rotatedToImageCoordinates({ x: x + w, y: y + h }, dimensions.x, dimensions.y, props.rotation ?? 0, !!props.isFlipped),
       rotatedToImageCoordinates({ x, y: y + h }, dimensions.x, dimensions.y, props.rotation ?? 0, !!props.isFlipped)
     ];
+    
     const inner = `M ${corners.map(point => `${point.x},${point.y}`).join(' L ')} Z`;
   
     return `${outer} ${inner}`;
