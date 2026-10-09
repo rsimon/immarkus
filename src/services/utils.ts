@@ -79,7 +79,7 @@ export const transcribeOpenAICompatible = (
   const submit = (imageUrl: string) => {    
     return client.chat.completions.create({
       model,
-      max_completion_tokens: 4000,
+      max_completion_tokens: 12000,
       messages: [{
         role: 'user',
         content: [{
