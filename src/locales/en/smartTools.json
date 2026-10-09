@@ -26,6 +26,7 @@
     "nav": {
       "rotateCounterClockwise": "Rotate counter-clockwise",
       "rotateClockwise": "Rotate clockwise",
+      "rotation": "Rotation",
       "flip": "Flip",
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out"

@@ -18,6 +18,18 @@ const OPS = {
   TRANSLATION:   { submit: 'translate', parse: undefined }
 } as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
 
+const blobToDataURL = (blob: Blob) => new Promise<string>((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (typeof reader.result === 'string')
+      resolve(reader.result);
+    else
+      reject(new Error('Failed to read submitted image as a data URL'));
+  };
+  reader.onerror = () => reject(reader.error ?? new Error('Failed to read submitted image'));
+  reader.readAsDataURL(blob);
+});
+
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const [options, setOptions] = useState<AnnotationServiceOptions>({
     connectorId: ServiceRegistry.listAvailableConnectors(type)[0].id 
@@ -82,6 +94,13 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
   const submit = useCallback(() => { 
     if (!service.connector) return;
 
+    // Temporary development aid for inspecting the exact submitted image.
+    const debugWindow = import.meta.env.DEV ? window.open('about:blank', '_blank') : null;
+    if (debugWindow)
+      debugWindow.document.write('Preparing submitted image preview…');
+    else if (import.meta.env.DEV)
+      console.warn('Submitted image preview tab was blocked by the browser.');
+
     const id = ++runId.current;
     const isStale = () => id !== runId.current;
 
@@ -95,6 +114,35 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       onUpdateState('pending');
 
       const image = 'file' in result ? result.file : result.url;
+      if (typeof image === 'string')
+        console.info('IIIF URL sent to annotation service:', image);
+
+      if (debugWindow) {
+        const submittedBlob = typeof image === 'string'
+          ? fetch(image).then(response => {
+              if (!response.ok)
+                throw new Error(`Failed to fetch submitted image (${response.status} ${response.statusText})`);
+              return response.blob();
+            })
+          : Promise.resolve(image);
+
+        submittedBlob
+          .then(blobToDataURL)
+          .then(dataURL => {
+            if (!debugWindow.closed)
+              debugWindow.location.replace(dataURL);
+          })
+          .catch(error => console.error('Failed to open submitted image preview:', error));
+      }
+
+      const submittedRegion = input.region
+        ? result.transform({
+            x: 0,
+            y: 0,
+            w: result.transform.source.width,
+            h: result.transform.source.height
+          })
+        : undefined;
 
       const parseFn = OPS[type].parse;
       if (!parseFn) return;
@@ -107,13 +155,13 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
         // Test the crosswalk to make sure data is valid
         try {
-          const annotations = crosswalk(data, result.transform, input.region, options.serviceOptions);
+          const annotations = crosswalk(data, result.transform, submittedRegion, options.serviceOptions);
 
           setResults(current => [...(current || []), { 
             data, 
             generator,
             transform: result.transform,
-            region: input.region,
+            region: submittedRegion,
             crosswalk
           }]);
 

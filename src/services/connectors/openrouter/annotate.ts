@@ -7,6 +7,7 @@ import {
   fileToBase64, 
   parseOpenAIResponse, 
   tagToPrompt, 
+  transformRectangle,
   urlToBase64 
 } from '@/services/utils';
 
@@ -62,7 +63,6 @@ const sniffScale = (detections: Detection[]): number => {
   }).filter(Number.isFinite);
 
   const max = Math.max(...values);
-
   return (max <= 1) ? 1 : 1000;
 }
 
@@ -148,7 +148,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
       return;
     }
 
-    const { x, y, w, h } = transform({
+    const geometry = transformRectangle(transform, {
       x: (x_min * width) / scale,
       y: (y_min * height) / scale,
       w: (x_max - x_min) * width / scale,
@@ -172,15 +172,7 @@ export const parseAnnotationResponse = (data: any, transform: PageTransform): Im
         annotation: id,
         selector: {
           type: ShapeType.RECTANGLE,
-          geometry: {
-            x, y, w, h,
-            bounds: {
-              minX: x,
-              minY: y,
-              maxX: x + w,
-              maxY: y + h
-            }
-          }
+          geometry
         }
       }
     }
