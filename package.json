@@ -41,6 +41,7 @@
     "@google/genai": "^2.28.0",
     "@gradio/client": "^2.7.1",
     "@huggingface/inference": "^4.13.31",
+    "@mistralai/mistralai": "^2.7.0",
     "@neodrag/react": "2.3.1",
     "@radix-ui/react-accordion": "^1.2.21",
     "@radix-ui/react-alert-dialog": "^1.1.24",
