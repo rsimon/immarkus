@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { Point } from 'openseadragon';
 import { useViewer } from '@annotorious/react';
-import { rotatedToImageCoordinates } from '@/utils/imageRotation';
+import { rotatedToImageCoordinates } from '../../rotationUtils';
 
 import './SelectionMask.css';
 

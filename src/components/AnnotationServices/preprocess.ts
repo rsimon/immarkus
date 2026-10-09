@@ -3,7 +3,7 @@ import type { DynamicImageServiceResource } from 'cozy-iiif';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { PageTransform, Point, ProcessingState, Region, Rotation } from '@/services';
 import { transformImage } from '@/utils/transformImage';
-import { getRotatedImageSize, rotatedToImageCoordinates } from '@/utils/imageRotation';
+import { getRotatedImageSize, rotatedToImageCoordinates } from './rotationUtils';
 
 interface IntermediateBasePreprocessingResult {
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { type Viewer, Point } from 'openseadragon';
 import { useViewer } from '@annotorious/react';
 import { Region } from '@/services';
-import { getRotatedImageSize, imageToRotatedCoordinates } from '@/utils/imageRotation';
+import { getRotatedImageSize, imageToRotatedCoordinates } from '../../rotationUtils';
 
 const viewerOffsetPointToImageXY = (
   viewer: Viewer,
