@@ -1,4 +1,4 @@
-import { Mistral } from "@mistralai/mistralai";
+import { Mistral } from '@mistralai/mistralai';
 import { buildTranscribeAndTagPrompt, fileToBase64, urlToBase64 } from '@/services/utils';
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
