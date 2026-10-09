@@ -7,9 +7,9 @@ import {
   fileToBase64, 
   parseOpenAIResponse, 
   tagToPrompt, 
+  transformRectangle,
   urlToBase64 
 } from '@/services/utils';
-import { transformRectangle } from './transformRectangle';
 
 interface Detection {
 
