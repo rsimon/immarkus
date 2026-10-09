@@ -1,5 +1,5 @@
-import Worker from './transformImageWorker?worker';
 import type { Region } from '@/services';
+import Worker from './transformImageWorker?worker';
 
 export const transformImage = (
   blob: Blob,
