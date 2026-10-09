@@ -30,6 +30,7 @@ export const NavControls = (props: NavControlsProps) => {
   const { t } = useTranslation('smartTools');
 
   const viewer = useViewer();
+  
   const [rotation, setRotation] = useState(0);
 
   useEffect(() => {
