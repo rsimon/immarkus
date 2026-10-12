@@ -110,8 +110,11 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       onUpdateState('pending');
 
       const image = 'file' in result ? result.file : result.url;
+
       if (typeof image === 'string')
         console.info('IIIF URL sent to annotation service:', image);
+      else 
+        window.open(URL.createObjectURL(image), '_blank');
 
       const submittedRegion = input.region
         ? result.transform({
