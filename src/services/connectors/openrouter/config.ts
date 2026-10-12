@@ -33,7 +33,6 @@ To get your own key:
       required: true,
       persist: true,
       options: [
-        ['qwen/qwen3.8-27b:free', 'Qwen 3.8 27B (Free)'],
         ['qwen/qwen3.8-27b', 'Qwen 3.8 27B'],
         ['google/gemini-3.8-flash', 'Gemini 3.8 Flash'],     
         ['google/gemini-3.7-flash', 'Gemini 3.7 Flash'],
