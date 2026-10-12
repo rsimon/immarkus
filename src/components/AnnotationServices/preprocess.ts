@@ -154,6 +154,7 @@ const fetchBlob = (url: string) => fetch(url).then(response => {
 
   if (!response.ok)
     throw new Error(`Failed to fetch image (${response.status} ${response.statusText})`);
+
   return response.blob();
 });
 
@@ -165,6 +166,7 @@ const getIIIFSource = (image: LoadedIIIFImage, minSize?: number) => {
     const url = firstImage.type === 'static'
       ? firstImage.url
       : firstImage.getImageURL(minSize ?? Math.max(originalSize.width, originalSize.height));
+
     return fetchBlob(url).then(blob => ({ blob, originalSize }));
   });
 }
