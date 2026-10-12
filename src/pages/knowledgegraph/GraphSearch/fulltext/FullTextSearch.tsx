@@ -28,14 +28,6 @@ interface FulltextSearchProps {
 
 }
 
-interface ResultCounts {
-
-  folders: number;
-
-  images: number;
-
-}
-
 export const FulltextSearch = (props: FulltextSearchProps) => {
 
   const { t } = useTranslation('knowledgegraph');

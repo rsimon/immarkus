@@ -166,8 +166,9 @@ export const useFulltextSearch = (
 
       const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
         .then(manifests => {
-          return manifests.flatMap((m, idx) => 
-            buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources))
+          return manifests.flatMap((m, idx) => {
+            return buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources);
+          })
         });
 
       pFolderRecords().then(folderRecords => {
@@ -178,9 +179,16 @@ export const useFulltextSearch = (
           setInitializing(false);
 
           console.log(`Took ${performance.now() - startTime}ms`);
+        }).catch(error => {
+          setInitializing(false);
+          setError('Error parsing IIIF manifest(s)');
         });
-      }).catch(error => { setError(error.message) });
+      }).catch(error => { 
+        setInitializing(false);
+        setError(error.message);
+      });
     } catch (error) {
+      setInitializing(false);
       setError(error.message);
     }
   }, [annotations, store]);
