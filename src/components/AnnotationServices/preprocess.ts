@@ -183,6 +183,7 @@ const getIIIFRegionResult = (
     w: region.w,
     h: region.h
   };
+
   const servedRegion = {
     x: Math.round(sourceRegion.x),
     y: Math.round(sourceRegion.y),
@@ -198,6 +199,7 @@ const getIIIFRegionResult = (
       ? originalSize.width - servedRegion.x - servedRegion.w
       : servedRegion.x
   };
+
   const scale = 1200 / Math.min(sourceRegion.w, sourceRegion.h);
 
   return {
@@ -275,12 +277,11 @@ export const preprocess = (
         })
       );
     });
-  };
+  }
 
   if (region) {
     if ('canvas' in image && isDynamicIIIF(image) && deg === 0) {
       const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
-
       onProgress('fetching_iiif');
 
       return firstImage.getPixelSize().then(originalSize => {
