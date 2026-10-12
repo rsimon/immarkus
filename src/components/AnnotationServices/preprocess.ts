@@ -169,6 +169,55 @@ const getIIIFSource = (image: LoadedIIIFImage, minSize?: number) => {
   });
 }
 
+const getIIIFRegionResult = (
+  image: DynamicImageServiceResource,
+  originalSize: { width: number, height: number },
+  region: Region,
+  isFlipped: boolean
+): IIIFPreprocessingResult | undefined => {
+  const sourceRegion = {
+    x: isFlipped
+      ? originalSize.width - region.x - region.w
+      : region.x,
+    y: region.y,
+    w: region.w,
+    h: region.h
+  };
+  const servedRegion = {
+    x: Math.round(sourceRegion.x),
+    y: Math.round(sourceRegion.y),
+    w: Math.round(sourceRegion.w),
+    h: Math.round(sourceRegion.h)
+  };
+
+  if (servedRegion.w < 1 || servedRegion.h < 1) return;
+
+  const transformRegion = {
+    ...servedRegion,
+    x: isFlipped
+      ? originalSize.width - servedRegion.x - servedRegion.w
+      : servedRegion.x
+  };
+  const scale = 1200 / Math.min(sourceRegion.w, sourceRegion.h);
+
+  return {
+    url: image.getRegionURL(
+      sourceRegion,
+      { degrees: 0, mirrored: isFlipped },
+      { minSize: 1200 }
+    ),
+    transform: toPageTransform(
+      originalSize.width,
+      originalSize.height,
+      0,
+      isFlipped,
+      transformRegion,
+      Math.round(sourceRegion.w * scale),
+      Math.round(sourceRegion.h * scale)
+    )
+  };
+}
+
 export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
@@ -229,6 +278,22 @@ export const preprocess = (
   };
 
   if (region) {
+    if ('canvas' in image && isDynamicIIIF(image) && deg === 0) {
+      const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
+
+      onProgress('fetching_iiif');
+
+      return firstImage.getPixelSize().then(originalSize => {
+        const result = getIIIFRegionResult(firstImage, originalSize, region, isFlipped);
+
+        if (!result)
+          return getSource(1200).then(({ blob, originalSize }) =>
+            preprocessFile(blob, originalSize.width, originalSize.height, region));
+
+        return result;
+      });
+    }
+
     onProgress('cropping');
 
     return getSource(1200).then(({ blob, originalSize }) =>
