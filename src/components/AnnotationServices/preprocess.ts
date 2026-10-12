@@ -59,11 +59,11 @@ const toPageTransform = (
 ): PageTransform => {
   const oriented = getRotatedImageSize(originalWidth, originalHeight, rotation);
 
-  const fn = (input: Point): Point => {
-    let x = region
+  const transformFn = (input: Point): Point => {
+    const x = region
       ? region.x + input.x * (region.w / submittedWidth)
       : input.x * (oriented.width / submittedWidth);
-    let y = region
+    const y = region
       ? region.y + input.y * (region.h / submittedHeight)
       : input.y * (oriented.height / submittedHeight);
 
@@ -79,10 +79,10 @@ const toPageTransform = (
   const transform = (input: Point | Region) => {
     if ('w' in input) {
       const corners = [
-        fn({ x: input.x, y: input.y }),
-        fn({ x: input.x + input.w, y: input.y }),
-        fn({ x: input.x, y: input.y + input.h }),
-        fn({ x: input.x + input.w, y: input.y + input.h })
+        transformFn({ x: input.x, y: input.y }),
+        transformFn({ x: input.x + input.w, y: input.y }),
+        transformFn({ x: input.x, y: input.y + input.h }),
+        transformFn({ x: input.x + input.w, y: input.y + input.h })
       ];
       const xs = corners.map(p => p.x);
       const ys = corners.map(p => p.y);
@@ -95,7 +95,8 @@ const toPageTransform = (
         h: Math.max(...ys) - minY
       };
     }
-    return fn(input);
+    
+    return transformFn(input);
   }
 
   return Object.assign(transform, {
