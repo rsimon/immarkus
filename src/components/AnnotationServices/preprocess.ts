@@ -95,7 +95,7 @@ const toPageTransform = (
         h: Math.max(...ys) - minY
       };
     }
-
+    
     return transformFn(input);
   }
 
@@ -150,9 +150,10 @@ const isDynamicIIIF = (image: LoadedImage) => {
 }
 
 const fetchBlob = (url: string) => fetch(url).then(response => {
+  console.debug('Fetching IIIF image URL:', url);
+
   if (!response.ok)
     throw new Error(`Failed to fetch image (${response.status} ${response.statusText})`);
-  
   return response.blob();
 });
 
