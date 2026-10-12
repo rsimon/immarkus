@@ -179,6 +179,7 @@ export const preprocess = (
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
   const deg = (((rotation ?? 0) % 360) + 360) % 360 as Rotation;
+
   const getSource = (minSize?: number) => 'file' in image
     ? getImageDimensions(image.file).then(originalSize => ({
         blob: image.file,
@@ -197,6 +198,7 @@ export const preprocess = (
 
     return getImageDimensions(blob).then(({ width, height }) => {
       const blobOriented = getRotatedImageSize(width, height, deg);
+
       const scaledCrop = crop && {
         ...crop,
         x: crop.x * blobOriented.width / originalOriented.width,
@@ -230,14 +232,15 @@ export const preprocess = (
 
   if (region) {
     onProgress('cropping');
+
     return getSource(1200).then(({ blob, originalSize }) =>
-      preprocessFile(blob, originalSize.width, originalSize.height, region)
-    );
+      preprocessFile(blob, originalSize.width, originalSize.height, region));
   }
 
   if ('canvas' in image && isDynamicIIIF(image)) {
     const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
     const imageURL = firstImage.getImageURL(1200, { degrees: deg, mirrored: isFlipped });
+
     onProgress('fetching_iiif');
 
     return firstImage.getPixelSize().then(originalSize =>
@@ -262,6 +265,5 @@ export const preprocess = (
     onProgress('fetching_iiif');
 
   return getSource().then(({ blob, originalSize }) =>
-    preprocessFile(blob, originalSize.width, originalSize.height)
-  );
+    preprocessFile(blob, originalSize.width, originalSize.height));
 }
