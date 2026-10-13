@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
+import { useToast } from '@/ui/Toaster';
 import { resolveManifestsWithId } from '@/utils/iiif';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
 import { 
@@ -36,6 +37,10 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
   const { images, iiifResources, folders } = store;
 
   const { includeFolders, graphMode } = settings;
+
+  const { toast } = useToast();
+
+  const failedManifests = useRef<Set<string>>(new Set());
   
   useEffect(() => {
     setGraph(undefined);
@@ -70,9 +75,36 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           const successfullyResolved = resolvedManifests.filter(t => t.manifest) as { uri: string, id: string, manifest: CozyManifest }[];
           const failed = resolvedManifests.filter(t => !t.manifest);
 
-          if (failed.length > 0)
-            console.warn(`Failed resolving ${failed.length} of ${resolvedManifests.length} manifests\n${
-              failed.map(t => t.uri).join('\n')}`)
+          if (failed.length > 0) {
+              const newFailures = failed.filter(t => !failedManifests.current.has(t.uri));
+              if (newFailures.length > 0) {
+                newFailures.forEach(t => failedManifests.current.add(t.uri));
+
+                console.warn(`Failed resolving ${failed.length} of ${resolvedManifests.length} manifests\n${
+                  failed.map(t => t.uri).join('\n')}`);
+
+                toast({
+                  duration: Infinity,
+                  title: 'IIIF Error',
+                  // @ts-ignore 
+                  description: (
+                    <div className="space-y-2">
+                      <p>Failed to fetch {failed.length} of {resolvedManifests.length} IIIF manifests:</p>
+                      <ul className="list-disc ml-4">
+                        {newFailures.map(t => (
+                          <li className="ml-4">
+                            <a 
+                            href={t.uri} 
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block truncate hover:underline">{t.uri}</a></li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                });
+              }
+          }
 
           const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
             .map(({ sourceId, annotations }) => ([
