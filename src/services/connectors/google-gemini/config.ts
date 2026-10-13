@@ -18,7 +18,7 @@ You need an API key to use Google Gemini. To get your own key:
 - Select **Get an API key** from the popup`.trim(),
   services: [{
     type: 'TRANSCRIPTION',
-    description: 'Full-text transcription via Google Gemini',
+    description: 'Full-text transcription via the Google Gemini API',
     requiresRegion: true,
     parameters: [{
       type: 'string',

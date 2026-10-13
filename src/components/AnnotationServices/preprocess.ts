@@ -1,10 +1,9 @@
 import imageCompression from 'browser-image-compression';
-import { DynamicImageServiceResource } from 'cozy-iiif';
+import type { DynamicImageServiceResource } from 'cozy-iiif';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { PageTransform, Point, ProcessingState, Region, Rotation } from '@/services';
-import { getImageSnippet } from '@/utils/getImageSnippet';
-import { boundsToAnnotation } from '@/utils/getImageSnippetHelpers';
 import { transformImage } from '@/utils/transformImage';
+import { getRotatedImageSize, rotatedToImageCoordinates } from './rotationUtils';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -49,59 +48,60 @@ const getImageDimensions = (blob: Blob) => createImageBitmap(blob)
     return { width, height }
   });
 
-const transformPoint = (
-  x: number, y: number,
-  region: Region, // region in the ORIGINAL image 
-  rotation: Rotation,
-  isFlipped: boolean,
-  w: number, h: number // dimensions of the submitted (cropped/rotated/flipped) image
-): Point => {
-  const deg = (((rotation ?? 0) % 360) + 360) % 360;
-
-  if (isFlipped) x = w - x;
-
-  let a: number, b: number, uw: number, uh: number;
-  switch (deg) {
-    case 0:   a = x;     b = y;     uw = w; uh = h; break;
-    case 90:  a = y;     b = w - x; uw = h; uh = w; break;
-    case 180: a = w - x; b = h - y; uw = w; uh = h; break;
-    case 270: a = h - y; b = x;     uw = h; uh = w; break;
-    default: throw new Error('Unsupported rotation: ' + rotation);
-  }
-
-  return {
-    x: region.x + a * (region.w / uw),
-    y: region.y + b * (region.h / uh)
-  };
-}
-
 const toPageTransform = (
-  region: Region,
+  originalWidth: number,
+  originalHeight: number,
   rotation: Rotation,
   isFlipped: boolean,
-  w: number,
-  h: number
+  region: Region | undefined,
+  submittedWidth: number,
+  submittedHeight: number
 ): PageTransform => {
-  const fn = (x: number, y: number) =>
-    transformPoint(x, y, region, rotation, isFlipped, w, h);
+  const oriented = getRotatedImageSize(originalWidth, originalHeight, rotation);
+
+  const transformFn = (input: Point): Point => {
+    const x = region
+      ? region.x + input.x * (region.w / submittedWidth)
+      : input.x * (oriented.width / submittedWidth);
+    const y = region
+      ? region.y + input.y * (region.h / submittedHeight)
+      : input.y * (oriented.height / submittedHeight);
+
+    return rotatedToImageCoordinates(
+      { x, y },
+      originalWidth,
+      originalHeight,
+      rotation,
+      isFlipped
+    );
+  }
 
   const transform = (input: Point | Region) => {
     if ('w' in input) {
-      const tl = fn(input.x, input.y);
-      const br = fn(input.x + input.w, input.y + input.h);
-      const minX = Math.min(tl.x, br.x);
-      const minY = Math.min(tl.y, br.y);
+      const corners = [
+        transformFn({ x: input.x, y: input.y }),
+        transformFn({ x: input.x + input.w, y: input.y }),
+        transformFn({ x: input.x, y: input.y + input.h }),
+        transformFn({ x: input.x + input.w, y: input.y + input.h })
+      ];
+      const xs = corners.map(p => p.x);
+      const ys = corners.map(p => p.y);
+      const minX = Math.min(...xs);
+      const minY = Math.min(...ys);
       return {
         x: minX,
         y: minY,
-        w: Math.max(tl.x, br.x) - minX,
-        h: Math.max(tl.y, br.y) - minY
-      } as Region;
+        w: Math.max(...xs) - minX,
+        h: Math.max(...ys) - minY
+      };
     }
-    return fn(input.x, input.y);
+    
+    return transformFn(input);
   }
 
-  return Object.assign(transform, { source: { width: w, height: h } }) as PageTransform;
+  return Object.assign(transform, {
+    source: { width: submittedWidth, height: submittedHeight }
+  }) as PageTransform;
 }
 
 const preprocessImageData = (
@@ -149,6 +149,77 @@ const isDynamicIIIF = (image: LoadedImage) => {
   return firstImage.type === 'dynamic';
 }
 
+const fetchBlob = (url: string) => fetch(url).then(response => {
+  if (!response.ok)
+    throw new Error(`Failed to fetch image (${response.status} ${response.statusText})`);
+
+  return response.blob();
+});
+
+const getIIIFSource = (image: LoadedIIIFImage, minSize?: number) => {
+  const firstImage = image.canvas.images[0];
+  if (!firstImage) throw new Error('Canvas has no image');
+
+  return firstImage.getPixelSize().then(originalSize => {
+    const url = firstImage.type === 'static'
+      ? firstImage.url
+      : firstImage.getImageURL(minSize ?? Math.max(originalSize.width, originalSize.height));
+
+    return fetchBlob(url).then(blob => ({ blob, originalSize }));
+  });
+}
+
+const getIIIFRegionResult = (
+  image: DynamicImageServiceResource,
+  originalSize: { width: number, height: number },
+  region: Region,
+  isFlipped: boolean
+): IIIFPreprocessingResult | undefined => {
+  const sourceRegion = {
+    x: isFlipped
+      ? originalSize.width - region.x - region.w
+      : region.x,
+    y: region.y,
+    w: region.w,
+    h: region.h
+  };
+
+  const servedRegion = {
+    x: Math.round(sourceRegion.x),
+    y: Math.round(sourceRegion.y),
+    w: Math.round(sourceRegion.w),
+    h: Math.round(sourceRegion.h)
+  };
+
+  if (servedRegion.w < 1 || servedRegion.h < 1) return;
+
+  const transformRegion = {
+    ...servedRegion,
+    x: isFlipped
+      ? originalSize.width - servedRegion.x - servedRegion.w
+      : servedRegion.x
+  };
+
+  const scale = 1200 / Math.min(sourceRegion.w, sourceRegion.h);
+
+  return {
+    url: image.getRegionURL(
+      sourceRegion,
+      { degrees: 0, mirrored: isFlipped },
+      { minSize: 1200 }
+    ),
+    transform: toPageTransform(
+      originalSize.width,
+      originalSize.height,
+      0,
+      isFlipped,
+      transformRegion,
+      Math.round(sourceRegion.w * scale),
+      Math.round(sourceRegion.h * scale)
+    )
+  };
+}
+
 export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
@@ -158,132 +229,105 @@ export const preprocess = (
 ): Promise<PreprocessingResult> => {
   const deg = (((rotation ?? 0) % 360) + 360) % 360 as Rotation;
 
-  if (region) {
-    onProgress('cropping');
+  const getSource = (minSize?: number) => 'file' in image
+    ? getImageDimensions(image.file).then(originalSize => ({
+        blob: image.file,
+        originalSize
+      }))
+    : getIIIFSource(image, minSize);
 
-    // Create a dummy annotation, so we can re-use 
-    // the getImageSnippet function
-    const annotation = boundsToAnnotation({
-      minX: region.x,
-      minY: region.y,
-      maxX: region.x + region.w,
-      maxY: region.y + region.h
+  const preprocessFile = (
+    blob: Blob,
+    originalWidth: number,
+    originalHeight: number,
+    crop?: Region
+  ): Promise<FilePreprocessingResult> => {
+    const mimeType = blob.type || ('file' in image ? image.file.type : 'image/jpeg');
+    const originalOriented = getRotatedImageSize(originalWidth, originalHeight, deg);
+
+    return getImageDimensions(blob).then(({ width, height }) => {
+      const blobOriented = getRotatedImageSize(width, height, deg);
+
+      const scaledCrop = crop && {
+        ...crop,
+        x: crop.x * blobOriented.width / originalOriented.width,
+        y: crop.y * blobOriented.height / originalOriented.height,
+        w: crop.w * blobOriented.width / originalOriented.width,
+        h: crop.h * blobOriented.height / originalOriented.height
+      };
+
+      return transformImage(blob, deg, isFlipped, mimeType, scaledCrop).then(transformed =>
+        getImageDimensions(transformed).then(({ width: transformedWidth, height: transformedHeight }) => {
+          const extension = mimeType.split('/')[1] || 'jpg';
+          const name = 'file' in image ? image.name : `iiif-image.${extension}`;
+          const file = new File([transformed], name, { type: mimeType });
+
+          return preprocessImageData(file, transformedWidth, transformedHeight, onProgress).then(result => ({
+            file: result.file,
+            transform: toPageTransform(
+              originalWidth,
+              originalHeight,
+              deg,
+              isFlipped,
+              crop,
+              result.width,
+              result.height
+            )
+          }));
+        })
+      );
     });
+  }
 
-    const getRegionTransform = (w: number, h: number) =>
-      toPageTransform(region, deg, isFlipped, w, h);
-    
-    if (isDynamicIIIF(image)) {
-      const firstImage = (image as LoadedIIIFImage).canvas.images[0] as DynamicImageServiceResource;
-      const regionURL = firstImage.getRegionURL(region, { degrees: deg, mirrored: isFlipped }, { minSize: Math.min(region.w, region.h)});
-
-      /**
-       * Case 1: Dynamic IIIF image service snippet with region
-       */
-      return fetch(regionURL).then(res => res.blob()).then(blob => {
-        return getImageDimensions(blob).then(({ width, height }) => (
-          { url: regionURL, transform: getRegionTransform(width, height) }
-        ));
-      });
-    } else {
-      return getImageSnippet(image, annotation, false).then(snippet => {
-        if ('data' in snippet && 'file' in image) {
-          const inputFile = deg === 0
-            ? Promise.resolve(new File([new Blob([snippet.data as BlobPart])], image.name, { type: image.file.type }))
-            : transformImage(new Blob([snippet.data as BlobPart]), deg, isFlipped, image.file.type).then(blob => {
-              // window.open(URL.createObjectURL(blob), '_blank');
-              return new File([blob], image.name, { type: image.file.type }) }
-            );
-
-          /**
-           * Case 2: file image snippet (local or clipped static IIIF) with region
-           */
-          return inputFile.then(file => preprocessImageData(file, snippet.width, snippet.height, onProgress).then(result => ({
-            file: result.file, 
-            transform: getRegionTransform(result.width, result.height) 
-          })));
-        } else {
-          // Should never happen
-          throw new Error('Unexpected snippet type');
-        }
-      });
-    }
-  } else {
-    const getImageTransform = (origW: number, origH: number, w: number, h: number) =>
-      toPageTransform({ x: 0, y: 0, w: origW, h: origH }, deg, isFlipped, w, h);
-
-    if ('file' in image) {
-      const inputFile = deg === 0
-        ? Promise.resolve(image.file)
-        : transformImage(image.file, rotation, isFlipped, image.file.type).then(blob => {
-          return new File([blob], image.name, { type: image.file.type })
-        });
-
-      return inputFile.then(data => getImageDimensions(data).then(({ width, height }) => {
-        const swap = deg === 90 || deg === 270;
-        const origW = swap ? height : width;
-        const origH = swap ? width : height;
-
-        /**
-         * Case 3: local image file without region
-         */
-        return preprocessImageData(data, width, height, onProgress).then(result => ({
-          file: result.file, 
-          transform: getImageTransform(origW, origH, result.width, result.height)
-        }));
-      }));
-    } else {
-      const firstImage = image.canvas.images[0];
-
-      // Should never happen
-      if (!firstImage) throw new Error('Canvas has no image');
-
-      const imageURL = firstImage.getImageURL(1200, { degrees: deg, mirrored: isFlipped });
-
+  if (region) {
+    if ('canvas' in image && isDynamicIIIF(image) && deg === 0) {
+      const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
       onProgress('fetching_iiif');
 
-      if (isDynamicIIIF(image)) {
-        return firstImage.getPixelSize().then(originalSize => {
-          return fetch(imageURL).then(res => res.blob()).then(blob => {
-            return getImageDimensions(blob).then(({ width, height }) => {
-              /**
-               * Case 4a: IIIF image service without region
-               */
-              return { 
-                url: imageURL, 
-                transform: getImageTransform(originalSize.width, originalSize.height, width, height) };
-            })
-          });
-        });
-      } else {
-        // Case 4b: Level0 or static image - need to fetch the whole image, than transform it in memory.
-        return firstImage.getPixelSize()
-          .then(originalSize => fetch(imageURL).then(res => res.blob()).then(blob => {
-            const mimeType = blob.type || 'image/jpeg';
-            const ext = mimeType.split('/')[1] ?? 'jpg';
-            const name = `iiif-image.${ext}`;
+      return firstImage.getPixelSize().then(originalSize => {
+        const result = getIIIFRegionResult(firstImage, originalSize, region, isFlipped);
 
-            const inputFile = deg === 0
-              ? Promise.resolve(new File([blob], name, { type: mimeType }))
-              : transformImage(blob, deg, isFlipped, mimeType).then(transformed =>
-                  new File([transformed], name, { type: mimeType })
-                );
+        if (!result)
+          return getSource(1200).then(({ blob, originalSize }) =>
+            preprocessFile(blob, originalSize.width, originalSize.height, region));
 
-            return inputFile.then(file => 
-              getImageDimensions(file).then(({ width, height }) =>
-                preprocessImageData(file, width, height, onProgress).then(result => ({
-                  file: result.file,
-                  transform: getImageTransform(
-                    originalSize.width, 
-                    originalSize.height,
-                    result.width, 
-                    result.height
-                  )
-                }))
-              )
-            );
-          }));
-      }
+        return result;
+      });
     }
+
+    onProgress('cropping');
+
+    return getSource(1200).then(({ blob, originalSize }) =>
+      preprocessFile(blob, originalSize.width, originalSize.height, region));
   }
+
+  if ('canvas' in image && isDynamicIIIF(image)) {
+    const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
+    const imageURL = firstImage.getImageURL(1200, { degrees: deg, mirrored: isFlipped });
+
+    onProgress('fetching_iiif');
+
+    return firstImage.getPixelSize().then(originalSize =>
+      fetchBlob(imageURL).then(blob =>
+        getImageDimensions(blob).then(({ width, height }) => ({
+          url: imageURL,
+          transform: toPageTransform(
+            originalSize.width,
+            originalSize.height,
+            deg,
+            isFlipped,
+            undefined,
+            width,
+            height
+          )
+        }))
+      )
+    );
+  }
+
+  if ('canvas' in image)
+    onProgress('fetching_iiif');
+
+  return getSource().then(({ blob, originalSize }) =>
+    preprocessFile(blob, originalSize.width, originalSize.height));
 }

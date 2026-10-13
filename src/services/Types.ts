@@ -260,10 +260,12 @@ export interface Region {
   h: number;
 
   rotation?: number;
+
+  isFlipped?: boolean;
   
 }
 
-export type Rotation = 0 | 90 | 180 | 270;
+export type Rotation = number;
 
 export interface TranslationServiceResponse {
   
@@ -320,6 +322,5 @@ export type AnnotationServiceCrosswalk<T = any> = (
   region?: Region, 
   options?: Record<string, any>
 ) => ImageAnnotation[];
-
 
 

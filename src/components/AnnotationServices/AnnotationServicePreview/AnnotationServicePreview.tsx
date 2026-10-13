@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LoadedImage } from '@/model';
 import { Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
@@ -39,6 +39,8 @@ export const AnnotationServicePreview = (props: AnnotationServicePreviewProps) =
 
   const anno = useAnnotator();
 
+  const [selectionVersion, setSelectionVersion] = useState(0);
+
   const options: OpenSeadragon.Options = useMemo(() => ({
     tileSources: 'data' in image ? {
       type: 'image',
@@ -71,11 +73,17 @@ export const AnnotationServicePreview = (props: AnnotationServicePreviewProps) =
     }
   }, [props.annotations, anno]);
 
-  const onChangeRegion = (region: Region) => props.onUpdateInput({ region });
+  const onChangeRegion = (region?: Region) => props.onUpdateInput({ region });
 
-  const onChangeRotation = (rotation: Rotation) => props.onUpdateInput({ rotation });
+  const onChangeRotation = (rotation: Rotation) => {
+    setSelectionVersion(version => version + 1);
+    props.onUpdateInput({ rotation, region: undefined });
+  };
 
-  const onChangeFlipped = (isFlipped: boolean) => props.onUpdateInput({ isFlipped });
+  const onChangeFlipped = (isFlipped: boolean) => {
+    setSelectionVersion(version => version + 1);
+    props.onUpdateInput({ isFlipped, region: undefined });
+  };
 
   return (
     <div className="relative h-full w-full">
@@ -94,6 +102,7 @@ export const AnnotationServicePreview = (props: AnnotationServicePreviewProps) =
           options={options} />
 
         <SelectRegion 
+          key={selectionVersion}
           processingState={props.status?.state}
           onChangeRegion={onChangeRegion} />
 
