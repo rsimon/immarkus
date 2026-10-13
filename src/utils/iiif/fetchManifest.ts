@@ -18,14 +18,14 @@ export const fetchManifest = (uri: string): Promise<CozyManifest | undefined> =>
     return throttledParse(uri)
       .then(result => {
         if (result.type === 'error') {
-          console.error(result);
+          throw new Error(result.message);
         } else if (result.type !== 'manifest') {
           console.error('Unsupported content type', result);
         } else {
           cache.set(uri, result.resource);
           return result.resource;
         }
-      });
+      })
   }
 }
 

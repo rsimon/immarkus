@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Ban, ChevronRight, PanelsTopLeft } from 'lucide-react';
+import { Ban, ChevronRight, PanelsTopLeft, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
 import { Spinner } from '@/components/Spinner';
@@ -32,7 +32,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
 
   const { t } = useTranslation('knowledgegraph');
 
-  const { search, initializing, error } = useFulltextSearch(props.annotations, props.graph);
+  const { search, initializing, warning, error } = useFulltextSearch(props.annotations, props.graph);
 
   const [query, setQuery] = useState('');
 
@@ -79,6 +79,12 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
         placeholder={t('graphSearch.searchAnnotationsAndMetadata')} 
         onChange={e => setQuery(e.target.value)} />
 
+      {warning && (
+        <div className="text-amber-600 text-xs flex items-center gap-1.5 px-1 pt-2.5">
+          <TriangleAlert className="size-3.5" /> {warning}
+        </div>
+      )}
+
       <div className="mt-1 ml-0.5 flex justify-between items-center">
         {props.query ? (
           <div className="flex items-center gap-3.5">
@@ -100,7 +106,7 @@ export const FulltextSearch = (props: FulltextSearchProps) => {
                   disabled={matchedImages.length === 0}
                   variant="ghost"
                   size="sm"
-                  className="h-7 text-xs font-normal gap-1 px-1.5 -mx-0.5 disabled:text-muted-foreground/70 disabled:hover:bg-transparent"
+                  className="h-7 text-xs font-normal gap-1 px-1 -mx-0.5 disabled:text-muted-foreground/70 disabled:hover:bg-transparent"
                   onClick={() => openInAnnotationView(matchedImages)}>
 
                   {props.settings.includeFolders ? (

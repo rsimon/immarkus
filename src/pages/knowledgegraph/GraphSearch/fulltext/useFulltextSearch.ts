@@ -4,7 +4,7 @@ import type { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource, IIIFResource, PropertyDefinition } from '@/model';
 import { useStore } from '@/store';
-import { fetchManifests } from '@/utils/iiif';
+import { fetchManifest } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
 import { Graph } from '../../Types';
 import { normalizeString } from '../searchUtils';
@@ -105,12 +105,17 @@ export const useFulltextSearch = (
   const model = store.getDataModel();
 
   const [initializing, setInitializing] = useState(true);
+  const [warning, setWarning] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
 
   const [index, setIndex] = useState<Fuse<IndexedRecord>>(undefined);
 
   useEffect(() => {
     try {
+      setInitializing(true);
+      setWarning(undefined);
+      setError(undefined);
+
       const startTime = performance.now();
       console.log(`Building fulltext index for ${graph.nodes.length} nodes`);
 
@@ -163,23 +168,39 @@ export const useFulltextSearch = (
       });
     })).then(nested => nested.flat());
       const manifestUrls = store.iiifResources.map(r => r.uri);
+      const failedToFetch: string[] = [];
 
-      const pIIIFRecords = () => fetchManifests(store.iiifResources.map(r => r.uri))
-        .then(manifests => {
-          return manifests.flatMap((m, idx) => {
-            return buildManifestIndexRecords(m, manifestUrls[idx], store.iiifResources);
+      const fetchManifests = manifestUrls.reduce<Promise<{ url: string, manifest: CozyManifest}[]>>((promise, url) => promise.then(all => (
+        fetchManifest(url)
+          .then((manifest: CozyManifest) => ([...all, { url, manifest }]))
+          .catch(error => {
+            console.error(error);
+            failedToFetch.push(url);
+            return all;
           })
-        });
+      )), Promise.resolve([]));
+
+      const pIIIFRecords = () => fetchManifests.then(manifests => {
+        return manifests.flatMap(m => {
+          return buildManifestIndexRecords(m.manifest, m.url, store.iiifResources);
+        })
+      });
 
       pFolderRecords().then(folderRecords => {
         pIIIFRecords().then(iiifRecords => {
           const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
+
+          if (failedToFetch.length > 0) {
+            setWarning(`Failed to fetch ${failedToFetch.length} of ${manifestUrls.length} manifests`);
+            console.warn(`Failed to fetch the following manifests:\n${failedToFetch.join('\n')}`);
+          }
 
           setIndex(buildIndex(all));
           setInitializing(false);
 
           console.log(`Took ${performance.now() - startTime}ms`);
         }).catch(error => {
+          console.error(error);
           setInitializing(false);
           setError('Error parsing IIIF manifest(s)');
         });
@@ -208,6 +229,6 @@ export const useFulltextSearch = (
     return { hits, counts };
   }, [index]);
 
-  return { search, error, initializing };
+  return { search, warning, error, initializing };
 
 }
