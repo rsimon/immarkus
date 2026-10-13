@@ -3,6 +3,10 @@
     "title": "Knowledge Graph",
     "description": "Explore connections between images and entities. Zoom and pan the graph with your mouse. Grab and pull a node to re-arrange the graph. Click a node to see more information."
   },
+  "iiifError": {
+    "title": "IIIF Error",
+    "description": "Failed to fetch {{failed}} of {{count}} IIIF manifests:"
+  },
   "graphControls": {
     "toggleFullscreen": "Toggle fullscreen",
     "unpinAllNodes": "Un-pin all pinned nodes",

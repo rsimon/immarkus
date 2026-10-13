@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource } from '@/model';
@@ -27,6 +28,8 @@ import {
 export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const store = useStore();
+
+  const { t } = useTranslation('knowledgegraph');
 
   const datamodel = store.getDataModel();
 
@@ -85,11 +88,15 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
                 toast({
                   duration: Infinity,
-                  title: 'IIIF Error',
-                  // @ts-ignore 
+                  title: t('iiifError.title'),
                   description: (
                     <div className="space-y-2">
-                      <p>Failed to fetch {failed.length} of {resolvedManifests.length} IIIF manifests:</p>
+                      <p>
+                        {t('iiifError.description', {
+                          failed: failed.length,
+                          count: resolvedManifests.length
+                        })}
+                      </p>
                       <ul className="list-disc ml-4">
                         {newFailures.map(t => (
                           <li className="ml-4">
@@ -100,7 +107,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
                             className="block truncate hover:underline">{t.uri}</a></li>
                         ))}
                       </ul>
-                    </div>
+                    </div>  
                   )
                 });
               }
