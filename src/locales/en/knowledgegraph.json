@@ -78,6 +78,10 @@
     "title": "Graph Search",
     "searchAnnotationsAndMetadata": "Search annotations and metadata...",
     "somethingWentWrong": "Something went wrong:",
+    "error": {
+      "fetchFailed": "Failed to fetch {{failed}} of {{count}} manifests",
+      "manifestParseError": "Error parsing IIIF manifest(s)"
+    },
     "images": "Images",
     "folders": "Folders",
     "useQueryBuilder": "Use query builder",

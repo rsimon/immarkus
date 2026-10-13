@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Fuse from 'fuse.js';
 import type { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest } from 'cozy-iiif';
@@ -102,6 +103,8 @@ export const useFulltextSearch = (
 ) => {
   const store = useStore(); 
 
+  const { t } = useTranslation('knowledgegraph');
+
   const model = store.getDataModel();
 
   const [initializing, setInitializing] = useState(true);
@@ -191,7 +194,7 @@ export const useFulltextSearch = (
           const all = [...nodeNameRecords, ...imageRecords, ...folderRecords, ...iiifRecords];
 
           if (failedToFetch.length > 0) {
-            setWarning(`Failed to fetch ${failedToFetch.length} of ${manifestUrls.length} manifests`);
+            setWarning(t('graphSearch.error.fetchFailed', { failed: failedToFetch.length, count: manifestUrls.length }));
             console.warn(`Failed to fetch the following manifests:\n${failedToFetch.join('\n')}`);
           }
 
@@ -202,7 +205,7 @@ export const useFulltextSearch = (
         }).catch(error => {
           console.error(error);
           setInitializing(false);
-          setError('Error parsing IIIF manifest(s)');
+          setError(t('graphSearch.error.manifestParseError'));
         });
       }).catch(error => { 
         setInitializing(false);
