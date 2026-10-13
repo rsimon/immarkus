@@ -35,9 +35,11 @@ export const fetchManifests = (uris: string[]): Promise<CozyManifest[]> =>
   )), Promise.resolve([]));
 
 export const resolveManifestsWithId = (manifests: IIIFManifestResource[], onProgress?: () => void) => 
-  manifests.reduce<Promise<{ id: string, manifest: CozyManifest}[]>>((promise, manifest) => promise.then(manifests =>
+  manifests.reduce<Promise<{ uri: string, id: string, manifest?: CozyManifest, error?: any }[]>>((promise, manifest) => promise.then(manifests =>
     fetchManifest(manifest.uri).then(fetched => {
       onProgress && onProgress();
-      return [...manifests, { id: manifest.id, manifest: fetched }]
+      return [...manifests, { uri: manifest.uri, id: manifest.id, manifest: fetched }]
+    }).catch(error => {
+      return [...manifests, { uri: manifest.uri, id: manifest.id, manifest: undefined, error }]
     })
   ), Promise.resolve([]));

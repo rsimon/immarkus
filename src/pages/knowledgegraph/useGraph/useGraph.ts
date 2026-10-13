@@ -62,11 +62,18 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         .filter(t => t[1]));
 
       Promise.all(annotationsQuery).then(imagesResult => {
-        const manifestsQuery = includeFolders 
+        const manifestsQuery: Promise<{ uri: string, id: string, manifest?: CozyManifest, error?: Error }[]> = includeFolders 
           ? resolveManifestsWithId(iiifResources as IIIFManifestResource[])
-          : Promise.resolve<{ id: string;  manifest: CozyManifest }[]>([]);
+          : Promise.resolve<{ uri: string, id: string;  manifest: CozyManifest }[]>([]);
 
         manifestsQuery.then(resolvedManifests => {
+          const successfullyResolved = resolvedManifests.filter(t => t.manifest) as { uri: string, id: string, manifest: CozyManifest }[];
+          const failed = resolvedManifests.filter(t => !t.manifest);
+
+          if (failed.length > 0)
+            console.warn(`Failed resolving ${failed.length} of ${resolvedManifests.length} manifests\n${
+              failed.map(t => t.uri).join('\n')}`)
+
           const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
             .map(({ sourceId, annotations }) => ([
               sourceId, 
@@ -79,7 +86,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
            */
           const nodesWithoutDegree: GraphNode[] = [
             ...(includeFolders ? folders.map(f => toFolderNode(f, folderMetadata)) : []),
-            ...resolvedManifests.flatMap(toManifestNodes),
+            ...successfullyResolved.flatMap(toManifestNodes),
             ...images.map(i => toImageNode(i, imageMetadata)),
             ...iiifResources.reduce<GraphNode[]>((all, r) => [...all, ...toCanvasNodes(r as IIIFManifestResource)], []),
             ...datamodel.entityTypes.map(toEntityTypeNode)
@@ -95,7 +102,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
           // Links between IIIF ToC folders
           const manifestStructurePrimitives = includeFolders 
-            ? resolvedManifests.flatMap(getManifestStructurePrimitives) : []
+            ? successfullyResolved.flatMap(getManifestStructurePrimitives) : []
 
           // Links between images and subfolders
           const imageFolderPrimitives = includeFolders 
@@ -103,7 +110,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
           // Links between manifests/IIIF ToC folders and canvases
           const canvasManifestPrimitives = includeFolders 
-            ? resolvedManifests.flatMap(getCanvasManifestPrimitives): [];
+            ? successfullyResolved.flatMap(getCanvasManifestPrimitives): [];
 
           // Parent-child model hierarchy links between entity classes
           const entityHierarchyPrimitives = graphMode === 'HIERARCHY' 
