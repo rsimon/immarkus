@@ -1,4 +1,11 @@
-import type { EntityType, PropertyDefinition } from '@/model';
+import { EntityType, PropertyDefinition } from '@/model';
+
+export const PROMPT_TRANSCRIBE = 
+`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
+
+{ "text": "all extracted text goes here" } 
+ 
+Preserve whitespace and newline formatting in the text output.`;
 
 const propertyToPrompt = (property: PropertyDefinition): string | undefined => {
   const instructions = property.description ? ` — ${property.description}` : '';
@@ -22,7 +29,7 @@ const propertyToPrompt = (property: PropertyDefinition): string | undefined => {
     default:
       return undefined;
   }
-};
+}
 
 export const tagToPrompt = (tag: EntityType): string => {
   const lines = (tag.properties || []).map(propertyToPrompt);
@@ -33,9 +40,64 @@ export const tagToPrompt = (tag: EntityType): string => {
     tag.description,
     lines.length > 0 ? `Fields to fill:\n${lines.join('\n')}` : `This class has no extractable fields; still report its mentions.`,
   ].filter(Boolean).join('\n');
-};
+}
 
-export const buildImageAnnotationPrompt = (
+export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
+  if (tags.length === 0) return PROMPT_TRANSCRIBE;
+
+  const classIds = tags.map((t) => `"${t.id}"`);
+
+  return `You are an expert annotator assisting with the scholarly transcription of historical sources. The attached image is a region selected from a larger document by a researcher.
+
+## Task 1: Transcription
+
+Transcribe all text visible in the image.
+${instructions ? `\n${instructions}\n` : ""}
+* Reproduce the original characters exactly. Do not modernize, translate, or add punctuation that is not in the source.
+* Preserve line breaks as they appear.
+* Use ○ for characters you cannot read. Never substitute a guess.
+
+## Task 2: Entity extraction
+
+From your transcription, list every individual entity that belongs to one of the classes below.
+
+${tags.map((t) => tagToPrompt(t)).join("\n\n")}
+
+## Rules
+
+* List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
+* List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
+* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank. As long as you can fill at least one property, 
+* If the image contains no legible text, return an empty "text" and an empty "entities" array.
+
+## Output format
+
+Respond with a single JSON object and nothing else — no markdown fences, no commentary:
+
+{
+  "text": "<the full transcription from Task 1>",
+  "entities": [
+    {
+      "class": "${classIds[0]}",
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    },{
+      "class": "${classIds[0]}",
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    }${classIds.length > 1 ? `, {
+      "class": "${classIds[1]}",
+      "properties": {
+        <field name>: <value, as specified per class above>
+      }
+    }` : ''}
+  ]
+}`;
+}
+
+export const buildAnnotatePrompt = (
   w: number,
   h: number,
   tags: EntityType[]
@@ -110,3 +172,4 @@ Respond ONLY with a valid JSON array (no markdown code fences, no commentary). E
 
 Use exactly one allowed category ID per object. Include the fields defined for that category in "properties". Remember to normalize coordinates to the range [0, 1] relative to the image. Every coordinate must be a plain decimal literal (e.g. 0.043). Never write expressions, fractions, or divisions such as "43 / 1000".`;
 };
+

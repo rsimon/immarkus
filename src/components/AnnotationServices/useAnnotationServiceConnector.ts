@@ -117,6 +117,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (!parseFn) return;
 
       const crosswalk =  service.connector[parseFn];
+      
       const request = type === 'ANNOTATION'
         ? service.connector.annotate(
             image,

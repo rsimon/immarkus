@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { EntityType, PropertyDefinition } from '@/model';
-import { tagToPrompt } from './annotationPrompt';
+import { EntityType } from '@/model';
 export { buildImageAnnotationPrompt, tagToPrompt } from './annotationPrompt';
+import { buildTranscribeAndTagPrompt, PROMPT_TRANSCRIBE } from './prompts';
 import { 
   AnnotationServiceResponse,
   Generator, 
@@ -12,13 +12,6 @@ import {
   Region,
   TranslationServiceResponse
 } from './Types';
-
-export const PROMPT_TRANSCRIBE = 
-`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
-
-{ "text": "all extracted text goes here" } 
- 
-Preserve whitespace and newline formatting in the text output.`;
 
 export const fileToBase64 = (file: Blob): Promise<string> => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -263,59 +256,4 @@ export const translateOpenAICompatible = (
       const { translation, language } = result;
       return { generator, translation, language } as TranslationServiceResponse;
     });
-}
-
-export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
-  if (tags.length === 0) return PROMPT_TRANSCRIBE;
-
-  const classIds = tags.map((t) => `"${t.id}"`);
-
-  return `You are an expert annotator assisting with the scholarly transcription of historical sources. The attached image is a region selected from a larger document by a researcher.
-
-## Task 1: Transcription
-
-Transcribe all text visible in the image.
-${instructions ? `\n${instructions}\n` : ""}
-* Reproduce the original characters exactly. Do not modernize, translate, or add punctuation that is not in the source.
-* Preserve line breaks as they appear.
-* Use ○ for characters you cannot read. Never substitute a guess.
-
-## Task 2: Entity extraction
-
-From your transcription, list every individual entity that belongs to one of the classes below.
-
-${tags.map((t) => tagToPrompt(t)).join("\n\n")}
-
-## Rules
-
-* List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
-* List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
-* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank. As long as you can fill at least one property, 
-* If the image contains no legible text, return an empty "text" and an empty "entities" array.
-
-## Output format
-
-Respond with a single JSON object and nothing else — no markdown fences, no commentary:
-
-{
-  "text": "<the full transcription from Task 1>",
-  "entities": [
-    {
-      "class": "${classIds[0]}",
-      "properties": {
-        <field name>: <value, as specified per class above>
-      }
-    },{
-      "class": "${classIds[0]}",
-      "properties": {
-        <field name>: <value, as specified per class above>
-      }
-    }${classIds.length > 1 ? `, {
-      "class": "${classIds[1]}",
-      "properties": {
-        <field name>: <value, as specified per class above>
-      }
-    }` : ''}
-  ]
-}`;
 }
