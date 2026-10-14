@@ -103,73 +103,42 @@ export const buildAnnotatePrompt = (
   tags: EntityType[]
 ): string => {
   const selectedTypesById = new Map(tags.map(type => [type.id, type]));
-
-  const promptTags = tags.map(tag => {
-    const ancestors: { id: string, label?: string, selected: boolean }[] = [];
-    const visited = new Set([tag.id]);
-    let parentId = tag.parentId;
-
-    while (parentId && !visited.has(parentId)) {
-      visited.add(parentId);
-
-      const parent = selectedTypesById.get(parentId);
-      if (!parent) {
-        ancestors.unshift({ id: parentId, selected: false });
-        break;
-      }
-
-      ancestors.unshift({ id: parent.id, label: parent.label, selected: true });
-      parentId = parent.parentId;
-    }
-
-    const hierarchy = [...ancestors, { id: tag.id, label: tag.label, selected: true }]
-      .map(type => `${type.label || type.id} (${JSON.stringify(type.id)}; ${type.selected ? 'selected output category' : 'context only'})`)
-      .join(' > ');
-
-    return `${tagToPrompt(tag)}\nHierarchy (broadest to most specific): ${hierarchy}`;
+  
+  const hierarchy = tags.flatMap(child => {
+    const parent = child.parentId ? selectedTypesById.get(child.parentId) : undefined;
+    return parent
+      ? [`"${child.label || child.id}" is a subtype of "${parent.label || parent.id}".`]
+      : [];
   });
 
-  const allowedCategories = JSON.stringify(tags.map(tag => tag.id));
-
-  return `You are identifying objects in an image. You have two tasks:
-
+  return `You are identifying objects in an image. You have two tasks: 
+  
 ## Task 1: Object Detection
 
 For each object, return a bounding box as fractions of the image width and height in XYXY order, normalized to a range from 0.0 to 1.0, where (0,0) is the top-left corner and (1,1) is the bottom-right corner. Boxes should tightly enclose just that object. Include every instance you can find, not just one example per category.
 
 ## Task 2: Property extraction
 
-For each object you identify, assign exactly one category and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge or interpolate information just because it seems plausible; any information you record must be based only on what is explicitly visible in the image.
+For each object you identify, assign a category, and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge, or interpolate information just because it seems plausible to you - any information you record must be based **only** on whatever is shown explicitly in the image.
 
-## Available entity types
+For the same object, choose the most specific listed class supported by the image; do not return both a parent and child class.
 
-Image dimensions: ${w} × ${h} pixels.
+${tags.map(tagToPrompt).join('\n\n')}
 
-You may use only these selected category IDs: ${allowedCategories}.
-
-${promptTags.join('\n\n')}
-
-## Choosing the category
-
-The hierarchy describes subtype relationships (for example, a sedan is a kind of car). It does not mean that a parent and child are separate objects or that both should be returned for the same object.
-
-For each visible object, choose the most specific selected category that the image evidence supports. If a selected child type is uncertain but a selected ancestor is clearly supported, use that ancestor. Ancestors marked "context only" explain the hierarchy but are not valid output categories. Never guess a more specific child based only on plausibility. If no selected category is sufficiently supported, omit that object.
-
-Use the properties listed for the chosen category. These include properties inherited from its parent types.
+${hierarchy.length > 0 ? `## Class hierarchy ${hierarchy.join('\n')}` : ''}
 
 ## Output format
 
-Respond ONLY with a valid JSON array (no markdown code fences, no commentary). Each item must match this shape:
+Respond ONLY with a valid JSON array (no markdown or commentary):
 
 [
   {
-    "category": "<one of the selected category IDs listed above>",
+    "category": "<class ID>",
     "label": "short human-readable description",
     "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
     "properties": {}
   }
 ]
 
-Use exactly one allowed category ID per object. Include the fields defined for that category in "properties". Remember to normalize coordinates to the range [0, 1] relative to the image. Every coordinate must be a plain decimal literal (e.g. 0.043). Never write expressions, fractions, or divisions such as "43 / 1000".`;
-};
-
+Use the class ID and property fields shown above. Coordinates must be decimal numbers between 0 and 1.`;
+}
