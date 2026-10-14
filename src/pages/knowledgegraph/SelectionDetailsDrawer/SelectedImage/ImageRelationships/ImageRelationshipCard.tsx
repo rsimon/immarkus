@@ -25,7 +25,9 @@ export const ImageRelationshipCard = (props: ImageRelationshipCardProps) => {
   // Is this a card for intra-image relations?
   const isIntra = props.selectedImage.id === otherImageId;
 
-  const loaded = isIntra ? selectedImage : useImages(inView && props.otherImageId) as LoadedImage;
+  const otherImage = useImages(inView && !isIntra ? otherImageId : undefined) as LoadedImage;
+
+  const loaded = isIntra ? selectedImage : otherImage;
   
   return (
     <article 
