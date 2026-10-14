@@ -17,6 +17,7 @@ import { SidebarSection } from './SidebarSection';
 import { SmartToolsPanel } from './SmartTools';
 import { AnnotationMode, Tool } from './AnnotationMode';
 import { WorkspaceSection} from './WorkspaceSection';
+import { WorkspaceViewportStateProvider } from './WorkspaceSection/WorkspaceViewportState';
 import { FilterState } from './FilterState';
 import { GPUDisabledError } from './GPUDisabledError';
 
@@ -92,7 +93,8 @@ export const Annotate = () => {
                   plugin={SAMPlugin} />
 
                 <SavingState.Root>
-                  <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
+                  <WorkspaceViewportStateProvider>
+                    <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
                     <HeaderSection
                       images={images} 
                       isSmartPanelOpen={isSmartPanelOpen}
@@ -163,7 +165,8 @@ export const Annotate = () => {
                         onChangeTool={setTool}
                         onClosePanel={onCloseSmartPanel} />
                     )}
-                  </main>
+                    </main>
+                  </WorkspaceViewportStateProvider>
 
                   <SidebarSection 
                     filterState={filterState} 

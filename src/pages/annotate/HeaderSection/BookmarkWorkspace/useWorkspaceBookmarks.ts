@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { LoadedImage } from '@/model';
 import { type WorkspaceBookmark, useSettings } from '@/store';
+import { useWorkspaceViewportState } from '../../WorkspaceSection/WorkspaceViewportState';
 
 type LoadedBookmark = WorkspaceBookmark & { current: boolean };
 
@@ -14,11 +15,12 @@ const hasSameValues = (a: string[], b: string[]) => {
 export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
   const { settings, updateSettings } = useSettings();
 
+  const { captureViewports } = useWorkspaceViewportState();
+
   const bookmarks: LoadedBookmark[] = useMemo(() => {
-    return (settings.bookmarks || []).map(({ name, images: ids }) => ({ 
-      name,
-      images: ids, 
-      current: hasSameValues(ids, images.map(i => i.id))
+    return (settings.bookmarks || []).map(bookmark => ({
+      ...bookmark,
+      current: hasSameValues(bookmark.images, images.map(i => i.id))
     })).sort((a, b) => a.name.localeCompare(b.name));
   }, [settings, images]);
  
@@ -26,6 +28,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
 
   const createBookmark = useCallback((name: string) => {
     const currentIds = images.map(i => i.id);
+    const viewports = captureViewports(currentIds);
 
     updateSettings(prev => {
       const prevBookmarks = prev.bookmarks || [];
@@ -33,7 +36,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
 
       const nextBookmarks: WorkspaceBookmark[] = [
         ...prevBookmarks, 
-        { name, images: currentIds }
+        { name, images: currentIds, viewports }
       ];
 
       return { 
@@ -41,13 +44,17 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
         bookmarks: nextBookmarks 
       };
     });
-  }, [images]);
+  }, [captureViewports, images]);
 
   const updateBookmark = useCallback((bookmark: WorkspaceBookmark) => {
+    const currentIds = images.map(i => i.id);
+    const viewports = captureViewports(currentIds);
+
     updateSettings(prev => {
       const nextBookmarks = (prev.bookmarks || []).map(b => b.name === bookmark.name ? {
         name: b.name,
-        images: images.map(i => i.id)
+        images: currentIds,
+        viewports
       } : b); 
 
       return { 
@@ -55,7 +62,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
         bookmarks: nextBookmarks
       }
     });
-  }, [images]);
+  }, [captureViewports, images]);
 
   const removeCurrentBookmark = useCallback(() => {
     const currentIds = images.map(i => i.id);

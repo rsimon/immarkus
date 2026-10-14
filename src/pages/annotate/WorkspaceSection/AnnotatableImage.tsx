@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import type OpenSeadragon from 'openseadragon';
+import OpenSeadragon from 'openseadragon';
 import type { History } from '@annotorious/core';
-import { Annotorious, OpenSeadragonViewer } from '@annotorious/react-manifold';
+import { Annotorious, OpenSeadragonViewer, useViewers } from '@annotorious/react-manifold';
 import { W3CImageRelationFormat } from '@annotorious/plugin-wires-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
 import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
@@ -14,6 +14,8 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
+import { useWorkspaceViewportState, restoreImageViewport } from './WorkspaceViewportState';
+import { useAnnotationViewState } from '../AnnotationViewState';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
   AnnotoriousPlugin, 
@@ -76,6 +78,53 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { image } = props;
 
+  const viewers = useViewers();
+
+  const viewerId = props.windowId || image.id;
+
+  const viewer = viewers?.get(viewerId);
+
+  const { registerViewer } = useWorkspaceViewportState();
+
+  const { pendingViewports, consumeViewport } = useAnnotationViewState();
+
+  const previousImageId = useRef(image.id);
+
+  useEffect(() => registerViewer(image.id, viewerId), [image.id, registerViewer, viewerId]);
+
+  useEffect(() => {
+    const imageChanged = previousImageId.current !== image.id;
+    previousImageId.current = image.id;
+
+    const savedViewport = pendingViewports[image.id];
+    if (!viewer || !savedViewport) return;
+
+    const restore = () => {
+      restoreImageViewport(viewer, savedViewport);
+      consumeViewport(image.id);
+    };
+
+    if (!imageChanged && viewer.isOpen()) {
+      restore();
+    } else if (imageChanged && viewer.isOpen()) {
+      let animationFrame: number;
+
+      const onAddItem = () => {
+        viewer.world.removeHandler('add-item', onAddItem);
+        animationFrame = requestAnimationFrame(restore);
+      };
+
+      viewer.world.addHandler('add-item', onAddItem);
+      return () => {
+        viewer.world.removeHandler('add-item', onAddItem);
+        cancelAnimationFrame(animationFrame);
+      };
+    } else {
+      viewer.addOnceHandler('open', restore);
+      return () => viewer.removeHandler('open', restore);
+    }
+  }, [consumeViewport, image.id, pendingViewports, viewer]);
+
   const { setSavingState } = useSavingState();
 
   const { colorByEntity } = useDrawingStyles();
@@ -129,7 +178,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           onUnmount={props.onUnmount} />
 
         <OpenSeadragonViewer
-          id={props.windowId || props.image.id}
+          id={viewerId}
           className="osd-container"
           options={options} />
 
