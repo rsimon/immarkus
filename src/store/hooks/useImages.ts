@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import murmur from 'murmurhash';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
 import { CozyCanvas } from 'cozy-iiif';
@@ -55,25 +55,43 @@ export const useImages = (
 ): LoadedImage | LoadedImage[] => {
   const store = useStore();
 
-  const imageIds = imageIdOrIds ? Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds] : undefined;
+  // Keep IDs stable if a new array with same values is passed in
+  const imageIds = useMemo(
+    () => imageIdOrIds
+      ? Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds]
+      : undefined,
+    [JSON.stringify(imageIdOrIds)]
+  );
 
   const [images, setImages] = useState<LoadedImage[]>([]);
 
   useEffect(() => {
-    if (!store || !imageIds) return;
+    let cancelled = false;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
 
     setImages([]);
 
+    if (!store || !imageIds) return () => {
+      cancelled = true;
+    };
+
     const load = () => {
-      const promises = imageIds.map(id => loadImage(id, store));
-      Promise.all(promises).then(setImages);
+      Promise.all(imageIds.map(id => loadImage(id, store)))
+        .then(loaded => {
+          if (!cancelled) setImages(loaded);
+        });
     }
 
     if (delay)
-      setTimeout(() => load(), delay);
+      timeout = setTimeout(load, delay);
     else
       load();
-  }, [(imageIds || []).join(',')]);
+
+    return () => {
+      cancelled = true;
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [delay, imageIds, store]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
