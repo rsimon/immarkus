@@ -55,7 +55,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
 
   const viewers = useViewers();
 
-  const viewer = useMemo(() => viewers?.get(props.windowId), [viewers, props.windowId]);
+  const viewer = useMemo(() => viewers.get(props.image.id), [viewers, props.image.id]);
 
   const anno = useAnnotator(props.image.id);
 
@@ -184,7 +184,6 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
       )}>
 
       <AnnotatableImage
-        windowId={props.windowId}
         hideAnnotations={props.hideAnnotations}
         image={props.image} 
         initialHistory={props.initialHistory}

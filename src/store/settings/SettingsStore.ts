@@ -14,7 +14,19 @@ export interface Settings {
 
 }
 
-export type WorkspaceBookmark = { name: string, images: string[] };
+export interface ImageViewport {
+
+  center: { x: number, y: number };
+
+  zoom: number;
+
+}
+
+export type WorkspaceBookmark = {
+  name: string;
+  images: string[];
+  viewports?: Record<string, ImageViewport>;
+};
 
 export const loadSettingsStore = (
   handle: FileSystemDirectoryHandle
@@ -44,4 +56,3 @@ export const loadSettingsStore = (
     updateSettings
   });
 });
-
