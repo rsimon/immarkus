@@ -8,6 +8,7 @@ import { useStore } from '@/store';
 import { fetchManifest } from '@/utils/iiif';
 import { serializePropertyValue } from '@/utils/serialize';
 import { Graph } from '../../Types';
+import { useFailedManifestToast } from '../../useFailedManifestToast';
 import { normalizeString } from '../searchUtils';
 
 export type RecordFieldType = 
@@ -104,6 +105,8 @@ export const useFulltextSearch = (
   const store = useStore(); 
 
   const { t } = useTranslation('knowledgegraph');
+  
+  const showFailedManifestToast = useFailedManifestToast();
 
   const model = store.getDataModel();
 
@@ -196,6 +199,7 @@ export const useFulltextSearch = (
           if (failedToFetch.length > 0) {
             setWarning(t('graphSearch.error.fetchFailed', { failed: failedToFetch.length, count: manifestUrls.length }));
             console.warn(`Failed to fetch the following manifests:\n${failedToFetch.join('\n')}`);
+            showFailedManifestToast(failedToFetch, manifestUrls.length);
           }
 
           setIndex(buildIndex(all));
@@ -215,7 +219,7 @@ export const useFulltextSearch = (
       setInitializing(false);
       setError(error.message);
     }
-  }, [annotations, store]);
+  }, [annotations, showFailedManifestToast, store, t]);
 
   const search = useCallback((query: string): SearchResult => {
     if (!index) return { hits: [], counts: {} };

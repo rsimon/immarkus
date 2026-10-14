@@ -1,12 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
 import { W3CAnnotation } from '@annotorious/react';
 import { CozyManifest } from 'cozy-iiif';
 import { IIIFManifestResource } from '@/model';
 import { useStore } from '@/store';
-import { useToast } from '@/ui/Toaster';
 import { resolveManifestsWithId } from '@/utils/iiif';
 import { Graph, GraphLink, GraphNode, KnowledgeGraphSettings } from '../Types';
+import { useFailedManifestToast } from '../useFailedManifestToast';
 import { 
   aggregatePrimitives,
   getCanvasManifestPrimitives,
@@ -29,8 +28,6 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const store = useStore();
 
-  const { t } = useTranslation('knowledgegraph');
-
   const datamodel = store.getDataModel();
 
   const [annotations, setAnnotations] = useState<{ sourceId: string, annotations: W3CAnnotation[] }[]>([]);
@@ -41,9 +38,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
 
   const { includeFolders, graphMode } = settings;
 
-  const { toast } = useToast();
-
-  const failedManifests = useRef<Set<string>>(new Set());
+  const showFailedManifestToast = useFailedManifestToast();
   
   useEffect(() => {
     setGraph(undefined);
@@ -79,38 +74,10 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
           const failed = resolvedManifests.filter(t => !t.manifest);
 
           if (failed.length > 0) {
-              const newFailures = failed.filter(t => !failedManifests.current.has(t.uri));
-              if (newFailures.length > 0) {
-                newFailures.forEach(t => failedManifests.current.add(t.uri));
-
-                console.warn(`Failed resolving ${failed.length} of ${resolvedManifests.length} manifests\n${
-                  failed.map(t => t.uri).join('\n')}`);
-
-                toast({
-                  duration: Infinity,
-                  title: t('iiifError.title'),
-                  description: (
-                    <div className="space-y-2">
-                      <p>
-                        {t('iiifError.description', {
-                          failed: failed.length,
-                          count: resolvedManifests.length
-                        })}
-                      </p>
-                      <ul className="list-disc ml-4">
-                        {newFailures.map(t => (
-                          <li className="ml-4">
-                            <a 
-                            href={t.uri} 
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block truncate hover:underline">{t.uri}</a></li>
-                        ))}
-                      </ul>
-                    </div>  
-                  )
-                });
-              }
+            console.warn(`Failed resolving ${failed.length} of ${resolvedManifests.length} manifests\n${
+              failed.map(t => t.uri).join('\n')}`);
+              
+            showFailedManifestToast(failed.map(t => t.uri), resolvedManifests.length);
           }
 
           const imageMetadata: Map<string, W3CAnnotation> = new Map(imagesResult
@@ -290,7 +257,7 @@ export const useGraph = (settings: KnowledgeGraphSettings) => {
         });
       });
     });
-  }, [graphMode, includeFolders]);
+  }, [graphMode, includeFolders, showFailedManifestToast]);
 
   return { annotations, graph };
 
