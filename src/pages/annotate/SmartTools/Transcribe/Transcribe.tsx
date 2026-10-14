@@ -21,10 +21,13 @@ interface TranscribeProps {
 }
 
 export const Transcribe = (props: TranscribeProps) => {
-  const { t } = useTranslation('smartTools');
+  return props.images.length > 0
+    ? <TranscribeContent images={props.images} />
+    : null;
+}
 
-  // Should never happen
-  if (props.images.length < 1) return null;
+const TranscribeContent = (props: TranscribeProps) => {
+  const { t } = useTranslation('smartTools');
 
   const [optIn, setOptIn] = useAIOptIn('transcribe');
 

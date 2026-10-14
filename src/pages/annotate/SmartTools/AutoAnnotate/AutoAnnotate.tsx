@@ -21,11 +21,13 @@ interface AutoAnnotateProps {
 }
 
 export const AutoAnnotate = (props: AutoAnnotateProps) => {
+  return props.images.length > 0
+    ? <AutoAnnotateContent images={props.images} />
+    : null;
+}
 
+const AutoAnnotateContent = (props: AutoAnnotateProps) => {
   const { t } = useTranslation('smartTools');
-
-  // Should never happen
-  if (props.images.length < 1) return null;
 
   const [optIn, setOptIn] = useAIOptIn('annotate');
 
