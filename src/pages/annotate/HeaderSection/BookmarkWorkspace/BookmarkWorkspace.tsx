@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Bookmark, BookmarkCheck, Check, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LoadedImage } from '@/model';
@@ -44,21 +44,29 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   } = useWorkspaceBookmarks(props.images);
 
   const [popoverOpen, setPopoverOpen] = useState(false);
+
   const [dialogOpen, setDialogOpen] = useState(false);
+
   const [workspaceName, setWorkspaceName] = useState('');
-  const [savedAt, setSavedAt] = useState<number>();
 
-  const justSaved = savedAt !== undefined;
+  const [justSaved, setJustSaved] = useState(false);
+  const savedTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  useEffect(() => {
-    if (savedAt === undefined) return;
+  const flashSaved = () => {
+    if (savedTimeout.current)
+      clearTimeout(savedTimeout.current);
 
-    const timeout = setTimeout(() => setSavedAt(undefined), 1500);
-    return () => clearTimeout(timeout);
-  }, [savedAt]);
+    setJustSaved(true);
+
+    savedTimeout.current = setTimeout(() => {
+      setJustSaved(false);
+      savedTimeout.current = undefined;
+    }, 1500);
+  }
 
   const onSaveError = (error: unknown) => {
     console.error(error);
+
     toast({
       variant: 'destructive',
       title: t('headerSection.bookmarkSaveFailed'),
@@ -75,8 +83,9 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const onSaveBookmark = () => {
     const trimmed = workspaceName.trim();
     if (!trimmed) return;
-    void createBookmark(trimmed).then(() => {
-      setSavedAt(Date.now());
+
+    createBookmark(trimmed).then(() => {
+      flashSaved();
       close();
     }).catch(onSaveError);
   }
@@ -93,7 +102,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
 
   const onUpdateBookmark = (bookmark: WorkspaceBookmark) => {
     void updateBookmark(bookmark).then(() => {
-      setSavedAt(Date.now());
+      flashSaved();
       close();
     }).catch(onSaveError);
   }
