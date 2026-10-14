@@ -6,13 +6,11 @@ import { fetchManifest } from '@/utils/iiif/fetchManifest';
 import { Store } from '../Store';
 import { useStore } from './useStore';
 
-type ImageLoader = Pick<Store, 'getIIIFResource' | 'loadImage'>;
-
 /**
  * A common helper that returns a loaded image for an image ID,
  * regardless of whether it's a file or IIIF image.
  */
-export const loadImage = (id: string, store: ImageLoader): Promise<LoadedImage> => {
+export const loadImage = (id: string, store: Store): Promise<LoadedImage> => {
 
   const findCanvas = (canvases: CozyCanvas[], canvasHash: string) =>
     canvases.find(c => {
@@ -57,12 +55,6 @@ export const useImages = (
 ): LoadedImage | LoadedImage[] => {
   const store = useStore();
 
-  // Reactive store updates replace its wrapper, but image-loading methods stay stable.
-  const imageLoader = useMemo(() => store && ({
-    getIIIFResource: store.getIIIFResource,
-    loadImage: store.loadImage
-  }), [store?.getIIIFResource, store?.loadImage]);
-
   // Keep IDs stable if a new array with same values is passed in
   const imageIds = useMemo(
     () => imageIdOrIds
@@ -79,12 +71,12 @@ export const useImages = (
 
     setImages([]);
 
-    if (!imageLoader || !imageIds) return () => {
+    if (!store || !imageIds) return () => {
       cancelled = true;
     };
 
     const load = () => {
-      Promise.all(imageIds.map(id => loadImage(id, imageLoader)))
+      Promise.all(imageIds.map(id => loadImage(id, store)))
         .then(loaded => {
           if (!cancelled) setImages(loaded);
         });
@@ -99,7 +91,7 @@ export const useImages = (
       cancelled = true;
       if (timeout) clearTimeout(timeout);
     };
-  }, [delay, imageIds, imageLoader]);
+  }, [delay, imageIds]);
 
   return Array.isArray(imageIdOrIds) ? images : images.length > 0 ? images[0] : undefined;
 }
