@@ -3,7 +3,6 @@ import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
-export { buildImageAnnotationPrompt, tagToPrompt } from './annotationPrompt';
 import { buildTranscribeAndTagPrompt, PROMPT_TRANSCRIBE } from './prompts';
 import { 
   AnnotationServiceResponse,

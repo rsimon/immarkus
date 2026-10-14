@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { AnnotationServiceResponse, PageTransform } from '@/services';
-import { buildImageAnnotationPrompt } from '@/services/annotationPrompt';
+import { buildAnnotatePrompt } from '@/services/prompts';
 import { 
   fileToBase64, 
   parseOpenAIResponse, 
@@ -54,7 +54,7 @@ export const annotate = (
   const client = new Mistral({ apiKey });
   
   const submit = (imageUrl: string) => { 
-    const prompt = buildImageAnnotationPrompt(transform.source.width, transform.source.height, tags);
+    const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags);
 
     return client.chat.complete({
       model,
