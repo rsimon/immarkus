@@ -19,21 +19,6 @@ const OPS = {
   TRANSLATION:   { submit: 'translate', parse: undefined }
 } as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
 
-const blobToDataURL = (blob: Blob) => new Promise<string>((resolve, reject) => {
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    if (typeof reader.result === 'string')
-      resolve(reader.result);
-    else
-      reject(new Error('Failed to read submitted image as a data URL'));
-  };
-
-  reader.onerror = () => reject(reader.error ?? new Error('Failed to read submitted image'));
-  
-  reader.readAsDataURL(blob);
-});
-
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const model = useDataModel();
 
