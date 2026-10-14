@@ -10,7 +10,6 @@ import {
   useState 
 } from 'react';
 
-
 interface AnnotationViewStateContextValue {
 
   imageIds: string[];
