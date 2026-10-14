@@ -30,6 +30,7 @@
     "hideUnannotated": "Hide unannotated",
     "back": "Back",
     "workspaceBookmarks": "Workspace bookmarks",
+    "updateCurrentBookmark": "Update current bookmark",
     "deleteCurrentBookmark": "Delete current bookmark",
     "saveBookmark": "Save bookmark...",
     "noSavedBookmarks": "No saved bookmarks",

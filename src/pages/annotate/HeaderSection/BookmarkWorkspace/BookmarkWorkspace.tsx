@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bookmark, BookmarkCheck, Check, Trash2 } from 'lucide-react';
+import { Bookmark, BookmarkCheck, Check, Save, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LoadedImage } from '@/model';
 import { WorkspaceBookmark } from '@/store';
@@ -34,6 +34,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const { 
     bookmarks, 
     isCurrentBookmarked, 
+    currentBookmark,
     createBookmark,
     updateBookmark,
     removeCurrentBookmark
@@ -91,12 +92,21 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
           className="min-w-50 w-auto p-0">
           <div className="p-1">
             {isCurrentBookmarked ? (
-              <Button
-                variant="ghost"
-                onClick={() => onDeleteBookmark()}
-                className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
-                <Trash2 className="size-3.5 mb-px" /> {t('headerSection.deleteCurrentBookmark')}
-              </Button>
+              <>
+                <Button
+                  variant="ghost"
+                  onClick={() => currentBookmark && onUpdateBookmark(currentBookmark)}
+                  className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
+                  <Save className="size-3.5 mb-px" /> {t('headerSection.updateCurrentBookmark')}
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => onDeleteBookmark()}
+                  className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
+                  <Trash2 className="size-3.5 mb-px" /> {t('headerSection.deleteCurrentBookmark')}
+                </Button>
+              </>
             ) : (
               <Button
                 variant="ghost"

@@ -46,6 +46,8 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
  
   const isCurrentBookmarked = bookmarks.some(w => w.current);
 
+  const currentBookmark = bookmarks.find(bookmark => bookmark.current);
+
   const createBookmark = useCallback((name: string) => {
     const currentIds = images.map(i => i.id);
     const viewports = captureViewports(currentIds);
@@ -97,6 +99,6 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
     });
   }, [images]);
 
-  return { bookmarks, isCurrentBookmarked, createBookmark, updateBookmark, removeCurrentBookmark };
+  return { bookmarks, isCurrentBookmarked, currentBookmark, createBookmark, updateBookmark, removeCurrentBookmark };
 
 }
