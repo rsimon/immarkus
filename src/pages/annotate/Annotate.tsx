@@ -92,78 +92,78 @@ export const Annotate = () => {
                   plugin={SAMPlugin} />
 
                 <SavingState.Root>
-                    <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
-                      <HeaderSection
+                  <main className="absolute top-0 left-0 h-full right-85 flex flex-col">
+                    <HeaderSection
+                      images={images} 
+                      isSmartPanelOpen={isSmartPanelOpen}
+                      hideAnnotations={hideAnnotations}
+                      mode={mode}
+                      tool={tool}
+                      onAddImage={onAddImage} 
+                      onChangeImage={onChangeImage}
+                      onChangeMode={setMode}
+                      onChangeTool={setTool} 
+                      onHideAnnotations={setHideAnnotations}
+                      onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
+
+                    {initError ? (
+                      <GPUDisabledError />
+                    ) : images.length > 0 ? ( 
+                      <WorkspaceSection 
+                        filterState={filterState}
                         images={images} 
-                        isSmartPanelOpen={isSmartPanelOpen}
                         hideAnnotations={hideAnnotations}
                         mode={mode}
-                        tool={tool}
+                        tool={tool} 
                         onAddImage={onAddImage} 
-                        onChangeImage={onChangeImage}
-                        onChangeMode={setMode}
-                        onChangeTool={setTool} 
-                        onHideAnnotations={setHideAnnotations}
-                        onToggleSmartPanel={() => setIsSmartPanelOpen(open => !open)} />
+                        onChangeImages={imageIds => setImageIds(imageIds)}
+                        onInitError={error => setInitError(error)}
+                        onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
+                    ) : imageIds.length === 0 ? (
+                      <div className="flex items-center justify-center h-full text-muted-foreground bg-muted">
+                        <Alert className="bg-transparent border-none max-w-lg p-6 text-primary/60">
+                          <AlertTitle className="text-lg">{t('emptyWorkspace.title')}</AlertTitle>
 
-                      {initError ? (
-                        <GPUDisabledError />
-                      ) : images.length > 0 ? ( 
-                        <WorkspaceSection 
-                          filterState={filterState}
-                          images={images} 
-                          hideAnnotations={hideAnnotations}
-                          mode={mode}
-                          tool={tool} 
-                          onAddImage={onAddImage} 
-                          onChangeImages={imageIds => setImageIds(imageIds)}
-                          onInitError={error => setInitError(error)}
-                          onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
-                      ) : imageIds.length === 0 ? (
-                        <div className="flex items-center justify-center h-full text-muted-foreground bg-muted">
-                          <Alert className="bg-transparent border-none max-w-lg p-6 text-primary/60">
-                            <AlertTitle className="text-lg">{t('emptyWorkspace.title')}</AlertTitle>
+                          <div className="text-sm leading-relaxed mt-4 space-y-4">
+                            <p>
+                              <Trans
+                                ns="annotate"
+                                i18nKey="emptyWorkspace.description1"
+                                components={{
+                                  strong: <span className="font-semibold" />,
+                                  imageIcon: <Image className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
+                                  graphIcon: <Waypoints className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
+                                  addIcon: <ImagePlus className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
+                                }} />
+                            </p>
+                            <p>
+                              <Trans
+                                ns="annotate"
+                                i18nKey="emptyWorkspace.description2"
+                                components={{
+                                  strong: <span className="font-semibold" />,
+                                  bookmarkIcon: <Bookmark className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
+                                }} />
+                            </p>
+                          </div>
+                        </Alert>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-full bg-muted">
+                        <Loader2 className="animate-spin size-5 opacity-50" />
+                      </div>
+                    )}
 
-                            <div className="text-sm leading-relaxed mt-4 space-y-4">
-                              <p>
-                                <Trans
-                                  ns="annotate"
-                                  i18nKey="emptyWorkspace.description1"
-                                  components={{
-                                    strong: <span className="font-semibold" />,
-                                    imageIcon: <Image className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
-                                    graphIcon: <Waypoints className="size-4 inline-block mb-0.5" strokeWidth={2.25} />,
-                                    addIcon: <ImagePlus className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
-                                  }} />
-                              </p>
-                              <p>
-                                <Trans
-                                  ns="annotate"
-                                  i18nKey="emptyWorkspace.description2"
-                                  components={{
-                                    strong: <span className="font-semibold" />,
-                                    bookmarkIcon: <Bookmark className="size-4 inline-block mb-0.5" strokeWidth={2.25} />
-                                  }} />
-                              </p>
-                            </div>
-                          </Alert>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center h-full bg-muted">
-                          <Loader2 className="animate-spin size-5 opacity-50" />
-                        </div>
-                      )}
-
-                      {isSmartPanelOpen && (
-                        <SmartToolsPanel 
-                          images={images}
-                          mode={mode} 
-                          tool={tool}
-                          onChangeMode={setMode} 
-                          onChangeTool={setTool}
-                          onClosePanel={onCloseSmartPanel} />
-                      )}
-                    </main>
+                    {isSmartPanelOpen && (
+                      <SmartToolsPanel 
+                        images={images}
+                        mode={mode} 
+                        tool={tool}
+                        onChangeMode={setMode} 
+                        onChangeTool={setTool}
+                        onClosePanel={onCloseSmartPanel} />
+                    )}
+                  </main>
 
                   <SidebarSection 
                     filterState={filterState} 
