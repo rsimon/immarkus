@@ -14,6 +14,7 @@ export const getLayoutLeaves = (layout: WorkspaceLayout): string[] =>
     ? [layout]
     : [...getLayoutLeaves(layout.first), ...getLayoutLeaves(layout.second)];
 
+// Maps a runtime layout (windowIds) to a stored layout (imageIds)
 export const toImageLayout = (
   node: MosaicNode<string>,
   windows: WorkspaceWindowImage[]
@@ -33,6 +34,7 @@ export const toImageLayout = (
   };
 }
 
+// Maps a stored layout (imageIds) to a runtime layout (windowIds)
 export const toWindowLayout = (
   layout: WorkspaceLayout,
   windows: WorkspaceWindowImage[]
@@ -52,6 +54,7 @@ export const toWindowLayout = (
   };
 }
 
+// Tests if the given stored layout contains exactly the given imageIds
 export const layoutMatchesImages = (layout: WorkspaceLayout, imageIds: string[]) => {
   const leaves = getLayoutLeaves(layout).sort();
   const expected = [...imageIds].sort();

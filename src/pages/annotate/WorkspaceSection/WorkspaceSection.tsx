@@ -93,6 +93,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
       const restoredLayout = initialLayout && layoutMatchesImages(initialLayout, imageIds)
         ? toWindowLayout(initialLayout, next)
         : undefined;
+        
       const nextValue = restoredLayout || createBalancedTreeFromLeaves(next.map(t => t.windowId));
 
       windowMap.current = next;
