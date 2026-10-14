@@ -8,6 +8,7 @@ import { Command, CommandInput, CommandItem, CommandList } from '@/ui/Command';
 import { Input } from '@/ui/Input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/Popover';
 import { Separator } from '@/ui/Separator';
+import { cn } from '@/ui/utils';
 import { useOpenInAnnotationView } from '../../AnnotationViewState';
 import { ToolbarButton } from '../../ToolbarButton';
 import { useWorkspaceBookmarks } from './useWorkspaceBookmarks';
@@ -116,9 +117,15 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
           <ToolbarButton
             tooltip={t(justSaved ? 'headerSection.bookmarkSaved' : 'headerSection.workspaceBookmarks')}>
             {isCurrentBookmarked ? (
-              <BookmarkCheck className={`size-8.5 p-2 ${justSaved ? 'text-green-600' : ''}`} />
+              <BookmarkCheck className={cn(
+                'size-8.5 p-2',
+                justSaved ? 'text-green-600' : undefined
+               )} />
             ) : (
-              <Bookmark className={`size-8.5 p-2 ${justSaved ? 'text-green-600' : ''}`} />
+              <Bookmark className={cn(
+                'size-8.5 p-2',
+                justSaved ? 'text-green-600' : undefined
+              )} />
             )}
           </ToolbarButton>
         </PopoverTrigger>
