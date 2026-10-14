@@ -38,10 +38,10 @@ export const Annotate = () => {
 
   const loadedImages = useImages(imageIds) as LoadedImage[];
 
-  const imagesMatchImageIds = imageIds.length === loadedImages.length &&
+  const hasLoadedImages = imageIds.length === loadedImages.length &&
     imageIds.every((id, index) => loadedImages[index]?.id === id);
 
-  const images = imagesMatchImageIds ? loadedImages : [];
+  const images = hasLoadedImages ? loadedImages : [];
 
   const [hideAnnotations, setHideAnnotations] = useState(false);
 
