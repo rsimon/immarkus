@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import OpenSeadragon from 'openseadragon';
 import type { History } from '@annotorious/core';
@@ -11,11 +11,11 @@ import type { ImageViewport } from '@/store';
 import { getOSDTilesets } from '@/utils/iiif';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
 import { AnnotationMode, Tool } from '../AnnotationMode';
+import { useAnnotationViewState } from '../AnnotationViewState';
 import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
-import { useAnnotationViewState } from '../AnnotationViewState';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
   AnnotoriousPlugin, 
@@ -88,12 +88,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { initialViewports, clearInitialViewport } = useAnnotationViewState();
 
-  const previousImageId = useRef(image.id);
-
   useEffect(() => {
-    const imageChanged = previousImageId.current !== image.id;
-    previousImageId.current = image.id;
-
     const savedViewport = initialViewports[image.id];
     if (!viewer || !savedViewport) return;
 
@@ -102,21 +97,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       clearInitialViewport(image.id);
     };
 
-    if (!imageChanged && viewer.isOpen()) {
+    if (viewer.isOpen()) {
       restore();
-    } else if (imageChanged && viewer.isOpen()) {
-      let animationFrame: number;
-
-      const onAddItem = () => {
-        viewer.world.removeHandler('add-item', onAddItem);
-        animationFrame = requestAnimationFrame(restore);
-      };
-
-      viewer.world.addHandler('add-item', onAddItem);
-      return () => {
-        viewer.world.removeHandler('add-item', onAddItem);
-        cancelAnimationFrame(animationFrame);
-      };
     } else {
       viewer.addOnceHandler('open', restore);
       return () => viewer.removeHandler('open', restore);
