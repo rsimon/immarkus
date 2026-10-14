@@ -62,7 +62,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   }
 
   const onOpenBookmark = (bookmark: WorkspaceBookmark) => {
-    openInAnnotationView(bookmark.images, bookmark.viewports);
+    openInAnnotationView(bookmark.images, bookmark.viewports, bookmark.layout);
     close();
   }
 
