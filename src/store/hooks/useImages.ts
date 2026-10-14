@@ -55,14 +55,12 @@ export const useImages = (
 ): LoadedImage | LoadedImage[] => {
   const store = useStore();
 
-  const imageIdsInput = imageIdOrIds || undefined;
-  const imageIdsKey = JSON.stringify(imageIdsInput);
-
+  // Keep IDs stable if a new array with same values is passed in
   const imageIds = useMemo(
-    () => imageIdsInput === undefined
-      ? undefined
-      : Array.isArray(imageIdsInput) ? imageIdsInput : [imageIdsInput],
-    [imageIdsKey]
+    () => imageIdOrIds
+      ? Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds]
+      : undefined,
+    [JSON.stringify(imageIdOrIds)]
   );
 
   const [images, setImages] = useState<LoadedImage[]>([]);
