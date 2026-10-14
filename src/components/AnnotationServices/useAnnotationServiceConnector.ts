@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { EntityType, LoadedImage } from '@/model';
+import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
@@ -18,22 +19,9 @@ const OPS = {
   TRANSLATION:   { submit: 'translate', parse: undefined }
 } as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
 
-const blobToDataURL = (blob: Blob) => new Promise<string>((resolve, reject) => {
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    if (typeof reader.result === 'string')
-      resolve(reader.result);
-    else
-      reject(new Error('Failed to read submitted image as a data URL'));
-  };
-
-  reader.onerror = () => reject(reader.error ?? new Error('Failed to read submitted image'));
-  
-  reader.readAsDataURL(blob);
-});
-
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
+  const model = useDataModel();
+
   const [options, setOptions] = useState<AnnotationServiceOptions>({
     connectorId: ServiceRegistry.listAvailableConnectors(type)[0].id 
   });
@@ -129,7 +117,17 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (!parseFn) return;
 
       const crosswalk =  service.connector[parseFn];
-      service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags).then(({ data, generator }) => {
+      
+      const request = type === 'ANNOTATION'
+        ? service.connector.annotate(
+            image,
+            result.transform,
+            options.serviceOptions,
+            tags.map(tag => model.getEntityType(tag.id, true) || tag)
+          )
+        : service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags);
+
+      request.then(({ data, generator }) => {
         if (isStale()) return;
 
         // console.log(data);
@@ -163,7 +161,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (isStale()) return;
       setStatus({ state: 'service_failed', error: error.message });
     });
-  }, [image, input, tags, options, service, setStatus, setResults]);
+  }, [image, input, tags, options, service, model, type, setStatus, setResults]);
 
   const clearResults = useCallback(() => {
     runId.current++;

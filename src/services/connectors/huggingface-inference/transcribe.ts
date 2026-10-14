@@ -1,5 +1,6 @@
 import { InferenceClient } from '@huggingface/inference';
-import { buildTranscribeAndTagPrompt, fileToBase64, urlToBase64 } from '@/services/utils';
+import { fileToBase64, urlToBase64 } from '@/services/utils';
+import { buildTranscribeAndTagPrompt } from '@/services/prompts';
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
 // import { MOCK_RESPONSE } from './mock-response';
