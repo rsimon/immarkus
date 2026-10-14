@@ -47,14 +47,14 @@ export const useAnnotationViewState = () => {
     return [...current, imageId];
   }), []);
 
-  const consumeViewport = useCallback((imageId: string) => setInitialViewports(current => {
+  const clearInitialViewport = useCallback((imageId: string) => setInitialViewports(current => {
     if (!(imageId in current)) return current;
     const next = { ...current };
     delete next[imageId];
     return next;
   }), [setInitialViewports]);
 
-  return { imageIds, setImageIds, addImageToView, initialViewports, setInitialViewports, consumeViewport };
+  return { imageIds, setImageIds, addImageToView, initialViewports, setInitialViewports, clearInitialViewport };
 }
 
 export const useOpenInAnnotationView = () => {

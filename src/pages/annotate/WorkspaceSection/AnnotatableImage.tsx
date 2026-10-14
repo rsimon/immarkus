@@ -70,7 +70,7 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 }
 
-const restoreImageViewport = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
+const restoreInitialViewport = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
   viewer.viewport.zoomTo(viewport.zoom, undefined, true);
   viewer.viewport.panTo(new OpenSeadragon.Point(viewport.center.x, viewport.center.y), true);
   viewer.viewport.applyConstraints();
@@ -86,7 +86,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const viewer = viewers.get(image.id);
 
-  const { initialViewports, consumeViewport } = useAnnotationViewState();
+  const { initialViewports, clearInitialViewport } = useAnnotationViewState();
 
   const previousImageId = useRef(image.id);
 
@@ -98,8 +98,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     if (!viewer || !savedViewport) return;
 
     const restore = () => {
-      restoreImageViewport(viewer, savedViewport);
-      consumeViewport(image.id);
+      restoreInitialViewport(viewer, savedViewport);
+      clearInitialViewport(image.id);
     };
 
     if (!imageChanged && viewer.isOpen()) {
@@ -121,7 +121,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       viewer.addOnceHandler('open', restore);
       return () => viewer.removeHandler('open', restore);
     }
-  }, [consumeViewport, image.id, initialViewports, viewer]);
+  }, [clearInitialViewport, image.id, initialViewports, viewer]);
 
   const { setSavingState } = useSavingState();
 
