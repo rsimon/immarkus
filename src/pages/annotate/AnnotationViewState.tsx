@@ -16,9 +16,9 @@ interface AnnotationViewStateContextValue {
 
   setImageIds: Dispatch<SetStateAction<string[]>>;
 
-  pendingViewports: Record<string, ImageViewport>;
+  initialViewports: Record<string, ImageViewport>;
 
-  setPendingViewports: Dispatch<SetStateAction<Record<string, ImageViewport>>>;
+  setInitialViewports: Dispatch<SetStateAction<Record<string, ImageViewport>>>;
 
 }
 
@@ -28,11 +28,11 @@ export const AnnotationViewStateProvider = (props: { children: ReactNode }) => {
 
   const [imageIds, setImageIds] = useState<string[]>([]);
 
-  const [pendingViewports, setPendingViewports] = useState<Record<string, ImageViewport>>({});
+  const [initialViewports, setInitialViewports] = useState<Record<string, ImageViewport>>({});
 
   return (
     <AnnotationViewStateContext.Provider
-      value={{ imageIds, setImageIds, pendingViewports, setPendingViewports }}>
+      value={{ imageIds, setImageIds, initialViewports, setInitialViewports }}>
       {props.children}
     </AnnotationViewStateContext.Provider>
   )
@@ -40,40 +40,40 @@ export const AnnotationViewStateProvider = (props: { children: ReactNode }) => {
 }
 
 export const useAnnotationViewState = () => {
-  const { imageIds, setImageIds, pendingViewports, setPendingViewports } = useContext(AnnotationViewStateContext);
+  const { imageIds, setImageIds, initialViewports, setInitialViewports } = useContext(AnnotationViewStateContext);
 
   const addImageToView = useCallback((imageId: string) => setImageIds(current => {
     if (current.includes(imageId)) return current;
     return [...current, imageId];
   }), []);
 
-  const consumeViewport = useCallback((imageId: string) => setPendingViewports(current => {
+  const consumeViewport = useCallback((imageId: string) => setInitialViewports(current => {
     if (!(imageId in current)) return current;
     const next = { ...current };
     delete next[imageId];
     return next;
-  }), [setPendingViewports]);
+  }), [setInitialViewports]);
 
-  return { imageIds, setImageIds, addImageToView, pendingViewports, setPendingViewports, consumeViewport };
+  return { imageIds, setImageIds, addImageToView, initialViewports, setInitialViewports, consumeViewport };
 }
 
 export const useOpenInAnnotationView = () => {
   const navigate = useNavigate();
   
-  const { imageIds, setImageIds, setPendingViewports } = useContext(AnnotationViewStateContext);
+  const { imageIds, setImageIds, setInitialViewports } = useContext(AnnotationViewStateContext);
 
   const openInAnnotationView = useCallback((
     imageIdOrIds: string | string[],
     viewports?: Record<string, ImageViewport>
   ) => {
     const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
-    setPendingViewports(viewports || {});
+    setInitialViewports(viewports || {});
     setImageIds(ids);
 
     requestAnimationFrame(() => {
       navigate(`/annotate/${ids.join('&')}`);
     });
-  }, [setImageIds, setPendingViewports, navigate]);
+  }, [setImageIds, setInitialViewports, navigate]);
 
   const addToAnnotationView = useCallback((imageIdOrIds: string | string[], open = false) => {
     const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];

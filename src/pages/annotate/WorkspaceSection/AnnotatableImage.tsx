@@ -86,7 +86,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const viewer = viewers.get(image.id);
 
-  const { pendingViewports, consumeViewport } = useAnnotationViewState();
+  const { initialViewports, consumeViewport } = useAnnotationViewState();
 
   const previousImageId = useRef(image.id);
 
@@ -94,7 +94,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
     const imageChanged = previousImageId.current !== image.id;
     previousImageId.current = image.id;
 
-    const savedViewport = pendingViewports[image.id];
+    const savedViewport = initialViewports[image.id];
     if (!viewer || !savedViewport) return;
 
     const restore = () => {
@@ -121,7 +121,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       viewer.addOnceHandler('open', restore);
       return () => viewer.removeHandler('open', restore);
     }
-  }, [consumeViewport, image.id, pendingViewports, viewer]);
+  }, [consumeViewport, image.id, initialViewports, viewer]);
 
   const { setSavingState } = useSavingState();
 
