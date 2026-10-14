@@ -3,6 +3,8 @@ import OpenAI from 'openai';
 import { ShapeType } from '@annotorious/react';
 import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType, PropertyDefinition } from '@/model';
+import { tagToPrompt } from './annotationPrompt';
+export { buildImageAnnotationPrompt, tagToPrompt } from './annotationPrompt';
 import { 
   AnnotationServiceResponse,
   Generator, 
@@ -262,43 +264,6 @@ export const translateOpenAICompatible = (
       return { generator, translation, language } as TranslationServiceResponse;
     });
 }
-
-// Compiles a prompt line for one property
-const propertyToPrompt = (p: PropertyDefinition): string | undefined => {
-  const instructions = p.description ? ` — ${p.description}` : '';
-
-  switch (p.type) {
-    case 'text':
-      return p.multiple
-        ? `* "${p.name}": array of strings, [] if none${instructions}`
-        : `* "${p.name}": string, or null if the text does not state it${instructions}`;
-
-    case 'number':
-      return `* "${p.name}": number, or null if the text does not state it${instructions}`;
-
-    case 'enum': {
-      const opts =  p.values.map((v) => `"${v}"`).join(", ");
-      return p.multiple
-        ? `* "${p.name}": array containing any of [${opts}], [] if none apply. Use the listed values exactly; never invent a new one${instructions}`
-        : `* "${p.name}": exactly one of [${opts}], or null. Use the listed values exactly; never invent a new one${instructions}`;
-    }
-
-    default:
-      // omit other types
-      return undefined;
-  }
-}
-
-export const tagToPrompt = (tag: EntityType): string => {
-  const lines = (tag.properties || []).map(propertyToPrompt);
-
-  return [
-    `### Class: "${tag.id}"`,
-    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
-    tag.description,
-    lines.length > 0 ? `Fields to fill:\n${lines.join("\n")}` : `This class has no extractable fields; still report its mentions.`,
-  ].filter(Boolean).join('\n');
-};
 
 export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;

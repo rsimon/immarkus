@@ -322,5 +322,3 @@ export type AnnotationServiceCrosswalk<T = any> = (
   region?: Region, 
   options?: Record<string, any>
 ) => ImageAnnotation[];
-
-

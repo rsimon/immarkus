@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { AnnotationServiceResponse, PageTransform } from '@/services';
+import { buildImageAnnotationPrompt } from '@/services/annotationPrompt';
 import { 
   fileToBase64, 
   parseOpenAIResponse, 
-  tagToPrompt, 
   transformRectangle,
   urlToBase64 
 } from '@/services/utils';
@@ -23,39 +23,6 @@ interface Detection {
 
 }
 
-const buildPrompt = (w: number, h: number, tags: EntityType[]) => 
-`You are identifying objects in an image. You have two tasks: 
-
-## Task 1: Object Detection
-
-For each object, return a bounding box as fractions of the image width and height in XYXY order, normalized to a range from 0.0 to 1.0, where (0,0) is the top-left corner and (1,1) is the bottom-right corner. Boxes should tightly enclose just that object. Include every instance you can find, not just one example per category.
-
-## Task 2: Property extraction
-
-For each object you identify, assign a category, and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge, or interpolate information just because it seems plausible to you - any information you record must be based **only** on whatever is shown explicitly in the image.
-
-Identify every instance of the following object types visible in the image, along with the following property fields:
-
-${tags.map((t) => tagToPrompt(t)).join("\n\n")}
-
-## Output format
-
-Respond ONLY with a valid JSON object (no markdown code fences, no commentary) matching exactly this shape:
-
-[
-  {
-    "category": ${tags.map(t => `"${t.id}"`).join(' | ')},
-    "label": "short human-readable description",
-    "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
-    "properties": {
-      <field name>: <value>
-    }
-  }
-]
-
-Remember to normalize coordinates to the the range of [0, 1] relative to the image. Every value must be a plain decimal literal (e.g. 0.043). Never write expressions, fractions, or divisions such as "43 / 1000".
-`;
-
 const sniffScale = (detections: Detection[]): number => {
   const values = detections.flatMap(d => {
     const { x_min, y_min, x_max, y_max } = d.bbox;
@@ -66,7 +33,12 @@ const sniffScale = (detections: Detection[]): number => {
   return (max <= 1) ? 1 : 1000;
 }
 
-export const annotate = (image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
+export const annotate = (
+  image: File | string,
+  transform: PageTransform,
+  options?: Record<string, any>,
+  tags: EntityType[] = []
+) => {
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -86,7 +58,7 @@ export const annotate = (image: File | string, transform: PageTransform, options
   });
   
   const submit = (imageUrl: string) => { 
-    const prompt = buildPrompt(transform.source.width, transform.source.height, tags);  
+    const prompt = buildImageAnnotationPrompt(transform.source.width, transform.source.height, tags);
 
     return client.chat.completions.create({
       model,
