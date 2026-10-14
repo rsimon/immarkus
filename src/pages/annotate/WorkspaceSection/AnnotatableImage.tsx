@@ -7,6 +7,7 @@ import { W3CImageRelationFormat } from '@annotorious/plugin-wires-react';
 import { mountPlugin as SelectorPack } from '@annotorious/plugin-tools';
 import { mountPlugin as MagneticOutlinePlugin } from '@annotorious/plugin-magnetic-outline';
 import { LoadedImage } from '@/model';
+import type { ImageViewport } from '@/store';
 import { getOSDTilesets } from '@/utils/iiif';
 import { AnnotoriousRelationEditorPlugin, useRelationEmphasisStyle } from '../RelationEditor';
 import { AnnotationMode, Tool } from '../AnnotationMode';
@@ -14,7 +15,6 @@ import { useSavingState } from '../SavingState';
 import { AnnotoriousKeyboardPlugin } from './AnnotoriousKeyboardPlugin';
 import { AnnotoriousStoragePlugin } from './AnnotoriousStoragePlugin';
 import { useDrawingStyles } from './useDrawingStyles';
-import { useWorkspaceViewportState, restoreImageViewport } from './WorkspaceViewportState';
 import { useAnnotationViewState } from '../AnnotationViewState';
 import { 
   AnnotoriousOpenSeadragonAnnotator, 
@@ -38,8 +38,6 @@ interface AnnotatableImageProps {
 
   initialHistory: History<ImageAnnotation>;
 
-  windowId?: string;
-  
   mode?: AnnotationMode;
 
   tool: Tool;
@@ -72,6 +70,12 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 }
 
+const restoreImageViewport = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
+  viewer.viewport.zoomTo(viewport.zoom, undefined, true);
+  viewer.viewport.panTo(new OpenSeadragon.Point(viewport.center.x, viewport.center.y), true);
+  viewer.viewport.applyConstraints();
+}
+
 export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const { t } = useTranslation('annotate');
@@ -80,17 +84,11 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const viewers = useViewers();
 
-  const viewerId = props.windowId || image.id;
-
-  const viewer = viewers?.get(viewerId);
-
-  const { registerViewer } = useWorkspaceViewportState();
+  const viewer = viewers.get(image.id);
 
   const { pendingViewports, consumeViewport } = useAnnotationViewState();
 
   const previousImageId = useRef(image.id);
-
-  useEffect(() => registerViewer(image.id, viewerId), [image.id, registerViewer, viewerId]);
 
   useEffect(() => {
     const imageChanged = previousImageId.current !== image.id;
@@ -178,7 +176,8 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
           onUnmount={props.onUnmount} />
 
         <OpenSeadragonViewer
-          id={viewerId}
+          key={image.id}
+          id={image.id}
           className="osd-container"
           options={options} />
 

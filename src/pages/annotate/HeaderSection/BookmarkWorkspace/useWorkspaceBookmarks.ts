@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
+import { useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
-import { type WorkspaceBookmark, useSettings } from '@/store';
-import { useWorkspaceViewportState } from '../../WorkspaceSection/WorkspaceViewportState';
+import { type ImageViewport, type WorkspaceBookmark, useSettings } from '@/store';
 
 type LoadedBookmark = WorkspaceBookmark & { current: boolean };
 
@@ -15,7 +15,24 @@ const hasSameValues = (a: string[], b: string[]) => {
 export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
   const { settings, updateSettings } = useSettings();
 
-  const { captureViewports } = useWorkspaceViewportState();
+  const viewers = useViewers();
+
+  const captureViewports = useCallback((imageIds: string[]) => {
+    const viewports: Record<string, ImageViewport> = {};
+
+    imageIds.forEach(imageId => {
+      const viewer = viewers.get(imageId);
+      if (!viewer?.isOpen()) return;
+
+      const center = viewer.viewport.getCenter(true);
+      viewports[imageId] = {
+        center: { x: center.x, y: center.y },
+        zoom: viewer.viewport.getZoom(true)
+      };
+    });
+
+    return viewports;
+  }, [viewers]);
 
   const bookmarks: LoadedBookmark[] = useMemo(() => {
     return (settings.bookmarks || []).map(bookmark => ({
