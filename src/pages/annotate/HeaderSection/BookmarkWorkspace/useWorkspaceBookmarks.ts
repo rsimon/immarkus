@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useViewers } from '@annotorious/react-manifold';
 import { LoadedImage } from '@/model';
 import { type ImageViewport, type WorkspaceBookmark, useSettings } from '@/store';
+import { useAnnotationViewState } from '../../AnnotationViewState';
 
 type LoadedBookmark = WorkspaceBookmark & { current: boolean };
 
@@ -14,6 +15,8 @@ const hasSameValues = (a: string[], b: string[]) => {
 
 export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
   const { settings, updateSettings } = useSettings();
+
+  const { currentLayout } = useAnnotationViewState();
 
   const viewers = useViewers();
 
@@ -53,7 +56,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
 
       const nextBookmarks: WorkspaceBookmark[] = [
         ...prevBookmarks, 
-        { name, images: currentIds, viewports }
+        { name, images: currentIds, viewports, layout: currentLayout }
       ];
 
       return { 
@@ -61,7 +64,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
         bookmarks: nextBookmarks 
       };
     });
-  }, [captureViewports, images]);
+  }, [captureViewports, currentLayout, images]);
 
   const updateBookmark = useCallback((bookmark: WorkspaceBookmark) => {
     const currentIds = images.map(i => i.id);
@@ -71,7 +74,8 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
       const nextBookmarks = (prev.bookmarks || []).map(b => b.name === bookmark.name ? {
         name: b.name,
         images: currentIds,
-        viewports
+        viewports,
+        layout: currentLayout
       } : b); 
 
       return { 
@@ -79,7 +83,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
         bookmarks: nextBookmarks
       }
     });
-  }, [captureViewports, images]);
+  }, [captureViewports, currentLayout, images]);
 
   const removeCurrentBookmark = useCallback(() => {
     const currentIds = images.map(i => i.id);

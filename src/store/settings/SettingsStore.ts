@@ -22,11 +22,29 @@ export interface ImageViewport {
 
 }
 
+export type WorkspaceLayout = string | {
+
+  direction: 'row' | 'column';
+  
+  first: WorkspaceLayout;
+  
+  second: WorkspaceLayout;
+  
+  splitPercentage?: number;
+
+}
+
 export type WorkspaceBookmark = {
+
   name: string;
+
   images: string[];
+  
   viewports?: Record<string, ImageViewport>;
-};
+  
+  layout?: WorkspaceLayout;
+  
+}
 
 export const loadSettingsStore = (
   handle: FileSystemDirectoryHandle

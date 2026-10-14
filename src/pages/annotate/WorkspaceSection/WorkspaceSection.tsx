@@ -11,6 +11,8 @@ import { AnnotatableImage } from './AnnotatableImage';
 import { usePersistentHistory } from './usePersistentHistory';
 import { useSelectAll } from './useSelectAll';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
+import { useAnnotationViewState } from '../AnnotationViewState';
+import { layoutMatchesImages, toImageLayout, toWindowLayout } from './workspaceLayout';
 
 import 'react-mosaic-component2/react-mosaic-component.css';
 
@@ -40,8 +42,12 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   const manifold = useAnnotoriousManifold();
 
+  const { initialLayout, clearInitialLayout, setCurrentLayout } = useAnnotationViewState();
+
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
+
+  const initializedImageIds = useRef<string>(undefined);
 
   const windowRefs = useRef<Map<string, WorkspaceWindowRef>>(null);
 
@@ -63,6 +69,11 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   }, [manifold, props.filterState]);
   
   useEffect(() => {
+    const imageIds = props.images.map(image => image.id);
+    const imageKey = imageIds.join(',');
+
+    if (initializedImageIds.current === imageKey && !initialLayout) return;
+
     if (props.images.length > 1) {
       const diff = props.images.length - windowMap.current.length;
 
@@ -79,13 +90,23 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
           : windowMap.current.slice(0, props.images.length)
               .map(({ windowId}, idx) => ({ windowId, image: props.images[idx] }));
 
-      windowMap.current = next;
+      const restoredLayout = initialLayout && layoutMatchesImages(initialLayout, imageIds)
+        ? toWindowLayout(initialLayout, next)
+        : undefined;
+        
+      const nextValue = restoredLayout || createBalancedTreeFromLeaves(next.map(t => t.windowId));
 
-      setValue(createBalancedTreeFromLeaves(next.map(t => t.windowId)));
+      windowMap.current = next;
+      setValue(nextValue);
+      setCurrentLayout(toImageLayout(nextValue, next));
     } else {
       windowRefs.current === undefined;
+      setCurrentLayout(undefined);
     }
-  }, [props.images]);
+
+    initializedImageIds.current = imageKey;
+    if (initialLayout) clearInitialLayout();
+  }, [clearInitialLayout, initialLayout, props.images, setCurrentLayout]);
 
   const onChangeImage = (windowId: string, nextImageId: string) => {
     const nextImages = windowMap.current
@@ -102,8 +123,9 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     props.onChangeImages(nextImages.map(i => i.id));
   }
 
-  const onChange = (value: MosaicNode<string>) => {
+  const onChange = (value: MosaicNode<string> | null) => {
     setValue(value);
+    setCurrentLayout(value ? toImageLayout(value, windowMap.current) : undefined);
     windowRefs.current?.forEach(ref => ref?.onResize());
   }
 
