@@ -47,7 +47,7 @@ export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: s
 
   const classIds = tags.map((t) => `"${t.id}"`);
 
-  return `You are an expert annotator assisting with the scholarly transcription of historical sources. The attached image is a region selected from a larger document by a researcher.
+  return `The attached image is a region selected from a larger document by a researcher.
 
 ## Task 1: Transcription
 
