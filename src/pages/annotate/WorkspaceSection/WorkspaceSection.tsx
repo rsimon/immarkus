@@ -3,7 +3,6 @@ import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from '
 import { v4 as uuidv4 } from 'uuid';
 import type { Filter, ImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
-import type { WorkspaceLayout } from '@/store';
 import { Image, LoadedImage } from '@/model';
 import { useWindowSize } from '@/utils/useWindowSize';
 import { AnnotationMode, Tool } from '../AnnotationMode';
@@ -13,57 +12,9 @@ import { usePersistentHistory } from './usePersistentHistory';
 import { useSelectAll } from './useSelectAll';
 import { WorkspaceWindow, WorkspaceWindowRef } from './WorkspaceWindow';
 import { useAnnotationViewState } from '../AnnotationViewState';
+import { layoutMatchesImages, toImageLayout, toWindowLayout } from './workspaceLayout';
 
 import 'react-mosaic-component2/react-mosaic-component.css';
-
-const getLayoutLeaves = (layout: WorkspaceLayout): string[] =>
-  typeof layout === 'string'
-    ? [layout]
-    : [...getLayoutLeaves(layout.first), ...getLayoutLeaves(layout.second)];
-
-const toImageLayout = (
-  node: MosaicNode<string>,
-  windows: { windowId: string, image: LoadedImage }[]
-): WorkspaceLayout | undefined => {
-  if (typeof node === 'string')
-    return windows.find(window => window.windowId === node)?.image.id;
-
-  const first = toImageLayout(node.first, windows);
-  const second = toImageLayout(node.second, windows);
-  if (!first || !second) return undefined;
-
-  return {
-    direction: node.direction,
-    first,
-    second,
-    splitPercentage: node.splitPercentage
-  };
-}
-
-const toWindowLayout = (
-  layout: WorkspaceLayout,
-  windows: { windowId: string, image: LoadedImage }[]
-): MosaicNode<string> | undefined => {
-  if (typeof layout === 'string')
-    return windows.find(window => window.image.id === layout)?.windowId;
-
-  const first = toWindowLayout(layout.first, windows);
-  const second = toWindowLayout(layout.second, windows);
-  if (!first || !second) return undefined;
-
-  return {
-    direction: layout.direction,
-    first,
-    second,
-    splitPercentage: layout.splitPercentage
-  };
-}
-
-const layoutMatchesImages = (layout: WorkspaceLayout, imageIds: string[]) => {
-  const leaves = getLayoutLeaves(layout).sort();
-  const expected = [...imageIds].sort();
-  return leaves.length === expected.length && leaves.every((id, index) => id === expected[index]);
-}
 
 interface WorkspaceSectionProps {
 
@@ -96,7 +47,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
 
-  const initializedImageIds = useRef<string>();
+  const initializedImageIds = useRef<string>(undefined);
 
   const windowRefs = useRef<Map<string, WorkspaceWindowRef>>(null);
 
