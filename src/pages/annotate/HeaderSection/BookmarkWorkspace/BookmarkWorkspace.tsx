@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Bookmark, BookmarkCheck, Check, Save, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Bookmark, BookmarkCheck, Check, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { LoadedImage } from '@/model';
 import { WorkspaceBookmark } from '@/store';
@@ -11,6 +11,7 @@ import { Separator } from '@/ui/Separator';
 import { useOpenInAnnotationView } from '../../AnnotationViewState';
 import { ToolbarButton } from '../../ToolbarButton';
 import { useWorkspaceBookmarks } from './useWorkspaceBookmarks';
+import { useToast } from '@/ui/Toaster/use-toast';
 import { 
   Dialog, 
   DialogContent, 
@@ -29,6 +30,8 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
 
   const { t } = useTranslation('annotate');
 
+  const { toast } = useToast();
+
   const { openInAnnotationView } = useOpenInAnnotationView();
 
   const { 
@@ -43,6 +46,25 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [workspaceName, setWorkspaceName] = useState('');
+  const [savedAt, setSavedAt] = useState<number>();
+
+  const justSaved = savedAt !== undefined;
+
+  useEffect(() => {
+    if (savedAt === undefined) return;
+
+    const timeout = setTimeout(() => setSavedAt(undefined), 1500);
+    return () => clearTimeout(timeout);
+  }, [savedAt]);
+
+  const onSaveError = (error: unknown) => {
+    console.error(error);
+    toast({
+      variant: 'destructive',
+      title: t('headerSection.bookmarkSaveFailed'),
+      description: error instanceof Error ? error.message : undefined
+    });
+  }
 
   const close = () => {
     setWorkspaceName('');
@@ -53,8 +75,10 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   const onSaveBookmark = () => {
     const trimmed = workspaceName.trim();
     if (!trimmed) return;
-    createBookmark(trimmed);
-    close();
+    void createBookmark(trimmed).then(() => {
+      setSavedAt(Date.now());
+      close();
+    }).catch(onSaveError);
   }
 
   const onDeleteBookmark = () => {
@@ -68,8 +92,10 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
   }
 
   const onUpdateBookmark = (bookmark: WorkspaceBookmark) => {
-    updateBookmark(bookmark);
-    close();
+    void updateBookmark(bookmark).then(() => {
+      setSavedAt(Date.now());
+      close();
+    }).catch(onSaveError);
   }
 
   return (
@@ -79,11 +105,11 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
         onOpenChange={open => setPopoverOpen(open)}>
         <PopoverTrigger asChild>
           <ToolbarButton
-            tooltip={t('headerSection.workspaceBookmarks')}>
+            tooltip={t(justSaved ? 'headerSection.bookmarkSaved' : 'headerSection.workspaceBookmarks')}>
             {isCurrentBookmarked ? (
-              <BookmarkCheck className="size-8.5 p-2" />
+              <BookmarkCheck className={`size-8.5 p-2 ${justSaved ? 'text-green-600' : ''}`} />
             ) : (
-              <Bookmark className="size-8.5 p-2" />
+              <Bookmark className={`size-8.5 p-2 ${justSaved ? 'text-green-600' : ''}`} />
             )}
           </ToolbarButton>
         </PopoverTrigger>
@@ -97,7 +123,7 @@ export const BookmarkWorkspace = (props: BookmarkWorkspaceProps) => {
                   variant="ghost"
                   onClick={() => currentBookmark && onUpdateBookmark(currentBookmark)}
                   className="text-xs font-normal items-center justify-start disabled:hover:bg-transparent h-auto px-2 py-1.5 flex gap-1.5 w-full">
-                  <Save className="size-3.5 mb-px" /> {t('headerSection.updateCurrentBookmark')}
+                  <Bookmark className="size-3.5 mb-px" /> {t('headerSection.updateCurrentBookmark')}
                 </Button>
 
                 <Button
