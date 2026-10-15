@@ -38,7 +38,7 @@ export const ExternalAuthorityFieldInput = (props: ExternalAuthorityFieldInputPr
       {isURI ? (
         <a 
           href={expanded} 
-          className="grow text-sky-700 hover:underline overflow-hidden text-ellipsis pr-1"
+          className="grow text-sky-700 hover:underline whitespace-nowrap overflow-hidden text-ellipsis pr-1"
           target="_blank">{formatIdentifier(props.value, props.authorities)}</a>
       ) : (
         <span className="grow overflow-hidden text-ellipsis pr-1">{props.value}</span>

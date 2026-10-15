@@ -6,6 +6,7 @@ import { Input } from '@/ui/Input';
 import { ExternalAuthority, findMatchingPattern } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
 import { useDebounce } from '@/utils/useDebounce';
+import { cn } from '@/ui/utils';
 
 interface IFrameAuthorityDialogProps {
 
@@ -19,9 +20,12 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
   const { t } = useTranslation('common');
 
-  const iframe = useRef<HTMLIFrameElement>(null);
-
   const { authority } = props;
+
+  // Some external sources don't offer a direct search link (https://example.com?q={{...}}) - in
+  // this case, we just embed the page into the iframe for convenience, without any special treatment
+  const isEmbedOnly = useMemo(() => 
+    typeof authority.search_pattern === 'string' && !authority.search_pattern.includes('{{query}}'), [authority]);
 
   const [query, setQuery] = useState('');
 
@@ -88,59 +92,77 @@ export const IFrameAuthorityDialog = (props: IFrameAuthorityDialogProps) => {
 
   return (
     <Dialog open={Boolean(props.authority)} onOpenChange={() => props.onClose()}>
-      <DialogContent className="p-4 max-w-2xl rounded-lg gap-3">
+      <DialogContent className={cn(
+        'p-4 rounded-lg gap-3',
+        isEmbedOnly ? 'max-w-6xl': 'max-w-2xl'
+        )}>
         <DialogTitle>{authority.name}</DialogTitle>
         <DialogDescription className="text-xs">
-          {authority.description}
+          <span>{authority.description}</span> {isEmbedOnly && (
+            <a 
+              href={authority.search_pattern as string}
+              target="_blank">
+              <ExternalLink className="size-4 inline ml-1 align-top opacity-50 hover:opacity-100" />
+            </a>
+          )}
         </DialogDescription>
 
-        <div className="relative mt-2">
-          <Input
-            className="h-9"
-            placeholder={t('propertyFields.searchAuthorityPlaceholder', { name: authority.name })}
-            value={query}
-            onChange={evt => setQuery(evt.target.value)} />
+        {!isEmbedOnly && (
+          <div className="relative mt-2">
+            <Input
+              className="h-9"
+              placeholder={t('propertyFields.searchAuthorityPlaceholder', { name: authority.name })}
+              value={query}
+              onChange={evt => setQuery(evt.target.value)} />
 
-          <span 
-            className="absolute top-0 right-0 h-full bg-muted border rounded-r">
-            {(debounced && linkURL) ? (
-                <a 
-                  className="px-4 h-full flex items-center hover:bg-slate-200/80"
-                  href={linkURL}
-                  target="_blank">
-                  <ExternalLink className="h-4 w-4" />
-                </a>
-            ) : (
-              <div
-                className="px-4 h-full flex items-center opacity-30">
-                <ExternalLink className="size-4" />
+            <span 
+              className="absolute top-0 right-0 h-full bg-muted border rounded-r">
+              {(debounced && linkURL) ? (
+                  <a 
+                    className="px-4 h-full flex items-center hover:bg-slate-200/80"
+                    href={linkURL}
+                    target="_blank">
+                    <ExternalLink className="h-4 w-4" />
+                  </a>
+              ) : (
+                <div
+                  className="px-4 h-full flex items-center opacity-30">
+                  <ExternalLink className="size-4" />
+                </div>
+              )}
+            </span>
+          </div>
+        )}
+
+        {isEmbedOnly ? (
+          <div className="relative border rounded-md h-[70vh] bg-muted">
+            <iframe
+              className="absolute top-0 left-0 w-full h-full"
+              src={authority.search_pattern as string} />
+          </div>
+        ) : (
+          <div className="relative border rounded-md h-[70vh] bg-muted">
+            {!loading && !debounced && (
+              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+                <Database strokeWidth={0.5} className="w-32 h-32 text-slate-300" />
               </div>
             )}
-          </span>
-        </div>
 
-        <div className="relative border rounded-md h-[70vh] bg-muted">
-          {!loading && !debounced && (
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-              <Database strokeWidth={0.5} className="w-32 h-32 text-slate-300" />
-            </div>
-          )}
+            {loading && (
+              <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+                <Spinner className="w-8 h-8 text-muted-foreground" />
+              </div>
+            )}
 
-          {loading && (
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center">
-              <Spinner className="w-8 h-8 text-muted-foreground" />
-            </div>
-          )}
-
-          {searchURL && (
-            <iframe 
-              ref={iframe}
-              style={{ opacity: loading ? 0 : 1}}
-              className="absolute top-0 left-0 w-full h-full"
-              onLoad={() => setLoading(false)}
-              src={searchURL} />
-          )}
-        </div>
+            {searchURL && (
+              <iframe 
+                style={{ opacity: loading ? 0 : 1}}
+                className="absolute top-0 left-0 w-full h-full"
+                onLoad={() => setLoading(false)}
+                src={searchURL} />
+            )}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )
