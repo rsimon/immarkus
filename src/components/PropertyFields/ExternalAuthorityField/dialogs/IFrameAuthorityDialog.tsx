@@ -3,10 +3,10 @@ import { Database, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/Dialog';
 import { Input } from '@/ui/Input';
+import { cn } from '@/ui/utils';
 import { ExternalAuthority, findMatchingPattern } from '@/model/ExternalAuthority';
 import { Spinner } from '@/components/Spinner';
 import { useDebounce } from '@/utils/useDebounce';
-import { cn } from '@/ui/utils';
 
 interface IFrameAuthorityDialogProps {
 
