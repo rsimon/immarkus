@@ -38,8 +38,8 @@ export const ExternalAuthorityOptions = (props: ExternalAuthorityOptionsProps) =
 
   const hasValidConfiguration = (a: ExternalAuthority) => {
     const hasValidSearchPattern = a.search_pattern && a.type === 'IFRAME' && (
-      (typeof a.search_pattern === 'string' && a.search_pattern.includes('{{query}}')) || 
-      typeof a.search_pattern === 'object' && Object.values(a.search_pattern).every(url => url.includes('{{query}}'))
+      (typeof a.search_pattern === 'string') || 
+      (typeof a.search_pattern === 'object' && Object.values(a.search_pattern).every(url => url.includes('{{query}}')))
     );
 
     return Boolean(a.name) && hasValidSearchPattern;
