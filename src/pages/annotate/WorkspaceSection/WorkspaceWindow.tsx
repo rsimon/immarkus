@@ -190,6 +190,7 @@ export const WorkspaceWindow = forwardRef<WorkspaceWindowRef, WorkspaceWindowPro
         mode={props.mode}
         tool={props.tool} 
         onInitError={props.onInitError}
+        onViewportRestored={setIsFlipped}
         onUnmount={props.onUnmount} />
     </MosaicWindow>
   )

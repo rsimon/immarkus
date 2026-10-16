@@ -44,6 +44,8 @@ interface AnnotatableImageProps {
 
   onInitError(error: Error): void;
 
+  onViewportRestored?(flipped: boolean): void;
+
   onUnmount(history: History<ImageAnnotation>): void;
 
 }
@@ -71,6 +73,8 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 }
 
 const restoreInitialViewport = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
+  viewer.viewport.setRotation(viewport.rotation ?? 0, true);
+  viewer.viewport.setFlip(viewport.flip ?? false);
   viewer.viewport.zoomTo(viewport.zoom, undefined, true);
   viewer.viewport.panTo(new OpenSeadragon.Point(viewport.center.x, viewport.center.y), true);
   viewer.viewport.applyConstraints();
@@ -94,6 +98,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
     const restore = () => {
       restoreInitialViewport(viewer, savedViewport);
+      props.onViewportRestored?.(viewer.viewport.getFlip());
       clearInitialViewport(image.id);
     };
 
@@ -103,7 +108,7 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
       viewer.addOnceHandler('open', restore);
       return () => viewer.removeHandler('open', restore);
     }
-  }, [clearInitialViewport, image.id, initialViewports, viewer]);
+  }, [clearInitialViewport, image.id, initialViewports, props.onViewportRestored, viewer]);
 
   const { setSavingState } = useSavingState();
 
