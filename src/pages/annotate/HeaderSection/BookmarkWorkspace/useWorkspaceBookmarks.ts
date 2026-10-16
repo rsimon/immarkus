@@ -30,7 +30,9 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
       const center = viewer.viewport.getCenter(true);
       viewports[imageId] = {
         center: { x: center.x, y: center.y },
-        zoom: viewer.viewport.getZoom(true)
+        zoom: viewer.viewport.getZoom(true),
+        rotation: viewer.viewport.getRotation(true),
+        flip: viewer.viewport.getFlip()
       };
     });
 
