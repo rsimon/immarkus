@@ -28,6 +28,7 @@ export const useWorkspaceBookmarks = (images: LoadedImage[]) => {
       if (!viewer?.isOpen()) return;
 
       const center = viewer.viewport.getCenter(true);
+      
       viewports[imageId] = {
         center: { x: center.x, y: center.y },
         zoom: viewer.viewport.getZoom(true),
