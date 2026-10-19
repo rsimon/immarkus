@@ -65,55 +65,10 @@ export interface TranslationServiceConfig extends BaseServiceConfig {
 
   type: 'TRANSLATION';
 
-  displayName?: string;
+  displayName: string;
 
   arguments?: Record<string, any>;
 
-}
-
-export interface AnnotationServiceConfig {
-  
-  /** Type of service **/
-  type: 'ANNOTATION';
-
-  /** Service display description **/
-  description: string;
-
-  /** Configuration parameters supported by this service **/
-  parameters?: ServiceConfigParameter[];
-
-}
-
-export interface TranscriptionServiceConfig {
-  
-  /** Type of service **/
-  type: 'TRANSCRIPTION';
-
-  /** Service display description **/
-  description: string;
-
-  /** Set to true if the service requires a user-provded region bounding box **/
-  requiresRegion?: boolean;
-
-  /** Set to true if the service supports data model form filling **/
-  supportsEntityExtraction?: boolean;
-
-  /** Configuration parameters supported by this service **/
-  parameters?: ServiceConfigParameter[];
-
-}
-
-export interface TranslationServiceConfig {
-
-  type: 'TRANSLATION';
-
-  displayName?: string;
-
-  /** Service display description **/
-  description?: string;
-
-  arguments?: Record<string, any>;
-  
 }
 
 export type ServiceConfig = ServiceConfigMap[ServiceType];
@@ -233,9 +188,9 @@ export interface Generator {
 
 export type PageTransform = {
 
-  (point: Point): Point;
-
   (region: Region): Region;
+
+  (point: Point): Point;
 
   readonly source: { width: number, height: number };
 
