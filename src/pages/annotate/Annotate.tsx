@@ -47,6 +47,9 @@ export const Annotate = () => {
 
   const [filterState, setFilterState] = useState<FilterState | undefined>();
 
+  // Image flip state - in case only one image is open
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const [mode, setMode] = useState<AnnotationMode>('move');
 
   const [tool, setTool] = useState<Tool>('rectangle');
@@ -104,8 +107,10 @@ export const Annotate = () => {
                       hideAnnotations={hideAnnotations}
                       mode={mode}
                       tool={tool}
+                      flipped={isFlipped}
                       onAddImage={onAddImage} 
                       onChangeImage={onChangeImage}
+                      onChangeFlipped={setIsFlipped}
                       onChangeMode={setMode}
                       onChangeTool={setTool} 
                       onHideAnnotations={setHideAnnotations}
@@ -118,10 +123,12 @@ export const Annotate = () => {
                         filterState={filterState}
                         images={images} 
                         hideAnnotations={hideAnnotations}
+                        flipped={isFlipped}
                         mode={mode}
                         tool={tool} 
                         onAddImage={onAddImage} 
                         onChangeImages={imageIds => setImageIds(imageIds)}
+                        onChangeFlipped={setIsFlipped}
                         onInitError={error => setInitError(error)}
                         onRemoveImage={image => setImageIds(ids => ids.filter(id => id !== image.id))} />
                     ) : imageIds.length === 0 ? (

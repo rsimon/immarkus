@@ -28,11 +28,15 @@ interface WorkspaceSectionProps {
 
   tool: Tool;
 
+  flipped: boolean;
+
   onAddImage(imageId: string): void;
 
   onChangeImages(imageIds: string[]): void;
 
   onInitError(error: Error): void;
+
+  onChangeFlipped(flipped: boolean): void;
 
   onRemoveImage(image: Image): void;
 
@@ -183,6 +187,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
           mode={props.mode}
           tool={props.tool} 
           onInitError={props.onInitError}
+          onViewportRestored={props.onChangeFlipped}
           onUnmount={onUnmountAnnotator(props.images[0].id)} />
       ) : props.images.length > 1 && (
         <Mosaic<string>

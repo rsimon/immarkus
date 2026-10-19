@@ -44,7 +44,7 @@ interface AnnotatableImageProps {
 
   onInitError(error: Error): void;
 
-  onViewportRestored?(flipped: boolean): void;
+  onViewportRestored(flipped: boolean): void;
 
   onUnmount(history: History<ImageAnnotation>): void;
 
