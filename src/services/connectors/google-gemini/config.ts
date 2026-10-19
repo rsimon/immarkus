@@ -40,6 +40,10 @@ You need an API key to use Google Gemini. To get your own key:
       ]
     }]
   },{
-    type: 'TRANSLATION'
+    type: 'TRANSLATION',
+    displayName: 'Google Gemini (2.5 Flash Lite)',
+    arguments: {
+      model: 'gemini-2.5-flash-lite'
+    }
   }]
 };

@@ -26,6 +26,10 @@ To get your own key:
     description: 'Full-text transcription via OpenAI GPT',
     requiresRegion: true
   }, {
-    type: 'TRANSLATION'
+    type: 'TRANSLATION',
+    displayName: 'OpenAI (GPT 4.1)',
+    arguments: {
+      model: 'gpt-4.1'
+    }
   }]
 };

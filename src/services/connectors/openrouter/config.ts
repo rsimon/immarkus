@@ -63,12 +63,6 @@ To get your own key:
     }]
   },{
     type: 'TRANSLATION',
-    displayName: 'OpenRouter (Qwen 3.8 27B Free)',
-    arguments: {
-      model: 'qwen/qwen3.8-27b:free'
-    }
-  },{
-    type: 'TRANSLATION',
     displayName: 'OpenRouter (Gemini 2.5 Flash Lite)',
     arguments: {
       model: 'google/gemini-2.5-flash-lite'

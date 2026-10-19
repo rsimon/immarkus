@@ -54,9 +54,8 @@ const setPersistedService = (connectorId: string, index: number) =>
   localStorage.setItem(KEY_SERVICE, `${connectorId}::${index}`);
 
 export const TranslateButton = (props: TranslateButtonProps) => {
-
   const { t } = useTranslation('common');
-
+  
   const availableConnectors = useMemo(() => connectors.filter(connector => {
     if (!connector.requiresKey) return true;
 

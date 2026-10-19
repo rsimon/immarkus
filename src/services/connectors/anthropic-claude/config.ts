@@ -27,6 +27,10 @@ export const config: ServiceConnectorConfig = {
     requiresRegion: true,
     supportsEntityExtraction: true,
   }, {
-    type: 'TRANSLATION'
+    type: 'TRANSLATION',
+    displayName: 'Anthropic (Claude Sonnet 4.6)',
+    arguments: {
+      model: 'claude-sonnet-4-6'
+    }
   }]
 };
