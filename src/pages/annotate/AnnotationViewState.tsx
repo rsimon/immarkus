@@ -16,13 +16,9 @@ interface AnnotationViewStateContextValue {
 
   setImageIds: Dispatch<SetStateAction<string[]>>;
 
-  initialViewports: Record<string, ImageViewport>;
+  currentViewports: Record<string, ImageViewport>;
 
-  setInitialViewports: Dispatch<SetStateAction<Record<string, ImageViewport>>>;
-
-  initialLayout?: WorkspaceLayout;
-
-  setInitialLayout: Dispatch<SetStateAction<WorkspaceLayout | undefined>>;
+  setCurrentViewports: Dispatch<SetStateAction<Record<string, ImageViewport>>>;
 
   currentLayout?: WorkspaceLayout;
 
@@ -36,9 +32,7 @@ export const AnnotationViewStateProvider = (props: { children: ReactNode }) => {
 
   const [imageIds, setImageIds] = useState<string[]>([]);
 
-  const [initialViewports, setInitialViewports] = useState<Record<string, ImageViewport>>({});
-
-  const [initialLayout, setInitialLayout] = useState<WorkspaceLayout>();
+  const [currentViewports, setCurrentViewports] = useState<Record<string, ImageViewport>>({});
 
   const [currentLayout, setCurrentLayout] = useState<WorkspaceLayout>();
 
@@ -47,10 +41,8 @@ export const AnnotationViewStateProvider = (props: { children: ReactNode }) => {
       value={{
         imageIds,
         setImageIds,
-        initialViewports,
-        setInitialViewports,
-        initialLayout,
-        setInitialLayout,
+        currentViewports,
+        setCurrentViewports,
         currentLayout,
         setCurrentLayout
       }}>
@@ -64,10 +56,8 @@ export const useAnnotationViewState = () => {
   const {
     imageIds,
     setImageIds,
-    initialViewports,
-    setInitialViewports,
-    initialLayout,
-    setInitialLayout,
+    currentViewports,
+    setCurrentViewports,
     currentLayout,
     setCurrentLayout
   } = useContext(AnnotationViewStateContext);
@@ -77,25 +67,27 @@ export const useAnnotationViewState = () => {
     return [...current, imageId];
   }), []);
 
-  const clearInitialViewport = useCallback((imageId: string) => setInitialViewports(current => {
-    if (!(imageId in current)) return current;
-    const next = { ...current };
-    delete next[imageId];
-    return next;
-  }), [setInitialViewports]);
+  const setCurrentViewport = useCallback((imageId: string, viewport: ImageViewport) =>
+    setCurrentViewports(current => {
+      const existing = current[imageId];
+      if (existing &&
+        existing.center.x === viewport.center.x &&
+        existing.center.y === viewport.center.y &&
+        existing.zoom === viewport.zoom &&
+        existing.rotation === viewport.rotation &&
+        existing.flip === viewport.flip)
+        return current;
 
-  const clearInitialLayout = useCallback(() => setInitialLayout(undefined), [setInitialLayout]);
+      return { ...current, [imageId]: viewport };
+    }), [setCurrentViewports]);
 
   return {
     imageIds,
     setImageIds,
     addImageToView,
-    initialViewports,
-    setInitialViewports,
-    clearInitialViewport,
-    initialLayout,
-    setInitialLayout,
-    clearInitialLayout,
+    currentViewports,
+    setCurrentViewports,
+    setCurrentViewport,
     currentLayout,
     setCurrentLayout
   };
@@ -104,7 +96,12 @@ export const useAnnotationViewState = () => {
 export const useOpenInAnnotationView = () => {
   const navigate = useNavigate();
   
-  const { imageIds, setImageIds, setInitialViewports, setInitialLayout } = useContext(AnnotationViewStateContext);
+  const {
+    imageIds,
+    setImageIds,
+    setCurrentViewports,
+    setCurrentLayout
+  } = useContext(AnnotationViewStateContext);
 
   const openInAnnotationView = useCallback((
     imageIdOrIds: string | string[],
@@ -112,14 +109,14 @@ export const useOpenInAnnotationView = () => {
     layout?: WorkspaceLayout
   ) => {
     const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];
-    setInitialViewports(viewports || {});
-    setInitialLayout(layout);
+    setCurrentViewports(viewports || {});
+    setCurrentLayout(layout);
     setImageIds(ids);
 
     requestAnimationFrame(() => {
       navigate(`/annotate/${ids.join('&')}`);
     });
-  }, [setImageIds, setInitialViewports, setInitialLayout, navigate]);
+  }, [setImageIds, setCurrentLayout, setCurrentViewports, navigate]);
 
   const addToAnnotationView = useCallback((imageIdOrIds: string | string[], open = false) => {
     const ids = Array.isArray(imageIdOrIds) ? imageIdOrIds : [imageIdOrIds];

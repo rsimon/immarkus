@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { dequal } from 'dequal/lite';
 import { Mosaic, MosaicBranch, MosaicNode, createBalancedTreeFromLeaves } from 'react-mosaic-component2';
 import { v4 as uuidv4 } from 'uuid';
 import type { Filter, ImageAnnotation } from '@annotorious/react';
@@ -46,7 +47,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
 
   const manifold = useAnnotoriousManifold();
 
-  const { initialLayout, clearInitialLayout, setCurrentLayout } = useAnnotationViewState();
+  const { currentLayout, setCurrentLayout } = useAnnotationViewState();
 
   // Association between image ID and Mosaic window ID
   const windowMap = useRef<{ windowId: string, image: LoadedImage }[]>([]);
@@ -76,7 +77,10 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     const imageIds = props.images.map(image => image.id);
     const imageKey = imageIds.join(',');
 
-    if (initializedImageIds.current === imageKey && !initialLayout) return;
+    const liveLayout = value ? toImageLayout(value, windowMap.current) : undefined;
+    if (initializedImageIds.current === imageKey &&
+      dequal(currentLayout, liveLayout))
+      return;
 
     if (props.images.length > 1) {
       const diff = props.images.length - windowMap.current.length;
@@ -94,8 +98,8 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
           : windowMap.current.slice(0, props.images.length)
               .map(({ windowId}, idx) => ({ windowId, image: props.images[idx] }));
 
-      const restoredLayout = initialLayout && layoutMatchesImages(initialLayout, imageIds)
-        ? toWindowLayout(initialLayout, next)
+      const restoredLayout = currentLayout && layoutMatchesImages(currentLayout, imageIds)
+        ? toWindowLayout(currentLayout, next)
         : undefined;
         
       const nextValue = restoredLayout || createBalancedTreeFromLeaves(next.map(t => t.windowId));
@@ -109,8 +113,7 @@ export const WorkspaceSection = (props: WorkspaceSectionProps) => {
     }
 
     initializedImageIds.current = imageKey;
-    if (initialLayout) clearInitialLayout();
-  }, [clearInitialLayout, initialLayout, props.images, setCurrentLayout]);
+  }, [currentLayout, props.images, setCurrentLayout, value]);
 
   const onChangeImage = (windowId: string, nextImageId: string) => {
     const nextImages = windowMap.current
