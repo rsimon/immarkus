@@ -20,6 +20,10 @@ export interface ImageViewport {
 
   zoom: number;
 
+  rotation?: number;
+
+  flip?: boolean;
+
 }
 
 export type WorkspaceLayout = string | {

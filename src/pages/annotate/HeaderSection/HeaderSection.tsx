@@ -44,11 +44,15 @@ interface HeaderSectionProps {
 
   tool: Tool;
 
+  flipped: boolean;
+
   onAddImage(imageId: string): void;
 
   onChangeImage(previousId: string, nextId: string): void;
 
   onChangeTool(tool: Tool): void;
+
+  onChangeFlipped(flipped: boolean): void;
 
   onChangeMode(mode?: AnnotationMode): void;
 
@@ -70,8 +74,6 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
   const [relationsEditorOpen, setRelationsEditorOpen] = useState(false);
 
-  const [isFlipped, setIsFlipped] = useState(viewer ? viewer.viewport.getFlip() : false);
-
   /** 
    * The toolbar has a 'collapsed mode', GDocs-style, 
    * which we'll enable as soon as it overflows.
@@ -89,7 +91,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
   }
 
   const onRotate = (clockwise: boolean) => {
-    const signFlip = isFlipped ? -1 : 1;
+    const signFlip = props.flipped ? -1 : 1;
     const signDir = clockwise ? 1: -1;
     const angle = 90 * signFlip * signDir;
     viewer?.viewport.rotateBy(angle);
@@ -99,7 +101,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
     if (!viewer) return;
 
     viewer.viewport.setFlip(flipped);
-    setIsFlipped(flipped);
+    props.onChangeFlipped(flipped);
   }
 
   const onZoom = (factor: number) => () =>
@@ -153,7 +155,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
             <MoreToolsPanel 
               hideAnnotations={props.hideAnnotations}
               images={props.images}
-              isFlipped={isFlipped}
+              isFlipped={props.flipped}
               mode={props.mode}
               relationsEditorOpen={relationsEditorOpen}
               osdToolsDisabled={osdToolsDisabled}
@@ -212,7 +214,7 @@ export const HeaderSection = (props: HeaderSectionProps) => {
 
             <ToolbarToggle
               disabled={osdToolsDisabled}
-              pressed={isFlipped}
+              pressed={props.flipped}
               onPressedChange={onFlip}
               tooltip={t('headerSection.flip')}>
               <SquareCenterlineDashedHorizontal 
