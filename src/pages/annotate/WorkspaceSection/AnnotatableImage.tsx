@@ -72,11 +72,39 @@ const HistoryConsumer = (props: HistoryConsumerProps) => {
 
 }
 
-const restoreInitialViewport = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
-  viewer.viewport.setRotation(viewport.rotation ?? 0, true);
-  viewer.viewport.setFlip(viewport.flip ?? false);
-  viewer.viewport.zoomTo(viewport.zoom, undefined, true);
-  viewer.viewport.panTo(new OpenSeadragon.Point(viewport.center.x, viewport.center.y), true);
+const getCurrentViewport = (viewer: OpenSeadragon.Viewer): ImageViewport => {
+  const center = viewer.viewport.getCenter(true);
+  return {
+    center: { x: center.x, y: center.y },
+    zoom: viewer.viewport.getZoom(true),
+    rotation: viewer.viewport.getRotation(true),
+    flip: viewer.viewport.getFlip()
+  };
+}
+
+const viewportMatches = (viewer: OpenSeadragon.Viewer, viewport: ImageViewport) => {
+  const current = getCurrentViewport(viewer);
+  const same = (a: number, b: number) => Math.abs(a - b) < 0.000001;
+
+  return same(current.center.x, viewport.center.x) &&
+    same(current.center.y, viewport.center.y) &&
+    same(current.zoom, viewport.zoom) &&
+    same(current.rotation, viewport.rotation ?? 0) &&
+    current.flip === (viewport.flip ?? false);
+}
+
+const restoreViewport = (viewer: OpenSeadragon.Viewer, viewport?: ImageViewport) => {
+  if (viewport) {
+    viewer.viewport.setRotation(viewport.rotation ?? 0, true);
+    viewer.viewport.setFlip(viewport.flip ?? false);
+    viewer.viewport.zoomTo(viewport.zoom, undefined, true);
+    viewer.viewport.panTo(new OpenSeadragon.Point(viewport.center.x, viewport.center.y), true);
+  } else {
+    viewer.viewport.setRotation(0, true);
+    viewer.viewport.setFlip(false);
+    viewer.viewport.goHome(true);
+  }
+
   viewer.viewport.applyConstraints();
 }
 
@@ -90,25 +118,49 @@ export const AnnotatableImage = (props: AnnotatableImageProps) => {
 
   const viewer = viewers.get(image.id);
 
-  const { initialViewports, clearInitialViewport } = useAnnotationViewState();
+  const { currentViewports, setCurrentViewport } = useAnnotationViewState();
+  const currentViewport = currentViewports[image.id];
 
   useEffect(() => {
-    const savedViewport = initialViewports[image.id];
-    if (!viewer || !savedViewport) return;
+    if (!viewer) return;
 
-    const restore = () => {
-      restoreInitialViewport(viewer, savedViewport);
+    const sync = () => {
+      if (!viewer.isOpen()) return;
+
+      if (!currentViewport || !viewportMatches(viewer, currentViewport))
+        restoreViewport(viewer, currentViewport);
+
       props.onViewportRestored?.(viewer.viewport.getFlip());
-      clearInitialViewport(image.id);
+      setCurrentViewport(image.id, getCurrentViewport(viewer));
     };
 
     if (viewer.isOpen()) {
-      restore();
+      sync();
     } else {
-      viewer.addOnceHandler('open', restore);
-      return () => viewer.removeHandler('open', restore);
+      viewer.addOnceHandler('open', sync);
+      return () => viewer.removeHandler('open', sync);
     }
-  }, [clearInitialViewport, image.id, initialViewports, props.onViewportRestored, viewer]);
+  }, [currentViewport, image.id, props.onViewportRestored, setCurrentViewport, viewer]);
+
+  useEffect(() => {
+    if (!viewer) return;
+
+    const saveViewport = () => {
+      if (viewer.isOpen())
+        setCurrentViewport(image.id, getCurrentViewport(viewer));
+    };
+
+    viewer.addHandler('animation-finish', saveViewport);
+    viewer.addHandler('rotate', saveViewport);
+    viewer.addHandler('flip', saveViewport);
+
+    return () => {
+      saveViewport();
+      viewer.removeHandler('animation-finish', saveViewport);
+      viewer.removeHandler('rotate', saveViewport);
+      viewer.removeHandler('flip', saveViewport);
+    };
+  }, [image.id, setCurrentViewport, viewer]);
 
   const { setSavingState } = useSavingState();
 
