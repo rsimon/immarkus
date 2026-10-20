@@ -5,6 +5,7 @@ import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
+  AnnotationServiceConnector,
   AnnotationServiceOptions, 
   AnnotationServiceResult, 
   ProcessingState, 
@@ -119,7 +120,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       const crosswalk =  service.connector[parseFn];
       
       const request = type === 'ANNOTATION'
-        ? service.connector.annotate(
+        ? (service.connector as AnnotationServiceConnector).annotate(
             image,
             result.transform,
             options.serviceOptions,

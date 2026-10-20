@@ -7,15 +7,41 @@ import {
   ServiceConnectorConfig, 
   ServiceType, 
   TranslationServiceConnector,
-  TranslationServiceConfig
+  TranslationServiceConfig,
+  TranscriptionServiceConfig,
+  TranscriptionServiceConnector,
+  ServiceConfig
 } from './Types';
 
-type UseServiceState =
-  | {
-      connectorConfig: ServiceConnectorConfig | undefined;
-      serviceConfig: AnnotationServiceConfig | TranslationServiceConfig | undefined;
-      connector: ServiceConnector | undefined;
-    };
+interface ServiceTypeMap {
+
+  ANNOTATION: { config: AnnotationServiceConfig; connector: AnnotationServiceConnector };
+
+  TRANSLATION: { config: TranslationServiceConfig; connector: TranslationServiceConnector };
+  
+  TRANSCRIPTION: { config: TranscriptionServiceConfig; connector: TranscriptionServiceConnector };
+
+}
+
+type UseServiceResult<T extends keyof ServiceTypeMap> = {
+
+  connectorConfig?: ServiceConnectorConfig;
+
+  serviceConfig?: ServiceTypeMap[T]['config'];
+
+  connector?: ServiceTypeMap[T]['connector'];
+
+};
+
+type UseServiceState = {
+
+  connectorConfig: ServiceConnectorConfig | undefined;
+
+  serviceConfig: ServiceConfig | undefined;
+  
+  connector: ServiceConnector | undefined;
+
+};
 
 const EMPTY_STATE: UseServiceState = { 
   
@@ -27,47 +53,30 @@ const EMPTY_STATE: UseServiceState = {
 
 };
 
-export function useService(
+export function useService<T extends keyof ServiceTypeMap>(
   connectorId: string,
-  type: ServiceType
-): { 
-  connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: AnnotationServiceConfig; 
-  connector?: AnnotationServiceConnector; 
-};
+  type: T
+): UseServiceResult<T>;
+
+export function useService<C extends ServiceConfig>(
+  connectorId: string,
+  config: C
+): UseServiceResult<C['type'] & keyof ServiceTypeMap>;
 
 export function useService(
   connectorId: string,
-  config: AnnotationServiceConfig
-): { 
-  connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: AnnotationServiceConfig; 
-  connector?: AnnotationServiceConnector; 
-};
-
-export function useService(
-  connectorId: string,
-  config: TranslationServiceConfig
-): { 
-  connectorConfig: ServiceConnectorConfig; 
-  serviceConfig: TranslationServiceConfig; 
-  connector?: TranslationServiceConnector; 
-};
-
-export function useService(
-  connectorId: string,
-  arg: ServiceType | AnnotationServiceConfig | TranslationServiceConfig
-): {
-  connectorConfig: ServiceConnectorConfig;
-  serviceConfig: AnnotationServiceConfig | TranslationServiceConfig;
-  connector?: ServiceConnector;
-} {
+  arg: ServiceType | ServiceConfig
+): UseServiceResult<keyof ServiceTypeMap>  {
   const type = typeof arg === 'string' ? arg : arg.type;
+  const key = `${connectorId}:${type}:${typeof arg === 'string' ? '' : JSON.stringify(arg)}`;
 
-  const [state, setState] = useState<UseServiceState>(EMPTY_STATE);
+  const [state, setState] = useState<UseServiceState & { key: string }>({
+    key,
+    ...EMPTY_STATE
+  });
 
   useEffect(() => {
-    setState(EMPTY_STATE);
+    let cancelled = false;
 
     const connectorConfig = ServiceRegistry.getConnectorConfig(connectorId);
     if (!connectorConfig)
@@ -81,9 +90,19 @@ export function useService(
         ? connectorConfig.services.find(s => s.type === type)!
         : arg;
 
-    ServiceRegistry.getConnector(connectorId, type).then(connector =>
-      setState({ connectorConfig, serviceConfig, connector }));
-  }, [connectorId, type, JSON.stringify(arg)]);
+    ServiceRegistry.getConnector(connectorId, type)
+      .then(connector => {
+        if (!cancelled)
+          setState({ key, connectorConfig, serviceConfig, connector });
+      })
+      .catch(error => {
+        if (!cancelled)
+          console.error(error);
+      });
 
-  return state;
+    return () => { cancelled = true; };
+  }, [key]);
+
+  return (state.key === key ? state : EMPTY_STATE) as UseServiceResult<keyof ServiceTypeMap>;
+
 }

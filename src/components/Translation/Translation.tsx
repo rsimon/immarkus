@@ -17,7 +17,6 @@ interface TranslationProps {
 }
 
 export const Translation = (props: TranslationProps) => {
-
   const { t } = useTranslation('common');
 
   const { connector, connectorConfig, serviceConfig } = useService(props.args.connector.id, props.args.service);
