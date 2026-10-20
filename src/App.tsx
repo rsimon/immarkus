@@ -73,6 +73,7 @@ export const App = () => {
               <Route index element={<Navigate to="/settings/general" />} />
               <Route path="general" element={<Settings tab="general" />} />
               <Route path="visual-search" element={<Settings tab="visual-search" />} />
+              <Route path="translation" element={<Settings tab="translation" />} />
             </Route>
 
             <Route path="export">
