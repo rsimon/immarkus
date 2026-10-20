@@ -3,11 +3,12 @@ import { AppNavigationSidebar } from '@/components/AppNavigationSidebar';
 import { NavTabItem } from '@/components/NavTabItem';
 import { Separator } from '@/ui/Separator';
 import { General } from './general';
+import { Translation } from './translation/Translation';
 import { VisualSearch } from './visualsearch';
 
 interface SettingsProps {
 
-  tab: 'general' | 'visual-search';
+  tab: 'general' | 'visual-search' | 'translation';
 
 }
 
@@ -45,6 +46,11 @@ export const Settings = (props: SettingsProps) => {
                   path="/settings/visual-search"
                   label={t('nav.visualSearch')}
                   active={props.tab === 'visual-search'} />
+
+                <NavTabItem
+                  path="/settings/translation"
+                  label={t('nav.translation')}
+                  active={props.tab === 'translation'} />
               </ol>
             </nav>
           </aside>
@@ -52,8 +58,10 @@ export const Settings = (props: SettingsProps) => {
           <section className="pl-12 py-0.5 grow">
             {props.tab === 'general' ? (
               <General />
-            ) : (
+            ) : props.tab === 'visual-search' ? (
               <VisualSearch />   
+            ) : (
+              <Translation />
             )}
           </section>
         </div>

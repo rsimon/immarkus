@@ -4,7 +4,8 @@
   "errors": "errors",
   "nav": {
     "general": "General",
-    "visualSearch": "Visual Search"
+    "visualSearch": "Visual Search",
+    "translation": "Translation"
   },
   "general": {
     "title": "General Settings",
@@ -12,6 +13,18 @@
     "language": {
       "label": "Language",
       "description": "The user interface language."
+    }
+  },
+  "translation": {
+    "title": "Automated Text Translation",
+    "description": "Configure a text translation service to use automated translation in annotation text or transcription fields.",
+    "service": {
+      "label": "Translation service",
+      "description": "Select a service and model ."
+    },
+    "credentials": {
+      "label": "Service credentials",
+      "description": "This service requires an API key or access token."
     }
   },
   "indexing": {

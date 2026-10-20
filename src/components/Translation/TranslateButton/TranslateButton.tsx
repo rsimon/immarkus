@@ -2,11 +2,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
-import { ServiceConnectorConfig, ServiceRegistry } from '@/services';
 import { cn } from '@/ui/utils';
+import { usePersistentState } from '@/utils/usePersistentState';
 import { TranslateSettingsPopover } from './TranslateSettingsPopover';
 import { TranslationSettings } from './Types';
-import { usePersistentState } from '@/utils/usePersistentState';
+import {
+  getAvailableTranslationConnectors,
+  getPersistedTranslationService,
+  isTranslationServiceConfigured,
+  persistTranslationService,
+  TRANSLATION_LANGUAGE_KEY
+} from '../translationSettings';
 
 interface TranslateButtonProps {
 
@@ -16,81 +22,31 @@ interface TranslateButtonProps {
 
 }
 
-const KEY_SERVICE = 'immarkus:annotate:translation-service';
-const KEY_LANGUAGE = 'immarkus:annotate:translation-language'
-
-const connectors = ServiceRegistry.listAvailableConnectors('TRANSLATION');
-
-const getInitialService = (available: ServiceConnectorConfig[]): TranslationSettings => {
-  const getFirst = () => {
-    const connector = available[0];
-    const service = connector?.services.find(s => s.type === 'TRANSLATION');
-    return { connector, service, index: 0 };
-  }
-
-  const persistedId = localStorage.getItem(KEY_SERVICE);
-  if (!persistedId) return getFirst();
-
-  const [connectorId, index] = persistedId.split('::');
-
-  const connector = available.find(c => c.id === connectorId);
-  if (!connector) return getFirst();
-
-  try {
-    const parsed = parseInt(index);
-    const service = connector.services.filter(s => s.type === 'TRANSLATION')[parsed];
-    return service ? { connector, service, index: parsed } : getFirst();
-  } catch {
-    return getFirst();
-  }
-}
-
-const getStoredParam = (connectorId: string, paramId: string) => {
-  const key = `immarkus:services:${connectorId}:${paramId}`;
-  return localStorage.getItem(key);
-}
-
-const setPersistedService = (connectorId: string, index: number) => 
-  localStorage.setItem(KEY_SERVICE, `${connectorId}::${index}`);
+const connectors = getAvailableTranslationConnectors();
 
 export const TranslateButton = (props: TranslateButtonProps) => {
   const { t } = useTranslation('common');
-  
-  const availableConnectors = useMemo(() => connectors.filter(connector => {
-    if (!connector.requiresKey) return true;
 
-    const requiredParams = (connector.parameters || []).filter(param => param.required);
-    if (requiredParams.some(param => param.type !== 'credential'))
-      return false; // Currently, only persisted credential params are supported
+  const [selectedService, setSelectedService] = useState<TranslationSettings | undefined>(
+    () => getPersistedTranslationService(connectors));
 
-    // Should never happen because `requiresKey` implies a required arg!
-    if (requiredParams.length === 0) {
-      console.warn(`Possibly misconfigured transcription service: ${connector.id}`);
-      return false;
-    }
+  const [targetLanguage, setTargetLanguage] = usePersistentState(TRANSLATION_LANGUAGE_KEY, 'en');
 
-    // We have required credential params - check if they are stored!
-    return requiredParams.every(param => getStoredParam(connector.id, param.id));
-  }), []);
+  const disabled = props.disabled || !selectedService
+    || !isTranslationServiceConfigured(selectedService.connector);
 
-  const disabled = props.disabled || availableConnectors.length === 0;
-
-  const [selectedService, setSelectedService] =
-    useState<TranslationSettings>(getInitialService(availableConnectors));
-
-  const [targetLanguage, setTargetLanguage] = usePersistentState(KEY_LANGUAGE, 'en');
-
-  // Persist changes to locaStorage
   useEffect(() => {
-    const { connector, index } = selectedService;
-    if (connector)
-      setPersistedService(connector.id, index);
+    if (selectedService)
+      persistTranslationService(selectedService);
   }, [selectedService]);
 
-  const onClickTranslate = () => props.onClickTranslate({
-    ...selectedService,
-    language: targetLanguage
-  });
+  const onClickTranslate = () => {
+    if (!disabled && selectedService)
+      props.onClickTranslate({ ...selectedService, language: targetLanguage });
+  }
+
+  const availableConnectors = useMemo(() => 
+    connectors.filter(isTranslationServiceConfigured), [connectors]);
 
   return availableConnectors.length > 0 ? (
     <Tooltip>

@@ -8,7 +8,7 @@ interface ServicesTabProps {
 
   availableConnectors: ServiceConnectorConfig[];
 
-  selected: TranslationSettings;
+  selected?: TranslationSettings;
 
   onChangeSelected(service: TranslationSettings): void;
 
@@ -33,35 +33,36 @@ export const ServicesTab = (props: ServicesTabProps) => {
   }
 
   const isSelected = (connector: ServiceConnectorConfig, index: number) =>
-    `${selected.connector.id}::${selected.index}` === `${connector.id}::${index}`;
+    selected && `${selected.connector.id}::${selected.index}` === `${connector.id}::${index}`;
 
   return (
     <RadioGroup
       className="gap-0 p-1"
-      value={`${selected.connector.id}::${selected.index}`}
+      value={selected ? `${selected.connector.id}::${selected.index}` : ''}
       onValueChange={onChangeService}>
       {availableConnectors.map(connector => (
         connector.services.filter(s => s.type === 'TRANSLATION')).map((service, idx) => (
-        <div 
-          key={`${connector.id}-${idx}`} 
-          className="flex items-center hover:bg-muted px-2 rounded-sm">
-          {isSelected(connector, idx) ? (
-            <Check className="size-4" />
-          ) : (
-            <div className="w-4 h-auto" />
-          )}
+          <div 
+            key={`${connector.id}-${idx}`} 
+            className="flex items-center hover:bg-muted px-2 rounded-sm">
+            {isSelected(connector, idx) ? (
+              <Check className="size-4" />
+            ) : (
+              <div className="w-4 h-auto" />
+            )}
 
-          <Label
-            htmlFor={`${connector.id}::${idx}`}
-            className="rounded-md cursor-pointer transition-colors p-2 w-full font-normal text-xs">
-            <RadioGroupItem
-              value={`${connector.id}::${idx}`}
-              id={`${connector.id}::${idx}`}
-              className="sr-only" />
-            {service.displayName || connector.displayName}
-          </Label>
-        </div>
-      )))}
+            <Label
+              htmlFor={`${connector.id}::${idx}`}
+              className="rounded-md cursor-pointer transition-colors p-2 w-full font-normal text-xs">
+              <RadioGroupItem
+                value={`${connector.id}::${idx}`}
+                id={`${connector.id}::${idx}`}
+                className="sr-only" />
+              {service.displayName}
+            </Label>
+          </div>
+        ))  
+      )}
     </RadioGroup>
   )
 }
