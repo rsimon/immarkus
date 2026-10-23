@@ -95,7 +95,7 @@ export const TestButton = (props: TestButtonProps) => {
         )}
       </Button>
 
-      <p className="text-xs leading-relaxed text-muted-foreground max-w-sm pl-0.5">
+      <p className="text-xs leading-relaxed text-muted-foreground pl-0.5">
         {t('translation.test.hint')}
       </p>
     </div>
