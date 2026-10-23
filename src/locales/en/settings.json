@@ -25,6 +25,13 @@
     "credentials": {
       "label": "Service credentials",
       "description": "This service requires an API key or access token."
+    },
+    "test": {
+      "testKey": "Test service key",
+      "testing": "Testing...",
+      "success": "Success",
+      "error": "Error",
+      "hint": "This will send a minimal test request to the service. May incur token costs!"
     }
   },
   "indexing": {

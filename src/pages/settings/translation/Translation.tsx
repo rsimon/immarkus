@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TranslationSettings } from '@/components/Translation';
 import { ServiceParameterControls } from '@/components/AnnotationServices/FormComponents';
 import { ServiceConfigParameter, ServiceConnectorConfig } from '@/services';
+import { TestButton } from './TestButton';
 import { 
   Select, 
   SelectContent, 
@@ -91,6 +92,7 @@ export const Translation = () => {
                   {connectors.flatMap(connector => (
                     connector.services.filter(s => s.type === 'TRANSLATION')).map((service, idx) => (
                       <SelectItem 
+                        key={`${connector.id}:${idx}`}
                         value={toServiceKey(connector, idx)}>
                         {service.displayName}
                       </SelectItem>
@@ -115,6 +117,8 @@ export const Translation = () => {
                     parameters={parameters}
                     values={credentialValues}
                     onChange={onCredentialChange} />
+
+                  <TestButton settings={selectedService} />
                 </div>
               )}
             </fieldset>
