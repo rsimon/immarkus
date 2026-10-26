@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
-import { EntityType, LoadedImage } from '@/model';
+import { EntityType, LoadedImage, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
@@ -28,6 +28,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
   });
 
   const [tags, setTags] = useState<EntityType[]>([]);
+
+  const [relations, setRelations] = useState<RelationshipType[]>([]);
 
   const [input, setInput] = useState<AnnotationServiceInput>({ rotation: 0, isFlipped: false });
 
@@ -187,6 +189,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     updateInput,
     tags,
     setTags,
+    relations,
+    setRelations,
     // Run
     submit,
     status,

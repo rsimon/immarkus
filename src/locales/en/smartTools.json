@@ -110,7 +110,10 @@
     "dialogTitle": "Auto-Annotate",
     "dialogDescription": "Submit this image for automatic annotation using AI.",
     "controls": {
-      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick specific Entity Classes to look for or <selectAll>use your entire data model</selectAll>.",
+      "entityTagsHint": "This service identifies objects in the image and pre-fills annotation fields automatically. Pick specific Entity Classes to look for or <selectAll>use your entire Entity Class model</selectAll>.",
+      "relations": "Relations",
+      "relationsHint": "Optionally, pick relations from your data model or <selectAll>use all relations</selectAll>.",
+      "selectRelations": "Select relations...",
       "runAnnotation": "Annotate"
     }
   },

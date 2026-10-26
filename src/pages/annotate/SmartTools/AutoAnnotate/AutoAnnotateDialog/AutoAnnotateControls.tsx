@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next';
-import { Sparkles } from 'lucide-react';
-import { EntityType } from '@/model';
+import { Cuboid, Sparkles, Spline } from 'lucide-react';
+import { RelationsSelectionControl } from '@/components/AnnotationServices/FormComponents';
+import { EntityType, RelationshipType } from '@/model';
 import { AnnotationServiceOptions, ServiceRegistry } from '@/services';
 import { useDataModel } from '@/store';
 import { Button } from '@/ui/Button';
@@ -26,11 +27,15 @@ interface AutoAnnotateControlsProps {
 
   entityTags: EntityType[];
 
+  relations: RelationshipType[];
+
   onConnectorChanged(connectorId: string): void;
 
   onServiceOptionChanged(key: string, value: any): void;
 
   onEntityTagsChanged(tags: EntityType[]): void;
+
+  onRelationsChanged(relations: RelationshipType[]): void;
 
   onCancel(): void;
 
@@ -57,11 +62,14 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
 
   const readyToSubmit = canSubmit && props.entityTags.length > 0;
 
-  const onSetAll = () => 
+  const onSetAllEntityTypes = () => 
     props.onEntityTagsChanged(model.entityTypes);
 
+  const onSetAllRelations = () =>
+    props.onRelationsChanged(model.relationshipTypes);
+
   return (
-    <div className="pr-2 py-4 min-h-full flex flex-col">
+    <div className="pr-2 py-4 pl-1 min-h-full flex flex-col">
       <div className="space-y-8 flex-1">
         <ServiceSelectionControl 
           available={connectors}
@@ -81,7 +89,7 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
 
           <fieldset className="space-y-2 mt-6">
             <Label className="font-semibold flex gap-1.5 items-center">
-              {t('annotate.controls.entityTags')}
+              <Cuboid className="size-4" /> {t('annotate.controls.entityTags')}
             </Label>
 
             <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
@@ -94,11 +102,11 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
                       role="button"
                       tabIndex={0}
                       className="font-medium underline text-foreground" 
-                      onClick={onSetAll}
+                      onClick={onSetAllEntityTypes}
                       onKeyDown={evt => {
                         if (evt.key === 'Enter' || evt.key === ' ') {
                           evt.preventDefault();
-                          onSetAll();
+                          onSetAllEntityTypes();
                         }
                     }}/>
                   )
@@ -108,6 +116,37 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
             <TagSelectionControl
               selectedTags={props.entityTags} 
               onChangeSelectedTags={props.onEntityTagsChanged} />
+          </fieldset>
+
+          <fieldset className="space-y-2 mt-6">
+            <Label className="font-semibold flex gap-1.5 items-center">
+              <Spline className="size-4" />  {t('autoAnnotate.controls.relations')}
+            </Label>
+
+            <p className="text-xs text-muted-foreground leading-relaxed mt-2.5">
+              <Trans
+                t={t}
+                i18nKey="autoAnnotate.controls.relationsHint" 
+                components={{
+                  selectAll: (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      className="font-medium underline text-foreground" 
+                      onClick={onSetAllRelations}
+                      onKeyDown={evt => {
+                        if (evt.key === 'Enter' || evt.key === ' ') {
+                          evt.preventDefault();
+                          onSetAllRelations();
+                        }
+                    }}/>
+                  )
+                }}/>
+            </p>
+            
+            <RelationsSelectionControl
+              relations={props.relations}
+              onChange={props.onRelationsChanged} />
           </fieldset>
         </form>
       </div>
