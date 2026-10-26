@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { Command as CommandPrimitive } from 'cmdk';
@@ -84,8 +84,10 @@ const FancyMultiSelect = (props: FancyMultiSelectProps) => {
 
   const [inputValue, setInputValue] = useState('');
 
-  const handleUnselect = (option: FanceMultiSelectOption) =>
+  const handleUnselect = (option: FanceMultiSelectOption) => {
     props.onChange(props.selected.filter(o => o.value !== option.value));
+    setOpen(false);
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const input = inputRef.current;
@@ -130,7 +132,7 @@ const FancyMultiSelect = (props: FancyMultiSelectProps) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
-                  onClick={() => handleUnselect(opt)}>
+                  onClick={e => handleUnselect(opt)}>
                   <X className="size-3 text-muted-foreground" />
                 </button>
               </Badge>
