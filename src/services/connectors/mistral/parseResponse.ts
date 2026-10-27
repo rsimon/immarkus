@@ -61,8 +61,7 @@ const createBlockAnnotation = (block: MistralOCRBlock, transform: PageTransform)
 
 export const parseResponse = (
   data: any,
-  transform: PageTransform,
-  _: Region | undefined
+  transform: PageTransform
 ): AnnotationServiceCrosswalkResponse => {
   const annotations = (data.pages as any[]).reduce<ImageAnnotation[]>((all, page) => {
     const blocks: MistralOCRBlock[] = page.blocks || [];
