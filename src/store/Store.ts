@@ -26,7 +26,7 @@ export interface AnnotationStore {
 
   images: FileImage[];
 
-  bulkDeleteAnnotations(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
+  bulkDeleteAnnotations(imageId: string, annotations: W3CAnnotation[] | string[]): Promise<void>;
 
   bulkUpsertAnnotation(imageId: string, annotations: W3CAnnotation[]): Promise<void>;
 
@@ -224,11 +224,11 @@ export const loadStore = (
 
   const bulkDeleteAnnotations = (
     imageId: string,
-    annotations: W3CAnnotation[]
+    annotations: W3CAnnotation[] | string[]
   ): Promise<void> => new Promise(async (resolve, reject) => {
     const img = images.find(i => i.id === imageId);
     if (img) {
-      const toDelete = new Set(annotations.map(a => a.id));
+      const toDelete = new Set(annotations.map(a => typeof a === 'string' ? a : a.id));
 
       const all = await getAnnotations(imageId);
       const next = all.filter(a => !toDelete.has(a.id));

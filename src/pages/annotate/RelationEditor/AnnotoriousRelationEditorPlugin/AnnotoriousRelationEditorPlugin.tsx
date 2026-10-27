@@ -1,8 +1,14 @@
 import OpenSeadragon from 'openseadragon';
-import { AnnotoriousOpenSeadragonAnnotator, ImageAnnotation, useAnnotator } from '@annotorious/react';
 import { useEffect } from 'react';
 import { useRelationEditor } from '../RelationEditorRoot';
 import { useStore } from '@/store';
+import { 
+  AnnotoriousOpenSeadragonAnnotator, 
+  ImageAnnotation, 
+  StoreChangeEvent, 
+  useAnnotator, 
+  W3CAnnotation 
+} from '@annotorious/react';
 
 interface AnnotoriousRelationEditorPluginProps {
 
@@ -14,7 +20,7 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
   
   const store = useStore();
 
-  const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator>();
+  const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator<ImageAnnotation, W3CAnnotation>>();
 
   const { source, setTarget, cancel } = useRelationEditor();
 
@@ -49,15 +55,20 @@ export const AnnotoriousRelationEditorPlugin = (props: AnnotoriousRelationEditor
   useEffect(() => {
     if (!anno || !store) return;
 
-    const onDelete = (annotation: ImageAnnotation) => {
-      const related = store.getRelatedAnnotations(annotation.id);
-      related.forEach(([link, _]) => store.deleteRelation(link.id));
+    const onStoreChange = (evt: StoreChangeEvent<ImageAnnotation>) => {
+      const { deleted } = evt.changes;
+      
+      const deletedIds = (deleted || []).map(a => a.id);
+      const related = deletedIds.flatMap(id => store.getRelatedAnnotations(id));
+      
+      const linkIds = related.map(t => t[0].id);
+      store.bulkDeleteRelations(linkIds);
     }
 
-    anno.on('deleteAnnotation', onDelete);
+    anno.state.store.observe(onStoreChange);
 
     return () => {
-      anno.off('deleteAnnotation', onDelete);
+      anno?.state?.store?.unobserve(onStoreChange);
     }
   }, [anno, store]);
 

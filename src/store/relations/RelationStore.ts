@@ -8,6 +8,8 @@ export type Directionality = 'INBOUND' | 'OUTBOUND';
 
 export interface RelationStore {
 
+  bulkDeleteRelations(linkIds: string[]): Promise<void>;
+
   bulkUpsertRelations(relations: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]): Promise<void>;
 
   deleteRelation(linkId: string): Promise<void>;
@@ -50,6 +52,11 @@ export const loadRelationStore = (
     annotations = annotations.filter(a => !(a.id === linkId || a.target === linkId));
     return save();
   }
+
+  const bulkDeleteRelations = (linkIds: string[]) => {
+    annotations = annotations.filter(a => !(linkIds.includes(a.id) || linkIds.includes(a.target)));
+    return save();
+  } 
 
   const getMetaAnnotation = (linkId: string) =>
     annotations.find(a => a.motivation === 'tagging' && a.target === linkId) as W3CRelationMetaAnnotation;
@@ -174,6 +181,7 @@ export const loadRelationStore = (
   }
 
   resolve({
+    bulkDeleteRelations,
     bulkUpsertRelations,
     deleteRelation,
     getRelatedAnnotations,
