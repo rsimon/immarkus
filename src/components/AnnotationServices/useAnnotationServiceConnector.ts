@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { ImageAnnotation } from '@annotorious/react';
 import { EntityType, LoadedImage, RelationshipType } from '@/model';
-import { DataModelStore, useDataModel, useStore } from '@/store';
+import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
