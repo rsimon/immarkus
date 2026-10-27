@@ -176,10 +176,12 @@ export const parseAnnotationResponse = (
     return {
       id,
       bodies: [{
+        id: uuidv4(),
         annotation: id,
         purpose: 'commenting',
         value: detection.label
       }, {
+        id: uuidv4(),
         annotation: id,
         purpose: 'classifying',
         type: 'Dataset',
@@ -276,7 +278,10 @@ const parseRelations = (
     const meta = {
       id: uuidv4(),
       motivation: 'tagging',
-      body: { value: schema.name },
+      body: {
+        id: uuidv4(),
+        value: schema.name 
+      },
       target: linkId,
       created
     } as W3CRelationMetaAnnotation;

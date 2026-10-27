@@ -177,6 +177,7 @@ Respond ONLY with a valid JSON array (no markdown or commentary):
 { 
   "objects": [
     {
+      "id": "o1",
       "category": "<class ID>",
       "label": "short human-readable description",
       "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
