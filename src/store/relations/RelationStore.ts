@@ -8,6 +8,8 @@ export type Directionality = 'INBOUND' | 'OUTBOUND';
 
 export interface RelationStore {
 
+  bulkUpsertRelations(relations: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]): Promise<void>;
+
   deleteRelation(linkId: string): Promise<void>;
 
   getRelatedAnnotations(annotationId: string, direction?: Directionality): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation | undefined][];
@@ -24,7 +26,7 @@ export interface RelationStore {
 
   removeIIIFResource(resource: IIIFResource): Promise<void>;
 
-  upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation, imageId?: string): Promise<void>;
+  upsertRelation(link: W3CRelationLinkAnnotation, meta: W3CRelationMetaAnnotation): Promise<void>;
 
 }
 
@@ -135,6 +137,20 @@ export const loadRelationStore = (
     return save();
   }
 
+  const bulkUpsertRelations = (
+    relations: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][]
+  ) => {
+    const flattened = relations.flat();
+    const idsToUpsert = new Set(flattened.map(a => a.id));
+
+    annotations = [
+      ...annotations.filter(a => !idsToUpsert.has(a.id)),
+      ...flattened
+    ];
+
+    return save();
+  }
+
   // Not great...
   const _removeIIIFResource = store.removeIIIFResource;
 
@@ -158,6 +174,7 @@ export const loadRelationStore = (
   }
 
   resolve({
+    bulkUpsertRelations,
     deleteRelation,
     getRelatedAnnotations,
     getRelatedImageAnnotations,

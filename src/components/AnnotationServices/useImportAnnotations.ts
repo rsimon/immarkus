@@ -1,9 +1,9 @@
+import { useCallback } from 'react';
 import { type ImageAnnotation, Origin, serializeW3CImageAnnotation } from '@annotorious/react';
 import { useAnnotoriousManifold } from '@annotorious/react-manifold';
 import type { LoadedImage } from '@/model';
-import { useStore } from '@/store';
 import type { AnnotationBatch } from '@/services';
-import { useCallback } from 'react';
+import { useStore } from '@/store';
 
 export const useImportAnnotations = () => {
   const store = useStore();
@@ -35,5 +35,11 @@ export const useImportAnnotations = () => {
     // annotation, which will lead to overwrites!
     const w3c = annotations.map(a => serializeW3CImageAnnotation(a, image.id));
     store.bulkUpsertAnnotation(image.id, w3c);
+
+    // Store relations (if any)
+    const relations = batches.flatMap(b => (b.relations ?? []));
+
+    if (relations.length > 0)
+      store.bulkUpsertRelations(relations);
   }, [store, manifold]);
 }

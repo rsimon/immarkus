@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
 import { Region, Rotation } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
@@ -20,6 +21,8 @@ import {
 interface AnnotationServicePreviewProps {
 
   annotations?: ImageAnnotation[];
+
+  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
 
   image: LoadedImage;
 

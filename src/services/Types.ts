@@ -238,6 +238,8 @@ export interface AnnotationBatch {
 
   annotations: ImageAnnotation[];
 
+  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
+
   generator: Generator;
   
 }
