@@ -44,10 +44,10 @@ export const AIConsent = (props: AIConsentProps) => {
         </AlertDialogTitle>
 
         <AlertDialogDescription className="leading-relaxed space-y-4">
-          <p>
-            {t('aiConsent.intro')}
-          </p>
+          {t('aiConsent.intro')}
+        </AlertDialogDescription>
 
+        <div className="leading-relaxed space-y-4">
           <ol className="space-y-4 list-decimal pl-5">
             <li className="pl-1">
               <Trans
@@ -93,7 +93,7 @@ export const AIConsent = (props: AIConsentProps) => {
           <AlertDialogAction className="w-full">
             {t('aiConsent.close')}
           </AlertDialogAction>
-        </AlertDialogDescription>
+        </div>
       </AlertDialogContent>
     </AlertDialog>
   )

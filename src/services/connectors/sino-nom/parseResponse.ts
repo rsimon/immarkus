@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { boundsFromPoints, ShapeType } from '@annotorious/react';
-import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import { PageTransform, Region } from '@/services/Types';
+import type { AnnotationBody } from '@annotorious/react';
+import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 
-export const parseResponse = (data: any, transform: PageTransform, _: Region): ImageAnnotation[] => {
+export const parseResponse = (data: any, transform: PageTransform, _: Region): AnnotationServiceCrosswalkResponse => {
   const { result_bbox } = data;
 
   const annotations = result_bbox.map(([ box, [text, _ ]]) => {
@@ -31,5 +31,5 @@ export const parseResponse = (data: any, transform: PageTransform, _: Region): I
 
   // console.log(annotations);
 
-  return annotations;
+  return { annotations };
 }

@@ -5,6 +5,7 @@ import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { buildTranscribeAndTagPrompt, PROMPT_TRANSCRIBE } from './prompts';
 import { 
+  AnnotationServiceCrosswalkResponse,
   AnnotationServiceResponse,
   Generator, 
   PageTransform, 
@@ -139,7 +140,7 @@ export const parseTranscriptionResponseBodies = (annotationId: string, result: a
   properties: entity.properties
 }))]);
 
-export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
+export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): AnnotationServiceCrosswalkResponse => {
   try {
     const result = parseOpenAIResponse(data);
     if (!result?.text)
@@ -147,7 +148,7 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
 
     const id = uuidv4();
 
-    return [{
+    const annotations = [{
       id,
       bodies: parseTranscriptionResponseBodies(id, result),
       target: {
@@ -166,6 +167,8 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
         }
       }
     }];
+
+    return { annotations };
   } catch (error) {
     console.error(data);
     console.error(error);

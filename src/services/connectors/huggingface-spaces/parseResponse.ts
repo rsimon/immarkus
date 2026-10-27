@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ShapeType } from '@annotorious/react';
-import type { AnnotationBody, ImageAnnotation } from '@annotorious/react';
-import type { PageTransform, Region } from '@/services/Types';
+import type { AnnotationBody } from '@annotorious/react';
+import type { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 
-export const parseResponse = (str: string, _: PageTransform, region: Region): ImageAnnotation[]  => {
+export const parseResponse = (str: string, _: PageTransform, region: Region): AnnotationServiceCrosswalkResponse  => {
   try {
     // Strip markdown container, if any
     const match = str.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, str];
@@ -11,7 +11,7 @@ export const parseResponse = (str: string, _: PageTransform, region: Region): Im
 
     const id = uuidv4();
 
-    return [{
+    const annotations = [{
       id,
       bodies: [{
         annotation: id,
@@ -34,6 +34,8 @@ export const parseResponse = (str: string, _: PageTransform, region: Region): Im
         }
       }
     }];
+
+    return { annotations };
   } catch (error) {
     console.error(str);
     console.error(error);

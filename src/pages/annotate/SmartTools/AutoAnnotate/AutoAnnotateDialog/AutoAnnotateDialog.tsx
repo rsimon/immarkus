@@ -5,6 +5,7 @@ import { LoadedImage } from '@/model';
 import { AnnotationBatch } from '@/services';
 import { Button } from '@/ui/Button';
 import { TooltipProvider } from '@/ui/Tooltip';
+import { AutoAnnotateControls } from './AutoAnnotateControls';
 import { 
   Dialog, 
   DialogContent, 
@@ -12,7 +13,6 @@ import {
   DialogTitle, 
   DialogTrigger 
 } from '@/ui/Dialog';
-import { AutoAnnotateControls } from './AutoAnnotateControls';
 
 interface AutoAnnotateDialogProps {
 
@@ -32,16 +32,19 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
 
   const { 
     annotations,
+    relations,
     batches,
     input,
     options,
     status,
     tags,
+    relationTypes,
     clearResults,
     reset,
     setConnector,
     setServiceOption,
     setTags,
+    setRelationTypes,
     submit,
     updateInput
   } = useAnnotationServiceConnector('ANNOTATION', props.image);
@@ -92,6 +95,7 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
               <div className="h-full rounded bg-muted border">
                 <AnnotationServicePreview 
                   annotations={annotations}
+                  relations={relations}
                   image={props.image} 
                   status={status}
                   onUpdateInput={updateInput}
@@ -105,10 +109,12 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
                 status={status} 
                 input={input} 
                 entityTags={tags}
+                relations={relationTypes}
                 options={options} 
                 onConnectorChanged={setConnector} 
                 onServiceOptionChanged={setServiceOption}
                 onEntityTagsChanged={setTags} 
+                onRelationsChanged={setRelationTypes}
                 onCancel={() => onOpenChange(false)} 
                 onSubmit={submit} />
             </div>

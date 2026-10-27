@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
-import { PageTransform, Region } from '@/services/Types';
+import { AnnotationBody, ShapeType } from '@annotorious/react';
+import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 
-export const parseResponse = (data: any, _: PageTransform, region: Region): ImageAnnotation[] => {
+export const parseResponse = (data: any, _: PageTransform, region: Region): AnnotationServiceCrosswalkResponse => {
   if (!region)
     throw new Error('OpenAI crosswalk: missing region');
 
@@ -17,7 +17,7 @@ export const parseResponse = (data: any, _: PageTransform, region: Region): Imag
 
   const id = uuidv4();
 
-  return [{
+  const annotations = [{
     id,
     bodies: [{
       annotation: id,
@@ -40,4 +40,6 @@ export const parseResponse = (data: any, _: PageTransform, region: Region): Imag
       }
     }
   }];
+
+  return { annotations };
 }

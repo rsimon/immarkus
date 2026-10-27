@@ -1,4 +1,4 @@
-import { EntityType, PropertyDefinition } from '@/model';
+import { EntityType, PropertyDefinition, RelationshipType } from '@/model';
 
 export const PROMPT_TRANSCRIBE = 
 `Extract all text from this image. Your response must be ONLY valid JSON in this format: 
@@ -42,6 +42,21 @@ export const tagToPrompt = (tag: EntityType): string => {
   ].filter(Boolean).join('\n');
 }
 
+const relationToPrompt = (relation: RelationshipType): string => {
+  const cls = (id?: string) => (id ? `"${id}"` : 'any class');
+
+  const direction = relation.directed
+    ? 'Directed: the relation reads source → target.'
+    : 'Undirected: source/target order carries no meaning. Report each pair once, never in both directions.';
+
+  return [
+    `### Relationship: "${relation.name}"`,
+    relation.description,
+    `Source class: ${cls(relation.sourceTypeId)}. Target class: ${cls(relation.targetTypeId)}.`,
+    direction,
+  ].filter(Boolean).join('\n');
+};
+
 export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;
 
@@ -67,7 +82,7 @@ ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
 * List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
 * List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
-* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank. As long as you can fill at least one property, 
+* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank.
 * If the image contains no legible text, return an empty "text" and an empty "entities" array.
 
 ## Output format
@@ -100,7 +115,8 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
 export const buildAnnotatePrompt = (
   w: number,
   h: number,
-  tags: EntityType[]
+  tags: EntityType[],
+  relations: RelationshipType[]
 ): string => {
   const selectedTypesById = new Map(tags.map(type => [type.id, type]));
   
@@ -111,34 +127,71 @@ export const buildAnnotatePrompt = (
       : [];
   });
 
-  return `You are identifying objects in an image. You have two tasks: 
+  // Basic sanitization: remove relations that point to classes not included in `tags`
+  const entityTypeIds = new Set(tags.map(t => t.id));
+  const applicableRelations = relations.filter(r =>
+    (!r.sourceTypeId || entityTypeIds.has(r.sourceTypeId)) &&
+    (!r.targetTypeId || entityTypeIds.has(r.targetTypeId))
+  );
+  const hasRelations = applicableRelations.length > 0;
+
+  const relationTask = hasRelations ? `
+## Task 3: Relationship extraction
+
+After identifying all objects, list the relationships between them. A relationship connects two **object instances** you identified above, referenced by their "id".
+
+${applicableRelations.map(relationToPrompt).join('\n\n')}
+
+Relationship rules:
+
+* "source" and "target" must be "id" values of objects in your list. Never reference an id that does not exist, and never invent an object just to serve as a relationship endpoint.
+* The source object must belong to the relationship's source class and the target object to its target class. A subtype satisfies a constraint on its parent class.
+* Report each relationship exactly once. The same pair of objects may be connected by several relationships of different types; list each separately.
+* If no relationships are visible, return an empty "relations" array.
+` : '';
+
+  return `You are identifying objects in an image. You have ${hasRelations ? 'three' : 'two'} tasks: 
   
 ## Task 1: Object Detection
 
 For each object, return a bounding box as fractions of the image width and height in XYXY order, normalized to a range from 0.0 to 1.0, where (0,0) is the top-left corner and (1,1) is the bottom-right corner. Boxes should tightly enclose just that object. Include every instance you can find, not just one example per category.
 
+Give every object a unique "id" ("o1", "o2", "o3", …).
+
 ## Task 2: Property extraction
 
-For each object you identify, assign a category, and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge, or interpolate information just because it seems plausible to you - any information you record must be based **only** on whatever is shown explicitly in the image.
+For each object you identify, assign a category, and record information about it. Record **only** information that is grounded in the image. Do not infer information from your own knowledge, or interpolate information just because it seems plausible to you - any information you record must be based **only** on what is shown explicitly in the image.
 
 For the same object, choose the most specific listed class supported by the image; do not return both a parent and child class.
 
 ${tags.map(tagToPrompt).join('\n\n')}
 
-${hierarchy.length > 0 ? `## Class hierarchy ${hierarchy.join('\n')}` : ''}
+${hierarchy.length > 0 ? `## Class hierarchy\n\n${hierarchy.join('\n')}` : ''}
+
+${relationTask}
 
 ## Output format
 
 Respond ONLY with a valid JSON array (no markdown or commentary):
 
-[
-  {
-    "category": "<class ID>",
-    "label": "short human-readable description",
-    "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
-    "properties": {}
-  }
-]
+{ 
+  "objects": [
+    {
+      "id": "o1",
+      "category": "<class ID>",
+      "label": "short human-readable description",
+      "bbox": { "x_min": 0.01, "y_min": 0.1, "x_max": 0.9, "y_max": 0.821 },
+      "properties": {}
+    }
+  ]${hasRelations ? `,
+  "relations": [
+    {
+      "type": "<relationship name>",
+      "source": "o1", 
+      "target": "o2"
+    }
+  ]`: ''}
+}
 
-Use the class ID and property fields shown above. Coordinates must be decimal numbers between 0 and 1.`;
+Use the class ID and property fields shown above. Coordinates must be decimal numbers between 0 and 1.${hasRelations ? ' Use the relationship names exactly as listed.' : ''}`;
 }

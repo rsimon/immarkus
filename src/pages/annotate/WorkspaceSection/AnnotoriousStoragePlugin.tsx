@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
-import { AnnotoriousImageAnnotator, ImageAnnotation, W3CAnnotation, useAnnotator } from '@annotorious/react';
 import { useStore } from '@/store';
 import { isW3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
+import { 
+  AnnotoriousOpenSeadragonAnnotator, 
+  ImageAnnotation, 
+  W3CAnnotation, 
+  useAnnotator 
+} from '@annotorious/react';
 
 interface AnnotoriousStoragePluginProps {
 
@@ -23,7 +28,7 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
 
   const store = useStore()!;
 
-  const anno = useAnnotator<AnnotoriousImageAnnotator<ImageAnnotation, W3CAnnotation>>();
+  const anno = useAnnotator<AnnotoriousOpenSeadragonAnnotator<ImageAnnotation, W3CAnnotation>>();
 
   useEffect(() => {
     // Wrap the op so that onSaving, onSaved and onError are
@@ -79,14 +84,15 @@ export const AnnotoriousStoragePlugin = (props: AnnotoriousStoragePluginProps) =
         anno.on('createAnnotation', annotation => {
           withSaveStatus(() => store.upsertAnnotation(imageId, annotation))
         });
-  
-        anno.on('deleteAnnotation', annotation => {
-          if (Array.isArray(annotation))
-            return withSaveStatus(() => store.bulkDeleteAnnotations(imageId, annotation));
-          else
-            return withSaveStatus(() => store.deleteAnnotation(imageId, annotation));
+
+        anno.state.store.observe(evt => {
+          const { deleted } = evt.changes;
+
+          const deletedIds = (deleted || []).map(a => a.id);
+          if (deletedIds.length > 0)
+            withSaveStatus(() => store.bulkDeleteAnnotations(imageId, deletedIds));
         });
-  
+
         anno.on('updateAnnotation', (annotation, previous) => {
           if (Array.isArray(annotation)) {
             return withSaveStatus(() => 

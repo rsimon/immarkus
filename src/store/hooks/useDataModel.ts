@@ -1,8 +1,9 @@
 import { useContext, useMemo } from 'react';
 import { StoreContext } from '../StoreProvider';
 import { EntityType, MetadataSchema, RelationshipType } from '@/model';
+import type { DataModelStore } from '../datamodel';
 
-export const useDataModel = () => {
+export const useDataModel = (): DataModelStore => {
 
   const { store, model, setModel } = useContext(StoreContext);
 
