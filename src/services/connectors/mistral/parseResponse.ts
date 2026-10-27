@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
-import { PageTransform, Region } from '@/services/Types';
+import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 
 interface MistralOCRBlock {
 
@@ -63,8 +63,8 @@ export const parseResponse = (
   data: any,
   transform: PageTransform,
   _: Region | undefined
-): ImageAnnotation[] => {
-  return (data.pages as any[]).reduce<ImageAnnotation[]>((all, page) => {
+): AnnotationServiceCrosswalkResponse => {
+  const annotations = (data.pages as any[]).reduce<ImageAnnotation[]>((all, page) => {
     const blocks: MistralOCRBlock[] = page.blocks || [];
 
     const onThisPage = blocks
@@ -73,4 +73,6 @@ export const parseResponse = (
 
     return [...all, ...onThisPage];
   }, []);
+
+  return { annotations };
 }

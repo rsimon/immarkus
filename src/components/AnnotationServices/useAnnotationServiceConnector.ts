@@ -70,21 +70,19 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       const { crosswalk, data, generator, region, transform } = result;
       
       try {
-      
         const { annotations, relations } = crosswalk(data, transform, region, options.serviceOptions, model);
-
-        console.log('got relations', relations);
-
-        return { annotations, generator };
+        return { annotations, relations, generator };
       } catch (error) {
         console.error(error);
-        return { annotations: [], generator: result.generator };
+        return { annotations: [], relations: [], generator: result.generator };
       }
     });
   }, [results, options, model]);
   
   const annotations = useMemo(() => {
     if (!batches) return;
+
+    console.log('batches!', batches);
 
     return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), []);
   }, [batches]);
