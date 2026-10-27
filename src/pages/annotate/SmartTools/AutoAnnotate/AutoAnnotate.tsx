@@ -97,7 +97,7 @@ const AutoAnnotateContent = (props: AutoAnnotateProps) => {
         <AutoAnnotateDialog 
           disabled={!selectedImage || !optIn}
           image={selectedImage} 
-          onImport={annotations => importAnnotations(annotations, selectedImage)} />
+          onImport={batches => importAnnotations(batches, selectedImage)} />
       </Annotorious>
     </div>
   )
