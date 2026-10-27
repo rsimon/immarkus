@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { PageTransform, Region } from '@/services/Types';
+import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 import { ImageAnnotation, Polygon, ShapeType } from '@annotorious/react';
 import type { AnnotationBody } from '@annotorious/react';
 import { boundsFromPoints } from '@annotorious/annotorious';
@@ -166,7 +166,7 @@ export const parseResponse = (
   transform: PageTransform,
   _: Region | undefined,
   options: Record<string, any> = { 'merge-annotations': 'dont_merge'}
-): ImageAnnotation[] => {
+): AnnotationServiceCrosswalkResponse  => {
   const response = data.responses[0];
 
   if (!response) {
@@ -179,18 +179,22 @@ export const parseResponse = (
 
   if (!isValidResponse(response)) {
     console.warn(data);
-    return [];
+    return { annotations: [] };
   }
 
   const merge = options['merge-annotations'] === 'block' || options['merge-annotations'] === 'paragraph';
   if (merge) {
-    return mergeAnnotations(response, options['merge-annotations'])
-      .map(({ text, boundingBox: { vertices } }) => 
-        toAnnotation(text, vertices, transform))
+    return {
+      annotations: mergeAnnotations(response, options['merge-annotations'])
+        .map(({ text, boundingBox: { vertices } }) => 
+          toAnnotation(text, vertices, transform))
+    }
   } else {
-    return response.textAnnotations
-      .filter(({ locale }) => !locale)
-      .map(({ description, boundingPoly: { vertices }}) => 
-        toAnnotation(description, vertices, transform));
+    return {
+      annotations: response.textAnnotations
+        .filter(({ locale }) => !locale)
+        .map(({ description, boundingPoly: { vertices }}) => 
+          toAnnotation(description, vertices, transform))
+    }
   }
 }

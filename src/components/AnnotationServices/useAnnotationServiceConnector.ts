@@ -70,19 +70,23 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       const { crosswalk, data, generator, region, transform } = result;
       
       try {
-        const annotations = crosswalk(data, transform, region, options.serviceOptions);
+      
+        const { annotations, relations } = crosswalk(data, transform, region, options.serviceOptions, model);
+
+        console.log('got relations', relations);
+
         return { annotations, generator };
       } catch (error) {
         console.error(error);
         return { annotations: [], generator: result.generator };
       }
     });
-  }, [results, options]);
+  }, [results, options, model]);
   
   const annotations = useMemo(() => {
     if (!batches) return;
 
-    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), [])
+    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), []);
   }, [batches]);
 
   const submit = useCallback(() => { 
@@ -138,7 +142,13 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
         // Test the crosswalk to make sure data is valid
         try {
-          const annotations = crosswalk(data, result.transform, submittedRegion, options.serviceOptions);
+          const { annotations } = crosswalk(
+            data,
+            result.transform, 
+            submittedRegion, 
+            options.serviceOptions, 
+            model
+          );
 
           setResults(current => [...(current || []), { 
             data, 

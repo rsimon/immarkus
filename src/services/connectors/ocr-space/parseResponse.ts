@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
-import { PageTransform, Region } from '@/services/Types';
+import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
 
 interface ParseOCRSpaceResponseArgs {
 
@@ -72,18 +72,22 @@ export const parseResponse = (
   transform: PageTransform, 
   _: Region | undefined,
   options: ParseOCRSpaceResponseArgs = { 'merge-lines': false }
-): ImageAnnotation[] => (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
-  if ('TextOverlay' in result) {
-    const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
-      if (options['merge-lines']) {
-        return [...all, createLineAnnotation(line, transform)];
-      } else {  
-        return [...all, ...createWordAnnotations(line, transform)];
-      }
-    }, []);
+): AnnotationServiceCrosswalkResponse => {
+  const annotations = (data.ParsedResults as any[]).reduce<ImageAnnotation[]>((all, result) => {
+    if ('TextOverlay' in result) {
+      const onThisPage = (result.TextOverlay.Lines as any[]).reduce<ImageAnnotation[]>((all, line) => {
+        if (options['merge-lines']) {
+          return [...all, createLineAnnotation(line, transform)];
+        } else {  
+          return [...all, ...createWordAnnotations(line, transform)];
+        }
+      }, []);
 
-    return [...all, ...onThisPage];
-  } else {
-    return all;
-  }
-}, []);
+      return [...all, ...onThisPage];
+    } else {
+      return all;
+    }
+  }, []);
+
+  return { annotations };
+}

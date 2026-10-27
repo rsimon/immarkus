@@ -1,5 +1,7 @@
 import { ImageAnnotation } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
+import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
+import { DataModel } from '@/store';
 
 export interface ServiceConnectorConfig {
 
@@ -275,5 +277,14 @@ export type AnnotationServiceCrosswalk<T = any> = (
   data: T, 
   transform: PageTransform,
   region?: Region, 
-  options?: Record<string, any>
-) => ImageAnnotation[];
+  options?: Record<string, any>,
+  model?: DataModel
+) => AnnotationServiceCrosswalkResponse;
+
+export interface AnnotationServiceCrosswalkResponse {
+
+  annotations: ImageAnnotation[];
+
+  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
+
+}

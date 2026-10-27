@@ -3,7 +3,6 @@ import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { buildTranscribeAndTagPrompt } from '@/services/prompts';
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
-// import { MOCK_RESPONSE } from './mock-response';
 
 const PROMPT_TRANSCRIBE = 
 `Extract all text from this image. Your response must be ONLY valid JSON in this format: 
