@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
-import { EntityType } from '@/model';
+import { EntityType, RelationshipType } from '@/model';
 import { AnnotationServiceResponse, PageTransform } from '@/services';
 import { buildAnnotatePrompt } from '@/services/prompts';
 import { 
@@ -37,13 +37,16 @@ export const annotate = (
   image: File | string,
   transform: PageTransform,
   options?: Record<string, any>,
-  tags: EntityType[] = []
+  tags: EntityType[] = [],
+  relations: RelationshipType[] = []
 ) => {
   const apiKey = options['api-key'];
   const model = options['model'];
 
   if (!apiKey)
     throw new Error('Missing API key');
+
+  console.log('got relations', relations);
 
   const generator = {
     id: model,

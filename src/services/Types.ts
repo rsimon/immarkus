@@ -1,5 +1,5 @@
 import { ImageAnnotation } from '@annotorious/react';
-import { EntityType } from '@/model';
+import { EntityType, RelationshipType } from '@/model';
 
 export interface ServiceConnectorConfig {
 
@@ -143,7 +143,7 @@ export type ServiceConfigParameter =
 
 export interface AnnotationServiceConnector {
 
-  annotate(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[]): Promise<AnnotationServiceResponse>;
+  annotate(image: File | string, transform: PageTransform, options?: Record<string, any>, tags?: EntityType[], relations?: RelationshipType[]): Promise<AnnotationServiceResponse>;
 
   parseAnnotationResponse: AnnotationServiceCrosswalk;
 

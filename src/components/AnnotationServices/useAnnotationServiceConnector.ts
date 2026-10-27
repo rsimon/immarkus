@@ -126,7 +126,8 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
             image,
             result.transform,
             options.serviceOptions,
-            tags.map(tag => model.getEntityType(tag.id, true) || tag)
+            tags.map(tag => model.getEntityType(tag.id, true) || tag),
+            relations
           )
         : service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags);
 
@@ -164,7 +165,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (isStale()) return;
       setStatus({ state: 'service_failed', error: error.message });
     });
-  }, [image, input, tags, options, service, model, type, setStatus, setResults]);
+  }, [image, input, tags, relations, options, service, model, type, setStatus, setResults]);
 
   const clearResults = useCallback(() => {
     runId.current++;
