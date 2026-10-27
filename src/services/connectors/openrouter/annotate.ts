@@ -4,7 +4,7 @@ import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityType, RelationshipType } from '@/model';
 import { buildAnnotatePrompt } from '@/services/prompts';
-import { DataModel } from '@/store';
+import { DataModelStore } from '@/store';
 import { 
   AnnotationServiceCrosswalkResponse, 
   AnnotationServiceResponse, 
@@ -126,7 +126,7 @@ export const parseAnnotationResponse = (
   transform: PageTransform,
   _: Region | undefined,
   __: Record<string, any> = {},
-  model: DataModel
+  model: DataModelStore
 ): AnnotationServiceCrosswalkResponse => {
   // console.log('[openrouter.annotate] LLM response', data);
 
@@ -199,8 +199,7 @@ export const parseAnnotationResponse = (
   const relations = parseRelations(
     detectedRrelations,
     idMap,
-    model.entityTypes,
-    model.relationshipTypes);
+    model);
 
   return { annotations, relations };
 }
@@ -208,31 +207,22 @@ export const parseAnnotationResponse = (
 const parseRelations = (
   detected: DetectedRelation[],
   idMap: Map<string, { uuid: string, category: string }>,
-  tags: EntityType[], // For future use: verify source/target 
-  relationTypes: RelationshipType[]
+  model: DataModelStore
 ): [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][] => {
   if (detected.length === 0) return [];
 
   // Lookup maps
   // const typesById = new Map(tags.map(t => [t.id, t]));
-  const schemaByName = new Map(relationTypes.map(r => [r.name, r]));
+  const schemaByName = new Map(model.relationshipTypes.map(r => [r.name, r]));
 
-  /* True if `categoryId` is `requiredId` or a descendant of it
-  const satisfies = (categoryId: string, requiredId?: string): boolean => {
-    if (!requiredId) return true;
+  const satisfies = (entityTypeId: string, requiredTypeId?: string) => {
+    if (!requiredTypeId) return true; // No restriction
 
-    const seen = new Set<string>();
-    let current: string | undefined = categoryId;
+    if (entityTypeId === requiredTypeId) return true; // Matching type
 
-    while (current && !seen.has(current)) {
-      if (current === requiredId) return true;
-      seen.add(current);
-      current = typesById.get(current)?.parentId;
-    }
-
-    return false;
-  };
-  */
+    const ancestors = model.getAncestors(requiredTypeId);
+    return ancestors.some(e => e.id === entityTypeId);
+  }
 
   const seenKeys = new Set<string>();
   const result: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][] = [];
@@ -257,12 +247,11 @@ const parseRelations = (
       continue;
     }
 
-    // TODO we should check relation constraints here!
-    // if (!satisfies(source.category, schema.sourceTypeId) ||
-    //     !satisfies(target.category, schema.targetTypeId)) {
-    //   console.warn('Skipping relation violating class constraints', rel);
-    //   continue;
-    // }
+    if (!satisfies(source.category, schema.sourceTypeId) ||
+        !satisfies(target.category, schema.targetTypeId)) {
+      console.warn('Skipping relation violating class constraints', rel);
+      continue;
+    }
 
     // Dedupe (for undirected relations [a,b] and [b,a] are the same relation)
     const pair = schema.directed
