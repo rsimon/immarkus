@@ -37,13 +37,13 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
     options,
     status,
     tags,
-    relations,
+    relationTypes,
     clearResults,
     reset,
     setConnector,
     setServiceOption,
     setTags,
-    setRelations,
+    setRelationTypes,
     submit,
     updateInput
   } = useAnnotationServiceConnector('ANNOTATION', props.image);
@@ -107,12 +107,12 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
                 status={status} 
                 input={input} 
                 entityTags={tags}
-                relations={relations}
+                relations={relationTypes}
                 options={options} 
                 onConnectorChanged={setConnector} 
                 onServiceOptionChanged={setServiceOption}
                 onEntityTagsChanged={setTags} 
-                onRelationsChanged={setRelations}
+                onRelationsChanged={setRelationTypes}
                 onCancel={() => onOpenChange(false)} 
                 onSubmit={submit} />
             </div>

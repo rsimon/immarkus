@@ -29,7 +29,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
   const [tags, setTags] = useState<EntityType[]>([]);
 
-  const [relations, setRelations] = useState<RelationshipType[]>([]);
+  const [relationTypes, setRelationTypes] = useState<RelationshipType[]>([]);
 
   const [input, setInput] = useState<AnnotationServiceInput>({ rotation: 0, isFlipped: false });
 
@@ -79,12 +79,12 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     });
   }, [results, options, model]);
   
-  const annotations = useMemo(() => {
-    if (!batches) return;
+  const { annotations, relations } = useMemo(() => {
+    if (!batches) return { annotations: undefined, relations: undefined };
+    const annotations = batches.flatMap(b => b.annotations);
+    const relations = batches.flatMap(b => b.relations);
 
-    console.log('batches!', batches);
-
-    return batches.reduce<ImageAnnotation[]>((all, batch) => ([...all, ...batch.annotations]), []);
+    return { annotations, relations };
   }, [batches]);
 
   const submit = useCallback(() => { 
@@ -129,7 +129,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
             result.transform,
             options.serviceOptions,
             tags.map(tag => model.getEntityType(tag.id, true) || tag),
-            relations
+            relationTypes
           )
         : service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags);
 
@@ -173,7 +173,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (isStale()) return;
       setStatus({ state: 'service_failed', error: error.message });
     });
-  }, [image, input, tags, relations, options, service, model, type, setStatus, setResults]);
+  }, [image, input, tags, relationTypes, options, service, model, type, setStatus, setResults]);
 
   const clearResults = useCallback(() => {
     runId.current++;
@@ -198,14 +198,15 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     updateInput,
     tags,
     setTags,
-    relations,
-    setRelations,
+    relationTypes,
+    setRelationTypes,
     // Run
     submit,
     status,
     // Results
-    annotations, 
     batches,
+    annotations,
+    relations, 
     // Reset,
     clearResults,
     reset
