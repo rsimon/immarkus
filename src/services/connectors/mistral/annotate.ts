@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
 import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform } from '@/services';
-import { buildAnnotatePrompt } from '@/services/prompts';
+import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { 
   fileToBase64, 
   parseOpenAIResponse, 

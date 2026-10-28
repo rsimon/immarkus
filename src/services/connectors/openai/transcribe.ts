@@ -1,6 +1,6 @@
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { PROMPT_TRANSCRIBE } from '@/services/prompts';
+import { PROMPT_TRANSCRIBE } from '@/services/utils/prompts';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';

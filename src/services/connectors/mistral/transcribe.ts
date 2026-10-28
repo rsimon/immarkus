@@ -1,6 +1,6 @@
 import { Mistral } from '@mistralai/mistralai';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { buildTranscribeAndTagPrompt } from '@/services/prompts';
+import { buildTranscribeAndTagPrompt } from '@/services/utils/prompts';
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
 

@@ -290,3 +290,35 @@ export interface AnnotationServiceCrosswalkResponse {
   relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
 
 }
+
+export interface DetectedObject {
+
+  id: string;
+
+  category: string;
+
+  label: string;
+
+  bbox: { x_min: number, y_min: number, x_max: number, y_max: number };
+
+  properties: Record<string, any>;
+
+}
+
+export interface DetectedRelation {
+
+  type: string;
+
+  source: string;
+
+  target: string;
+
+}
+
+export interface AutoAnnotateResponse {
+
+  objects: DetectedObject[];
+
+  relations?: DetectedRelation[];
+
+}
