@@ -10,6 +10,7 @@ import { config as OpenAI } from './connectors/openai/config';
 import { config as OpenRouter } from './connectors/openrouter/config';
 import { config as SinoNomAPI } from './connectors/sino-nom/config';
 import { config as VolcanoEngine } from './connectors/volcano-engine/config';
+import { config as CustomEndpoint } from './connectors/openai-compatible/config';
 
 export const Connectors: ServiceConnectorConfig[] = [
   AnthropicClaude,
@@ -22,5 +23,6 @@ export const Connectors: ServiceConnectorConfig[] = [
   OpenAI,
   OpenRouter,
   SinoNomAPI,
-  VolcanoEngine
+  VolcanoEngine,
+  CustomEndpoint
 ]
