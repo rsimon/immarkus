@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { EntityType, LoadedImage, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
@@ -186,6 +186,25 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     setResults(undefined);
     setStatus({});
   }, []);
+
+  // When a relationship type gets added, automatically add required entity classes 
+  useEffect(() => {
+    const required = new Set(
+      relationTypes.flatMap(r => ([r.sourceTypeId, r.targetTypeId].filter(Boolean)))
+    );
+
+    if (required.size === 0) return;
+
+    setTags(current => {
+      const idsToAdd = [...required].filter(r => current.every(t => t.id !== r));
+      if (idsToAdd.length === 0) {
+        return current;
+      } else {
+        const tagsToAdd = idsToAdd.map(id => model.entityTypes.find(t => t.id === id)).filter(Boolean);
+        return [...current, ...tagsToAdd];
+      }
+    });
+  }, [relationTypes, model.entityTypes]);
 
   return { 
     // Connector config

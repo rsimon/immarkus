@@ -31,6 +31,7 @@ export const annotate = (
 
   const submit = (imageUrl: string) => {
     const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags, relations);
+    // console.log(prompt);
 
     return client.chat.completions.create({
       model,

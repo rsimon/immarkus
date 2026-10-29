@@ -110,11 +110,10 @@ const parseRelations = (
 
   const satisfies = (entityTypeId: string, requiredTypeId?: string) => {
     if (!requiredTypeId) return true; // No restriction
-
     if (entityTypeId === requiredTypeId) return true; // Matching type
 
-    const ancestors = model.getAncestors(requiredTypeId);
-    return ancestors.some(e => e.id === entityTypeId);
+    const ancestors = model.getAncestors(entityTypeId);
+    return ancestors.some(e => e.id === requiredTypeId);
   }
 
   const seenKeys = new Set<string>();
