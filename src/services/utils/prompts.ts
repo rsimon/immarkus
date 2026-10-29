@@ -145,8 +145,9 @@ ${applicableRelations.map(relationToPrompt).join('\n\n')}
 Relationship rules:
 
 * "source" and "target" must be "id" values of objects in your list. Never reference an id that does not exist, and never invent an object just to serve as a relationship endpoint.
-* The source object must belong to the relationship's source class and the target object to its target class. A subtype satisfies a constraint on its parent class.
-* Report each relationship exactly once. The same pair of objects may be connected by several relationships of different types; list each separately.
+* If the relationship defines restrictions on the source and target class, then the source object must belong to the relationship's source class and/or the target object to its target class, respectively. A subtype satisfies a constraint on its parent class.
+* The same pair of objects may be connected by several relationships of different types; list each separately.
+* Include every relation between any objects you can find, not just one example per object or relationship type.
 * If no relationships are visible, return an empty "relations" array.
 ` : '';
 
