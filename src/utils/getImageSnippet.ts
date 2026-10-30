@@ -1,6 +1,6 @@
 import murmur from 'murmurhash';
 import pThrottle from 'p-throttle';
-import { cropRegion } from 'cozy-iiif/level-0';
+import { cropStitchedRegion } from 'cozy-iiif/level-0';
 import { ImageAnnotation, W3CImageAnnotation, W3CImageFormat } from '@annotorious/react';
 import { Store } from '@/store';
 import Worker from './getImageSnippetWorker?worker';
@@ -272,7 +272,7 @@ export const getImageSnippet = (
         .then(res => res.blob())
         .then(blob => scheduler.getSnippet(canvas.id, blob, a, type, applyMask, signal));
     } else if (firstImage.type === 'level0') {
-      return cropRegion(firstImage, region).then(blob => {
+      return cropStitchedRegion(firstImage, region).then(blob => {
         return blob.arrayBuffer().then(buffer => {
           const width = bounds.maxX - bounds.minX;
           const height = bounds.maxY - bounds.minY;

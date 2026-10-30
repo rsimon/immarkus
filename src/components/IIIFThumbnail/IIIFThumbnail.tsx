@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CozyCanvas } from 'cozy-iiif';
-import { getThumbnail } from 'cozy-iiif/level-0';
+import { getStitchedThumbnail } from 'cozy-iiif/level-0';
 
 interface IIIFThumbnailProps {
 
@@ -22,7 +22,7 @@ export const IIIFThumbnail = (props: IIIFThumbnailProps) => {
     if (!firstImage || firstImage.type !== 'level0') {
       setSrc(props.canvas.getThumbnailURL());
     } else {
-      getThumbnail(firstImage).then(blob => {
+      getStitchedThumbnail(firstImage).then(blob => {
         setSrc(URL.createObjectURL(blob));
       });
     }

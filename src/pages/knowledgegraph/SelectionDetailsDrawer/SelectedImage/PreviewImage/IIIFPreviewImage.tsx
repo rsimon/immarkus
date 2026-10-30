@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LoadedIIIFImage } from '@/model';
-import { getThumbnail } from 'cozy-iiif/level-0';
+import { getStitchedThumbnail } from 'cozy-iiif/level-0';
 
 interface IIIFPreviewImageProps {
 
@@ -20,7 +20,7 @@ export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
     if (!firstResource || firstResource.type !== 'level0') {
       setSrc(props.image.canvas.getThumbnailURL());
     } else {
-      getThumbnail(firstResource, { width: 600, height: 400 }).then(blob => {
+      getStitchedThumbnail(firstResource, { width: 600, height: 400 }).then(blob => {
         setSrc(URL.createObjectURL(blob));
       });
     }
