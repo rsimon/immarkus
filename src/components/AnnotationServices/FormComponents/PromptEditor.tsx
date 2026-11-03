@@ -38,7 +38,7 @@ export const PromptEditor = (props: PromptEditorProps) => {
     setOpen(false);
   }
 
-  return prompt ? (
+  return props.prompt ? (
     <>
       <div className="flex justify-center pt-1">
         <Button
