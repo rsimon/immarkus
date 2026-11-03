@@ -5,6 +5,7 @@ import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
   AnnotationServiceConnector,
+  TranscriptionServiceConnector,
   AnnotationServiceOptions, 
   AnnotationServiceResult, 
   ProcessingState, 
@@ -14,10 +15,10 @@ import {
 } from '@/services';
 
 const OPS = {
-  TRANSCRIPTION: { submit: 'transcribe', parse: 'parseTranscriptionResponse' },
-  ANNOTATION:    { submit: 'annotate',   parse: 'parseAnnotationResponse' },
-  TRANSLATION:   { submit: 'translate', parse: undefined }
-} as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
+  TRANSCRIPTION: { parse: 'parseTranscriptionResponse' },
+  ANNOTATION:    { parse: 'parseAnnotationResponse' },
+  TRANSLATION:   { parse: undefined }
+} as const satisfies Record<ServiceType, { parse?: string }>;
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const model = useDataModel();
@@ -39,6 +40,12 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
   const runId = useRef(0);
 
   const service = useService(options.connectorId, type);
+
+  const prompt = useMemo(() => service.connector?.getPrompt?.(type, {
+    options: options.serviceOptions,
+    tags,
+    relations: relationTypes
+  }), [service.connector, type, options.serviceOptions, tags, relationTypes]);
 
   const setConnector = useCallback((connectorId: string) => {
     runId.current++;
@@ -86,7 +93,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     return { annotations, relations };
   }, [batches]);
 
-  const submit = useCallback(() => { 
+  const submit = useCallback((promptOverride?: string) => {
     if (!service.connector) return;
 
     const id = ++runId.current;
@@ -128,9 +135,16 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
             result.transform,
             options.serviceOptions,
             tags.map(tag => model.getEntityType(tag.id, true) || tag),
-            relationTypes
+            relationTypes,
+            promptOverride
           )
-        : service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags);
+        : (service.connector as TranscriptionServiceConnector).transcribe(
+            image,
+            result.transform,
+            options.serviceOptions,
+            tags,
+            promptOverride
+          );
 
       request.then(({ data, generator }) => {
         if (isStale()) return;
@@ -221,6 +235,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     // Run
     submit,
     status,
+    prompt,
     // Results
     batches,
     annotations,

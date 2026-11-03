@@ -1,17 +1,12 @@
 import { InferenceClient } from '@huggingface/inference';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { buildTranscribeAndTagPrompt } from '@/services/utils/prompts';
+import { getPrompt } from '@/services/utils/transcribe';
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
 import { EntityType } from '@/model';
 
-const PROMPT_TRANSCRIBE = 
-`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
+export { getPrompt };
 
-{ "text": "all extracted text goes here" } 
- 
-Preserve whitespace and newline formatting in the text output.`;
-
-export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}, tags: EntityType[] = []) => {
+export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}, tags: EntityType[] = [], promptOverride?: string) => {
   const hfToken = options['access-token'];
   const model = options['model'];
 
@@ -28,7 +23,7 @@ export const transcribe = (image: File | string, _t: PageTransform, options: Rec
   const client = new InferenceClient(hfToken);
 
   const submit = (imageUrl: string) => {
-    const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
+    const prompt = promptOverride ?? getPrompt(tags);
 
     // return new Promise(resolve => {
     //   resolve(MOCK_RESPONSE)

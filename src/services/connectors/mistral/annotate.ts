@@ -22,6 +22,9 @@ interface Detection {
 
 }
 
+export const getPrompt = (tags: EntityType[] = [], relations: RelationshipType[] = []): string =>
+  buildAnnotatePrompt(tags, relations);
+
 const sniffScale = (detections: Detection[]): number => {
   const values = detections.flatMap(d => {
     const { x_min, y_min, x_max, y_max } = d.bbox;
@@ -38,7 +41,8 @@ export const annotate = (
   transform: PageTransform,
   options?: Record<string, any>,
   tags: EntityType[] = [],
-  relations: RelationshipType[] = []
+  relations: RelationshipType[] = [],
+  promptOverride?: string
 ) => {
   const apiKey = options['api-key'];
   const model = options['model'];
@@ -55,7 +59,7 @@ export const annotate = (
   const client = new Mistral({ apiKey });
   
   const submit = (imageUrl: string) => { 
-    const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags, relations);
+    const prompt = promptOverride ?? getPrompt(tags, relations);
 
     return client.chat.complete({
       model,

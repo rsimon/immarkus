@@ -32,6 +32,13 @@
       "zoomOut": "Zoom out"
     }
   },
+  "promptPreview": {
+    "title": "View or edit prompt",
+    "dialogTitle": "Prompt",
+    "description": "Review or edit the prompt. Running an edited prompt may go beyond the entity and relation selections in the form.",
+    "reset": "Reset to generated prompt",
+    "run": "Run this prompt"
+  },
   "panel": {
     "title": "Smart Tools",
     "traceOutline": "Smart Scissors",

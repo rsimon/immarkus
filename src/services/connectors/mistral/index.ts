@@ -1,6 +1,13 @@
-import { ServiceConnector } from '@/services/Types';
-import { transcribe } from './transcribe';
-import { annotate, parseAnnotationResponse } from './annotate';
+import { ServiceConnector, ServicePromptContext, ServiceType } from '@/services/Types';
+import { getPrompt as getTranscriptionPrompt, transcribe } from './transcribe';
+import { annotate, getPrompt as getAnnotationPrompt, parseAnnotationResponse } from './annotate';
 import { parseResponse as parseTranscriptionResponse } from './parseResponse';
 
-export default { annotate, parseAnnotationResponse, transcribe, parseTranscriptionResponse } as ServiceConnector;
+const getPrompt = (type: ServiceType, context: ServicePromptContext): string | undefined =>
+  type === 'ANNOTATION'
+    ? getAnnotationPrompt(context.tags, context.relations)
+    : type === 'TRANSCRIPTION'
+      ? getTranscriptionPrompt(context.options, context.tags)
+      : undefined;
+
+export default { annotate, getPrompt, parseAnnotationResponse, transcribe, parseTranscriptionResponse } as ServiceConnector;

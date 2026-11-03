@@ -1,14 +1,19 @@
 import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
+import { EntityType } from '@/model';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { PROMPT_TRANSCRIBE } from '@/services/utils/prompts';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 
+export const getPrompt = (): string => PROMPT_TRANSCRIBE;
+
 export const transcribe = (
   image: File | string, 
   _t: PageTransform,
-  options?: Record<string, any>
+  options?: Record<string, any>,
+  _tags?: EntityType[],
+  promptOverride?: string
 ): Promise<AnnotationServiceResponse> => {
   const apiKey = options['api-key'];
 
@@ -28,7 +33,7 @@ export const transcribe = (
       input:[{
         role: 'user',
         content: [
-          { type: 'input_text', text: PROMPT_TRANSCRIBE },
+          { type: 'input_text', text: promptOverride ?? getPrompt() },
           { 
             type: 'input_image', 
             image_url,

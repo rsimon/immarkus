@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { fileToBase64, parseOpenAIResponse, urlToBase64 } from './shared';
-import { buildTranscribeAndTagPrompt, PROMPT_TRANSCRIBE } from './prompts';
+import { buildTranscriptionPrompt } from './prompts';
 import type { 
   AnnotationServiceCrosswalkResponse, 
   AnnotationServiceResponse, 
@@ -12,6 +12,8 @@ import type {
   Region 
 } from '../Types';
 
+export const getPrompt = (tags: EntityType[] = []): string => buildTranscriptionPrompt(tags);
+
 export const transcribeOpenAICompatible = (
   image: File | string, 
   apiKey: string,
@@ -19,7 +21,8 @@ export const transcribeOpenAICompatible = (
   model: string,
   generator: Generator,
   tags: EntityType[] = [],
-  defaultHeaders?: any
+  defaultHeaders?: any,
+  promptOverride?: string
 ): Promise<AnnotationServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
@@ -28,7 +31,7 @@ export const transcribeOpenAICompatible = (
     defaultHeaders
   });
 
-  const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
+  const prompt = promptOverride ?? getPrompt(tags);
 
   const submit = (imageUrl: string) => {    
     return client.chat.completions.create({

@@ -2,7 +2,7 @@ import { EntityType } from '@/model';
 import { PageTransform } from '@/services/Types';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, _t: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
+export const transcribe = (image: File | string, _t: PageTransform, options?: Record<string, any>, tags?: EntityType[], promptOverride?: string) => {
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -22,7 +22,9 @@ export const transcribe = (image: File | string, _t: PageTransform, options?: Re
     'https://openrouter.ai/api/v1',
     model,
     generator, 
-    tags
+    tags,
+    undefined,
+    promptOverride
   );
 
 }

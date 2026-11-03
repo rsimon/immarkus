@@ -10,6 +10,7 @@ import {
   AnnotationServiceInput, 
   AnnotationServiceStatus, 
   ProcessingStateBadge, 
+  PromptPreviewControl,
   ServiceParameterControls, 
   ServiceSelectionControl, 
   TagSelectionControl, 
@@ -25,6 +26,8 @@ interface TranscriptionControlsProps {
 
   options: AnnotationServiceOptions;
 
+  prompt?: string;
+
   entityTags: EntityType[];
 
   onConnectorChanged(connectorId: string): void;
@@ -35,7 +38,7 @@ interface TranscriptionControlsProps {
 
   onCancel(): void;
 
-  onSubmit(): void;
+  onSubmit(promptOverride?: string): void;
 
 }
 
@@ -170,6 +173,12 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           onClick={props.onCancel}>
           {t('annotate.controls.cancel')}
         </Button>
+
+        <PromptPreviewControl
+          prompt={props.prompt}
+          disabled={showProcessingState}
+          canRun={!showProcessingState && canSubmit}
+          onRunPrompt={props.onSubmit} />
       </div>
     </div>
   )

@@ -35,6 +35,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
     input,
     options,
     status, 
+    prompt,
     tags,
     clearResults,
     reset,
@@ -105,6 +106,7 @@ export const TranscriptionDialog = (props: TranscriptionDialogProps) => {
                 options={options}
                 input={input}
                 entityTags={tags}
+                prompt={prompt}
                 onConnectorChanged={setConnector}
                 onServiceOptionChanged={setServiceOption}
                 onEntityTagsChanged={setTags}

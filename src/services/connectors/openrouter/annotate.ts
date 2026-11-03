@@ -4,12 +4,16 @@ import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { AnnotationServiceResponse, PageTransform } from '@/services';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 
+export const getPrompt = (tags: EntityType[] = [], relations: RelationshipType[] = []): string =>
+  buildAnnotatePrompt(tags, relations);
+
 export const annotate = (
   image: File | string,
   transform: PageTransform,
   options?: Record<string, any>,
   tags: EntityType[] = [],
-  relations: RelationshipType[] = []
+  relations: RelationshipType[] = [],
+  promptOverride?: string
 ) => {
   const apiKey = options['api-key'];
   const model = options['model'];
@@ -30,7 +34,7 @@ export const annotate = (
   });
 
   const submit = (imageUrl: string) => {
-    const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags, relations);
+    const prompt = promptOverride ?? getPrompt(tags, relations);
     // console.log(prompt);
 
     return client.chat.completions.create({
