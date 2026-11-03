@@ -10,7 +10,7 @@ import {
   AnnotationServiceInput, 
   AnnotationServiceStatus, 
   ProcessingStateBadge, 
-  PromptPreviewControl,
+  PromptEditor,
   ServiceParameterControls, 
   ServiceSelectionControl, 
   TagSelectionControl, 
@@ -174,7 +174,7 @@ export const TranscriptionControls = (props: TranscriptionControlsProps) => {
           {t('annotate.controls.cancel')}
         </Button>
 
-        <PromptPreviewControl
+        <PromptEditor
           prompt={props.prompt}
           disabled={showProcessingState}
           canRun={!showProcessingState && canSubmit}

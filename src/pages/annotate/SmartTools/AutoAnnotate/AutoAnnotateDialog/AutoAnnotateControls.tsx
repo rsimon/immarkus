@@ -12,7 +12,7 @@ import {
   ProcessingStateBadge, 
   ServiceParameterControls, 
   ServiceSelectionControl, 
-  PromptPreviewControl,
+  PromptEditor,
   TagSelectionControl, 
   useAnnotationServiceConfig, 
   useIsProcessing
@@ -175,7 +175,7 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
           {t('annotate.controls.cancel')}
         </Button>
 
-        <PromptPreviewControl
+        <PromptEditor
           prompt={props.prompt}
           disabled={showProcessingState}
           canRun={!showProcessingState && readyToSubmit}
