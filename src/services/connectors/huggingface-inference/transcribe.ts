@@ -4,6 +4,7 @@ import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/
 
 export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
   const { options = {}, tags = [], customPrompt } = args;
+  
   const hfToken = options['access-token'];
   const model = options['model'];
 
