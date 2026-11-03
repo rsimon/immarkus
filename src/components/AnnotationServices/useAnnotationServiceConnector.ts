@@ -93,7 +93,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     return { annotations, relations };
   }, [batches]);
 
-  const submit = useCallback((promptOverride?: string) => {
+  const submit = useCallback((customPrompt?: string) => {
     if (!service.connector) return;
 
     const id = ++runId.current;
@@ -136,14 +136,14 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
             options.serviceOptions,
             tags.map(tag => model.getEntityType(tag.id, true) || tag),
             relationTypes,
-            promptOverride
+            customPrompt
           )
         : (service.connector as TranscriptionServiceConnector).transcribe(
             image,
             result.transform,
             options.serviceOptions,
             tags,
-            promptOverride
+            customPrompt
           );
 
       request.then(({ data, generator }) => {
