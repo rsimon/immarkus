@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AlertTriangle, Check, Play } from 'lucide-react';
+import { Alert } from '@/ui/Alert';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
 import {
@@ -33,6 +35,8 @@ export const PromptEditor = (props: PromptEditorProps) => {
     if (!open) setEditedPrompt(props.prompt || '');
   }, [open, props.prompt]);
 
+  const isEdited = editedPrompt !== (props.prompt || '');
+
   const onRunPrompt = () => {
     props.onRunPrompt(editedPrompt);
     setOpen(false);
@@ -44,7 +48,7 @@ export const PromptEditor = (props: PromptEditorProps) => {
         <Button
           type="button"
           variant="link"
-          className="h-auto p-0 text-xs text-muted-foreground"
+          className="h-auto p-0 font-normal text-xs text-muted-foreground"
           disabled={props.disabled}
           onClick={() => setOpen(true)}>
           {t('promptEditor.title')}
@@ -52,35 +56,74 @@ export const PromptEditor = (props: PromptEditorProps) => {
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogTitle>{t('promptEditor.dialogTitle')}</DialogTitle>
-          <DialogDescription>{t('promptEditor.description')}</DialogDescription>
+        <DialogContent className="w-fit md:w-fit max-w-[95vw]">
+          <DialogTitle className="flex items-center gap-2 w-0 min-w-full">
+            {t('promptEditor.dialogTitle')}
+          </DialogTitle>
+
+          <DialogDescription className="w-0 min-w-full">
+            {t('promptEditor.description')}
+          </DialogDescription>
 
           <Textarea
-            className="min-h-72 max-h-[60vh] resize-y bg-background font-mono text-xs"
+            className="h-72 w-3xl field-sizing-fixed min-w-70 max-w-[calc(95vw-3rem)] resize bg-slate-100 font-mono text-xs focus-visible:outline-slate-300 focus-visible:outline-1"
             value={editedPrompt}
+            spellCheck={false}
             onChange={event => setEditedPrompt(event.target.value)}
             aria-label={t('promptEditor.dialogTitle')} />
 
-          <DialogFooter className="gap-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setEditedPrompt(props.prompt || '')}>
-              {t('promptEditor.reset')}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}>
-              {t('annotate.controls.cancel')}
-            </Button>
-            <Button
-              type="button"
-              disabled={!props.canRun || !editedPrompt.trim()}
-              onClick={onRunPrompt}>
-              {t('promptEditor.run')}
-            </Button>
+          <Alert className="py-2 px-3 rounded-md w-0 min-w-full text-sm leading-relaxed border-amber-700/15 text-amber-700 bg-amber-700/10">
+            <div className="space-y-1.5">
+              <div className="font-semibold flex gap-2">
+                <AlertTriangle
+                  aria-hidden
+                  className="mt-0.5 size-4 shrink-0 text-amber-700" />
+                Manual override warning
+              </div>
+
+              <p>
+                IMMARKUS expects the model to answer in a specific JSON format. Changing the response 
+                format instructions may lead to an invalid response the IMMARKUS may fail to parse.
+              </p>
+            </div>
+          </Alert>
+
+          <DialogFooter className="gap-2 flex sm:justify-between items-center">
+            <div>
+              <Button
+                type="button"
+                variant="outline"
+                className="gap-2 font-normal text-xs disabled:opacity-0"
+                disabled={!isEdited}
+                onClick={() => setEditedPrompt(props.prompt || '')}>
+                {isEdited ? (
+                  t('promptEditor.reset')
+                ) : (
+                  <>
+                    <Check aria-hidden className="size-4" />
+                    Generated from your settings
+                  </>
+                )}
+              </Button>
+            </div>
+
+            <div>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setOpen(false)}>
+                {t('annotate.controls.cancel')}
+              </Button>
+
+              <Button
+                type="button"
+                className="gap-2"
+                disabled={!props.canRun}
+                onClick={onRunPrompt}>
+                <Play aria-hidden className="size-4" />
+                {isEdited ? 'Run edited prompt' : t('promptEditor.run')}
+              </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

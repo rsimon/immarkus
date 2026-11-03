@@ -34,8 +34,8 @@
   },
   "promptEditor": {
     "title": "View or edit prompt",
-    "dialogTitle": "Prompt",
-    "description": "Review or edit the prompt. Running an edited prompt may go beyond the entity and relation selections in the form.",
+    "dialogTitle": "Prompt Editor",
+    "description": "Review and edit the prompt IMMARKUS generated from your settings.",
     "reset": "Reset to generated prompt",
     "run": "Run this prompt"
   },
