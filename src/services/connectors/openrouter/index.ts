@@ -1,4 +1,4 @@
-import { ServiceConnector, ServiceRequestArgs, ServiceType } from '@/services/Types';
+import { PromptServiceType, ServiceConnector, ServiceRequestArgs } from '@/services/Types';
 import { transcribe } from './transcribe';
 import { translate } from './translate';
 import { getPrompt as getAnnotationPrompt, annotate } from './annotate';
@@ -8,9 +8,9 @@ import {
   parseOpenAICompatibleTranscriptionResponse as parseTranscriptionResponse 
 } from '@/services/utils';
 
-const getPrompt = (type: ServiceType, args: ServiceRequestArgs): string | undefined =>
+const getPrompt = (type: PromptServiceType, args: ServiceRequestArgs): string | undefined =>
   type === 'ANNOTATION'
-    ? getAnnotationPrompt(args.tags, args.relations)
+    ? getAnnotationPrompt(args.tags, args.relations, args.width ?? 0, args.height ?? 0)
     : type === 'TRANSCRIPTION'
       ? getTranscriptionPrompt(args.tags)
       : undefined;

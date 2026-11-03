@@ -4,8 +4,12 @@ import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 
-export const getPrompt = (tags: EntityType[] = [], relations: RelationshipType[] = []): string =>
-  buildAnnotatePrompt(tags, relations);
+export const getPrompt = (
+  tags: EntityType[] = [],
+  relations: RelationshipType[] = [],
+  width = 0,
+  height = 0
+): string => buildAnnotatePrompt(width, height, tags, relations);
 
 export const annotate = (
   image: File | string,
@@ -33,7 +37,7 @@ export const annotate = (
   });
 
   const submit = (imageUrl: string) => {
-    const prompt = customPrompt ?? getPrompt(tags, relations);
+    const prompt = customPrompt ?? getPrompt(tags, relations, transform.source.width, transform.source.height);
 
     return client.chat.completions.create({
       model,

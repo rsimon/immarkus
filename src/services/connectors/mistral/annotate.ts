@@ -22,8 +22,12 @@ interface Detection {
 
 }
 
-export const getPrompt = (tags: EntityType[] = [], relations: RelationshipType[] = []): string =>
-  buildAnnotatePrompt(tags, relations);
+export const getPrompt = (
+  tags: EntityType[] = [],
+  relations: RelationshipType[] = [],
+  width = 0,
+  height = 0
+): string => buildAnnotatePrompt(width, height, tags, relations);
 
 const sniffScale = (detections: Detection[]): number => {
   const values = detections.flatMap(d => {
@@ -57,7 +61,7 @@ export const annotate = (
   const client = new Mistral({ apiKey });
   
   const submit = (imageUrl: string) => { 
-    const prompt = customPrompt ?? getPrompt(tags, relations);
+    const prompt = customPrompt ?? getPrompt(tags, relations, transform.source.width, transform.source.height);
 
     return client.chat.complete({
       model,

@@ -116,6 +116,8 @@ export const buildTranscriptionPrompt = (tags: EntityType[] = []): string =>
   tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
 
 export const buildAnnotatePrompt = (
+  w: number,
+  h: number,
   tags: EntityType[],
   relations: RelationshipType[]
 ): string => {

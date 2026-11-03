@@ -42,11 +42,19 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
   const service = useService(options.connectorId, type);
 
-  const prompt = useMemo(() => service.connector?.getPrompt?.(type, {
-    options: options.serviceOptions,
-    tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
-    relations: relationTypes
-  }), [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
+  const prompt = useMemo(() => {
+    const args: ServiceRequestArgs = {
+      options: options.serviceOptions,
+      tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
+      relations: relationTypes
+    };
+
+    return type === 'ANNOTATION'
+      ? (service.connector as AnnotationServiceConnector | undefined)?.getPrompt('ANNOTATION', args)
+      : type === 'TRANSCRIPTION'
+        ? (service.connector as TranscriptionServiceConnector | undefined)?.getPrompt('TRANSCRIPTION', args)
+        : undefined;
+  }, [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
 
   const setConnector = useCallback((connectorId: string) => {
     runId.current++;
@@ -134,7 +142,9 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
         options: options.serviceOptions,
         tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
         relations: relationTypes,
-        customPrompt
+        customPrompt,
+        width: result.transform.source.width,
+        height: result.transform.source.height
       };
       
       const request = type === 'ANNOTATION'

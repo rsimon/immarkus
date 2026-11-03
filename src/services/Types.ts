@@ -145,7 +145,7 @@ export type ServiceConfigParameter =
 
 export interface AnnotationServiceConnector {
 
-  getPrompt?(type: ServiceType, args: ServiceRequestArgs): string | undefined;
+  getPrompt(type: PromptServiceType, args: ServiceRequestArgs): string | undefined;
 
   annotate(image: File | string, transform: PageTransform, args?: ServiceRequestArgs): Promise<AnnotationServiceResponse>;
 
@@ -155,7 +155,7 @@ export interface AnnotationServiceConnector {
 
 export interface TranscriptionServiceConnector {
 
-  getPrompt?(type: ServiceType, args: ServiceRequestArgs): string | undefined;
+  getPrompt(type: PromptServiceType, args: ServiceRequestArgs): string | undefined;
 
   transcribe(image: File | string, transform: PageTransform, args?: ServiceRequestArgs): Promise<AnnotationServiceResponse>;
 
@@ -165,11 +165,11 @@ export interface TranscriptionServiceConnector {
 
 export interface TranslationServiceConnector {
 
-  getPrompt?(type: ServiceType, args: ServiceRequestArgs): string | undefined;
-
   translate(text: string, targetLanguage?: string, options?: Record<string, any>): Promise<TranslationServiceResponse>;
 
 }
+
+export type PromptServiceType = Exclude<ServiceType, 'TRANSLATION'>;
 
 export interface ServiceRequestArgs {
 
@@ -180,6 +180,10 @@ export interface ServiceRequestArgs {
   relations?: RelationshipType[];
 
   customPrompt?: string;
+
+  width?: number;
+
+  height?: number;
 
 }
 
