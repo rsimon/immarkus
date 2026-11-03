@@ -19,8 +19,7 @@
       "zoomOut": "ズームアウト"
     }
   },
-  "promptPreview": {
-  },
+  "promptEditor": {},
   "panel": {
     "title": "スマートツール",
     "traceOutline": "スマートシザーズ",

@@ -47,27 +47,27 @@ export const PromptEditor = (props: PromptEditorProps) => {
           className="h-auto p-0 text-xs text-muted-foreground"
           disabled={props.disabled}
           onClick={() => setOpen(true)}>
-          {t('promptPreview.title')}
+          {t('promptEditor.title')}
         </Button>
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-3xl">
-          <DialogTitle>{t('promptPreview.dialogTitle')}</DialogTitle>
-          <DialogDescription>{t('promptPreview.description')}</DialogDescription>
+          <DialogTitle>{t('promptEditor.dialogTitle')}</DialogTitle>
+          <DialogDescription>{t('promptEditor.description')}</DialogDescription>
 
           <Textarea
             className="min-h-72 max-h-[60vh] resize-y bg-background font-mono text-xs"
             value={editedPrompt}
             onChange={event => setEditedPrompt(event.target.value)}
-            aria-label={t('promptPreview.dialogTitle')} />
+            aria-label={t('promptEditor.dialogTitle')} />
 
           <DialogFooter className="gap-2">
             <Button
               type="button"
               variant="ghost"
               onClick={() => setEditedPrompt(props.prompt || '')}>
-              {t('promptPreview.reset')}
+              {t('promptEditor.reset')}
             </Button>
             <Button
               type="button"
@@ -79,7 +79,7 @@ export const PromptEditor = (props: PromptEditorProps) => {
               type="button"
               disabled={!props.canRun || !editedPrompt.trim()}
               onClick={onRunPrompt}>
-              {t('promptPreview.run')}
+              {t('promptEditor.run')}
             </Button>
           </DialogFooter>
         </DialogContent>
