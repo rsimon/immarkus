@@ -1,8 +1,8 @@
-import { EntityType } from '@/model';
-import { PageTransform } from '@/services/Types';
+import { PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, _t: PageTransform, options?: Record<string, any>, tags?: EntityType[], promptOverride?: string) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {} } = args;
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -22,11 +22,10 @@ export const transcribe = (image: File | string, _t: PageTransform, options?: Re
     'https://api.anthropic.com/v1',
     model,
     generator, 
-    tags,
+    args,
     { 
       'anthropic-dangerous-direct-browser-access': 'true' 
-    },
-    promptOverride
+    }
   );
 
 }

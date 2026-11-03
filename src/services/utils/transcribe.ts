@@ -9,7 +9,8 @@ import type {
   AnnotationServiceResponse, 
   Generator, 
   PageTransform, 
-  Region 
+  Region,
+  ServiceRequestArgs
 } from '../Types';
 
 export const getPrompt = (tags: EntityType[] = []): string => buildTranscriptionPrompt(tags);
@@ -20,9 +21,8 @@ export const transcribeOpenAICompatible = (
   baseURL: string,
   model: string,
   generator: Generator,
-  tags: EntityType[] = [],
-  defaultHeaders?: any,
-  promptOverride?: string
+  args: ServiceRequestArgs = {},
+  defaultHeaders?: any
 ): Promise<AnnotationServiceResponse> => {
   const client = new OpenAI({ 
     apiKey, 
@@ -31,7 +31,7 @@ export const transcribeOpenAICompatible = (
     defaultHeaders
   });
 
-  const prompt = promptOverride ?? getPrompt(tags);
+  const prompt = args.customPrompt ?? getPrompt(args.tags);
 
   const submit = (imageUrl: string) => {    
     return client.chat.completions.create({

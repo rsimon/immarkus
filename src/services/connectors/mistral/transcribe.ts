@@ -1,13 +1,14 @@
 import { Mistral } from '@mistralai/mistralai';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
 import { buildTranscriptionPrompt } from '@/services/utils/prompts';
-import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
+import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { EntityType } from '@/model';
 
 export const getPrompt = (options?: Record<string, any>, tags: EntityType[] = []): string | undefined =>
   options?.model?.includes('ocr') ? undefined : buildTranscriptionPrompt(tags);
 
-export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}, tags: EntityType[] = [], promptOverride?: string) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {}, tags = [], customPrompt } = args;
   const apiKey = options['api-key'];
   const model = options['model'] as string;
 
@@ -33,7 +34,7 @@ export const transcribe = (image: File | string, _t: PageTransform, options: Rec
         }
       }).then((data: any) => ({generator, data } as AnnotationServiceResponse));
     } else {
-      const prompt = promptOverride ?? getPrompt(options, tags);
+      const prompt = customPrompt ?? getPrompt(options, tags);
       if (!prompt)
         throw new Error('Missing transcription prompt');
 

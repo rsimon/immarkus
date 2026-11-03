@@ -2,7 +2,7 @@ import { Mistral } from '@mistralai/mistralai';
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
-import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform } from '@/services';
+import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services';
 import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { 
   fileToBase64, 
@@ -39,11 +39,9 @@ const sniffScale = (detections: Detection[]): number => {
 export const annotate = (
   image: File | string,
   transform: PageTransform,
-  options?: Record<string, any>,
-  tags: EntityType[] = [],
-  relations: RelationshipType[] = [],
-  promptOverride?: string
+  args: ServiceRequestArgs = {}
 ) => {
+  const { options = {}, tags = [], relations = [], customPrompt } = args;
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -59,7 +57,7 @@ export const annotate = (
   const client = new Mistral({ apiKey });
   
   const submit = (imageUrl: string) => { 
-    const prompt = promptOverride ?? getPrompt(tags, relations);
+    const prompt = customPrompt ?? getPrompt(tags, relations);
 
     return client.chat.complete({
       model,

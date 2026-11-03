@@ -5,6 +5,7 @@ import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
   AnnotationServiceConnector,
+  ServiceRequestArgs,
   TranscriptionServiceConnector,
   AnnotationServiceOptions, 
   AnnotationServiceResult, 
@@ -43,9 +44,9 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
   const prompt = useMemo(() => service.connector?.getPrompt?.(type, {
     options: options.serviceOptions,
-    tags,
+    tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
     relations: relationTypes
-  }), [service.connector, type, options.serviceOptions, tags, relationTypes]);
+  } satisfies ServiceRequestArgs), [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
 
   const setConnector = useCallback((connectorId: string) => {
     runId.current++;
@@ -128,22 +129,23 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (!parseFn) return;
 
       const crosswalk =  service.connector[parseFn];
+      const requestArgs: ServiceRequestArgs = {
+        options: options.serviceOptions,
+        tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
+        relations: relationTypes,
+        customPrompt
+      };
       
       const request = type === 'ANNOTATION'
         ? (service.connector as AnnotationServiceConnector).annotate(
             image,
             result.transform,
-            options.serviceOptions,
-            tags.map(tag => model.getEntityType(tag.id, true) || tag),
-            relationTypes,
-            customPrompt
+            requestArgs
           )
         : (service.connector as TranscriptionServiceConnector).transcribe(
             image,
             result.transform,
-            options.serviceOptions,
-            tags,
-            customPrompt
+            requestArgs
           );
 
       request.then(({ data, generator }) => {
