@@ -4,10 +4,7 @@ import { annotate, getPrompt as getAnnotationPrompt, parseAnnotationResponse } f
 import { parseResponse as parseTranscriptionResponse } from './parseResponse';
 
 const getPrompt = (type: PromptServiceType, args: ServiceRequestArgs): string | undefined =>
-  type === 'ANNOTATION'
-    ? getAnnotationPrompt(args.tags, args.relations, args.width ?? 0, args.height ?? 0)
-    : type === 'TRANSCRIPTION'
-      ? getTranscriptionPrompt(args.options, args.tags)
-      : undefined;
+  type === 'ANNOTATION' ? getAnnotationPrompt(args.tags, args.relations, args.width ?? 0, args.height ?? 0) :
+  type === 'TRANSCRIPTION' ? getTranscriptionPrompt(args.options, args.tags) : undefined;
 
 export default { annotate, getPrompt, parseAnnotationResponse, transcribe, parseTranscriptionResponse } as ServiceConnector;

@@ -5,8 +5,6 @@ import { PageTransform, ServiceRequestArgs } from '@/services/Types';
 export const PROMPT_TRANSCRIBE =
   'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.';
 
-export const getPrompt = (): string => PROMPT_TRANSCRIBE;
-
 const isValidEndpoint = (url: string) => {
   // TODO possibly support localhost URLs later?
   return url.startsWith('https://huggingface.co/spaces/');
@@ -59,7 +57,7 @@ export const transcribe = async (image: File | string, _t: PageTransform, args: 
 
     const job = await client.predict('/generate_image', { 		
       ...optionalArgs,		
-      [promptFieldname]: customPrompt ?? getPrompt(),
+      [promptFieldname]: customPrompt ?? PROMPT_TRANSCRIBE,
       [imageFieldname]: handle_file(blob)
     });
 

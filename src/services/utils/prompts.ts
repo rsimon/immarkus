@@ -57,7 +57,7 @@ const relationToPrompt = (relation: RelationshipType): string => {
   ].filter(Boolean).join('\n');
 };
 
-const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
+export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;
 
   const classIds = tags.map((t) => `"${t.id}"`);
@@ -111,9 +111,6 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
   ]
 }`;
 }
-
-export const buildTranscriptionPrompt = (tags: EntityType[] = []): string =>
-  tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
 
 export const buildAnnotatePrompt = (
   w: number,

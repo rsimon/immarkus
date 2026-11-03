@@ -2,8 +2,8 @@ import { PromptServiceType, ServiceConnector, ServiceRequestArgs } from '@/servi
 import { transcribe } from './transcribe';
 import { translate } from './translate';
 import { getPrompt as getAnnotationPrompt, annotate } from './annotate';
-import { getPrompt as getTranscriptionPrompt } from '@/services/utils/transcribe';
 import { 
+  getTranscriptionPrompt,
   parseAnnotationResponse,
   parseOpenAICompatibleTranscriptionResponse as parseTranscriptionResponse 
 } from '@/services/utils';

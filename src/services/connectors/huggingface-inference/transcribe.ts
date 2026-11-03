@@ -1,10 +1,6 @@
 import { InferenceClient } from '@huggingface/inference';
-import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { getPrompt } from '@/services/utils/transcribe';
+import { fileToBase64, getTranscriptionPrompt, urlToBase64 } from '@/services/utils';
 import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services/Types';
-import { EntityType } from '@/model';
-
-export { getPrompt };
 
 export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
   const { options = {}, tags = [], customPrompt } = args;
@@ -24,7 +20,7 @@ export const transcribe = (image: File | string, _t: PageTransform, args: Servic
   const client = new InferenceClient(hfToken);
 
   const submit = (imageUrl: string) => {
-    const prompt = customPrompt ?? getPrompt(tags);
+    const prompt = customPrompt ?? getTranscriptionPrompt(tags);
 
     // return new Promise(resolve => {
     //   resolve(MOCK_RESPONSE)

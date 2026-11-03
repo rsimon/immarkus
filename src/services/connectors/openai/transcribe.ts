@@ -5,8 +5,6 @@ import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
 
-export const getPrompt = (): string => PROMPT_TRANSCRIBE;
-
 export const transcribe = (
   image: File | string, 
   _t: PageTransform,
@@ -31,7 +29,7 @@ export const transcribe = (
       input:[{
         role: 'user',
         content: [
-          { type: 'input_text', text: customPrompt ?? getPrompt() },
+          { type: 'input_text', text: customPrompt ?? PROMPT_TRANSCRIBE },
           { 
             type: 'input_image', 
             image_url,

@@ -1,11 +1,10 @@
 import { Mistral } from '@mistralai/mistralai';
-import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { buildTranscriptionPrompt } from '@/services/utils/prompts';
+import { fileToBase64, getTranscriptionPrompt, urlToBase64 } from '@/services/utils';
 import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { EntityType } from '@/model';
 
 export const getPrompt = (options?: Record<string, any>, tags: EntityType[] = []): string | undefined =>
-  options?.model?.includes('ocr') ? undefined : buildTranscriptionPrompt(tags);
+  options?.model?.includes('ocr') ? undefined : getTranscriptionPrompt(tags);
 
 export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
   const { options = {}, tags = [], customPrompt } = args;
