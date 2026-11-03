@@ -42,7 +42,7 @@ interface AutoAnnotateControlsProps {
 
   onCancel(): void;
 
-  onSubmit(promptOverride?: string): void;
+  onSubmit(customPrompt?: string): void;
 
 }
 

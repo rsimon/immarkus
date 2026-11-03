@@ -38,7 +38,7 @@ interface TranscriptionControlsProps {
 
   onCancel(): void;
 
-  onSubmit(promptOverride?: string): void;
+  onSubmit(customPrompt?: string): void;
 
 }
 
