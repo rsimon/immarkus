@@ -19,7 +19,7 @@ const OPS = {
   TRANSCRIPTION: { parse: 'parseTranscriptionResponse' },
   ANNOTATION:    { parse: 'parseAnnotationResponse' },
   TRANSLATION:   { parse: undefined }
-} as const satisfies Record<ServiceType, { parse?: string }>;
+} as Record<ServiceType, { parse?: string }>;
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const model = useDataModel();
@@ -46,7 +46,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     options: options.serviceOptions,
     tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
     relations: relationTypes
-  } satisfies ServiceRequestArgs), [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
+  }), [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
 
   const setConnector = useCallback((connectorId: string) => {
     runId.current++;
@@ -129,6 +129,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
       if (!parseFn) return;
 
       const crosswalk =  service.connector[parseFn];
+      
       const requestArgs: ServiceRequestArgs = {
         options: options.serviceOptions,
         tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
