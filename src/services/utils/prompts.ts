@@ -57,7 +57,7 @@ const relationToPrompt = (relation: RelationshipType): string => {
   ].filter(Boolean).join('\n');
 };
 
-export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
+const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;
 
   const classIds = tags.map((t) => `"${t.id}"`);
