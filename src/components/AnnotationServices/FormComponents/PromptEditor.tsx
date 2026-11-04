@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Check, Play } from 'lucide-react';
+import { AlertTriangle, Play } from 'lucide-react';
 import { Alert } from '@/ui/Alert';
 import { Button } from '@/ui/Button';
 import { Textarea } from '@/ui/Textarea';
@@ -55,7 +55,9 @@ export const PromptEditor = (props: PromptEditorProps) => {
         </Button>
       </div>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog 
+        open={open} 
+        onOpenChange={setOpen}>
         <DialogContent className="w-fit md:w-fit max-w-[95vw]">
           <DialogTitle className="flex items-center gap-2 w-0 min-w-full">
             {t('promptEditor.dialogTitle')}
@@ -78,12 +80,11 @@ export const PromptEditor = (props: PromptEditorProps) => {
                 <AlertTriangle
                   aria-hidden
                   className="mt-0.5 size-4 shrink-0 text-amber-700" />
-                Manual override warning
+                {t('promptEditor.alertTitle')}
               </div>
 
               <p>
-                IMMARKUS expects the model to answer in a specific JSON format. Changing the response 
-                format instructions may lead to an invalid response the IMMARKUS may fail to parse.
+                {t('promptEditor.alertHint')}
               </p>
             </div>
           </Alert>
@@ -93,16 +94,11 @@ export const PromptEditor = (props: PromptEditorProps) => {
               <Button
                 type="button"
                 variant="outline"
-                className="gap-2 font-normal text-xs disabled:opacity-0"
+                className="gap-2 font-normal text-xs disabled:hidden"
                 disabled={!isEdited}
                 onClick={() => setEditedPrompt(props.prompt || '')}>
-                {isEdited ? (
+                {isEdited && (
                   t('promptEditor.reset')
-                ) : (
-                  <>
-                    <Check aria-hidden className="size-4" />
-                    Generated from your settings
-                  </>
                 )}
               </Button>
             </div>
@@ -121,7 +117,7 @@ export const PromptEditor = (props: PromptEditorProps) => {
                 disabled={!props.canRun}
                 onClick={onRunPrompt}>
                 <Play aria-hidden className="size-4" />
-                {isEdited ? 'Run edited prompt' : t('promptEditor.run')}
+                {isEdited ? t('promptEditor.runEdited') : t('promptEditor.runOriginal')}
               </Button>
             </div>
           </DialogFooter>
