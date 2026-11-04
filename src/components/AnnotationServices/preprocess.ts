@@ -160,10 +160,10 @@ const getIIIFSource = (image: LoadedIIIFImage, minSize?: number) => {
   const firstImage = image.canvas.images[0];
   if (!firstImage) throw new Error('Canvas has no image');
 
-  return firstImage.getPixelSize().then(originalSize => {
+  return firstImage.fetchTrueSize().then(originalSize => {
     const url = firstImage.type === 'static'
       ? firstImage.url
-      : firstImage.getImageURL(minSize ?? Math.max(originalSize.width, originalSize.height));
+      : firstImage.getImageURL({ size: minSize ?? Math.max(originalSize.w, originalSize.h) });
 
     return fetchBlob(url).then(blob => ({ blob, originalSize }));
   });
@@ -171,13 +171,13 @@ const getIIIFSource = (image: LoadedIIIFImage, minSize?: number) => {
 
 const getIIIFRegionResult = (
   image: DynamicImageServiceResource,
-  originalSize: { width: number, height: number },
+  originalSize: { w: number, h: number },
   region: Region,
   isFlipped: boolean
 ): IIIFPreprocessingResult | undefined => {
   const sourceRegion = {
     x: isFlipped
-      ? originalSize.width - region.x - region.w
+      ? originalSize.w - region.x - region.w
       : region.x,
     y: region.y,
     w: region.w,
@@ -196,7 +196,7 @@ const getIIIFRegionResult = (
   const transformRegion = {
     ...servedRegion,
     x: isFlipped
-      ? originalSize.width - servedRegion.x - servedRegion.w
+      ? originalSize.w - servedRegion.x - servedRegion.w
       : servedRegion.x
   };
 
@@ -205,12 +205,11 @@ const getIIIFRegionResult = (
   return {
     url: image.getRegionURL(
       sourceRegion,
-      { degrees: 0, mirrored: isFlipped },
-      { minSize: 1200 }
+      { size: 1200, rotation: { degrees: 0, mirrored: isFlipped } }
     ),
     transform: toPageTransform(
-      originalSize.width,
-      originalSize.height,
+      originalSize.w,
+      originalSize.h,
       0,
       isFlipped,
       transformRegion,
@@ -284,9 +283,8 @@ export const preprocess = (
       const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
       onProgress('fetching_iiif');
 
-      return firstImage.getPixelSize().then(originalSize => {
+      return firstImage.fetchTrueSize().then(originalSize => {
         const result = getIIIFRegionResult(firstImage, originalSize, region, isFlipped);
-
         if (!result)
           return getSource(1200).then(({ blob, originalSize }) =>
             preprocessFile(blob, originalSize.width, originalSize.height, region));
@@ -303,17 +301,17 @@ export const preprocess = (
 
   if ('canvas' in image && isDynamicIIIF(image)) {
     const firstImage = image.canvas.images[0] as DynamicImageServiceResource;
-    const imageURL = firstImage.getImageURL(1200, { degrees: deg, mirrored: isFlipped });
+    const imageURL = firstImage.getImageURL({ size: 1200, rotation: { degrees: deg, mirrored: isFlipped }});
 
     onProgress('fetching_iiif');
 
-    return firstImage.getPixelSize().then(originalSize =>
+    return firstImage.fetchTrueSize().then(originalSize =>
       fetchBlob(imageURL).then(blob =>
         getImageDimensions(blob).then(({ width, height }) => ({
           url: imageURL,
           transform: toPageTransform(
-            originalSize.width,
-            originalSize.height,
+            originalSize.w,
+            originalSize.h,
             deg,
             isFlipped,
             undefined,

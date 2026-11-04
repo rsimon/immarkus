@@ -84,6 +84,9 @@ export const exportImageMetadataCSV = async (
   return resolveManifestsWithId(iiifResources as IIIFManifestResource[], updateProgress).then(manifests => {
     const iiifColumns = aggregateIIIFMetadataLabels(manifests.map(r => r.manifest));
 
+    const successfulManifests = 
+      manifests.filter(m => m.manifest) as { id: string; uri: string; manifest: CozyManifest }[];
+
     return Promise.all(
       [...images, ...iiifResources].map(source => getMetadata(store, source))
     ).then(results => {
@@ -97,11 +100,11 @@ export const exportImageMetadataCSV = async (
           return Object.fromEntries([
             ['image', source.name], 
             ['image_type', 'uri' in source ? 'iiif_canvas' : 'local'],
-            ['path', getFullPath(source, store, manifests).join('/')],
+            ['path', getFullPath(source, store, successfulManifests).join('/')],
             ...entries,
             ...iiifColumns.map(label => [
               label,
-              'uri' in source ? getCanvasMetadata(source, label, manifests) : ''
+              'uri' in source ? getCanvasMetadata(source, label, successfulManifests) : ''
             ])
           ]);
         })
@@ -131,6 +134,9 @@ const createSchemaWorksheet = (
   ).then(resolved => {
     const iiifMetadataLabels = aggregateIIIFMetadataLabels(resolved.map(r => r.manifest));
 
+    const successfullyResolved = 
+      resolved.filter(m => m.manifest) as { id: string; uri: string; manifest: CozyManifest }[];
+
     worksheet.columns = [
       { header: 'Filename', key: 'filename', width: 60 },
       { header: 'Type', key: 'type', width: 60 }, 
@@ -147,7 +153,7 @@ const createSchemaWorksheet = (
       const row = {
         filename: source.name,
         type: 'uri' in source ? 'IIIF Canvas' : 'Local File',
-        path: getFullPath(source, store, resolved).join('/')
+        path: getFullPath(source, store, successfullyResolved).join('/')
       };
 
       const properties = (metadata && 'properties' in metadata) ? metadata.properties : {};
@@ -157,7 +163,7 @@ const createSchemaWorksheet = (
 
       if ('manifestId' in source) {
         iiifMetadataLabels.forEach(label => 
-          row[`@iiif_property_${label}`] = getCanvasMetadata(source, label, resolved));
+          row[`@iiif_property_${label}`] = getCanvasMetadata(source, label, successfullyResolved));
       }
 
       // Only include this row if there is actual metadata,

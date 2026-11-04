@@ -1,11 +1,11 @@
 import * as ExcelJS from 'exceljs/dist/exceljs.min.js';
+import { CozyManifest } from 'cozy-iiif';
 import { DataModelStore, Store } from '@/store';
 import { W3CAnnotationBody, W3CImageAnnotation } from '@annotorious/react';
 import { CanvasInformation, EntityType, IIIFManifestResource, Image, PropertyDefinition } from '@/model';
 import { ImageSnippet, getAnnotationsWithSnippets } from '@/utils/getImageSnippet';
 import { addImageToCell, fitColumnWidths, getAnnotations } from './utils';
 import { resolveManifestsWithId } from '@/utils/iiif';
-import { CozyManifest } from 'cozy-iiif';
 
 interface BaseSourceAnnotationSnippetTuple {
 

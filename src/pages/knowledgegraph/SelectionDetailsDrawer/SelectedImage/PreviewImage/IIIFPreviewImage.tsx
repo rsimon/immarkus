@@ -20,7 +20,7 @@ export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
     if (!firstResource || firstResource.type !== 'level0') {
       setSrc(props.image.canvas.getThumbnailURL());
     } else {
-      getStitchedThumbnail(firstResource, { width: 600, height: 400 }).then(blob => {
+      getStitchedThumbnail(firstResource, { size: { w: 600, h: 400 }}).then(blob => {
         setSrc(URL.createObjectURL(blob));
       });
     }

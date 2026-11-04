@@ -36,7 +36,7 @@ export interface VisualSearch {
 }
 
 const fetchImage = (canvas: CozyCanvas): Promise<File> => {
-  const url = canvas.getImageURL(1024);
+  const url = canvas.getImageURL({ size: 1024 });
   return fetch(url)
     .then(res => res.blob())
     .then(async blob => {

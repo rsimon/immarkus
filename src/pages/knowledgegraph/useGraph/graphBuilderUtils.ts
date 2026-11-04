@@ -1,11 +1,11 @@
 import murmur from 'murmurhash';
+import { CozyManifest, CozyTOCNode } from 'cozy-iiif';
 import { W3CAnnotation } from '@annotorious/react';
 import { W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { EntityType, Folder, IIIFManifestResource, Image } from '@/model';
 import { DataModelStore, Store } from '@/store';
 import { GraphLink, GraphLinkPrimitive, GraphNode } from '../Types';
 import { getEntityTypes } from '@/utils/annotation';
-import { CozyManifest, CozyTOCNode } from 'cozy-iiif';
 
 export const toFolderNode = (folder: Folder, metadata: Map<string, W3CAnnotation>): GraphNode => ({
   id: folder.id,
