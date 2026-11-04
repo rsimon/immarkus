@@ -28,7 +28,7 @@ const ThumbnailImage = (props: ThumbnailProps) => {
   const url = useMemo(() => loaded && (
     'data' in loaded 
       ? URL.createObjectURL(loaded.data) 
-      : loaded.canvas.getThumbnailURL(props.size || 112)), [loaded, props.size]);
+      : loaded.canvas.getThumbnailURL({ size: props.size || 112 })), [loaded, props.size]);
 
   return loaded ? (
     <img

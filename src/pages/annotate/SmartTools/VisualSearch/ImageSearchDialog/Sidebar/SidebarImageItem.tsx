@@ -51,7 +51,7 @@ export const SidebarImageItem = (props: SidebarImageItemProps) => {
 
     return 'data' in image
       ? URL.createObjectURL(image.data)
-      : image.canvas.getThumbnailURL(120);
+      : image.canvas.getThumbnailURL({ size: 120 });
   }, [image, inView]);
 
   useEffect(() => {

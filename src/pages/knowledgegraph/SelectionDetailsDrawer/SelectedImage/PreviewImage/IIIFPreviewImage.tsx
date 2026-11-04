@@ -24,7 +24,6 @@ export const IIIFPreviewImage = (props: IIIFPreviewImageProps) => {
         setSrc(URL.createObjectURL(blob));
       });
     }
-    // return props.image.canvas.getThumbnailURL(600);
   }, [props.image]);
 
   return props.image ? (
