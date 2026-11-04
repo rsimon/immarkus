@@ -1,17 +1,13 @@
 import { Mistral } from '@mistralai/mistralai';
-import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { buildTranscribeAndTagPrompt } from '@/services/utils/prompts';
-import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
+import { fileToBase64, getTranscriptionPrompt, urlToBase64 } from '@/services/utils';
+import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { EntityType } from '@/model';
 
-const PROMPT_TRANSCRIBE = 
-`Extract all text from this image. Your response must be ONLY valid JSON in this format: 
+export const getPrompt = (options?: Record<string, any>, tags: EntityType[] = []): string | undefined =>
+  options?.model?.includes('ocr') ? undefined : getTranscriptionPrompt(tags);
 
-{ "text": "all extracted text goes here" } 
- 
-Preserve whitespace and newline formatting in the text output.`;
-
-export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}, tags: EntityType[] = []) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {}, tags = [], customPrompt } = args;
   const apiKey = options['api-key'];
   const model = options['model'] as string;
 
@@ -28,8 +24,6 @@ export const transcribe = (image: File | string, _t: PageTransform, options: Rec
   const client = new Mistral({ apiKey });
 
   const submit = (imageUrl: string) => {
-    const prompt = tags.length === 0 ? PROMPT_TRANSCRIBE : buildTranscribeAndTagPrompt(tags);
-
     if (model.includes('ocr')) {
       return client.ocr.process({
         model,
@@ -39,6 +33,10 @@ export const transcribe = (image: File | string, _t: PageTransform, options: Rec
         }
       }).then((data: any) => ({generator, data } as AnnotationServiceResponse));
     } else {
+      const prompt = customPrompt ?? getPrompt(options, tags);
+      if (!prompt)
+        throw new Error('Missing transcription prompt');
+
       return client.chat.complete({
         model,
         maxTokens: 4000,

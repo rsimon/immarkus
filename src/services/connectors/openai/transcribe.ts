@@ -1,6 +1,5 @@
-import { AnnotationServiceResponse, PageTransform } from '@/services/Types';
-import { fileToBase64, urlToBase64 } from '@/services/utils';
-import { PROMPT_TRANSCRIBE } from '@/services/utils/prompts';
+import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services/Types';
+import { fileToBase64, getTranscriptionPrompt, urlToBase64 } from '@/services/utils';
 import OpenAI from 'openai';
 import { zodTextFormat } from 'openai/helpers/zod';
 import { z } from 'zod';
@@ -8,8 +7,9 @@ import { z } from 'zod';
 export const transcribe = (
   image: File | string, 
   _t: PageTransform,
-  options?: Record<string, any>
+  args: ServiceRequestArgs = {}
 ): Promise<AnnotationServiceResponse> => {
+  const { options = {}, customPrompt } = args;
   const apiKey = options['api-key'];
 
   const openai = new OpenAI({ apiKey, dangerouslyAllowBrowser: true });
@@ -28,7 +28,7 @@ export const transcribe = (
       input:[{
         role: 'user',
         content: [
-          { type: 'input_text', text: PROMPT_TRANSCRIBE },
+          { type: 'input_text', text: customPrompt ?? getTranscriptionPrompt(args.tags) },
           { 
             type: 'input_image', 
             image_url,

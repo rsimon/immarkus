@@ -2,7 +2,7 @@ import { Mistral } from '@mistralai/mistralai';
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
-import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform } from '@/services';
+import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services';
 import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { 
   fileToBase64, 
@@ -22,6 +22,13 @@ interface Detection {
 
 }
 
+export const getPrompt = (
+  tags: EntityType[] = [],
+  relations: RelationshipType[] = [],
+  width = 0,
+  height = 0
+): string => buildAnnotatePrompt(width, height, tags, relations);
+
 const sniffScale = (detections: Detection[]): number => {
   const values = detections.flatMap(d => {
     const { x_min, y_min, x_max, y_max } = d.bbox;
@@ -36,10 +43,9 @@ const sniffScale = (detections: Detection[]): number => {
 export const annotate = (
   image: File | string,
   transform: PageTransform,
-  options?: Record<string, any>,
-  tags: EntityType[] = [],
-  relations: RelationshipType[] = []
+  args: ServiceRequestArgs = {}
 ) => {
+  const { options = {}, tags = [], relations = [], customPrompt } = args;
   const apiKey = options['api-key'];
   const model = options['model'];
 
@@ -55,7 +61,7 @@ export const annotate = (
   const client = new Mistral({ apiKey });
   
   const submit = (imageUrl: string) => { 
-    const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags, relations);
+    const prompt = customPrompt ?? getPrompt(tags, relations, transform.source.width, transform.source.height);
 
     return client.chat.complete({
       model,

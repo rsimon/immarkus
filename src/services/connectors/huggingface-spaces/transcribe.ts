@@ -1,6 +1,9 @@
 import { Client, handle_file } from '@gradio/client';
 import { urlToFile } from '@/services/utils';
-import { PageTransform } from '@/services/Types';
+import { PageTransform, ServiceRequestArgs } from '@/services/Types';
+
+export const PROMPT_TRANSCRIBE =
+  'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.';
 
 const isValidEndpoint = (url: string) => {
   // TODO possibly support localhost URLs later?
@@ -16,7 +19,8 @@ const parseArgs = (str: string): any | undefined => {
   }
 }
 
-export const transcribe = async (image: File | string, _t: PageTransform, options?: Record<string, any>) => {
+export const transcribe = async (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {}, customPrompt } = args;
   const endpoint = options['endpoint'];
 
   // Should never happen
@@ -53,7 +57,7 @@ export const transcribe = async (image: File | string, _t: PageTransform, option
 
     const job = await client.predict('/generate_image', { 		
       ...optionalArgs,		
-      [promptFieldname]: 'Extract all text from this image. Your response must be ONLY valid JSON in this format: { "text": "all extracted text goes here" } Preserve whitespace and newline formatting in the text output.',
+      [promptFieldname]: customPrompt ?? PROMPT_TRANSCRIBE,
       [imageFieldname]: handle_file(blob)
     });
 

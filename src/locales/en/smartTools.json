@@ -32,6 +32,16 @@
       "zoomOut": "Zoom out"
     }
   },
+  "promptEditor": {
+    "title": "View or edit prompt",
+    "dialogTitle": "Prompt Editor",
+    "description": "Review and edit the prompt IMMARKUS generated from your settings.",
+    "alertTitle": "Warning: edit at your own risk",
+    "alertHint": "IMMARKUS relies on a fixed JSON response format that is defined in the prompt. If you remove or change the format instructions, IMMARKUS won’t be able to process the response and the request will fail.",
+    "reset": "Reset to generated prompt",
+    "runOriginal": "Run this prompt",
+    "runEdited": "Run edited prompt"
+  },
   "panel": {
     "title": "Smart Tools",
     "traceOutline": "Smart Scissors",

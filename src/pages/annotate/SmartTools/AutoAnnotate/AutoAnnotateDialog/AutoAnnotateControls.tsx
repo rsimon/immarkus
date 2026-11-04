@@ -12,6 +12,7 @@ import {
   ProcessingStateBadge, 
   ServiceParameterControls, 
   ServiceSelectionControl, 
+  PromptEditor,
   TagSelectionControl, 
   useAnnotationServiceConfig, 
   useIsProcessing
@@ -24,6 +25,8 @@ interface AutoAnnotateControlsProps {
   input: AnnotationServiceInput;
 
   options: AnnotationServiceOptions;
+
+  prompt?: string;
 
   entityTags: EntityType[];
 
@@ -39,7 +42,7 @@ interface AutoAnnotateControlsProps {
 
   onCancel(): void;
 
-  onSubmit(): void;
+  onSubmit(customPrompt?: string): void;
 
 }
 
@@ -171,6 +174,12 @@ export const AutoAnnotateControls = (props: AutoAnnotateControlsProps) => {
           onClick={props.onCancel}>
           {t('annotate.controls.cancel')}
         </Button>
+
+        <PromptEditor
+          prompt={props.prompt}
+          disabled={showProcessingState}
+          canRun={!showProcessingState && readyToSubmit}
+          onRunPrompt={props.onSubmit} />
       </div>
     </div>
   )

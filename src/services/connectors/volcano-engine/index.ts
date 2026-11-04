@@ -1,6 +1,12 @@
-import { ServiceConnector } from '@/services/Types';
+import { PromptServiceType, ServiceConnector, ServiceRequestArgs } from '@/services/Types';
 import { transcribe } from './transcribe';
 import { translate } from './translate';
-import { parseOpenAICompatibleTranscriptionResponse as parseTranscriptionResponse } from '@/services/utils'; 
+import { 
+  getTranscriptionPrompt, 
+  parseOpenAICompatibleTranscriptionResponse as parseTranscriptionResponse 
+} from '@/services/utils'; 
 
-export default { transcribe, translate, parseTranscriptionResponse } as ServiceConnector;
+const getPrompt = (type: PromptServiceType, args: ServiceRequestArgs): string | undefined =>
+  type === 'TRANSCRIPTION' ? getTranscriptionPrompt(args.tags) : undefined;
+
+export default { transcribe, getPrompt, translate, parseTranscriptionResponse } as ServiceConnector;

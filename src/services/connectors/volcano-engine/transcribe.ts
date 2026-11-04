@@ -1,7 +1,8 @@
-import { PageTransform } from '@/services/Types';
+import { PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, _t: PageTransform, options: Record<string, any> = {}) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {} } = args;
   const key = options['api-key'];
 
   // Should never happen
@@ -17,7 +18,8 @@ export const transcribe = (image: File | string, _t: PageTransform, options: Rec
       id: 'doubao-1.5-vision-pro-250328',
       name: 'VolcEngine (doubao-1.5-vision-pro-250328)',
       homepage: 'https://www.volcengine.com/'
-    }
+    },
+    args
   );
 
 }

@@ -1,6 +1,6 @@
 // https://docs.google.com/document/d/1NSZnDdWgTp7SXW0PkAH8GmcTBja71n62/edit
 
-import { PageTransform } from '@/services/Types';
+import { PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { urlToFile } from '@/services/utils';
 
 const { VITE_KIM_HAN_NOM_KEY } = import.meta.env;
@@ -67,7 +67,8 @@ const getToken = (email: string, password: string) => {
   }
 }
 
-export const transcribe = (image: File | string, _t: PageTransform, options?: Record<string, any>) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {} } = args;
   const email = options['email'];
   const password = options['password'];
 

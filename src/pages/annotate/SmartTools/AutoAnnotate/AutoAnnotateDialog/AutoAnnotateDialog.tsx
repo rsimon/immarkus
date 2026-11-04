@@ -37,6 +37,7 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
     input,
     options,
     status,
+    prompt,
     tags,
     relationTypes,
     clearResults,
@@ -109,6 +110,7 @@ export const AutoAnnotateDialog = (props: AutoAnnotateDialogProps) => {
                 status={status} 
                 input={input} 
                 entityTags={tags}
+                prompt={prompt}
                 relations={relationTypes}
                 options={options} 
                 onConnectorChanged={setConnector} 

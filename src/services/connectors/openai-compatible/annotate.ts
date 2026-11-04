@@ -1,16 +1,22 @@
 import OpenAI from 'openai';
 import { EntityType, RelationshipType } from '@/model';
 import { buildAnnotatePrompt } from '@/services/utils/prompts';
-import { AnnotationServiceResponse, PageTransform } from '@/services';
+import { AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services';
 import { fileToBase64, urlToBase64 } from '@/services/utils';
+
+export const getPrompt = (
+  tags: EntityType[] = [],
+  relations: RelationshipType[] = [],
+  width = 0,
+  height = 0
+): string => buildAnnotatePrompt(width, height, tags, relations);
 
 export const annotate = (
   image: File | string,
   transform: PageTransform,
-  options?: Record<string, any>,
-  tags: EntityType[] = [],
-  relations: RelationshipType[] = []
+  args: ServiceRequestArgs = {}
 ) => {
+  const { options = {}, tags = [], relations = [], customPrompt } = args;
   const url = options['url'];
   const model = options['model'];
   const apiKey = options['api-key'];
@@ -31,7 +37,7 @@ export const annotate = (
   });
 
   const submit = (imageUrl: string) => {
-    const prompt = buildAnnotatePrompt(transform.source.width, transform.source.height, tags, relations);
+    const prompt = customPrompt ?? getPrompt(tags, relations, transform.source.width, transform.source.height);
 
     return client.chat.completions.create({
       model,

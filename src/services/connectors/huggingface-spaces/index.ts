@@ -1,5 +1,8 @@
-import { transcribe } from './transcribe';
+import { PROMPT_TRANSCRIBE, transcribe } from './transcribe';
 import { parseResponse as parseTranscriptionResponse } from './parseResponse';
-import { ServiceConnector } from '@/services/Types';
+import { PromptServiceType, ServiceConnector, ServiceRequestArgs } from '@/services/Types';
 
-export default { transcribe, parseTranscriptionResponse } as ServiceConnector;
+const getPrompt = (type: PromptServiceType, _args: ServiceRequestArgs): string | undefined =>
+  type === 'TRANSCRIPTION' ? PROMPT_TRANSCRIBE : undefined;
+
+export default { transcribe, getPrompt, parseTranscriptionResponse } as ServiceConnector;

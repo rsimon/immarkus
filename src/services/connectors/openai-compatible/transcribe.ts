@@ -1,8 +1,8 @@
-import { EntityType } from '@/model';
-import { PageTransform } from '@/services/Types';
+import { PageTransform, ServiceRequestArgs } from '@/services/Types';
 import { transcribeOpenAICompatible } from '@/services/utils';
 
-export const transcribe = (image: File | string, _t: PageTransform, options?: Record<string, any>, tags?: EntityType[]) => {
+export const transcribe = (image: File | string, _t: PageTransform, args: ServiceRequestArgs = {}) => {
+  const { options = {} } = args;
   const url = options['url'];
   const model = options['model'];
   const apiKey = options['api-key'];
@@ -22,7 +22,7 @@ export const transcribe = (image: File | string, _t: PageTransform, options?: Re
     url,
     model,
     generator, 
-    tags
+    args
   );
 
 }

@@ -5,6 +5,8 @@ import { preprocess } from './preprocess';
 import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
 import { 
   AnnotationServiceConnector,
+  ServiceRequestArgs,
+  TranscriptionServiceConnector,
   AnnotationServiceOptions, 
   AnnotationServiceResult, 
   ProcessingState, 
@@ -14,10 +16,10 @@ import {
 } from '@/services';
 
 const OPS = {
-  TRANSCRIPTION: { submit: 'transcribe', parse: 'parseTranscriptionResponse' },
-  ANNOTATION:    { submit: 'annotate',   parse: 'parseAnnotationResponse' },
-  TRANSLATION:   { submit: 'translate', parse: undefined }
-} as const satisfies Record<ServiceType, { submit: string, parse?: string }>;
+  TRANSCRIPTION: { parse: 'parseTranscriptionResponse' },
+  ANNOTATION:    { parse: 'parseAnnotationResponse' },
+  TRANSLATION:   { parse: undefined }
+} as Record<ServiceType, { parse?: string }>;
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const model = useDataModel();
@@ -39,6 +41,20 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
   const runId = useRef(0);
 
   const service = useService(options.connectorId, type);
+
+  const prompt = useMemo(() => {
+    const args: ServiceRequestArgs = {
+      options: options.serviceOptions,
+      tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
+      relations: relationTypes
+    };
+
+    return type === 'ANNOTATION'
+      ? (service.connector as AnnotationServiceConnector | undefined)?.getPrompt('ANNOTATION', args)
+      : type === 'TRANSCRIPTION'
+        ? (service.connector as TranscriptionServiceConnector | undefined)?.getPrompt('TRANSCRIPTION', args)
+        : undefined;
+  }, [service.connector, type, options.serviceOptions, tags, relationTypes, model]);
 
   const setConnector = useCallback((connectorId: string) => {
     runId.current++;
@@ -86,7 +102,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     return { annotations, relations };
   }, [batches]);
 
-  const submit = useCallback(() => { 
+  const submit = useCallback((customPrompt?: string) => {
     if (!service.connector) return;
 
     const id = ++runId.current;
@@ -122,15 +138,26 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
 
       const crosswalk =  service.connector[parseFn];
       
+      const requestArgs: ServiceRequestArgs = {
+        options: options.serviceOptions,
+        tags: tags.map(tag => model.getEntityType(tag.id, true) || tag),
+        relations: relationTypes,
+        customPrompt,
+        width: result.transform.source.width,
+        height: result.transform.source.height
+      };
+      
       const request = type === 'ANNOTATION'
         ? (service.connector as AnnotationServiceConnector).annotate(
             image,
             result.transform,
-            options.serviceOptions,
-            tags.map(tag => model.getEntityType(tag.id, true) || tag),
-            relationTypes
+            requestArgs
           )
-        : service.connector[OPS[type].submit](image, result.transform, options.serviceOptions, tags);
+        : (service.connector as TranscriptionServiceConnector).transcribe(
+            image,
+            result.transform,
+            requestArgs
+          );
 
       request.then(({ data, generator }) => {
         if (isStale()) return;
@@ -221,6 +248,7 @@ export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedIm
     // Run
     submit,
     status,
+    prompt,
     // Results
     batches,
     annotations,
