@@ -48,7 +48,7 @@ export const PromptEditor = (props: PromptEditorProps) => {
         <Button
           type="button"
           variant="link"
-          className="h-auto p-0 font-normal text-xs text-muted-foreground"
+          className="h-auto p-0 mb-1 font-normal text-xs disabled:text-muted-foreground"
           disabled={props.disabled}
           onClick={() => setOpen(true)}>
           {t('promptEditor.title')}

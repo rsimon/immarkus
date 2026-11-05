@@ -43,7 +43,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
-      '@gradio/client': path.resolve('./node_modules/@gradio/client/dist/index.js')
+      '@gradio/client': path.resolve('./node_modules/@gradio/client/dist/index.js'),
+      '@livekit/rtc-node': path.resolve(
+        import.meta.dirname,
+        './src/services/connectors/mistral/shims/livekit-rtc-node.ts'
+      )
     }
   },
   define: {
