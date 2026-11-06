@@ -1,6 +1,6 @@
 {
   "name": "immarkus",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -70,7 +70,7 @@
     "@tanstack/react-table": "^9.3.1",
     "ajv": "^8.20.0",
     "browser-image-compression": "^2.0.2",
-    "browser-visual-search": "^0.6.3",
+    "browser-visual-search": "^0.7.0",
     "chroma-js": "^3.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -87,7 +87,7 @@
     "localforage": "^1.10.0",
     "lucide-react": "^1.70.0",
     "masonic": "^4.1.0",
-    "motion": "^14.9.1",
+    "motion": "^14.10.0",
     "murmurhash": "^2.0.1",
     "openai": "^7.53.0",
     "openseadragon": "^6.1.1",
