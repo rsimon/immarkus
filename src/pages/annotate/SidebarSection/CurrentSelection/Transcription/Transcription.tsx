@@ -74,7 +74,7 @@ export const Transcription = (props: TranscriptionProps) => {
             <TextAlignStart className="size-3 mb-px" strokeWidth={2.5}/> Transcription
           </div>
 
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start whitespace-pre-wrap tracking-wide rounded-b leading-relaxed border-t max-h-72 overflow-y-auto">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start whitespace-pre-wrap tracking-wide rounded-b leading-relaxed border-t max-h-120 overflow-y-auto">
             {lines.map(renderLine)}
           </div>
         </div>
