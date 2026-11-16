@@ -36,7 +36,7 @@ export const SidebarSection = (props: SidebarSectionProps) => {
       asChild      
       value={tab}
       onValueChange={setTab}>
-      <aside className="absolute top-0 right-0 h-full w-85 flex flex-col overflow-hidden">
+      <aside className="h-full min-h-0 min-w-0 flex flex-col overflow-hidden">
         <section className="toolbar border-b h-11.5 flex items-center shrink-0">
           <Separator orientation="vertical" className="h-4" />
 
