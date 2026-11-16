@@ -82,7 +82,7 @@ ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
 * List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
 * List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
-* Record each **mention** of an **instance**. Record the exact, verbatim quotes that mention that instance in the text, and provide a context snippet (2-3 words before and after the mention).
+* Record each **mention** of an **instance**. Record the exact, verbatim quotes that mention that instance in the text, and provide a larger context snippet including the mention, and 2-3 words before and after the mention.
 * Include the entity instance in the list even if you cannot fill a property. It's ok to leave properties blank.
 * If the image contains no legible text, return an empty "text" and an empty "entities" array.
 
@@ -100,7 +100,7 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
       },
       "mentions": [{
         "quote": <verbatim quote that mentions this entity instance in the text>
-        "context": <verbatim text context around the quote>
+        "context": <verbatim text context around the quote - including the quote>
       }]
     },{
       "class": "${classIds[0]}",

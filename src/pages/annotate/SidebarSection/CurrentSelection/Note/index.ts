@@ -1,1 +1,1 @@
-export * from './NoteForm';
+export * from './Note';

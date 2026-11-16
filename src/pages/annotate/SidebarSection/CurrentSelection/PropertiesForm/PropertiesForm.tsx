@@ -22,6 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
+import { Transcription } from '../Transcription';
 
 interface PropertiesFormProps {
 
@@ -50,6 +51,9 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
     // Robustness: users may have deleted referenced entity classes from the data model!
     .filter(({ entityType }) => Boolean(entityType))
   , [annotation]);
+
+  // Transcription body, if any
+  const transcription = annotation.bodies.find(b => b.purpose === 'transcribing');
 
   // Note body, if any
   const note = annotation.bodies.find(b => b.purpose === 'commenting');
@@ -190,6 +194,13 @@ export const PropertiesForm = (props: PropertiesFormProps) => {
         className="grow pt-1 flex flex-col" 
         onSubmit={onSubmit}>
         <div className="grow">
+          {transcription && (
+            <Transcription 
+              creator={transcription.creator} 
+              transcription={transcription}
+              entities={schemaBodies} />
+          )}
+
           {schemaBodies.length === 1 ? (
             <div>
               <div className="flex justify-between items-center pt-3 pb-4">

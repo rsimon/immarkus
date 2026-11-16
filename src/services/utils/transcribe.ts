@@ -125,7 +125,7 @@ const parseMention = (mention: { quote: string, context: string }, transcription
 export const parseTranscriptionResponseBodies = (annotationId: string, result: any): AnnotationBody[] => ([{
   id: uuidv4(),
   annotation: annotationId,
-  purpose: 'commenting',
+  purpose: 'transcribing',
   value: result.text
 }, ...(result.entities || []).map(entity => ({
   id: uuidv4(),
