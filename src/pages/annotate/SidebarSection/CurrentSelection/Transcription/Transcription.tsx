@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from 'react';
-import { ScanText } from 'lucide-react';
+import { ScanText, TextAlignStart } from 'lucide-react';
 import type { AnnotationBody, User, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType } from '@/model';
 import { TooltipProvider } from '@/ui/Tooltip';
@@ -42,13 +42,13 @@ export const Transcription = (props: TranscriptionProps) => {
     return (
       <Fragment key={lineIndex}>
         <span className={cn(
-          'flex self-stretch items-start justify-center pt-px bg-muted/60 border-r border-border/70 pl-1.5 pr-2 select-none text-xs text-right text-muted-foreground/70 tabular-nums',
+          'flex self-stretch items-start justify-center bg-muted/60 border-r border-border/70 pl-0.75 pt-0.5 pr-1 select-none text-[11px] text-right text-muted-foreground/70 tabular-nums',
           verticalPadding
         )}>
           {lineIndex + 1}
         </span>
 
-        <span className={cn('self-start min-w-0 pl-3', verticalPadding)}>
+        <span className={cn('self-start min-w-0 pl-3 font-serif ', verticalPadding)}>
           {splitLineSegments(line, highlights).map(({ start, end, highlight }) => {
             const text = value.slice(start, end);
             return highlight
@@ -69,8 +69,14 @@ export const Transcription = (props: TranscriptionProps) => {
       )}
 
       <TooltipProvider delayDuration={200}>
-        <div className="grid font-serif grid-cols-[auto_minmax(0,1fr)] items-start whitespace-pre-wrap tracking-wide rounded leading-relaxed border max-h-72 overflow-y-auto">
-          {lines.map(renderLine)}
+        <div className="border rounded">
+          <div className="flex gap-1 items-center p-1 uppercase font-medium text-muted-foreground tracking-wide text-[10px]">
+            <TextAlignStart className="size-3 mb-px" strokeWidth={2.5}/> Transcription
+          </div>
+
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start whitespace-pre-wrap tracking-wide rounded-b leading-relaxed border-t max-h-72 overflow-y-auto">
+            {lines.map(renderLine)}
+          </div>
         </div>
       </TooltipProvider>
     </div>
