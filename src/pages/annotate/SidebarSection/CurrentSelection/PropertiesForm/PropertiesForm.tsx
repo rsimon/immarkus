@@ -14,6 +14,7 @@ import { Separator } from '@/ui/Separator';
 import { createSafeKeys } from './PropertyKeys';
 import { RelationsList } from './RelationsList';
 import { Note } from '../Note';
+import { Transcription } from '../Transcription';
 import { PropertiesFormSection, PropertiesFormSectionActions } from '../PropertiesFormSection';
 import { PropertiesFormActions } from './PropertiesFormActions';
 import {
@@ -22,7 +23,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/ui/Accordion';
-import { Transcription } from '../Transcription';
 
 interface PropertiesFormProps {
 
