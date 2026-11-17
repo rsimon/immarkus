@@ -51,8 +51,20 @@
 }
 
 /** Mosaic theme overrides **/
-.page.annotate .mosaic-tile {
+.page.annotate .workspace .mosaic-tile {
   margin: 4px;
+}
+
+.page.annotate .annotation-layout .mosaic-root {
+  inset: 0;
+}
+
+.page.annotate .annotation-layout .mosaic-tile {
+  margin: 0;
+}
+
+.page.annotate .annotation-layout .mosaic-split:hover .mosaic-split-line {
+  box-shadow: none;
 }
 
 .page.annotate .mosaic.mosaic-blueprint-theme {
