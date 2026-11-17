@@ -63,10 +63,6 @@
   margin: 0;
 }
 
-.page.annotate .annotation-layout .mosaic-split:hover {
-  background: none;
-}
-
 .page.annotate .annotation-layout .mosaic-split:hover .mosaic-split-line {
   box-shadow: none;
 }
