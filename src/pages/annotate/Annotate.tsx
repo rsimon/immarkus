@@ -10,7 +10,7 @@ import { useImages } from '@/store';
 import { Alert, AlertTitle } from '@/ui/Alert';
 import { TooltipProvider } from '@/ui/Tooltip';
 import { useAnnotationViewState } from './AnnotationViewState';
-import { AnnotationLayout } from './AnnotationLayout';
+import { AnnotationViewLayout } from './AnnotationViewLayout';
 import { HeaderSection } from './HeaderSection';
 import { RelationEditorRoot } from './RelationEditor';
 import { SavingState } from './SavingState';
@@ -101,8 +101,8 @@ export const Annotate = () => {
                   plugin={SAMPlugin} />
 
                 <SavingState.Root>
-                  <AnnotationLayout
-                    workspace={(
+                  <AnnotationViewLayout
+                    main={(
                       <main className="h-full min-h-0 min-w-0 flex flex-col">
                         <HeaderSection
                           images={images}
