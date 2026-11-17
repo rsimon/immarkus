@@ -11,6 +11,7 @@ import { useAnnotoriousManifold, useSelection } from '@annotorious/react-manifol
 import { AnnotationValuePreview } from '@/components/AnnotationValuePreview';
 import { ConfirmedDelete } from '@/components/ConfirmedDelete';
 import { EntityBadge } from '@/components/EntityBadge';
+import { EntityType } from '@/model';
 import { useDataModel, useStore } from '@/store';
 import { AnnotationListItemRelation } from './AnnotationListItemRelation';
 import { cn } from '@/ui/utils';
@@ -86,6 +87,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
     }
   }
 
+  const distinctTags = (tags: W3CAnnotationBody[]) => tags.reduce<EntityType[]>((distinct, next) => {
+    return distinct.some(t => t.id === next.source) ? distinct : [...distinct, getEntityType(next.source)]
+  }, []);
+
   return (
     <>
       <div 
@@ -102,10 +107,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">
-              {entityTags.map(tag => (
+              {distinctTags(entityTags).map(tag => (
                 <li key={tag.id} className="inline-block mr-1 whitespace-nowrap">
-                  <EntityBadge 
-                    entityType={getEntityType(tag.source)} />
+                  <EntityBadge entityType={tag} />
                 </li>
               ))}
             </ul>
