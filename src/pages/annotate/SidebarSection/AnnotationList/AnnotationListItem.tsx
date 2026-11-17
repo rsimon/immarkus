@@ -87,8 +87,10 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
     }
   }
 
-  const distinctTags = (tags: W3CAnnotationBody[]) => tags.reduce<EntityType[]>((distinct, next) => {
-    return distinct.some(t => t.id === next.source) ? distinct : [...distinct, getEntityType(next.source)]
+  const distinctTags = (tags: W3CAnnotationBody[]) => tags.reduce<{ type: EntityType, count: number }[]>((distinct, next) => {
+    return distinct.some(t => t.type.id === next.source)
+      ? distinct.map(t => t.type.id === next.source ? { ...t, count: t.count + 1 } : t)
+      : [...distinct, { type: getEntityType(next.source), count: 1 }]
   }, []);
 
   return (
@@ -107,9 +109,9 @@ export const AnnotationListItem = (props: AnnotationListItemProps) => {
           {entityTags.length > 0 && (
             <ul 
               className="line-clamp-1 mr-8 px-2 py-3">
-              {distinctTags(entityTags).map(tag => (
-                <li key={tag.id} className="inline-block mr-1 whitespace-nowrap">
-                  <EntityBadge entityType={tag} />
+              {distinctTags(entityTags).map(({ type, count }) => (
+                <li key={type.id} className="inline-block mr-1 whitespace-nowrap">
+                  <EntityBadge entityType={type} count={count} />
                 </li>
               ))}
             </ul>

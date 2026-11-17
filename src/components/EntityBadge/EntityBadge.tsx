@@ -16,6 +16,8 @@ interface BadgeEntityProps {
 
   entityType?: EntityType;
 
+  count?: number;
+
 }
 
 export const EntityBadge = (props: BadgeEntityProps) => {
@@ -34,7 +36,18 @@ export const EntityBadge = (props: BadgeEntityProps) => {
         color: getForegroundColor(backgroundColor)
       }}>
 
-      <Cuboid className="h-3.5 w-3.5 mr-1"/> <span className="truncate">{entityType?.label || entityType?.id || t('entityBadge.error')}</span>
+      <Cuboid className="h-3.5 w-3.5 mr-1"/> 
+
+      <span className="truncate">
+        {entityType?.label || entityType?.id || t('entityBadge.error')}
+      </span>
+
+      {props.count && props.count > 1 && (
+        <span 
+          className="ml-1.75 -mr-1 pt-px text-[11px] bg-white/20 font-medium rounded-full min-w-4 flex justify-center">
+          {props.count}
+        </span>
+      )}
     </span>
   )
 
