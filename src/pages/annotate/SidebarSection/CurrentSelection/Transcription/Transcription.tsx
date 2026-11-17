@@ -1,4 +1,5 @@
 import { Fragment, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScanText, TextAlignStart } from 'lucide-react';
 import type { AnnotationBody, User, W3CAnnotationBody } from '@annotorious/react';
 import { EntityType } from '@/model';
@@ -19,6 +20,8 @@ interface TranscriptionProps {
 
 export const Transcription = (props: TranscriptionProps) => {
   const { creator, entities } = props;
+
+  const { t } = useTranslation('annotate');
 
   const value = props.transcription.value ?? '';
 
@@ -71,7 +74,7 @@ export const Transcription = (props: TranscriptionProps) => {
       <TooltipProvider delayDuration={200}>
         <div className="border rounded">
           <div className="flex gap-1 items-center p-1 uppercase font-medium text-muted-foreground tracking-wide text-[10px]">
-            <TextAlignStart className="size-3 mb-px" strokeWidth={2.5}/> Transcription
+            <TextAlignStart className="size-3 mb-px" strokeWidth={2.5}/> {t('currentSelection.transcription')}
           </div>
 
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start whitespace-pre-wrap tracking-wide rounded-b leading-relaxed border-t max-h-120 overflow-y-auto">

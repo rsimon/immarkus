@@ -119,6 +119,7 @@
   },
   "currentSelection": {
     "noAnnotationSelected": "No annotation selected",
+    "transcription": "Transcription",
     "addTag": "Add Tag",
     "addNote": "Add Note",
     "deleteAnnotation": "Delete Annotation",
