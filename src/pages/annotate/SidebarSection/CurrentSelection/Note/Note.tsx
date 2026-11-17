@@ -1,7 +1,7 @@
 import { ScanText } from 'lucide-react';
-import { User } from '@annotorious/react';
+import type { User } from '@annotorious/react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { FontSize } from '@/components/FontSize';
+import type { FontSize } from '@/components/FontSize';
 
 interface NoteProps {
 
@@ -20,7 +20,6 @@ interface NoteProps {
 }
 
 export const Note = (props: NoteProps) => {
-
   const { creator } = props;
 
   const hasGenerator = creator?.name && 'type' in creator;
@@ -29,9 +28,10 @@ export const Note = (props: NoteProps) => {
     <div className="mt-3">
       {hasGenerator && (
         <div className="text-[11px] flex gap-1 items-center justify-end mb-2.5 mr-0.5 text-muted-foreground/80">
-          {creator.name} <ScanText className="size-3.5 mb-[1px]" /> 
+          {creator.name} <ScanText className="size-3.5 mb-px" /> 
         </div>
       )}
+
       <TextareaAutosize
         key={props.fontSize}
         cacheMeasurements

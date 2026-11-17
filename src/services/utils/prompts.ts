@@ -31,17 +31,6 @@ const propertyToPrompt = (property: PropertyDefinition): string | undefined => {
   }
 }
 
-export const tagToPrompt = (tag: EntityType): string => {
-  const lines = (tag.properties || []).map(propertyToPrompt);
-
-  return [
-    `### Class: "${tag.id}"`,
-    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
-    tag.description,
-    lines.length > 0 ? `Fields to fill:\n${lines.join('\n')}` : `This class has no extractable fields; still report its mentions.`,
-  ].filter(Boolean).join('\n');
-}
-
 const relationToPrompt = (relation: RelationshipType): string => {
   const cls = (id?: string) => (id ? `"${id}"` : 'any class');
 
@@ -56,6 +45,17 @@ const relationToPrompt = (relation: RelationshipType): string => {
     direction,
   ].filter(Boolean).join('\n');
 };
+
+export const tagToPrompt = (tag: EntityType): string => {
+  const lines = (tag.properties || []).map(propertyToPrompt);
+
+  return [
+    `### Class: "${tag.id}"`,
+    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
+    tag.description,
+    lines.length > 0 ? `Fields to fill:\n${lines.join('\n')}` : `This class has no extractable fields; still report its mentions.`,
+  ].filter(Boolean).join('\n');
+}
 
 export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;
@@ -82,7 +82,8 @@ ${tags.map((t) => tagToPrompt(t)).join("\n\n")}
 
 * List each individual entity as one list item in 'entities' array. Do not merge the properties of different entity instances into the same list item. 
 * List each individual entity **instance** exactly once. That means: create different list items for different entity instances (e.g. different persons), but don't create multiple list items for mulitple **mentions** of the same instance.
-* Include the entity instance in the list even if you can fill only a single property. It's ok to leave some properties blank.
+* Record each **mention** of an **instance**. Record the exact, verbatim quotes that mention that instance in the text, and provide a larger context snippet including the mention, and 2-3 words before and after the mention.
+* Include the entity instance in the list even if you cannot fill a property. It's ok to leave properties blank.
 * If the image contains no legible text, return an empty "text" and an empty "entities" array.
 
 ## Output format
@@ -96,17 +97,29 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
       "class": "${classIds[0]}",
       "properties": {
         <field name>: <value, as specified per class above>
-      }
+      },
+      "mentions": [{
+        "quote": <verbatim quote that mentions this entity instance in the text>
+        "context": <verbatim text context around the quote - including the quote>
+      }]
     },{
       "class": "${classIds[0]}",
       "properties": {
         <field name>: <value, as specified per class above>
-      }
+      },
+      "mentions": [{
+        "quote": <quote>
+        "context": <text context>
+      }]
     }${classIds.length > 1 ? `, {
       "class": "${classIds[1]}",
       "properties": {
         <field name>: <value, as specified per class above>
-      }
+      },
+      "mentions": [{
+        "quote": <quote>
+        "context": <text context>
+      }]
     }` : ''}
   ]
 }`;

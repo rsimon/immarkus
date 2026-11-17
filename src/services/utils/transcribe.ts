@@ -34,7 +34,7 @@ export const transcribeOpenAICompatible = (
 
   const prompt = args.customPrompt ?? getTranscriptionPrompt(args.tags);
 
-  const submit = (imageUrl: string) => {    
+  const submit = (imageUrl: string) => {   
     return client.chat.completions.create({
       model,
       max_completion_tokens: 12000,
@@ -62,10 +62,70 @@ export const transcribeOpenAICompatible = (
   }
 }
 
+const parseMention = (mention: { quote: string, context: string }, transcription: string) => {
+  if (!mention)
+    throw new Error('Could not parse response: empty mention');
+
+  const { quote, context } = mention;
+
+  if (!context.includes(quote)) {
+    console.warn(mention);
+    console.warn(`Could not parse response - invalid mention: context does not include quote`);
+    return;
+  }
+
+  if (!transcription.includes(context)) {
+    console.warn(transcription);
+    console.warn(`Could not parse response: transcription does not include mention`);
+    return;
+  }
+
+  const hasMatchingContext = () => {
+    let contextFrom = 0;
+
+    const contextualOccurrences = new Set<number>();
+    
+    while (true) {
+      // Outer loop: next occurrence of context in transcription
+      const contextStart = transcription.indexOf(context, contextFrom);
+      if (contextStart === -1)
+        break;
+
+      let quoteFrom = 0;
+
+      while (true) {
+        // Inner loop: next occurrence of quote in context
+        const quoteOffset = context.indexOf(quote, quoteFrom);
+        if (quoteOffset === -1)
+          break;
+
+        contextualOccurrences.add(contextStart + quoteOffset);
+        quoteFrom = quoteOffset + 1;
+      }
+
+      contextFrom = contextStart + 1;
+    }
+
+    if (contextualOccurrences.size !== 1) {
+      console.warn(`Could not uniquely locate mention: "${quote}"`);
+      return false;
+    }
+
+    return true;
+  }
+
+ 
+  if (!hasMatchingContext()) return;
+    
+  const start = transcription.indexOf(quote, transcription.indexOf(context));
+  const end = start + quote.length;
+  return { start, end, quote };
+}
+
 export const parseTranscriptionResponseBodies = (annotationId: string, result: any): AnnotationBody[] => ([{
   id: uuidv4(),
   annotation: annotationId,
-  purpose: 'commenting',
+  purpose: 'transcribing',
   value: result.text
 }, ...(result.entities || []).map(entity => ({
   id: uuidv4(),
@@ -73,12 +133,14 @@ export const parseTranscriptionResponseBodies = (annotationId: string, result: a
   type: 'Dataset',
   purpose: 'classifying',
   source: entity.class,
-  properties: entity.properties
+  properties: entity.properties,
+  references: entity.mentions.map(m => parseMention(m, result.text)).filter(Boolean)
 }))]);
 
 export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): AnnotationServiceCrosswalkResponse => {
   try {
     const result = parseOpenAIResponse(data);
+    
     if (!result?.text)
       throw new Error('Could not parse response');
 
