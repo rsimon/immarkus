@@ -14,7 +14,7 @@ export const HoverTooltip = (props: HoverTooltipProps) => {
   const model = useDataModel();
 
   const transcription = useMemo(() => {
-    const comment = bodies.find(b => (b.purpose === 'commenting' || !b.purpose) && b.value);
+    const comment = bodies.find(b => (b.purpose === 'transcribing' || !b.purpose) && b.value);
     return comment ? comment.value! : undefined;
   }, [bodies]);
 
