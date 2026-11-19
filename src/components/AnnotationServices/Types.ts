@@ -1,10 +1,19 @@
-import { ProcessingState, Region, Rotation } from '@/services';
+import { Region } from '@/services';
+
+export type ProcessingState = 'cropping'
+  | 'compressing' 
+  | 'fetching_iiif' 
+  | 'pending' 
+  | 'success' 
+  | 'success_empty'
+  | 'compressing_failed' 
+  | 'service_failed';
 
 export interface AnnotationServiceInput {
 
   region?: Region;
 
-  rotation: Rotation;
+  rotation: number;
 
   isFlipped: boolean;
 

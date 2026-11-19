@@ -2,17 +2,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { EntityType, LoadedImage, RelationshipType } from '@/model';
 import { useDataModel } from '@/store';
 import { preprocess } from './preprocess';
-import { AnnotationServiceInput, AnnotationServiceStatus } from './Types';
+import { 
+  AnnotationServiceInput, 
+  AnnotationServiceStatus, 
+  ProcessingState 
+} from './Types';
 import { 
   AnnotationServiceConnector,
-  ServiceRequestArgs,
-  TranscriptionServiceConnector,
+  AnnotationServiceCrosswalk,
   AnnotationServiceOptions, 
-  AnnotationServiceResult, 
-  ProcessingState, 
+  Generator,
+  PageTransform,
+  Region,
   ServiceRegistry, 
+  ServiceRequestArgs,
   ServiceType, 
-  useService 
+  TranscriptionServiceConnector,
+  useService
 } from '@/services';
 
 const OPS = {
@@ -20,6 +26,20 @@ const OPS = {
   ANNOTATION:    { parse: 'parseAnnotationResponse' },
   TRANSLATION:   { parse: undefined }
 } as Record<ServiceType, { parse?: string }>;
+
+interface AnnotationServiceResult<T = any> {
+
+  data: T;
+
+  generator: Generator;
+
+  transform: PageTransform;
+
+  region?: Region;
+
+  crosswalk: AnnotationServiceCrosswalk;
+
+} 
 
 export const useAnnotationServiceConnector = (type: ServiceType, image: LoadedImage) => {
   const model = useDataModel();

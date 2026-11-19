@@ -7,10 +7,13 @@ import { fileToBase64, parseOpenAIResponse, urlToBase64 } from './shared';
 import type { 
   AnnotationServiceCrosswalkResponse, 
   AnnotationServiceResponse, 
+  EntityReference, 
+  EntityTagAnnotationBody, 
   Generator, 
   PageTransform, 
   Region,
-  ServiceRequestArgs
+  ServiceRequestArgs,
+  TranscriptionAnnotationBody
 } from '../Types';
 
 export const getTranscriptionPrompt = (tags: EntityType[] = []): string =>
@@ -62,7 +65,10 @@ export const transcribeOpenAICompatible = (
   }
 }
 
-const parseMention = (mention: { quote: string, context: string }, transcription: string) => {
+const parseMention = (
+  mention: { quote: string, context: string }, 
+  transcription: string
+): EntityReference => {
   if (!mention)
     throw new Error('Could not parse response: empty mention');
 
@@ -122,22 +128,32 @@ const parseMention = (mention: { quote: string, context: string }, transcription
   return { start, end, quote };
 }
 
-export const parseTranscriptionResponseBodies = (annotationId: string, result: any): AnnotationBody[] => ([{
-  id: uuidv4(),
-  annotation: annotationId,
-  purpose: 'transcribing',
-  value: result.text
-}, ...(result.entities || []).map(entity => ({
-  id: uuidv4(),
-  annotation: annotationId,
-  type: 'Dataset',
-  purpose: 'classifying',
-  source: entity.class,
-  properties: entity.properties,
-  references: entity.mentions.map(m => parseMention(m, result.text)).filter(Boolean)
-}))]);
+export const crosswalkSimpleTranscriptionPayload = (
+  annotationId: string, 
+  result: any
+): AnnotationBody[] => ([{
+    id: uuidv4(),
+    annotation: annotationId,
+    purpose: 'transcribing',
+    value: [{
+      content: result.text
+    }]
+  } as TranscriptionAnnotationBody, 
+  ...(result.entities || []).map(entity => ({
+    id: uuidv4(),
+    annotation: annotationId,
+    type: 'Dataset',
+    purpose: 'classifying',
+    source: entity.class,
+    properties: entity.properties,
+    references: entity.mentions.map(m => parseMention(m, result.text)).filter(Boolean)
+  } as EntityTagAnnotationBody))]);
 
-export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTransform, region: Region): AnnotationServiceCrosswalkResponse => {
+export const parseSimpleOpenAICompatibleTranscriptionResponse = (
+  data: any, 
+  _: PageTransform, 
+  region: Region
+): AnnotationServiceCrosswalkResponse => {
   try {
     const result = parseOpenAIResponse(data);
     
@@ -148,7 +164,7 @@ export const parseOpenAICompatibleTranscriptionResponse = (data: any, _: PageTra
 
     const annotations = [{
       id,
-      bodies: parseTranscriptionResponseBodies(id, result),
+      bodies: crosswalkSimpleTranscriptionPayload(id, result),
       target: {
         annotation: id,
         selector: {

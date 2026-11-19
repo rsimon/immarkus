@@ -15,7 +15,10 @@ interface HighlightedSegmentProps {
 
 export const HighlightedSegment = (props: HighlightedSegmentProps) => {
   const { body, entityType } = props.highlight;
+
   const color = entityType.color || DEFAULT_COLOR;
+
+  console.log({ body });
 
   return (
     <Tooltip>

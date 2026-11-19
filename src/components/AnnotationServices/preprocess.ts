@@ -1,9 +1,10 @@
 import imageCompression from 'browser-image-compression';
 import type { DynamicImageServiceResource } from 'cozy-iiif';
 import { LoadedIIIFImage, LoadedImage } from '@/model';
-import { PageTransform, Point, ProcessingState, Region, Rotation } from '@/services';
+import { PageTransform, Point, Region } from '@/services';
 import { transformImage } from '@/utils/transformImage';
 import { getRotatedImageSize, rotatedToImageCoordinates } from './rotationUtils';
+import { ProcessingState } from './Types';
 
 interface IntermediateBasePreprocessingResult {
 
@@ -51,7 +52,7 @@ const getImageDimensions = (blob: Blob) => createImageBitmap(blob)
 const toPageTransform = (
   originalWidth: number,
   originalHeight: number,
-  rotation: Rotation,
+  rotation: number,
   isFlipped: boolean,
   region: Region | undefined,
   submittedWidth: number,
@@ -222,11 +223,11 @@ const getIIIFRegionResult = (
 export const preprocess = (
   image: LoadedImage, 
   region: Region | undefined,
-  rotation: Rotation,
+  rotation: number,
   isFlipped: boolean, 
   onProgress: (state: ProcessingState) => void
 ): Promise<PreprocessingResult> => {
-  const deg = (((rotation ?? 0) % 360) + 360) % 360 as Rotation;
+  const deg = (((rotation ?? 0) % 360) + 360) % 360;
 
   const getSource = (minSize?: number) => 'file' in image
     ? getImageDimensions(image.file).then(originalSize => ({

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { LoadedImage } from '@/model';
-import { Region, Rotation } from '@/services';
+import { Region } from '@/services';
 import { getOSDTilesets } from '@/utils/iiif';
 import { AnnotationServiceInput, AnnotationServiceStatus } from '../Types';
 import { HoverTooltip } from './HoverTooltip';
@@ -78,7 +78,7 @@ export const AnnotationServicePreview = (props: AnnotationServicePreviewProps) =
 
   const onChangeRegion = (region?: Region) => props.onUpdateInput({ region });
 
-  const onChangeRotation = (rotation: Rotation) => {
+  const onChangeRotation = (rotation: number) => {
     setSelectionVersion(version => version + 1);
     props.onUpdateInput({ rotation, region: undefined });
   };

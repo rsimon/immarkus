@@ -2,25 +2,14 @@ import { Mistral } from '@mistralai/mistralai';
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ShapeType } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
-import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, PageTransform, ServiceRequestArgs } from '@/services';
+import { AnnotationServiceCrosswalkResponse, AnnotationServiceResponse, DetectedObject, PageTransform, ServiceRequestArgs } from '@/services';
 import { buildAnnotatePrompt } from '@/services/utils/prompts';
 import { 
   fileToBase64, 
+  guessScale, 
   parseOpenAIResponse, 
   urlToBase64 
 } from '@/services/utils';
-
-interface Detection {
-
-  category: string;
-
-  label: string;
-
-  bbox: { x_min: number, y_min: number, x_max: number, y_max: number };
-
-  properties: Record<string, any>;
-
-}
 
 export const getPrompt = (
   tags: EntityType[] = [],
@@ -28,17 +17,6 @@ export const getPrompt = (
   width = 0,
   height = 0
 ): string => buildAnnotatePrompt(width, height, tags, relations);
-
-const sniffScale = (detections: Detection[]): number => {
-  const values = detections.flatMap(d => {
-    const { x_min, y_min, x_max, y_max } = d.bbox;
-    return [x_min, y_min, x_max, y_max];
-  }).filter(Number.isFinite);
-
-  const max = Math.max(...values);
-
-  return (max <= 1) ? 1 : 1000;
-}
 
 export const annotate = (
   image: File | string,
@@ -95,10 +73,10 @@ export const annotate = (
 }
 
 export const parseAnnotationResponse = (data: any, transform: PageTransform): AnnotationServiceCrosswalkResponse => {
-  const payload: Detection[] = parseOpenAIResponse(data);
+  const payload: DetectedObject[] = parseOpenAIResponse(data);
   console.debug('LLM response', payload);
 
-  const scale = sniffScale(payload);
+  const scale = guessScale(payload);
   console.log({ scale });
 
   const annotations = payload.map(detection => {

@@ -1,7 +1,16 @@
-import { ImageAnnotation } from '@annotorious/react';
+import { AnnotationBody, ImageAnnotation } from '@annotorious/react';
 import { EntityType, RelationshipType } from '@/model';
-import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { DataModel } from '@/store';
+import { 
+  W3CRelationLinkAnnotation,
+  W3CRelationMetaAnnotation 
+} from '@annotorious/plugin-wires-react';
+
+
+/********************************/
+/* SERVICE CONFIGURATION        */
+/********************************/
+
 
 export interface ServiceConnectorConfig {
 
@@ -143,6 +152,20 @@ export type ServiceConfigParameter =
   | ServiceConfigStringParameter
   | ServiceConfigSwitchParameter;
 
+
+/********************************/
+/* SERVICE RUNTIME USAGE        */
+/********************************/
+
+
+export interface AnnotationServiceOptions {
+
+  connectorId: string;
+
+  serviceOptions?: Record<string, any>;
+
+}
+
 export interface AnnotationServiceConnector {
 
   getPrompt(type: PromptServiceType, args: ServiceRequestArgs): string | undefined;
@@ -189,27 +212,6 @@ export interface ServiceRequestArgs {
 
 export type ServiceConnector = AnnotationServiceConnector | TranscriptionServiceConnector | TranslationServiceConnector;
 
-export interface AnnotationServiceResponse<T extends unknown = any> {
-
-  data: T; 
-
-  generator: Generator;
-
-}
-
-export interface Generator {
-
-  id: string;
-
-  /** Defaults to 'Software' **/
-  type?: string;
-
-  name: string;
-
-  homepage?: string; 
-
-}
-
 export type PageTransform = {
 
   (region: Region): Region;
@@ -244,7 +246,19 @@ export interface Region {
   
 }
 
-export type Rotation = number;
+
+/********************************/
+/* SERVICE RESPONSES            */
+/********************************/
+
+
+export interface AnnotationServiceResponse<T extends unknown = any> {
+
+  data: T; 
+
+  generator: Generator;
+
+}
 
 export interface TranslationServiceResponse {
   
@@ -256,60 +270,30 @@ export interface TranslationServiceResponse {
 
 }
 
-export interface AnnotationBatch {
+export interface Generator {
 
-  annotations: ImageAnnotation[];
+  id: string;
 
-  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
+  /** Defaults to 'Software' **/
+  type?: string;
 
-  generator: Generator;
-  
-}
+  name: string;
 
-export interface AnnotationServiceOptions {
-
-  connectorId: string;
-
-  serviceOptions?: Record<string, any>;
+  homepage?: string; 
 
 }
 
-export type ProcessingState = 'cropping'
-  | 'compressing' 
-  | 'fetching_iiif' 
-  | 'pending' 
-  | 'success' 
-  | 'success_empty'
-  | 'compressing_failed' 
-  | 'service_failed';
 
-export interface AnnotationServiceResult<T = any> {
+/********************************/
+/* SERVICE RESPONSE PROCESSING  */
+/********************************/
 
-  data: T;
 
-  generator: Generator;
+export interface AutoAnnotateResponse {
 
-  transform: PageTransform;
+  objects: DetectedObject[];
 
-  region?: Region;
-
-  crosswalk: AnnotationServiceCrosswalk;
-
-} 
-
-export type AnnotationServiceCrosswalk<T = any> = (
-  data: T, 
-  transform: PageTransform,
-  region?: Region, 
-  options?: Record<string, any>,
-  model?: DataModel
-) => AnnotationServiceCrosswalkResponse;
-
-export interface AnnotationServiceCrosswalkResponse {
-
-  annotations: ImageAnnotation[];
-
-  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
+  relations?: DetectedRelation[];
 
 }
 
@@ -337,10 +321,80 @@ export interface DetectedRelation {
 
 }
 
-export interface AutoAnnotateResponse {
 
-  objects: DetectedObject[];
+/**************************************/
+/* SERVICE CROSSWALKS AND ANNOTATIONS */
+/**************************************/
 
-  relations?: DetectedRelation[];
+
+export type AnnotationServiceCrosswalk<T = any> = (
+  data: T, 
+  transform: PageTransform,
+  region?: Region, 
+  options?: Record<string, any>,
+  model?: DataModel
+) => AnnotationServiceCrosswalkResponse;
+
+export interface AnnotationServiceCrosswalkResponse {
+
+  annotations: ImageAnnotation[];
+
+  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
 
 }
+
+export interface AnnotationBatch {
+
+  annotations: ImageAnnotation[];
+
+  relations?: [W3CRelationLinkAnnotation, W3CRelationMetaAnnotation][];
+
+  generator: Generator;
+  
+}
+
+export interface TranscriptionAnnotationBody extends Omit<AnnotationBody, 'purpose' | 'value'> {
+
+  purpose: 'transcribing';
+
+  value: TranscribedBlock[];
+
+}
+
+export interface TranscribedBlock {
+
+  content: string;
+
+  type?: string;
+
+  bbox?: Region;
+
+}
+
+export interface EntityTagAnnotationBody extends Omit<AnnotationBody, 'purpose'> {
+
+  type: 'Dataset';
+
+  purpose: 'classifying';
+
+  source: string;
+
+  properties: Record<string, any>;
+
+  references: EntityReference[];
+
+}
+
+export interface EntityReference {
+  
+  start: number;
+  
+  end: number;
+  
+  quote: string;
+
+}
+
+
+
+

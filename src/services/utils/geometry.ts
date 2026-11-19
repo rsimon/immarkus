@@ -1,6 +1,6 @@
 import { DetectedObject, PageTransform } from '../Types';
 
-export const sniffScale = (detections: DetectedObject[]): number => {
+export const guessScale = (detections: DetectedObject[]): number => {
   const values = detections.flatMap(d => {
     const { x_min, y_min, x_max, y_max } = d.bbox;
     return [x_min, y_min, x_max, y_max];

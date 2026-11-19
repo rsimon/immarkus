@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AnnotationBody, ImageAnnotation, ShapeType } from '@annotorious/react';
 import { AnnotationServiceCrosswalkResponse, PageTransform, Region } from '@/services/Types';
-import { parseOpenAICompatibleTranscriptionResponse } from '@/services/utils';
+import { parseSimpleOpenAICompatibleTranscriptionResponse as parseOpenAI } from '@/services/utils';
 
 interface MistralOCRBlock {
 
@@ -19,16 +19,24 @@ interface MistralOCRBlock {
 
 }
 
-const toAnnotation = (text: string, region: Region): ImageAnnotation => {
+const toAnnotation = (text: string, region: Region, entities: any[]): ImageAnnotation => {
   const id = uuidv4();
 
   return {
     id,
     bodies: [{
       annotation: id,
-      purpose: 'commenting',
+      purpose: 'transcribing',
       value: text
-    } as AnnotationBody],
+    }, ...entities.map(e => ({
+      id: uuidv4(),
+      annotation: id,
+      type: 'Dataset',
+      purpose: 'classifying',
+      source: e.class,
+      properties: e.properties,
+      // references: e.mentions.map(m => parseMention(m, text)).filter(Boolean)
+    }))] as AnnotationBody[],
     target: {
       annotation: id,
       selector: {
@@ -47,7 +55,7 @@ const toAnnotation = (text: string, region: Region): ImageAnnotation => {
   }
 }
 
-const createBlockAnnotation = (block: MistralOCRBlock, transform: PageTransform): ImageAnnotation => {
+const createBlockAnnotation = (block: MistralOCRBlock, transform: PageTransform, entities: any[]): ImageAnnotation => {
   const { topLeftX, topLeftY, bottomRightX, bottomRightY, content } = block;
 
   const region = transform({
@@ -57,7 +65,7 @@ const createBlockAnnotation = (block: MistralOCRBlock, transform: PageTransform)
     h: bottomRightY - topLeftY
   });
 
-  return toAnnotation(content, region);
+  return toAnnotation(content, region, entities);
 }
 
 export const parseResponse = (
@@ -66,13 +74,17 @@ export const parseResponse = (
   region: Region
 ): AnnotationServiceCrosswalkResponse => {
   if ('pages' in data) {
+    console.log(data);
+    const entities = 'documentAnnotation' in data ? JSON.parse(data.documentAnnotation).entities : [];
+
     // OCR response
+
     const annotations = (data.pages as any[]).reduce<ImageAnnotation[]>((all, page) => {
       const blocks: MistralOCRBlock[] = page.blocks || [];
 
       const onThisPage = blocks
         .filter(b => b.content?.trim())
-        .map(b => createBlockAnnotation(b, transform));
+        .map(b => createBlockAnnotation(b, transform, entities));
 
       return [...all, ...onThisPage];
     }, []);
@@ -80,6 +92,6 @@ export const parseResponse = (
     return { annotations };
   } else {
     // LLM response
-    return parseOpenAICompatibleTranscriptionResponse(data, transform, region);
+    return parseOpenAI(data, transform, region);
   }
 }
