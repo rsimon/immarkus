@@ -3,7 +3,6 @@ import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefreshCcwDot, RotateCcwSquare, RotateCwSquare, SquareCenterlineDashedHorizontal, ZoomIn, ZoomOut } from 'lucide-react';
 import { useViewer } from '@annotorious/react';
-import { Rotation } from '@/services';
 import { Button } from '@/ui/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/Tooltip';
 import { Toggle } from '@/ui/Toggle';
@@ -13,7 +12,7 @@ interface NavControlsProps {
 
   onChangeFlipped(flipped: boolean): void;
 
-  onChangeRotation(rotation: Rotation): void;
+  onChangeRotation(rotation: number): void;
 
 }
 

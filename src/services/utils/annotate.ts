@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { type AnnotationBody, ShapeType } from '@annotorious/react';
 import { W3CRelationLinkAnnotation, W3CRelationMetaAnnotation } from '@annotorious/plugin-wires-react';
 import { DataModelStore } from '@/store';
-import { sniffScale, transformRectangle } from './geometry';
+import { guessScale, transformRectangle } from './geometry';
 import { parseOpenAIResponse } from './shared';
 import type { 
   AnnotationServiceCrosswalkResponse, 
@@ -19,16 +19,12 @@ export const parseAnnotationResponse = (
   __: Record<string, any> = {},
   model: DataModelStore
 ): AnnotationServiceCrosswalkResponse => {
-  // console.log('[openrouter.annotate] LLM response', data);
-
   const payload: AutoAnnotateResponse = parseOpenAIResponse(data);
-
-  // console.log('[openrouter.annotate] LLM response payload', payload);
 
   const objects = payload.objects ?? [];
   const detectedRrelations = payload.relations ?? [];
 
-  const scale = sniffScale(objects);
+  const scale = guessScale(objects);
   const { width, height } = transform.source;
 
   // LLM id -> { uuid, category }

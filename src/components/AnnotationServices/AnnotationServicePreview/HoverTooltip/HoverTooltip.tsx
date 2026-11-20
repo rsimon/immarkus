@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { ImageAnnotation } from '@annotorious/react';
 import { useDataModel } from '@/store';
+import { TranscriptionAnnotationBody } from '@/services';
 
 interface HoverTooltipProps {
 
@@ -14,8 +15,12 @@ export const HoverTooltip = (props: HoverTooltipProps) => {
   const model = useDataModel();
 
   const transcription = useMemo(() => {
-    const comment = bodies.find(b => (b.purpose === 'transcribing' || !b.purpose) && b.value);
-    return comment ? comment.value! : undefined;
+    const comment = bodies.find(b => 
+      (b.purpose === 'transcribing' || !b.purpose) && 
+      Array.isArray(b.value) 
+    ) as unknown as TranscriptionAnnotationBody;
+
+    return comment ? comment.value.map(block => block.content).join('\n\n') : undefined;
   }, [bodies]);
 
   const entityCounts = useMemo(() => {

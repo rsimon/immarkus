@@ -1,5 +1,8 @@
 import { EntityType, PropertyDefinition, RelationshipType } from '@/model';
 
+/** 
+ * Basic, non-parameterized transcription prompt 
+ */
 export const PROMPT_TRANSCRIBE = 
 `Extract all text from this image. Your response must be ONLY valid JSON in this format: 
 
@@ -7,6 +10,9 @@ export const PROMPT_TRANSCRIBE =
  
 Preserve whitespace and newline formatting in the text output.`;
 
+/**
+ * Transcription + entity recognition
+ */
 const propertyToPrompt = (property: PropertyDefinition): string | undefined => {
   const instructions = property.description ? ` — ${property.description}` : '';
 
@@ -31,6 +37,17 @@ const propertyToPrompt = (property: PropertyDefinition): string | undefined => {
   }
 }
 
+export const tagToPrompt = (tag: EntityType): string => {
+  const lines = (tag.properties || []).map(propertyToPrompt);
+
+  return [
+    `### Class: "${tag.id}"`,
+    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
+    tag.description,
+    lines.length > 0 ? `Fields to fill:\n${lines.join('\n')}` : `This class has no extractable fields; still report its mentions.`,
+  ].filter(Boolean).join('\n');
+}
+
 const relationToPrompt = (relation: RelationshipType): string => {
   const cls = (id?: string) => (id ? `"${id}"` : 'any class');
 
@@ -45,17 +62,6 @@ const relationToPrompt = (relation: RelationshipType): string => {
     direction,
   ].filter(Boolean).join('\n');
 };
-
-export const tagToPrompt = (tag: EntityType): string => {
-  const lines = (tag.properties || []).map(propertyToPrompt);
-
-  return [
-    `### Class: "${tag.id}"`,
-    tag.label && tag.label !== tag.id ? `Also known as: ${tag.label}` : undefined,
-    tag.description,
-    lines.length > 0 ? `Fields to fill:\n${lines.join('\n')}` : `This class has no extractable fields; still report its mentions.`,
-  ].filter(Boolean).join('\n');
-}
 
 export const buildTranscribeAndTagPrompt = (tags: EntityType[], instructions?: string): string => {
   if (tags.length === 0) return PROMPT_TRANSCRIBE;
@@ -125,6 +131,9 @@ Respond with a single JSON object and nothing else — no markdown fences, no co
 }`;
 }
 
+/**
+ * Auto-annotate prompt
+ */
 export const buildAnnotatePrompt = (
   w: number,
   h: number,

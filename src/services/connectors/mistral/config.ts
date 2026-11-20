@@ -13,6 +13,7 @@ export const config: ServiceConnectorConfig = {
   services: [{
     type: 'TRANSCRIPTION',
     description: 'OCR by Mistral.ai',
+    supportsEntityExtraction: true,
     requiresRegion: true,
     parameters: [{
       type: 'string',
